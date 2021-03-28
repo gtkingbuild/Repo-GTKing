@@ -65,14 +65,14 @@ Instalador actualizado a la versión 2.2.3
 <addon id="repository.repoprueba" name="[COLOR limegreen][B]Repo[/B][/COLOR]Prueba" version="2.0" provider-name="gtkingbuild">
     <extension point="xbmc.addon.repository" name="[COLOR limegreen][B]Repo[/B][/COLOR]Prueba">
         <dir minversion="18.0" maxversion="18.9.0">
-            <info compressed="false">https://raw.githubusercontent.com/a4k-openproject/repository.openwizard/master/leia/zips/addons.xml</info>
+            <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/zips/addons.xml</info>
             <checksum>https://raw.githubusercontent.com/a4k-openproject/repository.openwizard/master/leia/zips/addons.xml.md5</checksum>
-            <datadir zip="true">https://raw.githubusercontent.com/a4k-openproject/repository.openwizard/master/leia/zips/</datadir>
+            <datadir zip="true">https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/matrix/zips/</datadir>
         </dir>
         <dir minversion="18.9.0">
-            <info compressed="false">https://raw.githubusercontent.com/a4k-openproject/repository.openwizard/master/matrix/zips/addons.xml</info>
-            <checksum>https://raw.githubusercontent.com/a4k-openproject/repository.openwizard/master/matrix/zips/addons.xml.md5</checksum>
-            <datadir zip="true">https://raw.githubusercontent.com/a4k-openproject/repository.openwizard/master/matrix/zips/</datadir>
+            <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/zips/addons.xml</info>
+            <checksum>hhttps://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/matrix/zips/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/matrix/zips/</datadir>
         </dir>
     </extension>
 
