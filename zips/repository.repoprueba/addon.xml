@@ -3,13 +3,13 @@
     <extension point="xbmc.addon.repository" name="[COLOR limegreen][B]Repo[/B][/COLOR]Prueba">
         <dir minversion="18.0" maxversion="18.9.0">
             <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/zips/addons.xml</info>
-            <checksum>https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/zips/addons.xml.md5</checksum>
-            <datadir zip="true">https://raw.githubusercontent.com/a4k-openproject/Repo-Prueba/master/zips/</datadir>
+            <checksum>https://raw.githubusercontent.com/a4k-openproject/repository.openwizard/master/leia/zips/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/matrix/zips/</datadir>
         </dir>
         <dir minversion="18.9.0">
             <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/zips/addons.xml</info>
-            <checksum>https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/zips/addons.xml.md5</checksum>
-            <datadir zip="true"><datadir zip="true">https://raw.githubusercontent.com/a4k-openproject/Repo-Prueba/master/zips/</datadir>/</datadir>
+            <checksum>https://raw.githubusercontent.com/a4k-openproject/repository.openwizard/master/leia/zips/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/matrix/zips/</datadir>
         </dir>
     </extension>
     
