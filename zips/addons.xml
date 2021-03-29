@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addons>
 <addon id="repository.repoprueba" name="[COLOR limegreen][B]Repo[/B][/COLOR]Prueba" version="2.0" provider-name="gtkingbuild">
     <extension point="xbmc.addon.repository" name="[COLOR limegreen][B]Repo[/B][/COLOR]Prueba">
         <dir minversion="18.0" maxversion="18.9.0">
