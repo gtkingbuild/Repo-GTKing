@@ -1,0 +1,12 @@
+[submodule "leia/plugin.program.flixwizard"]
+	path = leia/plugin.program.flixwizard
+	url = https://github.com/unkn0wn234/plugin.program.flixwizard
+[submodule "matrix/plugin.program.flixwizard"]
+	path = matrix/plugin.program.flixwizard
+	url = https://github.com/unkn0wn234/plugin.program.flixwizard
+[submodule "matrix/skin.arctic.horizonmod"]
+	path = matrix/skin.arctic.horizonmod
+	url = https://github.com/unkn0wn234/skin.arctic.horizonmod/
+[submodule "leia/skin.embuarymod"]
+	path = leia/skin.embuarymod
+	url = https://github.com/unkn0wn234/skin.embuarymod
