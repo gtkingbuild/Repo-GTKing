@@ -1,3 +1,10 @@
+name="Elementum All-one"
+url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/1.59/elementun.zip"
+icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
+fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
+adult="no"
+description="EElementum All-one"
+
 name="Parche GTKing Prime Matrix"
 url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/3.9.1/Parche.GTKing.Prime.zip"
 icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
