@@ -62,6 +62,41 @@ Instalador actualizado a la versión 2.2.3
     </extension>
 </addon>
 
+<addon id="plugin.video.Vilhao.Matrix"
+       name="[COLOR blue]V[/COLOR][COLOR yellow]i[/COLOR][COLOR blue]l[/COLOR][COLOR yellow]h[/COLOR][COLOR blue]a[/COLOR][COLOR yellow]o[/COLOR]"
+       version="1.1"
+       provider-name="VILHAO">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.beautifulsoup" version="3.2.1"/>
+    <import addon="script.module.simple.downloader" version="0.9.4"/>
+    <import addon="script.module.beautifulsoup4" />
+    <import addon="script.module.requests" />
+    <import addon="script.module.httplib2" />
+    <import addon="script.module.youtube.dl" optional="true"/>
+    <import addon="plugin.video.youtube" optional="true" />
+    <import addon="script.module.urlresolver" optional="true"/>
+    <import addon="script.module.simplejson" />
+	<import addon="script.module.livestreamer" optional="true"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>[COLOR yellow]O[/COLOR] [COLOR blue]melhor[/COLOR] [COLOR yellow]para[/COLOR] [COLOR blue]ver[/COLOR] [COLOR yellow]na[/COLOR] [COLOR blue]sua[/COLOR] [COLOR yellow]TV[/COLOR][COLOR blue]!!![/COLOR]</summary>
+    <description>
+	[B][COLOR yellow]- Add-on oficial do Vilhao[/COLOR][/B]
+
+[B][COLOR yellow]- Vilhao, Para uso de todos.[/COLOR][/B]
+
+[B][COLOR yellow]- O Add-on Vilhao é de uso gratuito!![/COLOR][/B]
+
+[B][COLOR red]- Proibido a venda deste add-on[/COLOR][/B]
+	</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
 <addon id="repository.repoprueba" name="[COLOR limegreen][B]Repo[/B][/COLOR]Prueba" version="2.0" provider-name="gtkingbuild">
     <extension point="xbmc.addon.repository" name="[COLOR limegreen][B]Repo[/B][/COLOR]Prueba">
         <dir minversion="18.0" maxversion="18.9.0">
@@ -87,5 +122,38 @@ Instalador actualizado a la versión 2.2.3
         </assets>
 		<source>https://github.com/gtkingbuild/Repo-GTKing/</source>
     </extension>
+</addon>
+
+<addon id="script.luar"
+  version="0.8.1"
+  name="Luar"
+  provider-name="The Dreamers">
+  <requires>
+    <import addon="script.module.six" version="1.11.0"/>
+    <import addon="script.module.requests"/>
+    <import addon="resource.language.es_es"/>
+    <import addon="script.module.pycryptodome" optional="true"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+    <provides>executable</provides>
+  </extension>
+  <extension point="xbmc.addon.repository" name="Luar Repo">
+    <info>https://raw.githubusercontent.com/Masterwine/Luar/master/repor/addons.xml</info>
+    <checksum>https://raw.githubusercontent.com/Masterwine/Luar/master/repor/addons.xml.md5</checksum>
+    <datadir zip="true">https://raw.githubusercontent.com/Masterwine/Luar/master/repor/</datadir>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <summary lang="es">Script instalador de complementos para Kodi.</summary>
+    <description lang="es">Selecciona, instala y disfruta.</description>
+    <disclaimer lang="es"></disclaimer>
+    <assets>
+      <icon>icon.gif</icon>
+      <fanart>fanart.jpg</fanart>
+      <screenshot>resources/screenshot000.jpg</screenshot>
+      <screenshot>resources/screenshot001.jpg</screenshot>
+      <screenshot>resources/screenshot002.jpg</screenshot>
+    </assets>
+  </extension>
 </addon>
 </addons>
