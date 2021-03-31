@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.program.GTKing" name="GTKING [COLOR dodgerblue]MATRIX[/COLOR]" version="3.0.4" provider-name="Josa, Manu, DavidzgZgZ, Sugea, Tete, Mapache, Zalcos">
+<addon id="plugin.program.GTKing" name="GTKING [COLOR dodgerblue]MATRIX[/COLOR]" version="3.0.4" provider-name="Josa, DavidzgZgZ, Sugea y GTKing TEAM">
 	<requires>
     	<import addon="xbmc.python" version="3.0.0"/>
     	<import addon="script.module.requests" />
@@ -21,7 +21,7 @@
 - Telegram: [COLOR lime]t.me/beelinkking[/COLOR]</description>
 		<platform>all</platform>
 		<reuselanguageinvoker>false</reuselanguageinvoker>
-        <source>https://www.github.com/a4k-openproject/plugin.program.openwizard/</source>
+        <source>https://www.github.com/gtkingbuild/Repo-GTKing/plugin.program.GTKing/</source>
 		<news>
 - Build [COLOR dodgerblue]GTKing[/COLOR] [COLOR lime]Prime[/COLOR]
 05/03/2021
