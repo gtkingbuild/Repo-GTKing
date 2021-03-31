@@ -101,12 +101,12 @@ Instalador actualizado a la versión 2.2.3
         <dir minversion="18.0" maxversion="18.9.0">
             <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/leia/zips/addons.xml</info>
             <checksum>https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/leia/zips/addons.xml.md5</checksum>
-            <datadir zip="true">https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/leia/zips/repository.gtking</datadir>
+            <datadir zip="true">https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/leia/zips/</datadir>
         </dir>
         <dir minversion="18.9.0">
             <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/matrix/zips/addons.xml</info>
             <checksum>https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/matrix/zips/addons.xml.md5</checksum>
-            <datadir zip="true">https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/matrix/zips/repository.repository.gtkingMATRIX</datadir>
+            <datadir zip="true">https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/matrix/zips/</datadir>
         </dir>
     </extension>
 
