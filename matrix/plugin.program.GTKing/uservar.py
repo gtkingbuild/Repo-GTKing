@@ -29,7 +29,7 @@ YOUTUBEFILE = 'http://'
 # Text File for addon installer.  Leave as 'http://' to ignore
 ADDONFILE = 'http://'
 # Text File for advanced settings.  Leave as 'http://' to ignore
-ADVANCEDFILE = 'https://raw.githubusercontent.com/beelinkgtking2/beelinkgtking2.github.io/master/wizard/xml/Advanced.json'
+ADVANCEDFILE = 'https://raw.githubusercontent.com/gtkingbuild/gtkingbuild.github.io/master/wizard/xml/Advanced.json'
 #########################################################
 
 #########################################################
@@ -89,7 +89,7 @@ CONTACTFANART = 'http://'
 # Enable Auto Update 'Yes' or 'No'
 AUTOUPDATE = 'Yes'
 # Url to wizard version
-WIZARDFILE = 'https://raw.githubusercontent.com/beelinkgtking2/beelinkgtking2.github.io/master/wizard/xml/buildsauto.txt' 
+WIZARDFILE = 'https://raw.githubusercontent.com/gtkingbuild/gtkingbuild.github.io/master/wizard/xml/19builds.txt' 
 #########################################################
 
 #########################################################
@@ -100,9 +100,9 @@ AUTOINSTALL = 'Yes'
 # Addon ID for the repository
 REPOID = 'repository.repogtking'
 # Url to Addons.xml file in your repo folder(this is so we can get the latest version)
-REPOADDONXML = 'https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/zips/addons.xml'
+REPOADDONXML = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/matrix/zips/addons.xml'
 # Url to folder zip is located in
-REPOZIPURL = 'https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/zips/repository.repogtking/'
+REPOZIPURL = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/matrix/zips/'
 #########################################################
 
 #########################################################
@@ -111,7 +111,7 @@ REPOZIPURL = 'https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/z
 # Enable Notification screen Yes or No
 ENABLE = 'Yes'
 # Url to notification file
-NOTIFICATION = 'http://'
+NOTIFICATION = 'https://'
 # Use either 'Text' or 'Image'
 HEADERTYPE = 'Text'
 # Font size of header
@@ -122,5 +122,5 @@ HEADERIMAGE = 'http://'
 # Font for Notification Window
 FONTSETTINGS = 'Font13'
 # Background for Notification Window
-BACKGROUND = 'http://'
+BACKGROUND = 'https://'
 #########################################################
