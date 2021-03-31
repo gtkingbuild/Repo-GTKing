@@ -201,7 +201,7 @@ class BuildMenu:
                                    icon=icon, themeit=CONFIG.THEME1)
                                    
             if themecheck:
-                directory.add_separator('THEMES', fanart=fanart, icon=icon)
+                directory.add_separator('PARCHES', fanart=fanart, icon=icon)
 
                 response = tools.open_url(themefile)
                 theme = response.text
@@ -213,7 +213,7 @@ class BuildMenu:
                     if adultcheck:
                         continue
                         
-                    themetitle = themename if not themename == CONFIG.BUILDTHEME else "[B]{0} (Installed)[/B]".format(themename)
+                    themetitle = themename if not themename == CONFIG.BUILDTHEME else "[B]{0} (Instalado)[/B]".format(themename)
                     themeicon = themeicon if tools.open_url(themeicon, check=True) else icon
                     themefanart = themefanart if tools.open_url(themefanart, check=True) else fanart
                     
@@ -231,7 +231,7 @@ class BuildMenu:
         if response:
             if check.check_build(name, 'url'):
                 name, version, url, minor, gui_ignore, kodi, theme, icon, fanart, preview, adult, info, description = check.check_build(name, 'all')
-                adult = 'Yes' if adult.lower() == 'yes' else 'No'
+                adult = 'Si' if adult.lower() == 'Si' else 'No'
 
                 info_response = tools.open_url(info)
 
@@ -249,7 +249,7 @@ class BuildMenu:
                 msg = "[COLOR {0}]Nombre Build:[/COLOR] [COLOR {1}]{2}[/COLOR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, name)
                 msg += "[COLOR {0}]Version Build:[/COLOR] [COLOR {1}]{2}[/COLOR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, version)
                 if themes:
-                    msg += "[COLOR {0}]Build Tema(s):[/COLOR] [COLOR {1}]{2}[/COLOR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, ', '.join(themes))
+                    msg += "[COLOR {0}]Build Parche(s):[/COLOR] [COLOR {1}]{2}[/COLOR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, ', '.join(themes))
                 msg += "[COLOR {0}]Version Kodi:[/COLOR] [COLOR {1}]{2}[/COLOR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, kodi)
                 msg += "[COLOR {0}]Contentido Adulto :[/COLOR] [COLOR {1}]{2}[/COLOR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, adult)
                 msg += "[COLOR {0}]Descripcion:[/COLOR] [COLOR {1}]{2}[/COLOR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, description)

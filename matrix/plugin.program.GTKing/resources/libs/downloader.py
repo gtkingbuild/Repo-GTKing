@@ -75,7 +75,7 @@ class Downloader:
                         kbps_speed = kbps_speed / 1024
                         type_speed = 'MB'
                         
-                    currently_downloaded = '[COLOR %s][B]Peso:[/B] [COLOR %s]%.02f[/COLOR] MB of [COLOR %s]%.02f[/COLOR] MB[/COLOR]' % (CONFIG.COLOR2, CONFIG.COLOR1, downloaded / mb, CONFIG.COLOR1, total / mb)
+                    currently_downloaded = '[COLOR %s][B]Peso:[/B] [COLOR %s]%.02f[/COLOR] MB de [COLOR %s]%.02f[/COLOR] MB[/COLOR]' % (CONFIG.COLOR2, CONFIG.COLOR1, downloaded / mb, CONFIG.COLOR1, total / mb)
                     speed = '[COLOR %s][B]Velocidad:[/B] [COLOR %s]%.02f [/COLOR]%s/s ' % (CONFIG.COLOR2, CONFIG.COLOR1, kbps_speed, type_speed)
                     div = divmod(eta, 60)
                     speed += '[B]Estimado:[/B] [COLOR %s]%02d:%02d[/COLOR][/COLOR]' % (CONFIG.COLOR1, div[0], div[1])
