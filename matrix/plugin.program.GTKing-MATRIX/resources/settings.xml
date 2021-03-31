@@ -161,20 +161,20 @@
         <setting id="apk_path" type="folder" label="Elija la Ubicación de Descarga" default="/storage/emulated/0/Download/"/>
         <setting type="lsep" label="Guardar Datos al Instalar Build:"/>
         <setting id="keeptrakt" type="bool" label="Conservar Mis Datos de Trakt" default="true"/>
-        <setting id="traktnextsave" type="text" label="Última Vez que se Guardaron los Datos de Trakt:" visible="!eq(-1, false)" enable="false" default="2021-03-17 00:00:00"/>
+        <setting id="traktnextsave" type="text" label="Ultima Vez que se Guardaron los Datos de Trakt:" visible="!eq(-1, false)" enable="false" default="2021-03-17 00:00:00"/>
         <setting id="keepdebrid" type="bool" label="Conservar Mis Datos de Debrid" default="true"/>
         <setting id="debridnextsave" type="text" label="Ultima Vez que se Guardaron los Datos de Debrid:" visible="!eq(-1, false)" enable="false" default="2021-03-17 00:00:00"/>
         <setting id="keeplogin" type="bool" label="Conservar Mis Datos de Inicio de Sesión" default="true"/>
         <setting id="loginnextsave" type="text" label="Datos de Inicio de Sesión Guardados por Ultima Vez:" visible="!eq(-1, false)" enable="false" default="2021-03-17 00:00:00"/>
         <setting type="lsep" label="Mantenga la Configuración al Instalar Build:"/>
-        <setting id="keepfavourites" type="bool" label="Mantener Mis Favouritos" default="true"/>
+        <setting id="keepfavourites" type="bool" label="Mantener Mis Favoritos" default="true"/>
         <setting id="keepsources" type="bool" label="Mantener Mis Fuentes" default="true"/>
         <setting id="keepprofiles" type="bool" label="Mantener Mis Perfiles" default="false"/>
         <setting id="keepplayercore" type="bool" label="Mantener Mis playercorefactory.xml" default="false"/>
         <setting id="keepguisettings" type="bool" label="Mantener Mis guisettings.xml" default="false"/>
         <setting id="keepadvanced" type="bool" label="Mantener Mis AdvancedSettings.xml" default="true"/>
         <setting id="keeprepos" type="bool" label="Mantener Repositorios Instalados" default="false"/>
-        <setting id="keepsuper" type="bool" label="Mantener Super Favouritos" default="false"/>
+        <setting id="keepsuper" type="bool" label="Mantener Super Favoritos" default="false"/>
         <setting id="keepwhitelist" type="bool" label="Mantener Mis Whitelist Addons" default="false"/>
     </category>
 
