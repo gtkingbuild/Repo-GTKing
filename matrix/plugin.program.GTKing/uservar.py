@@ -102,7 +102,7 @@ REPOID = 'repository.gtkingMatrix'
 # Url to Addons.xml file in your repo folder(this is so we can get the latest version)
 REPOADDONXML = 'https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/matrix/zips/addons.xml'
 # Url to folder zip is located in
-REPOZIPURL = 'https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/matrix/zips/'
+REPOZIPURL = 'https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/matrix/zips/repository.gtkingMatrix/'
 #########################################################
 
 #########################################################

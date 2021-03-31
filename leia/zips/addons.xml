@@ -1,35 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.program.GTKing" name="GTKING [COLOR dodgerblue]MATRIX[/COLOR]" version="3.0.0" provider-name="Josa,DavidzgZgZ,Sugea">
-	<requires>
-    	<import addon="xbmc.python" version="3.0.0"/>
-    	<import addon="script.module.requests" />
-        <import addon="script.module.six" />
-        <import addon="script.kodi.android.update" optional="true" version="1.1.7" />
-	</requires>
+<addon id="plugin.program.gtking" name="GTKING [COLOR dodgerblue]WIZARD[/COLOR]" version="2.2.8" provider-name="Josa,DavidZgZ,Sugea">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+    <provides>executable</provides>
+  </extension>
+  <extension point="xbmc.service" library="startup.py" start="startup" />
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">GTKing [COLOR dodgerblue]WIZARD[/COLOR]</summary>
+    <description lang="en">Build GTKing Prime para Kodi 18
+-[COLOR dodgerblue][B]Testers:[/B][/COLOR] [COLOR lime]Mapache,Tete6776,Vicente,zalcos,Malibu[/COLOR]
 
-	<extension point="xbmc.python.pluginsource" library="default.py">
-    	<provides>executable</provides>
-    </extension>
-
-	<extension point="xbmc.service" library="startup.py" start="startup" />
-
-	<extension point="xbmc.addon.metadata">
-		<summary lang="es">GTKing [COLOR dodgerblue]MATRIX[/COLOR]</summary>
-    	<description lang="es">Build GTKing Prime para Kodi 19.
--Testers: Mapache,Tete6776,Vicente,zalcos
-
--Telegram: [COLOR lime]t.me/beelinkking[/COLOR]</description>
-		<platform>all</platform>
-		<reuselanguageinvoker>false</reuselanguageinvoker>
-        <source>https://www.github.com/gtkingbuild/plugin.program.GTKing/</source>
-		<news>
-- Build [COLOR dodgerblue]GTKing[/COLOR] [COLOR lime]Prime[/COLOR]
-05/03/2021
-Instalador actualizado a la versión 3.0.0
-- Inciada la compatibilidad con Kodi 19.0 Matrix
-
-06/11/2020
+-[COLOR dodgerblue][B]Telegram:[/B][/COLOR] [COLOR lime]t.me/beelinkking[/COLOR]</description>
+<news>- Plugin.[COLOR dodgerblue]Programa.[/COLOR] [COLOR lime]GTKing[/COLOR]
+Instalador actualizado a la versión 2.2.8
+- Cambios en el instalador - Miembros
+27/03/2021
 Instalador actualizado a la versión 2.2.5
 - Añadido y editado de textos
 
@@ -54,12 +42,9 @@ Instalador actualizado a la versión 2.2.3
 - Mejoras de aspectos.
 - Limpieza de Kodi automática al instalar la build GTKing Prime.
 - Nuevos iconos en Menu de Ajustes.
-		</news>
-		<assets>
-            <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
-        </assets>
-    </extension>
+ </news>
+    <platform>all</platform>
+  </extension>
 </addon>
 
 <addon id="plugin.video.Vilhao.Matrix"
@@ -97,8 +82,8 @@ Instalador actualizado a la versión 2.2.3
   </extension>
 </addon>
 
-<addon id="repository.repoprueba" name="[COLOR limegreen][B]Repo[/B][/COLOR]Prueba" version="2.0" provider-name="gtkingbuild">
-    <extension point="xbmc.addon.repository" name="[COLOR limegreen][B]Repo[/B][/COLOR]Prueba">
+<addon id="repository.gtking" name="[COLOR limegreen][B]Repo[/B][/COLOR]GTKing" version="2.0" provider-name="gtkingbuild">
+    <extension point="xbmc.addon.repository" name="[COLOR limegreen][B]Repo[/B][/COLOR]GTKing">
         <dir minversion="18.0" maxversion="18.9.0">
             <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/leia/zips/addons.xml</info>
             <checksum>https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/leia/zips/addons.xml.md5</checksum>

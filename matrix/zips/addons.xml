@@ -62,39 +62,38 @@ Instalador actualizado a la versión 2.2.3
     </extension>
 </addon>
 
-<addon id="plugin.video.Vilhao.Matrix"
-       name="[COLOR blue]V[/COLOR][COLOR yellow]i[/COLOR][COLOR blue]l[/COLOR][COLOR yellow]h[/COLOR][COLOR blue]a[/COLOR][COLOR yellow]o[/COLOR]"
-       version="1.1"
-       provider-name="VILHAO">
-  <requires>
+<addon id="plugin.video.Vilhao.Matrix" name="[COLOR blue]V[/COLOR][COLOR yellow]i[/COLOR][COLOR blue]l[/COLOR][COLOR yellow]h[/COLOR][COLOR blue]a[/COLOR][COLOR yellow]o[/COLOR] [COLOR lime]Matrix[/COLOR]" version="1.1" provider-name="Vilhao">
+<requires>
     <import addon="xbmc.python" version="3.0.0"/>
-    <import addon="script.module.beautifulsoup" version="3.2.1"/>
-    <import addon="script.module.simple.downloader" version="0.9.4"/>
-    <import addon="script.module.beautifulsoup4" />
-    <import addon="script.module.requests" />
-    <import addon="script.module.httplib2" />
-    <import addon="script.module.youtube.dl" optional="true"/>
-    <import addon="plugin.video.youtube" optional="true" />
-    <import addon="script.module.urlresolver" optional="true"/>
-    <import addon="script.module.simplejson" />
-	<import addon="script.module.livestreamer" optional="true"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="default.py">
-    <provides>video</provides>
-  </extension>
+    <import addon="script.module.requests"/>
+    <import addon="script.module.simplejson"/>
+	<import addon="script.module.kodi-six" />
+</requires>
+<extension point="xbmc.python.pluginsource" library="vilhao.py">
+	<provides>video</provides>
+</extension>
   <extension point="xbmc.addon.metadata">
-    <summary>[COLOR yellow]O[/COLOR] [COLOR blue]melhor[/COLOR] [COLOR yellow]para[/COLOR] [COLOR blue]ver[/COLOR] [COLOR yellow]na[/COLOR] [COLOR blue]sua[/COLOR] [COLOR yellow]TV[/COLOR][COLOR blue]!!![/COLOR]</summary>
-    <description>
-	[B][COLOR yellow]- Add-on oficial do Vilhao[/COLOR][/B]
+    <summary>[COLOR lime]O melhor para ver na sua TV!!![/COLOR]</summary>
+<description>[B][COLOR yellow]- Add-on oficial do Vilhao[/COLOR][/B]
 
 [B][COLOR yellow]- Vilhao, Para uso de todos.[/COLOR][/B]
 
 [B][COLOR yellow]- O Add-on Vilhao é de uso gratuito!![/COLOR][/B]
 
-[B][COLOR red]- Proibido a venda deste add-on[/COLOR][/B]
-	</description>
+[B][COLOR red]- Proibido a venda deste add-on[/COLOR][/B]</description>
     <platform>all</platform>
-  </extension>
+	<assets>
+       <icon>icon.png</icon>
+       <fanart>fanart.gif</fanart>
+       <screenshot>resources/screenshots/1.jpg</screenshot>
+       <screenshot>resources/screenshots/2.jpg</screenshot>
+       <screenshot>resources/screenshots/3.jpg</screenshot>
+    </assets>
+	<news>
+[B][COLOR lime]v1.0.matrix[/COLOR][/B]
+[B][COLOR lime]- Addon Vilhao em Python 3 com o melhor para sua tv.[/COLOR][/B]
+	</news>
+</extension>
 </addon>
 
 <addon id="repository.gtkingMatrix" name="[COLOR dodgerblue][B]Repo[/B][/COLOR] Prueba [COLOR limegreen]MATRIX[/COLOR]" version="3.0" provider-name="gtkingbuild">

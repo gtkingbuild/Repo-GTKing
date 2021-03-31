@@ -1,36 +1,33 @@
-﻿<settings>
-  <category label="General">
-        <setting id="save_location" type="folder"  label="                Select a download location." default=""/>
-        <setting type="lsep" label="           LAST UPDATE 22/04/2019" option="close" action="RunPlugin(plugin://plugin.video.Vilhao/?mode=7)" />
-        <setting type="lsep" label="    [COLOR white][B]KODI EVOLUTION...BROUGHT TO YOU BY Vilhao[/B][/COLOR]" option="close" action="RunPlugin(plugin://plugin.video.Vilhao/?mode=7)" />
-        
-  
-	    <setting id="Updatecommonresolvers" label="Update Commonresolver from Genesis" type="bool" default="true" visible="false"/>
-    	<setting id="ask_playlist_items" type="bool" label="Elegir Fuente de Video" default="true" visible="false"/>
-        <setting id="add_playlist" type="bool" label="Activar Multilink" default="true" visible="false"/>
-        <setting id="genesisorpulsar" type="enum" values="Genesis|Pulsar" label="Play IMDBid with:" default="Genesis" visible="false"/>
-        <setting id="donotshowbychannels" label="Ocultar Canales" type="bool" default="false" visible="false"/>
-		
-    <setting id="choose_source" type="enum" values="Choose File|Enter URL" label="Choose Source Type" default="" visible="false"/>
-    <setting id="new_file_source" type="file" source="files" label="Choose File" default="" visible="false"/>
-    <setting id="new_url_source" type="text" label="Add URL" default="" visible="false"/>
-    <setting type="action" label="Add Source" option="close" action="RunPlugin(plugin://plugin.video.Vilhao/?mode=7)" visible="false"/>
-    <setting id="searchotherplugins" label="Search Other plugins" type="bool" default="false" visible="false"/>
-
-    <setting id="browse_xml_database" type="bool" label="Browse and play from .xml Database" default="false" visible="false"/>
-    <setting type="action" label="Add .xml Database Sources" option="close" action="Container.Update(plugin://plugin.video.Vilhao/?mode=14)" visible="false"/>
-
-    <setting id="browse_community" type="bool" label="Browse and play from Community Files" default="false" visible="false"/>
-    <setting type="action" label="Add Community File URL as Source" option="close" action="Container.Update(plugin://plugin.video.Vilhao/?mode=10)" visible="false"/>
-  
-  </category>
-    
-	
-<category label="[COLOR red]Control Parental [/COLOR]">
-    <setting id="parentalblockedpin" label="Parental Block Pin" type="text"  option="hidden"  enable="true" default="1234"/>
-    <setting id="parentalblocked" label="Is Parental Blocked Applied?" type="bool" default="true" enable="true" visible="false"/>
+<settings>
+<category label="[B][COLOR yellow]Apoio[/COLOR][/B]">
+	<setting label="[COLOR red]Suporte:[/COLOR]" type="lsep"/>
+    <setting label="[COLOR blue]V[/COLOR][COLOR yellow]i[/COLOR][COLOR blue]l[/COLOR][COLOR yellow]h[/COLOR][COLOR blue]a[/COLOR][COLOR yellow]o[/COLOR]: [COLOR blue]Telegram[/COLOR]" type="action" action="RunScript(plugin.video.Vilhao.Matrix, supporttelegram)"/>
+	<setting label="[COLOR blue]V[/COLOR][COLOR yellow]i[/COLOR][COLOR blue]l[/COLOR][COLOR yellow]h[/COLOR][COLOR blue]a[/COLOR][COLOR yellow]o[/COLOR]" type="lsep"/>
+    <setting label="[COLOR red]O Add-on[/COLOR] [COLOR blue]V[/COLOR][COLOR yellow]i[/COLOR][COLOR blue]l[/COLOR][COLOR yellow]h[/COLOR][COLOR blue]a[/COLOR][COLOR yellow]o[/COLOR] [COLOR red]é de uso gratuito!![/COLOR]"/>
+    <setting label="[COLOR red]Proibido a venda deste add-on[/COLOR]"/>
+	<setting label="[COLOR lime]Se desejar oferecer um cafe ao[/COLOR] [COLOR blue]V[/COLOR][COLOR yellow]i[/COLOR][COLOR blue]l[/COLOR][COLOR yellow]h[/COLOR][COLOR blue]a[/COLOR][COLOR yellow]o[/COLOR]: [COLOR blue]Paypal[/COLOR] [COLOR red]Clicar Aqui[/COLOR]" type="action" action="RunScript(plugin.video.Vilhao.Matrix, donatePaypal)"/>
 </category>
-
-	
-	
+<category label="[B][COLOR yellow]Controle dos Pais[/COLOR][/B]">
+		<setting label="[COLOR red]Controle dos Pais:[/COLOR]" type="lsep"/>
+		<setting label="[COLOR lime]Exibir Menu Adultos (Servidor 2)[/COLOR]" id="adult" type="bool" default="true" />
+		<setting label="[COLOR lime]Exibir Canais Adultos (Lista M3U)[/COLOR]" id="adult2" type="bool" default="true" />
+		<setting label="[COLOR lime]Tipo de Teclado (OK para trocar)[/COLOR]" id="keyboard" type="enum" values="[COLOR lime]Númerico[/COLOR]|[COLOR lime]Alfanúmerico[/COLOR]" default="0" />
+		<setting label="[COLOR lime]Entre aqui para alterar senha[/COLOR]" type="action" action="RunScript(plugin.video.Vilhao.Matrix, SetPassword)"/>
+		<setting label="[COLOR yellow][B]Senha padrão 6969[/B][/COLOR]" type="bool"/>
+</category>
+<category label="[B][COLOR yellow]Complementos[/COLOR][/B]">
+	<setting label="[COLOR red]Configurações de Complemento:[/COLOR]" type="lsep"/>
+	<setting label="[COLOR lime]Exibir Mensagem de Boas Vindas[/COLOR]" id="mensagem" type="bool" default="true" />
+	<setting label="[COLOR lime]Verificar Complementos[/COLOR]" id="check_addon" type="bool" default="false" />
+	<setting label="[COLOR lime]Baixar e Instalar Elementum[/COLOR]" id="elementum" type="bool" default="false" />
+	<setting label="[COLOR lime]Baixar e Instalar Youtube[/COLOR]" id="youtube" type="bool" default="false" />
+</category>
+<category label="[B][COLOR yellow]Canais[/COLOR][/B]">
+		<setting label="[COLOR red]Configurações dos Canais:[/COLOR]" type="lsep"/>
+		<setting label="[COLOR lime]Exibir Canais 4K (Lista M3U)[/COLOR]" id="uhdtv" type="bool" default="true" />
+		<setting label="[COLOR lime]Exibir Canais FHD (Lista M3U)[/COLOR]" id="fhdtv" type="bool" default="true" />
+		<setting label="[COLOR lime]Exibir Canais HD (Lista M3U)[/COLOR]" id="hdtv" type="bool" default="true" />
+		<setting label="[COLOR lime]Exibir Canais SD (Lista M3U)[/COLOR]" id="sdtv" type="bool" default="true" />
+		<setting label="[COLOR lime](Lista M3U) Exibir Apenas Canais de[/COLOR]" id="filtrar" type="enum" values="Desativado|Futebol|Esportes|Filmes e Series|Infantil|Documentario|Aberto|Reality show|Noticias" default="0" />
+</category>
 </settings>
