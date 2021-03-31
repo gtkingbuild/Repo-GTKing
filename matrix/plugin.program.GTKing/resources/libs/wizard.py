@@ -229,9 +229,9 @@ class Wizard:
                 from resources.libs.gui.build_menu import BuildMenu
                 themes = BuildMenu().theme_count(name, False)
                 if len(themes) > 0:
-                    if self.dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}]La Build [COLOR {1}]{2}[/COLOR] viene con [COLOR {3}]{4}[/COLOR] diferentes parches".format(CONFIG.COLOR2, CONFIG.COLOR1, name, CONFIG.COLOR1, len(themes)) + '\n' + "Le gustaría instalar uno ahora?[/COLOR]",
-                                    yeslabel="[B][COLOR springgreen]Si, instalar[/COLOR][/B]",
-                                    nolabel="[B][COLOR red]No, Cancelar[/COLOR][/B]"):
+                    if self.dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}]The Build [COLOR {1}]{2}[/COLOR] comes with [COLOR {3}]{4}[/COLOR] different themes".format(CONFIG.COLOR2, CONFIG.COLOR1, name, CONFIG.COLOR1, len(themes)) + '\n' + "Would you like to install one now?[/COLOR]",
+                                    yeslabel="[B][COLOR springgreen]Install Theme[/COLOR][/B]",
+                                    nolabel="[B][COLOR red]Cancel Themes[/COLOR][/B]"):
                         logging.log("Theme List: {0}".format(str(themes)))
                         ret = self.dialog.select(CONFIG.ADDONTITLE, themes)
                         logging.log("Theme install selected: {0}".format(ret))
@@ -240,17 +240,17 @@ class Wizard:
                             installtheme = True
                         else:
                             logging.log_notify(CONFIG.ADDONTITLE,
-                                               '[COLOR {0}]Instalacion Parche: Cancelada![/COLOR]'.format(CONFIG.COLOR2))
+                                               '[COLOR {0}]Theme Install: Cancelled![/COLOR]'.format(CONFIG.COLOR2))
                             return
                     else:
                         logging.log_notify(CONFIG.ADDONTITLE,
-                                           '[COLOR {0}]Instalacion Parche: Cancelada![/COLOR]'.format(CONFIG.COLOR2))
+                                           '[COLOR {0}]Theme Install: Cancelled![/COLOR]'.format(CONFIG.COLOR2))
                         return
             else:
                 logging.log_notify(CONFIG.ADDONTITLE,
-                                   '[COLOR {0}]Instalacion Parche: Nada Encontrado![/COLOR]'.format(CONFIG.COLOR2))
+                                   '[COLOR {0}]Theme Install: None Found![/COLOR]'.format(CONFIG.COLOR2))
         else:
-            installtheme = self.dialog.yesno(CONFIG.ADDONTITLE, '[COLOR {0}]Te gustaría instalar el:'.format(CONFIG.COLOR2) +' \n' + '[COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, theme) + '\n' + 'para [COLOR {0}]{1} v{2}[/COLOR]?[/COLOR]'.format(CONFIG.COLOR1, name, check.check_build(name,'version')),yeslabel="[B][COLOR springgreen]Si, instalar[/COLOR][/B]", nolabel="[B][COLOR red]No, cancelar[/COLOR][/B]")
+            installtheme = self.dialog.yesno(CONFIG.ADDONTITLE, '[COLOR {0}]Would you like to install the theme:'.format(CONFIG.COLOR2) +' \n' + '[COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, theme) + '\n' + 'for [COLOR {0}]{1} v{2}[/COLOR]?[/COLOR]'.format(CONFIG.COLOR1, name, check.check_build(name,'version')),yeslabel="[B][COLOR springgreen]Install Theme[/COLOR][/B]", nolabel="[B][COLOR red]Cancel Themes[/COLOR][/B]")
                                         
         if installtheme:
             themezip = check.check_theme(name, theme, 'url')
@@ -259,10 +259,10 @@ class Wizard:
             response = tools.open_url(themezip, check=True)
             if not response:
                 logging.log_notify(CONFIG.ADDONTITLE,
-                                   '[COLOR {0}]Instalacion Parche: Url Zip Invalido![/COLOR]'.format(CONFIG.COLOR2))
+                                   '[COLOR {0}]Theme Install: Invalid Zip Url![/COLOR]'.format(CONFIG.COLOR2))
                 return False
 
-            self.dialogProgress.create(CONFIG.ADDONTITLE, '[COLOR {0}][B]Descargando:[/B][/COLOR] [COLOR {1}]{2}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, zipname) +' \n' + 'Espere por Favor')
+            self.dialogProgress.create(CONFIG.ADDONTITLE, '[COLOR {0}][B]Downloading:[/B][/COLOR] [COLOR {1}]{2}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, zipname) +' \n' + 'Please Wait')
 
             lib = os.path.join(CONFIG.PACKAGES, '{0}.zip'.format(zipname))
             
@@ -301,8 +301,8 @@ class Wizard:
 
                 xbmc.sleep(500)
 
-            title = '[COLOR {0}][B]Instalando Parche:[/B][/COLOR] [COLOR {1}]{2}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, theme)
-            self.dialogProgress.update(0, title + '\n' + 'Espere por Favor')
+            title = '[COLOR {0}][B]Installing Theme:[/B][/COLOR] [COLOR {1}]{2}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, theme)
+            self.dialogProgress.update(0, title + '\n' + 'Please Wait')
             percent, errors, error = extract.all(lib, CONFIG.HOME, title=title)
             CONFIG.set_setting('buildtheme', theme)
             logging.log('INSTALLED {0}: [ERRORS:{1}]'.format(percent, errors))
@@ -330,7 +330,7 @@ class Wizard:
                 xbmc.executebuiltin("Container.Refresh()")
         else:
             logging.log_notify(CONFIG.ADDONTITLE,
-                               '[COLOR {0}]Instalacion Parche: Cancelado![/COLOR]'.format(CONFIG.COLOR2))
+                               '[COLOR {0}]Theme Install: Cancelled![/COLOR]'.format(CONFIG.COLOR2))
 
 
 def wizard(action, name, url):
