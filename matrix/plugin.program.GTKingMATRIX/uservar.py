@@ -13,7 +13,7 @@ ART = os.path.join(PATH, 'resources', 'media')
 #########################################################
 #        User Edit Variables                            #
 #########################################################
-ADDONTITLE = '[COLOR white][B]GTKing[/B][/COLOR][COLOR limegreen][B]MATRIX[/B][/COLOR]'
+ADDONTITLE = '[COLOR limegreen][B]GTKing[/B][/COLOR]'
 BUILDERNAME = 'DavidZgZ & Josa'
 EXCLUDES = [ADDON_ID, 'repository.repogtking']
 # Text File with build info in it.
@@ -111,12 +111,12 @@ REPOZIPURL = 'https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/m
 # Enable Notification screen Yes or No
 ENABLE = 'Yes'
 # Url to notification file
-NOTIFICATION = 'https://raw.githubusercontent.com/gtkingbuild/gtkingbuild.github.io/master/wizard/xml/Notify.txt'
+NOTIFICATION = 'https://'
 # Use either 'Text' or 'Image'
 HEADERTYPE = 'Text'
 # Font size of header
 FONTHEADER = 'Font14'
-HEADERMESSAGE = '[COLOR white][B]GTKing[/B][/COLOR][COLOR limegreen][B]MATRIX[/B][/COLOR]'
+HEADERMESSAGE = '[COLOR limegreen][B]GTKing[/B][/COLOR]'
 # url to image if using Image 424x180
 HEADERIMAGE = 'http://'
 # Font for Notification Window
