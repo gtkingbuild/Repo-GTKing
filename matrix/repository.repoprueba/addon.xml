@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="repository.repoprueba" name="[COLOR limegreen][B]Repo[/B][/COLOR]Prueba" version="2.0" provider-name="gtkingbuild">
-    <extension point="xbmc.addon.repository" name="[COLOR limegreen][B]Repo[/B][/COLOR]Prueba">
+<addon id="repository.repoprueba" name="[COLOR limegreen][B]Repo[/B][/COLOR] Prueba LEIA" version="2.0" provider-name="gtkingbuild">
+    <extension point="xbmc.addon.repository" name="[COLOR limegreen][B]Repo[/B][/COLOR] Prueba LEIA">
         <dir minversion="18.0" maxversion="18.9.0">
             <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/leia/zips/addons.xml</info>
             <checksum>https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/leia/zips/addons.xml.md5</checksum>
