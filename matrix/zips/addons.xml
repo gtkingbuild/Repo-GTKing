@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.program.GTKing-Matrix" name="[COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]" version="3.0" provider-name="Josa, DavidzgZgZ, Sugea y GTKing TEAM">
+<addon id="plugin.program.GTKing-Matrix" name="[COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]" version="3.0" provider-name="Josa, DavidZgZ, Sugea y GTKing TEAM">
 	<requires>
     	<import addon="xbmc.python" version="3.0.0"/>
     	<import addon="script.module.requests" />
@@ -70,7 +70,7 @@ Instalador actualizado a la versión 3.0.4
 </extension>
 </addon>
 
-<addon id="repository.gtkingMatrix" name="[COLOR dodgerblue][B]Repo[/B][/COLOR] Prueba [COLOR limegreen]MATRIX[/COLOR]" version="3.0" provider-name="gtkingbuild">
+<addon id="repository.GTKing-Matrix" name="[COLOR steelblue][B]Repo[/B][/COLOR] [COLOR azure][B]GTKing[/B] [/COLOR][COLOR limegreen][B]MATRIX[/B][/COLOR]" version="3.0" provider-name="gtkingbuild">
     <extension point="xbmc.addon.repository" name="[COLOR dodgerblue][B]Repo[/B][/COLOR] Prueba [COLOR limegreen]MATRIX[/COLOR]">
         <dir minversion="18.0" maxversion="18.9.0">
             <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/leia/zips/addons.xml</info>
@@ -85,9 +85,9 @@ Instalador actualizado a la versión 3.0.4
     </extension>
 
     <extension point="xbmc.addon.metadata">
-        <summary>Repo [COLOR dodgerblue]PRUEBA[/COLOR]</summary>
+        <summary>[COLOR steelblue][B]Repo[/B][/COLOR] [COLOR azure][B]GTKing[/B] [/COLOR][COLOR limegreen][B]MATRIX[/B][/COLOR]</summary>
         <description>Repositorio de addons [COLOR dodgerblue]GTKING[/COLOR].</description>
-        <disclaimer>Esta Repo recoge los addons que hay por la Red.</disclaimer>
+        <disclaimer>Éste repositorio sólo recoge addons válidos para Kodi 19.x MATRIX.</disclaimer>
         <platform>all</platform>
         <assets>
             <icon>icon.png</icon>
