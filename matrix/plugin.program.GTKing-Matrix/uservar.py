@@ -13,9 +13,9 @@ ART = os.path.join(PATH, 'resources', 'media')
 #########################################################
 #        User Edit Variables                            #
 #########################################################
-ADDONTITLE = '[COLOR limegreen][B]GTKing[/B][/COLOR]'
+ADDONTITLE = '[COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]'
 BUILDERNAME = 'DavidZgZ & Josa'
-EXCLUDES = [ADDON_ID, 'repository.repogtking']
+EXCLUDES = [ADDON_ID, 'repository.gtkingMatrix']
 # Text File with build info in it.
 BUILDFILE = 'https://raw.githubusercontent.com/gtkingbuild/gtkingbuild.github.io/master/wizard/xml/19builds.txt'
 # How often you would like it to check for build updates in days
@@ -96,7 +96,7 @@ WIZARDFILE = 'https://raw.githubusercontent.com/gtkingbuild/gtkingbuild.github.i
 #        Auto Install Repo If Not Installed             #
 #########################################################
 # Enable Auto Install 'Yes' or 'No'
-AUTOINSTALL = 'Yes'
+AUTOINSTALL = 'No'
 # Addon ID for the repository
 REPOID = 'repository.gtkingMatrix'
 # Url to Addons.xml file in your repo folder(this is so we can get the latest version)
@@ -111,12 +111,12 @@ REPOZIPURL = 'https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/m
 # Enable Notification screen Yes or No
 ENABLE = 'Yes'
 # Url to notification file
-NOTIFICATION = 'https://'
+NOTIFICATION = 'https://raw.githubusercontent.com/gtkingbuild/gtkingbuild.github.io/master/wizard/xml/Notify.txt'
 # Use either 'Text' or 'Image'
 HEADERTYPE = 'Text'
 # Font size of header
 FONTHEADER = 'Font14'
-HEADERMESSAGE = '[COLOR limegreen][B]GTKing[/B][/COLOR]'
+HEADERMESSAGE = '[COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]'
 # url to image if using Image 424x180
 HEADERIMAGE = 'http://'
 # Font for Notification Window
