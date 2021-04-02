@@ -191,15 +191,15 @@ def fresh_start(install=None, over=False):
 
     elif install == 'restore':
         yes_pressed = dialog.yesno(CONFIG.ADDONTITLE,
-                                       "[COLOR {0}]Desea restaurar su".format(CONFIG.COLOR2),
-                                       "Configuración de Kodi a la configuración predeterminada",
-                                       "Antes de instalar la copia de seguridad local?[/COLOR]",
-                                       nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]',
+                                       "[COLOR {0}]Desea restaurar su".format(CONFIG.COLOR2)
+                                       +'\n'+"Configuración de Kodi a la configuración predeterminada"
+                                       +'\n'+"¿Antes de instalar la copia de seguridad local?[/COLOR]",                                       
+									   nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]',
                                        yeslabel='[B][COLOR springgreen]Continuar[/COLOR][/B]')
     elif install:
-        yes_pressed = dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}]Desea restaurar su".format(CONFIG.COLOR2),
-                                       "Configuración de Kodi a la configuración predeterminada",
-                                       "Antes de instalar [COLOR {0}]{1}[/COLOR]?".format(CONFIG.COLOR1, install),
+        yes_pressed = dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}]Desea restaurar su".format(CONFIG.COLOR2)
+                                       +'\n'+"Configuración de Kodi a la configuración predeterminada"
+                                       +'\n'+"Antes de instalar [COLOR {0}]{1}[/COLOR]?".format(CONFIG.COLOR1, install),
                                        nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]',
                                        yeslabel='[B][COLOR springgreen]Continuar[/COLOR][/B]')
     else:
@@ -280,8 +280,8 @@ def install_apk(name, url):
             yes = False
         else:
             yes = dialog.yesno(CONFIG.ADDONTITLE,
-                                   "[COLOR {0}]Le gustaría descargar e instalar: ".format(CONFIG.COLOR2),
-                                   "[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, name),
+                                   "[COLOR {0}]Le gustaría descargar e instalar: ".format(CONFIG.COLOR2)
+                                   +'\n'+"[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, name),
                                    yeslabel="[B][COLOR springgreen]Descargar[/COLOR][/B]",
                                    nolabel="[B][COLOR red]Cancelar[/COLOR][/B]")
                                    
@@ -298,8 +298,9 @@ def install_apk(name, url):
                 return
                 
             progress_dialog.create(CONFIG.ADDONTITLE,
-                          '[COLOR {0}][B]Descargando:[/B][/COLOR] [COLOR {1}]{2}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, apk),
-                          '', 'Espere por Favor')
+                          '[COLOR {0}][B]Descargando:[/B][/COLOR] [COLOR {1}]{2}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, apk)
+                          +'\n'+''
+                          +'\n'+'Espere por favor')
             
             try:
                 os.remove(lib)

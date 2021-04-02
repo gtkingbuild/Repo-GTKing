@@ -314,7 +314,7 @@ def show_build_prompt():
 
         def __init__(self, *args, **kwargs):
             self.title = CONFIG.THEME3.format(CONFIG.ADDONTITLE)
-            self.msg = "Actualmente no hay Build instalada desde {0}.\n\nSeleccione 'Build Menu' para instalar Build  'Ignorar' para no volver a ver este mensaje.\n\nGracias por escoger {1}.".format(CONFIG.ADDONTITLE, CONFIG.ADDONTITLE)
+            self.msg = "Actualmente no hay Build instalada de {0}.\n\nSeleccione 'Build Menu' para instalar Build  'Ignorar' cerrar esta ventana.\n\nGracias por escoger {1}.".format(CONFIG.ADDONTITLE, CONFIG.ADDONTITLE)
             self.msg = CONFIG.THEME2.format(self.msg)
 
         def onInit(self):

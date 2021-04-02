@@ -149,7 +149,9 @@ class Wizard:
 
                 db.addon_database(CONFIG.ADDON_ID, 1)
                 db.force_check_updates(over=True)
-
+                if os.path.exists(os.path.join(CONFIG.USERDATA, '.enableall')):
+                	CONFIG.set_setting('enable_all', 'true')
+					
                 self.dialog.ok(CONFIG.ADDONTITLE, "[COLOR {0}]Para guardar los cambios, ahora necesita forzar el cierre de Kodi, Presione OK para forzar el cierre de Kodi[/COLOR]".format(CONFIG.COLOR2))
                 tools.kill_kodi(over=True)
             else:

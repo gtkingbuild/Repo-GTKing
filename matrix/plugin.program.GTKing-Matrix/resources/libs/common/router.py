@@ -53,7 +53,7 @@ class Router:
             self._finish(handle)
 
         # SETTINGS
-        elif mode == 'settings':  # GTKingbuild settings
+        elif mode == 'settings':  # OpenWizard settings
             CONFIG.open_settings(name)
             xbmc.executebuiltin('Container.Refresh()')
         elif mode == 'opensettings':  # Open other addons' settings
@@ -112,6 +112,8 @@ class Router:
         elif mode == 'enableaddons':  # Maintenance - > Addon Tools -> Enable/Disable Addons
             menu.enable_addons()
             self._finish(handle)
+        elif mode == 'enableall':
+            menu.enable_addons(all=True)
         elif mode == 'toggleaddon':
             from resources.libs import db
             db.toggle_addon(name, url)
@@ -309,7 +311,7 @@ class Router:
             from resources.libs.common import tools
             tools.remove_file(CONFIG.WIZLOG)
             logging.log_notify("[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, CONFIG.ADDONTITLE),
-                               "[COLOR {0}]Registro del Wizard Borrado![/COLOR]".format(CONFIG.COLOR2))
+                               "[COLOR {0}]Wizard Log Cleared![/COLOR]".format(CONFIG.COLOR2))
 
         # ADVANCED SETTINGS
         elif mode == advanced_settings_mode:

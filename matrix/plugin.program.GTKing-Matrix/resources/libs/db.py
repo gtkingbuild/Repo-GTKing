@@ -134,9 +134,9 @@ def force_check_updates(auto=False, over=False):
                     
                 xbmc.sleep(1000)
             checked_time = 0
-            logging.log('{0} comprobado con exito.'.format(repo), level=xbmc.LOGDEBUG)
+            logging.log('{0} successfully force checked.'.format(repo), level=xbmc.LOGDEBUG)
             logging.log_notify('[COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, CONFIG.ADDONTITLE),
-                               "[COLOR {0}]{1} comprobado con exito.[/COLOR]".format(CONFIG.COLOR2, repo))
+                               "[COLOR {0}]{1} successfully force checked.[/COLOR]".format(CONFIG.COLOR2, repo))
             
     sqlexe.close()
                     
@@ -270,15 +270,12 @@ def toggle_addon(id, value, over=None):
     response = xbmc.executeJSONRPC(query)
     
     if 'error' in response and over is None:
-        from resources.libs import update
-        
         dialog = xbmcgui.Dialog()
         
         v = 'Enabling' if value == 'true' else 'Disabling'
         dialog.ok(CONFIG.ADDONTITLE,
-                      "[COLOR {0}]Error {1} [COLOR {2}]{3}[/COLOR]".format(CONFIG.COLOR2, v, CONFIG.COLOR1, id),
+                      "[COLOR {0}]Error {1} [COLOR {2}]{3}[/COLOR]".format(CONFIG.COLOR2, v, CONFIG.COLOR1, id) + '\n' +
                       "Check to make sure the add-on list is up to date and try again.[/COLOR]")
-        update.force_update()
 
 
 def toggle_dependency(name, dp=None):

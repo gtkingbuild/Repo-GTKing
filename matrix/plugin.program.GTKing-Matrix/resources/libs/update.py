@@ -44,17 +44,17 @@ def wizard_update():
             return
         if ver > CONFIG.ADDON_VERSION:
             yes = dialog.yesno(CONFIG.ADDONTITLE,
-                                   '[COLOR {0}]There is a new version of the {1}!'.format(CONFIG.COLOR2, CONFIG.ADDONTITLE),
-                                   'Would you like to download [COLOR {0}]v{1}[/COLOR]?[/COLOR]'.format(CONFIG.COLOR1, ver),
-                                   nolabel='[B][COLOR red]Remind Me Later[/COLOR][/B]',
-                                   yeslabel="[B][COLOR springgreen]Update Wizard[/COLOR][/B]")
+                                   '[COLOR {0}]Hay una nueva versión de{1}!'.format(CONFIG.COLOR2, CONFIG.ADDONTITLE)
+                                   +'\n'+'¿Quieres descargar la [COLOR {0}]v{1}[/COLOR]?[/COLOR]'.format(CONFIG.COLOR1, ver),
+                                   nolabel='[B][COLOR red]Recordar más tarde[/COLOR][/B]',
+                                   yeslabel="[B][COLOR springgreen]Actualizar[/COLOR][/B]")
             if yes:
                 from resources.libs import db
                 from resources.libs.common import tools
 
-                logging.log("[Auto Update Wizard] Installing wizard v{0}".format(ver))
-                progress_dialog.create(CONFIG.ADDONTITLE, '[COLOR {0}]Downloading Update...'.format(CONFIG.COLOR2), '',
-                              'Please Wait[/COLOR]')
+                progress_dialog.create(CONFIG.ADDONTITLE, '[COLOR {0}]Descargando Actualización...'.format(CONFIG.COLOR2)
+                                        +'\n'+''
+                                        +'\n'+'Espere por favor[/COLOR]')
                 lib = os.path.join(CONFIG.PACKAGES, '{0}-{1}.zip'.format(CONFIG.ADDON_ID, ver))
                 try:
                     os.remove(lib)
@@ -64,23 +64,23 @@ def wizard_update():
                 from resources.libs import extract
                 Downloader().download(zip, lib)
                 xbmc.sleep(2000)
-                progress_dialog.update(0, "", "Instalando {0} actualizar".format(CONFIG.ADDONTITLE))
+                progress_dialog.update(0, '\n'+"Instalando {0} Actualización".format(CONFIG.ADDONTITLE))
                 percent, errors, error = extract.all(lib, CONFIG.ADDONS, True)
                 progress_dialog.close()
                 xbmc.sleep(1000)
                 db.force_check_updates(auto=True, over=True)
                 xbmc.sleep(1000)
                 logging.log_notify(CONFIG.ADDONTITLE,
-                                   '[COLOR {0}]Add-on actualziado[/COLOR]'.format(CONFIG.COLOR2))
-                logging.log("[Auto Update Wizard] Wizard updated to v{0}".format(ver))
+                                   '[COLOR {0}]Add-on actualizado[/COLOR]'.format(CONFIG.COLOR2))
+                logging.log("[Auto Update Wizard] Wizard actualizado a la v{0}".format(ver))
                 tools.remove_file(os.path.join(CONFIG.ADDON_DATA, 'settings.xml'))
                 window.show_save_data_settings()
             else:
-                logging.log("[Auto Update Wizard] Install New Wizard Ignored: {0}".format(ver))
+                logging.log("[Auto Update Wizard] Instalación de Nuevo Wizard Ignorado: {0}".format(ver))
         else:
-            logging.log("[Auto Update Wizard] No New Version v{0}".format(ver))
+            logging.log("[Auto Update Wizard] No hay Nueva Versión v{0}".format(ver))
     else:
-        logging.log("[Auto Update Wizard] Url for wizard file not valid: {0}".format(CONFIG.BUILDFILE))
+        logging.log("[Auto Update Wizard] URL del Archivo del Wizard no válida: {0}".format(CONFIG.BUILDFILE))
 
 
 def addon_updates(do=None):

@@ -194,8 +194,8 @@ def whitelist(do):
         try:
             xbmcvfs.copy(CONFIG.WHITELIST, os.path.join(source, 'whitelist.txt'))
             dialog.ok(CONFIG.ADDONTITLE,
-                          "[COLOR {0}]Whitelist se ha exportado a:[/COLOR]".format(CONFIG.COLOR2),
-                          "[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, os.path.join(source, 'whitelist.txt')))
+                          "[COLOR {0}]Whitelist ha sido exportado a:[/COLOR]".format(CONFIG.COLOR2)
+                          +'\n'+"[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, os.path.join(source, 'whitelist.txt')))
             logging.log_notify(CONFIG.ADDONTITLE,
                                "[COLOR {0}]Whitelist Exportado[/COLOR]".format(CONFIG.COLOR2))
         except Exception as e:
@@ -210,9 +210,9 @@ def whitelist(do):
                 whitelist(do='export')
     elif do == 'clear':
         if not dialog.yesno(CONFIG.ADDONTITLE,
-                                "[COLOR {0}]Estás seguro de que quieres limpiar tu whitelist?".format(CONFIG.COLOR2),
-                                "Este proceso no se puede deshacer.[/COLOR]",
-                                yeslabel="[B][COLOR springgreen]Si, Quitar[/COLOR][/B]",
+                                "[COLOR {0}]Estás seguro de que quieres vaciar tu whitelist?".format(CONFIG.COLOR2)
+                                +'\n'+"Este proceso no se puede deshacer.[/COLOR]",
+                                yeslabel="[B][COLOR springgreen]Si, Eliminar[/COLOR][/B]",
                                 nolabel="[B][COLOR red]No, Cancelar[/COLOR][/B]"):
             logging.log_notify(CONFIG.ADDONTITLE,
                                "[COLOR {0}]Borrar Whitelist Cancelada[/COLOR]".format(CONFIG.COLOR2))
@@ -220,7 +220,7 @@ def whitelist(do):
         try:
             os.remove(CONFIG.WHITELIST)
             logging.log_notify(CONFIG.ADDONTITLE,
-                               "[COLOR {0}]Whitelist Cleared[/COLOR]".format(CONFIG.COLOR2))
+                               "[COLOR {0}]Whitelist Vaciada[/COLOR]".format(CONFIG.COLOR2))
         except:
             logging.log_notify(CONFIG.ADDONTITLE,
-                               "[COLOR {0}]Error Clearing Whitelist![/COLOR]".format(CONFIG.COLOR2))
+                               "[COLOR {0}]Error Vaciando Whitelist![/COLOR]".format(CONFIG.COLOR2))
