@@ -327,12 +327,12 @@ def save_menu():
     directory.add_dir('Mantener Login Info', {'mode': 'login'}, icon=CONFIG.ICONLOGIN, themeit=CONFIG.THEME1)
     directory.add_file('Importar Guardar Datos', {'mode': 'managedata', 'name': 'import'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
     directory.add_file('Exportar Datos Guardados', {'mode': 'managedata', 'name': 'export'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
-    directory.add_file('- Haga Clic para Alternar la Configuración -', themeit=CONFIG.THEME3)
+    directory.add_file('[B]- Haga Clic para Alternar la Configuración -[/B]', themeit=CONFIG.THEME3)
     directory.add_file('Guardar Trakt: {0}'.format(trakt.replace('true', on).replace('false', off)), {'mode': 'togglesetting', 'name': 'keeptrakt'}, icon=CONFIG.ICONTRAKT, themeit=CONFIG.THEME1)
     directory.add_file('Guardar Debrid: {0}'.format(debrid.replace('true', on).replace('false', off)), {'mode': 'togglesetting', 'name': 'keepdebrid'}, icon=CONFIG.ICONDEBRID, themeit=CONFIG.THEME1)
     directory.add_file('Guardar Login Info: {0}'.format(login.replace('true', on).replace('false', off)), {'mode': 'togglesetting', 'name': 'keeplogin'}, icon=CONFIG.ICONLOGIN, themeit=CONFIG.THEME1)
-    directory.add_file('Mantener \'Sources.xml\': {0}'.format(sources.replace('true', on).replace('false', off)), {'mode': 'togglesetting', 'name': 'keepsources'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
-    directory.add_file('Mantener \'Profiles.xml\': {0}'.format(profiles.replace('true', on).replace('false', off)), {'mode': 'togglesetting', 'name': 'keepprofiles'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
+    directory.add_file('Mantener \'Fuentes.xml\': {0}'.format(sources.replace('true', on).replace('false', off)), {'mode': 'togglesetting', 'name': 'keepsources'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
+    directory.add_file('Mantener \'Perfiles.xml\': {0}'.format(profiles.replace('true', on).replace('false', off)), {'mode': 'togglesetting', 'name': 'keepprofiles'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
     directory.add_file('Mantener \'playercorefactory.xml\': {0}'.format(playercore.replace('true', on).replace('false', off)), {'mode': 'togglesetting', 'name': 'keepplayercore'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
     directory.add_file('Mantener \'guisettings.xml\': {0}'.format(guisettings.replace('true', on).replace('false', off)), {'mode': 'togglesetting', 'name': 'keepguiseettings'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
     directory.add_file('Mantener \'Advancedsettings.xml\': {0}'.format(advanced.replace('true', on).replace('false', off)), {'mode': 'togglesetting', 'name': 'keepadvanced'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
@@ -382,9 +382,9 @@ def trakt_menu():
                 directory.add_file('[COLOR springgreen]Addon Data: {0}[/COLOR]'.format(auser), {'mode': 'authtrakt', 'name': trakt}, icon=icon, fanart=fanart, menu=menu)
             if user == "":
                 if os.path.exists(file):
-                    directory.add_file('[COLOR red]Saved Data: Save File Found(Import Data)[/COLOR]', {'mode': 'importtrakt', 'name': trakt}, icon=icon, fanart=fanart, menu=menu2)
+                    directory.add_file('[COLOR red]Saved Data: Guardar Archivo Encontrado(Import Data)[/COLOR]', {'mode': 'importtrakt', 'name': trakt}, icon=icon, fanart=fanart, menu=menu2)
                 else:
-                    directory.add_file('[COLOR red]Saved Data: Not Saved[/COLOR]', {'mode': 'savetrakt', 'name': trakt}, icon=icon, fanart=fanart, menu=menu2)
+                    directory.add_file('[COLOR red]Saved Data: No Guardado[/COLOR]', {'mode': 'savetrakt', 'name': trakt}, icon=icon, fanart=fanart, menu=menu2)
             else:
                 directory.add_file('[COLOR springgreen]Saved Data: {0}[/COLOR]'.format(user), icon=icon, fanart=fanart, menu=menu2)
 

@@ -172,7 +172,7 @@ class Wizard:
                                    yeslabel='[B][COLOR springgreen]Aplicar Corrección[/COLOR][/B]')
         else:
             yes_pressed = self.dialog.yesno("{0} - [COLOR red]ADVERTENCIA!![/COLOR]".format(CONFIG.ADDONTITLE),
-                               "[COLOR {0}][COLOR {1}]{2}[/COLOR] community build is not currently installed.".format(CONFIG.COLOR2, CONFIG.COLOR1, name) + '\n' + "Would you like to apply the guiFix anyways?.[/COLOR]",
+                               "[COLOR {0}][COLOR {1}]{2}[/COLOR] La build de la comunidad no está instalada actualmente.".format(CONFIG.COLOR2, CONFIG.COLOR1, name) + '\n' + "Would you like to apply the guiFix anyways?.[/COLOR]",
                                nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]',
                                yeslabel='[B][COLOR springgreen]Aplicar Corrección[/COLOR][/B]')
         if yes_pressed:
@@ -182,10 +182,10 @@ class Wizard:
             response = tools.open_url(guizip, check=True)
             if not response:
                 logging.log_notify(CONFIG.ADDONTITLE,
-                                   '[COLOR {0}]GuiFix: Invalid Zip Url![/COLOR]'.format(CONFIG.COLOR2))
+                                   '[COLOR {0}]GuiFix: ¡URL del Zip Invalida![/COLOR]'.format(CONFIG.COLOR2))
                 return
 
-            self.dialogProgress.create(CONFIG.ADDONTITLE, '[COLOR {0}][B]Downloading GuiFix:[/B][/COLOR] [COLOR {1}]{2}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, name), '', 'Please Wait')
+            self.dialogProgress.create(CONFIG.ADDONTITLE, '[COLOR {0}][B]Descargando GuiFix:[/B][/COLOR] [COLOR {1}]{2}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, name), '', 'Please Wait')
 
             lib = os.path.join(CONFIG.PACKAGES, '{0}_guisettings.zip'.format(zipname))
             
@@ -206,7 +206,7 @@ class Wizard:
                 return
             
             title = '[COLOR {0}][B]Instalando:[/B][/COLOR] [COLOR {1}]{2}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, name)
-            self.dialogProgress.update(0, title + '\n' + 'Please Wait')
+            self.dialogProgress.update(0, title + '\n' + 'Espere por favor')
             extract.all(lib, CONFIG.USERDATA, title=title)
             self.dialogProgress.close()
             skin.skin_to_default('Build Install')

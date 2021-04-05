@@ -13,7 +13,7 @@ ART = os.path.join(PATH, 'resources', 'media')
 #########################################################
 #        User Edit Variables                            #
 #########################################################
-ADDONTITLE = '[COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]'
+ADDONTITLE = '[COLOR azure]GTKing[/COLOR] [COLOR lime]MATRIX[/COLOR]'
 BUILDERNAME = 'DavidZgZ & Josa'
 EXCLUDES = [ADDON_ID, 'repository.gtkingMatrix']
 # Text File with build info in it.
@@ -71,7 +71,7 @@ THEME3 = u'[COLOR {color1}]{{}}[/COLOR]'.format(color1=COLOR1)
 # Current Build Header / {0} is the menu item and is required
 THEME4 = u'[COLOR {color1}]Build Actual:[/COLOR] [COLOR {color2}]{{}}[/COLOR]'.format(color1=COLOR1, color2=COLOR2)
 # Current Theme Header / {0} is the menu item and is required
-THEME5 = u'[COLOR {color1}]Theme Actual:[/COLOR] [COLOR {color2}]{{}}[/COLOR]'.format(color1=COLOR1, color2=COLOR2)
+THEME5 = u'[COLOR {color1}]Parche Actual:[/COLOR] [COLOR {color2}]{{}}[/COLOR]'.format(color1=COLOR1, color2=COLOR2)
 
 # Message for Contact Page
 # Enable 'Contact' menu item 'Yes' hide or 'No' dont hide

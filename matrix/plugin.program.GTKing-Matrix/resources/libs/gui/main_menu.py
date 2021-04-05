@@ -41,7 +41,7 @@ class MainMenu:
                 if ver:
                     if ver > CONFIG.ADDON_VERSION:
                         directory.add_file(
-                            '{0} [v{1}] [COLOR red][B][UPDATE v{2}][/B][/COLOR]'.format(CONFIG.ADDONTITLE,
+                            '{0} [v{1}] [COLOR red][B][ACTUALIZACIÓN v{2}][/B][/COLOR]'.format(CONFIG.ADDONTITLE,
                                                                                         CONFIG.ADDON_VERSION, ver),
                             {'mode': 'wizardupdate'}, themeit=CONFIG.THEME2)
                     else:
@@ -56,7 +56,7 @@ class MainMenu:
             version = check.check_build(CONFIG.BUILDNAME, 'version')
             build = '{0} (v{1})'.format(CONFIG.BUILDNAME, CONFIG.BUILDVERSION)
             if version > CONFIG.BUILDVERSION:
-                build = '{0} [COLOR red][B][UPDATE v{1}][/B][/COLOR]'.format(build, version)
+                build = '{0} [COLOR red][B][ACTUALIZACIÓN v{1}][/B][/COLOR]'.format(build, version)
             directory.add_dir(build, {'mode': 'viewbuild', 'name': CONFIG.BUILDNAME}, themeit=CONFIG.THEME4)
 
             from resources.libs.gui.build_menu import BuildMenu

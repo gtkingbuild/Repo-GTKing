@@ -46,7 +46,7 @@ def wizard_update():
             yes = dialog.yesno(CONFIG.ADDONTITLE,
                                    '[COLOR {0}]Hay una nueva versión de{1}!'.format(CONFIG.COLOR2, CONFIG.ADDONTITLE)
                                    +'\n'+'¿Quieres descargar la [COLOR {0}]v{1}[/COLOR]?[/COLOR]'.format(CONFIG.COLOR1, ver),
-                                   nolabel='[B][COLOR red]Recordar más tarde[/COLOR][/B]',
+                                   nolabel='[B][COLOR red]Recordar Más tarde[/COLOR][/B]',
                                    yeslabel="[B][COLOR springgreen]Actualizar[/COLOR][/B]")
             if yes:
                 from resources.libs import db

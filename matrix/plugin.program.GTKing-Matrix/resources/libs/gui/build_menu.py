@@ -134,15 +134,15 @@ class BuildMenu:
 
         elif hidden > 0:
             if adultcount > 0:
-                directory.add_file('There is currently only Adult builds', icon=CONFIG.ICONBUILDS,
+                directory.add_file('Actualmente solo hay builds para Adultos', icon=CONFIG.ICONBUILDS,
                                    themeit=CONFIG.THEME3)
-                directory.add_file('Enable Show Adults in Addon Settings > Misc', icon=CONFIG.ICONBUILDS,
+                directory.add_file('Habilitar Mostrar Adultos en la Configuración de Addon > Misc', icon=CONFIG.ICONBUILDS,
                                    themeit=CONFIG.THEME3)
             else:
-                directory.add_file('Currently No Builds Offered from {0}'.format(CONFIG.ADDONTITLE),
+                directory.add_file('Actualmente No Se Ofrecen Builds de {0}'.format(CONFIG.ADDONTITLE),
                                    icon=CONFIG.ICONBUILDS, themeit=CONFIG.THEME3)
         else:
-            directory.add_file('El archivo de texto parala builds no tiene el formato correcto.', icon=CONFIG.ICONBUILDS,
+            directory.add_file('El archivo de texto para la build no tiene el formato correcto.', icon=CONFIG.ICONBUILDS,
                                themeit=CONFIG.THEME3)
 
     def view_build(self, name):
@@ -152,12 +152,12 @@ class BuildMenu:
         if response:
             link = tools.clean_text(response.text)
         else:
-            directory.add_file('URL para archivo txt no válido', themeit=CONFIG.THEME3)
+            directory.add_file('URL para archivo .txt no válido', themeit=CONFIG.THEME3)
             directory.add_file('{0}'.format(CONFIG.BUILDFILE), themeit=CONFIG.THEME3)
             return
 
         if not check.check_build(name, 'version'):
-            directory.add_file('Error al leer el archivo txt.', themeit=CONFIG.THEME3)
+            directory.add_file('Error al leer el archivo .txt', themeit=CONFIG.THEME3)
             directory.add_file('{0} no se encontró en la lista de builds.'.format(name), themeit=CONFIG.THEME3)
             return
 
@@ -230,7 +230,7 @@ class BuildMenu:
         
         if response:
             if check.check_build(name, 'url'):
-                name, version, url, minor, gui_ignore, kodi, theme, icon, fanart, preview, adult, info, description = check.check_build(name, 'all')
+                name, version, url, minor, gui_ignore, kodi, theme, icon, fanart, preview, adult, info, description = check.check_build(name, 'todo')
                 adult = 'Si' if adult.lower() == 'Si' else 'No'
 
                 info_response = tools.open_url(info)
@@ -252,7 +252,7 @@ class BuildMenu:
                     msg += "[COLOR {0}]Build Parche(s):[/COLOR] [COLOR {1}]{2}[/COLOR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, ', '.join(themes))
                 msg += "[COLOR {0}]Version Kodi:[/COLOR] [COLOR {1}]{2}[/COLOR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, kodi)
                 msg += "[COLOR {0}]Contentido Adulto :[/COLOR] [COLOR {1}]{2}[/COLOR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, adult)
-                msg += "[COLOR {0}]Descripcion:[/COLOR] [COLOR {1}]{2}[/COLOR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, description)
+                msg += "[COLOR {0}]Descripción:[/COLOR] [COLOR {1}]{2}[/COLOR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, description)
 
                 if extend:
                     msg += "[COLOR {0}]Ultima Actualización:[/COLOR] [COLOR {1}]{2}[/COLOR][CR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, created)
@@ -261,15 +261,15 @@ class BuildMenu:
                     msg += "[COLOR {0}]Nombre Skin:[/COLOR] [COLOR {1}]{2}[/COLOR][CR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, skin)
                     msg += "[COLOR {0}]Programas:[/COLOR] [COLOR {1}]{2}[/COLOR][CR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, programs)
                     msg += "[COLOR {0}]Video:[/COLOR] [COLOR {1}]{2}[/COLOR][CR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, video)
-                    msg += "[COLOR {0}]Musica:[/COLOR] [COLOR {1}]{2}[/COLOR][CR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, music)
-                    msg += "[COLOR {0}]Imagenes:[/COLOR] [COLOR {1}]{2}[/COLOR][CR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, picture)
+                    msg += "[COLOR {0}]Música:[/COLOR] [COLOR {1}]{2}[/COLOR][CR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, music)
+                    msg += "[COLOR {0}]Imágenes:[/COLOR] [COLOR {1}]{2}[/COLOR][CR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, picture)
                     msg += "[COLOR {0}]Repositorios:[/COLOR] [COLOR {1}]{2}[/COLOR][CR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, repos)
                     msg += "[COLOR {0}]Scripts:[/COLOR] [COLOR {1}]{2}[/COLOR][CR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, scripts)
                     msg += "[COLOR {0}]Binarios:[/COLOR] [COLOR {1}]{2}[/COLOR]".format(CONFIG.COLOR2, CONFIG.COLOR1, binaries)
 
                 window.show_text_box("Visualización de Información de la Build: {0}".format(name), msg)
             else:
-                logging.log("Nombre Invalido de la Build!")
+                logging.log("Nombre Inválido de la Build!")
         else:
             logging.log("La compilación del archivo de texto no funciona: {0}".format(CONFIG.BUILDFILE))
 
@@ -286,7 +286,7 @@ class BuildMenu:
             if tools.open_url(videofile, check=True):
                 yt.play_video(videofile)
             else:
-                logging.log("[{0}]No se puede encontrar la URL para la vista previa del video".format(name))
+                logging.log("[{0}]No se puede encontrar la URL para la vista previa del vídeo".format(name))
         else:
             logging.log("La compilación del archivo de texto no funciona: {0}".format(CONFIG.BUILDFILE))
 

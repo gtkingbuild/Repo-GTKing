@@ -141,12 +141,12 @@ def wipe():
                 try:
                     os.remove(os.path.join(root, name))
                 except Exception as e:
-                    logging.log("Error removing {0}".format(os.path.join(root, name)))
+                    logging.log("Error eliminando {0}".format(os.path.join(root, name)))
                     logging.log("-> / {0}".format(str(e)))
         if progress_dialog.iscanceled():
             progress_dialog.close()
             logging.log_notify(CONFIG.ADDONTITLE,
-                               "[COLOR {0}]Fresh Start Cancelled[/COLOR]".format(CONFIG.COLOR2))
+                               "[COLOR {0}]Fresh Start Cancelado[/COLOR]".format(CONFIG.COLOR2))
             return False
     for root, dirs, files in os.walk(xbmcPath, topdown=True):
         dirs[:] = [d for d in dirs if d not in exclude_dirs]
@@ -157,7 +157,7 @@ def wipe():
         if progress_dialog.iscanceled():
             progress_dialog.close()
             logging.log_notify(CONFIG.ADDONTITLE,
-                               "[COLOR {0}]Fresh Start Cancelled[/COLOR]".format(CONFIG.COLOR2))
+                               "[COLOR {0}]Fresh Start Cancelado[/COLOR]".format(CONFIG.COLOR2))
             return False
             
     progress_dialog.close()
