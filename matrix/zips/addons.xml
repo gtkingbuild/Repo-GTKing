@@ -17,9 +17,9 @@
 	<extension point="xbmc.addon.metadata">
 		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR lime]MATRIX[/COLOR]</summary>
     	<description lang="es">
-[CENTER][I]Build GTKing MATRIX para KODI 19.x[/I][/CENTER]
+[S]Build GTKing MATRIX para KODI 19.x[/S]
 
-[B]- Testers:[/B] [COLOR magenta]Mapache,Tete6776,Vicente,zalcos[/COLOR]
+[B]- Testers:[/B] [COLOR gold]Mapache,Tete6776,Vicente,zalcos[/COLOR]
 
 [B]- Telegram:[/B] [COLOR lime]t.me/beelinkking[/COLOR]</description>
 		<platform>all</platform>
