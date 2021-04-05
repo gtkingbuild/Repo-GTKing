@@ -14,7 +14,7 @@
 	<extension point="xbmc.service" library="startup.py" start="startup" />
   
 	<extension point="xbmc.addon.metadata">
-		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR limeMATRIX[/COLOR]</summary>
+		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR lime]MATRIX[/COLOR]</summary>
     	<description lang="es">Build GTKing Prime para Kodi 19.
 - Testers: Mapache,Tete6776,Vicente,zalcos
 
