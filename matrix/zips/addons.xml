@@ -16,17 +16,20 @@
 
 	<extension point="xbmc.addon.metadata">
 		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR lime]MATRIX[/COLOR]</summary>
-    	<description lang="es">Build GTKing Prime para Kodi 19.
-- Testers: Mapache,Tete6776,Vicente,zalcos
+    	<description lang="es">
+Build GTKing MATRIX para Kodi 19.
 
-- Telegram: [COLOR lime]t.me/beelinkking[/COLOR]</description>
+[B]- Testers:[/B] [COLOR DeepPink]Mapache,Tete6776,Vicente,zalcos[/COLOR]
+
+[B]- Telegram:[/B] [COLOR lime]t.me/beelinkking[/COLOR]</description>
 		<platform>all</platform>
 		<reuselanguageinvoker>false</reuselanguageinvoker>
         <source>https://www.github.com/gtkingbuild/Repo-GTKing/plugin.program.GTKing-Matrix/</source>
 		<news>
-- Build [COLOR indigo][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]
+- Build [COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]
+
 05/03/2021
-Instalador actualizado a la versión 3.0.4
+- Instalador actualizado a la versión 3.0.4
 - Inciada la compatibilidad con Kodi 19.0 Matrix
 		</news>
 		<assets>
