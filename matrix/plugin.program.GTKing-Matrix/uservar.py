@@ -13,7 +13,7 @@ ART = os.path.join(PATH, 'resources', 'media')
 #########################################################
 #        User Edit Variables                            #
 #########################################################
-ADDONTITLE = '[COLOR azure]GTKing[/COLOR] [COLOR lime]MATRIX[/COLOR]'
+ADDONTITLE = '[COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]'
 BUILDERNAME = 'DavidZgZ & Josa'
 EXCLUDES = [ADDON_ID, 'repository.gtkingMatrix']
 # Text File with build info in it.
