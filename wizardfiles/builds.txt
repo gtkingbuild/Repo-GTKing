@@ -16,7 +16,7 @@ adult="No"
 info="http://"
 description="GTKing MATRIX para KODI 19.x Matrix"
 
-name="[COLOR sienna]GTactil King[/COLOR]"
+name="[COLOR gold]GTactil King[/COLOR]"
 version="1.0"
 url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/2.0/GTactil.zip"
 minor="http://"
