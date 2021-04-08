@@ -4,7 +4,7 @@ zip="https://github.com/gtkingbuild/gtkingbuild.github.io/tree/master/addons.de.
 
 name="19.x Matrix"
 version="1.0"
-url="https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/wizardfiles/GTKing/themes.txt"
+url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/0.1/GTKing.MATRIX.zip"
 minor="http://"
 gui="http://"
 kodi="19"
