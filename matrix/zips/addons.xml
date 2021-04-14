@@ -94,6 +94,34 @@
 	</extension>
 </addon>
 
+<addon id="repository.github" name="GitHub Add-on repository" provider-name="i96751414" version="0.0.6">
+    <requires>
+        <!--<import addon="xbmc.python" version="3.0.0"/>-->
+    </requires>
+    <extension point="xbmc.addon.repository">
+        <info>http://127.0.0.1:61234/addons.xml</info>
+        <checksum>http://127.0.0.1:61234/addons.xml.md5</checksum>
+        <datadir>http://127.0.0.1:61234/</datadir>
+    </extension>
+    <extension point="xbmc.python.script" library="default.py"/>
+    <extension point="xbmc.service" library="service.py"/>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <license>See https://github.com/i96751414/repository.github/blob/master/LICENSE</license>
+        <source>https://github.com/i96751414/repository.github</source>
+        <summary lang="en">GitHub virtual Add-on repository for TORREST and others</summary>
+        <description lang="en">Customizable repository which acts as a proxy for defined GitHub users' add-ons updates, like TORREST.</description>
+        <summary lang="es">Repositorio GitHub virtual para el Add-on TORREST y otros</summary>
+        <description lang="es">Repositorio configurable que actúa como un proxy para add-ons disponibles en GitHub, como TORREST.</description>
+        <news>
+            - Add support to Kodi 19
+        </news>
+        <assets>
+            <icon>icon.png</icon>
+        </assets>
+    </extension>
+</addon>
+
 <addon id="repository.GTKing-Matrix" name="[COLOR steelblue][B]Repo[/B][/COLOR] [COLOR azure][B]GTKing[/B] [/COLOR][COLOR limegreen][B]MATRIX[/B][/COLOR]" version="3.0" provider-name="gtkingbuild">
     <extension point="xbmc.addon.repository" name="[COLOR dodgerblue][B]Repo[/B][/COLOR] Prueba [COLOR limegreen]MATRIX[/COLOR]">
         <dir minversion="18.0" maxversion="18.9.0">
@@ -119,6 +147,39 @@
         </assets>
 		<source>https://github.com/gtkingbuild/Repo-GTKing/</source>
     </extension>
+</addon>
+
+<addon id="repository.Vilhao.Matrix" name="[COLOR red]Vilhao Matrix Repository[/COLOR]" version="1.2" provider-name="Vilhao">
+	<requires>
+
+		<import addon="xbmc.addon" version="12.0.0"/>
+	</requires>
+	<extension point="xbmc.addon.repository" name="[COLOR red]Vilhao 18 + 19 Matrix Repository[/COLOR]">
+
+		<dir minversion="18.9.1">
+			<info compressed="false">https://vilhaorepository.000webhostapp.com/repo.vilhao/addons.xml</info>
+			<checksum>https://vilhaorepository.000webhostapp.com/repo.vilhao/addons.xml.md5</checksum>
+			<datadir zip="true">https://vilhaorepository.000webhostapp.com/repo.vilhao/</datadir>
+
+		</dir>
+
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary>[COLOR red]O melhor do vilhao para a sua Tv[/COLOR]</summary>
+<description>
+[B][COLOR blue]●[/COLOR] [COLOR yellow]Repositório oficial do Vilhao - 2021[/COLOR][/B]
+[B][COLOR firebrick]●[/COLOR] [COLOR yellow]O Add-on Vilhao é de uso gratuito!![/COLOR][/B]
+[B][COLOR firebrick]●[/COLOR] [COLOR yellow]Proibido a venda dos add-ons do Vilhao.[/COLOR][/B]
+</description>
+<disclaimer>[B][COLOR yellow]O Vilhao é apenas um AGREGADOR de links assim como o Google.com, apenas agrega e organiza os links externos. O Vilhao nao e responsável pelos arquivos aqui encontrados.[/COLOR][/B]</disclaimer>
+		<platform>all</platform>
+		<source>https://vilhaorepository.000webhostapp.com/repo.vilhao/</source>
+		<assets>
+            <icon>icon.png</icon>
+			<fanart>fanart.jpg</fanart>
+        </assets>
+	</extension>
+
 </addon>
 
 <addon id="script.luar"
