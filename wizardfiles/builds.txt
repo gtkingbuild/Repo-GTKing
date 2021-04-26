@@ -32,7 +32,7 @@ description="GTKing MATRIX para KODI 19.x Matrix"
 
 name="Siguiente"
 version="1.0"
-url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/2.0/GTactil.zip"
+url=""
 minor="http://"
 gui="http://"
 kodi="19"
