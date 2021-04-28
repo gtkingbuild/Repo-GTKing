@@ -1,11 +1,11 @@
-name="[COLOR azure]•[/COLOR] Parche GTKing Prime Matrix"
+name="[B][COLOR azure]•[/COLOR] Parche GTKing Prime Matrix[/B]"
 url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/3.9.1/Parche.GTKing.Prime.zip"
 icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
 fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
 adult="no"
 description="Parche GTKing Prime"
 
-name="[COLOR azure]•[/COLOR] Parche GTKing Tactil Matrix"
+name="[B][COLOR azure]•[/COLOR] Parche GTKing Tactil Matrix[/B]"
 url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/3.9.1/Parche.GTKing.Prime.zip"
 icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
 fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
