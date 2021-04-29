@@ -11,3 +11,12 @@ icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
 fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
 adult="no"
 description="Parche GTKing Prime"
+
+name="Parche  Matrix"
+url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/3.9.1/Parche.GTKing.Prime.zip"
+icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
+fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
+adult="no"
+description="Parche GTKing Prime"
+
+
