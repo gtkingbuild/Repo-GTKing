@@ -39,6 +39,68 @@
     </extension>
 </addon>
 
+<addon id="plugin.video.palantir2" name="[COLOR gold]Palantir 2[/COLOR]" version="2.1.10" provider-name="TierraMedia">
+  <requires>
+    <import addon="script.module.six" version="1.11.0"/>
+    <import addon="script.module.resolveurl" version="5.0.00" optional="true"/>
+    <import addon="script.module.pycryptodome"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.repository" name="Palantir Repo">
+        <info>https://raw.githubusercontent.com/Palantiraddon/Repo/master/Palantir/addons.xml</info>
+        <checksum>https://raw.githubusercontent.com/Palantiraddon/Repo/master/Palantir/addons.xml.md5</checksum>
+        <datadir zip="true">https://raw.githubusercontent.com/Palantiraddon/repo/master/Palantir/</datadir>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <description>Visualiza el contenido de la nube, series, películas.</description>
+    <disclaimer>[B][COLOR red]Todo el contenido disponible en este Addon esta sacado de servidores gratuitos, disponible en la red para todos los usuarios.[/B][/COLOR]</disclaimer>
+    <platform>all</platform>
+    <assets>
+        <icon>icon.png</icon>
+        <fanart>fanart.gif</fanart>
+        <screenshot>resources/media/Captura1.png</screenshot>
+        <screenshot>resources/media/Captura2.png</screenshot>
+        <screenshot>resources/media/Captura3.png</screenshot>
+        <screenshot>resources/media/Captura4.png</screenshot>
+    </assets>
+    <news>- Reparado bug en añadir/eliminar favoritos
+- Añadido soporte a cuentas Alldebrid
+    </news>
+    <forum></forum>
+  </extension>
+</addon>
+
+<addon id="plugin.video.torrest" name="Torrest" provider-name="i96751414" version="0.0.12">
+    <requires>
+        <!--<import addon="xbmc.python" version="3.0.0"/>-->
+        <import addon="script.module.requests" version="2.22.0"/>
+        <import addon="script.module.routing" version="0.2.3"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="navigation.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.service" library="service.py"/>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <license>See https://github.com/i96751414/plugin.video.torrest/blob/master/LICENSE</license>
+        <source>https://github.com/i96751414/plugin.video.torrest</source>
+        <summary lang="en">Torrest on Kodi</summary>
+        <description lang="en">Torrest is a service with a rest API which allows torrent streaming.</description>
+        <news>
+        </news>
+        <assets>
+            <icon>icon.png</icon>
+            <screenshot>resources/screenshots/screenshot-1.jpg</screenshot>
+            <screenshot>resources/screenshots/screenshot-2.jpg</screenshot>
+            <screenshot>resources/screenshots/screenshot-3.jpg</screenshot>
+            <screenshot>resources/screenshots/screenshot-4.jpg</screenshot>
+        </assets>
+        <reuselanguageinvoker>true</reuselanguageinvoker>
+    </extension>
+</addon>
+
 <addon id="plugin.video.Vilhao.Matrix" name="[COLOR blue]V[/COLOR][COLOR yellow]i[/COLOR][COLOR blue]l[/COLOR][COLOR yellow]h[/COLOR][COLOR blue]a[/COLOR][COLOR yellow]o[/COLOR] [COLOR lime]Matrix[/COLOR]" version="1.1" provider-name="Vilhao">
 <requires>
     <import addon="xbmc.python" version="3.0.0"/>
@@ -73,6 +135,58 @@
 </extension>
 </addon>
 
+<addon id="plugin.video.winner" name="[B][/B][COLOR aqua][/COLOR]WINNER" version="1.0.6" provider-name="Camaradas">
+    <requires>
+        <import addon="script.module.requests" />
+        <import addon="script.module.resolveurl" />
+        <import addon="script.module.pysocks" />
+        <import addon="script.module.six" />
+        <import addon="plugin.video.youtube" />
+        <import addon="script.module.horus" optional="true" />
+        <import addon="script.module.pydevd" optional="true" />
+        <import addon="script.module.web-pdb" optional="true" />
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.repository" name="Hiraya Software Repo">
+        <info>https://raw.githubusercontent.com/camaradas/camaradas.repo/master/Repositorio/addons.xml</info>
+        <checksum>https://raw.githubusercontent.com/camaradas/camaradas.repo/master/Repositorio/addons.xml.md5</checksum>
+        <datadir zip="true">https://raw.githubusercontent.com/camaradas/camaradas.repo/master/Repositorio/</datadir>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">WINNER</summary>
+        <description lang="en">Live Sports Addon.
+
+Development: George, Alex303, Picapau
+Development support: Jesus, Toni
+Contributions: SuperTopo, Jesus
+Artwork: Bojbit
+Translation: Lou
+Content: Lou, Alex303, MiKeL, Chikiry, Bojbit, Luisma, Lucas, Nano, K0S, Manujaz
+Testers: Luisma, Toni, Zarat, SuperTopo, Jorge, Bojbit, MiKeL, Chikiry, Pau, Alex, Luar team
+        </description>
+        <disclaimer lang="en">WINNER Addon - Live Sports Addon</disclaimer>
+        <summary lang="es">WINNER</summary>
+        <description lang="es">Addon con eventos deportivos en directo.
+
+Desarrollo: George, Alex303, Picapau
+Soporte desarrollo: Jesus, Toni
+Aportaciones: SuperTopo, Jesus
+Artwork: Bojbit
+Traducciones: Lou
+Contenido: Lou, Alex303, MiKeL, Chikiry, Bojbit, Luisma, Lucas, Nano, K0S, Manujaz
+Testers: Luisma, Toni, Zarat, SuperTopo, Jorge, Bojbit, MiKeL, Chikiry, Pau, Alex, equipo Luar
+        </description>
+        <disclaimer lang="es">Addon WINNER - Eventos Deportivos en directo</disclaimer>
+        <platform>all</platform>
+        <assets>
+            <icon>icon.gif</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon>
+
 <addon id="repository.arxtic-ape" name="arxtic-ape repository" version="1.0.0" provider-name="arxtic-ape">
 	<extension point="xbmc.addon.repository" name="Arxtic Ape Addon Repository">
 		<dir>
@@ -92,6 +206,20 @@
 		<description>Install Arxtic Ape Addons</description>
 		<platform>all</platform>
 	</extension>
+</addon>
+
+<addon id="repository.camaradas.repo" name="[COLOR orangered]camaradas.repo[/COLOR]" version="2.0" provider-name="Team Camaradas">
+    <extension point="xbmc.addon.repository" name="camaradas.repo">
+        <info>https://raw.githubusercontent.com/camaradas/camaradas.repo/master/Repositorio/addons.xml</info>
+        <checksum>https://raw.githubusercontent.com/camaradas/camaradas.repo/master/Repositorio/addons.xml.md5</checksum>
+        <datadir zip="true">https://raw.githubusercontent.com/camaradas/camaradas.repo/master/Repositorio/</datadir>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary>Repositorio camaradas.repo</summary>
+        <description></description>
+        <disclaimer></disclaimer>
+        <platform>all</platform>
+    </extension>
 </addon>
 
 <addon id="repository.github" name="GitHub Add-on repository" provider-name="i96751414" version="0.0.6">
@@ -122,7 +250,7 @@
     </extension>
 </addon>
 
-<addon id="repository.GTKing-Matrix" name="[COLOR steelblue][B]Repo[/B][/COLOR] [COLOR azure][B]GTKing[/B] [/COLOR][COLOR limegreen][B]MATRIX[/B][/COLOR]" version="3.0.1" provider-name="gtkingbuild">
+<addon id="repository.GTKing-Matrix" name="[COLOR steelblue][B]Repo[/B][/COLOR] [COLOR azure][B]GTKing[/B] [/COLOR][COLOR limegreen][B]MATRIX[/B][/COLOR]" version="3.0.3" provider-name="gtkingbuild">
     <extension point="xbmc.addon.repository" name="[COLOR dodgerblue][B]Repo[/B][/COLOR] Prueba [COLOR limegreen]MATRIX[/COLOR]">
         <dir minversion="18.0" maxversion="18.9.0">
             <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/leia/zips/addons.xml</info>
@@ -133,6 +261,11 @@
             <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/matrix/zips/addons.xml</info>
             <checksum>https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/matrix/zips/addons.xml.md5</checksum>
             <datadir zip="true">https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/matrix/zips/</datadir>
+        </dir>
+        <dir minversion="18.9.0">
+            <info>https://raw.githubusercontent.com/Palantiraddon/Repo/master/Palantir/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/Palantiraddon/Repo/master/Palantir/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/Palantiraddon/repo/master/Palantir/</datadir>
         </dir>
     </extension>
 
@@ -182,6 +315,34 @@
 
 </addon>
 
+<addon id="script.kelebek"
+       name="KELEBEK"
+       version="3.5"
+       provider-name="Iron Butterfly">
+  <requires>
+    <import addon="script.module.pyxbmct" version="1.1.4" />
+    <import addon="script.module.beautifulsoup4" />
+    <import addon="script.module.requests" />
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="main.py">
+	<provides>executable</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <summary>KELEBEK V3.5</summary>
+    <description>Scan Sources searching changes and addons</description>
+    <language></language>
+    <license></license>
+    <source></source>
+    <forum></forum>
+    <website></website>
+	<assets>
+		<icon>resources/icon.png</icon>
+		<fanart>resources/fanart.jpg</fanart>
+	</assets>
+  </extension>
+</addon>
+
 <addon id="script.luar"
   version="0.8.1"
   name="Luar"
@@ -213,5 +374,37 @@
       <screenshot>resources/screenshot002.jpg</screenshot>
     </assets>
   </extension>
+</addon>
+
+<addon id="script.module.horus" name="Horus" version="1.1" provider-name="Caperucitaferoz">
+    <requires>
+        <import addon="script.module.six" />
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>executable</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <description>Horus:
+"Señor de sus ojos"
+"Unificador de las dos tierras"
+"Señor de las estrellas circumpolares"
+"El de los dos ojos"
+        </description>
+        <disclaimer>En Horus no vais a encontrar ningún tipo de contenido: ni películas, ni series ni eventos deportivos.</disclaimer>
+        <platform>all</platform>
+        <assets>
+              <icon>icon.png</icon>
+              <fanart>fanart.jpg</fanart>
+              <screenshot>resources/media/Captura1.png</screenshot>
+              <screenshot>resources/media/Captura2.png</screenshot>
+              <screenshot>resources/media/Captura3.png</screenshot>
+              <screenshot>resources/media/Captura4.png</screenshot>
+        </assets>
+        <news>
+            Versión inicial
+        </news>
+        <forum>https://t.me/KodiManiac
+        https://t.me/acestream_spanish</forum>
+    </extension>
 </addon>
 </addons>
