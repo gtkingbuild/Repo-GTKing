@@ -18,7 +18,7 @@ description="GTKing MATRIX para KODI 19.x Matrix"
 
 name="MATRIX WAKA WAKA"
 version="1.123456789"
-url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/3.9.0/GTKing.Prime.zip"
+url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/1.123456789/GTKing-MATRIX-WAKA-WAKA.zip"
 minor="http://"
 gui="http://"
 kodi="19"
