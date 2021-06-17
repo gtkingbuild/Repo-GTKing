@@ -770,14 +770,14 @@ def login_it(do, who):
                 except:
                     pass
             else:
-                logging.log('[Login Info] {0}({1}) is not installed'.format(LOGINID[log]['name'], LOGINID[log]['plugin']), level=xbmc.LOGERROR)
+                logging.log('[Info Inicio de Sesion] {0}({1}) no esta instalado'.format(LOGINID[log]['name'], LOGINID[log]['plugin']), level=xbmc.LOGERROR)
         CONFIG.set_setting('loginnextsave', tools.get_date(days=3, formatted=True))
     else:
         if LOGINID[who]:
             if os.path.exists(LOGINID[who]['path']):
                 update_login(do, who)
         else:
-            logging.log('[Login Info] Invalid Entry: {0}'.format(who), level=xbmc.LOGERROR)
+            logging.log('[Info Inicio de Sesion] Entrada Invalido: {0}'.format(who), level=xbmc.LOGERROR)
 
 
 def clear_saved(who, over=False):
@@ -789,7 +789,7 @@ def clear_saved(who, over=False):
         if os.path.exists(file):
             os.remove(file)
             logging.log_notify('[COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, LOGINID[who]['name']),
-                               '[COLOR {0}]Login Info: Removed![/COLOR]'.format(CONFIG.COLOR2),
+                               '[COLOR {0}]Info Inicio de Sesion: Removido![/COLOR]'.format(CONFIG.COLOR2),
                                2000,
                                LOGINID[who]['icon'])
         CONFIG.set_setting(LOGINID[who]['saved'], '')
@@ -827,11 +827,11 @@ def update_login(do, who):
                 user = addonid.getSetting(default)
                 CONFIG.set_setting(saved, user)
                 
-                logging.log('Login Data Saved for {0}'.format(name), level=xbmc.LOGINFO)
+                logging.log('Datos de Inicio de Sesion Guardados para {0}'.format(name), level=xbmc.LOGINFO)
             except Exception as e:
-                logging.log("[Login Data] Unable to Update {0} ({1})".format(who, str(e)), level=xbmc.LOGERROR)
+                logging.log("[Datos de Inicio de Sesion] No se Puede Actualizar {0} ({1})".format(who, str(e)), level=xbmc.LOGERROR)
         else:
-            logging.log('Login Data Not Registered for {0}'.format(name))
+            logging.log('Datos de Inicio de Sesion No Registrado para {0}'.format(name))
     elif do == 'restore':
         if os.path.exists(file):
             tree = ElementTree.parse(file)
@@ -845,13 +845,13 @@ def update_login(do, who):
                     
                 user = addonid.getSetting(default)
                 CONFIG.set_setting(saved, user)
-                logging.log('Login Data Restored for {0}'.format(name), level=xbmc.LOGINFO)
+                logging.log('Datos de Inicio de Sesion Restaurado para {0}'.format(name), level=xbmc.LOGINFO)
             except Exception as e:
-                logging.log("[Login Info] Unable to Restore {0} ({1})".format(who, str(e)), level=xbmc.LOGERROR)
+                logging.log("[Info Inicio de Sesion] No se Puede Restaurar {0} ({1})".format(who, str(e)), level=xbmc.LOGERROR)
         else:
-            logging.log('Login Data Not Found for {0}'.format(name))
+            logging.log('Info Inicio de Sesion No Encontrado para {0}'.format(name))
     elif do == 'clearaddon':
-        logging.log('{0} SETTINGS: {1}'.format(name, settings), level=xbmc.LOGDEBUG)
+        logging.log('{0} AJUSTES: {1}'.format(name, settings), level=xbmc.LOGDEBUG)
         if os.path.exists(settings):
             try:
                 tree = ElementTree.parse(settings)
@@ -859,17 +859,17 @@ def update_login(do, who):
                 
                 for setting in root.findall('setting'):
                     if setting.attrib['id'] in data:
-                        logging.log('Removing Setting: {0}'.format(setting.attrib))
+                        logging.log('Eliminacion de Ajustes: {0}'.format(setting.attrib))
                         root.remove(setting)
                             
                 tree.write(settings)
                 
                 logging.log_notify("[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, name),
-                                   '[COLOR {0}]Addon Data: Cleared![/COLOR]'.format(CONFIG.COLOR2),
+                                   '[COLOR {0}]Datos de Addon: Borrado![/COLOR]'.format(CONFIG.COLOR2),
                                    2000,
                                    icon)
             except Exception as e:
-                logging.log("[Trakt Data] Unable to Clear Addon {0} ({1})".format(who, str(e)), level=xbmc.LOGERROR)
+                logging.log("[Datos Trakt] No se Puede Borrar el Addon {0} ({1})".format(who, str(e)), level=xbmc.LOGERROR)
     xbmc.executebuiltin('Container.Refresh()')
 
 
@@ -891,11 +891,11 @@ def auto_update(who):
                 dialog = xbmcgui.Dialog()
 
                 if dialog.yesno(CONFIG.ADDONTITLE,
-                                    "Would you like to save the [COLOR {0}]Login Info[/COLOR] for [COLOR {1}]{2}[/COLOR]?".format(CONFIG.COLOR2, CONFIG.COLOR1, n)
+                                    "Le gustaria guardar la informacion de inicio de sesion de [COLOR {0}][/COLOR] para [COLOR {1}]{2}[/COLOR]?".format(CONFIG.COLOR2, CONFIG.COLOR1, n)
                                     +'\n'+"Addon: [COLOR springgreen][B]{0}[/B][/COLOR]".format(u)
-                                    +'\n'+"Saved:[/COLOR] [COLOR red][B]{0}[/B][/COLOR]".format(su) if not su == '' else 'Saved:[/COLOR] [COLOR red][B]None[/B][/COLOR]',
-                                    yeslabel="[B][COLOR springgreen]Save Data[/COLOR][/B]",
-                                    nolabel="[B][COLOR red]No Cancel[/COLOR][/B]"):
+                                    +'\n'+"Guardado: [COLOR red][B]{0}[/B][/COLOR]".format(su) if not su == '' else 'Guardado: [COLOR red][B]Ninguno[/B][/COLOR]',
+                                    yeslabel="[B][COLOR springgreen]Guardar Datos[/COLOR][/B]",
+                                    nolabel="[B][COLOR red]No, Cancelar[/COLOR][/B]"):
                     login_it('update', who)
             else:
                 login_it('update', who)
@@ -925,7 +925,7 @@ def import_list(who):
                 addonid.setSetting(id, value)
 
             logging.log_notify("[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, name),
-                       '[COLOR {0}]Login Data: Imported![/COLOR]'.format(CONFIG.COLOR2))
+                       '[COLOR {0}]Datos de Inicio de Sesion: Importado![/COLOR]'.format(CONFIG.COLOR2))
 
 
 def activate_login(who):
@@ -940,7 +940,7 @@ def activate_login(who):
         else:
             dialog = xbmcgui.Dialog()
 
-            dialog.ok(CONFIG.ADDONTITLE, '{0} is not currently installed.'.format(LOGINID[who]['name']))
+            dialog.ok(CONFIG.ADDONTITLE, '{0} no esta instalado actualmente.'.format(LOGINID[who]['name']))
     else:
         xbmc.executebuiltin('Container.Refresh()')
         return

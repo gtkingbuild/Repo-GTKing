@@ -53,7 +53,7 @@ def all_with_progress(_in, _out, dp, ignore, title):
     except Exception as e:
         errors += 1
         error += '%s\n' % e
-        logging.log('Error Checking Zip: {0}'.format(str(e)), level=xbmc.LOGERROR)
+        logging.log('Error Comprobación Zip: {0}'.format(str(e)), level=xbmc.LOGERROR)
         return update, errors, error
 
     white_list = whitelist.whitelist('read')
@@ -75,10 +75,10 @@ def all_with_progress(_in, _out, dp, ignore, title):
         try:
             str(item.filename).encode('ascii')
         except UnicodeDecodeError:
-            logging.log("[ASCII Check] Illegal character found in file: {0}".format(item.filename))
+            logging.log("[ASCII Check] Carácter ilegal encontrado en archivo: {0}".format(item.filename))
             continue
         except UnicodeEncodeError:
-            logging.log("[ASCII Check] Illegal character found in file: {0}".format(item.filename))
+            logging.log("[ASCII Check] Carácter ilegal encontrado en archivo: {0}".format(item.filename))
             continue
             
         count += 1

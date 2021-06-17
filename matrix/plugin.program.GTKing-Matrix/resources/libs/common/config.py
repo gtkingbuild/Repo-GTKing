@@ -74,11 +74,14 @@ class Config:
         self.SPACER = uservar.SPACER
         self.COLOR1 = uservar.COLOR1
         self.COLOR2 = uservar.COLOR2
+        self.COLOR3 = uservar.COLOR3
+        self.COLOR4 = uservar.COLOR4
         self.THEME1 = uservar.THEME1
         self.THEME2 = uservar.THEME2
         self.THEME3 = uservar.THEME3
         self.THEME4 = uservar.THEME4
         self.THEME5 = uservar.THEME5
+        self.THEME6 = uservar.THEME6
         self.HIDECONTACT = uservar.HIDECONTACT
         self.CONTACT = uservar.CONTACT
         self.CONTACTICON = uservar.CONTACTICON if not uservar.CONTACTICON.endswith('://') else self.ADDON_ICON
@@ -184,7 +187,7 @@ class Config:
                              os.path.join(self.HOME, 'cache'),
                              os.path.join(self.HOME, 'system'),
                              os.path.join(self.HOME, 'temp'),
-                             os.path.join(self.HOME, 'My_Builds'),
+                             os.path.join(self.HOME, 'Mis_Builds'),
                              os.path.join(self.HOME, 'cdm'),
                              os.path.join(self.ADDONS, 'temp'),
                              os.path.join(self.ADDONS, 'packages'),
@@ -263,7 +266,7 @@ class Config:
 
         # Backup variables
         self.BACKUPLOCATION = xbmcvfs.translatePath(self.get_setting('path') if not self.get_setting('path') == '' else self.HOME)
-        self.MYBUILDS = os.path.join(self.BACKUPLOCATION, 'My_Builds')
+        self.MYBUILDS = os.path.join(self.BACKUPLOCATION, 'Mis_Builds')
 
         # Logging variables
         self.DEBUGLEVEL = self.get_setting('debuglevel')

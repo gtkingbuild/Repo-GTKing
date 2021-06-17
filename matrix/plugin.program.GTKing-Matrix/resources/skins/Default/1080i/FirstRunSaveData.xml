@@ -42,7 +42,7 @@
                 <font>font12</font>
                 <align>left</align>
                 <aligny>top</aligny>
-                <label>Primera ejecución del asistente, le gustaría habilitar alguna de las siguientes configuraciones?</label>
+                <label>[B]Primera ejecución del asistente, le gustaría habilitar alguna de las siguientes configuraciones?[/B]</label>
             </control>
         </control>
 	    <!-- Scrollbar  -->
@@ -142,7 +142,7 @@
                 <textoffsetx>10</textoffsetx>
                 <radioheight>45</radioheight>
                 <radioposx>530</radioposx>
-                <label>Conservar archivo .xml de mis Perfiles</label>
+                <label>Conservar mi archivo .xml de mis Perfiles</label>
                 <font>font12</font>
                 <texturefocus colordiffuse="FF12B2E7">RadioButton/MenuItemFO.png</texturefocus>
                 <texturenofocus>RadioButton/MenuItemNF.png</texturenofocus>
@@ -206,7 +206,7 @@
                 <textoffsetx>10</textoffsetx>
                 <radioheight>45</radioheight>
                 <radioposx>530</radioposx>
-                <label>Conservar mi archivo Favourites.xml</label>
+                <label>Conservar mi archivo Favoritos.xml</label>
                 <font>font12</font>
                 <texturefocus colordiffuse="FF12B2E7">RadioButton/MenuItemFO.png</texturefocus>
                 <texturenofocus>RadioButton/MenuItemNF.png</texturenofocus>
@@ -270,7 +270,7 @@
                 <textoffsetx>10</textoffsetx>
                 <radioheight>45</radioheight>
                 <radioposx>530</radioposx>
-                <label>Borrar caché al iniciar</label>
+                <label>Borrar Caché al iniciar</label>
                 <font>font12</font>
                 <texturefocus colordiffuse="FF12B2E7">RadioButton/MenuItemFO.png</texturefocus>
                 <texturenofocus>RadioButton/MenuItemNF.png</texturenofocus>
@@ -286,7 +286,7 @@
                 <textoffsetx>10</textoffsetx>
                 <radioheight>45</radioheight>
                 <radioposx>530</radioposx>
-                <label>Borrar Packages al iniciar</label>
+                <label>Borrar Paquetes al iniciar</label>
                 <font>font12</font>
                 <texturefocus colordiffuse="FF12B2E7">RadioButton/MenuItemFO.png</texturefocus>
                 <texturenofocus>RadioButton/MenuItemNF.png</texturenofocus>
@@ -302,7 +302,7 @@
                 <textoffsetx>10</textoffsetx>
                 <radioheight>45</radioheight>
                 <radioposx>530</radioposx>
-                <label>Borrar Thumbnails antiguas al iniciar</label>
+                <label>Borrar Miniaturas antiguas al iniciar</label>
                 <font>font12</font>
                 <texturefocus colordiffuse="FF12B2E7">RadioButton/MenuItemFO.png</texturefocus>
                 <texturenofocus>RadioButton/MenuItemNF.png</texturenofocus>
@@ -320,7 +320,7 @@
                 <height>90</height>
                 <font>font13</font>
                 <textcolor>FFF0F0F0</textcolor>
-                <label>Continue</label>
+                <label>Continuar</label>
                 <align>center</align>
                 <aligny>center</aligny>
                 <onup>9000</onup>

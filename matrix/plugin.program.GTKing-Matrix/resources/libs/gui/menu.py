@@ -164,7 +164,7 @@ def speed_test():
         speedimg = glob.glob(os.path.join(CONFIG.SPEEDTEST, '*.png'))
         speedimg.sort(key=lambda f: os.path.getmtime(f), reverse=True)
         if len(speedimg) > 0:
-            directory.add_file('Clear Results', {'mode': 'clearspeedtest'}, icon=CONFIG.ICONSPEED, themeit=CONFIG.THEME3)
+            directory.add_file('Resultados Limpios', {'mode': 'clearspeedtest'}, icon=CONFIG.ICONSPEED, themeit=CONFIG.THEME3)
             directory.add_separator('Ejecuciones Anteriores', icon=CONFIG.ICONSPEED, themeit=CONFIG.THEME3)
             for item in speedimg:
                 created = date.fromtimestamp(os.path.getmtime(item)).strftime('%m/%d/%Y %H:%M:%S')
@@ -322,12 +322,12 @@ def save_menu():
     super = 'true' if CONFIG.KEEPSUPER == 'true' else 'false'
     whitelist = 'true' if CONFIG.KEEPWHITELIST == 'true' else 'false'
 
-    directory.add_dir('Mantener Trakt Data', {'mode': 'trakt'}, icon=CONFIG.ICONTRAKT, themeit=CONFIG.THEME1)
+    directory.add_dir('Mantener Trakt', {'mode': 'trakt'}, icon=CONFIG.ICONTRAKT, themeit=CONFIG.THEME1)
     directory.add_dir('Mantener Debrid', {'mode': 'realdebrid'}, icon=CONFIG.ICONDEBRID, themeit=CONFIG.THEME1)
     directory.add_dir('Mantener Login Info', {'mode': 'login'}, icon=CONFIG.ICONLOGIN, themeit=CONFIG.THEME1)
-    directory.add_file('Importar Guardar Datos', {'mode': 'managedata', 'name': 'import'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
+    directory.add_file('Importar Datos Guardados', {'mode': 'managedata', 'name': 'import'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
     directory.add_file('Exportar Datos Guardados', {'mode': 'managedata', 'name': 'export'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
-    directory.add_file('[B]- Haga Clic para Alternar la Configuración -[/B]', themeit=CONFIG.THEME3)
+    directory.add_file('[B]- Haga Clic para Alternar la Configuracion -[/B]', themeit=CONFIG.THEME3)
     directory.add_file('Guardar Trakt: {0}'.format(trakt.replace('true', on).replace('false', off)), {'mode': 'togglesetting', 'name': 'keeptrakt'}, icon=CONFIG.ICONTRAKT, themeit=CONFIG.THEME1)
     directory.add_file('Guardar Debrid: {0}'.format(debrid.replace('true', on).replace('false', off)), {'mode': 'togglesetting', 'name': 'keepdebrid'}, icon=CONFIG.ICONDEBRID, themeit=CONFIG.THEME1)
     directory.add_file('Guardar Login Info: {0}'.format(login.replace('true', on).replace('false', off)), {'mode': 'togglesetting', 'name': 'keeplogin'}, icon=CONFIG.ICONLOGIN, themeit=CONFIG.THEME1)
@@ -338,25 +338,25 @@ def save_menu():
     directory.add_file('Mantener \'Advancedsettings.xml\': {0}'.format(advanced.replace('true', on).replace('false', off)), {'mode': 'togglesetting', 'name': 'keepadvanced'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
     directory.add_file('Mantener \'Favoritos.xml\': {0}'.format(favourites.replace('true', on).replace('false', off)), {'mode': 'togglesetting', 'name': 'keepfavourites'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
     directory.add_file('Mantener Super Favoritos: {0}'.format(super.replace('true', on).replace('false', off)), {'mode': 'togglesetting', 'name': 'keepsuper'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
-    directory.add_file('Mantener Instalado Repo\'s: {0}'.format(repos.replace('true', on).replace('false', off)), {'mode': 'togglesetting', 'name': 'keeprepos'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
-    directory.add_file('Mantener Mis \'WhiteList\': {0}'.format(whitelist.replace('true', on).replace('false', off)), {'mode': 'togglesetting', 'name': 'keepwhitelist'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
+    directory.add_file('Mantener Repo\'s Instalado: {0}'.format(repos.replace('true', on).replace('false', off)), {'mode': 'togglesetting', 'name': 'keeprepos'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
+    directory.add_file('Mantener Mi \'Lista Blanca\': {0}'.format(whitelist.replace('true', on).replace('false', off)), {'mode': 'togglesetting', 'name': 'keepwhitelist'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
     if whitelist == 'true':
-        directory.add_file('Editar My Whitelist', {'mode': 'whitelist', 'name': 'edit'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
-        directory.add_file('Ver My Whitelist', {'mode': 'whitelist', 'name': 'view'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
-        directory.add_file('Clear My Whitelist', {'mode': 'whitelist', 'name': 'clear'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
-        directory.add_file('Importar My Whitelist', {'mode': 'whitelist', 'name': 'import'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
-        directory.add_file('Exportar My Whitelist', {'mode': 'whitelist', 'name': 'export'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
+        directory.add_file('Editar Mi Lista Blanca', {'mode': 'whitelist', 'name': 'edit'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
+        directory.add_file('Ver Mi Lista Blanca', {'mode': 'whitelist', 'name': 'view'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
+        directory.add_file('Limpiar Mi Lista Blanca', {'mode': 'whitelist', 'name': 'clear'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
+        directory.add_file('Importar Mi Lista Blanca', {'mode': 'whitelist', 'name': 'import'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
+        directory.add_file('Exportar Mi Lista Blanca', {'mode': 'whitelist', 'name': 'export'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
 
 
 def trakt_menu():
     from resources.libs import traktit
 
-    keep_trakt = '[COLOR springgreen]ON[/COLOR]' if CONFIG.KEEPTRAKT == 'true' else '[COLOR red]OFF[/COLOR]'
+    keep_trakt = '[COLOR azure]ON[/COLOR]' if CONFIG.KEEPTRAKT == 'true' else '[COLOR red]OFF[/COLOR]'
     last = str(CONFIG.TRAKTSAVE) if not CONFIG.TRAKTSAVE == '' else 'Trakt hasn\'t been saved yet.'
-    directory.add_file('[I]Registre una cuenta GRATIS en https://www.trakt.tv/[/I]', icon=CONFIG.ICONTRAKT, themeit=CONFIG.THEME3)
-    directory.add_file('Guardar Trakt Data: {0}'.format(keep_trakt), {'mode': 'togglesetting', 'name': 'keeptrakt'}, icon=CONFIG.ICONTRAKT, themeit=CONFIG.THEME3)
+    directory.add_file('[I][COLOR azure]Registre una cuenta GRATIS en[/COLOR] [COLOR turquoise]https://www.trakt.tv/[/COLOR][/I]', icon=CONFIG.ICONTRAKT, themeit=CONFIG.THEME3)
+    directory.add_file('[B]Guardar Datos de Trakt:[/B] [COLOR azure]{0}[/COLOR]'.format(keep_trakt), {'mode': 'togglesetting', 'name': 'keeptrakt'}, icon=CONFIG.ICONTRAKT, themeit=CONFIG.THEME3)
     if CONFIG.KEEPTRAKT == 'true':
-        directory.add_file('Ultimo Guardado: {0}'.format(str(last)), icon=CONFIG.ICONTRAKT, themeit=CONFIG.THEME3)
+        directory.add_file('[B]Ultimo Guardado:[/B] [COLOR azure]{0}[/COLOR]'.format(str(last)), icon=CONFIG.ICONTRAKT, themeit=CONFIG.THEME3)
     directory.add_separator(icon=CONFIG.ICONTRAKT, themeit=CONFIG.THEME3)
 
     for trakt in traktit.ORDER:
@@ -373,39 +373,39 @@ def trakt_menu():
             menu2 = create_save_data_menu('Trakt', trakt)
             menu.append((CONFIG.THEME2.format('{0} Settings'.format(name)), 'RunPlugin(plugin://{0}/?mode=opensettings&name={1}&url=trakt)'.format(CONFIG.ADDON_ID, trakt)))
 
-            directory.add_file('[+]-> {0}'.format(name), icon=icon, fanart=fanart, themeit=CONFIG.THEME3)
+            directory.add_file('[B][+]->[/B] [B]{0}[/B]'.format(name), icon=icon, fanart=fanart, themeit=CONFIG.THEME3)
             if not os.path.exists(path):
-                directory.add_file('[COLOR red]Addon Data: No instalado[/COLOR]', icon=icon, fanart=fanart, menu=menu)
+                directory.add_file('[COLOR red][B]Datos Addon:[/B][/COLOR] [COLOR azure] No Instalado[/COLOR]', icon=icon, fanart=fanart, menu=menu)
             elif not auser:
-                directory.add_file('[COLOR red]Addon Data: No registrado[/COLOR]', {'mode': 'authtrakt', 'name': trakt}, icon=icon, fanart=fanart, menu=menu)
+                directory.add_file('[COLOR red][B]Datos Addon:[/B][/COLOR] [COLOR azure] No registrado[/COLOR]', {'mode': 'authtrakt', 'name': trakt}, icon=icon, fanart=fanart, menu=menu)
             else:
-                directory.add_file('[COLOR springgreen]Addon Data: {0}[/COLOR]'.format(auser), {'mode': 'authtrakt', 'name': trakt}, icon=icon, fanart=fanart, menu=menu)
+                directory.add_file('[COLOR springgreen][B]Datos Addon:[/B][/COLOR] [COLOR azure] {0}[/COLOR]'.format(auser), {'mode': 'authtrakt', 'name': trakt}, icon=icon, fanart=fanart, menu=menu)
             if user == "":
                 if os.path.exists(file):
-                    directory.add_file('[COLOR red]Saved Data: Guardar Archivo Encontrado(Import Data)[/COLOR]', {'mode': 'importtrakt', 'name': trakt}, icon=icon, fanart=fanart, menu=menu2)
+                    directory.add_file('[COLOR red][B]Datos Guardados:[/B][/COLOR] [COLOR azure] Guardar Archivo Encontrado(Import Data)[/COLOR]', {'mode': 'importtrakt', 'name': trakt}, icon=icon, fanart=fanart, menu=menu2)
                 else:
-                    directory.add_file('[COLOR red]Saved Data: No Guardado[/COLOR]', {'mode': 'savetrakt', 'name': trakt}, icon=icon, fanart=fanart, menu=menu2)
+                    directory.add_file('[COLOR red][B]Datos Guardados:[/B][/COLOR] [COLOR azure] No Guardado[/COLOR]', {'mode': 'savetrakt', 'name': trakt}, icon=icon, fanart=fanart, menu=menu2)
             else:
-                directory.add_file('[COLOR springgreen]Saved Data: {0}[/COLOR]'.format(user), icon=icon, fanart=fanart, menu=menu2)
+                directory.add_file('[COLOR springgreen][B]Datos Guardados:[/B][/COLOR] [COLOR azure] {0}[/COLOR]'.format(user), icon=icon, fanart=fanart, menu=menu2)
 
     directory.add_separator()
-    directory.add_file('Guardar Todos los Datos de Trakt', {'mode': 'savetrakt', 'name': 'all'}, icon=CONFIG.ICONTRAKT, themeit=CONFIG.THEME3)
-    directory.add_file('Recuperar Todos los Datos de Trakt Guardados', {'mode': 'restoretrakt', 'name': 'all'}, icon=CONFIG.ICONTRAKT, themeit=CONFIG.THEME3)
-    directory.add_file('Importar Datos de Trakt', {'mode': 'importtrakt', 'name': 'all'}, icon=CONFIG.ICONTRAKT, themeit=CONFIG.THEME3)
-    directory.add_file('Borrar Todos los Datos de Addon Trakt', {'mode': 'addontrakt', 'name': 'all'}, icon=CONFIG.ICONTRAKT, themeit=CONFIG.THEME3)
-    directory.add_file('Borrar Todos los Datos de Trakt Guardados', {'mode': 'cleartrakt', 'name': 'all'}, icon=CONFIG.ICONTRAKT, themeit=CONFIG.THEME3)
+    directory.add_file('[COLOR azure]Guardar Todos los Datos de Trakt[/COLOR]', {'mode': 'savetrakt', 'name': 'all'}, icon=CONFIG.ICONTRAKT, themeit=CONFIG.THEME3)
+    directory.add_file('[COLOR azure]Recuperar Todos los Datos de Trakt Guardados[/COLOR]', {'mode': 'restoretrakt', 'name': 'all'}, icon=CONFIG.ICONTRAKT, themeit=CONFIG.THEME3)
+    directory.add_file('[COLOR azure]Importar Datos de Trakt[/COLOR]', {'mode': 'importtrakt', 'name': 'all'}, icon=CONFIG.ICONTRAKT, themeit=CONFIG.THEME3)
+    directory.add_file('[COLOR azure]Borrar Todos los Datos de Addon Trakt[/COLOR]', {'mode': 'addontrakt', 'name': 'all'}, icon=CONFIG.ICONTRAKT, themeit=CONFIG.THEME3)
+    directory.add_file('[COLOR azure]Borrar Todos los Datos de Trakt Guardados[/COLOR]', {'mode': 'cleartrakt', 'name': 'all'}, icon=CONFIG.ICONTRAKT, themeit=CONFIG.THEME3)
 
 
 def debrid_menu():
     from resources.libs import debridit
 
-    keep_debrid = '[COLOR springgreen]ON[/COLOR]' if CONFIG.KEEPDEBRID == 'true' else '[COLOR red]OFF[/COLOR]'
+    keep_debrid = '[COLOR azure]ON[/COLOR]' if CONFIG.KEEPDEBRID == 'true' else '[COLOR red]OFF[/COLOR]'
     last = str(CONFIG.DEBRIDSAVE) if not CONFIG.DEBRIDSAVE == '' else 'Debrid authorizations haven\'t been saved yet.'
-    directory.add_file('[I]https://www.real-debrid.com/ is a PAID service.[/I]', icon=CONFIG.ICONDEBRID, themeit=CONFIG.THEME3)
-    directory.add_file('[I]https://www.premiumize.me/ is a PAID service.[/I]', icon=CONFIG.ICONDEBRID, themeit=CONFIG.THEME3)
-    directory.add_file('Guardar Debrid Data: {0}'.format(keep_debrid), {'mode': 'togglesetting', 'name': 'keepdebrid'}, icon=CONFIG.ICONDEBRID, themeit=CONFIG.THEME3)
+    directory.add_file('[I][COLOR turquoise]https://www.real-debrid.com/ [/COLOR][COLOR azure]es un servicio [COLOR azure]PAGADO.[/COLOR][/I]', icon=CONFIG.ICONDEBRID, themeit=CONFIG.THEME3)
+    directory.add_file('[I][COLOR turquoise]https://www.premiumize.me/ [/COLOR][COLOR azure]es un servicio PAGADO.[/COLOR][/I]', icon=CONFIG.ICONDEBRID, themeit=CONFIG.THEME3)
+    directory.add_file('[B]Guardar Datos Debrid:[/B][COLOR azure] {0}[/COLOR]'.format(keep_debrid), {'mode': 'togglesetting', 'name': 'keepdebrid'}, icon=CONFIG.ICONDEBRID, themeit=CONFIG.THEME3)
     if CONFIG.KEEPDEBRID == 'true':
-        directory.add_file('Ultimo Guardado: {0}'.format(str(last)), icon=CONFIG.ICONDEBRID, themeit=CONFIG.THEME3)
+        directory.add_file('[B]Ultimo Guardado:[/B][COLOR azure] {0}[/COLOR]'.format(str(last)), icon=CONFIG.ICONDEBRID, themeit=CONFIG.THEME3)
     directory.add_separator(icon=CONFIG.ICONDEBRID, themeit=CONFIG.THEME3)
 
     for debrid in debridit.ORDER:
@@ -422,38 +422,38 @@ def debrid_menu():
             menu2 = create_save_data_menu('Debrid', debrid)
             menu.append((CONFIG.THEME2.format('{0} Settings'.format(name)), 'RunPlugin(plugin://{0}/?mode=opensettings&name={1}&url=debrid)'.format(CONFIG.ADDON_ID, debrid)))
 
-            directory.add_file('[+]-> {0}'.format(name), icon=icon, fanart=fanart, themeit=CONFIG.THEME3)
+            directory.add_file('[B][+]-> {0}[/B]'.format(name), icon=icon, fanart=fanart, themeit=CONFIG.THEME3)
             if not os.path.exists(path):
-                directory.add_file('[COLOR red]Addon Data: No Instalado[/COLOR]', icon=icon, fanart=fanart, menu=menu)
+                directory.add_file('[COLOR red][B]Datos Addon:[/B][/COLOR] [COLOR azure] No Instalado[/COLOR]', icon=icon, fanart=fanart, menu=menu)
             elif not auser:
-                directory.add_file('[COLOR red]Addon Data: No Registrado[/COLOR]', {'mode': 'authdebrid', 'name': debrid}, icon=icon, fanart=fanart, menu=menu)
+                directory.add_file('[COLOR red][B]Datos Addon:[/B][/COLOR] [COLOR azure] No Registrado[/COLOR]', {'mode': 'authdebrid', 'name': debrid}, icon=icon, fanart=fanart, menu=menu)
             else:
-                directory.add_file('[COLOR springgreen]Addon Data: {0}[/COLOR]'.format(auser), {'mode': 'authdebrid', 'name': debrid}, icon=icon, fanart=fanart, menu=menu)
+                directory.add_file('[COLOR springgreen][B]Datos Addon:[/B][/COLOR] [COLOR azure] {0}[/COLOR]'.format(auser), {'mode': 'authdebrid', 'name': debrid}, icon=icon, fanart=fanart, menu=menu)
             if user == "":
                 if os.path.exists(file):
-                    directory.add_file('[COLOR red]Datos Guardados: Guardar archivo encontrado(Import Data)[/COLOR]', {'mode': 'importdebrid', 'name': debrid}, icon=icon, fanart=fanart, menu=menu2)
+                    directory.add_file('[COLOR red][B]Datos Guardados:[/B][/COLOR] [COLOR azure] Guardar Archivo Encontrado (Datos Importados)[/COLOR]', {'mode': 'importdebrid', 'name': debrid}, icon=icon, fanart=fanart, menu=menu2)
                 else:
-                    directory.add_file('[COLOR red]Datos Guardados: no guardados[/COLOR]', {'mode': 'savedebrid', 'name': debrid}, icon=icon, fanart=fanart, menu=menu2)
+                    directory.add_file('[COLOR red][B]Datos Guardados:[/B][/COLOR] [COLOR azure] No Guardados[/COLOR]', {'mode': 'savedebrid', 'name': debrid}, icon=icon, fanart=fanart, menu=menu2)
             else:
-                directory.add_file('[COLOR springgreen]Datos Guardados: {0}[/COLOR]'.format(user), icon=icon, fanart=fanart, menu=menu2)
+                directory.add_file('[COLOR springgreen][B]Datos Guardados:[/B][/COLOR] [COLOR azure] {0}[/COLOR]'.format(user), icon=icon, fanart=fanart, menu=menu2)
 
     directory.add_separator(themeit=CONFIG.THEME3)
-    directory.add_file('Save All Debrid Data', {'mode': 'savedebrid', 'name': 'all'}, icon=CONFIG.ICONDEBRID, themeit=CONFIG.THEME3)
-    directory.add_file('Recover All Saved Debrid Data', {'mode': 'restoredebrid', 'name': 'all'}, icon=CONFIG.ICONDEBRID, themeit=CONFIG.THEME3)
-    directory.add_file('Import Debrid Data', {'mode': 'importdebrid', 'name': 'all'}, icon=CONFIG.ICONDEBRID, themeit=CONFIG.THEME3)
-    directory.add_file('Clear All Addon Debrid Data', {'mode': 'addondebrid', 'name': 'all'}, icon=CONFIG.ICONDEBRID, themeit=CONFIG.THEME3)
-    directory.add_file('Clear All Saved Debrid Data', {'mode': 'cleardebrid', 'name': 'all'}, icon=CONFIG.ICONDEBRID, themeit=CONFIG.THEME3)
+    directory.add_file('[COLOR azure]Guardar Todos los Datos Debrid[/COLOR]', {'mode': 'savedebrid', 'name': 'all'}, icon=CONFIG.ICONDEBRID, themeit=CONFIG.THEME3)
+    directory.add_file('[COLOR azure]Recuperar Todos los Datos Debrid Guardados[/COLOR]', {'mode': 'restoredebrid', 'name': 'all'}, icon=CONFIG.ICONDEBRID, themeit=CONFIG.THEME3)
+    directory.add_file('[COLOR azure]Importar Datos Debrid[/COLOR]', {'mode': 'importdebrid', 'name': 'all'}, icon=CONFIG.ICONDEBRID, themeit=CONFIG.THEME3)
+    directory.add_file('[COLOR azure]Borrar Todos los Datos Debrid de Addon[/COLOR]', {'mode': 'addondebrid', 'name': 'all'}, icon=CONFIG.ICONDEBRID, themeit=CONFIG.THEME3)
+    directory.add_file('[COLOR azure]Borrar Todos los Datos Debrid Guardados[/COLOR]', {'mode': 'cleardebrid', 'name': 'all'}, icon=CONFIG.ICONDEBRID, themeit=CONFIG.THEME3)
 
 
 def login_menu():
     from resources.libs import loginit
 
-    keep_login = '[COLOR springgreen]ON[/COLOR]' if CONFIG.KEEPLOGIN == 'true' else '[COLOR red]OFF[/COLOR]'
+    keep_login = '[COLOR azure]ON[/COLOR]' if CONFIG.KEEPLOGIN == 'true' else '[COLOR red]OFF[/COLOR]'
     last = str(CONFIG.LOGINSAVE) if not CONFIG.LOGINSAVE == '' else 'Login data hasn\'t been saved yet.'
-    directory.add_file('[I]Varios de estos complementos son servicios PAGADOS.[/I]', icon=CONFIG.ICONLOGIN, themeit=CONFIG.THEME3)
-    directory.add_file('Save API Keys: {0}'.format(keep_login), {'mode': 'togglesetting', 'name': 'keeplogin'}, icon=CONFIG.ICONLOGIN, themeit=CONFIG.THEME3)
+    directory.add_file('[I][COLOR turquoise]Varios de estos complementos son servicios[/COLOR] [COLOR azure]PAGADOS.[/COLOR][/I]', icon=CONFIG.ICONLOGIN, themeit=CONFIG.THEME3)
+    directory.add_file('[B]Guardar Claves API:[/B] [COLOR azure]{0}[/COLOR]'.format(keep_login), {'mode': 'togglesetting', 'name': 'keeplogin'}, icon=CONFIG.ICONLOGIN, themeit=CONFIG.THEME3)
     if CONFIG.KEEPLOGIN == 'true':
-        directory.add_file('Last Save: {0}'.format(str(last)), icon=CONFIG.ICONLOGIN, themeit=CONFIG.THEME3)
+        directory.add_file('[B]Ultimo Guardado:[/B] [COLOR azure]{0}[/COLOR]'.format(str(last)), icon=CONFIG.ICONLOGIN, themeit=CONFIG.THEME3)
     directory.add_separator(icon=CONFIG.ICONLOGIN, themeit=CONFIG.THEME3)
 
     for login in loginit.ORDER:
@@ -470,27 +470,27 @@ def login_menu():
             menu2 = create_save_data_menu('Login', login)
             menu.append((CONFIG.THEME2.format('{0} Ajustes'.format(name)), 'RunPlugin(plugin://{0}/?mode=opensettings&name={1}&url=login)'.format(CONFIG.ADDON_ID, login)))
 
-            directory.add_file('[+]-> {0}'.format(name), icon=icon, fanart=fanart, themeit=CONFIG.THEME3)
+            directory.add_file('[B][+]-> {0}[/B]'.format(name), icon=icon, fanart=fanart, themeit=CONFIG.THEME3)
             if not os.path.exists(path):
-                directory.add_file('[COLOR red]Addon Data: No Instalado[/COLOR]', icon=icon, fanart=fanart, menu=menu)
+                directory.add_file('[COLOR red][B]Datos Addon:[/B][/COLOR] [COLOR azure] No Instalado[/COLOR]', icon=icon, fanart=fanart, menu=menu)
             elif not auser:
-                directory.add_file('[COLOR red]Addon Data: No Registrado[/COLOR]', {'mode': 'authlogin', 'name': login}, icon=icon, fanart=fanart, menu=menu)
+                directory.add_file('[COLOR red][B]Datos Addon:[/B][/COLOR] [COLOR azure] No Registrado[/COLOR]', {'mode': 'authlogin', 'name': login}, icon=icon, fanart=fanart, menu=menu)
             else:
-                directory.add_file('[COLOR springgreen]Addon Data: {0}[/COLOR]'.format(auser), {'mode': 'authlogin', 'name': login}, icon=icon, fanart=fanart, menu=menu)
+                directory.add_file('[COLOR springgreen][B]Datos Addon:[/B][/COLOR] [COLOR azure] {0}[/COLOR]'.format(auser), {'mode': 'authlogin', 'name': login}, icon=icon, fanart=fanart, menu=menu)
             if user == "":
                 if os.path.exists(file):
-                    directory.add_file('[COLOR red]Saved Data: Save File Found (Import Data)[/COLOR]', {'mode': 'importlogin', 'name': login}, icon=icon, fanart=fanart, menu=menu2)
+                    directory.add_file('[COLOR red][B]Datos Guardados:[/B][/COLOR] [COLOR azure] Guardar Archivo Encontrado (Datos Importados)[/COLOR]', {'mode': 'importlogin', 'name': login}, icon=icon, fanart=fanart, menu=menu2)
                 else:
-                    directory.add_file('[COLOR red]Saved Data: Not Saved[/COLOR]', {'mode': 'savelogin', 'name': login}, icon=icon, fanart=fanart, menu=menu2)
+                    directory.add_file('[COLOR red][B]Datos Guardados:[/B][/COLOR] [COLOR azure] No Guardado[/COLOR]', {'mode': 'savelogin', 'name': login}, icon=icon, fanart=fanart, menu=menu2)
             else:
-                directory.add_file('[COLOR springgreen]Saved Data: {0}[/COLOR]'.format(user), icon=icon, fanart=fanart, menu=menu2)
+                directory.add_file('[COLOR springgreen][B]Datos Guardados:[/B][/COLOR] [COLOR azure] {0}[/COLOR]'.format(user), icon=icon, fanart=fanart, menu=menu2)
 
     directory.add_separator(themeit=CONFIG.THEME3)
-    directory.add_file('Save All Login Info', {'mode': 'savelogin', 'name': 'all'}, icon=CONFIG.ICONLOGIN, themeit=CONFIG.THEME3)
-    directory.add_file('Recover All Saved Login Info', {'mode': 'restorelogin', 'name': 'all'}, icon=CONFIG.ICONLOGIN, themeit=CONFIG.THEME3)
-    directory.add_file('Import Login Info', {'mode': 'importlogin', 'name': 'all'}, icon=CONFIG.ICONLOGIN, themeit=CONFIG.THEME3)
-    directory.add_file('Clear All Addon Login Info', {'mode': 'addonlogin', 'name': 'all'}, icon=CONFIG.ICONLOGIN, themeit=CONFIG.THEME3)
-    directory.add_file('Clear All Saved Login Info', {'mode': 'clearlogin', 'name': 'all'}, icon=CONFIG.ICONLOGIN, themeit=CONFIG.THEME3)
+    directory.add_file('[COLOR azure]Guardar Toda la Info del Login[/COLOR]', {'mode': 'savelogin', 'name': 'all'}, icon=CONFIG.ICONLOGIN, themeit=CONFIG.THEME3)
+    directory.add_file('[COLOR azure]Recuperar Toda la Info del Login Guardada[/COLOR]', {'mode': 'restorelogin', 'name': 'all'}, icon=CONFIG.ICONLOGIN, themeit=CONFIG.THEME3)
+    directory.add_file('[COLOR azure]Importar Info del Login[/COLOR]', {'mode': 'importlogin', 'name': 'all'}, icon=CONFIG.ICONLOGIN, themeit=CONFIG.THEME3)
+    directory.add_file('[COLOR azure]Borrar Toda la Info del Login de Addon[/COLOR]', {'mode': 'addonlogin', 'name': 'all'}, icon=CONFIG.ICONLOGIN, themeit=CONFIG.THEME3)
+    directory.add_file('[COLOR azure]Borrar Toda la Info del Login Guardada[/COLOR]', {'mode': 'clearlogin', 'name': 'all'}, icon=CONFIG.ICONLOGIN, themeit=CONFIG.THEME3)
 
 
 def enable_addons(add=False):
@@ -518,19 +518,19 @@ def enable_addons(add=False):
             addonnames.append(addonname)
     if not all:
         if len(addonids) == 0:
-            directory.add_file("No Addons Found to Enable or Disable.", icon=CONFIG.ICONMAINT)
+            directory.add_file("No se han Encontrado Addons para Habilitar o Deshabilitar.", icon=CONFIG.ICONMAINT)
         else:
-            directory.add_file("[I][B][COLOR red]!!Aviso: Desactivar Algunos Adoons Puede Causar Problemas!![/COLOR][/B][/I]", icon=CONFIG.ICONMAINT)
-            directory.add_dir('Enable All Addons', {'mode': 'enableall'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+            directory.add_file("[I][B][COLOR red]!!AVISO: Desactivar Algunos Adoons Puede Causar Problemas!![/COLOR][/B][/I]", icon=CONFIG.ICONMAINT)
+            directory.add_dir('Habilitar Todos los Addons', {'mode': 'enableall'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
             for i in range(0, len(addonids)):
                 folder = os.path.join(CONFIG.ADDONS, addonids[i])
                 icon = os.path.join(folder, 'icon.png') if os.path.exists(os.path.join(folder, 'icon.png')) else CONFIG.ADDON_ICON
                 fanart = os.path.join(folder, 'fanart.jpg') if os.path.exists(os.path.join(folder, 'fanart.jpg')) else CONFIG.ADDON_FANART
                 if tools.get_addon_info(addonids[i], 'name'):
-                    state = "[COLOR springgreen][Enabled][/COLOR]"
+                    state = "[COLOR springgreen][Activado][/COLOR]"
                     goto = "false"
                 else:
-                    state = "[COLOR red][Disabled][/COLOR]"
+                    state = "[COLOR red][Desactivado][/COLOR]"
                     goto = "true"
 
                 directory.add_file("{0} {1}".format(state, addonnames[i]), {'mode': 'toggleaddon', 'name': addonids[i], 'url': goto}, icon=icon, fanart=fanart)
@@ -543,10 +543,10 @@ def enable_addons(add=False):
 
 def remove_addon_data_menu():
     if os.path.exists(CONFIG.ADDON_DATA):
-        directory.add_file('[COLOR red][B][REMOVE][/B][/COLOR] All Addon_Data', {'mode': 'removedata', 'name': 'all'}, themeit=CONFIG.THEME2)
-        directory.add_file('[COLOR red][B][REMOVE][/B][/COLOR] All Addon_Data for Uninstalled Addons', {'mode': 'removedata', 'name': 'uninstalled'}, themeit=CONFIG.THEME2)
-        directory.add_file('[COLOR red][B][REMOVE][/B][/COLOR] All Empty Folders in Addon_Data', {'mode': 'removedata', 'name': 'empty'}, themeit=CONFIG.THEME2)
-        directory.add_file('[COLOR red][B][REMOVE][/B][/COLOR] {0} Addon_Data'.format(CONFIG.ADDONTITLE), {'mode': 'resetaddon'}, themeit=CONFIG.THEME2)
+        directory.add_file('[COLOR red][B][ELIMINAR][/B][/COLOR] [COLOR white]Todos los Addon_Data[/COLOR]', {'mode': 'removedata', 'name': 'all'}, themeit=CONFIG.THEME2)
+        directory.add_file('[COLOR red][B][ELIMINAR][/B][/COLOR] [COLOR white]Todos los Addon_Data para Addons Desinstalados[/COLOR]', {'mode': 'removedata', 'name': 'uninstalled'}, themeit=CONFIG.THEME2)
+        directory.add_file('[COLOR red][B][ELIMINAR][/B][/COLOR] [COLOR white]Todos las Carpetas Vacías en Addon_Data[/COLOR]', {'mode': 'removedata', 'name': 'empty'}, themeit=CONFIG.THEME2)
+        directory.add_file('[COLOR red][B][ELIMINAR][/B][/COLOR] {0} [COLOR white]Addon_Data[/COLOR]'.format(CONFIG.ADDONTITLE), {'mode': 'resetaddon'}, themeit=CONFIG.THEME2)
         directory.add_separator(themeit=CONFIG.THEME3)
         fold = glob.glob(os.path.join(CONFIG.ADDON_DATA, '*/'))
         for folder in sorted(fold, key = lambda x: x):
@@ -555,20 +555,20 @@ def remove_addon_data_menu():
             fanart = os.path.join(folder.replace(CONFIG.ADDON_DATA, CONFIG.ADDONS), 'fanart.png')
             folderdisplay = foldername
             replace = {'audio.': '[COLOR orange][AUDIO] [/COLOR]', 'metadata.': '[COLOR cyan][METADATA] [/COLOR]',
-                       'module.': '[COLOR orange][MODULE] [/COLOR]', 'plugin.': '[COLOR blue][PLUGIN] [/COLOR]',
-                       'program.': '[COLOR orange][PROGRAM] [/COLOR]', 'repository.': '[COLOR gold][REPO] [/COLOR]',
+                       'module.': '[COLOR orange][MODULO] [/COLOR]', 'plugin.': '[COLOR blue][PLUGIN] [/COLOR]',
+                       'program.': '[COLOR orange][PROGRAMA] [/COLOR]', 'repository.': '[COLOR lime][REPO] [/COLOR]',
                        'script.': '[COLOR springgreen][SCRIPT] [/COLOR]',
-                       'service.': '[COLOR springgreen][SERVICE] [/COLOR]', 'skin.': '[COLOR dodgerblue][SKIN] [/COLOR]',
+                       'service.': '[COLOR springgreen][SERVICIO] [/COLOR]', 'skin.': '[COLOR dodgerblue][SKIN] [/COLOR]',
                        'video.': '[COLOR orange][VIDEO] [/COLOR]', 'weather.': '[COLOR yellow][WEATHER] [/COLOR]'}
             for rep in replace:
                 folderdisplay = folderdisplay.replace(rep, replace[rep])
             if foldername in CONFIG.EXCLUDES:
-                folderdisplay = '[COLOR springgreen][B][PROTECTED][/B][/COLOR] {0}'.format(folderdisplay)
+                folderdisplay = '[COLOR springgreen][B][PROTEGIDO][/B][/COLOR] [COLOR white]{0}[/COLOR]'.format(folderdisplay)
             else:
-                folderdisplay = '[COLOR red][B][REMOVE][/B][/COLOR] {0}'.format(folderdisplay)
-            directory.add_file(' {0}'.format(folderdisplay), {'mode': 'removedata', 'name': foldername}, icon=icon, fanart=fanart, themeit=CONFIG.THEME2)
+                folderdisplay = '[COLOR red][B][ELIMINAR][/B][/COLOR] [COLOR white]{0}[/COLOR]'.format(folderdisplay)
+            directory.add_file(' [COLOR white]{0}[/COLOR]'.format(folderdisplay), {'mode': 'removedata', 'name': foldername}, icon=icon, fanart=fanart, themeit=CONFIG.THEME2)
     else:
-        directory.add_file('No Addon data folder found.', themeit=CONFIG.THEME3)
+        directory.add_file('No se encontró ninguna carpeta de datos de Addon.', themeit=CONFIG.THEME3)
 
 
 def change_freq():
@@ -584,12 +584,12 @@ def change_freq():
 
 
 def developer():
-    directory.add_file('Create QR Code', {'mode': 'createqr'}, themeit=CONFIG.THEME1)
-    directory.add_file('Test Notifications', {'mode': 'testnotify'}, themeit=CONFIG.THEME1)
-    directory.add_file('Test Update', {'mode': 'testupdate'}, themeit=CONFIG.THEME1)
-    directory.add_file('Test Build Prompt', {'mode': 'testbuildprompt'}, themeit=CONFIG.THEME1)
-    directory.add_file('Test Save Data Settings', {'mode': 'testsavedata'}, themeit=CONFIG.THEME1)
-    directory.add_file('Test Binary Detection', {'mode': 'binarycheck'}, themeit=CONFIG.THEME1)
+    directory.add_file('Crear Codigo QR', {'mode': 'createqr'}, themeit=CONFIG.THEME1)
+    directory.add_file('Prueba de Notificaciones', {'mode': 'testnotify'}, themeit=CONFIG.THEME1)
+    directory.add_file('Prueba de Actualizacion', {'mode': 'testupdate'}, themeit=CONFIG.THEME1)
+    directory.add_file('Prueba de Solicitud de la Build', {'mode': 'testbuildprompt'}, themeit=CONFIG.THEME1)
+    directory.add_file('Prueba de Configuracion de Almacenamiento de Datos', {'mode': 'testsavedata'}, themeit=CONFIG.THEME1)
+    directory.add_file('Prueba de Deteccion Binaria', {'mode': 'binarycheck'}, themeit=CONFIG.THEME1)
 
 
 ###########################
@@ -605,11 +605,11 @@ def create_addon_data_menu(add='', name=''):
     name2 = quote_plus(name.lower().replace(' ', ''))
     name = name.replace('url', 'URL Resolver')
     menu_items.append((CONFIG.THEME2.format(name.title()), ' '))
-    menu_items.append((CONFIG.THEME3.format('Save {0} Data'.format(add3)), 'RunPlugin(plugin://{0}/?mode=save{1}&name={2})'.format(CONFIG.ADDON_ID, add2, name2)))
-    menu_items.append((CONFIG.THEME3.format('Restore {0} Data'.format(add3)), 'RunPlugin(plugin://{0}/?mode=restore{1}&name={2})'.format(CONFIG.ADDON_ID, add2, name2)))
-    menu_items.append((CONFIG.THEME3.format('Clear {0} Data'.format(add3)), 'RunPlugin(plugin://{0}/?mode=clear{1}&name={2})'.format(CONFIG.ADDON_ID, add2, name2)))
+    menu_items.append((CONFIG.THEME3.format('Guardar {0} Datos'.format(add3)), 'RunPlugin(plugin://{0}/?mode=save{1}&name={2})'.format(CONFIG.ADDON_ID, add2, name2)))
+    menu_items.append((CONFIG.THEME3.format('Restaurar {0} Datos'.format(add3)), 'RunPlugin(plugin://{0}/?mode=restore{1}&name={2})'.format(CONFIG.ADDON_ID, add2, name2)))
+    menu_items.append((CONFIG.THEME3.format('Limpiar {0} Datos'.format(add3)), 'RunPlugin(plugin://{0}/?mode=clear{1}&name={2})'.format(CONFIG.ADDON_ID, add2, name2)))
 
-    menu_items.append((CONFIG.THEME2.format('{0} Settings'.format(CONFIG.ADDONTITLE)), 'RunPlugin(plugin://{0}/?mode=settings)'.format(CONFIG.ADDON_ID)))
+    menu_items.append((CONFIG.THEME2.format('{0} Ajustes'.format(CONFIG.ADDONTITLE)), 'RunPlugin(plugin://{0}/?mode=settings)'.format(CONFIG.ADDON_ID)))
 
     return menu_items
 
@@ -622,12 +622,12 @@ def create_save_data_menu(add='', name=''):
     name2 = quote_plus(name.lower().replace(' ', ''))
     name = name.replace('url', 'URL Resolver')
     menu_items.append((CONFIG.THEME2.format(name.title()), ' '))
-    menu_items.append((CONFIG.THEME3.format('Register {0}'.format(add3)), 'RunPlugin(plugin://{0}/?mode=auth{1}&name={2})'.format(CONFIG.ADDON_ID, add2, name2)))
-    menu_items.append((CONFIG.THEME3.format('Save {0} Data'.format(add3)), 'RunPlugin(plugin://{0}/?mode=save{1}&name={2})'.format(CONFIG.ADDON_ID, add2, name2)))
-    menu_items.append((CONFIG.THEME3.format('Restore {0} Data'.format(add3)), 'RunPlugin(plugin://{0}/?mode=restore{1}&name={2})'.format(CONFIG.ADDON_ID, add2, name2)))
-    menu_items.append((CONFIG.THEME3.format('Import {0} Data'.format(add3)), 'RunPlugin(plugin://{0}/?mode=import{1}&name={2})'.format(CONFIG.ADDON_ID, add2, name2)))
-    menu_items.append((CONFIG.THEME3.format('Clear Addon {0} Data'.format(add3)), 'RunPlugin(plugin://{0}/?mode=addon{1}&name={2})'.format(CONFIG.ADDON_ID, add2, name2)))
+    menu_items.append((CONFIG.THEME3.format('Registrarse {0}'.format(add3)), 'RunPlugin(plugin://{0}/?mode=auth{1}&name={2})'.format(CONFIG.ADDON_ID, add2, name2)))
+    menu_items.append((CONFIG.THEME3.format('Guardar {0} Datos'.format(add3)), 'RunPlugin(plugin://{0}/?mode=save{1}&name={2})'.format(CONFIG.ADDON_ID, add2, name2)))
+    menu_items.append((CONFIG.THEME3.format('Restaurar {0} Datos'.format(add3)), 'RunPlugin(plugin://{0}/?mode=restore{1}&name={2})'.format(CONFIG.ADDON_ID, add2, name2)))
+    menu_items.append((CONFIG.THEME3.format('Importar {0} Datos'.format(add3)), 'RunPlugin(plugin://{0}/?mode=import{1}&name={2})'.format(CONFIG.ADDON_ID, add2, name2)))
+    menu_items.append((CONFIG.THEME3.format('Limpiar Addon {0} Datos'.format(add3)), 'RunPlugin(plugin://{0}/?mode=addon{1}&name={2})'.format(CONFIG.ADDON_ID, add2, name2)))
 
-    menu_items.append((CONFIG.THEME2.format('{0} Settings'.format(CONFIG.ADDONTITLE)), 'RunPlugin(plugin://{0}/?mode=settings)'.format(CONFIG.ADDON_ID)))
+    menu_items.append((CONFIG.THEME2.format('{0} Ajustes'.format(CONFIG.ADDONTITLE)), 'RunPlugin(plugin://{0}/?mode=settings)'.format(CONFIG.ADDON_ID)))
 
     return menu_items

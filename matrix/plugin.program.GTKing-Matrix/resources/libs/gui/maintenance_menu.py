@@ -41,7 +41,7 @@ class MaintenanceMenu:
         from resources.libs import clear
         from resources.libs.common import tools
 
-        on = '[B][COLOR springgreen]ON[/COLOR][/B]'
+        on = '[B][COLOR azure]ON[/COLOR][/B]'
         off = '[B][COLOR red]OFF[/COLOR][/B]'
 
         autoclean = 'true' if CONFIG.AUTOCLEANUP == 'true' else 'false'
@@ -58,33 +58,33 @@ class MaintenanceMenu:
         totalsize = sizepack + sizethumb + sizecache
 
         directory.add_file(
-            'Limpieza Total: [COLOR springgreen][B]{0}[/B][/COLOR]'.format(tools.convert_size(totalsize)), {'mode': 'fullclean'},
+            'Limpieza Total: [COLOR azure][B]{0}[/B][/COLOR]'.format(tools.convert_size(totalsize)), {'mode': 'fullclean'},
             icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('Borrar Cache: [COLOR springgreen][B]{0}[/B][/COLOR]'.format(tools.convert_size(sizecache)),
+        directory.add_file('Borrar Cache: [COLOR azure][B]{0}[/B][/COLOR]'.format(tools.convert_size(sizecache)),
                            {'mode': 'clearcache'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
         if xbmc.getCondVisibility('System.HasAddon(script.module.urlresolver)') or xbmc.getCondVisibility(
                 'System.HasAddon(script.module.resolveurl)'):
             directory.add_file('Borrar Cache de Función de Resolución', {'mode': 'clearfunctioncache'}, icon=CONFIG.ICONMAINT,
                                themeit=CONFIG.THEME3)
-        directory.add_file('Borrar Paquetes: [COLOR springgreen][B]{0}[/B][/COLOR]'.format(tools.convert_size(sizepack)),
+        directory.add_file('Borrar Paquetes: [COLOR azure][B]{0}[/B][/COLOR]'.format(tools.convert_size(sizepack)),
                            {'mode': 'clearpackages'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
         directory.add_file(
-            'Borrar Miniaturas: [COLOR springgreen][B]{0}[/B][/COLOR]'.format(tools.convert_size(sizethumb)),
+            'Borrar Miniaturas: [COLOR azure][B]{0}[/B][/COLOR]'.format(tools.convert_size(sizethumb)),
             {'mode': 'clearthumb'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
         if os.path.exists(CONFIG.ARCHIVE_CACHE):
-            directory.add_file('Limpiar Archivo_Cache: [COLOR springgreen][B]{0}[/B][/COLOR]'.format(
+            directory.add_file('Limpiar Archivo_Cache: [COLOR azure][B]{0}[/B][/COLOR]'.format(
                 tools.convert_size(archive)), {'mode': 'cleararchive'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
         directory.add_file('Borrar Miniaturas Antiguas', {'mode': 'oldThumbs'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
         directory.add_file('Borrar Registros Accidental', {'mode': 'clearcrash'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('Purgar Bases_Datos', {'mode': 'purgedb'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('Nuevo Comienzo', {'mode': 'freshstart'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('Limpiar Bases_Datos', {'mode': 'purgedb'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('Restarurar Configuracion', {'mode': 'freshstart'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
 
-        directory.add_file('Auto Limpieza', fanart=CONFIG.ADDON_FANART, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME1)
+        directory.add_file('[B]Auto Limpieza[/B]', fanart=CONFIG.ADDON_FANART, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME1)
         directory.add_file('Auto Limpieza al Iniciar: {0}'.format(autoclean.replace('true', on).replace('false', off)),
                            {'mode': 'togglesetting', 'name': 'autoclean'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
         if autoclean == 'true':
             directory.add_file(
-                '--- Auto Clean Frequency: [B][COLOR springgreen]{0}[/COLOR][/B]'.format(
+                '--- Auto Clean Frequency: [B][COLOR azure]{0}[/COLOR][/B]'.format(
                     CONFIG.CLEANFREQ[CONFIG.AUTOFREQ]),
                 {'mode': 'changefreq'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
             directory.add_file(
@@ -96,7 +96,7 @@ class MaintenanceMenu:
             directory.add_file(
                 '--- Clear Old Thumbs on Startup: {0}'.format(thumbs.replace('true', on).replace('false', off)),
                 {'mode': 'togglesetting', 'name': 'clearthumbs'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('Borrar Video Cache', fanart=CONFIG.ADDON_FANART, icon=CONFIG.ICONMAINT,
+        directory.add_file('[B]Borrar Video Cache[/B]', fanart=CONFIG.ADDON_FANART, icon=CONFIG.ICONMAINT,
                            themeit=CONFIG.THEME1)
         directory.add_file(
             'Incluir Video Cache en Borrar Cache: {0}'.format(includevid.replace('true', on).replace('false', off)),
@@ -123,7 +123,7 @@ class MaintenanceMenu:
 
         if includevid == 'true':
             directory.add_file(
-                '--- Incluir TODOS los Addons de Video: {0}'.format(includeall.replace('true', on).replace('false', off)),
+                '[COLOR azure]---[/COLOR] Incluir TODOS los Addons de Video: {0}'.format(includeall.replace('true', on).replace('false', off)),
                 {'mode': 'togglecache', 'name': 'includeall'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
             if xbmc.getCondVisibility('System.HasAddon(plugin.video.exodusredux)'):
                 directory.add_file(
@@ -158,9 +158,9 @@ class MaintenanceMenu:
                 directory.add_file(
                     '--- Include Yoda: {0}'.format(includeyoda.replace('true', on).replace('false', off)),
                     {'mode': 'togglecache', 'name': 'includeyoda'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-            directory.add_file('--- Habilitar TODOS los Addons de Video', {'mode': 'togglecache', 'name': 'true'}, icon=CONFIG.ICONMAINT,
+            directory.add_file('[COLOR azure]---[/COLOR] Habilitar TODOS los Addons de Video', {'mode': 'togglecache', 'name': 'true'}, icon=CONFIG.ICONMAINT,
                                themeit=CONFIG.THEME3)
-            directory.add_file('--- Desactivar TODOS los Addons de Video', {'mode': 'togglecache', 'name': 'false'}, icon=CONFIG.ICONMAINT,
+            directory.add_file('[COLOR azure]---[/COLOR] Desactivar TODOS los Addons de Video', {'mode': 'togglecache', 'name': 'false'}, icon=CONFIG.ICONMAINT,
                                themeit=CONFIG.THEME3)
 
     def addon_menu(self):
@@ -174,19 +174,19 @@ class MaintenanceMenu:
    
     def logging_menu(self):
         errors = int(logging.error_checking(count=True))
-        errorsfound = str(errors) + ' Error(s) Found' if errors > 0 else 'Nada Encontrado'
+        errorsfound = str(errors) + ' Error(es) Encontrado' if errors > 0 else 'Nada Encontrado'
         wizlogsize = ': [COLOR red]No Encontrado[/COLOR]' if not os.path.exists(
-            CONFIG.WIZLOG) else ": [COLOR springgreen]{0}[/COLOR]".format(
+            CONFIG.WIZLOG) else ": [COLOR azure]{0}[/COLOR]".format(
             tools.convert_size(os.path.getsize(CONFIG.WIZLOG)))
             
         directory.add_file('Activar Registro de Depuración', {'mode': 'enabledebug'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
         directory.add_file('Cargar Archivo de Registro', {'mode': 'uploadlog'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('Ver Errores en el Log: [COLOR springgreen][B]{0}[/B][/COLOR]'.format(errorsfound), {'mode': 'viewerrorlog'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('Ver Errores en el Log: [COLOR azure][B]{0}[/B][/COLOR]'.format(errorsfound), {'mode': 'viewerrorlog'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
         if errors > 0:
             directory.add_file('Ver el Ultimo error en el Log', {'mode': 'viewerrorlast'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
         directory.add_file('Ver Archivo de registro', {'mode': 'viewlog'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
         directory.add_file('Ver archivo de Registro del Wizard', {'mode': 'viewwizlog'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('Borrar archivo de registro del Wizard: [COLOR springgreen][B]{0}[/B][/COLOR]'.format(wizlogsize), {'mode': 'clearwizlog'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('Borrar archivo de registro del Wizard: [COLOR azure][B]{0}[/B][/COLOR]'.format(wizlogsize), {'mode': 'clearwizlog'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
    
         
     def misc_menu(self):
@@ -200,22 +200,22 @@ class MaintenanceMenu:
 
     def backup_menu(self):
         directory.add_file('Limpiar Carpeta del Backup', {'mode': 'clearbackup'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('Back Up Localizacion: [COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.MYBUILDS), {'mode': 'settings', 'name': 'Maintenance'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('[Back Up]: Build', {'mode': 'backup', 'action': 'build'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('[Back Up]: GuiFix', {'mode': 'backup', 'action': 'gui'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('[Back Up]: Tema', {'mode': 'backup', 'action': 'theme'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('[Back Up]: Addon Pack', {'mode': 'backup', 'action': 'addonpack'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('[Back Up]: Addon_data', {'mode': 'backup', 'action': 'addondata'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('[Restaurar]: Local Build', {'mode': 'restore', 'action': 'build'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('[Restaurar]: Local GuiFix', {'mode': 'restore', 'action': 'gui'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('[Restaurar]: Local Theme', {'mode': 'restore', 'action': 'theme'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('[Restaurar]: Local Addon Pack', {'mode': 'restore', 'action': 'addonpack'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('[Restaurar]: Local Addon_data', {'mode': 'restore', 'action': 'addondata'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('[Restaurar]: External Build', {'mode': 'restore', 'action': 'build', 'name': 'external'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('[Restaurar]: External GuiFix', {'mode': 'restore', 'action': 'gui', 'name': 'external'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('[Restaurar]: External Tema', {'mode': 'restore', 'action': 'theme', 'name': 'external'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('[Restaurar]: External Addon Pack', {'mode': 'restore', 'action': 'addonpack', 'name': 'external'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('[Restaurar]: External Addon_data', {'mode': 'restore', 'action': 'addondata', 'name': 'external'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('Backup Localizacion: [COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.MYBUILDS), {'mode': 'settings', 'name': 'Maintenance'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('[Backup]: [COLOR azure]Build[/COLOR]', {'mode': 'backup', 'action': 'build'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('[Backup]: [COLOR azure]GuiFix[/COLOR]', {'mode': 'backup', 'action': 'gui'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('[Backup]: [COLOR azure]Tema[/COLOR]', {'mode': 'backup', 'action': 'theme'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('[Backup]: [COLOR azure]Addon Pack[/COLOR]', {'mode': 'backup', 'action': 'addonpack'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('[Backup]: [COLOR azure]Addon_Data[/COLOR]', {'mode': 'backup', 'action': 'addondata'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('[Restaurar]: [COLOR azure]Local Build[/COLOR]', {'mode': 'restore', 'action': 'build'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('[Restaurar]: [COLOR azure]Local GuiFix[/COLOR]', {'mode': 'restore', 'action': 'gui'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('[Restaurar]: [COLOR azure]Local Tema[/COLOR]', {'mode': 'restore', 'action': 'theme'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('[Restaurar]: [COLOR azure]Local Addon Pack[/COLOR]', {'mode': 'restore', 'action': 'addonpack'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('[Restaurar]: [COLOR azure]Local Addon_Data[/COLOR]', {'mode': 'restore', 'action': 'addondata'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('[Restaurar]: [COLOR azure]External Build[/COLOR]', {'mode': 'restore', 'action': 'build', 'name': 'external'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('[Restaurar]: [COLOR azure]External GuiFix[/COLOR]', {'mode': 'restore', 'action': 'gui', 'name': 'external'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('[Restaurar]: [COLOR azure]External Tema[/COLOR]', {'mode': 'restore', 'action': 'theme', 'name': 'external'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('[Restaurar]: [COLOR azure]External Addon Pack[/COLOR]', {'mode': 'restore', 'action': 'addonpack', 'name': 'external'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('[Restaurar]: [COLOR azure]External Addon_Data[/COLOR]', {'mode': 'restore', 'action': 'addondata', 'name': 'external'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
 
     def tweaks_menu(self):
         directory.add_dir('Advanced Settings', {'mode': 'advanced_settings'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)

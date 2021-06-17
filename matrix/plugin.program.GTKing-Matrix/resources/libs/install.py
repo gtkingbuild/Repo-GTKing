@@ -58,7 +58,7 @@ def wipe():
         CONFIG.set_setting('loginnextsave', str(tools.get_date(days=3, formatted=True)))
 
     exclude_dirs = CONFIG.EXCLUDES
-    exclude_dirs.append('My_Builds')
+    exclude_dirs.append('Mis_Builds')
     
     progress_dialog = xbmcgui.DialogProgress()
     
@@ -111,29 +111,29 @@ def wipe():
             del_file += 1
             fold = root.replace('/', '\\').split('\\')
             x = len(fold)-1
-            if name == 'sources.xml' and fold[-1] == 'userdata' and CONFIG.KEEPSOURCES == 'true':
-                logging.log("Keep sources.xml: {0}".format(os.path.join(root, name)))
-            elif name == 'favourites.xml' and fold[-1] == 'userdata' and CONFIG.KEEPFAVS == 'true':
-                logging.log("Keep favourites.xml: {0}".format(os.path.join(root, name)))
-            elif name == 'profiles.xml' and fold[-1] == 'userdata' and CONFIG.KEEPPROFILES == 'true':
-                logging.log("Keep profiles.xml: {0}".format(os.path.join(root, name)))
+            if name == 'fuentes.xml' and fold[-1] == 'userdata' and CONFIG.KEEPSOURCES == 'true':
+                logging.log("Mantener fuentes.xml: {0}".format(os.path.join(root, name)))
+            elif name == 'favoritos.xml' and fold[-1] == 'userdata' and CONFIG.KEEPFAVS == 'true':
+                logging.log("Mantener favoritos.xml: {0}".format(os.path.join(root, name)))
+            elif name == 'perfiles.xml' and fold[-1] == 'userdata' and CONFIG.KEEPPROFILES == 'true':
+                logging.log("Mantener perfiles.xml: {0}".format(os.path.join(root, name)))
             elif name == 'playercorefactory.xml' and fold[-1] == 'userdata' and CONFIG.KEEPPLAYERCORE == 'true':
-                logging.log("Keep playercorefactory.xml: {0}".format(os.path.join(root, name)))
+                logging.log("Mantener playercorefactory.xml: {0}".format(os.path.join(root, name)))
             elif name == 'guisettings.xml' and fold[-1] == 'userdata' and CONFIG.KEEPGUISETTINGS == 'true':
-                logging.log("Keep guisettings.xml: {0}".format(os.path.join(root, name)))
+                logging.log("Mantener guisettings.xml: {0}".format(os.path.join(root, name)))
             elif name == 'advancedsettings.xml' and fold[-1] == 'userdata' and CONFIG.KEEPADVANCED == 'true':
-                logging.log("Keep advancedsettings.xml: {0}".format(os.path.join(root, name)))
+                logging.log("Mantener advancedsettings.xml: {0}".format(os.path.join(root, name)))
             elif name in CONFIG.LOGFILES:
-                logging.log("Keep Log File: {0}".format(name))
+                logging.log("Mantener archivo del Log: {0}".format(name))
             elif name.endswith('.db'):
                 try:
                     if name == latestAddonDB:
-                        logging.log("Ignoring {0} on Kodi {1}".format(name, tools.kodi_version()))
+                        logging.log("Ignorando {0} en Kodi{1}".format(name, tools.kodi_version()))
                     else:
                         os.remove(os.path.join(root, name))
                 except Exception as e:
                     if not name.startswith('Textures13'):
-                        logging.log('Failed to delete, Purging DB')
+                        logging.log('Error al eliminar, Purgando DB')
                         logging.log("-> {0}".format(str(e)))
                         db.purge_db_file(os.path.join(root, name))
             else:
@@ -151,7 +151,7 @@ def wipe():
     for root, dirs, files in os.walk(xbmcPath, topdown=True):
         dirs[:] = [d for d in dirs if d not in exclude_dirs]
         for name in dirs:
-            progress_dialog.update(100, '\n' + 'Cleaning Up Empty Folder: [COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, name))
+            progress_dialog.update(100, '\n' + 'Limpieza de Carpeta Vacia: [COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, name))
             if name not in ["Database", "userdata", "temp", "addons", "addon_data"]:
                 shutil.rmtree(os.path.join(root, name), ignore_errors=True, onerror=None)
         if progress_dialog.iscanceled():
@@ -216,7 +216,7 @@ def fresh_start(install=None, over=False):
 
             Wizard().build('normal', install, over=True)
         else:
-            dialog.ok(CONFIG.ADDONTITLE, "[COLOR {0}]Para guardar los cambios, ahora necesita forzar el cierre de Kodi, Presione OK para forzar el cierre de Kodi[/COLOR]".format(CONFIG.COLOR2))
+            dialog.ok(CONFIG.ADDONTITLE, "[COLOR {0}]Para guardar los cambios, ahora necesita Forzar el Cierre de Kodi, Presione OK para Forzar el Cierre de Kodi[/COLOR]".format(CONFIG.COLOR2))
             from resources.libs import update
             update.addon_updates('reset')
             tools.kill_kodi(over=True)
@@ -274,7 +274,7 @@ def install_apk(name, url):
         redownload = True
         yes = True
         if os.path.exists(lib):
-            redownload = dialog.yesno(CONFIG.ADDONTITLE, '[COLOR {}]{}[/COLOR] ya existe. Te gustaría volver a descargarlo??'.format(CONFIG.COLOR1, apk),
+            redownload = dialog.yesno(CONFIG.ADDONTITLE, '[COLOR {}]{}[/COLOR] ya existe. Te gustaría volver a descargarlo?'.format(CONFIG.COLOR1, apk),
                                yeslabel="[B]Volver a descargar[/B]",
                                nolabel="[B]Instalar[/B]")
             yes = False
@@ -294,7 +294,7 @@ def install_apk(name, url):
             response = tools.open_url(url, check=True)
             if not response:
                 logging.log_notify(CONFIG.ADDONTITLE,
-                                   '[COLOR {0}]APK Instalador: Invalida Apk Url![/COLOR]'.format(CONFIG.COLOR2))
+                                   '[COLOR {0}]APK Instalador: Apk Url Invalida![/COLOR]'.format(CONFIG.COLOR2))
                 return
                 
             progress_dialog.create(CONFIG.ADDONTITLE,

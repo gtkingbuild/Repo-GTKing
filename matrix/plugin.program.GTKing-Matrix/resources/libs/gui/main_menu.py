@@ -31,7 +31,7 @@ class MainMenu:
         from resources.libs.common import tools
 
         errors = int(logging.error_checking(count=True))
-        errorsfound = str(errors) + ' Error(s) Found' if errors > 0 else 'Nada Encontrado'
+        errorsfound = str(errors) + ' Error(es) Encontrado' if errors > 0 else 'Nada Encontrado'
 
         if CONFIG.AUTOUPDATE == 'Yes':
             response = tools.open_url(CONFIG.BUILDFILE, check=True)
@@ -54,7 +54,7 @@ class MainMenu:
             directory.add_file('{0} [v{1}]'.format(CONFIG.ADDONTITLE, CONFIG.ADDON_VERSION), themeit=CONFIG.THEME2)
         if len(CONFIG.BUILDNAME) > 0:
             version = check.check_build(CONFIG.BUILDNAME, 'version')
-            build = '{0} (v{1})'.format(CONFIG.BUILDNAME, CONFIG.BUILDVERSION)
+            build = '[B]{0} - v{1}[/B]'.format(CONFIG.BUILDNAME, CONFIG.BUILDVERSION)
             if version > CONFIG.BUILDVERSION:
                 build = '{0} [COLOR red][B][ACTUALIZACIÓN v{1}][/B][/COLOR]'.format(build, version)
             directory.add_dir(build, {'mode': 'viewbuild', 'name': CONFIG.BUILDNAME}, themeit=CONFIG.THEME4)
@@ -67,15 +67,15 @@ class MainMenu:
         else:
             directory.add_dir('Nada', {'mode': 'builds'}, themeit=CONFIG.THEME4)
         directory.add_separator()
-        directory.add_dir('Builds - Parches', {'mode': 'builds'}, icon=CONFIG.ICONBUILDS, themeit=CONFIG.THEME1)
-        directory.add_dir('Mantenimiento', {'mode': 'maint'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME1)
+        directory.add_dir('[B][COLOR dodgerblue]BUILDS[/COLOR] - [COLOR dodgerblue]PARCHES[/COLOR][/B]', {'mode': 'builds'}, icon=CONFIG.ICONBUILDS, themeit=CONFIG.THEME1)
+        directory.add_dir('[B]Mantenimiento[/B]', {'mode': 'maint'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME1)
         if (tools.platform() == 'android' or CONFIG.DEVELOPER == 'true'):
             directory.add_dir('Instalador de APK', {'mode': 'apk'}, icon=CONFIG.ICONAPK, themeit=CONFIG.THEME1)
         if tools.open_url(CONFIG.ADDONFILE, check=True) or os.path.exists(os.path.join(CONFIG.ADDON_PATH, 'resources', 'text', 'addons.json')):
             directory.add_dir('Instalador de Addon', {'mode': 'addons'}, icon=CONFIG.ICONADDONS, themeit=CONFIG.THEME1)
         if tools.open_url(CONFIG.YOUTUBEFILE, check=True) and not CONFIG.YOUTUBETITLE == '':
             directory.add_dir(CONFIG.YOUTUBETITLE, {'mode': 'youtube'}, icon=CONFIG.ICONYOUTUBE, themeit=CONFIG.THEME1)
-        directory.add_dir('Guardar Datos', {'mode': 'savedata'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
+        directory.add_dir('[B]Guardar Datos[/B]', {'mode': 'savedata'}, icon=CONFIG.ICONSAVE, themeit=CONFIG.THEME1)
         if CONFIG.HIDECONTACT == 'No':
             directory.add_file('Contacto', {'mode': 'contact'}, icon=CONFIG.ICONCONTACT, themeit=CONFIG.THEME1)
         directory.add_separator()
@@ -85,6 +85,6 @@ class MainMenu:
         if errors > 0:
             directory.add_file('Ver el Ultimo Error en el Registro', {'mode': 'viewerrorlast'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME1)
         directory.add_separator()
-        directory.add_file('Ajustes', {'mode': 'settings', 'name': CONFIG.ADDON_ID}, icon=CONFIG.ICONSETTINGS, themeit=CONFIG.THEME1)
+        directory.add_file('[B]Ajustes[/B]', {'mode': 'settings', 'name': CONFIG.ADDON_ID}, icon=CONFIG.ICONSETTINGS, themeit=CONFIG.THEME1)
         if CONFIG.DEVELOPER == 'true':
             directory.add_dir('Menú de Desarrollador', {'mode': 'developer'}, icon=CONFIG.ADDON_ICON, themeit=CONFIG.THEME1)

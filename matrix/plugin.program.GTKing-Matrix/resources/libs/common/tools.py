@@ -427,7 +427,7 @@ def kill_kodi(msg=None, over=None):
                                   yeslabel='[B][COLOR springgreen]Forzar Cierre Kodi[/COLOR][/B]')
     if choice == 1:
         from resources.libs.common import logging
-        logging.log("Force Closing Kodi: Platform[{0}]".format(str(platform())))
+        logging.log("Forzar Cierre de Kodi: Plataforma[{0}]".format(str(platform())))
         os._exit(1)
 
 
@@ -450,13 +450,13 @@ def convert_special(url, over=False):
     
     total = file_count(url)
     start = 0
-    progress_dialog.create(CONFIG.ADDONTITLE, "[COLOR {0}]Changing Physical Paths To Special".format(CONFIG.COLOR2) + "\n" + "Please Wait[/COLOR]")
+    progress_dialog.create(CONFIG.ADDONTITLE, "[COLOR {0}]Cambio de Rutas Físicas a Especiales".format(CONFIG.COLOR2) + "\n" + "Espere por favor[/COLOR]")
     for root, dirs, files in os.walk(url):
         for file in files:
             start += 1
             perc = int(percentage(start, total))
             if file.endswith(".xml") or file.endswith(".hash") or file.endswith("properies"):
-                progress_dialog.update(perc, "[COLOR {0}]Scanning: [COLOR {1}]{2}[/COLOR]".format(CONFIG.COLOR2, CONFIG.COLOR1, root.replace(CONFIG.HOME, '')) + '\n' + "[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, file) + '\n' + "Please Wait[/COLOR]")
+                progress_dialog.update(perc, "[COLOR {0}]Escaneando: [COLOR {1}]{2}[/COLOR]".format(CONFIG.COLOR2, CONFIG.COLOR1, root.replace(CONFIG.HOME, '')) + '\n' + "[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, file) + '\n' + "Espere por Favor[/COLOR]")
                 a = read_from_file(os.path.join(root, file))
                 encodedpath = quote(CONFIG.HOME)
                 encodedpath2 = quote(CONFIG.HOME).replace('%3A', '%3a').replace('%5C', '%5c')
@@ -465,18 +465,18 @@ def convert_special(url, over=False):
                 try:
                     write_to_file(os.path.join(root, file), b)
                 except IOError as e:
-                    logging.log('Unable to open file to convert special paths: {}'.format(os.path.join(root, file)))
+                    logging.log('No se puede abrir el archivo para convertir rutas especiales: {}'.format(os.path.join(root, file)))
 
                 if progress_dialog.iscanceled():
                     progress_dialog.close()
                     logging.log_notify(CONFIG.ADDONTITLE,
-                                       "[COLOR {0}]Convert Path Cancelled[/COLOR]".format(CONFIG.COLOR2))
+                                       "[COLOR {0}]Conversión de Ruta Cancelada[/COLOR]".format(CONFIG.COLOR2))
                     sys.exit()
     progress_dialog.close()
-    logging.log("[Convert Paths to Special] Complete")
+    logging.log("[Convertir Rutas en Especiales Completas")
     if not over:
         logging.log_notify(CONFIG.ADDONTITLE,
-                           "[COLOR {0}]Convert Paths to Special: Complete![/COLOR]".format(CONFIG.COLOR2))
+                           "[COLOR {0}]Convertir Rutas en Especiales:[/COLOR] [COLOR azure]Completo![/COLOR]".format(CONFIG.COLOR2))
 
 
 def redo_thumbs():
@@ -501,7 +501,7 @@ def reload_fix(default=None):
     dialog = xbmcgui.Dialog()
     
     dialog.ok(CONFIG.ADDONTITLE,
-                  "[COLOR {0}]WARNING: Sometimes Reloading the Profile causes Kodi to crash. While Kodi is Reloading the Profile Please Do Not Press Any Buttons![/COLOR]".format(CONFIG.COLOR2))
+                  "[COLOR {0}]ADVERTENCIA: A veces, Recargando el Perfil hace que Kodi se bloquee. Mientras Kodi está Recargando el Perfil, Por Favor No Presione Ningún Botón![/COLOR]".format(CONFIG.COLOR2))
                   
     if not os.path.exists(CONFIG.PACKAGES):
         os.makedirs(CONFIG.PACKAGES)
@@ -545,22 +545,22 @@ def ascii_check(use=None, over=False):
 
     if use is None:
         source = dialog.browse(3,
-                                   '[COLOR {0}]Select the folder you want to scan[/COLOR]'.format(CONFIG.COLOR2),
+                                   '[COLOR {0}]Seleccione la carpeta que desea escanear[/COLOR]'.format(CONFIG.COLOR2),
                                    'files', '', False, False, CONFIG.HOME)
         if over:
             yes = 1
         else:
             yes = dialog.yesno(CONFIG.ADDONTITLE,
-                                   '[COLOR {0}]Do you want to [COLOR {1}]delete[/COLOR] all filenames with special characters or would you rather just [COLOR {2}]scan and view[/COLOR] the results in the log?[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, CONFIG.COLOR1),
-                                   yeslabel='[B][COLOR springgreen]Delete[/COLOR][/B]',
-                                   nolabel='[B][COLOR red]Scan[/COLOR][/B]')
+                                   '[COLOR {0}]Desea [COLOR {1}]eliminar[/COLOR] todos los nombres de archivo con caracteres especiales o prefiere simplemente [COLOR {2}]escanear y ver[/COLOR] los resultados en el Registro (log)?[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, CONFIG.COLOR1),
+                                   yeslabel='[B][COLOR springgreen]Eliminar[/COLOR][/B]',
+                                   nolabel='[B][COLOR red]Escanear[/COLOR][/B]')
     else:
         source = use
         yes = 1
 
     if source == "":
         logging.log_notify(CONFIG.ADDONTITLE,
-                           "[COLOR {0}]ASCII Check: Cancelled[/COLOR]".format(CONFIG.COLOR2))
+                           "[COLOR {0}]ASCII Check:[/COLOR] [COLOR gold]Cancelado[/COLOR]".format(CONFIG.COLOR2))
         return
 
     files_found = os.path.join(CONFIG.PLUGIN_DATA, 'asciifiles.txt')
@@ -572,22 +572,22 @@ def ascii_check(use=None, over=False):
     items = file_count(source)
     msg = ''
     prog = []
-    logging.log("Source file: ({0})".format(str(source)))
+    logging.log("Archivo fuente: ({0})".format(str(source)))
 
-    progress_dialog.create(CONFIG.ADDONTITLE, 'Please wait...')
+    progress_dialog.create(CONFIG.ADDONTITLE, 'Espere por Favor...')
     for base, dirs, files in os.walk(source):
         dirs[:] = [d for d in dirs]
         files[:] = [f for f in files]
         for file in files:
             prog.append(file)
             prog2 = int(len(prog) / float(items) * 100)
-            progress_dialog.update(prog2, "[COLOR {0}]Checking for non ASCII files".format(CONFIG.COLOR2) + '\n' + '[COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, file) + '\n' + 'Please Wait[/COLOR]')
+            progress_dialog.update(prog2, "[COLOR {0}]Comprobación de archivos no ASCII".format(CONFIG.COLOR2) + '\n' + '[COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, file) + '\n' + 'Espere por Favor[/COLOR]')
             try:
                 file.encode('ascii')
             except UnicodeEncodeError:
-                logging.log("[ASCII Check] Illegal character found in file: {0}".format(file))
+                logging.log("[ASCII Check] Carácter ilegal encontrado en archivo: {0}".format(file))
             except UnicodeDecodeError:
-                logging.log("[ASCII Check] Illegal character found in file: {0}".format(file))
+                logging.log("[ASCII Check] Carácter ilegal encontrado en archivo: {0}".format(file))
                 badfile = os.path.join(base, file)
                 if yes:
                     try:
@@ -596,24 +596,24 @@ def ascii_check(use=None, over=False):
                             afiles.write(chunk+'\n')
                         afiles.write('\n')
                         f1 += 1
-                        logging.log("[ASCII Check] File Removed: {0} ".format(badfile), level=xbmc.LOGERROR)
+                        logging.log("[ASCII Check] Archivo Eliminado: {0} ".format(badfile), level=xbmc.LOGERROR)
                     except:
                         for chunk in chunks(badfile, 75):
                             afails.write(chunk+'\n')
                         afails.write('\n')
                         f2 += 1
-                        logging.log("[ASCII Check] File Failed: {0} ".format(badfile), level=xbmc.LOGERROR)
+                        logging.log("[ASCII Check] Archivo Fallido: {0} ".format(badfile), level=xbmc.LOGERROR)
                 else:
                     for chunk in chunks(badfile, 75):
                         afiles.write(chunk+'\n')
                     afiles.write('\n')
                     f1 += 1
-                    logging.log("[ASCII Check] File Found: {0} ".format(badfile), level=xbmc.LOGERROR)
+                    logging.log("[ASCII Check] Archivo Encontrado: {0} ".format(badfile), level=xbmc.LOGERROR)
                 pass
         if progress_dialog.iscanceled():
             progress_dialog.close()
             logging.log_notify(CONFIG.ADDONTITLE,
-                               "[COLOR {0}]ASCII Check Cancelled[/COLOR]".format(CONFIG.COLOR2))
+                               "[COLOR {0}]Comprobación ASCII Cancelada[/COLOR]".format(CONFIG.COLOR2))
             sys.exit()
     progress_dialog.close()
     afiles.close()
@@ -627,15 +627,15 @@ def ascii_check(use=None, over=False):
         if yes:
             if use:
                 logging.log_notify(CONFIG.ADDONTITLE,
-                                 "[COLOR {0}]ASCII Check: {1} Removed / {2} Failed.[/COLOR]".format(CONFIG.COLOR2, f1, f2))
+                                 "[COLOR {0}]ASCII Check: {1} Eliminado / {2} Fallido.[/COLOR]".format(CONFIG.COLOR2, f1, f2))
             else:
                 window.show_text_box("Viewing Removed ASCII Files",
-                                  "[COLOR yellow][B]{0} Files Removed:[/B][/COLOR]\n {1}\n\n[COLOR yellow][B]{2} Files Failed:[B][/COLOR]\n {3}".format(f1, msg, f2, msg2))
+                                  "[COLOR yellow][B]{0} Archivos Eliminados:[/B][/COLOR]\n {1}\n\n[COLOR yellow][B]{2} Archivos Fallidos:[B][/COLOR]\n {3}".format(f1, msg, f2, msg2))
         else:
-            window.show_text_box("Viewing Found ASCII Files", "[COLOR yellow][B]{0} Files Found:[/B][/COLOR]\n {1}".format(f1, msg))
+            window.show_text_box("Viewing Found ASCII Files", "[COLOR yellow][B]{0} Archivos Encontrados:[/B][/COLOR]\n {1}".format(f1, msg))
     else:
         logging.log_notify(CONFIG.ADDONTITLE,
-                           "[COLOR {0}]ASCII Check: None Found.[/COLOR]".format(CONFIG.COLOR2))
+                           "[COLOR {0}]ASCII Check:[/COLOR] [COLOR gold]Nada Encontrado.[/COLOR]".format(CONFIG.COLOR2))
 
 
 def clean_text(text):
@@ -744,7 +744,7 @@ def open_url(url, stream=False, check=False, cred=None, count=0):
         response = requests.get(url, headers=user_agent, timeout=10.000, stream=stream, auth=cred)
 
         if response.status_code == 401:
-            retry = dialog.yesno(CONFIG.ADDONTITLE, 'Either the username or password were invalid. Would you like to try again?', yeslabel='Try Again', nolabel='Cancel')
+            retry = dialog.yesno(CONFIG.ADDONTITLE, 'El nombre de usuario o la contraseña no eran válidos. Le gustaría volver a intentarlo?', yeslabel='Try Again', nolabel='Cancel')
             
             if retry and count < 3:
                 count += 1

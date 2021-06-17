@@ -43,14 +43,14 @@ def remove_current():
         if os.path.exists(CONFIG.ADVANCED):
             tools.remove_file(CONFIG.ADVANCED)
             logging.log_notify("[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, CONFIG.ADDONTITLE),
-                               "[COLOR {0}]advancedsettings.xml removed[/COLOR]".format(CONFIG.COLOR2))
+                               "[COLOR {0}]advancedsettings.xml eliminado[/COLOR]".format(CONFIG.COLOR2))
             xbmc.executebuiltin('Container.Refresh()')
         else:
             logging.log_notify("[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, CONFIG.ADDONTITLE),
-                               "[COLOR {0}]advancedsettings.xml not found[/COLOR]".format(CONFIG.COLOR2))
+                               "[COLOR {0}]advancedsettings.xml no encontrado[/COLOR]".format(CONFIG.COLOR2))
     else:
         logging.log_notify("[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, CONFIG.ADDONTITLE),
-                               "[COLOR {0}]advancedsettings.xml not removed[/COLOR]".format(CONFIG.COLOR2))
+                               "[COLOR {0}]advancedsettings.xml no eliminado[/COLOR]".format(CONFIG.COLOR2))
 
 
 def _write_setting(category, tag, value):
@@ -88,15 +88,15 @@ class AdvancedMenu:
         self.tags = {}
 
     def show_menu(self, url=None):
-        directory.add_dir('Configuración Rápida advancedsettings.xml',
+        directory.add_dir('[COLOR azure]Configuración Rápida advancedsettings.xml[/COLOR]',
                                {'mode': 'advanced_settings', 'action': 'quick_configure'}, icon=CONFIG.ICONMAINT,
                                themeit=CONFIG.THEME3)
 
         if os.path.exists(CONFIG.ADVANCED):
-            directory.add_file('View Current advancedsettings.xml',
+            directory.add_file('Ver Actual advancedsettings.xml',
                                {'mode': 'advanced_settings', 'action': 'view_current'}, icon=CONFIG.ICONMAINT,
                                themeit=CONFIG.THEME3)
-            directory.add_file('Remove Current advancedsettings.xml',
+            directory.add_file('Eliminar Actual advancedsettings.xml',
                                {'mode': 'advanced_settings', 'action': 'remove_current'}, icon=CONFIG.ICONMAINT,
                                themeit=CONFIG.THEME3)
         
@@ -112,7 +112,7 @@ class AdvancedMenu:
             TEMPADVANCEDFILE = tools.read_from_file(local_file)
         else:
             TEMPADVANCEDFILE = None
-            logging.log("[Advanced Settings] No Presets Available")
+            logging.log("[Advanced Settings] No hay Ajustes Preestablecidos Disponibles")
         
         if TEMPADVANCEDFILE:
             import json
@@ -123,7 +123,7 @@ class AdvancedMenu:
                 advanced_json = json.loads(TEMPADVANCEDFILE)
             except:
                 advanced_json = None
-                logging.log("[Advanced Settings] ERROR: Invalid Format for {0}.".format(TEMPADVANCEDFILE))
+                logging.log("[Advanced Settings] ERROR: Formato no válido para {0}.".format(TEMPADVANCEDFILE))
                 
             if advanced_json:
                 presets = advanced_json['presets']
@@ -152,17 +152,17 @@ class AdvancedMenu:
                                                 'url': preseturl},
                                                description=description, icon=icon, fanart=fanart, themeit=CONFIG.THEME2)
         else:
-            logging.log("[Advanced Settings] URL not working: {0}".format(CONFIG.ADVANCEDFILE))
+            logging.log("[Advanced Settings] URL no funciona: {0}".format(CONFIG.ADVANCEDFILE))
 
     def quick_configure(self):
-        directory.add_file('Los cambios no se reflejarán hasta que se reinicie Kodi.', icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('Haga Clic aquí para reiniciar Kodi.', {'mode': 'forceclose'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('[COLOR azure]Los cambios no se reflejarán hasta que se reinicie Kodi.[/COLOR]', icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('[COLOR azure]Haga Clic aquí para reiniciar Kodi.[/COLOR]', {'mode': 'forceclose'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
         # directory.add_file('Más categorías próximamente :)', icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_separator(middle='CATEGORIAS')
+        directory.add_separator(middle='[B]CATEGORIAS[/B]')
         # directory.add_dir('Troubleshooting', {'mode': 'advanced_settings', 'action': 'show_section', 'tags': 'loglevel|jsonrpc'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
         # directory.add_dir('Playback', {'mode': 'advanced_settings', 'action': 'show_section', 'tags': 'skiploopfilter|video|audio|edl|pvr|epg|forcedswaptime'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
         # directory.add_dir('Video Library', {'mode': 'advanced_settings', 'action': 'show_section', 'tags': 'videoextensions|discstubextensions|languagecodes|moviestacking|folderstacking|cleandatetime|cleanstrings|tvshowmatching|tvmultipartmatching'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_dir('Red y Cache', {'mode': 'advanced_settings', 'action': 'show_section', 'tags': 'cache|network'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_dir('[COLOR azure]RED y CACHE[/COLOR]', {'mode': 'advanced_settings', 'action': 'show_section', 'tags': 'cache|network'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
 
     def show_section(self, tags):
         from xml.etree import ElementTree
@@ -188,7 +188,7 @@ class AdvancedMenu:
                 self.tags[name] = values
 
         if len(self.tags) == 0:
-            directory.add_file('No settings for this category exist in your current advancedsettings.xml file.', icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+            directory.add_file('No existe ninguna configuración para esta categoría en su advancedsettings.xml file.', icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
             directory.add_separator()
             
         for category in self.tags:
@@ -281,6 +281,6 @@ class AdvancedMenu:
                                    "[COLOR {0}]Escritura Canceleda![/COLOR]".format(CONFIG.COLOR2))
                 return
         else:
-            logging.log("[Advanced Settings] URL not working: {0}".format(url))
+            logging.log("[Advanced Settings] URL no funciona: {0}".format(url))
             logging.log_notify('[COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, CONFIG.ADDONTITLE),
-                               "[COLOR {0}]URL Not Working[/COLOR]".format(CONFIG.COLOR2))
+                               "[COLOR {0}]URL No Funciona[/COLOR]".format(CONFIG.COLOR2))

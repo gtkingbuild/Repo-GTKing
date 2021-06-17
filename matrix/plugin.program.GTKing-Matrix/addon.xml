@@ -14,26 +14,23 @@
 	<extension point="xbmc.service" library="startup.py" start="startup" />
   
 	<extension point="xbmc.addon.metadata">
-		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR lime]MATRIX[/COLOR]</summary>
+		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR lime]MATRIX[/COLOR] tu Wizard para KODI 19.x !!</summary>
+		
     	<description lang="es">
-[S]Build GTKing MATRIX para KODI 19.x[/S]
-
-[B]- Testers:[/B] [COLOR gold]Mapache,Tete6776,Vicente,zalcos[/COLOR]
-
-[B]- Telegram:[/B] [COLOR lime]t.me/beelinkking[/COLOR]</description>
+[B]• Testers:[/B]     [COLOR dodgerblue]Mapache,Tete6776,Vicente[/COLOR]
+[B]• Telegram:[/B] [COLOR lime]t.me/beelinkking[/COLOR]</description>
 		<platform>all</platform>
 		<reuselanguageinvoker>false</reuselanguageinvoker>
         <source>https://www.github.com/gtkingbuild/Repo-GTKing/plugin.program.GTKing-Matrix/</source>
 		<news>
-- Build [COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]
+• plugin.program [COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]
 
-05/03/2021
+• 05/03/2021
 - Instalador actualizado a la versión 3.0.4
-- Inciada la compatibilidad con Kodi 19.0 Matrix
-		</news>
-		<assets>
-            <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
-        </assets>
+- Inciada la compatibilidad con Kodi 19.0 Matrix</news>
+	<assets>
+	    <icon>icon.png</icon>
+        <fanart>fanart.jpg</fanart>
+	</assets>
     </extension>
 </addon>

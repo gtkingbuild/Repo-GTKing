@@ -15,7 +15,7 @@
         <setting id="separate" type="bool" label="No separe en función de la versión" default="false"/>
         
         <!-- Hidden Settings -->
-        <setting id="first_install" type="bool" label="First Install" visible="false" default="false" />
+        <setting id="first_install" type="bool" label="First Install" visible="false" default="true" />
 		<setting id="enable_all" type="bool" label="Activar todos los Add-ons en el Inicio" visible="false" default="false" />
         <setting id="time_started" type="number" label="Time Startup Script Last Run" visible="false" default="0" />
         <setting id="installed" type="text" label="Build Instalada" visible="false" default="false" />
@@ -169,14 +169,14 @@
         <setting id="loginnextsave" type="text" label="Datos de Inicio de Sesión Guardados por Ultima Vez:" visible="!eq(-1, false)" enable="false" default="2021-03-17 00:00:00"/>
         <setting type="lsep" label="Mantenga la Configuración al Instalar Build:"/>
         <setting id="keepfavourites" type="bool" label="Mantener Mis Favoritos" default="true"/>
-        <setting id="keepsources" type="bool" label="Mantener Mis Fuentes" default="true"/>
+        <setting id="keepsources" type="bool" label="Mantener Mis Fuentes" default="false"/>
         <setting id="keepprofiles" type="bool" label="Mantener Mis Perfiles" default="false"/>
         <setting id="keepplayercore" type="bool" label="Mantener Mis playercorefactory.xml" default="false"/>
         <setting id="keepguisettings" type="bool" label="Mantener Mis guisettings.xml" default="false"/>
         <setting id="keepadvanced" type="bool" label="Mantener Mis AdvancedSettings.xml" default="true"/>
         <setting id="keeprepos" type="bool" label="Mantener Repositorios Instalados" default="false"/>
         <setting id="keepsuper" type="bool" label="Mantener Super Favoritos" default="false"/>
-        <setting id="keepwhitelist" type="bool" label="Mantener Mis Whitelist Addons" default="false"/>
+        <setting id="keepwhitelist" type="bool" label="Mantener Addons de Mi Lista Blanca" default="false"/>
     </category>
 
     <category label="Ver Configuraciones">

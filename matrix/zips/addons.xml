@@ -15,27 +15,24 @@
 	<extension point="xbmc.service" library="startup.py" start="startup" />
 
 	<extension point="xbmc.addon.metadata">
-		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR lime]MATRIX[/COLOR]</summary>
+		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR lime]MATRIX[/COLOR] tu Wizard para KODI 19.x !!</summary>
+
     	<description lang="es">
-[S]Build GTKing MATRIX para KODI 19.x[/S]
-
-[B]- Testers:[/B] [COLOR gold]Mapache,Tete6776,Vicente,zalcos[/COLOR]
-
-[B]- Telegram:[/B] [COLOR lime]t.me/beelinkking[/COLOR]</description>
+[B]• Testers:[/B]     [COLOR dodgerblue]Mapache,Tete6776,Vicente[/COLOR]
+[B]• Telegram:[/B] [COLOR lime]t.me/beelinkking[/COLOR]</description>
 		<platform>all</platform>
 		<reuselanguageinvoker>false</reuselanguageinvoker>
         <source>https://www.github.com/gtkingbuild/Repo-GTKing/plugin.program.GTKing-Matrix/</source>
 		<news>
-- Build [COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]
+• plugin.program [COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]
 
-05/03/2021
+• 05/03/2021
 - Instalador actualizado a la versión 3.0.4
-- Inciada la compatibilidad con Kodi 19.0 Matrix
-		</news>
-		<assets>
-            <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
-        </assets>
+- Inciada la compatibilidad con Kodi 19.0 Matrix</news>
+	<assets>
+	    <icon>icon.png</icon>
+        <fanart>fanart.jpg</fanart>
+	</assets>
     </extension>
 </addon>
 
@@ -99,40 +96,6 @@
         </assets>
         <reuselanguageinvoker>true</reuselanguageinvoker>
     </extension>
-</addon>
-
-<addon id="plugin.video.Vilhao.Matrix" name="[COLOR blue]V[/COLOR][COLOR yellow]i[/COLOR][COLOR blue]l[/COLOR][COLOR yellow]h[/COLOR][COLOR blue]a[/COLOR][COLOR yellow]o[/COLOR] [COLOR lime]Matrix[/COLOR]" version="1.1" provider-name="Vilhao">
-<requires>
-    <import addon="xbmc.python" version="3.0.0"/>
-    <import addon="script.module.requests"/>
-    <import addon="script.module.simplejson"/>
-	<import addon="script.module.kodi-six" />
-</requires>
-<extension point="xbmc.python.pluginsource" library="vilhao.py">
-	<provides>video</provides>
-</extension>
-  <extension point="xbmc.addon.metadata">
-    <summary>[COLOR lime]O melhor para ver na sua TV!!![/COLOR]</summary>
-<description>[B][COLOR yellow]- Add-on oficial do Vilhao[/COLOR][/B]
-
-[B][COLOR yellow]- Vilhao, Para uso de todos.[/COLOR][/B]
-
-[B][COLOR yellow]- O Add-on Vilhao é de uso gratuito!![/COLOR][/B]
-
-[B][COLOR red]- Proibido a venda deste add-on[/COLOR][/B]</description>
-    <platform>all</platform>
-	<assets>
-       <icon>icon.png</icon>
-       <fanart>fanart.gif</fanart>
-       <screenshot>resources/screenshots/1.jpg</screenshot>
-       <screenshot>resources/screenshots/2.jpg</screenshot>
-       <screenshot>resources/screenshots/3.jpg</screenshot>
-    </assets>
-	<news>
-[B][COLOR lime]v1.0.matrix[/COLOR][/B]
-[B][COLOR lime]- Addon Vilhao em Python 3 com o melhor para sua tv.[/COLOR][/B]
-	</news>
-</extension>
 </addon>
 
 <addon id="plugin.video.winner" name="[B][/B][COLOR aqua][/COLOR]WINNER" version="1.0.6" provider-name="Camaradas">
@@ -280,39 +243,6 @@ Testers: Luisma, Toni, Zarat, SuperTopo, Jorge, Bojbit, MiKeL, Chikiry, Pau, Ale
         </assets>
 		<source>https://github.com/gtkingbuild/Repo-GTKing/</source>
     </extension>
-</addon>
-
-<addon id="repository.Vilhao.Matrix" name="[COLOR red]Vilhao Matrix Repository[/COLOR]" version="1.2" provider-name="Vilhao">
-	<requires>
-
-		<import addon="xbmc.addon" version="12.0.0"/>
-	</requires>
-	<extension point="xbmc.addon.repository" name="[COLOR red]Vilhao 18 + 19 Matrix Repository[/COLOR]">
-
-		<dir minversion="18.9.1">
-			<info compressed="false">https://vilhaorepository.000webhostapp.com/repo.vilhao/addons.xml</info>
-			<checksum>https://vilhaorepository.000webhostapp.com/repo.vilhao/addons.xml.md5</checksum>
-			<datadir zip="true">https://vilhaorepository.000webhostapp.com/repo.vilhao/</datadir>
-
-		</dir>
-
-	</extension>
-	<extension point="xbmc.addon.metadata">
-		<summary>[COLOR red]O melhor do vilhao para a sua Tv[/COLOR]</summary>
-<description>
-[B][COLOR blue]●[/COLOR] [COLOR yellow]Repositório oficial do Vilhao - 2021[/COLOR][/B]
-[B][COLOR firebrick]●[/COLOR] [COLOR yellow]O Add-on Vilhao é de uso gratuito!![/COLOR][/B]
-[B][COLOR firebrick]●[/COLOR] [COLOR yellow]Proibido a venda dos add-ons do Vilhao.[/COLOR][/B]
-</description>
-<disclaimer>[B][COLOR yellow]O Vilhao é apenas um AGREGADOR de links assim como o Google.com, apenas agrega e organiza os links externos. O Vilhao nao e responsável pelos arquivos aqui encontrados.[/COLOR][/B]</disclaimer>
-		<platform>all</platform>
-		<source>https://vilhaorepository.000webhostapp.com/repo.vilhao/</source>
-		<assets>
-            <icon>icon.png</icon>
-			<fanart>fanart.jpg</fanart>
-        </assets>
-	</extension>
-
 </addon>
 
 <addon id="script.kelebek"

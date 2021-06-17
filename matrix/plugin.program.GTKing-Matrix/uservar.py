@@ -17,7 +17,7 @@ ADDONTITLE = '[COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLO
 BUILDERNAME = 'DavidZgZ & Josa'
 EXCLUDES = [ADDON_ID, 'repository.gtkingMatrix']
 # Text File with build info in it.
-BUILDFILE = 'https://raw.githubusercontent.com/gtkingbuild/gtkingbuild.github.io/master/wizard/xml/19builds.txt'
+BUILDFILE = 'https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/wizardfiles/builds.txt'
 # How often you would like it to check for build updates in days
 # 0 being every startup of kodi
 UPDATECHECK = 0
@@ -56,28 +56,33 @@ ICONSETTINGS = os.path.join(ART, 'settings.png')
 # Hide the section separators 'Yes' or 'No'
 HIDESPACERS = 'No'
 # Character used in separator
-SPACER = '='
+#SPACER = '♠'
+SPACER = '<->'
 
 # You can edit these however you want, just make sure that you have a %s in each of the
 # THEME's so it grabs the text from the menu item
 COLOR1 = 'limegreen'
 COLOR2 = 'white'
+COLOR3 = 'dodgerblue'
+COLOR4 = 'turquoise'
 # Primary menu items   / {0} is the menu item and is required
-THEME1 = u'[COLOR {color1}][COLOR {color1}][B]-[/B][/COLOR][COLOR {color2}][B][/B][COLOR {color1}][/COLOR] [COLOR {color2}]{{}}[/COLOR]'.format(color1=COLOR1, color2=COLOR2)
+THEME1 = u'[COLOR {color1}][COLOR {color1}][B]-[/B][/COLOR][COLOR {color2}][B][/B][COLOR {color1}][/COLOR] [COLOR {color2}]{{}}[/COLOR]'.format(color1=COLOR1, color2=COLOR2, color3=COLOR3, color4=COLOR4)
 # Build Names          / {0} is the menu item and is required
-THEME2 = u'[COLOR {color1}]{{}}[/COLOR]'.format(color1=COLOR1)
+THEME2 = u'[COLOR {color1}]{{}}[/COLOR]'.format(color1=COLOR3)
 # Alternate items      / {0} is the menu item and is required
 THEME3 = u'[COLOR {color1}]{{}}[/COLOR]'.format(color1=COLOR1)
 # Current Build Header / {0} is the menu item and is required
-THEME4 = u'[COLOR {color1}]Build Actual:[/COLOR] [COLOR {color2}]{{}}[/COLOR]'.format(color1=COLOR1, color2=COLOR2)
+THEME4 = u'[COLOR {color1}][B]Build Actual:[/B][/COLOR] [COLOR {color2}]{{}}[/COLOR]'.format(color1=COLOR1, color2=COLOR2, color3=COLOR3, color4=COLOR4)
 # Current Theme Header / {0} is the menu item and is required
-THEME5 = u'[COLOR {color1}]Parche Actual:[/COLOR] [COLOR {color2}]{{}}[/COLOR]'.format(color1=COLOR1, color2=COLOR2)
+THEME5 = u'[COLOR {color1}][B]Parche Actual:[/B][/COLOR] [COLOR {color2}]{{}}[/COLOR]'.format(color1=COLOR1, color2=COLOR2, color3=COLOR3, color4=COLOR4)
+# Current Theme Header / {0} is the menu item and is required
+THEME6 = u'[COLOR {color1}]{{}}[/COLOR]'.format(color1=COLOR4)
 
 # Message for Contact Page
 # Enable 'Contact' menu item 'Yes' hide or 'No' dont hide
 HIDECONTACT = 'No'
 # You can add \n to do line breaks
-CONTACT = 'Gracias por elegir GTKingBuild.\n\nContáctenos en el Grupo Telegram [COLOR white]https://t.me/beelinkking[/COLOR]'
+CONTACT = 'Gracias por elegir [COLOR azure]GTKingBuild.[/COLOR]\n\nContáctenos en el Grupo Telegram [COLOR white]https://t.me/beelinkking[/COLOR]'
 # Images used for the contact window.  http:// for default icon and fanart
 CONTACTICON = os.path.join(ART, 'qricon.png')
 CONTACTFANART = 'http://'
@@ -89,7 +94,7 @@ CONTACTFANART = 'http://'
 # Enable Auto Update 'Yes' or 'No'
 AUTOUPDATE = 'Yes'
 # Url to wizard version
-WIZARDFILE = 'https://raw.githubusercontent.com/gtkingbuild/gtkingbuild.github.io/master/wizard/xml/19builds.txt' 
+WIZARDFILE = 'https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/wizardfiles/builds.txt' 
 #########################################################
 
 #########################################################
@@ -111,7 +116,7 @@ REPOZIPURL = 'https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/m
 # Enable Notification screen Yes or No
 ENABLE = 'Yes'
 # Url to notification file
-NOTIFICATION = 'https://raw.githubusercontent.com/gtkingbuild/gtkingbuild.github.io/master/wizard/xml/Notify.txt'
+NOTIFICATION = 'https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/wizardfiles/GTKing/Notify.xml'
 # Use either 'Text' or 'Image'
 HEADERTYPE = 'Text'
 # Font size of header

@@ -56,7 +56,7 @@ def highlight_text(msg):
     for item in matches:
         string = '-->Python callback/script returned the following error<--{0}-->End of Python script error report<--'.format(item)
         msg = msg.replace(string, '[COLOR red]{0}[/COLOR]'.format(string))
-    msg = msg.replace('WARNING', '[COLOR yellow]WARNING[/COLOR]').replace('ERROR', '[COLOR red]ERROR[/COLOR]').replace('[NL]', '\n').replace(': EXCEPTION Thrown (PythonToCppException) :', '[COLOR red]: EXCEPTION Thrown (PythonToCppException) :[/COLOR]')
+    msg = msg.replace('WARNING', '[COLOR yellow]ADVERTENCIA[/COLOR]').replace('ERROR', '[COLOR red]ERROR[/COLOR]').replace('[NL]', '\n').replace(': EXCEPTION Thrown (PythonToCppException) :', '[COLOR red]: EXCEPCIÓN Lanzado (PythonToCppException) :[/COLOR]')
     msg = msg.replace('\\\\', '\\').replace(CONFIG.HOME, '')
     return msg
 
@@ -314,7 +314,7 @@ def show_build_prompt():
 
         def __init__(self, *args, **kwargs):
             self.title = CONFIG.THEME3.format(CONFIG.ADDONTITLE)
-            self.msg = "Actualmente no hay Build instalada de {0}.\n\nSeleccione 'Build Menu' para instalar Build  'Ignorar' cerrar esta ventana.\n\nGracias por escoger {1}.".format(CONFIG.ADDONTITLE, CONFIG.ADDONTITLE)
+            self.msg = "[COLOR azure]Actualmente no hay ninguna[/COLOR] [COLOR lime]Build[/COLOR] [COLOR azure]instalada de[/COLOR] {0}[COLOR azure].[/COLOR][COLOR gold]\n\nSeleccione [/COLOR][COLOR azure][B]'Build Menu'[/B][/COLOR] [COLOR gold]para instalar la [COLOR lime]Build[/COLOR][COLOR gold]. Seleccione [/COLOR][COLOR azure][B]'Ignorar'[/B][/COLOR][COLOR gold] para Cerrar esta ventana.[/COLOR][COLOR azure]\n\nGracias por escoger[/COLOR] {1}[COLOR azure].[/COLOR]".format(CONFIG.ADDONTITLE, CONFIG.ADDONTITLE)
             self.msg = CONFIG.THEME2.format(self.msg)
 
         def onInit(self):

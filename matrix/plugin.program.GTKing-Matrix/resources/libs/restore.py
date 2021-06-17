@@ -141,12 +141,12 @@ class Restore:
         db.force_check_updates(over=True)
 
         tools.kill_kodi(
-            msg='[COLOR {0}]Para guardar los cambios, es necesario forzar el cierre de Kodi. Te gustaria continuar?[/COLOR]'.format(
+            msg='[COLOR {0}]Para guardar los cambios, es necesario Forzar el Cierre de Kodi. Te gustaria continuar?[/COLOR]'.format(
                 CONFIG.COLOR2))
 
     def _view_errors(self, percent, errors, error, file):
         if int(errors) >= 1:
-            if self.dialog.yesno(CONFIG.ADDONTITLE, '[COLOR {0}][COLOR {1}]{2}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, file) + '\n' + 'Completed: [COLOR {0}]{1}{2}[/COLOR] [Errors: [COLOR {3}]{4}[/COLOR]]'.format(CONFIG.COLOR1, percent, '%',CONFIG.COLOR1, errors) + '\n' + 'Would you like to view the errors?[/COLOR]',
+            if self.dialog.yesno(CONFIG.ADDONTITLE, '[COLOR {0}][COLOR {1}]{2}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, file) + '\n' + 'Completado: [COLOR {0}]{1}{2}[/COLOR] [Errores: [COLOR {3}]{4}[/COLOR]]'.format(CONFIG.COLOR1, percent, '%',CONFIG.COLOR1, errors) + '\n' + 'Le gustaria ver los errores[/COLOR]',
                                  nolabel='[B][COLOR red]No, Gracias[/COLOR][/B]',
                                  yeslabel='[B][COLOR springgreen]Ver Errores[/COLOR][/B]'):
 

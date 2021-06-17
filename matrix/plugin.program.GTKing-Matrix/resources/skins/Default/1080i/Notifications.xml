@@ -75,7 +75,7 @@
                 <height>60</height>
                 <font>font12</font>
                 <textcolor>FFF0F0F0</textcolor>
-                <label>Cerrar</label>
+                <label>[B]Cerrar[/B]</label>
                 <align>center</align>
                 <aligny>center</aligny>
                 <texturefocus colordiffuse="FF12B2E7">Button/testbuttonfo.png</texturefocus>
@@ -93,10 +93,10 @@
                 <font>font12</font>
                 <textcolor>FFF0F0F0</textcolor>
                 <textoffsetx>20</textoffsetx>
-                <label>Recordar Más Tarde</label>
+                <label>[B]Recordar Más Tarde[/B]</label>
                 <align>center</align>
                 <aligny>center</aligny>
-                <texturefocus colordiffuse="FF12B2E7">Button/testbuttonfo.png</texturefocus>
+                <texturefocus colordiffuse="FF62e44f">Button/testbuttonfo.png</texturefocus>
                 <texturenofocus>Button/testbuttonnf.png</texturenofocus>
                 <onleft>201</onleft>
                 <onright>201</onright>
