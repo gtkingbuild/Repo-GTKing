@@ -18,7 +18,7 @@ description="GTKing MATRIX para KODI 19.x Matrix"
 
 
 name="[COLOR red]PARCHES[/COLOR]"
-version="1"
+version="1.0.0"
 url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/1.0/GTKing.MATRIX.zip"
 minor="http://"
 gui="http://"
