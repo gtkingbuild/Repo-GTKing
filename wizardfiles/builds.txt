@@ -17,8 +17,8 @@ info="http://"
 description="GTKing MATRIX para KODI 19.x Matrix"
 
 
-name="[COLOR BLUE]PARCHES[/COLOR]"
-version="1.0.0"
+name="[COLOR red]PARCHES[/COLOR]"
+version=""
 url=""
 minor="http://"
 gui="http://"
