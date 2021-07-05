@@ -891,10 +891,10 @@ def auto_update(who):
                 dialog = xbmcgui.Dialog()
 
                 if dialog.yesno(CONFIG.ADDONTITLE,
-                                    "Le gustaria guardar la informacion de inicio de sesion de [COLOR {0}][/COLOR] para [COLOR {1}]{2}[/COLOR]?".format(CONFIG.COLOR2, CONFIG.COLOR1, n)
+                                    "Le gustaria guardar la informacion de inicio de sesion de [COLOR {0}] [/COLOR] para [COLOR {1}]{2}[/COLOR]?".format(CONFIG.COLOR2, CONFIG.COLOR1, n)
                                     +'\n'+"Addon: [COLOR springgreen][B]{0}[/B][/COLOR]".format(u)
-                                    +'\n'+"Guardado: [COLOR red][B]{0}[/B][/COLOR]".format(su) if not su == '' else 'Guardado: [COLOR red][B]Ninguno[/B][/COLOR]',
-                                    yeslabel="[B][COLOR springgreen]Guardar Datos[/COLOR][/B]",
+                                    +'\n'+"Salvado:[/COLOR] [COLOR red][B]{0}[/B][/COLOR]".format(su) if not su == '' else 'Salvado:[/COLOR] [COLOR red][B]Ninguno[/B][/COLOR]',
+                                    yeslabel="[B][COLOR springgreen]Salvar Datos[/COLOR][/B]",
                                     nolabel="[B][COLOR red]No, Cancelar[/COLOR][/B]"):
                     login_it('update', who)
             else:

@@ -343,7 +343,7 @@ def update_trakt(do, who):
                                    2000,
                                    icon)
             except Exception as e:
-                logging.log("[Datos Trakt] No se Puede Borrar el Addon {0} ({1})".format(who, str(e)), level=xbmc.LOGERROR)
+                logging.log("[Datos Trakt] No se Puede Borrar el Addon  {0} ({1})".format(who, str(e)), level=xbmc.LOGERROR)
     xbmc.executebuiltin('Container.Refresh()')
 
 
@@ -365,10 +365,10 @@ def auto_update(who):
                 dialog = xbmcgui.Dialog()
 
                 if dialog.yesno(CONFIG.ADDONTITLE,
-                                    "Le gustaria guardar los [COLOR {0}]Datos Trakt[/COLOR] para [COLOR {1}]{2}[/COLOR]?".format(CONFIG.COLOR2, CONFIG.COLOR1, n)
+                                    "Le gustaría guardar los [COLOR {0}]Datos Trakt[/COLOR] para [COLOR {1}]{2}[/COLOR]?".format(CONFIG.COLOR2, CONFIG.COLOR1, n)
                                     +'\n'+"Addon: [COLOR springgreen][B]{0}[/B][/COLOR]".format(u)
-                                    +'\n'+"Guardado: [COLOR red][B]{0}[/B][/COLOR]".format(su) if not su == '' else 'Guardado: [COLOR red][B]Ninguno[/B][/COLOR]',
-                                    yeslabel="[B][COLOR springgreen]Guardar Datos[/COLOR][/B]",
+                                    +'\n'+"Salvado:[/COLOR] [COLOR red][B]{0}[/B][/COLOR]".format(su) if not su == '' else 'Salvado:[/COLOR] [COLOR red][B]Ninguno[/B][/COLOR]',
+                                    yeslabel="[B][COLOR springgreen]Salvar Datos[/COLOR][/B]",
                                     nolabel="[B][COLOR red]No, Cancelar[/COLOR][/B]"):
                     trakt_it('update', who)
             else:

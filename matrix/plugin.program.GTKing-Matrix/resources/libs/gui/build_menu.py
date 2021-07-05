@@ -183,7 +183,7 @@ class BuildMenu:
                     fanart=fanart, icon=icon, themeit=CONFIG.THEME3)    
                     
             directory.add_separator('[B]INSTALACION BUILD[/B]', fanart=fanart, icon=icon, themeit=CONFIG.THEME3)
-            directory.add_file('[B][COLOR azure]|-> Instalar Build[/COLOR][/B]', {'mode': 'install', 'action': 'build', 'name': name}, description=description, fanart=fanart,
+            directory.add_file('[B][COLOR azure]- Instalar Build[/COLOR][/B]', {'mode': 'install', 'action': 'build', 'name': name}, description=description, fanart=fanart,
                                icon=icon, themeit=CONFIG.THEME3)
                                
             if guicheck:
@@ -203,7 +203,7 @@ class BuildMenu:
                     if adultcheck:
                         continue
                         
-                    themetitle = themename if not themename == CONFIG.BUILDTHEME else "[B]{0} (Instalado)[/B]".format(themename)
+                    themetitle = themename if not themename == CONFIG.BUILDTHEME else "{0} - Instalado".format(themename)
                     themeicon = themeicon if tools.open_url(themeicon, check=True) else icon
                     themefanart = themefanart if tools.open_url(themefanart, check=True) else fanart
                     

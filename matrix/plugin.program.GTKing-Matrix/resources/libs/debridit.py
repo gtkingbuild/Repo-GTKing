@@ -425,7 +425,7 @@ def update_debrid(do, who):
                                    2000,
                                    icon)
             except Exception as e:
-                logging.log("[Info Debrid] No se Puede Borrar el Addon {0} ({1})".format(who, str(e)), level=xbmc.LOGERROR)
+                logging.log("[Info Debrid] No se Puede Borrar el  Addon {0} ({1})".format(who, str(e)), level=xbmc.LOGERROR)
     xbmc.executebuiltin('Container.Refresh()')
 
 
@@ -449,7 +449,7 @@ def auto_update(who):
                 if dialog.yesno(CONFIG.ADDONTITLE,
                                     "Le gustaría salvar la [COLOR {0}]Info Debrid[/COLOR] para [COLOR {1}]{2}[/COLOR]?".format(CONFIG.COLOR2, CONFIG.COLOR1, n)
                                     +'\n'+"Addon: [COLOR springgreen][B]{0}[/B][/COLOR]".format(u)
-                                    +'\n'+"Guardado: [COLOR red][B]{0}[/B][/COLOR]".format(su) if not su == '' else 'Salvado:[/COLOR] [COLOR red][B]Ninguno[/B][/COLOR]',
+                                    +'\n'+"Salvado:[/COLOR] [COLOR red][B]{0}[/B][/COLOR]".format(su) if not su == '' else 'Salvado:[/COLOR] [COLOR red][B]Ninguno[/B][/COLOR]',
                                     yeslabel="[B][COLOR springreen]Salvar Debrid[/COLOR][/B]",
                                     nolabel="[B][COLOR red]No, Cancelar[/COLOR][/B]"):
                     debrid_it('update', who)
