@@ -485,11 +485,11 @@ def error_checking(log=None, count=None, last=None):
             string = ''
             for item in errors:
                 i += 1
-                string += "[B][COLOR red]NUMERO ERRONEO {0}:[/B][/COLOR] {1}\n".format(str(i), item.replace(CONFIG.HOME, '/').replace('                                        ', ''))
-            window.show_log_viewer("Visualización de Errores en el Registro", string)
+                string += "[B][COLOR red]ERROR NUMERO {0}:[/B][/COLOR] [COLOR silver]{1}[/COLOR]\n".format(str(i), item.replace(CONFIG.HOME, '/').replace('                                        ', ''))
+            window.show_log_viewer("[B][COLOR azure]Visualización de Errores en el Registro[/COLOR][/B]", string)
         else:
-            string = "[B][COLOR red]Ultimo Error en el Registro:[/B][/COLOR] {0}\n".format(errors[0].replace(CONFIG.HOME, '/').replace('                                        ', ''))
-            window.show_log_viewer("Visualización del Ultimo Error en el Registro", string)
+            string = "[B][COLOR red]Ultimo Error en el Registro:[/B][/COLOR] [COLOR ff038d91]{0}[/COLOR]\n".format(errors[0].replace(CONFIG.HOME, '/').replace('                                        ', ''))
+            window.show_log_viewer("[B][COLOR azure]Visualización del Ultimo Error en el Registro[/B][/COLOR]", string)
 
     else:
         log_notify('[COLOR {0}]Ver Error de Registro[/COLOR]'.format(CONFIG.COLOR1),

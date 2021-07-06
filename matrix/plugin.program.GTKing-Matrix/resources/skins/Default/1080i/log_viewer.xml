@@ -50,7 +50,7 @@
                     <focusedcolor>$INFO[Window().Property(texture.color2)]</focusedcolor>
                     <texturefocus colordiffuse="$INFO[Window().Property(texture.color1)]">Background/white.png</texturefocus>
                     <texturenofocus colordiffuse="FF282828">Background/white.png</texturenofocus>
-                    <label>Cargar Registro</label>
+                    <label>[B][COLOR azure]Cargar Registro[/COLOR][/B]</label>
                 </control>
                 
                 <control type="button" id="202">
@@ -93,7 +93,7 @@
                     <focusedcolor>$INFO[Window().Property(texture.color2)]</focusedcolor>
                     <texturefocus colordiffuse="$INFO[Window().Property(texture.color1)]">Background/white.png</texturefocus>
                     <texturenofocus colordiffuse="FF282828">Background/white.png</texturenofocus>
-                    <label>Cerrar</label>
+                    <label>[B][COLOR azure]Cerrar[/COLOR][/B]</label>
                 </control>
             </control>
             
