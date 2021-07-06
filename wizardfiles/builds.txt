@@ -17,9 +17,9 @@ info="http://"
 description="GTKing MATRIX para KODI 19.x Matrix"
 
 
-name="19.x Matrix 2"
-version="1.0.0"
-url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/1.0/GTKing.MATRIX.zip"
+name="Parche Prueba"
+version="1.0.5"
+url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/0.1/Parche.GTKing.MATRIX.zip"
 minor="http://"
 gui="http://"
 kodi="19"
