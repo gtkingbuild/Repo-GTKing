@@ -1,0 +1,12 @@
+1
+|||
+[COLOR lime][B]PARCHES ACTUALIZADORES GTKING MATRIX[/B][/COLOR]
+
+[COLOR lime][B]ACTUALIZACIÓN:[/B][/COLOR]
+[COLOR gold]08/07/2021 Actualización Parche GTKing MATRIX 1.0[/COLOR]
+[COLOR white]- Redirigidos atajos Listas Chikiry y Magellan. 
+- Cambiado el color de Novedades del menú principal a Verde[/COLOR]
+
+[COLOR dodgerblue]* Para actualizar el parche actualizador dirigirse a la sección "BUILD y PARCHES" del menú "AJUSTES" e instalar el que corresponda *[/COLOR]
+
+[COLOR red]                                           ******* GRACIAS POR CONFIAR EN GTKing TEAM *******                                            [/COLOR]
