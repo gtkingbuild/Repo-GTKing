@@ -41,11 +41,16 @@
             <control type="textbox" id="104">
                 <left>20</left>
                 <top>90</top>
+				<!-- <width>1640</width>
+				<height>790</height>
+				<font>font10</font>
+                <align>left</align>
+                <aligny>top</aligny> -->
                 <width>1640</width>
                 <height>790</height>
-                <font>font10</font>
-                <align>left</align>
-                <aligny>top</aligny>
+                <font>font20</font>
+                <align>center</align>
+                <aligny>center</aligny>
                 <colordiffuse>FFFF00FF</colordiffuse>
                 <pagecontrol>105</pagecontrol>
             </control>

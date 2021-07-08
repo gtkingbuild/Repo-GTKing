@@ -116,7 +116,7 @@ REPOZIPURL = 'https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/m
 # Enable Notification screen Yes or No
 ENABLE = 'Yes'
 # Url to notification file
-NOTIFICATION = 'https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/wizardfiles/GTKing/Notify.xml'
+NOTIFICATION = 'https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/wizardfiles/GTKing/Notify.txt'
 # Use either 'Text' or 'Image'
 HEADERTYPE = 'Text'
 # Font size of header
