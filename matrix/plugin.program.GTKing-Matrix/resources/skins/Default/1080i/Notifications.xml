@@ -21,10 +21,10 @@
             </control>
             <control type="label" id="102">
                 <posx>20</posx>
-                <posy>20</posy>
-                <width>1660</width>
+                <posy>40</posy>
+                <width>1640</width>
                 <height>60</height>
-                <font>font14</font>
+                <font>font_bigposter_text</font>
                 <label></label>
                 <align>center</align>
                 <aligny>center</aligny>
@@ -34,18 +34,13 @@
                 <posx>20</posx>
                 <posy>20</posy>
                 <width>1660</width>
-                <height>60</height>
+                <height>400</height> <!--250-->
                 <aspectratio aligny="center" align="center">keep</aspectratio>
                 <visible>Skin.String(headerimagetype)</visible>
             </control>
             <control type="textbox" id="104">
                 <left>20</left>
-                <top>90</top>
-				<!-- <width>1640</width>
-				<height>790</height>
-				<font>font10</font>
-                <align>left</align>
-                <aligny>top</aligny> -->
+                <top>150</top>
                 <width>1640</width>
                 <height>790</height>
                 <font>font20</font>

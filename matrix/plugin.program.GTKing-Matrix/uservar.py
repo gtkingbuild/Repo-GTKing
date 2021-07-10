@@ -118,7 +118,7 @@ ENABLE = 'Yes'
 # Url to notification file
 NOTIFICATION = 'https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/wizardfiles/GTKing/Notify.txt'
 # Use either 'Text' or 'Image'
-HEADERTYPE = 'Text'
+HEADERTYPE = 'Image'
 # Font size of header
 FONTHEADER = 'Font14'
 HEADERMESSAGE = '[COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]'
