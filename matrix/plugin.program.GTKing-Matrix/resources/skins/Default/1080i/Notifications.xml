@@ -21,7 +21,7 @@
             </control>
             <control type="label" id="102">
                 <posx>20</posx>
-                <posy>40</posy>
+                <posy>40</posy> <!--40-->
                 <width>1640</width>
                 <height>60</height>
                 <font>font_bigposter_text</font>
@@ -32,18 +32,18 @@
             </control>
             <control type="image" id="103">
                 <posx>20</posx>
-                <posy>20</posy>
+                <posy>10</posy> <!--20-->
                 <width>1660</width>
-                <height>400</height> <!--250-->
+                <height>250</height> <!--250-->
                 <aspectratio aligny="center" align="center">keep</aspectratio>
                 <visible>Skin.String(headerimagetype)</visible>
             </control>
             <control type="textbox" id="104">
-                <autoscroll delay="1500" time="500" repeat="4000">!Control.HasFocus(105)</autoscroll>
-				<left>20</left>
-                <top>150</top>
+				<autoscroll delay="1500" time="500" repeat="4000">!Control.HasFocus(105)</autoscroll>
+                <left>20</left>
+                <top>250</top> <!--150-->
                 <width>1640</width>
-                <height>790</height>
+                <height>575</height> <!--790-->
                 <font>font20</font>
                 <align>center</align>
                 <aligny>center</aligny>
@@ -62,10 +62,10 @@
                 <texturesliderbarfocus colordiffuse="FF12B2E7">Button/scrollbar-V-focus.png</texturesliderbarfocus>
                 <orientation>vertical</orientation>
                 <showonepage>true</showonepage>
-                <onup>201</onup>
-                <ondown>201</ondown>
-                <onleft>201</onleft>
-                <onright>201</onright>
+                <onup>201</onup> <!--201-->
+                <ondown>201</ondown> <!--201-->
+                <onleft>201</onleft> <!--201-->
+                <onright>201</onright> <!--201-->
             </control>
         </control>
         <control type="group">
