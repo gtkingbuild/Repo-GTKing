@@ -195,15 +195,15 @@ def fresh_start(install=None, over=False):
                                        +'\n'+"Configuración de Kodi a la configuración predeterminada"
                                        +'\n'+"¿Antes de instalar la copia de seguridad local?[/COLOR]",                                       
 									   nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]',
-                                       yeslabel='[B][COLOR springgreen]Continuar[/COLOR][/B]')
+                                       yeslabel='[B][COLOR cyan]Continuar[/COLOR][/B]')
     elif install:
         yes_pressed = dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}]Desea restaurar su".format(CONFIG.COLOR2)
                                        +'\n'+"Configuración de Kodi a la configuración predeterminada"
                                        +'\n'+"Antes de instalar [COLOR {0}]{1}[/COLOR]?".format(CONFIG.COLOR1, install),
                                        nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]',
-                                       yeslabel='[B][COLOR springgreen]Continuar[/COLOR][/B]')
+                                       yeslabel='[B][COLOR cyan]Continuar[/COLOR][/B]')
     else:
-        yes_pressed = dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}]Desea restaurar su".format(CONFIG.COLOR2) +' \n' + "Configuración de Kodi a la configuración predeterminada[/COLOR]", nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]', yeslabel='[B][COLOR springgreen]Continuar[/COLOR][/B]')
+        yes_pressed = dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}]Desea restaurar su".format(CONFIG.COLOR2) +' \n' + "Configuración de Kodi a la configuración predeterminada[/COLOR]", nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]', yeslabel='[B][COLOR cyan]Continuar[/COLOR][/B]')
     if yes_pressed:
         wipe()
         
@@ -282,7 +282,7 @@ def install_apk(name, url):
             yes = dialog.yesno(CONFIG.ADDONTITLE,
                                    "[COLOR {0}]Le gustaría descargar e instalar: ".format(CONFIG.COLOR2)
                                    +'\n'+"[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, name),
-                                   yeslabel="[B][COLOR springgreen]Descargar[/COLOR][/B]",
+                                   yeslabel="[B][COLOR cyan]Descargar[/COLOR][/B]",
                                    nolabel="[B][COLOR red]Cancelar[/COLOR][/B]")
                                    
             if not yes:

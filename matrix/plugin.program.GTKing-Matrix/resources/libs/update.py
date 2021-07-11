@@ -47,7 +47,7 @@ def wizard_update():
                                    '[COLOR {0}]Hay una nueva versión de{1}!'.format(CONFIG.COLOR2, CONFIG.ADDONTITLE)
                                    +'\n'+'¿Quieres descargar la [COLOR {0}]v{1}[/COLOR]?[/COLOR]'.format(CONFIG.COLOR1, ver),
                                    nolabel='[B][COLOR red]Recordar Más tarde[/COLOR][/B]',
-                                   yeslabel="[B][COLOR springgreen]Actualizar[/COLOR][/B]")
+                                   yeslabel="[B][COLOR cyan]Actualizar[/COLOR][/B]")
             if yes:
                 from resources.libs import db
                 from resources.libs.common import tools
@@ -76,7 +76,7 @@ def wizard_update():
                 tools.remove_file(os.path.join(CONFIG.ADDON_DATA, 'settings.xml'))
                 window.show_save_data_settings()
             else:
-                logging.log("[Auto Update Wizard] Instalación de Nuevo Wizard Ignorado: {0}".format(ver))
+                logging.log("[Auto Update Wizard] Instalación del Nuevo Wizard Ignorada: {0}".format(ver))
         else:
             logging.log("[Auto Update Wizard] No hay Nueva Versión v{0}".format(ver))
     else:

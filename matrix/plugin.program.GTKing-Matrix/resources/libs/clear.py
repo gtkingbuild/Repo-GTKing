@@ -155,7 +155,7 @@ def clear_packages(over=None):
                     else:
                         dialog = xbmcgui.Dialog()
                     
-                        yes = dialog.yesno("[COLOR {0}]Eliminar Archivos de Paquete[/COLOR]".format(CONFIG.COLOR2), "[COLOR {0}]{1}[/COLOR] archivos encontrados / [COLOR {2}]{3}[/COLOR] en tamaño.".format(CONFIG.COLOR1, str(file_count),CONFIG.COLOR1, size) + '\n' + "Do you want to delete them?", nolabel='[B][COLOR red]Don\'t Clear[/COLOR][/B]', yeslabel='[B][COLOR springgreen]Clear Packages[/COLOR][/B]')
+                        yes = dialog.yesno("[COLOR {0}]Eliminar Archivos de Paquete[/COLOR]".format(CONFIG.COLOR2), "[COLOR {0}]{1}[/COLOR] archivos encontrados / [COLOR {2}]{3}[/COLOR] en tamaño.".format(CONFIG.COLOR1, str(file_count),CONFIG.COLOR1, size) + '\n' + "Quieres eliminarlos?", nolabel='[B][COLOR red]No Eliminar[/COLOR][/B]', yeslabel='[B][COLOR dodgerblue]Eliminar Paquetes[/COLOR][/B]')
                     if yes:
                         for f in files:
                             os.unlink(os.path.join(root, f))
@@ -222,7 +222,7 @@ def clear_archive():
     if dialog.yesno(CONFIG.ADDONTITLE,
                         '[COLOR {0}]Le gustaria borrar la carpeta \'Archive_Cache \'?[/COLOR]'.format(CONFIG.COLOR2),
                         nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]',
-                        yeslabel='[B][COLOR springgreen]Si Borrar[/COLOR][/B]'):
+                        yeslabel='[B][COLOR dodgerblue]Si Borrar[/COLOR][/B]'):
         if os.path.exists(CONFIG.ARCHIVE_CACHE):
             from resources.libs.common import tools
             tools.clean_house(CONFIG.ARCHIVE_CACHE)
@@ -235,7 +235,7 @@ def clear_function_cache(over=False):
         if dialog.yesno(CONFIG.ADDONTITLE,
                             '[COLOR {0}]Le gustaria borrar los caches de la funcion de resolucion?[/COLOR]'.format(CONFIG.COLOR2),
                             nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]',
-                            yeslabel='[B][COLOR springgreen]Borrar Cache[/COLOR][/B]'):
+                            yeslabel='[B][COLOR dodgerblue]Borrar Cache[/COLOR][/B]'):
             clear = True
     else:
         clear = True
@@ -464,7 +464,7 @@ def clear_crash():
         if dialog.yesno(CONFIG.ADDONTITLE,
                             '[COLOR {0}]Le gustaria eliminar el Crash logs?'.format(CONFIG.COLOR2)
                             +'\n'+'[COLOR {0}]{1}[/COLOR] Archivos Encontrados[/COLOR]'.format(CONFIG.COLOR1, len(files)),
-                            yeslabel="[B][COLOR springgreen]Eliminar Logs[/COLOR][/B]",
+                            yeslabel="[B][COLOR dodgerblue]Eliminar Logs[/COLOR][/B]",
                             nolabel="[B][COLOR red]Mantener Logs[/COLOR][/B]"):
             for f in files:
                 os.remove(f)
@@ -512,7 +512,7 @@ def total_clean():
     if dialog.yesno(CONFIG.ADDONTITLE,
                         '[COLOR {0}]Le gustaria borrar la cache, los paquetes y las miniaturas?[/COLOR]'.format(CONFIG.COLOR2),
                         nolabel='[B][COLOR red]Cancelar Pproceso[/COLOR][/B]',
-                        yeslabel='[B][COLOR springgreen]Borrar Todo[/COLOR][/B]'):
+                        yeslabel='[B][COLOR dodgerblue]Borrar Todo[/COLOR][/B]'):
         clear_archive()
         clear_cache()
         clear_function_cache(over=True)
@@ -533,7 +533,7 @@ def clear_thumbs(type=None):
     if type is not None:
         choice = 1
     else:
-        choice = dialog.yesno(CONFIG.ADDONTITLE, '[COLOR {0}]Le gustaria eliminar {1} y las carpetas de miniaturas relacionadas?'.format(CONFIG.COLOR2, latest) + '\n' + "They will repopulate on the next startup[/COLOR]", nolabel='[B][COLOR red]Don\'t Delete[/COLOR][/B]', yeslabel='[B][COLOR springgreen]Delete Thumbs[/COLOR][/B]')
+        choice = dialog.yesno(CONFIG.ADDONTITLE, '[COLOR {0}]Le gustaria eliminar {1} y las carpetas de miniaturas relacionadas?'.format(CONFIG.COLOR2, latest) + '\n' + "Ellas se repoblarán en la próxima puesta en marcha.[/COLOR]", nolabel='[B][COLOR red]No Eliminar[/COLOR][/B]', yeslabel='[B][COLOR dodgerblue]Eliminar Pulgares[/COLOR][/B]')
     if choice == 1:
         try:
             tools.remove_file(os.path.join(CONFIG.DATABASE, latest))
@@ -561,7 +561,7 @@ def remove_addon(addon, name, over=False, data=True):
                                '[COLOR {0}]Estas seguro de que quieres eliminar el add-on:'.format(CONFIG.COLOR2)
                                +'\n'+'Name: [COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, name)
                                +'\n'+'ID: [COLOR {0}]{1}[/COLOR][/COLOR]'.format(CONFIG.COLOR1, addon),
-                               yeslabel='[B][COLOR springgreen]Eliminar Add-on[/COLOR][/B]',
+                               yeslabel='[B][COLOR dodgerblue]Eliminar Add-on[/COLOR][/B]',
                                nolabel='[B][COLOR red]No Eliminar[/COLOR][/B]')
     if yes == 1:
         folder = os.path.join(CONFIG.ADDONS, addon)
@@ -601,7 +601,7 @@ def remove_addon_data(addon):
     if addon == 'all':  # clear ALL addon data
         if dialog.yesno(CONFIG.ADDONTITLE,
                             '[COLOR {0}]Le gustaria eliminar [COLOR {1}]TODOS[/COLOR] los datos de los addons almacenados en su carpeta de datos de usuario para los addons desinstalados?[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1),
-                            yeslabel='[B][COLOR springgreen]Eliminar Datos[/COLOR][/B]',
+                            yeslabel='[B][COLOR dodgerblue]Eliminar Datos[/COLOR][/B]',
                             nolabel='[B][COLOR red]No Eliminar[/COLOR][/B]'):
             tools.clean_house(CONFIG.ADDON_DATA)
         else:
@@ -610,7 +610,7 @@ def remove_addon_data(addon):
     elif addon == 'uninstalled':  # clear addon data for uninstalled addons
         if dialog.yesno(CONFIG.ADDONTITLE,
                             '[COLOR {0}]Le gustaría eliminar [COLOR {1}]TODOS[/COLOR] los datos de los addons almacenados en su carpeta de datos de usuario para los addons desinstalados?[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1),
-                            yeslabel='[B][COLOR springgreen]Eliminar Datos[/COLOR][/B]',
+                            yeslabel='[B][COLOR dodgerblue]Eliminar Datos[/COLOR][/B]',
                             nolabel='[B][COLOR red]No Eliminar[/COLOR][/B]'):
                             
             total = 0
@@ -634,7 +634,7 @@ def remove_addon_data(addon):
     elif addon == 'empty':  # clear empty folders from addon_data
         if dialog.yesno(CONFIG.ADDONTITLE,
                             '[COLOR {0}]Le gustaria eliminar [COLOR {1}] TODAS [/ COLOR] las carpetas de datos de addons vacias en su carpeta de datos de usuario?[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1),
-                            yeslabel='[B][COLOR springgreen]Eliminar Datos[/COLOR][/B]',
+                            yeslabel='[B][COLOR dodgerblue]Eliminar Datos[/COLOR][/B]',
                             nolabel='[B][COLOR red]No Eliminar[/COLOR][/B]'):
             total = tools.empty_folder(CONFIG.ADDON_DATA)
             logging.log_notify('[COLOR {0}]Eliminar Carpetas Vacias[/COLOR]'.format(CONFIG.COLOR1),
@@ -648,7 +648,7 @@ def remove_addon_data(addon):
             logging.log_notify("[COLOR {0}]Plugin Protegido[/COLOR]".format(CONFIG.COLOR1),
                                "[COLOR {0}]No se permite eliminar datos de los add-ons[/COLOR]".format(CONFIG.COLOR2))
         elif os.path.exists(addon_data):
-            if dialog.yesno(CONFIG.ADDONTITLE, '[COLOR {0}]Tambien le gustaria eliminar los datos de los add-ons para:[/COLOR]'.format(CONFIG.COLOR2) + '\n' + '[COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, addon), yeslabel='[B][COLOR springgreen]Quitar datos[/COLOR][/B]', nolabel='[B][COLOR red]No Quitar[/COLOR][/B]'):
+            if dialog.yesno(CONFIG.ADDONTITLE, '[COLOR {0}]Tambien le gustaria eliminar los datos de los add-ons para:[/COLOR]'.format(CONFIG.COLOR2) + '\n' + '[COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, addon), yeslabel='[B][COLOR dodgerblue]Quitar datos[/COLOR][/B]', nolabel='[B][COLOR red]No Quitar[/COLOR][/B]'):
                 tools.clean_house(addon_data)
                 try:
                     shutil.rmtree(addon_data)

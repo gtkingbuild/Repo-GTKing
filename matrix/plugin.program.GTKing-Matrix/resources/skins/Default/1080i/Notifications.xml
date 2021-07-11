@@ -39,7 +39,8 @@
                 <visible>Skin.String(headerimagetype)</visible>
             </control>
             <control type="textbox" id="104">
-                <left>20</left>
+                <autoscroll delay="1500" time="500" repeat="4000">!Control.HasFocus(105)</autoscroll>
+				<left>20</left>
                 <top>150</top>
                 <width>1640</width>
                 <height>790</height>

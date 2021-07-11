@@ -53,7 +53,7 @@ def all_with_progress(_in, _out, dp, ignore, title):
     except Exception as e:
         errors += 1
         error += '%s\n' % e
-        logging.log('Error Comprobación Zip: {0}'.format(str(e)), level=xbmc.LOGERROR)
+        logging.log('Error al Comprobar el Zip: {0}'.format(str(e)), level=xbmc.LOGERROR)
         return update, errors, error
 
     white_list = whitelist.whitelist('read')
@@ -90,11 +90,11 @@ def all_with_progress(_in, _out, dp, ignore, title):
         line1 = '{0} [COLOR {1}][B][Errores:{2}][/B][/COLOR]'.format(title,
                                                                     CONFIG.COLOR2,
                                                                     errors)
-        line2 = '[COLOR {0}][B]Archivo:[/B][/COLOR] [COLOR {1}]{2}/{3}[/COLOR] '.format(CONFIG.COLOR2,
+        line2 = '[COLOR {0}][B]Archivo:[/B][/COLOR] [COLOR {1}]{2}[/COLOR][COLOR white]/[/COLOR][COLOR {1}]{3}[/COLOR]'.format(CONFIG.COLOR2,
                                                                                      CONFIG.COLOR1,
                                                                                      count,
                                                                                      int(nFiles))
-        line2 += '[COLOR {0}][B]Tamaño:[/B][/COLOR] [COLOR {1}]{2}/{3}[/COLOR]'.format(CONFIG.COLOR2,
+        line2 += '[COLOR {0}][B]Tamaño:[/B][/COLOR] [COLOR {1}]{2}[/COLOR][COLOR white]/[/COLOR][COLOR {1}]{3}[/COLOR]'.format(CONFIG.COLOR2,
                                                                                      CONFIG.COLOR1,
                                                                                      tools.convert_size(size),
                                                                                      zipsize)

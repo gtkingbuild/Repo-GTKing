@@ -257,11 +257,11 @@ class BuildMenu:
                     msg += "[COLOR {0}]Scripts:[/COLOR] [COLOR {1}]{2}[/COLOR][CR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, scripts)
                     msg += "[COLOR {0}]Binarios:[/COLOR] [COLOR {1}]{2}[/COLOR]".format(CONFIG.COLOR2, CONFIG.COLOR1, binaries)
 
-                window.show_text_box("Visualización de Información de la Build: {0}".format(name), msg)
+                window.show_text_box("[B][COLOR azure]Visualización de Información de la Build:[/COLOR][/B] [COLOR blue]{0}[/COLOR]".format(name), msg)
             else:
                 logging.log("Nombre Inválido de la Build!")
         else:
-            logging.log("La Build del archivo de texto no funciona: {0}".format(CONFIG.BUILDFILE))
+            logging.log("[B][COLOR azure]La Build del archivo de texto no funciona:[/COLOR][/B] [COLOR blue]{0}[/COLOR]".format(CONFIG.BUILDFILE))
 
     def build_video(self, name):
         from resources.libs import check
@@ -278,7 +278,7 @@ class BuildMenu:
             else:
                 logging.log("[{0}]No se puede encontrar la URL para la vista previa del vídeo".format(name))
         else:
-            logging.log("La Build del archivo de texto no funciona: {0}".format(CONFIG.BUILDFILE))
+            logging.log("[B][COLOR azure]La Build del archivo de texto no funciona:[/COLOR][/B] [COLOR blue]{0}[/COLOR]".format(CONFIG.BUILDFILE))
 
     def create_install_menu(self, name):
         menu_items = []

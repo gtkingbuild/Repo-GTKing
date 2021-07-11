@@ -216,7 +216,7 @@ def ensure_folders(folder=None):
         dialog = xbmcgui.Dialog()
 
         dialog.ok(CONFIG.ADDONTITLE,
-                      "[COLOR {0}]Error creating add-on directories:[/COLOR]".format(CONFIG.COLOR2)
+                      "[COLOR {0}]Error al crear directorios de Add-ons:[/COLOR]".format(CONFIG.COLOR2)
                       +'\n'+"[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, name))
 
 #########################
@@ -501,7 +501,7 @@ def reload_fix(default=None):
     dialog = xbmcgui.Dialog()
     
     dialog.ok(CONFIG.ADDONTITLE,
-                  "[COLOR {0}]ADVERTENCIA: A veces, Recargando el Perfil hace que Kodi se bloquee. Mientras Kodi está Recargando el Perfil, Por Favor No Presione Ningún Botón![/COLOR]".format(CONFIG.COLOR2))
+                  "[COLOR red]ADVERTENCIA:[/COLOR] [COLOR {0}] A veces, Recargando el Perfil hace que Kodi se bloquee. Mientras Kodi está Recargando el Perfil, Por Favor No Presione Ningún Botón![/COLOR]".format(CONFIG.COLOR2))
                   
     if not os.path.exists(CONFIG.PACKAGES):
         os.makedirs(CONFIG.PACKAGES)
@@ -552,7 +552,7 @@ def ascii_check(use=None, over=False):
         else:
             yes = dialog.yesno(CONFIG.ADDONTITLE,
                                    '[COLOR {0}]Desea [COLOR {1}]eliminar[/COLOR] todos los nombres de archivo con caracteres especiales o prefiere simplemente [COLOR {2}]escanear y ver[/COLOR] los resultados en el Registro (log)?[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, CONFIG.COLOR1),
-                                   yeslabel='[B][COLOR springgreen]Eliminar[/COLOR][/B]',
+                                   yeslabel='[B][COLOR cyan]Eliminar[/COLOR][/B]',
                                    nolabel='[B][COLOR red]Escanear[/COLOR][/B]')
     else:
         source = use
@@ -701,22 +701,22 @@ def _check_url(url, cred):
             response = requests.head(url, headers={'user-agent': CONFIG.USER_AGENT}, allow_redirects=True, auth=cred)
             
             if response.status_code < 300:
-                logging.log("URL check passed for {0}: Status code [{1}]".format(url, response.status_code), level=xbmc.LOGDEBUG)
+                logging.log("Verificación de URL aprobada para {0}: Código de estado [{1}]".format(url, response.status_code), level=xbmc.LOGDEBUG)
                 return True
             elif response.status_code < 400:
-                logging.log("URL check redirected from {0} to {1}: Status code [{2}]".format(url, response.headers['Location'], response.status_code), level=xbmc.LOGDEBUG)
+                logging.log("Verificación de URL redirigida de {0} a {1}: Código de estado [{2}]".format(url, response.headers['Location'], response.status_code), level=xbmc.LOGDEBUG)
                 return _check_url(response.headers['Location'])
             elif response.status_code == 401:
-                logging.log("URL requires authentication for {0}: Status code [{1}]".format(url, response.status_code), level=xbmc.LOGDEBUG)
+                logging.log("URL requiere autenticación para {0}: Código de estado [{1}]".format(url, response.status_code), level=xbmc.LOGDEBUG)
                 return 'auth'
             else:
-                logging.log("URL check failed for {0}: Status code [{1}]".format(url, response.status_code), level=xbmc.LOGDEBUG)
+                logging.log("Error al comprobar la URL de {0}: Código de estado [{1}]".format(url, response.status_code), level=xbmc.LOGDEBUG)
                 return False
         except Exception as e:
-            logging.log("URL check error for {0}: [{1}]".format(url, e), level=xbmc.LOGDEBUG)
+            logging.log("Error de verificación de URL para {0}: [{1}]".format(url, e), level=xbmc.LOGDEBUG)
             return False
     else:
-        logging.log("URL is not of a valid schema: {0}".format(url), level=xbmc.LOGDEBUG)
+        logging.log("La URL no tiene un esquema válido: {0}".format(url), level=xbmc.LOGDEBUG)
         return False
         
 
@@ -744,7 +744,7 @@ def open_url(url, stream=False, check=False, cred=None, count=0):
         response = requests.get(url, headers=user_agent, timeout=10.000, stream=stream, auth=cred)
 
         if response.status_code == 401:
-            retry = dialog.yesno(CONFIG.ADDONTITLE, 'El nombre de usuario o la contraseña no eran válidos. Le gustaría volver a intentarlo?', yeslabel='Try Again', nolabel='Cancel')
+            retry = dialog.yesno(CONFIG.ADDONTITLE, 'El nombre de usuario o la contraseña no eran válidos. Le gustaría volver a intentarlo?', yeslabel='Intentar Otra Vez', nolabel='Cancelar')
             
             if retry and count < 3:
                 count += 1
@@ -752,7 +752,7 @@ def open_url(url, stream=False, check=False, cred=None, count=0):
                 
                 response = open_url(url, stream, check, cred, count)
             else:
-                dialog.ok(CONFIG.ADDONTITLE, 'Authentication Failed.')
+                dialog.ok(CONFIG.ADDONTITLE, 'Error de Autenticación.')
                 return False
         
         return response

@@ -131,17 +131,17 @@ def upload_log():
         if filetype == 'log':
             log = os.path.basename(grab_log(file=True))
             name = log if log else "kodi.log"
-            error = "Error posting the {0} file".format(name)
+            error = "Error al publicar el {0} archivo".format(name)
         elif filetype == 'oldlog':
             log = os.path.basename(grab_log(file=True, old=True))
             name = log if log else "kodi.old.log"
-            error = "Error posting the {0} file".format(name)
+            error = "Error al publicar el {0} archivo".format(name)
         elif filetype == 'wizlog':
             name = "wizard.log"
-            error = "Error posting the {0} file".format(name)
+            error = "Error al publicar el {0} archivo".format(name)
         elif filetype == 'crashlog':
             name = "crash log"
-            error = "Error posting the crashlog file"
+            error = "Error al publicar el archivo de registro de fallos"
         succes, data = read_log(item[1])
         if succes:
             content = clean_log(data)
@@ -174,22 +174,22 @@ def get_files():
         if os.path.exists(kodilog):
             logfiles.append(['log', kodilog])
         else:
-            show_result("No log file found")
+            show_result("No se encontró ningún archivo de registro")
     else:
-        show_result("No log file found")
+        show_result("No se encontró ningún archivo de registro")
     if CONFIG.KEEPOLDLOG:
         if old:
             if os.path.exists(old):
                 logfiles.append(['oldlog', old])
             else:
-                show_result("No old log file found")
+                show_result("No se encontró ningún archivo de registro antiguo")
         else:
-            show_result("No old log file found")
+            show_result("No se encontró ningún archivo de registro antiguo")
     if CONFIG.KEEPWIZLOG:
         if wizard:
             logfiles.append(['wizlog', wizard])
         else:
-            show_result("No wizard log file found")
+            show_result("No se encontró ningún archivo de registro del wizard")
     if CONFIG.KEEPCRASHLOG:
         crashlog_path = ''
         items = []
@@ -204,9 +204,9 @@ def get_files():
             crashlog_path = os.path.expanduser('~')
             filematch = 'kodi_crashlog'
         elif tools.platform() == 'windows':
-            log("Windows crashlogs are not supported, please disable this option in the addon settings")
+            log("Los registros de fallos de Windows no son compatibles, desactive esta opción en la configuración del add-on")
         elif tools.platform() == 'android':
-            log("Android crashlogs are not supported, please disable this option in the addon settings")
+            log("Los registros de fallos de Android no son compatibles, desactive esta opción en la configuración del add-on")
         if crashlog_path and os.path.isdir(crashlog_path):
             dirs, files = xbmcvfs.listdir(crashlog_path)
             for item in files:
@@ -216,7 +216,7 @@ def get_files():
                     lastcrash = items[-1]
                     logfiles.append(['crashlog', lastcrash])
         if len(items) == 0:
-            log("No crashlog file found")
+            log("No se encontró ningún archivo de registro de fallos")
     return logfiles
 
 
@@ -227,11 +227,11 @@ def read_log(path):
         if content:
             return True, content
         else:
-            log('file is empty')
-            return False, "File is Empty"
+            log('el archivo está vacío')
+            return False, "El Archivo está Vacío"
     except Exception as e:
-        log('unable to read file: {0}'.format(e))
-        return False, "Unable to Read File"
+        log('imposible leer el archivo: {0}'.format(e))
+        return False, "Imposible Leer el Archivo"
 
 
 def clean_log(content):
@@ -247,17 +247,17 @@ def post_log(data, name):
     try:
         page = LogURLopener().open(URL, params)
     except Exception as e:
-        a = 'failed to connect to the server'
+        a = 'error al conectar con el servidor'
         log("{0}: {1}".format(a, str(e)), level=xbmc.LOGERROR)
         return False, a
 
     try:
         page_url = page.url.strip()
         # copy_to_clipboard(page_url)
-        log("URL for {0}: {1}".format(name, page_url))
+        log("URL para {0}: {1}".format(name, page_url))
         return True, page_url
     except Exception as e:
-        a = 'unable to retrieve the paste url'
+        a = 'no se puede recuperar la URL pegada'
         log("{0}: {1}".format(a, str(e)), level=xbmc.LOGERROR)
         return False, a
 
@@ -388,7 +388,7 @@ def view_log_file():
         elif wizlog:
             logtype = wizlog
 
-    window.show_log_viewer("Viewing Log File", log_file=logtype, ext_buttons=True)
+    window.show_log_viewer("Ver Archivo de Registro", log_file=logtype, ext_buttons=True)
 
 
 def swap_debug():
@@ -397,7 +397,7 @@ def swap_debug():
     new = '"debug.showloginfo"'
     query = '{{"jsonrpc":"2.0", "method":"Settings.GetSettingValue","params":{{"setting":{0}}}, "id":1}}'.format(new)
     response = xbmc.executeJSONRPC(query)
-    log("Debug Logging Get Settings: {0}".format(str(response)))
+    log("Configuración de Obtención del Registro de Depuración: {0}".format(str(response)))
     if 'false' in response:
         value = 'true'
         threading.Thread(target=_dialog_watch).start()
@@ -408,7 +408,7 @@ def swap_debug():
         log_notify(CONFIG.ADDONTITLE,
                            '[COLOR {0}]Registro de Depuración:[/COLOR] [COLOR {1}]Activado[/COLOR]'.format(CONFIG.COLOR1,
                                                                                                    CONFIG.COLOR2))
-        log("Debug Logging Set Settings: {0}".format(str(response)))
+        log("Configuración del Conjunto de Registros de Depuración: {0}".format(str(response)))
     elif 'true' in response:
         value = 'false'
         threading.Thread(target=_dialog_watch).start()
@@ -419,7 +419,7 @@ def swap_debug():
         log_notify(CONFIG.ADDONTITLE,
                    '[COLOR {0}]Registro de Depuración:[/COLOR] [COLOR {1}]Desactivado[/COLOR]'.format(CONFIG.COLOR1,
                                                                                          CONFIG.COLOR2))
-        log("Debug Logging Set Settings: {0}".format(str(response)))
+        log("Configuración del Conjunto de Registros de Depuración: {0}".format(str(response)))
 
 
 def _dialog_watch():
@@ -485,11 +485,11 @@ def error_checking(log=None, count=None, last=None):
             string = ''
             for item in errors:
                 i += 1
-                string += "[B][COLOR red]ERROR NUMERO {0}:[/B][/COLOR] [COLOR silver]{1}[/COLOR]\n".format(str(i), item.replace(CONFIG.HOME, '/').replace('                                        ', ''))
+                string += "[B][COLOR red]ERROR NÚMERO {0}:[/B][/COLOR] [COLOR silver]{1}[/COLOR]\n".format(str(i), item.replace(CONFIG.HOME, '/').replace('                                        ', ''))
             window.show_log_viewer("[B][COLOR azure]Visualización de Errores en el Registro[/COLOR][/B]", string)
         else:
-            string = "[B][COLOR red]Ultimo Error en el Registro:[/B][/COLOR] [COLOR ff038d91]{0}[/COLOR]\n".format(errors[0].replace(CONFIG.HOME, '/').replace('                                        ', ''))
-            window.show_log_viewer("[B][COLOR azure]Visualización del Ultimo Error en el Registro[/B][/COLOR]", string)
+            string = "[B][COLOR red]Último Error en el Registro:[/B][/COLOR] [COLOR teal]{0}[/COLOR]\n".format(errors[0].replace(CONFIG.HOME, '/').replace('                                        ', ''))
+           window.show_log_viewer("[B][COLOR azure]Visualización del Último Error en el Registro[/COLOR][/B]", string)
 
     else:
         log_notify('[COLOR {0}]Ver Error de Registro[/COLOR]'.format(CONFIG.COLOR1),

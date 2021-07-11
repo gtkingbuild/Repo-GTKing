@@ -207,7 +207,7 @@ def show_apk_warning(apk):
             xbmc.sleep(400)
             self.close()
 
-    xbmc.executebuiltin('Skin.SetString(apkinstaller, Now that {0} has been downloaded[CR]Click install on the next window!)'.format(apk))
+     xbmc.executebuiltin('Skin.SetString(apkinstaller, Ahora que se ha descargado {0} [CR]Haga clic en instalar en la siguiente ventana!)'.format(apk))
     popup = APKInstaller('APK.xml', CONFIG.ADDON_PATH, 'Default', close_time=34)
     popup.doModal()
     del popup
@@ -314,7 +314,7 @@ def show_build_prompt():
 
         def __init__(self, *args, **kwargs):
             self.title = CONFIG.THEME3.format(CONFIG.ADDONTITLE)
-            self.msg = "[COLOR azure]Actualmente no hay ninguna[/COLOR] [COLOR lime]Build[/COLOR] [COLOR azure]instalada de[/COLOR] {0}[COLOR azure].[/COLOR][COLOR gold]\n\nSeleccione [/COLOR][COLOR azure][B]'Build Menu'[/B][/COLOR] [COLOR gold]para instalar la [COLOR lime]Build[/COLOR][COLOR gold]. Seleccione [/COLOR][COLOR azure][B]'Ignorar'[/B][/COLOR][COLOR gold] para Cerrar esta ventana.[/COLOR][COLOR azure]\n\nGracias por escoger[/COLOR] {1}[COLOR azure].[/COLOR]".format(CONFIG.ADDONTITLE, CONFIG.ADDONTITLE)
+            self.msg = "[B][COLOR azure]\nActualmente no hay ninguna[/COLOR][/B] [B][COLOR lime]Build[/COLOR][/B] [B][COLOR azure]instalada en[/COLOR][/B] {0}[B][COLOR azure].[/COLOR][/B][COLOR gold]\n\n\n[B]Seleccione[/B] [/COLOR][COLOR azure][B]'Build Menu'[/B][/COLOR] [COLOR gold][B]para instalar la [COLOR lime]Build[/COLOR][COLOR gold]. Seleccione[/B] [/COLOR][COLOR azure][B]'Ignorar'[/B][/COLOR] [COLOR gold][B]para Cerrar esta ventana.[/COLOR][/B][COLOR azure]\n\n\nGracias por escoger[/COLOR] {1}[COLOR azure].[/COLOR]".format(CONFIG.ADDONTITLE, CONFIG.ADDONTITLE)
             self.msg = CONFIG.THEME2.format(self.msg)
 
         def onInit(self):
@@ -333,7 +333,7 @@ def show_build_prompt():
             self.setFocusId(self.buildmenu)
 
         def do_build_menu(self):
-            logging.log("[Build Actual Check] [User Selected: Abrir Build Menu] [Next Check: {0}]".format(CONFIG.BUILDCHECK),
+            logging.log("[Verificación Build Actual] [Usuario Seleccionado: Abrir Menu Build] [Siguiente Verificación: {0}]".format(CONFIG.BUILDCHECK),
                         level=xbmc.LOGINFO)
             CONFIG.set_setting('nextbuildcheck', tools.get_date(days=CONFIG.UPDATECHECK, formatted=True))
             CONFIG.set_setting('instalado', 'ignorado')
@@ -345,7 +345,7 @@ def show_build_prompt():
             xbmc.executebuiltin('ActivateWindow(Programs, {0}, return)'.format(url))
 
         def do_ignore(self):
-            logging.log("[Build Actual Check] [User Selected: Ignore Build Menu] [Next Check: {0}]".format(CONFIG.BUILDCHECK),
+            logging.log("[Verificación Build Actual] [Usuario seleccionado: Ignorar Build Menu] [Siguiente Verificación: {0}]".format(CONFIG.BUILDCHECK),
                         level=xbmc.LOGINFO)
             CONFIG.set_setting('nextbuildcheck', tools.get_date(days=CONFIG.UPDATECHECK, formatted=True))
             CONFIG.set_setting('instalado', 'ignorado')
@@ -376,8 +376,8 @@ def show_update_window(name='Testing Window', current='1.0', new='1.1', icon=CON
             self.new = kwargs['nuevo']
             self.icon = kwargs['icon']
             self.fanart = kwargs['fanart']
-            self.msgupdate = "Actualización disponible para instalar la build:\n[COLOR {0}]{1}[/COLOR]\n\nVersion Actual: v[COLOR {2}]{3}[/COLOR]\nUltima Version: v[COLOR {4}]{5}[/COLOR]\n\n[COLOR {6}]*Recommendado: Nueva instalación[/COLOR]".format(CONFIG.COLOR1, self.name, CONFIG.COLOR1, self.current, CONFIG.COLOR1, self.new, CONFIG.COLOR1)
-            self.msgcurrent = "Ejecutando la última versión de la build instalada:\n[COLOR {0}]{1}[/COLOR]\n\nVersion Actual: v[COLOR {2}]{3}[/COLOR]\nUltima Version: v[COLOR {4}]{5}[/COLOR]\n\n[COLOR {6}]*Recommendado: Nueva instalación[/COLOR]".format(CONFIG.COLOR1, self.name, CONFIG.COLOR1, self.current, CONFIG.COLOR1, self.new, CONFIG.COLOR1)
+            self.msgupdate = "[B]Actualización disponible para instalar la Build:[/B]\n[COLOR {0}]{1}[/COLOR]\n\nVersión Actual: v[COLOR {2}]{3}[/COLOR]\nUltima Versión: v[COLOR {4}]{5}[/COLOR]\n\n[COLOR {6}]*Recommendado: Nueva instalación[/COLOR]".format(CONFIG.COLOR1, self.name, CONFIG.COLOR1, self.current, CONFIG.COLOR1, self.new, CONFIG.COLOR1)
+            self.msgcurrent = "Ejecutando la última versión de la Build instalada:\n[COLOR {0}]{1}[/COLOR]\n\nVersión Actual: v[COLOR {2}]{3}[/COLOR]\nUltima Versión: v[COLOR {4}]{5}[/COLOR]\n\n[COLOR {6}]*Recommendado: Nueva instalación[/COLOR]".format(CONFIG.COLOR1, self.name, CONFIG.COLOR1, self.current, CONFIG.COLOR1, self.new, CONFIG.COLOR1)
 
         def onInit(self):
             self.imagefanart = 101
@@ -395,22 +395,22 @@ def show_update_window(name='Testing Window', current='1.0', new='1.1', icon=CON
             self.setProperty('dialog.imageicon', self.icon)
 
         def do_fresh_install(self):
-            logging.log("[Check Updates] [Versión Instalada: {0}] [Version Actual: {1}] [Usuario Seleccionado: Instalación de la Build Nueva]".format(CONFIG.BUILDVERSION, CONFIG.BUILDLATEST))
-            logging.log("[Check Updates] [Next Check: {0}]".format(tools.get_date(days=CONFIG.UPDATECHECK, formatted=True)))
+            logging.log("[Revisa Actualizaciones] [Versión Instalada: {0}] [Version Actual: {1}] [Usuario Seleccionado: Instalación de la Nueva Build]".format(CONFIG.BUILDVERSION, CONFIG.BUILDLATEST))
+            logging.log("[Revisa Actualizaciones] [Siguiente    Verificación: {0}]".format(tools.get_date(days=CONFIG.UPDATECHECK, formatted=True)))
             url = 'plugin://{0}/?mode=install&name={1}&action=fresh'.format(CONFIG.ADDON_ID, quote_plus(CONFIG.BUILDNAME))
             xbmc.executebuiltin('RunPlugin({0})'.format(url))
             self.close()
 
         def do_normal_install(self):
-            logging.log("[Check Updates] [Versión Instalada: {0}] [Version Actual: {1}] [Usuario Seleccionado: Instalación de la Build Nueva]".format(CONFIG.BUILDVERSION, CONFIG.BUILDLATEST))
-            logging.log("[Check Updates] [Next Check: {0}]".format(tools.get_date(days=CONFIG.UPDATECHECK, formatted=True)))
+            logging.log("[Revisa Actualizaciones] [Versión Instalada: {0}] [Versión Actual: {1}] [Usuario Seleccionado: Instalación de la Nueva Build]".format(CONFIG.BUILDVERSION, CONFIG.BUILDLATEST))
+            logging.log("[Revisa Actualizaciones] [Nueva: {0}]".format(tools.get_date(days=CONFIG.UPDATECHECK, formatted=True)))
             url = 'plugin://{0}/?mode=install&name={1}&action=normal'.format(CONFIG.ADDON_ID, quote_plus(CONFIG.BUILDNAME))
             xbmc.executebuiltin('RunPlugin({0})'.format(url))
             self.close()
 
         def do_ignore(self):
-            logging.log("[Check Updates] [Versión Instalada: {0}] [Version Actual: {1}] [Usuario Seleccionado: Ignorar {2} Dias]".format(CONFIG.BUILDVERSION, CONFIG.BUILDLATEST, CONFIG.UPDATECHECK))
-            logging.log("[Check Updates] [Next Check: {0}]".format(tools.get_date(days=CONFIG.UPDATECHECK, formatted=True)))
+            logging.log("[Revisa Actualizaciones] [Versión Instalada: {0}] [Versión Actual: {1}] [Usuario Seleccionado: Ignorar {2} Dias]".format(CONFIG.BUILDVERSION, CONFIG.BUILDLATEST, CONFIG.UPDATECHECK))
+            logging.log("[Revisa Actualizaciones] [Siguiente Verificación: {0}]".format(tools.get_date(days=CONFIG.UPDATECHECK, formatted=True)))
             self.close()
 
         def onAction(self, action):
@@ -430,10 +430,10 @@ def show_update_window(name='Testing Window', current='1.0', new='1.1', icon=CON
     # update.doModal()
     # del update
     msgcurrent = 'Ejecutando la última versión de la build instalada: '
-    msgupdate = 'Actualización disponible para la build instalada: '
+    msgupdate = '[B]Actualización disponible para instalar la Build:[/B] '
     build_name = '[COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, name)
-    current_version = 'Version Actual: v[COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, current)
-    latest_version = 'Ultima Version: v[COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, new)
+    current_version = 'Versión Actual: v[COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, current)
+    latest_version = 'Última Versión: v[COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, new)
     
     final_msg = '{0}{1}\n{2}\n{3}\n'.format(msgcurrent if current >= new else msgupdate,
                                         build_name, current_version, latest_version)
@@ -502,13 +502,13 @@ def show_notification(msg, test=False):
         def do_remind(self):
             if not test:
                 CONFIG.set_setting('notedismiss', 'false')
-            logging.log('[Notifications] Notificacion {0} Recuérdame más Tarde'.format(CONFIG.get_setting('noteid')))
+            logging.log('[Notificaciones] Notificación {0} Recuérdame más Tarde'.format(CONFIG.get_setting('noteid')))
             self.close()
 
         def do_dismiss(self):
             if not test:
                 CONFIG.set_setting('notedismiss', 'true')
-            logging.log('[Notifications] Notificacion {0} Despedida'.format(CONFIG.get_setting('noteid')))
+            logging.log('[Notificaciones] Notificación {0} Despedida'.format(CONFIG.get_setting('noteid')))
             self.close()
 
         def onAction(self, action):

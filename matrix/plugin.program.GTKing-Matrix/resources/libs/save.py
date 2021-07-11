@@ -66,7 +66,7 @@ def import_save_data():
     x = 0
     overwrite = dialog.yesno(CONFIG.ADDONTITLE,
                                  "[COLOR {0}]Prefieres que sobrescribamos todos los archivos de Datos Guardados o te preguntemos por cada archivo que se está importando?[/COLOR]".format(CONFIG.COLOR2),
-                                 yeslabel="[B][COLOR springgreen]Sobrescribir TODO[/COLOR][/B]",
+                                 yeslabel="[B][COLOR cyan]Sobrescribir TODO[/COLOR][/B]",
                                  nolabel="[B][COLOR red]No preguntar[/COLOR][/B]")
     
     if os.path.exists(trakt):
@@ -84,9 +84,9 @@ def import_save_data():
                     os.remove(old)
                 else:
                     if not dialog.yesno(CONFIG.ADDONTITLE,
-                                            "[COLOR {0}]Would you like replace the current [COLOR {1}]{2}[/COLOR] file?".format(CONFIG.COLOR2, CONFIG.COLOR1, item),
-                                            yeslabel="[B][COLOR springgreen]Yes Replace[/COLOR][/B]",
-                                            nolabel="[B][COLOR red]No Skip[/COLOR][/B]"):
+                                            "[COLOR {0}]Le gustaría reemplazar el archivo [COLOR {1}]{2}[/COLOR] actual?".format(CONFIG.COLOR2, CONFIG.COLOR1, item),
+                                            yeslabel="[B][COLOR cyan]Sí, Reemplazar[/COLOR][/B]",
+                                            nolabel="[B][COLOR red]No, Saltar[/COLOR][/B]"):
                         continue
                     else:
                         os.remove(old)
@@ -108,9 +108,9 @@ def import_save_data():
                     os.remove(old)
                 else:
                     if not dialog.yesno(CONFIG.ADDONTITLE,
-                                            "[COLOR {0}]Would you like replace the current [COLOR {1}]{2}[/COLOR] file?".format(CONFIG.COLOR2, CONFIG.COLOR1, item),
-                                            yeslabel="[B][COLOR springgreen]Yes Replace[/COLOR][/B]",
-                                            nolabel="[B][COLOR red]No Skip[/COLOR][/B]"):
+                                            "[COLOR {0}]Desea reemplazar el archivo [COLOR {1}]{2}[/COLOR] actual?".format(CONFIG.COLOR2, CONFIG.COLOR1, item),
+                                            yeslabel="[B][COLOR cyan]Sí, Reemplazar[/COLOR][/B]",
+                                            nolabel="[B][COLOR red]No, Saltar[/COLOR][/B]"):
                         continue
                     else:
                         os.remove(old)
@@ -133,9 +133,9 @@ def import_save_data():
                     os.remove(old)
                 else:
                     if not dialog.yesno(CONFIG.ADDONTITLE,
-                                            "[COLOR {0}]Would you like replace the current [COLOR {1}]{2}[/COLOR] file?".format(CONFIG.COLOR2, CONFIG.COLOR1, item),
-                                            yeslabel="[B][COLOR springgreen]Yes Replace[/COLOR][/B]",
-                                            nolabel="[B][COLOR red]No Skip[/COLOR][/B]"):
+                                            "[COLOR {0}]Desea reemplazar el archivo [COLOR {1}]{2}[/COLOR] actual?".format(CONFIG.COLOR2, CONFIG.COLOR1, item),
+                                            yeslabel="[B][COLOR cyan]Sí, Reemplazar[/COLOR][/B]",
+                                            nolabel="[B][COLOR red]No, Saltar[/COLOR][/B]"):
                         continue
                     else:
                         os.remove(old)
@@ -151,9 +151,9 @@ def import_save_data():
             if os.path.exists(old):
                 if not overwrite == 1:
                     if not dialog.yesno(CONFIG.ADDONTITLE,
-                                            "[COLOR {0}]Would you like replace the current [COLOR {1}]{2}[/COLOR] file?".format(CONFIG.COLOR2, CONFIG.COLOR1, item),
-                                            yeslabel="[B][COLOR springgreen]Yes Replace[/COLOR][/B]",
-                                            nolabel="[B][COLOR red]No Skip[/COLOR][/B]"):
+                                            "[COLOR {0}]Desea reemplazar el archivo [COLOR {1}]{2}[/COLOR] actual?".format(CONFIG.COLOR2, CONFIG.COLOR1, item),
+                                            yeslabel="[B][COLOR cyan]Sí, Reemplazar[/COLOR][/B]",
+                                            nolabel="[B][COLOR red]No, Saltar[/COLOR][/B]"):
                         continue
             os.remove(old)
             shutil.copy(new, old)
@@ -162,9 +162,9 @@ def import_save_data():
         old = os.path.join(CONFIG.ADDON_DATA, 'plugin.program.super.favourites')
         if os.path.exists(old):
             cont = dialog.yesno(CONFIG.ADDONTITLE,
-                                    "[COLOR {0}]Would you like replace the current [COLOR {1}]Super Favourites[/COLOR] addon_data folder with the new one?".format(CONFIG.COLOR2, CONFIG.COLOR1),
-                                    yeslabel="[B][COLOR springgreen]Yes Replace[/COLOR][/B]",
-                                    nolabel="[B][COLOR red]No Skip[/COLOR][/B]")
+                                    "[COLOR {0}]Le gustaría reemplazar la carpeta actual  [COLOR {1}]Super Favoritos[/COLOR] addon_data por la nueva?".format(CONFIG.COLOR2, CONFIG.COLOR1),
+                                    yeslabel="[B][COLOR cyan]Sí, Reemplazar[/COLOR][/B]",
+                                    nolabel="[B][COLOR red]No, Saltar[/COLOR][/B]")
         else:
             cont = 1
         if cont == 1:
@@ -177,10 +177,10 @@ def import_save_data():
         xbmcvfs.delete(tempfile)
     if x == 0:
         logging.log_notify(CONFIG.ADDONTITLE,
-                           "[COLOR {0}]Save Data Import Failed[/COLOR]".format(CONFIG.COLOR2))
+                           "[COLOR {0}]No se pudo Guardar la Importación de Datos[/COLOR]".format(CONFIG.COLOR2))
     else:
         logging.log_notify(CONFIG.ADDONTITLE,
-                           "[COLOR {0}]Save Data Import Complete[/COLOR]".format(CONFIG.COLOR2))
+                           "[COLOR {0}]Guardar Importación de Datos Completa[/COLOR]".format(CONFIG.COLOR2))
 
 
 def export_save_data():

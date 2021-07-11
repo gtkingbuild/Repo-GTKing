@@ -171,8 +171,8 @@ class Wizard:
                                    nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]',
                                    yeslabel='[B][COLOR springgreen]Aplicar Correccion[/COLOR][/B]')
         else:
-            yes_pressed = self.dialog.yesno("{0} - [COLOR red]ADVERTENCIA!![/COLOR]".format(CONFIG.ADDONTITLE),
-                               "[COLOR {0}][COLOR {1}]{2}[/COLOR] La build de la comunidad no está instalada actualmente.".format(CONFIG.COLOR2, CONFIG.COLOR1, name) + '\n' + "Le gustaria aplicar la Correccion Gui ([COLOR azure]de interfaz gráfica de usuario[/COLOR]) de todos modos?.[/COLOR]",
+            yes_pressed = self.dialog.yesno("[B]{0} - [COLOR red]ADVERTENCIA!![/COLOR][/B]".format(CONFIG.ADDONTITLE),
+                               "[COLOR {0}][COLOR {1}]{2}[/COLOR] [B]La Build de la comunidad no está instalada actualmente.".format(CONFIG.COLOR2, CONFIG.COLOR1, name) + '\n' + "Le gustaría aplicar la Corrección Gui ([COLOR azure]de la interfaz gráfica de usuario[/COLOR]) de todos modos?[/B][/COLOR]",
                                nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]',
                                yeslabel='[B][COLOR springgreen]Aplicar Correccion[/COLOR][/B]')
         if yes_pressed:
@@ -182,7 +182,7 @@ class Wizard:
             response = tools.open_url(guizip, check=True)
             if not response:
                 logging.log_notify(CONFIG.ADDONTITLE,
-                                   '[COLOR {0}]Correccion Gui: Url Zip Invalido![/COLOR]'.format(CONFIG.COLOR2))
+                                   '[COLOR {0}]Corrección Gui: Url Zip Inválido![/COLOR]'.format(CONFIG.COLOR2))
                 return
 
             self.dialogProgress.create(CONFIG.ADDONTITLE, '[COLOR {0}][B]Descargando Correccion Gui:[/B][/COLOR] [COLOR {1}]{2}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, name), '', 'Espere por Favor')
@@ -214,11 +214,11 @@ class Wizard:
             installed = db.grab_addons(lib)
             db.addon_database(installed, 1, True)
 
-            self.dialog.ok(CONFIG.ADDONTITLE, "[COLOR {0}]Para guardar los cambios, ahora necesita Forzar el Cierre de Kodi. \nPresione [B]OK[/B] para Forzar el Cierre de Kodi.[/COLOR]".format(CONFIG.COLOR2))
+            self.dialog.ok(CONFIG.ADDONTITLE, "[COLOR {0}][B]Para guardar los cambios, ahora necesita Forzar el Cierre de Kodi.[/B] \n\nPresione [B]OK[/B] para Forzar el Cierre de Kodi.[/COLOR]".format(CONFIG.COLOR2))
             tools.kill_kodi(over=True)
         else:
             logging.log_notify(CONFIG.ADDONTITLE,
-                               '[COLOR {0}]Correccion Gui:[/COLOR] [COLOR gold]Cancelado![/COLOR]'.format(CONFIG.COLOR2))
+                               '[COLOR {0}]Corrección Gui:[/COLOR] [COLOR gold]Cancelado![/COLOR]'.format(CONFIG.COLOR2))
 
     def theme(self, name, theme='', over=False):
         installtheme = False
@@ -231,28 +231,28 @@ class Wizard:
                 from resources.libs.gui.build_menu import BuildMenu
                 themes = BuildMenu().theme_count(name, False)
                 if len(themes) > 0:
-                    if self.dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}]La Build [COLOR {1}]{2}[/COLOR] viene con [COLOR {3}]{4}[/COLOR] Parches diferentes".format(CONFIG.COLOR2, CONFIG.COLOR1, name, CONFIG.COLOR1, len(themes)) + '\n' + "Le gustaria instalar uno ahora?[/COLOR]",
-                                    yeslabel="[B][COLOR springgreen]Instalar Parche[/COLOR][/B]",
+                    if self.dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}][B]La Build [COLOR {1}]{2}[/COLOR] viene con [COLOR {3}]{4}[/COLOR] Parches diferentes[/B]".format(CONFIG.COLOR2, CONFIG.COLOR1, name, CONFIG.COLOR1, len(themes)) + '\n\n' + "Le gustaria instalar uno ahora?[/COLOR]",
+                                    yeslabel="[B][COLOR cyan]Instalar Parche[/COLOR][/B]",
                                     nolabel="[B][COLOR red]Cancelar Parche[/COLOR][/B]"):
                         logging.log("Lista de Parches: {0}".format(str(themes)))
                         ret = self.dialog.select(CONFIG.ADDONTITLE, themes)
-                        logging.log("Selecciona un Parche para Instalar: {0}".format(ret))
+                        logging.log("[B]Selecciona un Parche para Instalar:[/B] {0}".format(ret))
                         if not ret == -1:
                             theme = themes[ret]
                             installtheme = True
                         else:
                             logging.log_notify(CONFIG.ADDONTITLE,
-                                               '[COLOR {0}]Instalacion:[/COLOR] [COLOR gold]Cancelado![/COLOR]'.format(CONFIG.COLOR2))
+                                               '[COLOR {0}]Instalación:[/COLOR] [COLOR gold]Cancelado![/COLOR]'.format(CONFIG.COLOR2))
                             return
                     else:
                         logging.log_notify(CONFIG.ADDONTITLE,
-                                           '[COLOR {0}]Instalacion Parche:[/COLOR] [COLOR gold]Cancelado![/COLOR]'.format(CONFIG.COLOR2))
+                                           '[COLOR {0}]Instalación Parche:[/COLOR] [COLOR gold]Cancelado![/COLOR]'.format(CONFIG.COLOR2))
                         return
             else:
                 logging.log_notify(CONFIG.ADDONTITLE,
-                                   '[COLOR {0}]Instalacion Parche:[/COLOR] [COLOR gold]Nada Encontrado![/COLOR]'.format(CONFIG.COLOR2))
+                                   '[COLOR {0}]Instalación Parche:[/COLOR] [COLOR gold]Nada Encontrado![/COLOR]'.format(CONFIG.COLOR2))
         else:
-            installtheme = self.dialog.yesno(CONFIG.ADDONTITLE, '[COLOR {0}]Te gustaria instalar uno de los Parches que hay en:'.format(CONFIG.COLOR2) +' \n' + '[COLOR dodgerblue]PARCHES MATRIX[/COLOR]'.format(CONFIG.COLOR1, theme) + '\n' + 'para [COLOR {0}]{1} v{2} [/COLOR]?[/COLOR]'.format(CONFIG.COLOR1, name, check.check_build(name,'version')),yeslabel="[B][COLOR springgreen]Instalar Parche[/COLOR][/B]", nolabel="[B][COLOR red]Cancelar Parche[/COLOR][/B]")
+            installtheme = self.dialog.yesno(CONFIG.ADDONTITLE, '[COLOR {0}][B]Te gustaría instalar uno de los Parches que hay en:[/B]'.format(CONFIG.COLOR2) +' \n' + '[COLOR dodgerblue][B]PARCHES MATRIX[/B][/COLOR]'.format(CONFIG.COLOR1, theme) + '\n' + '[B]para [COLOR {0}]{1} v{2}[/COLOR]?[/B][/COLOR]'.format(CONFIG.COLOR1, name, check.check_build(name,'version')),yeslabel="[B][COLOR cyan]Instalar Parche[/COLOR][/B]", nolabel="[B][COLOR red]Cancelar Parche[/COLOR][/B]")
                                         
         if installtheme:
             themezip = check.check_theme(name, theme, 'url')
@@ -261,7 +261,7 @@ class Wizard:
             response = tools.open_url(themezip, check=True)
             if not response:
                 logging.log_notify(CONFIG.ADDONTITLE,
-                                   '[COLOR {0}]Instalacion Parche: Url Zip Invalido![/COLOR]'.format(CONFIG.COLOR2))
+                                   '[COLOR {0}]Instalación Parche:[/COLOR] [COLOR gold]Url Zip Inválido![/COLOR]'.format(CONFIG.COLOR2))
                 return False
 
             self.dialogProgress.create(CONFIG.ADDONTITLE, '[COLOR {0}][B]Descargando:[/B][/COLOR] [COLOR {1}]{2}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, zipname) +' \n' + 'Espere por Favor')
@@ -298,7 +298,7 @@ class Wizard:
             xbmc.executebuiltin("Container.Refresh()")
         else:
             logging.log_notify(CONFIG.ADDONTITLE,
-                               '[COLOR {0}]Instalacion Parche:[/COLOR] [COLOR gold]Cancelado![/COLOR]'.format(CONFIG.COLOR2))
+                               '[COLOR {0}]Instalación Parche:[/COLOR] [COLOR gold]Cancelado![/COLOR]'.format(CONFIG.COLOR2))
 
 
 def wizard(action, name, url):

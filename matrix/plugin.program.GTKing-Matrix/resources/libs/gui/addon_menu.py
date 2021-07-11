@@ -93,7 +93,7 @@ class AddonMenu:
             TEMPADDONFILE = tools.read_from_file(local_file)
         else:
             TEMPADDONFILE = None
-            logging.log("[Addon Menu] No se agregó ninguna lista de complementos.")
+            logging.log("[Addon Menu] No se agregó ninguna lista de add-ons.")
 
         if TEMPADDONFILE:
             import json
@@ -169,7 +169,7 @@ class AddonMenu:
                                 try:
                                     add = tools.get_addon_info(plugin, 'path')
                                     if os.path.exists(add):
-                                        addonname = "[COLOR springgreen][Instalado][/COLOR] {0}".format(addonname)
+                                        addonname = "[COLOR cyan][Instalado][/COLOR] {0}".format(addonname)
                                 except:
                                     pass
 
@@ -182,7 +182,7 @@ class AddonMenu:
                         directory.add_file('El archivo de texto no tiene el formato correcto!', themeit=CONFIG.THEME3)
                         logging.log("[Addon Menu] ERROR: Formato inválido.")
                     elif len(addons) == 0:
-                        directory.add_file("Aún no se agregaron complementos a este menú!", themeit=CONFIG.THEME2)
+                        directory.add_file("Aún no se agregaron add-ons a este menú!", themeit=CONFIG.THEME2)
         else:
             logging.log("[Addon Menu] ERROR: La URL de la lista de Addon no funciona.")
             directory.add_file('Url para el archivo txt no válido', themeit=CONFIG.THEME3)
@@ -214,7 +214,7 @@ class AddonMenu:
         response = tools.open_url(url, check=True)
 
         if not response:
-            logging.log_notify("[COLOR {0}]Addon Instalador[/COLOR]".format(CONFIG.COLOR1),
+            logging.log_notify("[COLOR {0}]Instalador de Add-ons[/COLOR]".format(CONFIG.COLOR1),
                                '[COLOR {0}]{1}:[/COLOR] [COLOR {2}]URL inválido zip![/COLOR]'.format(CONFIG.COLOR1,
                                                                                                     plugin,
                                                                                                     CONFIG.COLOR2))
@@ -227,7 +227,7 @@ class AddonMenu:
                                                                                                       CONFIG.COLOR1,
                                                                                                       plugin)
                                +'\n'+''
-                               +'\n'+'[COLOR {0}]Espere por favor[/COLOR]'.format(CONFIG.COLOR2))
+                               +'\n'+'[COLOR {0}]Espere por Favor[/COLOR]'.format(CONFIG.COLOR2))
         urlsplits = url.split('/')
         lib = os.path.join(CONFIG.PACKAGES, urlsplits[-1])
 
@@ -241,7 +241,7 @@ class AddonMenu:
                                                                                       plugin)
         self.progress_dialog.update(0, title
                                     +'\n'+''
-                                    +'\n'+'[COLOR {0}]Espere por favor[/COLOR]'.format(CONFIG.COLOR2))
+                                    +'\n'+'[COLOR {0}]Espere por Favor[/COLOR]'.format(CONFIG.COLOR2))
         percent, errors, error = extract.all(lib, CONFIG.ADDONS, title=title)
         self.progress_dialog.update(0, title
                                     +'\n'+''
@@ -311,7 +311,7 @@ class AddonMenu:
                         return True
                 else:
                     logging.log(
-                        "[Addon Installer] Repository not installed: Unable to grab url! ({0})".format(urls[1]))
+                        "[Addon Installer] Repositorio no instalado: [COLOR gold]No se puede obtener la URL![/COLOR] ({0})".format(urls[1]))
             else:
                 logging.log("Repository installed, installing addon")
                 install = install_from_kodi(plugin)
@@ -356,8 +356,8 @@ class AddonMenu:
         response = tools.open_url(url, check=True)
 
         if not response:
-            logging.log_notify("[COLOR {0}]Addon Instalador[/COLOR]".format(CONFIG.COLOR1),
-                               '[COLOR {0}]{1}:[/COLOR] [COLOR {2}]Url Invalido Zip![/COLOR]'.format(CONFIG.COLOR1, name, CONFIG.COLOR2))
+            logging.log_notify("[COLOR {0}]Instalador de Add-ons[/COLOR]".format(CONFIG.COLOR1),
+                               '[COLOR {0}]{1}:[/COLOR] [COLOR {2}]Url del Zip Inválida![/COLOR]'.format(CONFIG.COLOR1, name, CONFIG.COLOR2))
             return
 
         if not os.path.exists(CONFIG.PACKAGES):
@@ -366,7 +366,7 @@ class AddonMenu:
         progress_dialog.create(CONFIG.ADDONTITLE,
                       '[COLOR {0}][B]Descargando:[/B][/COLOR] [COLOR {1}]{2}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, name)
                       +'\n'+''
-                      +'\n'+'[COLOR {0}]Espere por favor[/COLOR]'.format(CONFIG.COLOR2))
+                      +'\n'+'[COLOR {0}]Espere por Favor[/COLOR]'.format(CONFIG.COLOR2))
         urlsplits = url.split('/')
         lib = xbmc.makeLegalFilename(os.path.join(CONFIG.PACKAGES, urlsplits[-1]))
         try:
@@ -377,12 +377,12 @@ class AddonMenu:
         title = '[COLOR {0}][B]Instalando:[/B][/COLOR] [COLOR {1}]{2}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, name)
         progress_dialog.update(0, title
                                 +'\n'+''
-                                +'\n'+'[COLOR {0}]Espere por favor[/COLOR]'.format(CONFIG.COLOR2))
+                                +'\n'+'[COLOR {0}]Espere por Favor[/COLOR]'.format(CONFIG.COLOR2))
         percent, errors, error = extract.all(lib, CONFIG.ADDONS, title=title)
         installed = db.grab_addons(lib)
         db.addon_database(installed, 1, True)
         progress_dialog.close()
-        logging.log_notify("[COLOR {0}]Addon Instalador[/COLOR]".format(CONFIG.COLOR1),
+        logging.log_notify("[COLOR {0}]Instalador de Add-ons[/COLOR]".format(CONFIG.COLOR1),
                            '[COLOR {0}]{1}: Instalado![/COLOR]'.format(CONFIG.COLOR2, name))
         xbmc.executebuiltin('UpdateAddonRepos()')
         xbmc.executebuiltin('UpdateLocalAddons()')
@@ -402,8 +402,8 @@ class AddonMenu:
         response = tools.open_url(url, check=False)
 
         if not response:
-            logging.log_notify("[COLOR {0}]Addon Instalador[/COLOR]".format(CONFIG.COLOR1),
-                               '[COLOR {0}]{1}:[/COLOR] [COLOR {2}]Url Invalido Zip![/COLOR]'.format(CONFIG.COLOR1, name, CONFIG.COLOR2))
+            logging.log_notify("[COLOR {0}]Instalador de Add-ons[/COLOR]".format(CONFIG.COLOR1),
+                               '[COLOR {0}]{1}:[/COLOR] [COLOR {2}]Url del Zip Inválida![/COLOR]'.format(CONFIG.COLOR1, name, CONFIG.COLOR2))
             return
 
         if not os.path.exists(CONFIG.PACKAGES):
@@ -412,7 +412,7 @@ class AddonMenu:
         progress_dialog.create(CONFIG.ADDONTITLE,
                       '[COLOR {0}][B]Descargando:[/B][/COLOR] [COLOR {1}]{2}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, name)
                       +'\n'+''
-                      +'\n'+'[COLOR {0}]Espere por favor[/COLOR]'.format(CONFIG.COLOR2))
+                      +'\n'+'[COLOR {0}]Espere por Favor[/COLOR]'.format(CONFIG.COLOR2))
 
         urlsplits = url.split('/')
         lib = xbmc.makeLegalFilename(os.path.join(CONFIG.PACKAGES, urlsplits[-1]))
@@ -424,12 +424,12 @@ class AddonMenu:
         title = '[COLOR {0}][B]Instalando:[/B][/COLOR] [COLOR {1}]{2}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, name)
         progress_dialog.update(0, title
                                     +'\n'+''
-                                    +'\n'+'[COLOR {0}]Espere por favor[/COLOR]'.format(CONFIG.COLOR2))
+                                    +'\n'+'[COLOR {0}]Espere por Favor[/COLOR]'.format(CONFIG.COLOR2))
         percent, errors, error = extract.all(lib, CONFIG.HOME, title=title)
         installed = db.grab_addons(lib)
         db.addon_database(installed, 1, True)
         progress_dialog.close()
-        logging.log_notify("[COLOR {0}]Addon Instalador[/COLOR]".format(CONFIG.COLOR1),
+        logging.log_notify("[COLOR {0}]Instalador de Add-ons[/COLOR]".format(CONFIG.COLOR1),
                            '[COLOR {0}]{1}: Instalado![/COLOR]'.format(CONFIG.COLOR2, name))
         xbmc.executebuiltin('UpdateAddonRepos()')
         xbmc.executebuiltin('UpdateLocalAddons()')

@@ -175,14 +175,14 @@ def check_build_update():
         CONFIG.set_setting('latestversion', version)
         if version > CONFIG.BUILDVERSION:
             if CONFIG.DISABLEUPDATE == 'false':
-                logging.log("[Check Updates] [Versión Instalada: {0}] [Version Actual: {1}] Abrir Ventana de Actualización".format(CONFIG.BUILDVERSION, version))
+                logging.log("[Revisa Actualizaciones] [Versión Instalada: {0}] [Versión Actual: {1}] Abrir Ventana de Actualización".format(CONFIG.BUILDVERSION, version))
                 window.show_update_window(CONFIG.BUILDNAME, CONFIG.BUILDVERSION, version, icon, fanart)
             else:
-                logging.log("[Check Updates] [Versión Instalada: {0}] [Version Actual: {1}] Ventana de Actualización Deshabilitada".format(CONFIG.BUILDVERSION, version))
+                logging.log("[Revisa Actualizaciones] [Versión Instalada: {0}] [Versión Actual: {1}] Ventana de Actualización Deshabilitada".format(CONFIG.BUILDVERSION, version))
         else:
-            logging.log("[Check Updates] [Versión Instalada: {0}] [Version Actual: {1}]".format(CONFIG.BUILDVERSION, version))
+            logging.log("[Revisa Actualizaciones] [Versión Instalada: {0}] [Versión Actual: {1}]".format(CONFIG.BUILDVERSION, version))
     else:
-        logging.log("[Check Updates] ERROR: No se puede encontrar la versión de la build en el archivo de texto", level=xbmc.LOGERROR)
+        logging.log("[Revisa Actualizaciones] ERROR: No se puede encontrar la versión de la Build en el archivo de texto", level=xbmc.LOGERROR)
 
 
 def check_skin():
@@ -191,7 +191,7 @@ def check_skin():
 
     dialog = xbmcgui.Dialog()
     
-    logging.log("[Build Check] Inicio de Comprobación del Skin Inválido")
+    logging.log("[Verificación Build] Inicio de Comprobación del Skin Inválido")
     
     gotoskin = False
     if not CONFIG.DEFAULTSKIN == '':
@@ -257,7 +257,7 @@ def check_skin():
 
         if skin.switch_to_skin(gotoskin):
             skin.look_and_feel_data('restore')
-    logging.log("[Build Check] Fin de Comprobación del Skin Invalido")
+    logging.log("[Verificación Build] Fin de Comprobación del Skin Invalido")
 
 
 def check_sources():
@@ -294,7 +294,7 @@ def check_sources():
         logging.log("Fuentes Malas: {0}".format(len(bad)))
         if len(bad) > 0:
             choice = dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}]{1}[/COLOR][COLOR {2}] Fuente(s) se han encontrado Rotas".format(CONFIG.COLOR1, len(bad), CONFIG.COLOR2) + '\n' + "Le gustaría Eliminar todos o elegir uno por uno?[/COLOR]",
-                                      yeslabel="[B][COLOR springgreen]Eliminar Todo[/COLOR][/B]",
+                                      yeslabel="[B][COLOR dodgerblue]Eliminar Todo[/COLOR][/B]",
                                       nolabel="[B][COLOR red]Elija Eliminar[/COLOR][/B]")
             if choice == 1:
                 remove = bad
@@ -303,7 +303,7 @@ def check_sources():
                     logging.log("{0} fuentes: {1}, {2}".format(name, path, working))
                     if dialog.yesno(CONFIG.ADDONTITLE,
                                         "[COLOR {0}]{1}[/COLOR][COLOR {2}] se informó que no funciona".format(CONFIG.COLOR1, name, CONFIG.COLOR2) + '\n' + "[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, path) + '\n' + "[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, working),
-                                        yeslabel="[B][COLOR springgreen]Eliminar Fuente[/COLOR][/B]",
+                                        yeslabel="[B][COLOR dodgerblue]Eliminar Fuente[/COLOR][/B]",
                                         nolabel="[B][COLOR red]Mantener Fuente[/COLOR][/B]"):
                         remove.append([name, path, sharing, working])
                         logging.log("Eliminando Fuente {0}".format(name))

@@ -80,7 +80,7 @@ class MainMenu:
             directory.add_file('Contacto', {'mode': 'contact'}, icon=CONFIG.ICONCONTACT, themeit=CONFIG.THEME1)
         directory.add_separator()
         directory.add_file('Cargar Archivo de Registro', {'mode': 'uploadlog'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME1)
-        directory.add_file('[B]Ver Errores en el Registro:[/B] [COLOR ff038d91]{0}[/COLOR]'.format(errorsfound), {'mode': 'viewerrorlog'}, icon=CONFIG.ICONMAINT,
+        directory.add_file('[B]Ver Errores en el Registro:[/B] [COLOR teal]{0}[/COLOR]'.format(errorsfound), {'mode': 'viewerrorlog'}, icon=CONFIG.ICONMAINT,
                            themeit=CONFIG.THEME1)
         if errors > 0:
             directory.add_file('Ver el Ultimo Error en el Registro', {'mode': 'viewerrorlast'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME1)
