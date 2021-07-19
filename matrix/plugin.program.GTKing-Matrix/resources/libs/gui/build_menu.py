@@ -203,7 +203,7 @@ class BuildMenu:
                     if adultcheck:
                         continue
                         
-                    themetitle = themename if not themename == CONFIG.BUILDTHEME else "{0} - Instalado".format(themename)
+                    themetitle = themename if not themename == CONFIG.BUILDTHEME else "{0} [COLOR powderblue]- Instalado[/COLOR]".format(themename)
                     themeicon = themeicon if tools.open_url(themeicon, check=True) else icon
                     themefanart = themefanart if tools.open_url(themefanart, check=True) else fanart
                     

@@ -56,7 +56,7 @@ def highlight_text(msg):
     for item in matches:
         string = '-->Python callback/script returned the following error<--{0}-->End of Python script error report<--'.format(item)
         msg = msg.replace(string, '[COLOR red]{0}[/COLOR]'.format(string))
-    msg = msg.replace('WARNING', '[COLOR yellow]ADVERTENCIA[/COLOR]').replace('ERROR', '[COLOR red]ERROR[/COLOR]').replace('[NL]', '\n').replace(': EXCEPTION Thrown (PythonToCppException) :', '[COLOR red]: EXCEPCIÓN Lanzado (PythonToCppException) :[/COLOR]')
+    msg = msg.replace('WARNING', '[COLOR yellow]ADVERTENCIA[/COLOR]').replace('ERROR', '[COLOR red]ERROR[/COLOR]').replace('[NL]', '\n').replace(': EXCEPCIÓN Lanzado (PythonToCppException) :', '[COLOR red]: EXCEPCIÓN Lanzado (PythonToCppException) :[/COLOR]')
     msg = msg.replace('\\\\', '\\').replace(CONFIG.HOME, '')
     return msg
 
@@ -207,7 +207,7 @@ def show_apk_warning(apk):
             xbmc.sleep(400)
             self.close()
 
-     xbmc.executebuiltin('Skin.SetString(apkinstaller, Ahora que se ha descargado {0} [CR]Haga clic en instalar en la siguiente ventana!)'.format(apk))
+    xbmc.executebuiltin('Skin.SetString(apkinstaller, Ahora que se ha descargado {0} [CR]Haga clic en instalar en la siguiente ventana!)'.format(apk))
     popup = APKInstaller('APK.xml', CONFIG.ADDON_PATH, 'Default', close_time=34)
     popup.doModal()
     del popup
@@ -314,7 +314,7 @@ def show_build_prompt():
 
         def __init__(self, *args, **kwargs):
             self.title = CONFIG.THEME3.format(CONFIG.ADDONTITLE)
-            self.msg = "[B][COLOR azure]\nActualmente no hay ninguna[/COLOR][/B] [B][COLOR lime]Build[/COLOR][/B] [B][COLOR azure]instalada en[/COLOR][/B] {0}[B][COLOR azure].[/COLOR][/B][COLOR gold]\n\n\n[B]Seleccione[/B] [/COLOR][COLOR azure][B]'Build Menu'[/B][/COLOR] [COLOR gold][B]para instalar la [COLOR lime]Build[/COLOR][COLOR gold]. Seleccione[/B] [/COLOR][COLOR azure][B]'Ignorar'[/B][/COLOR] [COLOR gold][B]para Cerrar esta ventana.[/COLOR][/B][COLOR azure]\n\n\nGracias por escoger[/COLOR] {1}[COLOR azure].[/COLOR]".format(CONFIG.ADDONTITLE, CONFIG.ADDONTITLE)
+            self.msg = "[B][COLOR azure]\nActualmente no hay ninguna[/COLOR][/B] [B][COLOR green]Build[/COLOR][/B] [B][COLOR azure]instalada en[/COLOR][/B] {0}[B][COLOR azure].[/COLOR][/B][COLOR darkturquoise]\n\n\n[B]Seleccione[/B] [/COLOR][COLOR azure][B]'Build Menu'[/B][/COLOR] [COLOR darkturquoise][B]para instalar la [COLOR green]Build[/COLOR][COLOR darkturquoise]. Seleccione[/B] [/COLOR][COLOR azure][B]'Ignorar'[/B][/COLOR] [COLOR darkturquoise][B]para Cerrar esta ventana.[/COLOR][/B][COLOR azure]\n\n\nGracias por escoger[/COLOR] {1}[COLOR azure].[/COLOR]".format(CONFIG.ADDONTITLE, CONFIG.ADDONTITLE)
             self.msg = CONFIG.THEME2.format(self.msg)
 
         def onInit(self):
@@ -429,11 +429,11 @@ def show_update_window(name='Testing Window', current='1.0', new='1.1', icon=CON
     # update = UpdateWindow("build_update_prompt.xml", CONFIG.ADDON_PATH, 'Default', name=name, current=current, new=new, icon=icon, fanart=fanart)
     # update.doModal()
     # del update
-    msgcurrent = 'Ejecutando la última versión de la build instalada: '
+    msgcurrent = 'Ejecutando la última versión de la Build instalada: '
     msgupdate = '[B]Actualización disponible para instalar la Build:[/B] '
     build_name = '[COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, name)
     current_version = 'Versión Actual: v[COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, current)
-    latest_version = 'Última Versión: v[COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, new)
+    latest_version = 'Ultima Versión: v[COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, new)
     
     final_msg = '{0}{1}\n{2}\n{3}\n'.format(msgcurrent if current >= new else msgupdate,
                                         build_name, current_version, latest_version)
@@ -502,13 +502,13 @@ def show_notification(msg, test=False):
         def do_remind(self):
             if not test:
                 CONFIG.set_setting('notedismiss', 'false')
-            logging.log('[Notificaciones] Notificación {0} Recuérdame más Tarde'.format(CONFIG.get_setting('noteid')))
+            logging.log('[Notificationes] Notificación {0} Recuérdame más Tarde'.format(CONFIG.get_setting('noteid')))
             self.close()
 
         def do_dismiss(self):
             if not test:
                 CONFIG.set_setting('notedismiss', 'true')
-            logging.log('[Notificaciones] Notificación {0} Despedida'.format(CONFIG.get_setting('noteid')))
+            logging.log('[Notificationes] Notificación {0} Despedida'.format(CONFIG.get_setting('noteid')))
             self.close()
 
         def onAction(self, action):
@@ -528,7 +528,7 @@ def show_notification(msg, test=False):
     del notify
 
 
-def show_log_viewer(window_title="Ver Archivo de Registro", window_msg=None, log_file=None, ext_buttons=False):
+def show_log_viewer(window_title="[B][COLOR azure]Ver Archivo de Registro[/COLOR][/B]", window_msg=None, log_file=None, ext_buttons=False):
     class LogViewer(xbmcgui.WindowXMLDialog):
         def __init__(self, *args, **kwargs):
             self.log_file = kwargs['log_file']
