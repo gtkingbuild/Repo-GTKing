@@ -207,7 +207,7 @@ def show_apk_warning(apk):
             xbmc.sleep(400)
             self.close()
 
-     xbmc.executebuiltin('Skin.SetString(apkinstaller, Ahora que se ha descargado {0} [CR]Haga clic en instalar en la siguiente ventana!)'.format(apk))
+    xbmc.executebuiltin('Skin.SetString(apkinstaller, Ahora que se ha descargado {0} [CR]Haga clic en instalar en la siguiente ventana!)'.format(apk))
     popup = APKInstaller('APK.xml', CONFIG.ADDON_PATH, 'Default', close_time=34)
     popup.doModal()
     del popup
