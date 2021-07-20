@@ -76,7 +76,7 @@ def wizard_update():
                 tools.remove_file(os.path.join(CONFIG.ADDON_DATA, 'settings.xml'))
                 window.show_save_data_settings()
             else:
-                logging.log("[Auto Update Wizard] Instalación del Wizard Nuevo Ignorado: {0}".format(ver))
+                logging.log("[Auto Update Wizard] Instalación del Nuevo Wizard Ignorada: {0}".format(ver))
         else:
             logging.log("[Auto Update Wizard] No hay Nueva Versión v{0}".format(ver))
     else:

@@ -90,7 +90,7 @@ def all_with_progress(_in, _out, dp, ignore, title):
         line1 = '{0} [COLOR {1}][B][Errores:{2}][/B][/COLOR]'.format(title,
                                                                     CONFIG.COLOR2,
                                                                     errors)
-        line2 = '[COLOR {0}][B]Archivo:[/B][/COLOR] [COLOR {1}]{2}[/COLOR][COLOR white]/[/COLOR][COLOR {1}]{3}[/COLOR] '.format(CONFIG.COLOR2,
+        line2 = '[COLOR {0}][B]Archivo:[/B][/COLOR] [COLOR {1}]{2}[/COLOR][COLOR white]/[/COLOR][COLOR {1}]{3}[/COLOR]'.format(CONFIG.COLOR2,
                                                                                      CONFIG.COLOR1,
                                                                                      count,
                                                                                      int(nFiles))

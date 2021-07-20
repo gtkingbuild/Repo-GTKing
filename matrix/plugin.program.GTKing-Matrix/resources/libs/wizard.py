@@ -44,9 +44,9 @@ class Wizard:
     def _prompt_for_wipe(self):
         # Should we wipe first?
         if self.dialog.yesno(CONFIG.ADDONTITLE,
-                           "[COLOR {0}][B]Desea restaurar su".format(CONFIG.COLOR2) +'\n' + "configuración de Kodi a la configuración predeterminada" + '\n' + "Antes de instalar la Copia de Seguridad de la Build?[/B][/COLOR]",
+                           "[COLOR {0}]Desea restaurar su".format(CONFIG.COLOR2) +'\n' + "configuracion de Kodi a la configuracion predeterminada" + '\n' + "Antes de instalar la copia de seguridad de la build?[/COLOR]",
                            nolabel='[B][COLOR red]No[/COLOR][/B]',
-                           yeslabel='[B][COLOR cyan]Si[/COLOR][/B]'):
+                           yeslabel='[B][COLOR springgreen]Si[/COLOR][/B]'):
             install.wipe()
 
     def build(self, name, over=False):
@@ -73,12 +73,12 @@ class Wizard:
             warning = False
 
         if warning:
-            yes_pressed = self.dialog.yesno("[B]{0} - [COLOR red]ADVERTENCIA!![/COLOR][/B]".format(CONFIG.ADDONTITLE), '[COLOR {0}][B]Exíste la posibilidad de que el Skin no se vea correctamente'.format(CONFIG.COLOR2) + '\n' + 'Al instalar una {0} Build en un Kodi {1} instalado'.format(check.check_build(name, 'kodi'), CONFIG.KODIV) + '\n' + 'Todavía te gustaría instalar: [COLOR {0}]{1} v{2}[/COLOR]?[/B][/COLOR]'.format(CONFIG.COLOR1, name, check.check_build(name, 'version')), nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]', yeslabel='[B][COLOR cyan]Si, Instalar[/COLOR][/B]')
+            yes_pressed = self.dialog.yesno("{0} - [COLOR red]ADVERTENCIA!![/COLOR]".format(CONFIG.ADDONTITLE), '[COLOR {0}]Existe la posibilidad de que el Skin no se vea correctamente'.format(CONFIG.COLOR2) + '\n' + 'Al instalar una {0} build en un Kodi {1} instalado'.format(check.check_build(name, 'kodi'), CONFIG.KODIV) + '\n' + 'Todavia te gustaria instalar: [COLOR {0}]{1} v{2}[/COLOR]?[/COLOR]'.format(CONFIG.COLOR1, name, check.check_build(name, 'version')), nolabel='[B][COLOR red]No, Cancel[/COLOR][/B]', yeslabel='[B][COLOR springgreen]Yes, Install[/COLOR][/B]')
         else:
             if over:
                 yes_pressed = 1
             else:
-                yes_pressed = self.dialog.yesno(CONFIG.ADDONTITLE, '[COLOR {0}][B]La Instalación Sobreescribirá los datos de su Kodi Actual![/B]'.format(CONFIG.COLOR2)  + '\n\n' + '[COLOR {0}]Le gustaría Descargar e Instalar: '.format(CONFIG.COLOR2) + '[B][COLOR {0}]{1} v{2}[/COLOR][/B]?[/COLOR]'.format(CONFIG.COLOR1, name, check.check_build(name,'version')), nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]', yeslabel='[B][COLOR cyan]Si, Instalar[/COLOR][/B]')
+                yes_pressed = self.dialog.yesno(CONFIG.ADDONTITLE, '[COLOR {0}][B]La Instalación Sobreescribirá los datos de su Kodi Actual ![/B] '.format(CONFIG.COLOR2)  + '\n' + '[COLOR {0}]Le gustaria Descargar e Instalar: '.format(CONFIG.COLOR2) + '[COLOR {0}]{1} v{2} [/COLOR]?[/COLOR]'.format(CONFIG.COLOR1, name, check.check_build(name,'version')), nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]', yeslabel='[B][COLOR springgreen]Si, Instalar[/COLOR][/B]')
         if yes_pressed:
             CONFIG.clear_setting('build')
             buildzip = check.check_build(name, 'url')
@@ -135,10 +135,10 @@ class Wizard:
                     yes_pressed = self.dialog.yesno(CONFIG.ADDONTITLE,
                                        '[COLOR {0}][COLOR {1}]{2} v{3}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, name, check.check_build(name, 'version')) +'\n' + 'Completado: [COLOR {0}]{1}{2}[/COLOR] [Errores:[COLOR {3}]{4}[/COLOR]]'.format(CONFIG.COLOR1, percent, '%', CONFIG.COLOR1, errors) + '\n' + 'Le gustaria ver los errores?[/COLOR]',
                                        nolabel='[B][COLOR red]No, Gracias[/COLOR][/B]',
-                                       yeslabel='[B][COLOR cyan]Ver Errores[/COLOR][/B]')
+                                       yeslabel='[B][COLOR springgreen]Ver Errores[/COLOR][/B]')
                     if yes_pressed:
                         from resources.libs.gui import window
-                        window.show_text_box("[B]Visualización de Errores de Instalación de la Build[/B]", error)
+                        window.show_text_box("Visualizacion de Errores de Instalacion de la Build", error)
                 self.dialogProgress.close()
 
                 from resources.libs.gui.build_menu import BuildMenu
@@ -152,14 +152,14 @@ class Wizard:
                 if os.path.exists(os.path.join(CONFIG.USERDATA, '.enableall')):
                 	CONFIG.set_setting('enable_all', 'true')
 
-                self.dialog.ok(CONFIG.ADDONTITLE, "[COLOR {0}][B]Para guardar los cambios, ahora necesita Forzar el Cierre de Kodi.[/B] \nPresione [B]OK[/B] para Forzar el Cierre de Kodi.[/COLOR]".format(CONFIG.COLOR2))
+                self.dialog.ok(CONFIG.ADDONTITLE, "[COLOR {0}]Para guardar los cambios, ahora necesita Forzar el Cierre de Kodi. \nPresione [B]OK[/B] para Forzar el Cierre de Kodi.[/COLOR]".format(CONFIG.COLOR2))
                 tools.kill_kodi(over=True)
             else:
                 from resources.libs.gui import window
-                window.show_text_box("[B]Visualización de Errores de Instalación de la Build[/B]", error)
+                window.show_text_box("Visualizacion de Errores de Instalacion de la Build", error)
         else:
             logging.log_notify(CONFIG.ADDONTITLE,
-                               '[COLOR {0}]Instalación Build:[/COLOR] [COLOR gold]Cancelado![/COLOR]'.format(CONFIG.COLOR2))
+                               '[COLOR {0}]Instalacion Build:[/COLOR] [COLOR gold]Cancelado![/COLOR]'.format(CONFIG.COLOR2))
 
     def gui(self, name, over=False):
         if name == CONFIG.get_setting('buildname'):
@@ -167,14 +167,14 @@ class Wizard:
                 yes_pressed = 1
             else:
                 yes_pressed = self.dialog.yesno(CONFIG.ADDONTITLE,
-                                   '[COLOR {0}][B]Le gustaría aplicar la Corrección de la interfaz gráfica de usuario para:'.format(CONFIG.COLOR2) + '\n' + '[COLOR {0}]{1}[/COLOR]?[/B][/COLOR]'.format(CONFIG.COLOR1, name),
+                                   '[COLOR {0}]Le gustaria aplicar la correccion de interfaz gráfica de usuario para:'.format(CONFIG.COLOR2) + '\n' + '[COLOR {0}]{1}[/COLOR]?[/COLOR]'.format(CONFIG.COLOR1, name),
                                    nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]',
-                                   yeslabel='[B][COLOR cyan]Aplicar Corrección[/COLOR][/B]')
+                                   yeslabel='[B][COLOR springgreen]Aplicar Correccion[/COLOR][/B]')
         else:
             yes_pressed = self.dialog.yesno("[B]{0} - [COLOR red]ADVERTENCIA!![/COLOR][/B]".format(CONFIG.ADDONTITLE),
                                "[COLOR {0}][COLOR {1}]{2}[/COLOR] [B]La Build de la comunidad no está instalada actualmente.".format(CONFIG.COLOR2, CONFIG.COLOR1, name) + '\n' + "Le gustaría aplicar la Corrección Gui ([COLOR azure]de la interfaz gráfica de usuario[/COLOR]) de todos modos?[/B][/COLOR]",
                                nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]',
-                               yeslabel='[B][COLOR cyan]Aplicar Corrección[/COLOR][/B]')
+                               yeslabel='[B][COLOR springgreen]Aplicar Correccion[/COLOR][/B]')
         if yes_pressed:
             guizip = check.check_build(name, 'gui')
             zipname = name.replace('\\', '').replace('/', '').replace(':', '').replace('*', '').replace('?', '').replace('"', '').replace('<', '').replace('>', '').replace('|', '')
@@ -182,10 +182,10 @@ class Wizard:
             response = tools.open_url(guizip, check=True)
             if not response:
                 logging.log_notify(CONFIG.ADDONTITLE,
-                                   '[COLOR {0}]Corrección Gui:[/COLOR] [COLOR gold]Url Zip Inválido![/COLOR]'.format(CONFIG.COLOR2))
+                                   '[COLOR {0}]Corrección Gui: Url Zip Inválido![/COLOR]'.format(CONFIG.COLOR2))
                 return
 
-            self.dialogProgress.create(CONFIG.ADDONTITLE, '[COLOR {0}][B]Descargando Corrección Gui:[/B][/COLOR] [COLOR {1}]{2}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, name), '', 'Espere por Favor')
+            self.dialogProgress.create(CONFIG.ADDONTITLE, '[COLOR {0}][B]Descargando Correccion Gui:[/B][/COLOR] [COLOR {1}]{2}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, name), '', 'Espere por Favor')
 
             lib = os.path.join(CONFIG.PACKAGES, '{0}_guisettings.zip'.format(zipname))
             
@@ -231,7 +231,7 @@ class Wizard:
                 from resources.libs.gui.build_menu import BuildMenu
                 themes = BuildMenu().theme_count(name, False)
                 if len(themes) > 0:
-                    if self.dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}][B]La Build [COLOR {1}]{2}[/COLOR] viene con [COLOR {3}]{4}[/COLOR] Parche de actualización[/B]".format(CONFIG.COLOR2, CONFIG.COLOR1, name, CONFIG.COLOR1, len(themes)) + '\n\n' + "Le gustaría instalar el Parche de actualización ahora?[/COLOR]",
+                    if self.dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}][B]La Build [COLOR {1}]{2}[/COLOR] viene con [COLOR {3}]{4}[/COLOR] Parches diferentes[/B]".format(CONFIG.COLOR2, CONFIG.COLOR1, name, CONFIG.COLOR1, len(themes)) + '\n\n' + "Le gustaria instalar uno ahora?[/COLOR]",
                                     yeslabel="[B][COLOR cyan]Instalar Parche[/COLOR][/B]",
                                     nolabel="[B][COLOR red]Cancelar Parche[/COLOR][/B]"):
                         logging.log("Lista de Parches: {0}".format(str(themes)))

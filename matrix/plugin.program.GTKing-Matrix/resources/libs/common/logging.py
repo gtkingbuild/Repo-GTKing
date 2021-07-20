@@ -388,7 +388,7 @@ def view_log_file():
         elif wizlog:
             logtype = wizlog
 
-    window.show_log_viewer("[B][COLOR azure]Ver Archivo de Registro[/COLOR][/B]", log_file=logtype, ext_buttons=True)
+    window.show_log_viewer("Ver Archivo de Registro", log_file=logtype, ext_buttons=True)
 
 
 def swap_debug():
@@ -488,7 +488,7 @@ def error_checking(log=None, count=None, last=None):
                 string += "[B][COLOR red]ERROR NÚMERO {0}:[/B][/COLOR] [COLOR silver]{1}[/COLOR]\n".format(str(i), item.replace(CONFIG.HOME, '/').replace('                                        ', ''))
             window.show_log_viewer("[B][COLOR azure]Visualización de Errores en el Registro[/COLOR][/B]", string)
         else:
-           string = "[B][COLOR red]Último Error en el Registro:[/B][/COLOR] [COLOR teal]{0}[/COLOR]\n".format(errors[0].replace(CONFIG.HOME, '/').replace('                                        ', ''))
+            string = "[B][COLOR red]Último Error en el Registro:[/B][/COLOR] [COLOR teal]{0}[/COLOR]\n".format(errors[0].replace(CONFIG.HOME, '/').replace('                                        ', ''))
            window.show_log_viewer("[B][COLOR azure]Visualización del Último Error en el Registro[/COLOR][/B]", string)
 
     else:

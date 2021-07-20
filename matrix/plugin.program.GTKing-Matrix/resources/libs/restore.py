@@ -43,21 +43,21 @@ def binaries():
     if os.path.exists(binarytxt):
         binaryids = tools.read_from_file(binarytxt).split(',')
 
-        logging.log("[Binario Detección] Reinstalación de Addons Binarios Elegibles")
+        logging.log("[Binario Detección] Reinstalación de Add-ons Binarios Elegibles")
         dialog.ok(CONFIG.ADDONTITLE,
-                  '[COLOR {0}]La compilación restaurada contiene addons específicos de la plataforma, que ahora serán '
-                  'instalado automáticamente. Es posible que aparezcan varios cuadros de diálogo durante este proceso. Cancelarlos '
+                  '[COLOR {0}]La compilación restaurada contiene add-ons específicos de la plataforma, que ahora serán '
+                  'instalados automáticamente. Es posible que aparezcan varios cuadros de diálogo durante este proceso. Cancelarlos '
                   'puede hacer que la compilación restaurada funcione incorrectamente.[/COLOR]'.format(
                       CONFIG.COLOR2))
     else:
-        logging.log("[Binario Detección] No hay Addons Binarios Elegibles para Reinstalar")
+        logging.log("[Detección de Binario] No hay Addons Binarios Elegibles para Reinstalar")
         return True
 
     success = []
     fail = []
 
     if len(binaryids) == 0:
-        logging.log('No se seleccionaron addons para la instalación.')
+        logging.log('No se seleccionaron add-ons para la instalación.')
         return
 
     from resources.libs.gui import addon_menu
@@ -116,7 +116,7 @@ class Restore:
                 self.progress_dialog.update(0, '[COLOR {0}]No se puede leer el archivo zip desde la ubicación actual.'.format(CONFIG.COLOR2) + '\n' + 'Copiando archivo a paquetes')
                 xbmcvfs.copy(file, packages)
                 file = xbmcvfs.translatePath(packages)
-                self.progress_dialog.update(0, '\n' + 'Copiar archivo a paquetes: Completo')
+                self.progress_dialog.update(0, '\n' + 'Copiar el archivo a paquetes: Completo')
                 zipfile.ZipFile(file, 'r', allowZip64=True)
         else:
             from resources.libs.downloader import Downloader

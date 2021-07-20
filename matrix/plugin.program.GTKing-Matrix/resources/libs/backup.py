@@ -51,7 +51,7 @@ def cleanup_backup():
 
     if len(folder) == 0:
         logging.log_notify(CONFIG.ADDONTITLE,
-                           "[COLOR {0}]Ubicación de la Copia de sSeguridad Vacío[/COLOR]".format(CONFIG.COLOR2))
+                           "[COLOR {0}]Ubicación de la Copia de Seguridad: Vacío[/COLOR]".format(CONFIG.COLOR2))
         return
     for item in sorted(folder, key=os.path.getmtime):
         filelist.append(item)
@@ -118,11 +118,11 @@ class Backup:
 
     def backup_addon_pack(self, name=""):
         if self.dialog.yesno(CONFIG.ADDONTITLE,
-                             "[COLOR {0}]Estás seguro de que deseas crear un paquete de Addons?[/COLOR]".format(CONFIG.COLOR2),
-                             nolabel="[B][COLOR red]Cancelar Copia de Seguridad[/COLOR][/B]",
+                             "[COLOR {0}]Estás seguro de que deseas crear un Paquete de Add-ons?[/COLOR]".format(CONFIG.COLOR2),
+                             nolabel="[B][COLOR red]Cancelar Backup[/COLOR][/B]",
                              yeslabel="[B][COLOR springgreen]Crear Paquete[/COLOR][/B]"):
             if name == "":
-                name = tools.get_keyboard("", "Introduzca un nombre para el zip del paquete de add-ons")
+                name = tools.get_keyboard("", "Por favor ingrese un nombre para el zip del Paquete de Add-ons")
                 if not name:
                     return False
                 name = quote_plus(name)
@@ -172,7 +172,7 @@ class Backup:
                 selected = []
 
             logging.log(selected)
-            self.progress_dialog.create(CONFIG.ADDONTITLE, '[COLOR {0}][B]Creando el archivo Zip:[/B][/COLOR]'.format(CONFIG.COLOR2) + '\n' + 'Espere por Favor')
+            self.progress_dialog.create(CONFIG.ADDONTITLE, '[COLOR {0}][B]Creando el archivo Zip:[/B][/COLOR]'.format(CONFIG.COLOR2) + '\n' + 'Espere por favor')
             if len(selected) > 0:
                 added = []
                 for item in selected:
@@ -204,7 +204,7 @@ class Backup:
                                     fn = os.path.join(base, file)
                                     zipf.write(fn, fn[len(CONFIG.ADDONS):], zipfile.ZIP_DEFLATED)
                                     added.append(depends)
-            self.dialog.ok(CONFIG.ADDONTITLE,"[COLOR {0}]{1}[/COLOR] [COLOR {2}]Copia de Seguridad exitosa:[/COLOR]".format(CONFIG.COLOR1, name, CONFIG.COLOR2) + '\n' + "[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, zipname))
+            self.dialog.ok(CONFIG.ADDONTITLE,"[COLOR {0}]{1}[/COLOR] [COLOR {2}]Copia de Seguridad Exitosa:[/COLOR]".format(CONFIG.COLOR1, name, CONFIG.COLOR2) + '\n' + "[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, zipname))
 
     def backup_build(self, name=""):
         if self.dialog.yesno(CONFIG.ADDONTITLE,
@@ -237,14 +237,14 @@ class Backup:
                 except:
                     logging.log("Incapaz de crear {0}.zip".format(name), level=xbmc.LOGERROR)
                     if self.dialog.yesno(CONFIG.ADDONTITLE,
-                                         "[COLOR {0}]No podemos escribir en el directorio de respaldo actual, le gustaría cambiar la ubicación?[/COLOR]".format(CONFIG.COLOR2),
+                                         "[COLOR {0}]No podemos escribir en el directorio de la copia de seguridad actual, le gustaría cambiar la ubicación?[/COLOR]".format(CONFIG.COLOR2),
                                          yeslabel="[B][COLOR springgreen]Cambiar Directorio[/COLOR][/B]",
                                          nolabel="[B][COLOR red]Cancelar[/COLOR][/B]"):
                         CONFIG.open_settings()
                         return
                     else:
                         return
-            self.progress_dialog.create(CONFIG.ADDONTITLE + "[COLOR {0}]: Creando Zip[/COLOR]".format(CONFIG.COLOR2) + '\n' + "[COLOR {0}]Creando Copia de Seguridad zip".format(CONFIG.COLOR2) + '\n' + "Espere por Favor...[/COLOR]")
+            self.progress_dialog.create(CONFIG.ADDONTITLE + "[COLOR {0}]: Creando Zip[/COLOR]".format(CONFIG.COLOR2) + '\n' + "[COLOR {0}]Creando zip de la Copia de Seguridad".format(CONFIG.COLOR2) + '\n' + "Espere por Favor...[/COLOR]")
 
             for base, dirs, files in os.walk(CONFIG.HOME):
                 dirs[:] = [d for d in dirs if d not in exclude_dirs]
@@ -321,7 +321,7 @@ class Backup:
                     try:
                         for_progress += 1
                         progress = tools.percentage(for_progress, N_ITEM)
-                        self.progress_dialog.update(int(progress), '[COLOR {0}]Creando Copia de Seguridad zip: [COLOR {1}]{2}[/COLOR] / [COLOR {3}]{4}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, for_progress, CONFIG.COLOR1, N_ITEM) + '\n' + '[COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, file))
+                        self.progress_dialog.update(int(progress), '[COLOR {0}]Creando zip de la Copia de Seguridad: [COLOR {1}]{2}[/COLOR] / [COLOR {3}]{4}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, for_progress, CONFIG.COLOR1, N_ITEM) + '\n' + '[COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, file))
                         fn = os.path.join(base, file)
                         if file in CONFIG.LOGFILES:
                             logging.log("[Back Up] Tipo = build: Ignorar {0} - Archivo del Log".format(file))
@@ -360,7 +360,7 @@ class Backup:
                             zipf.write(fn, fn[len(CONFIG.HOME):], zipfile.ZIP_DEFLATED)
                             extractsize += os.path.getsize(fn)
                         except Exception as e:
-                            logging.log("[Back Up] Tipo = build: No se puede hacer una Copia de Seguridad {0}".format(file))
+                            logging.log("[Back Up] Tipo = build: No se puede crear la Copia de Seguridad {0}".format(file))
                             logging.log("{0} / {1}".format(Exception, e))
                         if self.progress_dialog.iscanceled():
                             self.progress_dialog.close()
@@ -368,8 +368,8 @@ class Backup:
                                                "[COLOR {0}]Copia de Seguridad Cancelada[/COLOR]".format(CONFIG.COLOR2))
                             sys.exit()
                     except Exception as e:
-                        logging.log("[Back Up] Tipo = build: No se puede hacer una Copia de Seguridad {0}".format(file))
-                        logging.log("Error de Copia de Seguridad de la Build {0}".format(str(e)))
+                        logging.log("[Back Up] Tipo = build: No se puede crear la Copia de Seguridad {0}".format(file))
+                        logging.log("Error en la Copia de Seguridad de la Build: {0}".format(str(e)))
 
             if 'addon_data' in exclude_dirs:
                 match = glob.glob(os.path.join(CONFIG.ADDON_DATA, 'skin.*', ''))
@@ -485,7 +485,7 @@ class Backup:
                     zipf = zipfile.ZipFile(tempguizipname, mode='w', allowZip64=True)
                 except:
                     logging.log("Incapaz de crear {0}_guisettings.zip".format(guiname), level=xbmc.LOGERROR)
-                    if self.dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}No podemos escribir en el directorio de respaldo actual, le gustaría cambiar la ubicación?[/COLOR]".format(CONFIG.COLOR2),
+                    if self.dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}No podemos escribir en el directorio de la copia de seguridad, le gustaría cambiar la ubicación?[/COLOR]".format(CONFIG.COLOR2),
                                          yeslabel="[B][COLOR springgreen]Cambiar Directorio[/COLOR][/B]",
                                          nolabel="[B][COLOR red]Cancelar[/COLOR][/B]"):
                         CONFIG.open_settings()
@@ -531,7 +531,7 @@ class Backup:
         else:
             logging.log("[Back Up] Tipo = guifix: guisettings.xml no encontrado")
         if name == "":
-            self.dialog.ok(CONFIG.ADDONTITLE, "[COLOR {0}]GUI Fix Copia de Seguridad exitosa:[/COLOR]".format(CONFIG.COLOR2) + '\n' + "[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, guizipname))
+            self.dialog.ok(CONFIG.ADDONTITLE, "[COLOR {0}]Copia de Seguridad GUI Fix exitosa:[/COLOR]".format(CONFIG.COLOR2) + '\n' + "[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, guizipname))
 
     def backup_theme(self, name=""):
         if not self.dialog.yesno(CONFIG.ADDONTITLE + '[COLOR {0}]: Copia de Seguridad del Tema[/COLOR]'.format(CONFIG.COLOR2), "[COLOR {0}]Le gustaría crear una Copia de Seguridad del Tema?[/COLOR]".format(CONFIG.COLOR2),
@@ -556,7 +556,7 @@ class Backup:
                 zipf = zipfile.ZipFile(tempzipname, mode='w', allowZip64=True)
             except:
                 logging.log("Incapaz de crear {0}.zip".format(themename), level=xbmc.LOGERROR)
-                if self.dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}No podemos escribir en el directorio de respaldo actual, le gustaría cambiar la ubicación?[/COLOR]".format(CONFIG.COLOR2),
+                if self.dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}No podemos escribir en el directorio de la copia de seguridad actual, le gustaría cambiar la ubicación?[/COLOR]".format(CONFIG.COLOR2),
                                      yeslabel="[B][COLOR springgreen]Cambiar Directorio[/COLOR][/B]",
                                      nolabel="[B][COLOR red]Cancelar[/COLOR][/B]"):
                     CONFIG.open_settings()
@@ -590,7 +590,7 @@ class Backup:
                             zipf.write(fn, fn2, zipfile.ZIP_DEFLATED)
                 ad_skin = os.path.join(CONFIG.ADDON_DATA, CONFIG.SKIN, 'settings.xml')
                 if os.path.exists(ad_skin):
-                    if self.dialog.yesno(CONFIG.ADDONTITLE + '[COLOR {0}]: Copia de Seguridad del Tema[/COLOR]'.format(CONFIG.COLOR2), "[COLOR {0}]Le gustaría ir a agregar el [COLOR {1}]settings.xml[/COLOR] en [COLOR {2}]/addon_data/[/COLOR] para?".format(
+                    if self.dialog.yesno(CONFIG.ADDONTITLE + '[COLOR {0}]: Copia de Seguridad del Tema[/COLOR]'.format(CONFIG.COLOR2), "[COLOR {0}]Le gustaría ir a agregar el archivo[COLOR {1}]settings.xml[/COLOR] en la carpeta [COLOR {2}]/addon_data/[/COLOR] para?".format(
                                              CONFIG.COLOR2, CONFIG.COLOR1, CONFIG.COLOR1) + '\n'+ "[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, CONFIG.SKIN),
                                          yeslabel="[B][COLOR springgreen]Agregar Settings[/COLOR][/B]",
                                          nolabel="[B][COLOR red]Saltar Settings[/COLOR][/B]"):
@@ -599,7 +599,7 @@ class Backup:
                 match = tools.parse_dom(tools.read_from_file(os.path.join(CONFIG.SKIN, 'addon.xml')), 'import',
                                         ret='addon')
                 if 'script.skinshortcuts' in match:
-                    if self.dialog.yesno(CONFIG.ADDONTITLE + '[COLOR {0}]: Copia de Seguridad del Tema[/COLOR]'.format(CONFIG.COLOR2), "[COLOR {0}]Le gustaría ir a agregar el [COLOR {1}]settings.xml[/COLOR] para [COLOR {2}]script.skinshortcuts[/COLOR]?".format(CONFIG.COLOR2, CONFIG.COLOR1, CONFIG.COLOR1),
+                    if self.dialog.yesno(CONFIG.ADDONTITLE + '[COLOR {0}]: Copia de Seguridad del Tema[/COLOR]'.format(CONFIG.COLOR2), "[COLOR {0}]Le gustaría ir a agregar el archivo[COLOR {1}]settings.xml[/COLOR] para [COLOR {2}]script.skinshortcuts[/COLOR]?".format(CONFIG.COLOR2, CONFIG.COLOR1, CONFIG.COLOR1),
                                          yeslabel="[B][COLOR springgreen]Agregar Ajustes[/COLOR][/B]",
                                          nolabel="[B][COLOR red]Omitir Ajustes[/COLOR][/B]"):
                         for base, dirs, files in os.walk(os.path.join(CONFIG.ADDON_DATA, 'script.skinshortcuts')):
@@ -612,7 +612,7 @@ class Backup:
                                      CONFIG.COLOR2, CONFIG.COLOR1),
                                  yeslabel="[B][COLOR springgreen]Si, Incluir[/COLOR][/B]",
                                  nolabel="[B][COLOR red]No, Continuar[/COLOR][/B]"):
-                fn = self.dialog.browse(0, 'Seleccione la ubicación de los fondos', 'carpetas', '', True, False, CONFIG.HOME,
+                fn = self.dialog.browse(0, 'Seleccione la ubicacion de los fondos', 'carpetas', '', True, False, CONFIG.HOME,
                                         False)
                 if not fn == CONFIG.HOME:
                     for base, dirs, files in os.walk(fn):
@@ -634,7 +634,7 @@ class Backup:
                     zipf.write(os.path.join(CONFIG.DATABASE, text), '/userdata/Database/{0}'.format(text),
                                zipfile.ZIP_DEFLATED)
             if self.dialog.yesno(CONFIG.ADDONTITLE + '[COLOR {0}]: Copia de Seguridad del Tema[/COLOR]'.format(CONFIG.COLOR2),
-                                 "[COLOR {0}]Le gustaría incluir algún addons?[/COLOR]".format(CONFIG.COLOR2),
+                                 "[COLOR {0}]Le gustaría incluir algún add-on?[/COLOR]".format(CONFIG.COLOR2),
                                  yeslabel="[B][COLOR springgreen]Si, Incluir[/COLOR][/B]",
                                  nolabel="[B][COLOR red]No, Continuar[/COLOR][/B]"):
                 fold = glob.glob(os.path.join(CONFIG.ADDONS, '*/'))
@@ -698,7 +698,7 @@ class Backup:
             zipf.close()
             logging.log("[Back Up] Type = theme: {0}".format(str(e)))
             self.dialog.ok(CONFIG.ADDONTITLE,
-                           "[COLOR {0}]{1}[/COLOR][COLOR {2}] zip del Tema falló:[/COLOR]".format(CONFIG.COLOR1, themename, CONFIG.COLOR2) + '\n' + "[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, str(e)))
+                           "[COLOR {0}]{1}[/COLOR][COLOR {2}] zip del Tema fallido:[/COLOR]".format(CONFIG.COLOR1, themename, CONFIG.COLOR2) + '\n' + "[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, str(e)))
             if not tempzipname == '':
                 try:
                     os.remove(tempzipname)
@@ -753,7 +753,7 @@ class Backup:
             ITEM = []
             tools.convert_special(CONFIG.ADDON_DATA, True)
             tools.ascii_check(CONFIG.ADDON_DATA, True)
-            self.progress_dialog.create(CONFIG.ADDONTITLE + "[COLOR {0}]: Creando Zip[/COLOR]".format(CONFIG.COLOR2), "[COLOR {0}]Creando zip de respaldo".format(CONFIG.COLOR2) + '\n' + "Espere por Favor...[/COLOR]")
+            self.progress_dialog.create(CONFIG.ADDONTITLE + "[COLOR {0}]: Creando Zip de Copia de Seguridad[/COLOR]".format(CONFIG.COLOR2), "[COLOR {0}]Creando backup zip".format(CONFIG.COLOR2) + '\n' + "Espere por Favor...[/COLOR]")
             for base, dirs, files in os.walk(CONFIG.ADDON_DATA):
                 dirs[:] = [d for d in dirs if os.path.join(base, d) not in CONFIG.EXCLUDE_DIRS]
                 files[:] = [f for f in files if f not in CONFIG.EXCLUDE_FILES]
@@ -814,10 +814,10 @@ class Backup:
                         try:
                             zipf.write(fn, fn[len(CONFIG.ADDON_DATA):], zipfile.ZIP_DEFLATED)
                         except Exception as e:
-                            logging.log("[Back Up] Tipo = addon_data: No se puede hacer una Copia de Seguridad {0}".format(file))
+                            logging.log("[Back Up] Tipo = addon_data: No se puede crear una Copia de Seguridad {0}".format(file))
                             logging.log("Error de Copia de Seguridad: {0}".format(str(e)))
                     except Exception as e:
-                        logging.log("[Back Up] Tipo = addon_data: No se puede hacer una Copia de Seguridad {0}".format(file))
+                        logging.log("[Back Up] Tipo = addon_data: No se puede crear una Copia de Seguridad {0}".format(file))
                         logging.log("Error de Copia de Seguridad: {0}".format(str(e)))
             zipf.close()
             if not tempzipname == '':

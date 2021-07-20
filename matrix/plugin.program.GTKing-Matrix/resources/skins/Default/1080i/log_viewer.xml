@@ -60,7 +60,7 @@
                     <focusedcolor>$INFO[Window().Property(texture.color2)]</focusedcolor>
                     <texturefocus colordiffuse="$INFO[Window().Property(texture.color1)]">Background/white.png</texturefocus>
                     <texturenofocus colordiffuse="FF282828">Background/white.png</texturenofocus>
-                    <label>[B][COLOR azure]Kodi Log[/COLOR][/B]</label>
+                    <label>Kodi Log</label>
                     <visible>String.IsEqual(Window().Property(message.buttons), true)</visible>
                 </control>
                 
@@ -71,7 +71,7 @@
                     <focusedcolor>$INFO[Window().Property(texture.color2)]</focusedcolor>
                     <texturefocus colordiffuse="$INFO[Window().Property(texture.color1)]">Background/white.png</texturefocus>
                     <texturenofocus colordiffuse="FF282828">Background/white.png</texturenofocus>
-                    <label>[B][COLOR azure]Registro Antiguo[/COLOR][/B]</label>
+                    <label>Registro Antiguo</label>
                     <visible>String.IsEqual(Window().Property(message.buttons), true)</visible>
                 </control>
                 
@@ -82,7 +82,7 @@
                     <focusedcolor>$INFO[Window().Property(texture.color2)]</focusedcolor>
                     <texturefocus colordiffuse="$INFO[Window().Property(texture.color1)]">Background/white.png</texturefocus>
                     <texturenofocus colordiffuse="FF282828">Background/white.png</texturenofocus>
-                    <label>[B][COLOR azure]Wizard Log[/COLOR][/B]</label>
+                    <label>Wizard Log</label>
                     <visible>String.IsEqual(Window().Property(message.buttons), true)</visible>
                 </control>
                 

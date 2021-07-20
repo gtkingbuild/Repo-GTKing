@@ -17,9 +17,9 @@
 		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR lime]MATRIX[/COLOR] tu Wizard para KODI 19.x !!</summary>
 		
     	<description lang="es">
-[B]• Devs:[/B]	   [COLOR gold]JoseaTEBA y DavidZgZ[/COLOR]
-[B]• Testers:[/B]	[COLOR dodgerblue]Mapache,Tete6776,Vicente[/COLOR]
-[B]• Telegram:[/B]  [COLOR lime]t.me/beelinkking[/COLOR]</description>
+[B]• Developers:[/B] [COLOR gold]JoseaTEBA y DavidZgZ[/COLOR]
+[B]• Testers:[/B] [COLOR dodgerblue]Sugea, Mapache, Tete6776 y Vicente[/COLOR]
+[B]• Telegram:[/B] [COLOR lime]t.me/beelinkking[/COLOR]</description>
 		<platform>all</platform>
 		<reuselanguageinvoker>false</reuselanguageinvoker>
         <source>https://www.github.com/gtkingbuild/Repo-GTKing/plugin.program.GTKing-Matrix/</source>

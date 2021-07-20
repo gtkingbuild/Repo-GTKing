@@ -93,7 +93,7 @@ class AddonMenu:
             TEMPADDONFILE = tools.read_from_file(local_file)
         else:
             TEMPADDONFILE = None
-            logging.log("[Addon Menu] No se agregó ninguna lista de addons.")
+            logging.log("[Addon Menu] No se agregó ninguna lista de add-ons.")
 
         if TEMPADDONFILE:
             import json
@@ -182,7 +182,7 @@ class AddonMenu:
                         directory.add_file('El archivo de texto no tiene el formato correcto!', themeit=CONFIG.THEME3)
                         logging.log("[Addon Menu] ERROR: Formato inválido.")
                     elif len(addons) == 0:
-                        directory.add_file("Aún no se agregaron addons a este menú!", themeit=CONFIG.THEME2)
+                        directory.add_file("Aún no se agregaron add-ons a este menú!", themeit=CONFIG.THEME2)
         else:
             logging.log("[Addon Menu] ERROR: La URL de la lista de Addon no funciona.")
             directory.add_file('Url para el archivo txt no válido', themeit=CONFIG.THEME3)
@@ -214,7 +214,7 @@ class AddonMenu:
         response = tools.open_url(url, check=True)
 
         if not response:
-            logging.log_notify("[COLOR {0}]Instalador de Addons[/COLOR]".format(CONFIG.COLOR1),
+            logging.log_notify("[COLOR {0}]Instalador de Add-ons[/COLOR]".format(CONFIG.COLOR1),
                                '[COLOR {0}]{1}:[/COLOR] [COLOR {2}]URL inválido zip![/COLOR]'.format(CONFIG.COLOR1,
                                                                                                     plugin,
                                                                                                     CONFIG.COLOR2))
@@ -356,8 +356,8 @@ class AddonMenu:
         response = tools.open_url(url, check=True)
 
         if not response:
-            logging.log_notify("[COLOR {0}]Instalador de Addons[/COLOR]".format(CONFIG.COLOR1),
-                               '[COLOR {0}]{1}:[/COLOR] [COLOR {2}]Url Zip Inválido![/COLOR]'.format(CONFIG.COLOR1, name, CONFIG.COLOR2))
+            logging.log_notify("[COLOR {0}]Instalador de Add-ons[/COLOR]".format(CONFIG.COLOR1),
+                               '[COLOR {0}]{1}:[/COLOR] [COLOR {2}]Url del Zip Inválida![/COLOR]'.format(CONFIG.COLOR1, name, CONFIG.COLOR2))
             return
 
         if not os.path.exists(CONFIG.PACKAGES):
@@ -382,7 +382,7 @@ class AddonMenu:
         installed = db.grab_addons(lib)
         db.addon_database(installed, 1, True)
         progress_dialog.close()
-        logging.log_notify("[COLOR {0}]Instalador de Addons[/COLOR]".format(CONFIG.COLOR1),
+        logging.log_notify("[COLOR {0}]Instalador de Add-ons[/COLOR]".format(CONFIG.COLOR1),
                            '[COLOR {0}]{1}: Instalado![/COLOR]'.format(CONFIG.COLOR2, name))
         xbmc.executebuiltin('UpdateAddonRepos()')
         xbmc.executebuiltin('UpdateLocalAddons()')
@@ -402,8 +402,8 @@ class AddonMenu:
         response = tools.open_url(url, check=False)
 
         if not response:
-            logging.log_notify("[COLOR {0}]Instalador de Addons[/COLOR]".format(CONFIG.COLOR1),
-                               '[COLOR {0}]{1}:[/COLOR] [COLOR {2}]Url Zip Inválido![/COLOR]'.format(CONFIG.COLOR1, name, CONFIG.COLOR2))
+            logging.log_notify("[COLOR {0}]Instalador de Add-ons[/COLOR]".format(CONFIG.COLOR1),
+                               '[COLOR {0}]{1}:[/COLOR] [COLOR {2}]Url del Zip Inválida![/COLOR]'.format(CONFIG.COLOR1, name, CONFIG.COLOR2))
             return
 
         if not os.path.exists(CONFIG.PACKAGES):
@@ -429,7 +429,7 @@ class AddonMenu:
         installed = db.grab_addons(lib)
         db.addon_database(installed, 1, True)
         progress_dialog.close()
-        logging.log_notify("[COLOR {0}]Instalador de Addons[/COLOR]".format(CONFIG.COLOR1),
+        logging.log_notify("[COLOR {0}]Instalador de Add-ons[/COLOR]".format(CONFIG.COLOR1),
                            '[COLOR {0}]{1}: Instalado![/COLOR]'.format(CONFIG.COLOR2, name))
         xbmc.executebuiltin('UpdateAddonRepos()')
         xbmc.executebuiltin('UpdateLocalAddons()')
