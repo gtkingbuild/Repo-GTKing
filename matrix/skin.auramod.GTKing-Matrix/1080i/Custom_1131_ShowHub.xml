@@ -9,7 +9,7 @@
         <control type="group">
             <include content="Dialog_Standard_Group">
                 <param name="width" value="1800" />
-                <param name="height" value="726" />
+                <param name="height" value="850" /> <!-- 726 -->
             </include>
 
             <control type="label">
@@ -22,7 +22,7 @@
                 <left>20</left>
                 <width>1060</width>
                 <top>100</top>
-                <height>600</height>
+                <height>725</height> <!-- 600 -->
                 <control type="image">
                     <aspectratio scalediffuse="false">keep</aspectratio>
                     <texture background="true" fallback="special://skin/fanart.jpg" diffuse="diffuse/1117.png">$INFO[Window.Property(Image_Preview)]</texture>
@@ -38,7 +38,7 @@
                 <right>20</right>
                 <width>680</width>
                 <top>100</top>
-                <height>600</height>
+                <height>720</height> <!-- 600 -->
                 <itemgap>10</itemgap>
                 <orientation>vertical</orientation>
                 <pagecontrol>60</pagecontrol>
@@ -70,7 +70,16 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/x1qlxGR.png)</onfocus>
                         </control>
 						
-						<control type="radiobutton" id="9004" description="Instalar Balandro">
+						<!-- <control type="radiobutton" id="9004" description="Instalar Winner">
+                            <include>Dialog_Standard_ListButton</include>
+                            <radioposx>630</radioposx>
+                            <label>Winner</label>
+							<selected>System.HasAddon(script.module.winner)</selected>
+                            <onclick>InstallAddon(script.module.winner)</onclick>	
+							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/kPSZtP8.png)</onfocus>
+                        </control> -->
+						
+						<control type="radiobutton" id="9005" description="Instalar Balandro">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Balandro</label>
@@ -79,7 +88,7 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/TsVLf4g.jpg)</onfocus>
                         </control>
 						
-						<control type="radiobutton" id="9005" description="Instalar Cloud 9">
+						<control type="radiobutton" id="9006" description="Instalar Cloud 9">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Cloud 9</label>
@@ -88,7 +97,7 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/xCu19eS.png)</onfocus>
                         </control>
 						
-						<control type="radiobutton" id="9006" description="Instalar Apex Sports">
+						<control type="radiobutton" id="9007" description="Instalar Apex Sports">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Apex Sports</label>
@@ -97,7 +106,16 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/LkpXBOk.jpg)</onfocus>
                         </control>
 						
-						<control type="radiobutton" id="9007" description="Instalar Alfa">
+						<control type="radiobutton" id="9008" description="Instalar Sport HD">
+                            <include>Dialog_Standard_ListButton</include>
+                            <radioposx>630</radioposx>
+                            <label>Sport HD</label>
+							<selected>System.HasAddon(plugin.video.sporthdme)</selected>
+                            <onclick>InstallAddon(plugin.video.sporthdme)</onclick>	
+							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/GLkkGxF.png)</onfocus>
+                        </control>
+						
+						<control type="radiobutton" id="9009" description="Instalar Alfa">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Alfa</label>
@@ -106,7 +124,7 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/Ii3dBvu.png)</onfocus>
                         </control>
 												
-						 <control type="radiobutton" id="9008" description="Instalar Palantir 2">
+						 <control type="radiobutton" id="9010" description="Instalar Palantir 2">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Palantir 2</label>
@@ -114,6 +132,24 @@
                             <onclick>InstallAddon(plugin.video.palantir2)</onclick>	
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/7CPNLul.jpg)</onfocus>
                         </control> 
+						
+						<control type="radiobutton" id="9011" description="Samsung TV+">
+                            <include>Dialog_Standard_ListButton</include>
+                            <radioposx>630</radioposx>
+                            <label>Samsung TV+</label>
+							<selected>System.HasAddon(slyguy.samsung.tv.plus)</selected>							
+                            <onclick>InstallAddon(slyguy.samsung.tv.plus)</onclick>	
+							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/4EUXhDM.png)</onfocus>
+                        </control>
+						
+						<control type="radiobutton" id="9011" description="Red Bull TV">
+                            <include>Dialog_Standard_ListButton</include>
+                            <radioposx>630</radioposx>
+                            <label>Red Bull TV</label>
+							<selected>System.HasAddon(plugin.video.redbull.tv)</selected>							
+                            <onclick>InstallAddon(plugin.video.redbull.tv)</onclick>	
+							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/i1rxlN4.png)</onfocus>
+                        </control>
 												
 					<!-- <control type="radiobutton" id="9009" description="Instalar Tacones">
                             <include>Dialog_Standard_ListButton</include>
@@ -124,7 +160,7 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/aciSu1i.png)</onfocus>
                         </control> -->
 									
-                       <control type="radiobutton" id="9009" description="Continuar">
+                       <control type="radiobutton" id="9012" description="Continuar">
                             <include>Dialog_Standard_ListButton</include>
                             <label>Continuar</label>
                             <onclick condition="String.IsEmpty(Window(Home).Property(RunWizard))">ReloadSkin()</onclick>
