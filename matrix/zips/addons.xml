@@ -533,7 +533,7 @@ Testers: Luisma, Toni, Zarat, SuperTopo, Jorge, Bojbit, MiKeL, Chikiry, Pau, Ale
     </extension>
 </addon>
 
-<addon id="repository.GTKing-Matrix" name="[COLOR steelblue][B]Repo[/B][/COLOR] [COLOR azure][B]GTKing[/B] [/COLOR][COLOR limegreen][B]MATRIX[/B][/COLOR]" version="1.0" provider-name="gtkingbuild">
+<addon id="repository.GTKing-Matrix" name="[COLOR steelblue][B]Repo[/B][/COLOR] [COLOR azure][B]GTKing[/B] [/COLOR][COLOR limegreen][B]MATRIX[/B][/COLOR]" version="1.1" provider-name="gtkingbuild">
     <extension point="xbmc.addon.repository" name="[COLOR dodgerblue][B]Repo[/B][/COLOR] Prueba [COLOR limegreen]MATRIX[/COLOR]">
         <dir minversion="18.0" maxversion="18.9.0">
             <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/leia/zips/addons.xml</info>
@@ -658,7 +658,7 @@ Testers: Luisma, Toni, Zarat, SuperTopo, Jorge, Bojbit, MiKeL, Chikiry, Pau, Ale
     </extension>
 </addon>
 
-<addon id="skin.auramod.GTKing-Matrix" version="1.1.1.01" name="AuraMod [COLOR FF1e90ff]GTKING[/COLOR]" provider-name="Auramod,[COLOR FF1e90ff]GTKING[/COLOR]">
+<addon id="skin.auramod.GTKing-Matrix" version="1.1.1.02" name="AuraMod [COLOR FF1e90ff]GTKING[/COLOR]" provider-name="Auramod,[COLOR FF1e90ff]GTKING[/COLOR]">
     <requires>
         <import addon="xbmc.gui" version="5.15.0"/>
         <import addon="script.skin.helper.service" version="1.1.24"/>

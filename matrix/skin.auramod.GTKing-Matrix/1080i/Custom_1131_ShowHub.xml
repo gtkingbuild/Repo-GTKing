@@ -142,7 +142,7 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/4EUXhDM.png)</onfocus>
                         </control>
 						
-						<control type="radiobutton" id="9011" description="Red Bull TV">
+						<control type="radiobutton" id="9012" description="Red Bull TV">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Red Bull TV</label>
@@ -160,7 +160,7 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/aciSu1i.png)</onfocus>
                         </control> -->
 									
-                       <control type="radiobutton" id="9012" description="Continuar">
+                       <control type="radiobutton" id="9013" description="Continuar">
                             <include>Dialog_Standard_ListButton</include>
                             <label>Continuar</label>
                             <onclick condition="String.IsEmpty(Window(Home).Property(RunWizard))">ReloadSkin()</onclick>
