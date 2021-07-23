@@ -35,9 +35,11 @@ DEFAULT_SKINS = ['skin.estuary', 'skin.estouchy']
 def _get_old(old_key):
     try:
         old = '"{0}"'.format(old_key)
+        xbmc.log('old= ' + str(old), xbmc.LOGINFO)
         query = '{{"jsonrpc":"2.0","method":"Settings.GetSettingValue","params":{{"setting":{0}}}, "id":1}}'.format(old)
         response = xbmc.executeJSONRPC(query)
         response = simplejson.loads(response)
+        xbmc.log('response_old= ' + str(response), xbmc.LOGINFO)
         if 'result' in response:
             if 'value' in response['result']:
                 return response['result']['value']
@@ -54,6 +56,7 @@ def _set_new(new_key, value):
         value = '"{0}"'.format(value)
         query = '{{"jsonrpc":"2.0","method":"Settings.SetSettingValue","params":{{"setting":{0},"value":{1}}}, "id":1}}'.format(new, value)
         response = xbmc.executeJSONRPC(query)
+        
     except Exception as e:
         pass
         # need to be logging error here
@@ -63,20 +66,21 @@ def _set_new(new_key, value):
 
 def _swap_skins(skin):
     _set_new('lookandfeel.skin', skin)
+    xbmc.log('skin= ' + str(skin), xbmc.LOGINFO)
     
     return _dialog_watch()
 
 
 def switch_to_skin(goto, title="Error"):
     from resources.libs.common import logging
-
+    xbmc.log('goto= ' + str(goto), xbmc.LOGINFO)
     result = _swap_skins(goto)
+    
 
     if result:
         logging.log('[COLOR {0}]{1}: Skin Swap Success![/COLOR]'.format(CONFIG.COLOR2, title))
-    else:
-        logging.log_notify(CONFIG.ADDONTITLE,
-                           '[COLOR {0}]{1}: Skin Swap Failed![/COLOR]'.format(CONFIG.COLOR2, title))
+    #else:
+        #logging.log_notify(CONFIG.ADDONTITLE,'[COLOR {0}]{1}: Skin Swap Failed![/COLOR]'.format(CONFIG.COLOR2, title))
                            
     return result
 
@@ -94,7 +98,7 @@ def skin_to_default(title):
 def look_and_feel_data(do='save'):
     from resources.libs.common import logging
 
-    scan = ['lookandfeel.enablerssfeeds', 'lookandfeel.font', 'lookandfeel.rssedit', 'lookandfeel.skincolors',
+    scan = ['lookandfeel.skin','lookandfeel.enablerssfeeds', 'lookandfeel.font', 'lookandfeel.rssedit', 'lookandfeel.skincolors',
             'lookandfeel.skintheme', 'lookandfeel.skinzoom', 'lookandfeel.soundskin', 'lookandfeel.startupwindow',
             'lookandfeel.stereostrength']
             
@@ -102,13 +106,16 @@ def look_and_feel_data(do='save'):
         for item in scan:
             query = '{{"jsonrpc":"2.0", "method":"Settings.GetSettingValue","params":{{"setting":"{0}"}}, "id":1}}'.format(item)
             response = xbmc.executeJSONRPC(query)
+            xbmc.log('response= ' + str(response), xbmc.LOGINFO)
             if 'error' not in response:
                 match = re.compile('{"value":(.+?)}').findall(str(response))
+                xbmc.log('match= ' + str(match), xbmc.LOGINFO)
                 CONFIG.set_setting(item.replace('lookandfeel', 'default'), match[0])
                 logging.log("%s saved to %s" % (item, match[0]))
     elif do == 'restore':
         for item in scan:
             value = CONFIG.get_setting(item.replace('lookandfeel', 'default'))
+            xbmc.log('value= ' + str(value), xbmc.LOGINFO)
             query = '{{"jsonrpc":"2.0", "method":"Settings.SetSettingValue","params":{{"setting":"{0}","value":{1}}}, "id":1}}'.format(item, value)
             response = xbmc.executeJSONRPC(query)
             logging.log("{0} restored to {1}".format(item, value))
@@ -128,7 +135,7 @@ def swap_us():
         query = '{{"jsonrpc":"2.0", "method":"Settings.SetSettingValue","params":{{"setting":{0},"value":{1}}}, "id":1}}'.format(new, value)
         response = xbmc.executeJSONRPC(query)
         logging.log_notify(CONFIG.ADDONTITLE,
-                           '[COLOR {0}]Fuentes Desconocidas:[/COLOR] [COLOR {1}]Activado[/COLOR]'.format(CONFIG.COLOR1, CONFIG.COLOR2))
+                           '[COLOR {0}]Unknown Sources:[/COLOR] [COLOR {1}]Enabled[/COLOR]'.format(CONFIG.COLOR1, CONFIG.COLOR2))
         logging.log("Unknown Sources Set Settings: {0}".format(str(response)))
     elif 'true' in response:
         value = 'false'
@@ -137,7 +144,7 @@ def swap_us():
         query = '{{"jsonrpc":"2.0", "method":"Settings.SetSettingValue","params":{{"setting":{0},"value":{1}}}, "id":1}}'.format(new, value)
         response = xbmc.executeJSONRPC(query)
         logging.log_notify(CONFIG.ADDONTITLE,
-                           '[COLOR {0}]Fuentes Desconocidas:[/COLOR] [COLOR {1}]Desactivado[/COLOR]'.format(CONFIG.COLOR1, CONFIG.COLOR2))
+                           '[COLOR {0}]Unknown Sources:[/COLOR] [COLOR {1}]Disabled[/COLOR]'.format(CONFIG.COLOR1, CONFIG.COLOR2))
         logging.log("Unknown Sources Set Settings: {0}".format(str(response)))
 
 
@@ -145,7 +152,7 @@ def _dialog_watch():
     x = 0
     while not xbmc.getCondVisibility("Window.isVisible(yesnodialog)") and x < 100:
         x += 1
-        xbmc.sleep(100)
+        xbmc.sleep(1)
 
     if xbmc.getCondVisibility("Window.isVisible(yesnodialog)"):
         xbmc.executebuiltin('SendClick(yesnodialog, 11)')
