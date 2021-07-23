@@ -216,7 +216,7 @@ def ensure_folders(folder=None):
         dialog = xbmcgui.Dialog()
 
         dialog.ok(CONFIG.ADDONTITLE,
-                      "[COLOR {0}]Error al crear directorios de Add-ons:[/COLOR]".format(CONFIG.COLOR2)
+                      "[COLOR {0}]Error al crear directorios Addons:[/COLOR]".format(CONFIG.COLOR2)
                       +'\n'+"[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, name))
 
 #########################
@@ -501,7 +501,7 @@ def reload_fix(default=None):
     dialog = xbmcgui.Dialog()
     
     dialog.ok(CONFIG.ADDONTITLE,
-                  "[COLOR red]ADVERTENCIA:[/COLOR] [COLOR {0}] A veces, Recargando el Perfil hace que Kodi se bloquee. Mientras Kodi está Recargando el Perfil, Por Favor No Presione Ningún Botón![/COLOR]".format(CONFIG.COLOR2))
+                  "[COLOR red]ADVERTENCIA:[/COLOR] [COLOR {0}]A veces, Recargando el Perfil hace que Kodi se bloquee. Mientras Kodi está Recargando el Perfil, Por Favor No Presione Ningún Botón![/COLOR]".format(CONFIG.COLOR2))
                   
     if not os.path.exists(CONFIG.PACKAGES):
         os.makedirs(CONFIG.PACKAGES)

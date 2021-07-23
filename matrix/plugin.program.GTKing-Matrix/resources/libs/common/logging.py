@@ -388,7 +388,7 @@ def view_log_file():
         elif wizlog:
             logtype = wizlog
 
-    window.show_log_viewer("Ver Archivo de Registro", log_file=logtype, ext_buttons=True)
+    window.show_log_viewer("[B][COLOR azure]Ver Archivo de Registro[/COLOR][/B]", log_file=logtype, ext_buttons=True)
 
 
 def swap_debug():

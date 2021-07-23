@@ -45,7 +45,7 @@ def create_code():
     
     if not response:
         if not dialog.yesno(CONFIG.ADDONTITLE,
-                                 "[COLOR {0}]Parece que la URL que ingresó no es válida o no funciona. Le gustaría crearla de todos modos?[/COLOR]".format(CONFIG.COLOR2)
+                                "[COLOR {0}]Parece que la URL que ingresó no es válida o no funciona. Le gustaría crearla de todos modos?[/COLOR]".format(CONFIG.COLOR2)
                                 +'\n'+"[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, url),
                                 yeslabel="[B][COLOR red]Sí, Crear[/COLOR][/B]",
                                 nolabel="[B][COLOR springgreen]No, Cancelar[/COLOR][/B]"):
