@@ -1,4 +1,4 @@
-name="Parche GTKing Matrix"
+name="[B][COLOR azure]•[/COLOR] Parche GTKing Matrix 1.0.4[/B]"
 url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/0.1/Parche.GTKing.MATRIX.zip"
 icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
 fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
