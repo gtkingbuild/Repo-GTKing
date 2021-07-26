@@ -98,7 +98,7 @@ def force_check_updates(auto=False, over=False):
     
     if not over:
         logging.log_notify(CONFIG.ADDONTITLE,
-                           '[COLOR {0}]Forzar la Comprobacion de Actualizaciones[/COLOR]'.format(CONFIG.COLOR2))
+                           '[COLOR {0}]Forzar la Comprobación de Actualizaciones[/COLOR]'.format(CONFIG.COLOR2))
 
     dbfile = latest_db('Addons')
     dbfile = os.path.join(CONFIG.DATABASE, dbfile)
@@ -120,10 +120,10 @@ def force_check_updates(auto=False, over=False):
         checked_time = 0
         for repo in installed_repos.fetchall():
             repo = repo[0]
-            logging.log('Comprobacion forzada {0}...'.format(repo), level=xbmc.LOGDEBUG)
+            logging.log('Comprobación forzada {0}...'.format(repo), level=xbmc.LOGDEBUG)
             while checked_time < start_time:
                 if time.time() >= start_time + 20:
-                    logging.log('{0} se agoto el tiempo durante la verificacion forzada del repo.'.format(repo), level=xbmc.LOGDEBUG)
+                    logging.log('{0} se agotó el tiempo durante la verificación forzada del repo.'.format(repo), level=xbmc.LOGDEBUG)
                     break
                 
                 lastcheck = sqlexe.execute('SELECT lastcheck FROM repo WHERE addonID = ?', (repo,))
@@ -134,9 +134,9 @@ def force_check_updates(auto=False, over=False):
                     
                 xbmc.sleep(1000)
             checked_time = 0
-            logging.log('{0} fuerza comprobada con exito.'.format(repo), level=xbmc.LOGDEBUG)
+            logging.log('{0} comprobación forzada con éxito.'.format(repo), level=xbmc.LOGDEBUG)
             logging.log_notify('[COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, CONFIG.ADDONTITLE),
-                               "[COLOR {0}]{1} fuerza comprobada con exito.[/COLOR]".format(CONFIG.COLOR2, repo))
+                               "[COLOR {0}]{1} comprobación forzada con éxito.[/COLOR]".format(CONFIG.COLOR2, repo))
             
     sqlexe.close()
                     
@@ -151,7 +151,7 @@ def purge_db_file(name):
             textdb = database.connect(name)
             textexe = textdb.cursor()
         except Exception as e:
-            logging.log("DB Error de Conexion: {0}".format(str(e)), level=xbmc.LOGERROR)
+            logging.log("DB Error de Conexión: {0}".format(str(e)), level=xbmc.LOGERROR)
             return False
     else:
         logging.log('{0} no encontrado.'.format(name), level=xbmc.LOGERROR)
@@ -235,7 +235,7 @@ def kodi_17_fix():
     if len(disabledAddons) > 0:
         addon_database(disabledAddons, 1, True)
         logging.log_notify(CONFIG.ADDONTITLE,
-                           "[COLOR {0}]Habilitacion de Addons Completa![/COLOR]".format(CONFIG.COLOR2))
+                           "[COLOR {0}]Habilitación de Addons Completa![/COLOR]".format(CONFIG.COLOR2))
     update.force_update()
     xbmc.executebuiltin("ReloadSkin()")
 

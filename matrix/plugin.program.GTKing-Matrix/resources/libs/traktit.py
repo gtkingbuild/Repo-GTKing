@@ -366,9 +366,9 @@ def auto_update(who):
 
                 if dialog.yesno(CONFIG.ADDONTITLE,
                                     "Le gustaría guardar los [COLOR {0}]Datos Trakt[/COLOR] para [COLOR {1}]{2}[/COLOR]?".format(CONFIG.COLOR2, CONFIG.COLOR1, n)
-                                    +'\n'+"Addon: [COLOR springgreen][B]{0}[/B][/COLOR]".format(u)
+                                    +'\n'+"Addon: [COLOR cyan][B]{0}[/B][/COLOR]".format(u)
                                     +'\n'+"Salvado:[/COLOR] [COLOR red][B]{0}[/B][/COLOR]".format(su) if not su == '' else 'Salvado:[/COLOR] [COLOR red][B]Ninguno[/B][/COLOR]',
-                                    yeslabel="[B][COLOR springgreen]Salvar Datos[/COLOR][/B]",
+                                    yeslabel="[B][COLOR cyan]Salvar Datos[/COLOR][/B]",
                                     nolabel="[B][COLOR red]No, Cancelar[/COLOR][/B]"):
                     trakt_it('update', who)
             else:

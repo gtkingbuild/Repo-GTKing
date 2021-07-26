@@ -66,7 +66,7 @@ def wipe():
     
     update.addon_updates('set')
     xbmcPath = os.path.abspath(CONFIG.HOME)
-    progress_dialog.create(CONFIG.ADDONTITLE, "[COLOR {0}]Calcular archivos y carpetas".format(CONFIG.COLOR2) + '\n' + '\n' + 'Espere por Favor![/COLOR]')
+    progress_dialog.create(CONFIG.ADDONTITLE, "[COLOR {0}][B]Calcular archivos y carpetas[/B]".format(CONFIG.COLOR2) + '\n' + '\n' + '[B]Espere por Favor![/B][/COLOR]')
     total_files = sum([len(files) for r, d, files in os.walk(xbmcPath)])
     del_file = 0
     progress_dialog.update(0, "[COLOR {0}]Recopilación de lista de Excluidos.[/COLOR]".format(CONFIG.COLOR2))
@@ -103,7 +103,7 @@ def wipe():
     for item in CONFIG.DEPENDENCIES:
         exclude_dirs.append(item)
 
-    progress_dialog.update(0, "[COLOR {0}]Borrar archivos y carpetas:".format(CONFIG.COLOR2))
+    progress_dialog.update(0, "[COLOR {0}][B]Borrar archivos y carpetas:[/B]".format(CONFIG.COLOR2))
     latestAddonDB = db.latest_db('Addons')
     for root, dirs, files in os.walk(xbmcPath, topdown=True):
         dirs[:] = [d for d in dirs if d not in exclude_dirs]
@@ -137,7 +137,7 @@ def wipe():
                         logging.log("-> {0}".format(str(e)))
                         db.purge_db_file(os.path.join(root, name))
             else:
-                progress_dialog.update(int(tools.percentage(del_file, total_files)), '\n' + '[COLOR {0}]Archivo: [/COLOR][COLOR {1}]{2}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, name))
+                progress_dialog.update(int(tools.percentage(del_file, total_files)), '\n' + '[COLOR {0}][B]Archivo:[/B] [/COLOR][COLOR {1}]{2}[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, name))
                 try:
                     os.remove(os.path.join(root, name))
                 except Exception as e:
@@ -151,7 +151,7 @@ def wipe():
     for root, dirs, files in os.walk(xbmcPath, topdown=True):
         dirs[:] = [d for d in dirs if d not in exclude_dirs]
         for name in dirs:
-            progress_dialog.update(100, '\n' + 'Limpieza de Carpeta Vacia: [COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, name))
+            progress_dialog.update(100, '\n' + '[B]Limpieza de Carpeta Vacía:[/B] [COLOR {0}]{1}[/COLOR]'.format(CONFIG.COLOR1, name))
             if name not in ["Database", "userdata", "temp", "addons", "addon_data"]:
                 shutil.rmtree(os.path.join(root, name), ignore_errors=True, onerror=None)
         if progress_dialog.iscanceled():
@@ -191,19 +191,19 @@ def fresh_start(install=None, over=False):
 
     elif install == 'restore':
         yes_pressed = dialog.yesno(CONFIG.ADDONTITLE,
-                                       "[COLOR {0}]Desea restaurar su".format(CONFIG.COLOR2)
-                                       +'\n'+"Configuración de Kodi a la configuración predeterminada"
-                                       +'\n'+"¿Antes de instalar la copia de seguridad local?[/COLOR]",                                       
+                                       "[COLOR {0}][B]Desea restaurar su[/B]".format(CONFIG.COLOR2)
+                                       +'\n'+"[B]Configuración de Kodi a la configuración predeterminada[/B]"
+                                       +'\n'+"[B]¿Antes de instalar la copia de seguridad local?[/B][/COLOR]",                                       
 									   nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]',
                                        yeslabel='[B][COLOR cyan]Continuar[/COLOR][/B]')
     elif install:
-        yes_pressed = dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}]Desea restaurar su".format(CONFIG.COLOR2)
-                                       +'\n'+"Configuración de Kodi a la configuración predeterminada"
-                                       +'\n'+"Antes de instalar [COLOR {0}]{1}[/COLOR]?".format(CONFIG.COLOR1, install),
+        yes_pressed = dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}][B]Desea restaurar su[/B]".format(CONFIG.COLOR2)
+                                       +'\n'+"[B]Configuración de Kodi a la configuración predeterminada[/B]"
+                                       +'\n'+"[B]Antes de instalar[/B] [COLOR {0}]{1}[/COLOR][B]?[/B]".format(CONFIG.COLOR1, install),
                                        nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]',
                                        yeslabel='[B][COLOR cyan]Continuar[/COLOR][/B]')
     else:
-        yes_pressed = dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}]Desea restaurar su".format(CONFIG.COLOR2) +' \n' + "Configuración de Kodi a la configuración predeterminada[/COLOR]", nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]', yeslabel='[B][COLOR cyan]Continuar[/COLOR][/B]')
+        yes_pressed = dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}][B]Desea restaurar su[/B]".format(CONFIG.COLOR2) +' \n' + "[B]Configuración de Kodi a la configuración predeterminada[/B][/COLOR]", nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]', yeslabel='[B][COLOR cyan]Continuar[/COLOR][/B]')
     if yes_pressed:
         wipe()
         
@@ -216,14 +216,14 @@ def fresh_start(install=None, over=False):
 
             Wizard().build('normal', install, over=True)
         else:
-            dialog.ok(CONFIG.ADDONTITLE, "[COLOR {0}]Para guardar los cambios, ahora necesita Forzar el Cierre de Kodi, Presione OK para Forzar el Cierre de Kodi[/COLOR]".format(CONFIG.COLOR2))
+            dialog.ok(CONFIG.ADDONTITLE, "[COLOR {0}][B]Para guardar los cambios, ahora necesita Forzar el Cierre de Kodi, Presione [COLOR azure]OK[/COLOR] para Forzar el Cierre de Kodi[/B][/COLOR]".format(CONFIG.COLOR2))
             from resources.libs import update
             update.addon_updates('reset')
             tools.kill_kodi(over=True)
     else:
         if not install == 'restore':
             logging.log_notify(CONFIG.ADDONTITLE,
-                               '[COLOR {0}]Instalación Nueva: Cancelada![/COLOR]'.format(CONFIG.COLOR2))
+                               '[COLOR {0}][B]Instalación Nueva:[/B] Cancelada![/COLOR]'.format(CONFIG.COLOR2))
             xbmc.executebuiltin('Container.Refresh()')
 
 

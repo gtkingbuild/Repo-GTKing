@@ -314,7 +314,7 @@ def show_build_prompt():
 
         def __init__(self, *args, **kwargs):
             self.title = CONFIG.THEME3.format(CONFIG.ADDONTITLE)
-            self.msg = "[B][COLOR azure]\nActualmente no hay ninguna[/COLOR][/B] [B][COLOR green]Build[/COLOR][/B] [B][COLOR azure]instalada en[/COLOR][/B] {0}[B][COLOR azure].[/COLOR][/B][COLOR darkturquoise]\n\n\n[B]Seleccione[/B] [/COLOR][COLOR azure][B]'Build Menu'[/B][/COLOR] [COLOR darkturquoise][B]para instalar la [COLOR green]Build[/COLOR][COLOR darkturquoise]. Seleccione[/B] [/COLOR][COLOR azure][B]'Ignorar'[/B][/COLOR] [COLOR darkturquoise][B]para Cerrar esta ventana.[/COLOR][/B][COLOR azure]\n\n\nGracias por escoger[/COLOR] {1}[COLOR azure].[/COLOR]".format(CONFIG.ADDONTITLE, CONFIG.ADDONTITLE)
+            self.msg = "[B][COLOR azure]\nActualmente no hay ninguna[/COLOR][/B] [B][COLOR lime]Build[/COLOR][/B] [B][COLOR azure]instalada en[/COLOR][/B] {0}[B][COLOR azure].[/COLOR][/B][COLOR azure]\n\n\n[B]Seleccione[/B] [/COLOR][COLOR FF62e44f][B]'Build Menu'[/B][/COLOR] [COLOR azure][B]para instalar la [COLOR azure]Build[/COLOR][COLOR azure]. Seleccione[/B] [/COLOR][COLOR FF12B2E7][B]'Ignorar'[/B][/COLOR] [COLOR azure][B]para Cerrar esta ventana.[/COLOR][/B][COLOR azure]\n\n\n[B]Gracias por escoger:[/B][/COLOR]  {1}[COLOR azure].[/COLOR]".format(CONFIG.ADDONTITLE, CONFIG.ADDONTITLE)
             self.msg = CONFIG.THEME2.format(self.msg)
 
         def onInit(self):

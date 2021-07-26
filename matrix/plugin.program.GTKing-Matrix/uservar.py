@@ -14,7 +14,7 @@ ART = os.path.join(PATH, 'resources', 'media')
 #        User Edit Variables                            #
 #########################################################
 ADDONTITLE = '[COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]'
-BUILDERNAME = 'DavidZgZ & Josa'
+BUILDERNAME = 'JoseaTEBA & DavidZgZ'
 EXCLUDES = [ADDON_ID, 'repository.gtkingMatrix']
 # Text File with build info in it.
 BUILDFILE = 'https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/wizardfiles/builds.txt'

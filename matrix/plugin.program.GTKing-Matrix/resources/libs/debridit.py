@@ -448,9 +448,9 @@ def auto_update(who):
 
                 if dialog.yesno(CONFIG.ADDONTITLE,
                                     "Le gustaría salvar la [COLOR {0}]Info Debrid[/COLOR] para [COLOR {1}]{2}[/COLOR]?".format(CONFIG.COLOR2, CONFIG.COLOR1, n)
-                                    +'\n'+"Addon: [COLOR springgreen][B]{0}[/B][/COLOR]".format(u)
+                                    +'\n'+"Addon: [COLOR cyan][B]{0}[/B][/COLOR]".format(u)
                                     +'\n'+"Salvado:[/COLOR] [COLOR red][B]{0}[/B][/COLOR]".format(su) if not su == '' else 'Salvado:[/COLOR] [COLOR red][B]Ninguno[/B][/COLOR]',
-                                    yeslabel="[B][COLOR springreen]Salvar Debrid[/COLOR][/B]",
+                                    yeslabel="[B][COLOR cyan]Salvar Debrid[/COLOR][/B]",
                                     nolabel="[B][COLOR red]No, Cancelar[/COLOR][/B]"):
                     debrid_it('update', who)
             else:

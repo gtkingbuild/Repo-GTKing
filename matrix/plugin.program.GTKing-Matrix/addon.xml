@@ -18,8 +18,8 @@
 		
     	<description lang="es">
 [B]• Developers:[/B] [COLOR gold]JoseaTEBA y DavidZgZ[/COLOR]
-[B]• Testers:[/B] [COLOR dodgerblue]Sugea, Mapache, Tete6776 y Vicente[/COLOR]
-[B]• Telegram:[/B] [COLOR lime]t.me/beelinkking[/COLOR]</description>
+[B]• Testers:[/B]        [COLOR dodgerblue]Sugea, Mapache, Tete6776, Vicente[/COLOR]
+[B]• Telegram:[/B]    [COLOR lime]t.me/beelinkking[/COLOR]</description>
 		<platform>all</platform>
 		<reuselanguageinvoker>false</reuselanguageinvoker>
         <source>https://www.github.com/gtkingbuild/Repo-GTKing/plugin.program.GTKing-Matrix/</source>
@@ -27,7 +27,7 @@
 • plugin.program [COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]
 
 • 10/07/2021
-- Instalador renombrado a la versión 1.0
+- Instalador renombrado a la versión 7.0
 - Añadidas notificaciones para actualizar el parche de la Build.
 - Corregido el Parche despúes de instalar la Build.
 

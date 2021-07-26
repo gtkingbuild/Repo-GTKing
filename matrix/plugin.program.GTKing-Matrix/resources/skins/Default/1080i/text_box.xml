@@ -50,7 +50,7 @@
                     <focusedcolor>$INFO[Window().Property(texture.color2)]</focusedcolor>
                     <texturefocus colordiffuse="$INFO[Window().Property(texture.color1)]">Background/white.png</texturefocus>
                     <texturenofocus colordiffuse="FF282828">Background/white.png</texturenofocus>
-                    <label>Cerrar</label>
+                    <label>[B]Cerrar[/B]</label>
                 </control>
             </control>
             
