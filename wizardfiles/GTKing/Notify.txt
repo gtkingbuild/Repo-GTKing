@@ -5,7 +5,9 @@
 
 [COLOR aquamarine][B]INSTALACIÓN:[B][/COLOR]
 
-[COLOR deepskyblue]* Para realizar la instalación correctamente deberás pulsar en la opción [B]"BUILD MENÚ"[/B] en la ventana que aparece después de instalar el plugin instalador (Wizard), seleccionas la Build que deseas instalar, después de la instalación si nos pregunta si queremos instalar un parche de actualización seleccionaremos [B]"Si, Instalar"[/B] y elegimos el parche a instalar (si hubiera más de uno elegiremos el de mayor número de versión, cuando termine de instalar nos aparecerá una ventana para Forzar el cierre de Kodi, pulsaremos en [B]"OK"[/B], después de eso se cerrará Kodi y ya sólo nos quedará iniciar de nuevo Kodi y darle unos minutos para que cargue el menú correctamente.
+[COLOR deepskyblue]* Para realizar la instalación correctamente deberás pulsar en la opción [B]"BUILD MENÚ"[/B] en la ventana que aparece después de instalar el plugin instalador (Wizard).
+Seleccionamos la Build que deseas instalar, después de la instalación puede que nos pregunte si queremos instalar un parche de actualización, seleccionaremos [B]"Si, Instalar"[/B] y elegimos el parche a instalar (si hubiera más de uno elegiremos el de mayor número de versión.
+Cuando termine de instalar nos aparecerá una ventana para Forzar el cierre de Kodi, pulsaremos en [B]"OK"[/B], después de eso se cerrará Kodi y ya sólo nos quedará iniciar de nuevo Kodi y darle unos minutos para que cargue el menú correctamente.
 
 
 [COLOR lime][B]PARCHES ACTUALIZADORES GTKING MATRIX[/B][/COLOR]
