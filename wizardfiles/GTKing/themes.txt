@@ -1,5 +1,5 @@
 name="Parche PRUEBA GTKing Matrix 7.0"
-url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/7.0/parche.prueba.zip"
+url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/7.0/Parche.GTKing.MATRIX.3.zip"
 icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
 fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
 adult="no"
