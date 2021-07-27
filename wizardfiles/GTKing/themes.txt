@@ -1,3 +1,10 @@
+name="[B][COLOR azure]•[/COLOR] Parche GTKing Matrix 1.0.4[/B]"
+url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/0.1/Parche.GTKing.MATRIX.zip"
+icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
+fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
+adult="no"
+description="Parche GTKing Prime Matrix"
+
 name="Parche Prueba GTKing MATRIX 27"
 url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/7.0/Prueba.27JULIOMa.zip"
 icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
