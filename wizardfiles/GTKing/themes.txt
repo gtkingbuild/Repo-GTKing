@@ -6,7 +6,7 @@ adult="no"
 description="Parche GTKing Prime Matrix"
 
 name="[B][COLOR green]•[/COLOR]Parche Prueba GTKing MATRIX 27[/B]"
-url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/7.2/Prueba.27Matrix.zip"
+url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/7.2/Prueba.27JULIO-7.2.zip"
 icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
 fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
 adult="no"
