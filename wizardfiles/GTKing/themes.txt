@@ -5,7 +5,7 @@ fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
 adult="no"
 description="Parche GTKing Prime Matrix"
 
-name="[B][COLOR green]•[/COLOR]Tema GTKing MATRIX 0.2[/B]"
+name="[B][COLOR green]•[/COLOR]Tema GTKing MATRIX 1.0.5[/B]"
 url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/0.2/Tema.GTKing.MATRIX.zip"
 icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
 fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
