@@ -231,7 +231,7 @@ class Wizard:
                 from resources.libs.gui.build_menu import BuildMenu
                 themes = BuildMenu().theme_count(name, False)
                 if len(themes) > 0:
-                    if self.dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}][B]La Build [COLOR {1}]{2}[/COLOR] viene con [COLOR {3}]{4}[/COLOR] Parche de actualización[/B]".format(CONFIG.COLOR2, CONFIG.COLOR1, name, CONFIG.COLOR1, len(themes)) + '\n\n' + "[B]Le gustaría instalar el Parche  de actualización ahora?[/B][/COLOR]",
+                    if self.dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}][B]La Build [COLOR {1}]{2}[/COLOR] viene con [COLOR {3}]{4}[/COLOR] Parche de actualización[/B]".format(CONFIG.COLOR2, CONFIG.COLOR1, name, CONFIG.COLOR1, len(themes)) + '\n\n' + "[B]Le gustaría instalar el Parche de actualización ahora?[/B][/COLOR]",
                                     yeslabel="[B][COLOR cyan]Instalar Parche[/COLOR][/B]",
                                     nolabel="[B][COLOR red]Cancelar Parche[/COLOR][/B]"):
                         logging.log("Lista de Parches: {0}".format(str(themes)))
@@ -314,9 +314,6 @@ class Wizard:
             #db.force_check_updates(over=True)
             installed = db.grab_addons(lib)
             db.addon_database(installed, 1, True)
-
-            self.dialog.ok(CONFIG.ADDONTITLE, "[COLOR {0}][B]Para guardar los cambios, ahora necesita Forzar el Cierre de Kodi.[/B] \n\nPresione [B]OK[/B] para Forzar el Cierre de Kodi.[/COLOR]".format(CONFIG.COLOR2))
-            tools.kill_kodi(over=True)
             
             if test2:
                 skin.look_and_feel_data('save')
