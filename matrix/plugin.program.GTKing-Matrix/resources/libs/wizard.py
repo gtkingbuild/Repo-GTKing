@@ -315,6 +315,9 @@ class Wizard:
             installed = db.grab_addons(lib)
             db.addon_database(installed, 1, True)
             
+			self.dialog.ok(CONFIG.ADDONTITLE, "[COLOR {0}][B]Para guardar los cambios, ahora necesita Forzar el Cierre de Kodi.[/B] \n\nPresione [B]OK[/B] para Forzar el Cierre de Kodi.[/COLOR]".format(CONFIG.COLOR2))
+            tools.kill_kodi(over=True)
+			
             if test2:
                 skin.look_and_feel_data('save')
                 xbmc.log('test2= ' + str(test2), xbmc.LOGINFO)
