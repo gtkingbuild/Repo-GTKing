@@ -144,7 +144,7 @@ class Wizard:
                 from resources.libs.gui.build_menu import BuildMenu
                 themecount = BuildMenu().theme_count(name)
 
-                if themecount > 0:
+                if themecount > 99:
                     self.theme(name)
 
                 db.addon_database(CONFIG.ADDON_ID, 1)

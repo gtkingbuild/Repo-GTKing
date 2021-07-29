@@ -88,16 +88,7 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/TsVLf4g.jpg)</onfocus>
                         </control>
 						
-						<control type="radiobutton" id="9006" description="Instalar Cloud 9">
-                            <include>Dialog_Standard_ListButton</include>
-                            <radioposx>630</radioposx>
-                            <label>Cloud 9</label>
-							<selected>System.HasAddon(plugin.video.Cloud9)</selected>
-                            <onclick>InstallAddon(plugin.video.Cloud9)</onclick>	
-							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/xCu19eS.png)</onfocus>
-                        </control>
-						
-						<control type="radiobutton" id="9007" description="Instalar Apex Sports">
+						<control type="radiobutton" id="9006" description="Instalar Apex Sports">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Apex Sports</label>
@@ -106,7 +97,7 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/LkpXBOk.jpg)</onfocus>
                         </control>
 						
-						<control type="radiobutton" id="9008" description="Instalar Sport HD">
+						<control type="radiobutton" id="9007" description="Instalar Sport HD">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Sport HD</label>
@@ -115,7 +106,7 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/GLkkGxF.png)</onfocus>
                         </control>
 						
-						<control type="radiobutton" id="9009" description="Instalar Alfa">
+						<control type="radiobutton" id="9008" description="Instalar Alfa">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Alfa</label>
@@ -124,7 +115,7 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/Ii3dBvu.png)</onfocus>
                         </control>
 												
-						 <control type="radiobutton" id="9010" description="Instalar Palantir 2">
+						 <control type="radiobutton" id="9009" description="Instalar Palantir 2">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Palantir 2</label>
@@ -133,7 +124,7 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/7CPNLul.jpg)</onfocus>
                         </control> 
 						
-						<control type="radiobutton" id="9011" description="Samsung TV+">
+						<control type="radiobutton" id="9010" description="Samsung TV+">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Samsung TV+</label>
@@ -142,7 +133,7 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/4EUXhDM.png)</onfocus>
                         </control>
 						
-						<control type="radiobutton" id="9012" description="Red Bull TV">
+						<control type="radiobutton" id="9011" description="Red Bull TV">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Red Bull TV</label>
@@ -160,7 +151,7 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/aciSu1i.png)</onfocus>
                         </control> -->
 									
-                       <control type="radiobutton" id="9013" description="Continuar">
+                       <control type="radiobutton" id="9012" description="Continuar">
                             <include>Dialog_Standard_ListButton</include>
                             <label>Continuar</label>
                             <onclick condition="String.IsEmpty(Window(Home).Property(RunWizard))">ReloadSkin()</onclick>
