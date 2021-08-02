@@ -1,5 +1,5 @@
-id="plugin.program.GTKing-3.0.zip"
-version="3.0"
+id="plugin.program.GTKing-Matrix-1.0.zip"
+version="1.0"
 zip="https://github.com/gtkingbuild/gtkingbuild.github.io/tree/master/addons.de.programa/"
 
 name="19.x Matrix"
