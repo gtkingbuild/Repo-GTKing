@@ -1,16 +1,6 @@
-name="[B][COLOR azure]•[/COLOR] Parche GTKing Matrix 1.0.4[/B]"
-url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/0.1/Parche.GTKing.MATRIX.zip"
-icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
-fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
-adult="no"
-description="Parche GTKing Prime Matrix"
-
-name="[B][COLOR green]•[/COLOR]Tema GTKing MATRIX 1.0.5[/B]"
-url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/0.2/parche.prueba.zip"
+name="[B][COLOR red]•[/COLOR]Parche Prueba GTKing MATRIX 1.0[/B]"
+url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/0.1/parche.prueba.zip"
 icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
 fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
 adult="no"
 description="Parche PRUEBA GTKing Prime Matrix"
-
-
-
