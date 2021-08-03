@@ -47,7 +47,7 @@
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Personalizar Menu de Inicio</label>
-                            <onfocus>SetProperty(Image_Preview,special://skin/extras/backgrounds/viewmodes/persmen.jpg)</onfocus>
+                            <onfocus>SetProperty(Image_Preview,special://skin/extras/backgrounds/viewmodes/permeini.jpg)</onfocus>
                             <onclick condition="String.IsEmpty(Window(Home).Property(RunWizard))">ReloadSkin()</onclick>
                             <onclick condition="!String.IsEmpty(Window(Home).Property(RunWizard))">Close</onclick>
                             <onclick condition="!String.IsEmpty(Window(Home).Property(RunWizard))">RunScript(script.skinshortcuts,type=manage&amp;group=mainmenu)</onclick>
