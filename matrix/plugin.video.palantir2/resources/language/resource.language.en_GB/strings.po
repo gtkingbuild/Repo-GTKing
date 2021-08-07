@@ -679,7 +679,7 @@ msgid "Top/Uptobox server"
 msgstr ""
 
 msgctxt "#30012"
-msgid "Account email"
+msgid "Add Email or User"
 msgstr ""
 
 msgctxt "#30013"
@@ -691,11 +691,7 @@ msgid "Alldebrid"
 msgstr ""
 
 msgctxt "#30015"
-msgid "Apikey Name"
-msgstr ""
-
-msgctxt "#30016"
-msgid "Apikey Code"
+msgid "RealDebrid"
 msgstr ""
 
 msgctxt "#30017"
@@ -896,7 +892,7 @@ msgid "It is not possible to automatically identify the next episode of this ser
 msgstr ""
 
 msgctxt "#30071"
-msgid " Register for free at uptobox.com and add your account in the settings, to be able to use this server"
+msgid " Register for free at uptobox.com and add your account in the Palantir 2 settings, to be able to use this server"
 msgstr ""
 
 msgctxt "#30072"
@@ -920,14 +916,28 @@ msgid "Your Alldebrid account has been paired with Palantir 2"
 msgstr ""
 
 msgctxt "#30077"
-msgid "Failed to pair your Alldebrid account"
+msgid "Failed to pair your %s account"
 msgstr ""
 
 msgctxt "#30078"
 msgid "Time exceeded"
 msgstr ""
 
-# empty strings from id 30079 to 30099
+msgctxt "#30079"
+msgid "Filesize need premium"
+msgstr ""
+
+msgctxt "#30080"
+msgid "You need to wait %s seconds before requesting a new download link"
+msgstr ""
+
+
+msgctxt "#30081"
+msgid "Found original video. Do you want to find other resolutions?"
+msgstr ""
+
+
+# empty strings from id 30082 to 30099
 
 # moria
 
@@ -1125,4 +1135,8 @@ msgstr ""
 
 msgctxt "#30151"
 msgid "Set this view for menus"
+msgstr ""
+
+msgctxt "#30152"
+msgid "To resolve this link it is necessary to install ResolveUrl"
 msgstr ""

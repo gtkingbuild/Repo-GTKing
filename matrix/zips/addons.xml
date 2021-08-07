@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.program.autowidget" name="AutoWidget" version="3.2.2" provider-name="drinfernoo">
+<addon id="plugin.program.autowidget" name="AutoWidget" version="3.3.7" provider-name="drinfernoo">
     <requires>
-        <import addon="script.module.kodi-six" />
         <import addon="script.module.pil" />
         <import addon="script.module.six" />
     </requires>
 
     <extension point="xbmc.python.pluginsource" library="main.py">
-        <provides>executable video</provides>
+        <provides>executable video music</provides>
     </extension>
 
     <extension point="xbmc.service" library="service.py" />
@@ -22,6 +21,14 @@
             <item library="context_refresh.py">
                 <label>$ADDON[plugin.program.autowidget 30006]</label>
                 <visible>String.Contains(ListItem.FolderPath, plugin://plugin.program.autowidget)</visible>
+            </item>
+			<item library="context_refresh_single.py">
+                <label>$ADDON[plugin.program.autowidget 30047]</label>
+                <visible>!String.IsEmpty(ListItem.Property(autoID)) + [!String.IsEqual(ListItem.Property(autoAction),static) + !String.IsEqual(ListItem.Property(autoAction),merged)]</visible>
+            </item>
+			<item library="clear_cache_single.py">
+                <label>$ADDON[plugin.program.autowidget 30117]</label>
+                <visible>!String.IsEmpty(ListItem.Property(autoCache))</visible>
             </item>
         </menu>
     </extension>
@@ -37,6 +44,46 @@
         <website>https://www.github.com/drinfernoo/</website>
         <source>https://www.github.com/drinfernoo/plugin.program.autowidget/</source>
         <news>
+3.3.7
+ - Delay widget updates during library scans or when in media views
+ - Fix widget cleaning scan for skins which don't use Skin Shortcuts
+ - Fix refreshing widgets created before 3.3.0
+ - Add more content type choices in editor dialog
+3.3.6
+ - Fix "Next Page" for Python 2.7
+3.3.5
+ - Better handling of error and empty states
+ - Better handling of "Next Page" items
+ - Fix "Active Widgets" menu
+ - Delay library updates when inside media views
+3.3.4
+ - Fix "Next Page" localizations
+3.3.3
+ - Fix "Clear Cache"
+3.3.2
+ - Fix bug when paths return no items
+3.3.1
+ - Fix bug when Skin Shortcuts is not installed
+ - More improvements to page item handling
+3.3.0
+ - Add "Copy Group" in group context menu
+ - Add "Create New ... Group" in "My Groups" menu
+ - Add "Clear Cache" in "Tools" menu
+ - Add "Refresh Widget" to widget context menu
+ - Add "Clear Cache" to widget context menu
+ - Add rudimentary error item for failed widgets
+ - Add "Icon Packs" for library widgets from genres, studios, and countries
+ - Remove dependency on Kodi Six
+ - Allow editing content type
+ - Allow Cycling Widgets to pull from a subset of paths
+ - Support cast thumbnails for Kodi N
+ - Fix translatePath reference again
+ - Faster and more robust item creation
+ - Make `.widget` files much simpler
+ - Better support for library paths
+ - Better support for music
+3.2.3
+ - Add English (US) and Portugese localizations
 3.2.2
  - Add more localizations
  - Better "Next Page" detection
@@ -337,11 +384,12 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.palantir2" name="[COLOR gold]Palantir 2[/COLOR]" version="2.1.10" provider-name="TierraMedia">
+<addon id="plugin.video.palantir2" name="[COLOR gold]Palantir 2[/COLOR]" version="2.1.16" provider-name="TierraMedia">
   <requires>
     <import addon="script.module.six" version="1.11.0"/>
     <import addon="script.module.resolveurl" version="5.0.00" optional="true"/>
     <import addon="script.module.pycryptodome"/>
+    <import addon="script.embuary.info"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="default.py">
     <provides>video</provides>
@@ -363,10 +411,9 @@
         <screenshot>resources/media/Captura3.png</screenshot>
         <screenshot>resources/media/Captura4.png</screenshot>
     </assets>
-    <news>- Reparado bug en añadir/eliminar favoritos
-- Añadido soporte a cuentas Alldebrid
+    <news>- Añadidos nuevos servidores
     </news>
-    <forum></forum>
+    <forum>https://t.me/addon_palantir</forum>
   </extension>
 </addon>
 
@@ -399,16 +446,13 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.winner" name="[B][/B][COLOR aqua][/COLOR]WINNER" version="1.0.6" provider-name="Camaradas">
+<addon id="plugin.video.winner" name="[B][/B][COLOR aqua][/COLOR]WINNER" version="1.0.7" provider-name="Camaradas">
     <requires>
         <import addon="script.module.requests" />
-        <import addon="script.module.resolveurl" />
         <import addon="script.module.pysocks" />
         <import addon="script.module.six" />
         <import addon="plugin.video.youtube" />
         <import addon="script.module.horus" optional="true" />
-        <import addon="script.module.pydevd" optional="true" />
-        <import addon="script.module.web-pdb" optional="true" />
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>video</provides>
@@ -427,7 +471,7 @@ Development support: Jesus, Toni
 Contributions: SuperTopo, Jesus
 Artwork: Bojbit
 Translation: Lou
-Content: Lou, Alex303, MiKeL, Chikiry, Bojbit, Luisma, Lucas, Nano, K0S, Manujaz
+Content: Lou, Alex303, MiKeL, Chikiry, Bojbit, Luisma, Lucas, Nano, K0S, Manujaz, MrYayi
 Testers: Luisma, Toni, Zarat, SuperTopo, Jorge, Bojbit, MiKeL, Chikiry, Pau, Alex, Luar team
         </description>
         <disclaimer lang="en">WINNER Addon - Live Sports Addon</disclaimer>
@@ -439,7 +483,7 @@ Soporte desarrollo: Jesus, Toni
 Aportaciones: SuperTopo, Jesus
 Artwork: Bojbit
 Traducciones: Lou
-Contenido: Lou, Alex303, MiKeL, Chikiry, Bojbit, Luisma, Lucas, Nano, K0S, Manujaz
+Contenido: Lou, Alex303, MiKeL, Chikiry, Bojbit, Luisma, Lucas, Nano, K0S, Manujaz, MrYayi
 Testers: Luisma, Toni, Zarat, SuperTopo, Jorge, Bojbit, MiKeL, Chikiry, Pau, Alex, equipo Luar
         </description>
         <disclaimer lang="es">Addon WINNER - Eventos Deportivos en directo</disclaimer>
