@@ -39,3 +39,15 @@ msgstr "Erreur"
 msgctxt "#33004"
 msgid "Dead link"
 msgstr "Link hors service"
+
+msgctxt "#33005"
+msgid "To play this link you need to install:"
+msgstr "Pour reproduir ce lien vous avez besoin d'avoir installé:"
+
+msgctxt "#33006"
+msgid "Recommended"
+msgstr "Recommandé"
+
+msgctxt "#33007"
+msgid "or"
+msgstr "ou"

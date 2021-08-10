@@ -69,24 +69,12 @@ msgid "Top/Uptobox server"
 msgstr "Servidor Top/Uptobox"
 
 msgctxt "#30012"
-msgid "Account email"
-msgstr "Correo electrónico da conta"
+msgid "Add Email or User"
+msgstr "Engadir correo electrónico ou usuario"
 
 msgctxt "#30013"
 msgid "Password"
 msgstr "Contrasinal"
-
-msgctxt "#30014"
-msgid "Alldebrid"
-msgstr "Alldebrid"
-
-msgctxt "#30015"
-msgid "Apikey Name"
-msgstr "usuario Apikey"
-
-msgctxt "#30016"
-msgid "Apikey Code"
-msgstr "Código Apikey"
 
 msgctxt "#30017"
 msgid "Always play at full resolution (only Premium)"
@@ -286,8 +274,8 @@ msgid "It is not possible to automatically identify the next episode of this ser
 msgstr "Non é posible identificar automaticamente o seguinte episodio desta serie"
 
 msgctxt "#30071"
-msgid " Register for free at uptobox.com and add your account in the settings, to be able to use this server"
-msgstr " Rexístrate de balde en uptobox.com e engade a túa conta na configuración para poder usar este servidor"
+msgid " Register for free at uptobox.com and add your account in the Palantir 2 settings, to be able to use this server"
+msgstr " Rexístrate de balde en uptobox.com e engade a túa conta na configuración de Palantir 2 para poder usar este servidor"
 
 msgctxt "#30072"
 msgid "Activate"
@@ -310,14 +298,28 @@ msgid "Your Alldebrid account has been paired with Palantir 2"
 msgstr "A túa conta de Alldebrid emparellouse con Palantir 2"
 
 msgctxt "#30077"
-msgid "Failed to pair your Alldebrid account"
-msgstr "Non se puido emparellar a túa conta de Alldebrid"
+msgid "Failed to pair your %s account"
+msgstr "Non se puido emparellar a túa conta de %s"
 
 msgctxt "#30078"
 msgid "Time exceeded"
 msgstr "Tempo superado"
 
-# empty strings from id 30079 to 30099
+msgctxt "#30079"
+msgid "Filesize need premium"
+msgstr "Contido exclusivo para usuarios Premium"
+
+msgctxt "#30080"
+msgid "You need to wait %s seconds before requesting a new download link"
+msgstr "Agarde %s segundos antes de solicitar unha nova ligazón de descarga"
+
+
+msgctxt "#30081"
+msgid "Found original video. Do you want to find other resolutions?"
+msgstr "Atopouse o vídeo orixinal. ¿Queres atopar outras resolucións?"
+
+
+# empty strings from id 30082 to 30099
 
 # moria
 
@@ -517,3 +519,6 @@ msgctxt "#30151"
 msgid "Set this view for menus"
 msgstr "Configure esta vista para os menús"
 
+msgctxt "#30152"
+msgid "To resolve this link it is necessary to install ResolveUrl"
+msgstr "Para resolver esta ligazón é necesario instalar ResolveUrl"

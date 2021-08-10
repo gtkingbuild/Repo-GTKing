@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.winner" name="[B][/B][COLOR aqua][/COLOR]WINNER" version="1.0.6" provider-name="Camaradas">
+<addon id="plugin.video.winner" name="[B][/B][COLOR aqua][/COLOR]WINNER" version="1.0.7" provider-name="Camaradas">
     <requires>
         <import addon="script.module.requests" />
-        <import addon="script.module.resolveurl" />
         <import addon="script.module.pysocks" />
         <import addon="script.module.six" />
         <import addon="plugin.video.youtube" />
         <import addon="script.module.horus" optional="true" />
-        <import addon="script.module.pydevd" optional="true" />
-        <import addon="script.module.web-pdb" optional="true" />
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>video</provides>
@@ -27,7 +24,7 @@ Development support: Jesus, Toni
 Contributions: SuperTopo, Jesus
 Artwork: Bojbit
 Translation: Lou
-Content: Lou, Alex303, MiKeL, Chikiry, Bojbit, Luisma, Lucas, Nano, K0S, Manujaz
+Content: Lou, Alex303, MiKeL, Chikiry, Bojbit, Luisma, Lucas, Nano, K0S, Manujaz, MrYayi
 Testers: Luisma, Toni, Zarat, SuperTopo, Jorge, Bojbit, MiKeL, Chikiry, Pau, Alex, Luar team
         </description>
         <disclaimer lang="en">WINNER Addon - Live Sports Addon</disclaimer>
@@ -39,7 +36,7 @@ Soporte desarrollo: Jesus, Toni
 Aportaciones: SuperTopo, Jesus
 Artwork: Bojbit
 Traducciones: Lou
-Contenido: Lou, Alex303, MiKeL, Chikiry, Bojbit, Luisma, Lucas, Nano, K0S, Manujaz
+Contenido: Lou, Alex303, MiKeL, Chikiry, Bojbit, Luisma, Lucas, Nano, K0S, Manujaz, MrYayi
 Testers: Luisma, Toni, Zarat, SuperTopo, Jorge, Bojbit, MiKeL, Chikiry, Pau, Alex, equipo Luar
         </description>
         <disclaimer lang="es">Addon WINNER - Eventos Deportivos en directo</disclaimer>

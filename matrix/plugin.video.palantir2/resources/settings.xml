@@ -1156,7 +1156,7 @@
 				<setting id="TOP_password" type="string" label="30013" help="">
 					<level>0</level>
 					<dependencies>
-						<dependency type="enable" operator="!is" setting="TOP_user"></dependency>
+						<dependency type="visible" operator="!is" setting="TOP_user"></dependency>
 					</dependencies>
 					<default/>
 					<constraints>
@@ -1169,8 +1169,8 @@
 				<setting id="TOP_onlyOrigin" type="boolean" label="30017" help="">
 					<level>0</level>
 					<dependencies>
-						<dependency type="enable" operator="!is" setting="TOP_user"></dependency>
-						<dependency type="enable" operator="!is" setting="TOP_password"></dependency>
+						<dependency type="visible" operator="!is" setting="TOP_user"></dependency>
+						<dependency type="visible" operator="!is" setting="TOP_password"></dependency>
 					</dependencies>
 					<default>true</default>
 					<control type="toggle"/>
@@ -1185,10 +1185,44 @@
 				<setting id="Alldebrid_onlyOrigin" type="boolean" label="30073" help="">
 					<level>0</level>
 					<dependencies>
-						<dependency type="enable" operator="is" setting="Alldebrid_enabled">true</dependency>
+						<dependency type="visible" operator="is" setting="Alldebrid_enabled">true</dependency>
 					</dependencies>
 					<default>false</default>
 					<control type="toggle"/>
+				</setting>
+				<setting id="Alldebrid_apikey" type="string" label="" help="">
+					<visible>False</visible>
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control type="edit" format="string" />
+				</setting>
+			</group>
+			<group id="Realdebrid" label="30015">
+				<setting id="Realdebrid_enabled" type="boolean" label="30072" help="">
+					<level>0</level>
+					<default>false</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="Realdebrid_token" type="string" label="" help="">
+					<visible>False</visible>
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control type="edit" format="string" />
+				</setting>
+				<setting id="Realdebrid_refresh_token" type="string" label="" help="">
+					<visible>False</visible>
+					<level>0</level>
+					<default/>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control type="edit" format="string" />
 				</setting>
 			</group>
 		</category>
@@ -1266,14 +1300,6 @@
 				<setting id="reset_resolveurl_cache" type="action" label="30026" help="">
 					<level>0</level>
 					<data>RunPlugin(plugin://script.module.resolveurl/?mode=reset_cache)</data>
-					<constraints>
-						<allowempty>true</allowempty>
-					</constraints>
-					<control type="button" format="action"/>
-				</setting>
-				<setting id="reset_extendedinfo_cache" type="action" label="30027" help="">
-					<level>0</level>
-					<data>RunScript(script.extendedinfo,info=deletecache)</data>
 					<constraints>
 						<allowempty>true</allowempty>
 					</constraints>

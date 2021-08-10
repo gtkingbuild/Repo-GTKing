@@ -69,24 +69,12 @@ msgid "Top/Uptobox server"
 msgstr "Servidor Top/Uptobox"
 
 msgctxt "#30012"
-msgid "Account email"
-msgstr "E-mail del compte"
+msgid "Add Email or User"
+msgstr "Afegir-mail o Usuari"
 
 msgctxt "#30013"
 msgid "Password"
 msgstr "Contrasenya"
-
-msgctxt "#30014"
-msgid "Alldebrid"
-msgstr "Alldebrid"
-
-msgctxt "#30015"
-msgid "Apikey Name"
-msgstr "Usuari Apikey"
-
-msgctxt "#30016"
-msgid "Apikey Code"
-msgstr " Codi Apikey"
 
 msgctxt "#30017"
 msgid "Always play at full resolution (only Premium)"
@@ -286,8 +274,8 @@ msgid "It is not possible to automatically identify the next episode of this ser
 msgstr "No és possible indentificar automàticament el proper episodi d'aquesta sèrie"
 
 msgctxt "#30071"
-msgid " Register for free at uptobox.com and add your account in the settings, to be able to use this server"
-msgstr " Registreu-vos gratis a uptobox.com i afegeix el teu compte en els ajustos, per poder utilitzar aquest servidor"
+msgid " Register for free at uptobox.com and add your account in the Palantir 2 settings, to be able to use this server"
+msgstr " Registreu-vos gratis a uptobox.com i afegeix el teu compte a la configuració de Palantir 2, per poder utilitzar aquest servidor"
 
 msgctxt "#30072"
 msgid "Activate"
@@ -310,14 +298,28 @@ msgid "Your Alldebrid account has been paired with Palantir 2"
 msgstr "El seu compte de Alldebrid ha estat aparellada amb Palantir 2"
 
 msgctxt "#30077"
-msgid "Failed to pair your Alldebrid account"
-msgstr "Error a l'aparellar seu compte de Alldebrid"
+msgid "Failed to pair your %s account"
+msgstr "Error a l'aparellar seu compte de %s"
 
 msgctxt "#30078"
 msgid "Time exceeded"
 msgstr "Temps excedit"
 
-# empty strings from id 30079 to 30099
+msgctxt "#30079"
+msgid "Filesize need premium"
+msgstr "Contingut exclusiu per a usuaris Premium"
+
+msgctxt "#30080"
+msgid "You need to wait %s seconds before requesting a new download link"
+msgstr "Cal esperar %s segons abans de sol·licitar un nou enllaç de baixada"
+
+
+msgctxt "#30081"
+msgid "Found original video. Do you want to find other resolutions?"
+msgstr "Trobat vídeo original. Voleu cercar altres resolucions?"
+
+
+# empty strings from id 30082 to 30099
 
 # moria
 
@@ -520,3 +522,7 @@ msgstr "Estableix aquesta visualització per als episodis"
 msgctxt "#30151"
 msgid "Set this view for menus"
 msgstr "Estableix aquesta vista per als menús"
+
+msgctxt "#30152"
+msgid "To resolve this link it is necessary to install ResolveUrl"
+msgstr "Per resoldre aquest enllaç cal instal·lar ResolveUrl"

@@ -11,15 +11,7 @@
                 <param name="width" value="1800" />
                 <param name="height" value="726" />
             </include>
-
-            <!-- <control type="label">
-                <description>Header Label</description>
-                <label>[CAPITALIZE]TV Hub Configuration[/CAPITALIZE]</label>
-		<textcolor>grey</textcolor>
-		<shadowcolor>dimgrey</shadowcolor>
-		<font>font_heading_small</font>
-                <include>Dialog_Standard_Header</include>
-            </control> -->
+			
 			<control type="label">
                 <description>Header Label</description>
                 <label>[CAPITALIZE]Personalizar MENU de Inicio[/CAPITALIZE]</label>
@@ -51,69 +43,39 @@
                 <orientation>vertical</orientation>
                 <pagecontrol>60</pagecontrol>
                 <usecontrolcoords>true</usecontrolcoords>
-                       <!--<control type="button" id="8001" description="TV Lists Items">
-                            <include>Dialog_Standard_ListButton</include>
-                            <label>TV Lists Hub Items</label>
-                            <onfocus>SetProperty(Image_Preview,special://skin/extras/backgrounds/viewmodes/hub-tv-categories.jpg)</onfocus>
-            		     <onclick>RunScript(script.skinshortcuts,type=manage&amp;group=x1104)</onclick>
-                        </control>
-                        <control type="button" id="8002" description="TV Aura Hub Items">
-                            <include>Dialog_Standard_ListButton</include>
-                            <label>TV Aura Hub Items</label>
-                            <onfocus>SetProperty(Image_Preview,special://skin/extras/backgrounds/viewmodes/hub-tv-aura.jpg)</onfocus>
-			    <onclick>RunScript(script.skinshortcuts,type=manage&amp;group=aurahubtv)</onclick> 
-                        </control>
-                        <control type="radiobutton" id="80021" description="TV Aura Hub Items">
-                            <include>Dialog_Standard_ListButton</include>
-                            <radioposx>630</radioposx>
-                            <label> - Enable Compact Widget spacing</label>
-                            <selected>Skin.HasSetting(AuraHubSpacingSmall)</selected>
-                            <onclick>Skin.ToggleSetting(AuraHubSpacingSmall)</onclick>
-                            <onfocus>SetProperty(Image_Preview,special://skin/extras/backgrounds/viewmodes/hub-tv-aura-small.jpg)</onfocus>
-                        </control>
-                        <control type="button" id="8003" description="TV Netflix Hub Items">
-                            <include>Dialog_Standard_ListButton</include>
-                            <label>TV Netflix Hub Items</label>
-                            <onfocus>SetProperty(Image_Preview,special://skin/extras/backgrounds/viewmodes/hub-tv-netflix.jpg)</onfocus>
-			    <onclick>RunScript(script.skinshortcuts,type=manage&amp;group=netflixhubtv)</onclick>
-                        </control>
-                        <control type="button" id="8004" description="TV Genre Hub Items">
-                            <include>Dialog_Standard_ListButton</include>
-                            <label>TV Genre Hub Items</label>
-                            <onfocus>SetProperty(Image_Preview,special://skin/extras/backgrounds/viewmodes/hub-tv-genres.jpg)</onfocus>
-			    <onclick>RunScript(script.skinshortcuts,type=manage&amp;group=x1109)</onclick>
-                        </control>
-                        <control type="button" id="8005" description="TV Networks Hub Items">
-                            <include>Dialog_Standard_ListButton</include>
-                            <label>TV Networks Hub Items</label>
-                            <onfocus>SetProperty(Image_Preview,special://skin/extras/backgrounds/viewmodes/hub-tv-networks.jpg)</onfocus>
-			    <onclick>RunScript(script.skinshortcuts,type=manage&amp;group=hubtvnetworks)</onclick>
-                        </control> -->
 						<control type="radiobutton" id="9001" description="Personalizar Menu de Inicio">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Personalizar Menu de Inicio</label>
-                            <onfocus>SetProperty(Image_Preview,special://skin/extras/backgrounds/viewmodes/persmen.jpg)</onfocus>
+                            <onfocus>SetProperty(Image_Preview,special://skin/extras/backgrounds/viewmodes/permeini.jpg)</onfocus>
                             <onclick condition="String.IsEmpty(Window(Home).Property(RunWizard))">ReloadSkin()</onclick>
                             <onclick condition="!String.IsEmpty(Window(Home).Property(RunWizard))">Close</onclick>
                             <onclick condition="!String.IsEmpty(Window(Home).Property(RunWizard))">RunScript(script.skinshortcuts,type=manage&amp;group=mainmenu)</onclick>
                        </control>
-                       <control type="button" id="9002" description="Personalizar Menu de Incio">
+					   <control type="button" id="9002" description="Continuar">
                             <include>Dialog_Standard_ListButton</include>
-                            <label>Finalizar</label>
+							<label>Finalizar</label>
                             <onfocus>SetProperty(Image_Preview,special://skin/extras/backgrounds/viewmodes/persmen.jpg)</onfocus>
                             <onclick condition="String.IsEmpty(Window(Home).Property(RunWizard))">ReloadSkin()</onclick>
                             <onclick condition="!String.IsEmpty(Window(Home).Property(RunWizard))">ReloadSkin()</onclick>
                             <onclick condition="!String.IsEmpty(Window(Home).Property(RunWizard))">Close</onclick>
+                        </control>	
+                       <control type="button" id="9003" description="Personalizar Menu de Incio">
+                            <include>Dialog_Standard_ListButton</include>
+                            <label align="center">Continuar</label>
+                            <onclick condition="String.IsEmpty(Window(Home).Property(RunWizard))">ReloadSkin()</onclick>
+                            <onclick condition="!String.IsEmpty(Window(Home).Property(RunWizard))">Close</onclick>
+                            <onclick condition="!String.IsEmpty(Window(Home).Property(RunWizard))">ReplaceWindow(1142)</onclick>
+                            <onfocus>SetProperty(Image_Preview,special://skin/extras/backgrounds/viewmodes/vdestacados.jpg)</onfocus>
                        </control>
-					   <control type="label" id="9003" description="Descripcion">
-							<top>250</top>
+					   <control type="label" id="9004" description="Descripcion">
+							<top>180</top>
 							<width>680</width>
 							<scroll>false</scroll>
 							<wrapmultiline>true</wrapmultiline>		
 							<label>[COLOR dodgerblue][B]ATENCION!![/B][/COLOR]
 • Si no quieres Personalizar Menu de Inicio, pulsa en Finalizar, se guardarán los cambios y se recargará el SKIN. 
-Si vas a Personalizar el Menu de Inicio, cuando pulses Finalizar, vuelve ATRAS para poder acabar, espere que se recargue el SKIN para que los cambios se apliquen.
+Si vas a Personalizar el Menu de Inicio, cuando finalices, pulse ATRAS para poder acabar, espere que se recargue el SKIN para que los cambios se apliquen.
 Si pulsas en Personalizar Menu de Inicio y no haces cambios ninguno, al volver atrás, pulsa Recargar SKIN desde Ajustes.</label>
 					   </control>
 

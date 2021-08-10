@@ -92,7 +92,7 @@
                             <label>Activar/Desactivar Centro & Destacados</label>
 							<onclick>Skin.ToggleSetting(EnableSpotlight)</onclick>
                             <selected>Skin.HasSetting(EnableSpotlight)</selected>
-                            <onfocus>SetProperty(Image_Preview,special://skin/extras/backgrounds/viewmodes/vdestacados.jpg)</onfocus>
+                            <onfocus>SetProperty(Image_Preview,special://skin/extras/backgrounds/viewmodes/destacados.jpg)</onfocus>
                        </control>
 						<control type="button" id="9003" description="Continuar">
                             <include>Dialog_Standard_ListButton</include>
@@ -109,7 +109,7 @@
 							<wrapmultiline>true</wrapmultiline>		
 				            <label>[COLOR dodgerblue][B]ATENCION!![/B][/COLOR]
 							
-• Por defecto los Destacados vienen Activados!.
+• Por defecto los Destacados vienen Activado!.
  
 Activa o Desactiva y pulsa Continuar.
 
