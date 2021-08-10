@@ -132,20 +132,20 @@ def all_with_progress(_in, _out, dp, ignore, title):
             try:
                 zin.extract(item, _out)
             except Exception as e:
-                errormsg = "[COLOR {0}]Archivo:[/COLOR] [COLOR {1}]{2}[/COLOR]\n".format(CONFIG.COLOR2,
+                errormsg = "[COLOR {0}][B]Archivo:[/B][/COLOR] [COLOR {1}]{2}[/COLOR]\n".format(CONFIG.COLOR2,
                                                                                       CONFIG.COLOR1,
                                                                                       file[-1])
-                errormsg += "[COLOR {0}]Carpeta:[/COLOR] [COLOR {1}]{2}[/COLOR]\n".format(CONFIG.COLOR2,
+                errormsg += "[COLOR {0}][B]Carpeta:[/B][/COLOR] [COLOR {1}]{2}[/COLOR]\n".format(CONFIG.COLOR2,
                                                                                          CONFIG.COLOR1,
                                                                                          item.filename.replace(file[-1], ''))
-                errormsg += "[COLOR {0}]Error:[/COLOR] [COLOR {1}]{2}[/COLOR]\n\n".format(CONFIG.COLOR2,
+                errormsg += "[COLOR {0}][B]Error:[/B][/COLOR] [COLOR {1}]{2}[/COLOR]\n\n".format(CONFIG.COLOR2,
                                                                                           CONFIG.COLOR1,
                                                                                           str(e).replace('\\\\', '\\')
                                                                                           .replace("'{0}'"
                                                                                           .format(item.filename), ''))
                 errors += 1
                 error += errormsg
-                logging.log('Error Extrayendo: {0}({1})'.format(item.filename, str(e)), level=xbmc.LOGERROR)
+                logging.log('[B]Error Extrayendo:[/B] {0}({1})'.format(item.filename, str(e)), level=xbmc.LOGERROR)
                 pass
         dp.update(prog, line1 + '\n' + line2 + '\n' + line3)
         if dp.iscanceled():

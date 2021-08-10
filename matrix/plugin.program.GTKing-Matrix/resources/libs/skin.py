@@ -78,7 +78,7 @@ def switch_to_skin(goto, title="Error"):
     
 
     if result:
-        logging.log('[COLOR {0}]{1}: Skin Swap Success![/COLOR]'.format(CONFIG.COLOR2, title))
+        logging.log('[COLOR {0}]{1}: Éxito en el cambio de Skin![/COLOR]'.format(CONFIG.COLOR2, title))
     #else:
         #logging.log_notify(CONFIG.ADDONTITLE,'[COLOR {0}]{1}: Skin Swap Failed![/COLOR]'.format(CONFIG.COLOR2, title))
                            
@@ -91,7 +91,7 @@ def skin_to_default(title):
         return switch_to_skin(skin, title)
     else:
         from resources.libs.common import logging
-        logging.log('[COLOR {0}]{1}: Skipping Skin Swap[/COLOR]'.format(CONFIG.COLOR2, title))
+        logging.log('[COLOR {0}]{1}: Omitir el cambio de Skin [/COLOR]'.format(CONFIG.COLOR2, title))
         return False
 
 
@@ -118,7 +118,7 @@ def look_and_feel_data(do='save'):
             xbmc.log('value= ' + str(value), xbmc.LOGINFO)
             query = '{{"jsonrpc":"2.0", "method":"Settings.SetSettingValue","params":{{"setting":"{0}","value":{1}}}, "id":1}}'.format(item, value)
             response = xbmc.executeJSONRPC(query)
-            logging.log("{0} restored to {1}".format(item, value))
+            logging.log("{0} restaurado a {1}".format(item, value))
 
 
 def swap_us():
@@ -127,7 +127,7 @@ def swap_us():
     new = '"addons.unknownsources"'
     query = '{{"jsonrpc":"2.0", "method":"Settings.GetSettingValue","params":{{"setting":{0}}}, "id":1}}'.format(new)
     response = xbmc.executeJSONRPC(query)
-    logging.log("Unknown Sources Get Settings: {0}".format(str(response)))
+    logging.log("Fuentes Desconocidas Obtener Configuración: {0}".format(str(response)))
     if 'false' in response:
         value = 'true'
         threading.Thread(target=_dialog_watch).start()
@@ -135,7 +135,7 @@ def swap_us():
         query = '{{"jsonrpc":"2.0", "method":"Settings.SetSettingValue","params":{{"setting":{0},"value":{1}}}, "id":1}}'.format(new, value)
         response = xbmc.executeJSONRPC(query)
         logging.log_notify(CONFIG.ADDONTITLE,
-                           '[COLOR {0}]Unknown Sources:[/COLOR] [COLOR {1}]Enabled[/COLOR]'.format(CONFIG.COLOR1, CONFIG.COLOR2))
+                           '[COLOR {0}]Fuentes Desconocidas:[/COLOR] [COLOR {1}]Activado[/COLOR]'.format(CONFIG.COLOR1, CONFIG.COLOR2))
         logging.log("Unknown Sources Set Settings: {0}".format(str(response)))
     elif 'true' in response:
         value = 'false'
@@ -144,7 +144,7 @@ def swap_us():
         query = '{{"jsonrpc":"2.0", "method":"Settings.SetSettingValue","params":{{"setting":{0},"value":{1}}}, "id":1}}'.format(new, value)
         response = xbmc.executeJSONRPC(query)
         logging.log_notify(CONFIG.ADDONTITLE,
-                           '[COLOR {0}]Unknown Sources:[/COLOR] [COLOR {1}]Disabled[/COLOR]'.format(CONFIG.COLOR1, CONFIG.COLOR2))
+                           '[COLOR {0}]Fuentes Desconocidas:[/COLOR] [COLOR {1}]Desactivado[/COLOR]'.format(CONFIG.COLOR1, CONFIG.COLOR2))
         logging.log("Unknown Sources Set Settings: {0}".format(str(response)))
 
 

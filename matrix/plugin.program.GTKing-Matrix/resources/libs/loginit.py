@@ -891,10 +891,10 @@ def auto_update(who):
                 dialog = xbmcgui.Dialog()
 
                 if dialog.yesno(CONFIG.ADDONTITLE,
-                                    "Le gustaria guardar la informacion de inicio de sesion de [COLOR {0}] [/COLOR] para [COLOR {1}]{2}[/COLOR]?".format(CONFIG.COLOR2, CONFIG.COLOR1, n)
-                                    +'\n'+"Addon: [COLOR springgreen][B]{0}[/B][/COLOR]".format(u)
+                                    "Le gustaria guardar la información de inicio de sesión de [COLOR {0}] [/COLOR] para [COLOR {1}]{2}[/COLOR]?".format(CONFIG.COLOR2, CONFIG.COLOR1, n)
+                                    +'\n'+"Addon: [COLOR cyan][B]{0}[/B][/COLOR]".format(u)
                                     +'\n'+"Salvado:[/COLOR] [COLOR red][B]{0}[/B][/COLOR]".format(su) if not su == '' else 'Salvado:[/COLOR] [COLOR red][B]Ninguno[/B][/COLOR]',
-                                    yeslabel="[B][COLOR springgreen]Salvar Datos[/COLOR][/B]",
+                                    yeslabel="[B][COLOR cyan]Salvar Datos[/COLOR][/B]",
                                     nolabel="[B][COLOR red]No, Cancelar[/COLOR][/B]"):
                     login_it('update', who)
             else:
@@ -925,7 +925,7 @@ def import_list(who):
                 addonid.setSetting(id, value)
 
             logging.log_notify("[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, name),
-                       '[COLOR {0}]Datos de Inicio de Sesion: Importado![/COLOR]'.format(CONFIG.COLOR2))
+                       '[COLOR {0}]Datos de Inicio de Sesión: Importado![/COLOR]'.format(CONFIG.COLOR2))
 
 
 def activate_login(who):

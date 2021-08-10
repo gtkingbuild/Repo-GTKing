@@ -233,7 +233,7 @@ def clear_function_cache(over=False):
 
     if not over:
         if dialog.yesno(CONFIG.ADDONTITLE,
-                            '[COLOR {0}]Le gustaria borrar los caches de la funcion de resolucion?[/COLOR]'.format(CONFIG.COLOR2),
+                            '[COLOR {0}]Le gustaria borrar los caches de la función de resolución?[/COLOR]'.format(CONFIG.COLOR2),
                             nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]',
                             yeslabel='[B][COLOR dodgerblue]Borrar Cache[/COLOR][/B]'):
             clear = True

@@ -419,12 +419,12 @@ def kill_kodi(msg=None, over=None):
         dialog = xbmcgui.Dialog()
         
         if not msg:
-            msg = '[COLOR {0}]Estás a punto de cerrar Kodi. Te gustaria continuar?[/COLOR]'.format(CONFIG.COLOR2)
+            msg = '[B][COLOR {0}]Estás a punto de cerrar Kodi.[/B] Te gustaría continuar?[/COLOR]'.format(CONFIG.COLOR2)
         
         choice = dialog.yesno('Forzar Cierre Kodi',
                                   msg,
                                   nolabel='[B][COLOR red] No, Cancelar[/COLOR][/B]',
-                                  yeslabel='[B][COLOR springgreen]Forzar Cierre Kodi[/COLOR][/B]')
+                                  yeslabel='[B][COLOR cyan]Forzar Cierre Kodi[/COLOR][/B]')
     if choice == 1:
         from resources.libs.common import logging
         logging.log("Forzar Cierre de Kodi: Plataforma[{0}]".format(str(platform())))
@@ -551,7 +551,7 @@ def ascii_check(use=None, over=False):
             yes = 1
         else:
             yes = dialog.yesno(CONFIG.ADDONTITLE,
-                                   '[COLOR {0}]Desea [COLOR {1}]eliminar[/COLOR] todos los nombres de archivo con caracteres especiales o prefiere simplemente [COLOR {2}]escanear y ver[/COLOR] los resultados en el Registro (log)?[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, CONFIG.COLOR1),
+                                   '[COLOR {0}]Desea [COLOR {1}]eliminar[/COLOR] todos los nombres de archivo con carácteres especiales o prefiere simplemente [COLOR {2}]escanear y ver[/COLOR] los resultados en el Registro (log)?[/COLOR]'.format(CONFIG.COLOR2, CONFIG.COLOR1, CONFIG.COLOR1),
                                    yeslabel='[B][COLOR cyan]Eliminar[/COLOR][/B]',
                                    nolabel='[B][COLOR red]Escanear[/COLOR][/B]')
     else:
