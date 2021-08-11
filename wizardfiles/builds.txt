@@ -14,9 +14,9 @@ fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
 preview="http://"
 adult="No"
 info="http://"
-description="[COLOR green][B]GTKing MATRIX para KODI 19.X Matrix[/B][/COLOR] - 
-[COLOR dodgerblue][B]Developers:[/B][/COLOR] DavidZGZ, JoseaTEBA - 
-[COLOR orange][B]Colaboradores:[/B][/COLOR] Suguea, Vicente, Alfonso, Mapache, Malibu"
+description="[COLOR limegreen][B]GTKing MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 19.X Matrix[/B][/COLOR] - 
+[COLOR dodgerblue][B]Developers:[/B][/COLOR] [COLOR cyan][B]DavidZGZ, JoseaTEBA -[/B][/COLOR]
+[COLOR orange][B]Colaboradores:[/B][/COLOR] [B]Suguea, Vicente, Alfonso, Mapache, Malibu[/B]"
 
 
 name=""
