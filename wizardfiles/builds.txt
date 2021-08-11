@@ -14,9 +14,9 @@ fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
 preview="http://"
 adult="No"
 info="http://"
-description="GTKing MATRIX para KODI 19.x Matrix - 
-Developers: DavidZGZ, JOSEATEBA.
-Colaboradores: Suguea, Vicente, Alfonso, Mapache, Malibu"
+description="[COLOR GREEN][B]GTKing MATRIX para KODI 19.x Matrix[/B][/COLOR] - 
+[COLOR dodgerblue][B]Developers:[/COLOR] DavidZGZ,JoseaTEBA[/B][/COLOR] - 
+[COLOR orange][B]Colaboradores: Suguea, Vicente, Alfonso, Mapache, Malibu[/B][/COLOR]"
 
 
 name=""
