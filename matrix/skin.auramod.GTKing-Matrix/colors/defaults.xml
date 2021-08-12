@@ -56,9 +56,9 @@
 
 	<!-- All others -->
 	<color name="black">FF1b1b1b</color>	
-	<color name="red">FFFF0000</color>
-	<color name="blue">FF0000FF</color>
-	<color name="darkblue">ff011222</color>
+	<color name="red">FFFF0000</color>         
+	<color name="blue">FF4aa7ff</color>        <!--<color name="blue">FF0000FF</color><!-- FF0000FF -->
+	<color name="dodgerblue">ff1E90FF</color>  <!-- <color name="darkblue">ff011222</color>ff011222  -->
 	<color name="green">FF00FF00</color>	
 	<color name="WidgetPosterDiffuse">aaFFFFFF</color>
 	<color name="PrimaryM">FFFFFFFF</color>
@@ -67,7 +67,7 @@
 	<color name="pink">ffffc0cb</color>
 	<color name="purple">ff3a0079</color>
 	<color name="lime">ff32cd32</color>
-	<color name="yellow">ffffff00</color>
+	<color name="gold">ffFFd700</color>       <!-- <color name="yellow">ffffff00</color> -->
 	<color name="cyan">ff00ffff</color>
 	<color name="magenta">ffff00ff</color>
 
