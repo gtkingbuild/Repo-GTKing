@@ -14,11 +14,12 @@
 	<extension point="xbmc.service" library="startup.py" start="startup" />
   
 	<extension point="xbmc.addon.metadata">
-		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR lime]MATRIX[/COLOR] tu Wizard para KODI 19.x !!</summary>
+		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR lime]MATRIX[/COLOR] tu Wizard para [COLOR teal]KODI 19.x[/COLOR] !!</summary>
 		
     	<description lang="es">
 [B]• Developers:[/B] [COLOR gold]JoseaTEBA y DavidZgZ[/COLOR]
-[B]• Testers:[/B]        [COLOR dodgerblue]Sugea, Mapache, Tete6776, Vicente[/COLOR]
+[B]• Testers:[/B]        [COLOR dodgerblue]Sugea, Vicente,  
+                         Tete6776, Mapache[/COLOR]
 [B]• Telegram:[/B]    [COLOR lime]t.me/beelinkking[/COLOR]</description>
 		<platform>all</platform>
 		<reuselanguageinvoker>false</reuselanguageinvoker>
