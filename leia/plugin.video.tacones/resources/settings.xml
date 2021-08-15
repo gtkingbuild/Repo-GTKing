@@ -1,0 +1,15 @@
+<settings>
+
+  <category label="Acerca de">
+	 <setting type="lsep" label="[COLOR red]TACONES:[/COLOR] Addon sin ánimo de lucro y con fines exclusivamente educativos" option="close" action="RunPlugin(plugin://plugin.video.tacones/?mode=7)" />
+  </category>
+  
+  <category label="General">
+	 <setting id="ask_playlist_items" type="bool" label="Elegir Fuente de Video" default="true" visible="false"/>
+	 <setting id="debug" type="bool" label="Activar Modo Depuración" default="false" visible="true"/>
+     <setting id="1080pquality" label="Mejorar calidad 1080p" type="bool" default="true" visible="false"/>
+     <setting id="add_playlist" type="bool" label="Activar Multilink" default="true" visible="false"/>
+     <setting id="donotshowbychannels" label="Ocultar Canales" type="bool" default="false" visible="false"/>
+  </category>
+
+</settings>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="repository.gtking" name="[COLOR limegreen][B]Repo[/B][/COLOR]GTKing" version="2.0" provider-name="gtkingbuild">
-    <extension point="xbmc.addon.repository" name="[COLOR limegreen][B]Repo[/B][/COLOR]GTKing">
+<addon id="repository.GTKing" name="[COLOR steelblue][B]Repo[/B][/COLOR] [COLOR azure][B]GTKing[/B] [/COLOR]" version="2.7.5" provider-name="gtkingbuild">
+    <extension point="xbmc.addon.repository" name="[COLOR dodgerblue][B]Repo[/B][/COLOR] Prueba [COLOR limegreen]MATRIX[/COLOR]">
         <dir minversion="18.0" maxversion="18.9.0">
             <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/leia/zips/addons.xml</info>
             <checksum>https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/leia/zips/addons.xml.md5</checksum>
@@ -11,12 +11,17 @@
             <checksum>https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/matrix/zips/addons.xml.md5</checksum>
             <datadir zip="true">https://raw.githubusercontent.com/gtkingbuild/Repo-Prueba/master/matrix/zips/</datadir>
         </dir>
+        <dir minversion="18.9.0">
+            <info>https://raw.githubusercontent.com/Palantiraddon/Repo/master/Palantir/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/Palantiraddon/Repo/master/Palantir/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/Palantiraddon/repo/master/Palantir/</datadir>
+        </dir>
     </extension>
     
     <extension point="xbmc.addon.metadata">
-        <summary>Repo [COLOR dodgerblue]PRUEBA[/COLOR]</summary>
+        <summary>[COLOR steelblue][B]Repo[/B][/COLOR] [COLOR azure][B]GTKing[/B] [/COLOR]</summary>
         <description>Repositorio de addons [COLOR dodgerblue]GTKING[/COLOR].</description>
-        <disclaimer>Esta Repo recoge los addons que hay por la Red.</disclaimer>
+        <disclaimer>Éste repositorio sólo recoge addons válidos para Kodi 18.x LEIA.</disclaimer>
         <platform>all</platform>
         <assets>
             <icon>icon.png</icon>
