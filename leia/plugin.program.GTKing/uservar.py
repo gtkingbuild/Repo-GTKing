@@ -97,11 +97,11 @@ WIZARDFILE     = 'https://raw.githubusercontent.com/gtkingbuild/gtkingbuild.gith
 # Enable Auto Install 'Yes' or 'No'
 AUTOINSTALL    = 'Yes'
 # Addon ID for the repository
-REPOID         = 'repository.repogtking'
+REPOID         = 'repository.GTKing-LEIA'
 # Url to Addons.xml file in your repo folder(this is so we can get the latest version)
-REPOADDONXML   = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/addons.xml'
+REPOADDONXML   = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/leia/addons.xml'
 # Url to folder zip is located in
-REPOZIPURL     = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/repository.repogtking/'
+REPOZIPURL     = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/leia/repository.GTKing-LEIA/'
 #########################################################
 
 #########################################################
