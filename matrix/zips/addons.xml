@@ -578,8 +578,8 @@ Testers: Luisma, Toni, Zarat, SuperTopo, Jorge, Bojbit, MiKeL, Chikiry, Pau, Ale
     </extension>
 </addon>
 
-<addon id="repository.GTKing-Matrix" name="[COLOR steelblue][B]Repo[/B][/COLOR] [COLOR azure][B]GTKing[/B] [/COLOR][COLOR limegreen][B]MATRIX[/B][/COLOR]" version="1.1" provider-name="gtkingbuild">
-    <extension point="xbmc.addon.repository" name="[COLOR dodgerblue][B]Repo[/B][/COLOR] Prueba [COLOR limegreen]MATRIX[/COLOR]">
+<addon id="repository.GTKing-Matrix" name="[COLOR steelblue][B]Repo[/B][/COLOR] [COLOR azure][B]GTKing[/B][/COLOR] [COLOR limegreen][B]MATRIX[/B][/COLOR]" version="1.1" provider-name="gtkingbuild">
+    <extension point="xbmc.addon.repository" name="[COLOR dodgerblue][B]Repo[/B][/COLOR] [COLOR azure][B]GTKing[/B][/COLOR] [COLOR limegreen][B]MATRIX[/B][/COLOR]">
         <dir minversion="18.0" maxversion="18.9.0">
             <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/leia/zips/addons.xml</info>
             <checksum>https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/leia/zips/addons.xml.md5</checksum>
@@ -598,9 +598,9 @@ Testers: Luisma, Toni, Zarat, SuperTopo, Jorge, Bojbit, MiKeL, Chikiry, Pau, Ale
     </extension>
 
     <extension point="xbmc.addon.metadata">
-        <summary>[COLOR steelblue][B]Repo[/B][/COLOR] [COLOR azure][B]GTKing[/B] [/COLOR][COLOR limegreen][B]MATRIX[/B][/COLOR]</summary>
-        <description>Repositorio de addons [COLOR dodgerblue]GTKING[/COLOR].</description>
-        <disclaimer>Éste repositorio sólo recoge addons válidos para Kodi 19.x MATRIX.</disclaimer>
+        <summary>[COLOR steelblue][B]Repo[/B][/COLOR] [COLOR azure][B]GTKing[/B][/COLOR] [COLOR limegreen][B]MATRIX[/B][/COLOR]</summary>
+        <description>[B]Repositorio de addons [COLOR dodgerblue]GTKING[/COLOR].[/B]</description>
+        <disclaimer>[B]Éste repositorio sólo recoge addons válidos para Kodi 19.x MATRIX.[/B]</disclaimer>
         <platform>all</platform>
         <assets>
             <icon>icon.png</icon>
