@@ -929,7 +929,7 @@ def writeAdvanced(name, url):
     ADVANCEDWORKING = wiz.workingURL(url)
     if ADVANCEDWORKING == True:
         if os.path.exists(ADVANCED): choice = DIALOG.yesno(ADDONTITLE, "[COLOR %s]Quieres sobreescribir el actual Buffer con [COLOR %s]%s[/COLOR]?[/COLOR]" % (COLOR2, COLOR1, name), yeslabel="[B][COLOR springgreen]Si[/COLOR][/B]", nolabel="[B][COLOR red]No[/COLOR][/B]")
-        else: choice = DIALOG.yesno(ADDONTITLE, "[COLOR %s]Quieres descargarlo e instalarlo[COLOR %s]%s[/COLOR]?[/COLOR]" % (COLOR2, COLOR1, name), yeslabel="[B][COLOR springgreen]Instalar[/COLOR][/B]", nolabel="[B][COLOR red]Cancelar[/COLOR][/B]")
+        else: choice = DIALOG.yesno(ADDONTITLE, "[COLOR %s]Quieres descargarlo e instalarlo [COLOR %s]%s[/COLOR]?[/COLOR]" % (COLOR2, COLOR1, name), yeslabel="[B][COLOR springgreen]Instalar[/COLOR][/B]", nolabel="[B][COLOR red]Cancelar[/COLOR][/B]")
 
         if choice == 1:
             file = wiz.openURL(url)
