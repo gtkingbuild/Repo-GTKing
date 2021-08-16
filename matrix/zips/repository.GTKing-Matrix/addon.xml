@@ -19,7 +19,7 @@
     </extension>
     
     <extension point="xbmc.addon.metadata">
-		<summary>[B][COLOR steelblue]Repo[/COLOR] [COLOR azure]GTKing[/COLOR] [COLOR limegreen]MATRIX[/COLOR][/B]</summary>
+		<summary>[COLOR steelblue]Repo[/COLOR] [COLOR azure]GTKing[/COLOR] [COLOR limegreen]MATRIX[/COLOR]</summary>
         <description>[B]Repositorio de addons[/B] [COLOR dodgerblue][B]GTKING[/B][/COLOR][B].[/B]</description>
         <disclaimer>[B]Éste repositorio sólo recoge addons válidos para Kodi 19.x MATRIX.[/B]</disclaimer>
         <platform>all</platform>
