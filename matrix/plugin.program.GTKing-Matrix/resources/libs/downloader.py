@@ -93,5 +93,5 @@ class Downloader:
         	xbmc.sleep(1000)
         	os.unlink(dest)
         	dialog = xbmcgui.Dialog()
-        	dialog.ok('[B][COLOR azure]Cancelando GTKing[/COLOR] [COLOR dodgerblue]MATRIX[/COLOR][/B]', '\n\n[B][COLOR azure]Descarga Cancelada![/COLOR][/B]')
+        	dialog.ok('[B][COLOR azure]Cancelando GTKing[/COLOR] [COLOR dodgerblue]MATRIX[/COLOR][/B]', + '\n\n' + '[B][COLOR azure]Descarga Cancelada![/COLOR][/B]')
         	quit()
