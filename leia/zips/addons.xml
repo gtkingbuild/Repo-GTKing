@@ -100,7 +100,7 @@ v2.3.14 (2019-02-10)
   </extension>
 </addon>
 
-<addon id="plugin.program.gtking" name="GTKING [COLOR dodgerblue]WIZARD[/COLOR]" version="2.2.8" provider-name="Josa,DavidZgZ,Sugea">
+<addon id="plugin.program.gtking" name="GTKING [COLOR dodgerblue]WIZARD[/COLOR]" version="2.2.8" provider-name="[COLOR white][B]JoseaTEBA,DavidZgZ,Sugea[/B][/COLOR]">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
   </requires>
@@ -184,7 +184,7 @@ Instalador actualizado a la versión 2.2.3
   </extension>
 </addon>
 
-<addon id="repository.GTKing" name="[COLOR steelblue][B]Repo[/B][/COLOR] [COLOR azure][B]GTKing[/B][/COLOR]" version="2.7.5" provider-name="[COLOR gold][B]GTKingBuild[/B][/COLOR]">
+<addon id="repository.GTKing" name="[COLOR steelblue][B]Repo[/B][/COLOR] [COLOR azure][B]GTKing[/B][/COLOR]" version="2.7.5" provider-name="[COLOR white][B]GTKingBuild[/B][/COLOR]">
     <extension point="xbmc.addon.repository" name="[COLOR dodgerblue][B]Repo[/B][/COLOR] [COLOR azure][B]GTKing[/B][/COLOR]">
         <dir minversion="18.0" maxversion="18.9.0">
             <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/leia/zips/addons.xml</info>
