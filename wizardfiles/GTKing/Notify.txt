@@ -8,7 +8,8 @@
 [COLOR deepskyblue]* Para realizar la instalación correctamente deberás pulsar en la opción [COLOR white][B]"Build Menu"[/B][/COLOR] en la ventana que aparece después de instalar el plugin instalador (Wizard).
 
 En ésta ventana de Notificación, damos a [COLOR white][B]"Cerrar"[/B][/COLOR]
-Seleccionamos la Build que deseas instalar [COLOR yellowgreen][B]19.x[/B][/COLOR] - [COLOR white][B]Instalar Build[/B][/COLOR]. Cuando termine de instalar, se cerrará Kodi y ya sólo nos quedará iniciar de nuevo Kodi y darle unos minutos para que cargue el menú correctamente.
+Seleccionamos la Build que deseas instalar [COLOR yellowgreen][B]19.x[/B][/COLOR] - [COLOR white][B]Instalar Build[/B][/COLOR]. Cuando termine de instalar, nos saldrá una ventana que [COLOR white][B]"Necesita Forzar el Cierre de Kodi"[/B][/COLOR]. Pulsaremos en [COLOR white][B]"OK"[/B][/COLOR] Y se cerrará Kodi y ya sólo nos quedará iniciar de nuevo Kodi, darle unos minutos para que cargue el menú correctamente.
+
 Después de arrancar Kodi elegimos el parche a instalar en el menú "Builds" en la sección de "Ajustes" (si hubiera más de uno elegiremos el de mayor número de versión.
 
 
