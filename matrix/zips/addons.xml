@@ -339,7 +339,7 @@
     </extension>
 </addon>
 
-<addon id="plugin.program.GTKing-Matrix" name="[COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]" version="1.0" provider-name="[COLOR gold][B]GTKing TEAM[/B][/COLOR]">
+<addon id="plugin.program.GTKing-Matrix" name="[COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]" version="1.0" provider-name="[B][COLOR gold]GTKing TEAM[/COLOR][/B]">
 	<requires>
     	<import addon="xbmc.python" version="3.0.0"/>
     	<import addon="script.module.requests" />
@@ -359,8 +359,7 @@
     	<description lang="es">
 [B]• Developers:[/B] [COLOR gold]JoseaTEBA y DavidZgZ[/COLOR]
 [B]• Testers:[/B]        [COLOR dodgerblue]Sugea, Vicente,
-                         Tete6776, Mapache,
-                         Malibu, galaico11.[/COLOR]
+                         Tete6776, Mapache[/COLOR]
 [B]• Telegram:[/B]    [COLOR lime]t.me/beelinkking[/COLOR]</description>
 		<platform>all</platform>
 		<reuselanguageinvoker>false</reuselanguageinvoker>
