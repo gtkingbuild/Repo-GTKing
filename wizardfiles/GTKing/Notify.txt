@@ -17,7 +17,7 @@ Después de arrancar Kodi elegimos el parche a instalar en el menú "Builds" en 
 [COLOR gold]26/07/2021 Actualización Parche GTKing MATRIX 1.0[/COLOR]
 [COLOR white] - Cambiado el color de Novedades del menú principal a Azul[/COLOR]
 
-[COLOR dodgerblue]* Para actualizar el parche actualizador dirigirse a la sección "[B]BUILDS: [COLOR white]GTKING [COLOR lime]MATRIX[/COLOR]  - [COLOR yellowgreen]19.X[/COLOR] y PARCHES MATRIX - [COLOR cyan]Parche[/COLOR][/B]" del menú "AJUSTES" e instalar el de mayor número de versión *[/COLOR]
+[COLOR dodgerblue]* Para actualizar el parche actualizador dirigirse a la sección "[B]BUILDS: [COLOR white]GTKING [COLOR lime]MATRIX[/COLOR] - [COLOR yellowgreen]19.x[/COLOR] PARCHES MATRIX - [COLOR cyan]Parche[/COLOR][/B]" del menú "AJUSTES" e instalar el de mayor número de versión *[/COLOR]
 
 [COLOR red]                   ****** JOSEATEBA, DAVIDZGZ y GTKing TEAM ******                 [/COLOR] 
   
