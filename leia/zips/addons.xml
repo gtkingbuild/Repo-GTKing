@@ -191,11 +191,11 @@ Instalador actualizado a la versión 2.2.3
             <checksum>https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/leia/zips/addons.xml.md5</checksum>
             <datadir zip="true">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/leia/zips/</datadir>
         </dir>
-        <dir minversion="18.9.0">
+       <dir minversion="18.9.0">
             <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/matrix/zips/addons.xml</info>
             <checksum>https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/matrix/zips/addons.xml.md5</checksum>
             <datadir zip="true">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/matrix/zips/</datadir>
-        </dir> 
+        </dir>
         <dir minversion="18.9.0">
             <info>https://raw.githubusercontent.com/Palantiraddon/Repo/master/Palantir/addons.xml</info>
             <checksum>https://raw.githubusercontent.com/Palantiraddon/Repo/master/Palantir/addons.xml.md5</checksum>
