@@ -175,7 +175,7 @@
         <setting id="keepguisettings" type="bool" label="Mantener Mis guisettings.xml" default="false"/>
         <setting id="keepadvanced" type="bool" label="Mantener Mis AdvancedSettings.xml" default="true"/>
         <setting id="keeprepos" type="bool" label="Mantener Repositorios Instalados" default="true"/>
-        <setting id="keepsuper" type="bool" label="Mantener Super Favoritos" default="true"/>
+        <setting id="keepsuper" type="bool" label="Mantener Super Favoritos" default="false"/>
         <setting id="keepwhitelist" type="bool" label="Mantener Addons de Mi Lista Blanca" default="false"/>
     </category>
 
