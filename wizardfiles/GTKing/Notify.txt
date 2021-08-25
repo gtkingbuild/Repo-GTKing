@@ -5,9 +5,10 @@
 
 [COLOR aquamarine][B]INSTALACIÓN:[B][/COLOR]
 
-[COLOR deepskyblue]* Para realizar la instalación correctamente deberás pulsar en la opción [COLOR white][B]"BUILD MENÚ"[/B][/COLOR] en la ventana que aparece después de instalar el plugin instalador (Wizard).
+[COLOR deepskyblue]* Para realizar la instalación correctamente deberás pulsar en la opción [COLOR white][B]"Build Menu"[/B][/COLOR] en la ventana que aparece después de instalar el plugin instalador (Wizard).
 
-Seleccionamos la Build que deseas instalar. Cuando termine de instalar nos aparecerá una ventana para Forzar el cierre de Kodi, pulsaremos en [B]"OK"[/B], después de eso se cerrará Kodi y ya sólo nos quedará iniciar de nuevo Kodi y darle unos minutos para que cargue el menú correctamente.
+En ésta ventana de Notificación, damos a [COLOR white][B]"Cerrar"[/B][/COLOR]
+Seleccionamos la Build que deseas instalar [COLOR yellowgreen][B]19.x[/B][/COLOR] - [COLOR white][B]Instalar Build[/B][/COLOR]. Cuando termine de instalar, se cerrará Kodi y ya sólo nos quedará iniciar de nuevo Kodi y darle unos minutos para que cargue el menú correctamente.
 Después de arrancar Kodi elegimos el parche a instalar en el menú "Builds" en la sección de "Ajustes" (si hubiera más de uno elegiremos el de mayor número de versión.
 
 
@@ -17,7 +18,7 @@ Después de arrancar Kodi elegimos el parche a instalar en el menú "Builds" en 
 [COLOR gold]26/07/2021 Actualización Parche GTKing MATRIX 1.0[/COLOR]
 [COLOR white] - Cambiado el color de Novedades del menú principal a Azul[/COLOR]
 
-[COLOR dodgerblue]* Para actualizar el parche actualizador dirigirse a la sección "[B]BUILDS: [COLOR white]GTKING [COLOR lime]MATRIX[/COLOR] - [COLOR yellowgreen]19.x[/COLOR] PARCHES MATRIX - [COLOR cyan]Parche[/COLOR][/B]" del menú "AJUSTES" e instalar el de mayor número de versión *[/COLOR]
+[COLOR dodgerblue]* Para actualizar el parche actualizador dirigirse a la sección "[B]BUILDS [COLOR white]-[/COLOR] PARCHES [COLOR white]---[/COLOR] BUILDS: [COLOR azure]GTKING [COLOR lime]MATRIX[/COLOR] - [COLOR yellowgreen]19.x[/COLOR] - [COLOR dodgerblue]PARCHES MATRIX[/COLOR] - [COLOR cyan]Parche[/COLOR][/B]" del Menú "[COLOR white][B]AJUSTES[/B][/COLOR]" e instalar el de mayor número de versión *[/COLOR]
 
 [COLOR red]                   ****** JOSEATEBA, DAVIDZGZ y GTKing TEAM ******                 [/COLOR] 
   
