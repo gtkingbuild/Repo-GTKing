@@ -54,7 +54,7 @@ class Router:
 
         # SETTINGS
         elif mode == 'settings':  # OpenWizard settings
-            CONFIG.open_settings(name)
+            CONFIG.open_settings(cat = name)
             xbmc.executebuiltin('Container.Refresh()')
         elif mode == 'opensettings':  # Open other addons' settings
             settings_id = eval(url.upper() + 'ID')[name]['plugin']
