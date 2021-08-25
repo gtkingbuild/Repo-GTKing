@@ -7,6 +7,6 @@
         <provides>testprovides</provides>
     </extension>
     <extension point="xbmc.addon.metadata">
-        <description>If you're seeing this message it means the add-on is still updating, please wait for the update process to complete.</description>
+        <description>Si ve este mensaje, significa que el complemento aún se está actualizando, espere a que se complete el proceso de actualización.</description>
     </extension>
 </addon>
