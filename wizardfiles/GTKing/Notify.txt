@@ -18,7 +18,7 @@ Después de arrancar Kodi elegimos el parche a instalar en el menú "Builds" en 
 
 [COLOR dodgerblue]* Para actualizar el parche actualizador dirigirse a la sección "BUILD y PARCHES" del menú "AJUSTES" e instalar el de mayor número de versión *[/COLOR]
 
-[COLOR red]                   ****** JOSEATEBA Y DAVIDZGZ ******                 [/COLOR] 
+[COLOR red]                   ****** JOSEATEBA, DAVIDZGZ y GTKing TEAM ******                 [/COLOR] 
   
 [COLOR dodgerblue]https://t.me/beelinkking[/COLOR]
 
