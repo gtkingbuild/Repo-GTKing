@@ -1,5 +1,0 @@
-[B]Version 1.1[/B]
-Modificado archivo settings.xml de la carpeta resources
-
-[B]Version 1.0[/B]
-Primera versión de Tacones Addon basado en LiveStreamsPro
