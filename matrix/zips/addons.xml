@@ -597,20 +597,6 @@ Testers: Luisma, Toni, Zarat, SuperTopo, Jorge, Bojbit, MiKeL, Chikiry, Pau, Ale
         </dir>
     </extension>
 
-    <extension point="xbmc.addon.metadata">
-        <summary>[COLOR steelblue]Repo[/COLOR] [COLOR azure]GTKing[/COLOR] [COLOR limegreen]MATRIX[/COLOR]</summary>
-        <description>Repositorio de addons [COLOR dodgerblue]GTKING[/COLOR].
-[COLOR gold]Developers:[/COLOR] DavidZgZ, JoseaTEBA y GTKing TEAM</description>
-        <disclaimer>Éste repositorio sólo recoge addons válidos para Kodi 19.x MATRIX.</disclaimer>
-        <platform>all</platform>
-        <assets>
-            <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
-        </assets>
-		<source>https://github.com/gtkingbuild/Repo-GTKing/</source>
-    </extension>
-</addon>
-
 <addon id="script.kelebek"
        name="KELEBEK"
        version="3.5"
