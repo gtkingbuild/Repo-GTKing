@@ -4,7 +4,8 @@ zip="https://github.com/gtkingbuild/gtkingbuild.github.io/tree/master/addons.de.
 
 name="19.x Matrix"
 version="1.0"
-url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/1.0/GTKing.MATRIX.zip"
+url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/1.0/GTKing.MATRIX.zip"
+#url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/1.0/GTKing.MATRIX.zip"
 minor="http://"
 gui="http://"
 kodi="19"
@@ -15,7 +16,7 @@ fanart="https://gtkingbuild.github.io/wizard/wizardmatrix/fanart.jpg"
 preview="http://"
 adult="No"
 info="http://"
-description="[COLOR azure][B]GTKing[/COLOR] [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 19.X Matrix.[/B][/COLOR]                                                       [COLOR dodgerblue][B]Developers:[/B][/COLOR] [B]DavidZGZ, JoseaTEBA.[/B]                         [COLOR orange][B]Colaboradores-Test:[/B][/COLOR] [COLOR cyan][B]Sugea, Tete6776, Vicente, Mapache, Malibu y Angel.[/B][/COLOR]"
+description="[COLOR azure][B]GTKing[/COLOR] [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 19.X Matrix.[/B][/COLOR]                                                       [COLOR dodgerblue][B]Developers:[/B][/COLOR] [B]DavidZGZ, JoseaTEBA.[/B]                         [COLOR orange][B]Colaboradores-Test:[/B][/COLOR] [COLOR cyan][B]Sugea, Tete6776, Vicente, Mapache, Malibu y galaico11.[/B][/COLOR]"
 
 
 name=""
