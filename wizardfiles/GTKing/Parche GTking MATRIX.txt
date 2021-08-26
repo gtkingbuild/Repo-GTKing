@@ -1,0 +1,6 @@
+#name="[B][COLOR red]•[/COLOR]Parche Prueba GTKing MATRIX 1.0[/B]"
+#url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/0.1/parche.prueba.zip"
+#icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
+#fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
+#adult="no"
+#description="Parche PRUEBA GTKing Prime Matrix"

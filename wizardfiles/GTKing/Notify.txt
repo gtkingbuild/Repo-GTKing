@@ -1,0 +1,25 @@
+1
+|||
+
+[COLOR greenyellow][B]¡¡¡BIENVENIDOS A LA BUILD GTKing MATRIX!!![B][/COLOR]
+
+[COLOR aquamarine][B]INSTALACIÓN:[B][/COLOR]
+
+[COLOR deepskyblue]* Para realizar la instalación correctamente deberás pulsar en la opción [B]"BUILD MENÚ"[/B] en la ventana que aparece después de instalar el plugin instalador (Wizard).
+Seleccionamos la Build que deseas instalar. Cuando termine de instalar nos aparecerá una ventana para Forzar el cierre de Kodi, pulsaremos en [B]"OK"[/B], después de eso se cerrará Kodi y ya sólo nos quedará iniciar de nuevo Kodi y darle unos minutos para que cargue el menú correctamente.
+Después de arrancar Kodi elegimos el parche a instalar en el menú "Builds" en la sección de "Ajustes" (si hubiera más de uno elegiremos el de mayor número de versión.
+
+
+[COLOR lime][B]PARCHES ACTUALIZADORES GTKING MATRIX[/B][/COLOR]
+
+[COLOR lime][B]ACTUALIZACIÓN:[/B][/COLOR]
+[COLOR gold]26/07/2021 Actualización Parche GTKing MATRIX 1.0[/COLOR]
+[COLOR white] - Cambiado el color de Novedades del menú principal a Azul[/COLOR]
+
+[COLOR dodgerblue]* Para actualizar el parche actualizador dirigirse a la sección "BUILD y PARCHES" del menú "AJUSTES" e instalar el de mayor número de versión *[/COLOR]
+
+[COLOR red]                   ****** JOSEATEBA, DAVIDZGZ y GTKing TEAM ******                 [/COLOR] 
+  
+[COLOR dodgerblue]https://t.me/beelinkking[/COLOR]
+
+[COLOR lime][B]GRACIAS POR UTILIZAR GTKING MATRIX![/B][/COLOR]
