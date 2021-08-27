@@ -358,7 +358,7 @@
 
     	<description lang="es">
 [B]• Developers:[/B] [COLOR gold]JoseaTEBA y DavidZgZ[/COLOR]
-[B]• Testers:[/B]        [COLOR dodgerblue]ehSugea, Vicente,
+[B]• Testers:[/B]        [COLOR dodgerblue]Sugea, Vicente,
                          Tete6776, Mapache,
                          Malibu, galaico11.[/COLOR]
 [B]• Telegram:[/B]    [COLOR lime]t.me/beelinkking[/COLOR]</description>
@@ -704,7 +704,7 @@ Testers: Luisma, Toni, Zarat, SuperTopo, Jorge, Bojbit, MiKeL, Chikiry, Pau, Ale
     </extension>
 </addon>
 
-<addon id="skin.auramod.GTKing-Matrix" version="1.1.1" name="AuraMod [COLOR FF1e90ff]GTKING[/COLOR]" provider-name="Auramod,[COLOR FF1e90ff]GTKING[/COLOR]">
+<addon id="skin.auramod.GTKing-Matrix" version="1.1.2" name="AuraMod [COLOR FF1e90ff]GTKING[/COLOR]" provider-name="Auramod,[COLOR FF1e90ff]GTKING[/COLOR]">
     <requires>
         <import addon="xbmc.gui" version="5.15.0"/>
         <import addon="script.skin.helper.service" version="1.1.24"/>

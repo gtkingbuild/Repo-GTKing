@@ -182,7 +182,7 @@
                             <font>font_topbar</font>
                             <textcolor>main_fg_100</textcolor>
                             <label>$VAR[Label_Header_Content]</label>
-                            <visible>![Window.IsVisible(script-globalsearch.xml) | Window.IsVisible(Home)] | Window.IsVisible(script-script.extendedinfo-VideoList.xml)</visible
+                            <visible>![Window.IsVisible(script-globalsearch.xml) | Window.IsVisible(Home)] | Window.IsVisible(script-script.extendedinfo-VideoList.xml)</visible>
                             <visible>!Control.HasFocus(300)</visible>
                         </control>
                         <control type="label">
@@ -262,7 +262,7 @@
                         <control type="label">
                             <width>auto</width>
                             <font>font_small</font>
-                            <textcolor>$VAR[dodgerblue]</textcolor>
+                            <textcolor>$VAR[ColorHighlight]</textcolor>
                             <label>  |  </label>
                             <visible>Player.HasMedia</visible>
                             <visible>![Window.IsVisible(script-script.extendedinfo-DialogVideoInfo.xml) | Window.IsVisible(script-script.extendedinfo-DialogInfo.xml) | Window.IsVisible(DialogVideoInfo.xml) | Window.IsVisible(DialogMusicInfo.xml) | Window.IsVisible(DialogAddonInfo.xml)]</visible>
@@ -294,7 +294,7 @@
                             <visible>!Control.HasFocus(60)</visible>
                             <width>auto</width>
                             <font>font_small</font>
-                            <textcolor>$VAR[dodgerblue]</textcolor>
+                            <textcolor>$VAR[ColorHighlight]</textcolor>
                             <label>  |  </label>
                             <visible>!String.IsEmpty(Weather.Temperature)</visible>
                             <visible>Weather.IsFetched</visible>
@@ -318,7 +318,7 @@
                             <visible>Control.HasFocus(60)</visible>
                             <width>auto</width>
                             <font>font_small</font>
-                            <textcolor>$VAR[dodgerblue]</textcolor>
+                            <textcolor>$VAR[ColorHighlight]</textcolor>
                             <label>  |  </label>
                         </control>
                         <control type="label">
@@ -844,7 +844,7 @@
                         <control type="label">
                             <width>auto</width>
                             <font>font_small</font>
-                            <textcolor>$VAR[dodgerblue]</textcolor>
+                            <textcolor>$VAR[ColorHighlight]</textcolor>
                             <label>  |  </label>
                             <visible>!String.IsEmpty(Weather.Temperature)</visible>
                             <visible>Weather.IsFetched</visible>
