@@ -16,7 +16,7 @@ fanart="https://gtkingbuild.github.io/wizard/wizardmatrix/fanart.jpg"
 preview="http://"
 adult="No"
 info="http://"
-description="[COLOR azure][B]GTKing[/COLOR] [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 19.X Matrix.[/B][/COLOR]                                                       [COLOR dodgerblue][B]Developers:[/B][/COLOR] [B]DavidZGZ, JoseaTEBA.[/B]                         [COLOR orange][B]Colaboradores-Test:[/B][/COLOR] [COLOR cyan][B]Sugea, Tete6776, Vicente, Mapache, Malibu y galaico11.[/B][/COLOR]"
+description="[COLOR azure][B]GTKing[/COLOR] [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 19.X Matrix.[/B][/COLOR]                                                       [COLOR dodgerblue][B]Developers:[/B][/COLOR] [B]DavidZgZ, JoseaTEBA.[/B]                         [COLOR orange][B]Colaboradores-Test:[/B][/COLOR] [COLOR cyan][B]Sugea, Tete6776, Vicente, Mapache, Malibu y galaico11.[/B][/COLOR]"
 
 
 name=""
