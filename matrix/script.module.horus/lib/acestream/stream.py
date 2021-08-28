@@ -5,7 +5,6 @@ from threading import Thread
 from lib.acestream.object import Extendable
 from lib.acestream.object import Observable
 
-from lib.utils import logger
 
 class Stats(Extendable, Observable):
 
@@ -36,7 +35,6 @@ class Stats(Extendable, Observable):
 
   def update(self):
     response = self.server.get(self.stat_url)
-    #logger(response.__dict__)
     self._set_response_to_values(response)
 
   def _set_response_to_values(self, response):
@@ -83,7 +81,7 @@ class Stream(Extendable, Observable):
         response = self.server.getserver(method='get_media_files', api_version=3, infohash=self.infohash)
 
         if response.success:
-            self.filename = response.data['files'][0]['filename']
+          self.filename = response.data['files'][0]['filename']
 
         if not self.id:
           response = self.server.getserver(method='get_content_id', infohash=self.infohash)
@@ -150,7 +148,7 @@ class Stream(Extendable, Observable):
     list_id = list()
 
     response = self.server.getserver(method='get_available_players',infohash=self.infohash)
-    logger(response.__dict__)
+
     if response.success:
       for ply in response.data.get('players'):
         list_name.append(ply['name'])
