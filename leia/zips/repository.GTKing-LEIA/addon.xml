@@ -21,7 +21,7 @@
     <extension point="xbmc.addon.metadata">
         <summary>[COLOR steelblue][B]Repo[/COLOR] [COLOR azure]GTKing[/COLOR]</summary>
         <description>Repositorio de addons [COLOR dodgerblue]GTKING[/COLOR].
-[COLOR gold]Developers:[/COLOR] DavidZgZ, JoseaTEBA y GTKing TEAM</description> 		</description>
+[COLOR gold]Developers:[/COLOR] DavidZgZ, JoseaTEBA y GTKing TEAM</description> 		
         <disclaimer>Éste repositorio sólo recoge addons válidos para Kodi 18.x LEIA.</disclaimer>
         <platform>all</platform>
         <assets>
