@@ -1,0 +1,26 @@
+v4.0 25/07/20
+Nueva reforma de la Build
+-Nuevos atajos.
+-Builds y Parches por color
+
+v3.0 (15/07/20)
+Nueva actualización
+- Eliminado addon limpia tu kodi para optimizar los buscadores.
+- Atajo a la sección Supercine modificado.
+- Nuevos iconos en el menú de ajustes.
+- Nuevo wallpaper en la sección addons.
+
+
+v2.1.0 (26/06/20)
+ Nueva Actualizacion instalador para la nueva Build GTKing Prime.
+- Actualizado mejoras en bases de datos TV
+- Novedad del addon MediaExplorer y con su icono.
+- Atajos para MediaExplorer y Magellan.
+
+Nueva Build GTKing Prime 
+- Mejoras externas.
+- Mejoras internas.
+
+v2.0.0 (27/05/2024)
+Version inicial
+
