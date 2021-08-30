@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="repository.repogtking" name="[B]Repo [COLOR dodgerblue]GTKING[/COLOR][/B]" version="2.0.1" provider-name="beelinkgtking2">
+<addon id="repository.repogtking" name="[B]Repo [COLOR dodgerblue]GTKING[/COLOR][/B]" version="2.4.3" provider-name="gtkingbuild">
        <extension point="xbmc.addon.repository" name="Repo GTKING">
-              <info>https://raw.githubusercontent.com/beelinkgtking2/Repo-GTKing/master/addons.xml</info>
-              <checksum>https://raw.githubusercontent.com/beelinkgtking2/Repo-GTKing/master/addons.xml.md5</checksum>
-              <datadir zip="true">https://raw.githubusercontent.com/beelinkgtking2/Repo-GTKing/master/</datadir>
+              <info>https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/addons.xml</info>
+              <checksum>https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/addons.xml.md5</checksum>
+              <datadir zip="true">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/</datadir>
        </extension>
        <extension point="xbmc.addon.metadata">
               <summary lang="en">Repo [COLOR dodgerblue]GTKING[/COLOR]</summary>

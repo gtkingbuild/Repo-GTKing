@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.program.gtking" name="GTKING [COLOR dodgerblue]WIZARD[/COLOR]" version="2.2.8" provider-name="JoseaTEBA, DavidZgZ, Sugea">
+<addon id="plugin.program.gtking" name="GTKING [COLOR dodgerblue]WIZARD[/COLOR]" version="2.2.8" provider-name="Josa,DavidZgZ,Sugea">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
   </requires>
@@ -11,8 +11,8 @@
     <summary lang="en">GTKing [COLOR dodgerblue]WIZARD[/COLOR]</summary>
     <description lang="en">Build GTKing Prime para Kodi 18
 -[COLOR gold][B]Developers:[/B][/COLOR] [COLOR azure]JoseaTEBA, DavidZgZ[/COLOR]
--[COLOR lime][B]Testers:  [/B][/COLOR] [COLOR azure]Mapache, Tete6776,
-                     Vicente, Malibu[/COLOR]
+-[COLOR lime][B]Testers:   [/B][/COLOR] [COLOR azure]Mapache, Tete6776,
+                        Vicente, Malibu[/COLOR]
 -[COLOR dodgerblue][B]Telegram:[/B][/COLOR] [COLOR lime]t.me/beelinkking[/COLOR]</description>
 <news>- Plugin.[COLOR dodgerblue]Programa.[/COLOR] [COLOR lime]GTKing[/COLOR]
 Instalador actualizado a la versión 2.2.8
