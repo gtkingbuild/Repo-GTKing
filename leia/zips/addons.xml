@@ -100,7 +100,7 @@ v2.3.14 (2019-02-10)
   </extension>
 </addon>
 
-<addon id="plugin.program.gtking" name="GTKING [COLOR dodgerblue]WIZARD[/COLOR]" version="2.2.8" provider-name="Josa,DavidZgZ,Sugea">
+<addon id="plugin.program.gtking" name="GTKING [COLOR dodgerblue]WIZARD[/COLOR]" version="2.2.8" provider-name="JosaTEBA, DavidZgZ, Sugea">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
   </requires>
@@ -111,8 +111,9 @@ v2.3.14 (2019-02-10)
   <extension point="xbmc.addon.metadata">
     <summary lang="en">GTKing [COLOR dodgerblue]WIZARD[/COLOR]</summary>
     <description lang="en">Build GTKing Prime para Kodi 18
--[COLOR dodgerblue][B]Testers:[/B][/COLOR] [COLOR lime]Mapache,Tete6776,Vicente,zalcos,Malibu[/COLOR]
-
+-[COLOR gold][B]Developers:[/B][/COLOR] [COLOR azure]JoseaTEBA, DavidZgZ[/COLOR]
+-[COLOR lime][B]Testers:      [/B][/COLOR] [COLOR azure]Mapache, Tete6776,
+                       Vicente, Malibu[/COLOR]
 -[COLOR dodgerblue][B]Telegram:[/B][/COLOR] [COLOR lime]t.me/beelinkking[/COLOR]</description>
 <news>- Plugin.[COLOR dodgerblue]Programa.[/COLOR] [COLOR lime]GTKing[/COLOR]
 Instalador actualizado a la versión 2.2.8
@@ -184,8 +185,8 @@ Instalador actualizado a la versión 2.2.3
   </extension>
 </addon>
 
-<addon id="repository.GTKing" name="[COLOR steelblue][B]Repo[/B][/COLOR] [COLOR azure][B]GTKing[/B] [/COLOR]" version="2.7.5" provider-name="gtkingbuild">
-    <extension point="xbmc.addon.repository" name="[COLOR dodgerblue][B]Repo[/B][/COLOR] Prueba [COLOR limegreen]MATRIX[/COLOR]">
+<addon id="repository.GTKing-Leia" name="[COLOR steelblue][B]Repo[/B][/COLOR] [COLOR azure][B]GTKing[/B][/COLOR] [COLOR limegreen][B]LEIA[/B][/COLOR]" version="2.7.6" provider-name="GTKingTEAM">
+    <extension point="xbmc.addon.repository" name="[COLOR steelblue][B]Repo[/B][/COLOR] [COLOR azure][B]GTKing[/B][/COLOR] [COLOR limegreen][B]LEIA[/B][/COLOR]">
         <dir minversion="18.0" maxversion="18.9.0">
             <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/leia/zips/addons.xml</info>
             <checksum>https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/leia/zips/addons.xml.md5</checksum>
@@ -205,7 +206,8 @@ Instalador actualizado a la versión 2.2.3
 
     <extension point="xbmc.addon.metadata">
         <summary>[COLOR steelblue][B]Repo[/B][/COLOR] [COLOR azure][B]GTKing[/B] [/COLOR]</summary>
-        <description>Repositorio de addons [COLOR dodgerblue]GTKING[/COLOR].</description>
+        <description>[B]Repositorio de addons [COLOR dodgerblue]GTKING[/COLOR][/B] [COLOR limegreen][B]LEIA[/B][/COLOR].
+[COLOR gold][B]Developers:[/B][/COLOR] [B]DavidZgZ, JoseaTEBA y GTKing TEAM[/B]</description>
         <disclaimer>Éste repositorio sólo recoge addons válidos para Kodi 18.x LEIA.</disclaimer>
         <platform>all</platform>
         <assets>
