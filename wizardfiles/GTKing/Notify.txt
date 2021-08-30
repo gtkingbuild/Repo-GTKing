@@ -1,0 +1,20 @@
+1
+|||
+
+[COLOR greenyellow][B]¡¡¡BIENVENIDOS A LA BUILD GTKing MATRIX!!![B][/COLOR]
+
+[COLOR aquamarine][B]INSTALACIÓN:[B][/COLOR]
+
+[COLOR deepskyblue]* Para realizar la instalación correctamente deberás pulsar en la opción [COLOR white][B]"Build Menu"[/B][/COLOR] en la ventana que aparece después de instalar el plugin instalador (Wizard).
+
+En ésta ventana de Notificación, damos a [COLOR white][B]"Cerrar"[/B][/COLOR]
+Seleccionamos la Build que deseas instalar [COLOR yellowgreen][B]19.x[/B][/COLOR] - [COLOR white][B]Instalar Build[/B][/COLOR]. 
+Cuando termine de instalar, nos saldrá una ventana [COLOR white][B]"Necesita Forzar el Cierre de Kodi"[/B][/COLOR]. Pulsaremos en [COLOR white][B]"OK"[/B][/COLOR].
+Se cerrará Kodi y ya sólo nos quedará iniciar de nuevo Kodi, darle unos minutos para que cargue el menú correctamente.
+
+
+[COLOR red]                   ****** JOSEATEBA, DAVIDZGZ y GTKing TEAM ******                 [/COLOR] 
+  
+[COLOR dodgerblue]https://t.me/beelinkking[/COLOR]
+
+[COLOR white][B]GRACIAS POR UTILIZAR [COLOR dodgerblue]GTKING [COLOR lime]MATRIX![/B][/COLOR]

@@ -1,0 +1,234 @@
+# XBMC Media Center language file
+# Addon Provider: Anabel
+
+
+msgid ""
+msgstr ""
+
+
+"Project-Id-Version: KELEBEK\n"
+"Report-Msgid-Bugs-To: alaporra@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Anabel\n"
+"Language-Team: Anabel\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Descryption
+#: Files where is used
+msgctxt "#32000"
+msgid "KELEBEK"
+msgstr ""
+
+msgctxt "#32001"
+msgid "Launching"
+msgstr ""
+
+msgctxt "#32002"
+msgid "Please, wait..."
+msgstr ""
+
+msgctxt "#32003"
+msgid "Install"
+msgstr ""
+
+msgctxt "#32004"
+msgid "Uninstall"
+msgstr ""
+
+msgctxt "#32005"
+msgid "View All"
+msgstr ""
+
+msgctxt "#32006"
+msgid "Update All"
+msgstr ""
+
+msgctxt "#32007"
+msgid "Exit"
+msgstr ""
+
+msgctxt "#32008"
+msgid " INSTALLED/UPDATED"
+msgstr ""
+
+msgctxt "#32009"
+msgid "INSTALLING ADDONS AND DEPENDENCIES OF "
+msgstr ""
+
+msgctxt "#32010"
+msgid "ALL ADDONS AND DEPENDENCIES SELECTED "
+msgstr ""
+
+msgctxt "#32011"
+msgid "DOWNLOADING..."
+msgstr ""
+
+msgctxt "#32012"
+msgid "Please, wait..."
+msgstr ""
+
+msgctxt "#32013"
+msgid "ALREADY INSTALLED"
+msgstr ""
+
+msgctxt "#32014"
+msgid " INSTALLED..."
+msgstr ""
+
+msgctxt "#32015"
+msgid "Uninstalling Addon "
+msgstr ""
+
+msgctxt "#32016"
+msgid " uninstalled"
+msgstr ""
+
+msgctxt "#32017"
+msgid "INSTALLING DEPENDENCIES OF "
+msgstr ""
+
+msgctxt "#32018"
+msgid "ALL ADDONS AND DEPENDENCIES UPDATED"
+msgstr ""
+
+msgctxt "#32019"
+msgid "READING LOCAL SOURCE..."
+msgstr ""
+
+msgctxt "#32020"
+msgid "SCANNING FULL SOURCE..."
+msgstr ""
+
+msgctxt "#32021"
+msgid "ALL_VIEW FINISHED"
+msgstr ""
+
+msgctxt "#32022"
+msgid "Creator:"
+msgstr ""
+
+msgctxt "#32023"
+msgid "Description:"
+msgstr ""
+
+msgctxt "#32024"
+msgid "Summary:"
+msgstr ""
+
+msgctxt "#32025"
+msgid "Local Version:"
+msgstr ""
+
+msgctxt "#32026"
+msgid "UPDATE FOUND:"
+msgstr ""
+
+msgctxt "#32027"
+msgid " UPDATED"
+msgstr ""
+
+msgctxt "#32028"
+msgid "NOT INSTALLED"
+msgstr ""
+
+msgctxt "#32029"
+msgid "Total_length: "
+msgstr ""
+
+msgctxt "#32030"
+msgid "Extracting "
+msgstr ""
+
+msgctxt "#32031"
+msgid "Extracted"
+msgstr ""
+
+msgctxt "#32032"
+msgid "ERROR INSTALLING "
+msgstr ""
+
+msgctxt "#32033"
+msgid "ERROR DOWNLOAD"
+msgstr ""
+
+msgctxt "#32034"
+msgid "LOCAL SCAN FINISHED"
+msgstr ""
+
+msgctxt "#32035"
+msgid "downloaded"
+msgstr ""
+
+msgctxt "#32036"
+msgid "INSTALLING "
+msgstr ""
+
+msgctxt "#32037"
+msgid "UPDATING ADDONS AND DEPENDENCIES OF "
+msgstr ""
+
+msgctxt "#32038"
+msgid "COMMAND EXECUTED"
+msgstr ""
+
+msgctxt "#32039"
+msgid "Go Back"
+msgstr ""
+
+msgctxt "#32040"
+msgid "Outdated"
+msgstr ""
+
+msgctxt "#32041"
+msgid "LOG UPLOADED TO PASTEBIN: "
+msgstr ""
+
+msgctxt "#32042"
+msgid "Log Inverted"
+msgstr ""
+
+msgctxt "#32043"
+msgid "Only Errors"
+msgstr ""
+
+msgctxt "#32044"
+msgid "KELEBEK LOG DISPLAY"
+msgstr ""
+
+msgctxt "#32045"
+msgid "ERROR LOG EXTRACTED"
+msgstr ""
+
+msgctxt "#32046"
+msgid "IAGL Addon configured for RetroArch"
+msgstr ""
+
+msgctxt "#32047"
+msgid "KELEBEK LOG ANALYSIS"
+msgstr ""
+
+msgctxt "#32048"
+msgid "KELEBEK UPDATED"
+msgstr ""
+
+msgctxt "#32049"
+msgid "Change Order"
+msgstr ""
+
+msgctxt "#32050"
+msgid "Making Alpha Tree..."
+msgstr ""
+
+msgctxt "#32051"
+msgid "Making Alpha List..."
+msgstr ""
+
+msgctxt "#32052"
+msgid "Making Global List..."
+msgstr ""
+

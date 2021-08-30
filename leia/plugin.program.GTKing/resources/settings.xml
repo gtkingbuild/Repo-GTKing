@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+	<category label="Opciones de la Build">
+		<setting type="lsep" label="Build Actual:"/>
+		<setting id="buildname" type="text" label="Build Instalada: " enable="false" default=""/>
+		<setting id="buildversion" type="text" label="Version Instalada: " enable="false" default=""/>
+		<setting id="buildtheme" type="text" label="Tema Actual: " enable="false" default=""/>
+		<setting id="latestversion" type="text" label="Ultima Version: " enable="false" default=""/>
+		<setting id="lastbuildcheck" type="text" label="Proxima comprobacion de actualizacion: " enable="false" default=""/>
+		<setting id="disableupdate" type="bool" label="Desactivar Notificacion de Actualizacion" default="false"/>
+		<setting id="installmethod" type="enum" label="Que metodo quieres usar despues de la instalacion?" values="Preguntar|Recargar Perfil|Forzar Cierre" enable="!eq(-4,false)" default="2"/>
+		<setting type="lsep" label="Ver Builds:"/>
+		<setting id="show17" type="bool" label="Ver Builds de Krypton(v17.X)" default="true"/>
+		<setting id="show18" type="bool" label="Ver Builds Leia(v18.X)" default="true"/>
+		<setting id="seperate" type="bool" label="No separar por versiones" default="false"/>
+		<setting id="installed" type="bool" label="Build Instalada" visible="false" default="false" />
+		<setting id="extract" type="text" label="Extraer Build %" visible="false" default="100" />
+		<setting id="errors" type="text" label="Error de Extraccion" visible="false" default="" />
+		<setting id="defaultskin" type="text" label="Skin por defecto: " enable="false" default="" visible="false"/>
+		<setting id="defaultskinname" type="text" label="Default Skin Name: " enable="false" default="" visible="false"/>
+		<setting id="defaultskinignore" type="bool" label="Ignore default skin check:" enable="false" default="false" visible="false"/>
+		<setting id="default.enablerssfeeds" type="text" label="Default lookandfeel.enablerssfeeds:" enable="false" default="" visible="false"/>
+		<setting id="default.font" type="text" label="Default lookandfeel.font:" enable="false" default="" visible="false"/>
+		<setting id="default.rssedit" type="text" label="Default lookandfeel.rssedit:" enable="false" default="" visible="false"/>
+		<setting id="default.skincolors" type="text" label="Default lookandfeel.skincolors:" enable="false" default="" visible="false"/>
+		<setting id="default.skintheme" type="text" label="Default lookandfeel.skintheme:" enable="false" default="" visible="false"/>
+		<setting id="default.skinzoom" type="text" label="Default lookandfeel.skinzoom:" enable="false" default="" visible="false"/>
+		<setting id="default.soundskin" type="text" label="Default lookandfeel.soundskin:" enable="false" default="" visible="false"/>
+		<setting id="default.startupwindow" type="text" label="Default lookandfeel.startupwindow:" enable="false" default="" visible="false"/>
+		<setting id="default.stereostrength" type="text" label="Default lookandfeel.stereostrength:" enable="false" default="" visible="false"/>
+		<setting id="default.addonupdate" type="text" label="Default general.addonupdate:" enable="false" default="" visible="false"/>
+		<setting id="pvrclient" type="text" label="Enabled PVR:" enable="false" default="" visible="false"/>
+	</category>
+
+	<category label="Mantenimiento">
+		<setting type="lsep" label="Menu de mantenimiento: "/>
+		<setting id="showmaint" type="bool" label="Ver todas las secciones de Mantenimiento" default="false"/>
+		<setting type="lsep" label="Ubicacion de la Copia de Seguridad: "/>
+		<setting id="path" type="folder" label="Elegir ubicacion de la copia" default=""/>
+		<setting type="lsep" label="Auto Limpieza al iniciar Kodi:"/>
+		<setting id="autoclean" type="bool" label="Activar Auto Limpieza" default="true"/>
+		<setting id="clearcache" type="bool" label="Limpiar Cache al iniciar Kodi" default="true" enable="!eq(-1,false)"/>
+		<setting id="clearpackages" type="bool" label="Limpiar paquetes al iniciar Kodi" default="true" enable="!eq(-2,false)"/>
+		<setting id="clearthumbs" type="bool" label="Borrar Thumbnails antiguos al iniciar Kodi" default="true" enable="!eq(-3,false)"/>
+		<setting id="autocleanfeq" type="enum" label="Cada cuanto tiempo quieres limpiar Kodi al abrirlo?" values="Siempre|1 al dia|Cada 3 dias|Semanalmente" enable="!eq(-4,false)" default="3"/>
+		<setting id="nextautocleanup" type="text" label="Proxima Auto Limpieza: " enable="true" visible="false" default=""/>
+		<setting type="lsep" label="Limpiar Video Cache:"/>
+		<setting id="includevideo" type="bool" label="Incluir Addons de Video en la Limpieza de Cache: " default="true"/>
+		<setting id="includeall" type="bool" label="Incluir todos los Addons: " default="true" enable="!eq(-1,false)" visible="!eq(-1,false)"/>
+	</category>
+
+	<category label="Ajustes de Instalacion">
+		<setting type="lsep" label="Mantener ajustes cuando instalas una Build:"/>
+		<setting id="keepmyvideos" type="bool" label="Mantener mi Videoteca" default="false"/>
+		<setting id="keepfavourites" type="bool" label="Mantener mis Favoritos" default="false"/>
+		<setting id="keepsources" type="bool" label="Mantener mis fuentes de contenido" default="false"/>
+		<setting id="keepprofiles" type="bool" label="Mantener mis perfiles" default="false"/>
+		<setting id="keepadvanced" type="bool" label="Mantener mi AdvancedSettings.xml" default="false"/>
+		<setting id="keeprepos" type="bool" label="Mantener los repositorios instalados" default="false"/>
+		<setting id="keepsuper" type="bool" label="Mantener Super Favourites" default="false"/>
+		<setting type="lsep" label="Soporte agregar tu wizard:"/>
+		<setting id="enable3rd" type="bool" label="Habilitar Agregar tu wizard" default="false"/>
+		<setting id="wizard1name" type="text" label="Wizard 1 Nombre: " enable="true" visible="!eq(-1,false)" default=""/>
+		<setting id="wizard1url" type="text" label="Wizard 1 URL: " enable="true" visible="!eq(-2,false)" default=""/>
+		<setting id="wizard2name" type="text" label="Wizard 2 Nombre: " enable="true" visible="!eq(-3,false)" default=""/>
+		<setting id="wizard2url" type="text" label="Wizard 2 URL: " enable="true" visible="!eq(-4,false)" default=""/>
+		<setting id="wizard3name" type="text" label="Wizard 3 Nombre: " enable="true" visible="!eq(-5,false)" default=""/>
+		<setting id="wizard3url" type="text" label="Wizard 3 URL: " enable="true" visible="!eq(-6,false)" default=""/>
+	</category>
+
+	<category label="Ajustes varios">
+		<setting id="developer" type="bool" label="Ver Menu de Desarrollo: " enable="true" default=""/>
+		<setting id="adult" type="bool" label="Ver Addons de Adultos: " enable="true" default="false"/>
+		<setting id="auto-view" type="bool" label="Activar Auto Vista" default="true"/>
+		<setting id="viewType" type="number" label="Tipo de Vista" default="50" enable="!eq(-1,false)"/>
+		<setting type="lsep" label="Ventana de notificacion al inicio:"/>
+		<setting id="notify" type="bool" label="Desactivar Notificaciones de inicio" />
+		<setting id="noteid" type="text" label="Ultimas notificaciones" visible="false" />
+		<setting id="notedismiss" type="bool" label="Rechazar o Recordar mas tarde" visible="false" />
+	</category>
+
+	<category label="Ajustes del Log">
+		<setting type="lsep" label="Registro de eventos en el wizard:"/>
+		<setting id="addon_debug" type="bool" label="Activar Addon Debugging: " enable="true" default="false"/>
+		<setting type="lsep" visible="!eq(-1,false)" label="Level 0: No registrar"/>
+		<setting type="lsep" visible="!eq(-2,false)" label="Level 1: Registro normal"/>
+		<setting type="lsep" visible="!eq(-3,false)" label="Level 2: Registro completo"/>
+		<setting id="debuglevel" type="enum" label="Que nivel de Registo quieres" visible="!eq(-4,false)" enable="!eq(-1,false)" values="Level 0|Level 1|Level 2" default="0"/>
+		<setting id="wizardlog" type="bool" label="Activar escritura de Wizard.Log: " visible="!eq(-5,false)" enable="true" default="False"/>
+		<setting id="autocleanwiz" type="bool" label="Limpieza automatico de Wizard.Log: " visible="!eq(-6,false)" enable="!eq(-1,false)" default="true"/>
+		<setting id="wizlogcleanby" type="enum" label="Como limpiar el registro de eventos?" visible="!eq(-1,false)" values="Por dias|Por tamaño|Por lineas" default="1"/>
+		<setting id="wizlogcleandays" type="enum" label="Mantener cuantos dias el wizard.log?" visible="eq(-1,0)+!eq(-2,false)" values="1 Dia|2 Dias|3 Dias|7 Dias" default="1"/>
+		<setting id="wizlogcleansize" type="enum" label="Tamaño maximo para el wizard.log?" visible="eq(-2,1)+!eq(-3,false)" values="100 KB|200 KB|300 KB|400 KB|500 KB|1 MB" default="1"/>
+		<setting id="wizlogcleanlines" type="enum" label="Mantener cuantas lineas del wizard.log?" visible="eq(-3,2)+!eq(-4,false)" values="100|200|300|400|500" default="1"/>
+		<setting id="nextcleandate" type="text" label="Proxima limpieza del wizard.log:" visible="false" default=""/>
+	</category>
+</settings>
