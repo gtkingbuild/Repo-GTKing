@@ -6,7 +6,7 @@
   <extension point="xbmc.python.pluginsource" library="default.py">
     <provides>executable</provides>
   </extension>
-  <extension point="xbmc.service" library="startup.py" start="startup" />
+  <extension point="xbmc.service" library="startup.py" start="startup"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">GTKing [COLOR dodgerblue]WIZARD[/COLOR]</summary>
     <description lang="en">Build GTKing Prime para Kodi 18
