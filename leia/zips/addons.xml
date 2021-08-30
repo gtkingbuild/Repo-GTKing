@@ -100,6 +100,54 @@ v2.3.14 (2019-02-10)
   </extension>
 </addon>
 
+<addon id="plugin.program.gtking" name="GTKING [COLOR dodgerblue]WIZARD[/COLOR]" version="2.2.8" provider-name="JosaTEBA, DavidZgZ, Sugea">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+    <provides>executable</provides>
+  </extension>
+  <extension point="xbmc.service" library="startup.py" start="startup" />
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">GTKing [COLOR dodgerblue]WIZARD[/COLOR]</summary>
+    <description lang="en">Build GTKing Prime para Kodi 18
+-[COLOR gold][B]Developers:[/B][/COLOR] [COLOR azure]JoseaTEBA, DavidZgZ[/COLOR]
+-[COLOR lime][B]Testers:     [/B][/COLOR] [COLOR azure]Mapache, Tete6776,
+                         Vicente, Malibu[/COLOR]
+-[COLOR dodgerblue][B]Telegram:[/B][/COLOR] [COLOR lime]t.me/beelinkking[/COLOR]</description>
+<news>- Plugin.[COLOR dodgerblue]Programa.[/COLOR] [COLOR lime]GTKing[/COLOR]
+Instalador actualizado a la versión 2.2.8
+- Cambios en el instalador - Miembros
+27/03/2021
+Instalador actualizado a la versión 2.2.5
+- Añadido y editado de textos
+
+15/10/2020
+Instalador actualizado a la versión 2.2.4
+- Cambios de textos al instalar la Build
+
+05/10/2020
+Instalador actualizado a la versión 2.2.3
+- Cambios de textos al instalar la Build
+
+28/09/2020
+ Instalador actualizado a la versión 2.2.2
+- Cambios de textos al instalar parche
+
+  25/09/2020
+  Instalador actualizado a la versión 2.2.1
+- Editar textos
+
+21/9/2020
+- Instalador actualizado a la versión 2.2.0
+- Mejoras de aspectos.
+- Limpieza de Kodi automática al instalar la build GTKing Prime.
+- Nuevos iconos en Menu de Ajustes.
+ </news>
+    <platform>all</platform>
+  </extension>
+</addon>
+
 <addon id="plugin.video.tacones"
        name="[COLOR red]TACONES[/COLOR]"
        version="1.2"
@@ -135,6 +183,39 @@ v2.3.14 (2019-02-10)
     <description>Addon sin ánimo de lucro y con fines exclusivamente educativos</description>
     <platform>all</platform>
   </extension>
+</addon>
+
+<addon id="repository.repogtking" name="[B]Repo [COLOR dodgerblue]GTKING[/COLOR][/B]" version="2.7.6" provider-name="gtking">
+    <extension point="xbmc.addon.repository" name="Repo GTKING ">
+        <dir minversion="18.0" maxversion="18.9.0">
+            <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/leia/zips/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/leia/zips/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/leia/zips/</datadir>
+        </dir>
+        <dir minversion="18.9.0">
+            <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/matrix/zips/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/matrix/zips/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/matrix/zips/</datadir>
+        </dir>
+        <dir minversion="18.9.0">
+            <info>https://raw.githubusercontent.com/Palantiraddon/Repo/master/Palantir/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/Palantiraddon/Repo/master/Palantir/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/Palantiraddon/repo/master/Palantir/</datadir>
+        </dir>
+    </extension>
+
+    <extension point="xbmc.addon.metadata">
+        <summary>[COLOR steelblue][B]Repo[/COLOR] [COLOR azure]GTKing[/COLOR]</summary>
+        <description>Repositorio de addons [COLOR dodgerblue]GTKING[/COLOR].
+[COLOR gold]Developers:[/COLOR] DavidZgZ, JoseaTEBA y GTKing TEAM</description>
+        <disclaimer>Éste repositorio sólo recoge addons válidos para Kodi 18.x LEIA.</disclaimer>
+        <platform>all</platform>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+		<source>https://github.com/gtkingbuild/Repo-GTKing/</source>
+    </extension>
 </addon>
 
 <addon id="script.kelebek"
