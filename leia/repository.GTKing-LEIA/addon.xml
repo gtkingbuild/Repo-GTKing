@@ -7,9 +7,8 @@
    </extension>
     
     <extension point="xbmc.addon.metadata">
-        <summary>[COLOR steelblue]Repo[/COLOR] [COLOR azure]GTKing[/COLOR]</summary>
-        <description>[B]Repositorio de addons [COLOR dodgerblue]GTKING[/COLOR][/B] [COLOR limegreen][B]LEIA[/B][/COLOR].
-[COLOR gold][B]Developers:[/B][/COLOR] [B]DavidZgZ, JoseaTEBA y GTKing TEAM[/B]</description>
+        <summary>[B]Repositorio de addons [COLOR dodgerblue]GTKING[/COLOR][/B] [COLOR limegreen][B]LEIA[/B][/COLOR].</summary>
+        <description>[COLOR gold][B]Developers:[/B][/COLOR] [B]DavidZgZ, JoseaTEBA y GTKing TEAM[/B]</description>
         <disclaimer>Éste repositorio sólo recoge addons válidos para Kodi 18.x LEIA.</disclaimer>
         <platform>all</platform>
         <assets>
