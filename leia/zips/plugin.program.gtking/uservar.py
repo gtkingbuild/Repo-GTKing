@@ -101,7 +101,7 @@ REPOID         = 'repository.GTKing-Leia'
 # REPOID         = 'repository.repogtking'
 # Url to Addons.xml file in your repo folder(this is so we can get the latest version)
 REPOADDONXML   ='https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/leia/zips/addons.xml'
-# REPOADDONXML   = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKingLeia/master/addons.xml'
+#REPOADDONXML   = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKingLeia/master/addons.xml'
 # Url to folder zip is located in
 # REPOZIPURL     = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/repository.repogtking/'
 REPOZIPURL     = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/repository.GTKing-Leia/'
