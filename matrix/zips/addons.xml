@@ -672,7 +672,7 @@ Testers: Luisma, Toni, Zarat, SuperTopo, Jorge, Bojbit, MiKeL, Chikiry, Pau, Ale
   </extension>
 </addon>
 
-<addon id="script.module.horus" name="Horus" version="1.1.5" provider-name="Caperucitaferoz">
+<addon id="script.module.horus" name="Horus" version="1.1" provider-name="Caperucitaferoz">
     <requires>
         <import addon="script.module.six" />
     </requires>
@@ -697,7 +697,7 @@ Testers: Luisma, Toni, Zarat, SuperTopo, Jorge, Bojbit, MiKeL, Chikiry, Pau, Ale
               <screenshot>resources/media/Captura4.png</screenshot>
         </assets>
         <news>
-            - Añadido soporte para enlaces magnet-torrent
+            Versión inicial
         </news>
         <forum>https://t.me/KodiManiac
         https://t.me/acestream_spanish</forum>

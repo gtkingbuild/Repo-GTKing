@@ -5,7 +5,6 @@
         <setting id="ace_port" type="text" label="30025" default="6878" />
         <setting id="time_limit" type="slider" label="30026" default="30" range="10,2,120" option="int" />
         <setting id="show_osd" type="bool" label="30043" default="true"/>
-        <setting id="remerber_last_id" type="bool" label="30044" default="true"/>
         <!-- Android -->
         <setting id="reproductor_externo" type="bool" label="30039" default="false" visible="System.Platform.Android"/>
 

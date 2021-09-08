@@ -191,7 +191,3 @@ msgstr ""
 msgctxt "#30043"
 msgid "Show Acestream information in OSD"
 msgstr ""
-
-msgctxt "#30044"
-msgid "Remember last operating ID"
-msgstr ""

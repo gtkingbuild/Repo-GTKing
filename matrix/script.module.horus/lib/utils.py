@@ -277,9 +277,6 @@ def get_system_platform():
             elif arquitectura != "x86":
                 plataforma = str(os.uname())
 
-        """elif xbmc.getCondVisibility('system.platform.uwp'):
-        plataforma = "uwp"""""
-
     elif xbmc.getCondVisibility('system.platform.windows'):
         plataforma = "windows"
 
@@ -330,8 +327,6 @@ def extractFile(source, dest):
 
 def install_acestream():
     ruta = ruta_zip = ruta_extract = url = None
-    set_setting("install_acestream", '')
-    set_setting("acestream_cachefolder", '')
 
     if not system_platform in ['linux', 'windows']:
         logger("install_acestream: system_platform = %s" % str((system_platform, arquitectura, root)))
@@ -395,6 +390,5 @@ def install_acestream():
 
 system_platform, arquitectura, root = get_system_platform()
 
-from acestream.server import Server
+from lib.acestream.server import Server
 server = Server(host=get_setting("ip_addr"), port=get_setting("ace_port"))
-

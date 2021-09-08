@@ -22,16 +22,15 @@
 
 from lib.utils import *
 
-from acestream.engine import Engine
-from acestream.stream import Stream
+from lib.acestream.engine import Engine
+from lib.acestream.stream import Stream
 
 error_flag = False
 
 class OSD(object):
-    def __init__(self, stats):
+    def __init__(self):
         self.showing = False
         self.window = xbmcgui.Window(12901)
-        self.stats = stats
 
         viewport_w, viewport_h = self._get_skin_resolution() #(1280, 720)
         posX = viewport_w - 305
@@ -43,66 +42,68 @@ class OSD(object):
         font_min = 'font10'
 
         # Background
-        self.horus_background = xbmcgui.ControlImage(x=posX, y=posY, width=window_w, height=window_h,
-                                                     filename=os.path.join(runtime_path, 'resources', 'media' , 'background.png'))
+        self._background = xbmcgui.ControlImage(x=posX, y=posY, width=window_w, height=window_h,
+                                filename=os.path.join(runtime_path, 'resources', 'media' , 'background.png'))
         # icono
-        self.horus_icon = xbmcgui.ControlImage(x=posX + 25, y=posY + 15, width=38, height=28,
-                                               filename=os.path.join(runtime_path, 'resources', 'media' , 'acestreamlogo.png'))
+        self._icon = xbmcgui.ControlImage(x=posX + 25, y=posY + 15, width=38, height=28,
+                                filename=os.path.join(runtime_path, 'resources', 'media' , 'acestreamlogo.png'))
         # title
-        self.horus_title = xbmcgui.ControlLabel(x=posX + 78, y=posY + 13, width=window_w - 10, height=30,
-                                                label="Horus", font=font_max, textColor='0xFFEB9E17')
+        self._title = xbmcgui.ControlLabel(x=posX + 78, y=posY + 13, width=window_w - 10, height=30,
+                                             label="Horus", font=font_max, textColor='0xFFEB9E17')
         # sep
-        self.horus_sep1 = xbmcgui.ControlImage(x=posX + 5, y=posY + 55, width=window_w - 10, height=1,
-                                               filename=os.path.join(runtime_path, 'resources', 'media', 'separator.png'))
+        self._sep1 = xbmcgui.ControlImage(x=posX + 5, y=posY + 55, width=window_w - 10, height=1,
+                                filename=os.path.join(runtime_path, 'resources', 'media', 'separator.png'))
         # Stats
-        self.horus_status = xbmcgui.ControlLabel(x=posX + 25, y=posY + 80, width=window_w - 10, height=30, font=font_min, label=translate(30009) % '')
-        self.horus_speed_down = xbmcgui.ControlLabel(x=posX + 25, y=posY + 100, width=window_w - 10, height=30, font=font_min, label=translate(30009) % 0)
-        self.horus_speed_up = xbmcgui.ControlLabel(x=posX + 25, y=posY + 120, width=window_w - 10, height=30, font=font_min, label=translate(30011) % 0)
-        self.horus_peers = xbmcgui.ControlLabel(x=posX + 25, y=posY + 140, width=window_w - 10, height=30, font=font_min, label=translate(30012) % 0)
-        self.horus_downloaded = xbmcgui.ControlLabel(x=posX + 25, y=posY + 170, width=window_w - 10, height=30, font=font_min, label=translate(30013) % 0)
-        self.horus_uploaded = xbmcgui.ControlLabel(x=posX + 25, y=posY + 190, width=window_w - 10, height=30, font=font_min, label=translate(30014) % 0)
+        self._status = xbmcgui.ControlLabel(x=posX + 25, y=posY + 80, width=window_w - 10, height=30, font=font_min, label=translate(30009) % '')
+        self._speed_down = xbmcgui.ControlLabel(x=posX + 25, y=posY + 100, width=window_w - 10, height=30, font=font_min, label=translate(30009) % 0)
+        self._speed_up = xbmcgui.ControlLabel(x=posX + 25, y=posY + 120, width=window_w - 10, height=30, font=font_min, label=translate(30011) % 0)
+        self._peers = xbmcgui.ControlLabel(x=posX + 25, y=posY + 140, width=window_w - 10, height=30, font=font_min, label=translate(30012) % 0)
+        self._downloaded = xbmcgui.ControlLabel(x=posX + 25, y=posY + 170, width=window_w - 10, height=30, font=font_min, label=translate(30013) % 0)
+        self._uploaded = xbmcgui.ControlLabel(x=posX + 25, y=posY + 190, width=window_w - 10, height=30, font=font_min, label=translate(30014) % 0)
 
         # sep
-        self.horus_sep2 = xbmcgui.ControlImage(x=posX + 5, y=posY + window_h - 30, width=window_w - 10, height=1,
-                                               filename=os.path.join(runtime_path, 'resources', 'media', 'separator.png'))
+        self._sep2 = xbmcgui.ControlImage(x=posX + 5, y=posY + window_h - 30, width=window_w - 10, height=1,
+                                filename=os.path.join(runtime_path, 'resources', 'media', 'separator.png'))
 
-    def update(self,**kwargs):
+    def update(self, stats):
         if self.showing:
-            status = {'dl':translate(30007), 'prebuf': translate(30008) %(self.stats.progress) + '%'}
-            self.horus_status.setLabel(translate(30009) % status.get(self.stats.status, self.stats.status))
-            self.horus_speed_down.setLabel(translate(30010) % self.stats.speed_down)
-            self.horus_speed_up.setLabel(translate(30011) % self.stats.speed_up)
-            self.horus_peers.setLabel(translate(30012) % self.stats.peers)
-            self.horus_downloaded.setLabel(translate(30013) % (self.stats.downloaded // 1048576))
-            self.horus_uploaded.setLabel(translate(30014) % (self.stats.uploaded // 1048576))
+            status = {'dl':translate(30007), 'prebuf': translate(30008) %(stats.progress) + '%'}
+            self._status.setLabel(translate(30009) % status.get(stats.status, stats.status))
+            self._speed_down.setLabel(translate(30010) % stats.speed_down)
+            self._speed_up.setLabel(translate(30011) % stats.speed_up)
+            self._peers.setLabel(translate(30012) % stats.peers)
+            self._downloaded.setLabel(translate(30013) % (stats.downloaded // 1048576))
+            self._uploaded.setLabel(translate(30014) % (stats.uploaded // 1048576))
+
 
     def show(self):
-        self.window.addControl(self.horus_background)
-        self.window.addControl(self.horus_icon)
-        self.window.addControl(self.horus_title)
-        self.window.addControl(self.horus_sep1)
-        self.window.addControl(self.horus_status)
-        self.window.addControl(self.horus_speed_down)
-        self.window.addControl(self.horus_speed_up)
-        self.window.addControl(self.horus_peers)
-        self.window.addControl(self.horus_downloaded)
-        self.window.addControl(self.horus_uploaded)
-        self.window.addControl(self.horus_sep2)
         self.showing = True
+        self.window.addControl(self._background)
+        self.window.addControl(self._icon)
+        self.window.addControl(self._title)
+        self.window.addControl(self._sep1)
+        self.window.addControl(self._status)
+        self.window.addControl(self._speed_down)
+        self.window.addControl(self._speed_up)
+        self.window.addControl(self._peers)
+        self.window.addControl(self._downloaded)
+        self.window.addControl(self._uploaded)
+        self.window.addControl(self._sep2)
 
     def hide(self):
+        self.window.removeControl(self._background)
+        self.window.removeControl(self._icon)
+        self.window.removeControl(self._title)
+        self.window.removeControl(self._sep1)
+        self.window.removeControl(self._status)
+        self.window.removeControl(self._speed_down)
+        self.window.removeControl(self._speed_up)
+        self.window.removeControl(self._peers)
+        self.window.removeControl(self._downloaded)
+        self.window.removeControl(self._uploaded)
+        self.window.removeControl(self._sep2)
         self.showing = False
-        self.window.removeControl(self.horus_background)
-        self.window.removeControl(self.horus_icon)
-        self.window.removeControl(self.horus_title)
-        self.window.removeControl(self.horus_sep1)
-        self.window.removeControl(self.horus_status)
-        self.window.removeControl(self.horus_speed_down)
-        self.window.removeControl(self.horus_speed_up)
-        self.window.removeControl(self.horus_peers)
-        self.window.removeControl(self.horus_downloaded)
-        self.window.removeControl(self.horus_uploaded)
-        self.window.removeControl(self.horus_sep2)
+
 
     def _get_skin_resolution(self):
         import xml.etree.ElementTree as ET
@@ -111,12 +112,6 @@ class OSD(object):
         try: res = tree.findall("./res")[0]
         except: res = tree.findall("./extension/res")[0]
         return int(res.attrib["width"]), int(res.attrib["height"])
-
-    def close(self):
-        try:
-            self.hide()
-        except:
-            pass
 
 
 class MyPlayer(xbmc.Player):
@@ -139,7 +134,7 @@ class MyPlayer(xbmc.Player):
         self.AVStarted = False
         self.is_active = True
         self.init_time = float(init_time)
-        self.osd = OSD(stream.stats)
+        self.osd = OSD()
 
         status = 'failed'
 
@@ -163,21 +158,20 @@ class MyPlayer(xbmc.Player):
             except:
                 pass
             if get_setting("show_osd"):
-                """if show_stat:
+                if show_stat:
                     # update stat
-                    self.osd.update()"""
+                    self.osd.update(stream.stats)
 
                 if not show_stat and xbmc.getCondVisibility('Window.IsActive(videoosd)'):
                     #show windows OSD
+                    self.osd.update(stream.stats)
                     self.osd.show()
-                    stream.connect('stats::updated', self.osd.update)
                     show_stat = True
 
                 elif not xbmc.getCondVisibility('Window.IsActive(videoosd)'):
                     # hide windows OSD
                     if self.osd.showing:
                         self.osd.hide()
-                        stream.disconnect('stats::updated')
                     show_stat = False
 
             self.monitor.waitForAbort(1)
@@ -195,9 +189,6 @@ class MyPlayer(xbmc.Player):
                 status = 'finished'
             else:
                 status = 'stopped'
-
-            self.osd.close()
-            clear_cache()
 
         return status
 
@@ -255,86 +246,6 @@ def add_historial(contenido):
         dump_json_file(historial[:10], settings_path)
 
 
-def clear_cache():
-    aux = False
-    home = '.'
-    try:
-        acestream_cachefolder = get_setting("acestream_cachefolder", None)
-        if not acestream_cachefolder:
-            if system_platform == "windows":
-                home = os.getenv("SystemDrive") + r'\\'
-                acestream_cachefolder = os.path.join(os.getenv("SystemDrive"), '\_acestream_cache_')
-            elif system_platform == "linux":
-                home = os.getenv("HOME")
-                acestream_cachefolder = os.path.join(os.getenv("HOME"), '.ACEStream', 'cache', '.acestream_cache')
-            else:
-                home = "/storage/emulated/0/"
-                acestream_cachefolder = '/storage/emulated/0/org.acestream.engine/.ACEStream/.acestream_cache'
-
-        acestream_cachefolder = acestream_cachefolder if os.path.isdir(acestream_cachefolder) else None
-
-        if not acestream_cachefolder:
-            for root, dirnames, filenames in os.walk(home):
-                if root.endswith(os.path.join('.ACEStream','cache')):
-                    aux = root
-                if re.search(r'.acestream_cache.?', root):
-                    acestream_cachefolder = root
-                    break
-
-        if not acestream_cachefolder and aux:
-            acestream_cachefolder = aux
-
-        if acestream_cachefolder:
-            set_setting("acestream_cachefolder", acestream_cachefolder)
-            dirnames, filenames = xbmcvfs.listdir(acestream_cachefolder)
-            for f in filenames:
-                xbmcvfs.delete(os.path.join(acestream_cachefolder, f))
-            logger("clear_cache")
-        else:
-            logger("clear_cache: cache not found", "error")
-
-    except:
-        logger("error clear_cache", "error")
-
-
-def read_torrent(torrent,headers=None):
-    import bencodepy
-    import hashlib
-
-    infohash = None
-
-    try:
-        if torrent.lower().startswith('http'):
-            from six.moves import urllib_request
-
-            if not headers:
-                headers = dict()
-            elif not isinstance(headers,dict):
-                headers = eval(headers)
-
-            if not 'User-Agent' in headers:
-                headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0'
-
-            req = urllib_request.Request(torrent, headers=headers)
-            torrent_file = urllib_request.urlopen(req).read()
-
-        elif os.path.isfile(torrent):
-            torrent_file = open(torrent, "rb").read()
-
-        metainfo = bencodepy.decode(torrent_file)
-
-        if not six.PY3:
-            infohash = hashlib.sha1(bencodepy.encode(metainfo['info'])).hexdigest()
-        else:
-            infohash = hashlib.sha1(bencodepy.encode(metainfo[b'info'])).hexdigest()
-        logger(infohash)
-
-    except Exception as e:
-        logger(e, 'error')
-
-    return infohash
-
-
 def acestreams(id=None, url=None, infohash=None, title="", iconimage="", plot=""):
     #logger(id)
     global error_flag
@@ -343,11 +254,6 @@ def acestreams(id=None, url=None, infohash=None, title="", iconimage="", plot=""
     engine = None
     cmd_stop_acestream = None
     acestream_executable = None
-
-    #url = 'http://dl.acestream.org/sintel/sintel.torrent'
-    #url = 'https://files.grantorrent.nl/torrents/peliculas/Otra-vuelta-de-tuerca-(The-Turning)-(2020).avi53.torrent'
-    #infohash = 'eebd63aa0a5edc49b253fc5741e49e32961d0f4f'
-
 
     # verificar argumentos
     if infohash:
@@ -359,7 +265,6 @@ def acestreams(id=None, url=None, infohash=None, title="", iconimage="", plot=""
         if not regex.match(id):
             xbmcgui.Dialog().ok(HEADING, translate(30015))
             return
-
 
     if id and system_platform == 'android' and get_setting("reproductor_externo"):
         AndroidActivity = 'StartAndroidActivity("","org.acestream.action.start_content","","acestream:?content_id=%s")' % id
@@ -508,7 +413,6 @@ def acestreams(id=None, url=None, infohash=None, title="", iconimage="", plot=""
         stream.connect(['started','stopped'], notification_info)
         stream.start(hls=hls)
 
-
         # Wait for stream to start
         timedown = time.time() + get_setting("time_limit")
         while not d.iscanceled() and time.time() < timedown and (not stream.status or stream.status != 'dl') and error_flag == False:
@@ -539,10 +443,7 @@ def acestreams(id=None, url=None, infohash=None, title="", iconimage="", plot=""
 
         d.close()
         if d.iscanceled() or time.time() >= timedown or error_flag == True:  # Tiempo finalizado o cancelado
-            if error_flag:
-                raise Exception("error flag")
-            else:
-                raise Exception("accion cancelada o timeout")
+            raise Exception("accion cancelada o timeout")
 
         # Open a media player to play the stream
         player = MyPlayer()
@@ -634,39 +535,33 @@ def search(url):
         data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;", "", data)
 
         if data:
-            if url.startswith('https://ipfs.io/'):
-                patron = '<a href="(/ipfs/[^"]+acelive)">(\d*)'
-                for ace,n in re.findall(patron, data, re.I):
-                    itemlist.append(Item(label="Arenavisión Canal " + n,
-                                         action='play',
-                                         url="https://ipfs.io" + ace))
-            else:
-                try:
-                    for n, it in enumerate(eval(re.findall('(\[.*?])', data)[0])):
-                        label = it.get("name", it.get("title", it.get("label")))
-                        id = it.get("id", it.get("url"))
-                        id = re.findall('([0-9a-f]{40})', id, re.I)[0]
-                        icon = it.get("icon", it.get("image", it.get("thumb")))
+            try:
+                for n, it in enumerate(eval(re.findall('(\[.*?])', data)[0])):
+                    label = it.get("name", it.get("title", it.get("label")))
+                    id = it.get("id", it.get("url"))
+                    id = re.findall('([0-9a-f]{40})', id, re.I)[0]
+                    icon = it.get("icon", it.get("image", it.get("thumb")))
 
-                        new_item = Item(label= label if label else translate(30030) % (n,id), action='play', id=id)
+                    new_item = Item(label= label if label else translate(30030) % (n,id), action='play', id=id)
 
-                        if icon:
-                            new_item.icon = icon
+                    if icon:
+                        new_item.icon = icon
 
-                        itemlist.append(new_item)
+                    itemlist.append(new_item)
 
-                except:
-                    itemlist = []
-                    for patron in [r"acestream://([0-9a-f]{40})", r'(?:"|>)([0-9a-f]{40})(?:"|<)']:
-                        n = 1
-                        for id in re.findall(patron, data, re.I):
-                            if id not in ids:
-                                ids.append(id)
-                                itemlist.append(Item(label= translate(30030) % (n,id),
-                                                     action='play',
-                                                     id= id))
-                                n += 1
-                        if itemlist: break
+            except:
+                itemlist = []
+                for patron in [r"acestream://([0-9a-f]{40})", '(?:"|>)([0-9a-f]{40})(?:"|<)']:
+                    n = 1
+                    logger(re.findall(patron, data, re.I))
+                    for id in re.findall(patron, data, re.I):
+                        if id not in ids:
+                            ids.append(id)
+                            itemlist.append(Item(label= translate(30030) % (n,id),
+                                                 action='play',
+                                                 id= id))
+                            n += 1
+                    if itemlist: break
 
     except: pass
 
@@ -747,23 +642,15 @@ def run(item):
         elif item.infohash:
             infohash=item.infohash
         else:
-            last_id = get_setting("last_id", "a0270364634d9c49279ba61ae3d8467809fb7095")
-            input = xbmcgui.Dialog().input(translate(30022), last_id if get_setting("remerber_last_id") else "")
-            if re.findall('^(http|magnet)', input, re.I):
+            last_id = get_setting("last_id", "fa93b7f9320c7958a5f64513d450cbff688fa886")
+            input = xbmcgui.Dialog().input(translate(30022), last_id)
+            if input.startswith('http'):
                 url = input
             else:
                 id = input
 
         if id:
             acestreams(id=id)
-        elif url and url.lower().endswith('.torrent'):
-            infohash = read_torrent(url)
-            if infohash:
-                acestreams(infohash=infohash)
-        elif url and url.lower().startswith('magnet:'):
-            infohash = re.findall('xt=urn:btih:([a-f0-9]+)', url, re.I)
-            if infohash:
-                acestreams(infohash=infohash[0])
         elif url:
             acestreams(url=url)
         elif infohash:
@@ -822,21 +709,6 @@ if __name__ == '__main__':
             action = argumentos.get('action', '').lower()
 
             if action == 'play' and (argumentos.get('id') or argumentos.get('url') or argumentos.get('infohash')):
-                if argumentos.get('url') and argumentos.get('url').lower().endswith('.torrent'):
-                    infohash = read_torrent(argumentos.get('url'), argumentos.get('headers'))
-                    if infohash:
-                        argumentos['infohash'] = infohash
-                        argumentos['url'] = None
-                    else:
-                        exit(0)
-                elif argumentos.get('url') and argumentos.get('url').lower().startswith('magnet:'):
-                    infohash = re.findall('xt=urn:btih:([a-f0-9]+)', argumentos.get('url'), re.I)
-                    if infohash:
-                        argumentos['infohash'] = infohash[0]
-                        argumentos['url'] = None
-                    else:
-                        exit(0)
-
                 acestreams(id=argumentos.get('id'),
                            url=argumentos.get('url'),
                            infohash=argumentos.get('infohash'),
@@ -846,6 +718,7 @@ if __name__ == '__main__':
 
             elif action == 'install_acestream':
                 if system_platform in ['linux', 'windows']:
+                    set_setting("install_acestream", '')
                     install_acestream()
             exit (0)
 
@@ -853,7 +726,4 @@ if __name__ == '__main__':
         item = Item(action='mainmenu')
 
     run(item)
-
-
-
 
