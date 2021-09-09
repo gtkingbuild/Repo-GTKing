@@ -50,7 +50,6 @@ class Request(object):
       response = self._parse_json(urlopen(req_url).read())
     except (IOError, HTTPError) as error:
       response = { 'result': None, 'error': str(error) }
-
     return self._generate_response(response)
 
   def _generate_response(self, output):
