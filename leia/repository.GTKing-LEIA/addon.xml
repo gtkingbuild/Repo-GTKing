@@ -19,10 +19,10 @@
     </extension>
     
     <extension point="xbmc.addon.metadata">
-        <summary>[COLOR steelblue]Repo[/COLOR] [COLOR azure]GTKing[/COLOR] [COLOR limegreen]MATRIX[/COLOR]</summary>
+        <summary>[COLOR steelblue]Repo[/COLOR] [COLOR azure]GTKing[/COLOR] [COLOR limegreen]LEIA[/COLOR]</summary>
         <description>Repositorio de addons [COLOR dodgerblue]GTKING[/COLOR].
 [COLOR gold]Developers:[/COLOR] DavidZgZ, JoseaTEBA y GTKing TEAM</description> 		             
-        <disclaimer>Éste repositorio sólo recoge addons válidos para Kodi 19.x MATRIX.</disclaimer>
+        <disclaimer>Éste repositorio sólo recoge addons válidos para Kodi 18.x LEIA.</disclaimer>
         <platform>all</platform>
         <assets>
             <icon>icon.png</icon>
