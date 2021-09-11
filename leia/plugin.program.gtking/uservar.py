@@ -95,7 +95,7 @@ WIZARDFILE     = 'https://raw.githubusercontent.com/gtkingbuild/gtkingbuild.gith
 ###        Repo If Not Installed ########################
 #########################################################
 # Enable Auto Install 'Yes' or 'No'
-AUTOINSTALL    = 'Yes'
+AUTOINSTALL    = 'No'
 # Addon ID for the repository
 REPOID         = 'repository.GTKing-Leia'
 # REPOID         = 'repository.repogtking'

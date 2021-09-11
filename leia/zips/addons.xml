@@ -112,8 +112,9 @@ v2.3.14 (2019-02-10)
     <summary lang="en">GTKing [COLOR dodgerblue]WIZARD[/COLOR]</summary>
     <description lang="en">Build GTKing Prime para Kodi 18
 -[COLOR gold][B]Developers:[/B][/COLOR] [COLOR azure]JoseaTEBA, DavidZgZ[/COLOR]
--[COLOR lime][B]Testers:      [/B][/COLOR] [COLOR azure]Mapache, Tete6776,
-                       Vicente, Malibu[/COLOR]
+-[COLOR lime][B]Testers:[/B][/COLOR]        [COLOR azure]Sugea, Mapache,
+                        Tete6776,
+                        Vicente, Malibu[/COLOR]
 -[COLOR dodgerblue][B]Telegram:[/B][/COLOR] [COLOR lime]t.me/beelinkking[/COLOR]</description>
 <news>- Plugin.[COLOR dodgerblue]Programa.[/COLOR] [COLOR lime]GTKing[/COLOR]
 Instalador actualizado a la versión 2.2.8
@@ -205,10 +206,10 @@ Instalador actualizado a la versión 2.2.3
     </extension>
 
     <extension point="xbmc.addon.metadata">
-        <summary>[COLOR steelblue]Repo[/COLOR] [COLOR azure]GTKing[/COLOR] [COLOR limegreen]MATRIX[/COLOR]</summary>
+        <summary>[COLOR steelblue]Repo[/COLOR] [COLOR azure]GTKing[/COLOR] [COLOR limegreen]LEIA[/COLOR]</summary>
         <description>Repositorio de addons [COLOR dodgerblue]GTKING[/COLOR].
 [COLOR gold]Developers:[/COLOR] DavidZgZ, JoseaTEBA y GTKing TEAM</description>
-        <disclaimer>Éste repositorio sólo recoge addons válidos para Kodi 19.x MATRIX.</disclaimer>
+        <disclaimer>Éste repositorio sólo recoge addons válidos para Kodi 18.x LEIA.</disclaimer>
         <platform>all</platform>
         <assets>
             <icon>icon.png</icon>
