@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.world.tv"
+       name="[COLOR blue]V[/COLOR][COLOR yellow]i[/COLOR][COLOR blue]l[/COLOR][COLOR yellow]h[/COLOR][COLOR blue]a[/COLOR][COLOR yellow]o[/COLOR] [COLORspringgreen]W[/COLOR][COLORred]o[/COLOR][COLORcyan]r[/COLOR][COLORpink]l[/COLOR][COLORblue]d[/COLOR] [COLORyellow]T[/COLOR][COLORlime]V[/COLOR]"
+       version="21.5.20"
+       provider-name="[COLOR blue]V[/COLOR][COLOR yellow]i[/COLOR][COLOR blue]l[/COLOR][COLOR yellow]h[/COLOR][COLOR blue]a[/COLOR][COLOR yellow]o[/COLOR]">
+  <requires>
+    <!-- <import addon="xbmc.python" version="2.26.0" /> -->
+    <import addon="script.module.pycryptodome" />
+    <import addon="script.module.requests" />
+    <import addon="script.module.kodi-six" />
+    <import addon="script.module.future" />
+    <import addon="script.module.routing" />
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+  <reuselanguageinvoker>true</reuselanguageinvoker>
+        <summary lang="en">[COLOR lime]O melhor para ver na sua TV!!![/COLOR]</summary>
+        <description>[COLOR blue]V[/COLOR][COLOR yellow]i[/COLOR][COLOR blue]l[/COLOR][COLOR yellow]h[/COLOR][COLOR blue]a[/COLOR][COLOR yellow]o[/COLOR]
+    
+[B][COLOR yellow]- Para uso de todos.[/COLOR][/B]
+    
+[B][COLOR yellow]- O Add-on Vilhao é de uso gratuito!![/COLOR][/B]
+    
+[B][COLOR red]- Proibido a venda deste add-on[/COLOR][/B]</description>
+        <disclaimer lang="en">[B][COLOR lime]- Addon Vilhao funcionando em kodi 18 e 19 com o melhor para sua tv.[/COLOR][/B]</disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+    <assets>
+        <icon>icon.gif</icon>
+        <fanart>fanart.jpg</fanart>
+    </assets>
+  </extension>
+</addon>
