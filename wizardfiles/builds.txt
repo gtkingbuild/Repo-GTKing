@@ -2,7 +2,7 @@ id="plugin.program.GTKing-Matrix-1.0.zip"
 version="1.0"
 zip="https://github.com/gtkingbuild/gtkingbuild.github.io/tree/master/addons.de.programa/"
 
-name="19.x Matrix"
+name="GTKing Matrix"
 version="1.0"
 url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/1.0/GTKing.MATRIX.zip"
 minor="http://"
