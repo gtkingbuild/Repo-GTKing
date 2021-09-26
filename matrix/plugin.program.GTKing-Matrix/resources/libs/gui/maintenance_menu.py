@@ -84,17 +84,17 @@ class MaintenanceMenu:
                            {'mode': 'togglesetting', 'name': 'autoclean'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
         if autoclean == 'true':
             directory.add_file(
-                '--- Frecuencia de Limpieza Automática: [B][COLOR azure]{0}[/COLOR][/B]'.format(
+                '[COLOR azure]---[/COLOR] Frecuencia de Limpieza Automática: [B][COLOR azure]{0}[/COLOR][/B]'.format(
                     CONFIG.CLEANFREQ[CONFIG.AUTOFREQ]),
                 {'mode': 'changefreq'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
             directory.add_file(
-                '--- Borrar Cache al Iniciar: {0}'.format(cache.replace('true', on).replace('false', off)),
+                '[COLOR azure]---[/COLOR] Borrar Cache al Iniciar: {0}'.format(cache.replace('true', on).replace('false', off)),
                 {'mode': 'togglesetting', 'name': 'clearcache'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
             directory.add_file(
-                '--- Borrar Paquetes al Iniciar: {0}'.format(packages.replace('true', on).replace('false', off)),
+                '[COLOR azure]---[/COLOR] Borrar Paquetes al Iniciar: {0}'.format(packages.replace('true', on).replace('false', off)),
                 {'mode': 'togglesetting', 'name': 'clearpackages'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
             directory.add_file(
-                '--- Borrar Pulgares Viejos en el Inicio: {0}'.format(thumbs.replace('true', on).replace('false', off)),
+                '[COLOR azure]---[/COLOR] Borrar Miniaturas Antiguas en el Inicio: {0}'.format(thumbs.replace('true', on).replace('false', off)),
                 {'mode': 'togglesetting', 'name': 'clearthumbs'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
         directory.add_file('[B]Borrar Video Cache[/B]', fanart=CONFIG.ADDON_FANART, icon=CONFIG.ICONMAINT,
                            themeit=CONFIG.THEME1)
