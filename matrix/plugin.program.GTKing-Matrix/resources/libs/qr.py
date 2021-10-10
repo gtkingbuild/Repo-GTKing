@@ -48,7 +48,7 @@ def create_code():
                                 "[COLOR {0}]Parece que la URL que ingresó no es válida o no funciona. Le gustaría crearla de todos modos?[/COLOR]".format(CONFIG.COLOR2)
                                 +'\n'+"[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, url),
                                 yeslabel="[B][COLOR red]Sí, Crear[/COLOR][/B]",
-                                nolabel="[B][COLOR springgreen]No, Cancelar[/COLOR][/B]"):
+                                nolabel="[B][COLOR cyan]No, Cancelar[/COLOR][/B]"):
             return
     name = tools.get_keyboard('', "{0}: Inserte el nombre del Código QR.".format(CONFIG.ADDONTITLE))
     name = "QR_Code_{0}".format(tools.id_generator(6)) if name == "" else name

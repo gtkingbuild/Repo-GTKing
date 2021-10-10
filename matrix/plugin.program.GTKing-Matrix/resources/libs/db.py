@@ -303,7 +303,7 @@ def toggle_dependency(name, dp=None):
 #
 #     do = gui.DIALOG.yesno(CONFIG.ADDONTITLE,
 #                           "[COLOR {0}]Would you like to [COLOR {1}]Enable[/COLOR] or [COLOR {2}]Disable[/COLOR] all Adult add-ons?[/COLOR]".format(CONFIG.COLOR2, CONFIG.COLOR1, CONFIG.COLOR1),
-#                           yeslabel="[B][COLOR springgreen]Enable[/COLOR][/B]",
+#                           yeslabel="[B][COLOR cyan]Enable[/COLOR][/B]",
 #                           nolabel="[B][COLOR red]Disable[/COLOR][/B]")
 #     state = 'true' if do == 1 else 'false'
 #     goto = 'Enabling' if do == 1 else 'Disabling'
@@ -319,7 +319,7 @@ def toggle_dependency(name, dp=None):
 #     if len(found) > 0:
 #         if gui.DIALOG.yesno(CONFIG.ADDONTITLE,
 #                             "[COLOR {0}]Would you like to view a list of the add-ons that where {1}?[/COLOR]".format(CONFIG.COLOR2, goto.replace('ing', 'ed')),
-#                             yeslabel="[B][COLOR springgreen]View List[/COLOR][/B]",
+#                             yeslabel="[B][COLOR cyan]View List[/COLOR][/B]",
 #                             nolabel="[B][COLOR red]Cancel[/COLOR][/B]"):
 #             editlist = '[CR]'.join(found)
 #             gui.show_text_box(CONFIG.ADDONTITLE,
@@ -368,7 +368,7 @@ def fix_metas():
 #
 #     if dialog.yesno(CONFIG.ADDONTITLE,
 #                         "[COLOR {0}]Would you like to [COLOR {1}]hide[/COLOR] all passwords when typing in the add-on settings menus?[/COLOR]".format(CONFIG.COLOR2),
-#                         yeslabel="[B][COLOR springgreen]Hide Passwords[/COLOR][/B]",
+#                         yeslabel="[B][COLOR cyan]Hide Passwords[/COLOR][/B]",
 #                         nolabel="[B][COLOR red]No Cancel[/COLOR][/B]"):
 #         count = 0
 #         for folder in glob.glob(os.path.join(CONFIG.ADDONS, '*/')):
@@ -402,7 +402,7 @@ def fix_metas():
 #
 #     if dialog.yesno(CONFIG.ADDONTITLE,
 #                         "[COLOR {0}]Would you like to [COLOR {1}]unhide[/COLOR] all passwords when typing in the add-on settings menus?[/COLOR]".format(CONFIG.COLOR2, CONFIG.COLOR1),
-#                         yeslabel="[B][COLOR springgreen]Unhide Passwords[/COLOR][/B]",
+#                         yeslabel="[B][COLOR cyan]Unhide Passwords[/COLOR][/B]",
 #                         nolabel="[B][COLOR red]No Cancel[/COLOR][/B]"):
 #         count = 0
 #         for folder in glob.glob(os.path.join(CONFIG.ADDONS, '*/')):

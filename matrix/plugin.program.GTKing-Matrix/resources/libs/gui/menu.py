@@ -306,7 +306,7 @@ def system_info():
 
 
 def save_menu():
-    on = '[COLOR springgreen]ON[/COLOR]'
+    on = '[COLOR cyan]ON[/COLOR]'
     off = '[COLOR red]OFF[/COLOR]'
 
     trakt = 'true' if CONFIG.KEEPTRAKT == 'true' else 'false'
@@ -379,14 +379,14 @@ def trakt_menu():
             elif not auser:
                 directory.add_file('[COLOR red][B]Datos Addon:[/B][/COLOR] [COLOR azure] No registrado[/COLOR]', {'mode': 'authtrakt', 'name': trakt}, icon=icon, fanart=fanart, menu=menu)
             else:
-                directory.add_file('[COLOR springgreen][B]Datos Addon:[/B][/COLOR] [COLOR azure] {0}[/COLOR]'.format(auser), {'mode': 'authtrakt', 'name': trakt}, icon=icon, fanart=fanart, menu=menu)
+                directory.add_file('[COLOR cyan][B]Datos Addon:[/B][/COLOR] [COLOR azure] {0}[/COLOR]'.format(auser), {'mode': 'authtrakt', 'name': trakt}, icon=icon, fanart=fanart, menu=menu)
             if user == "":
                 if os.path.exists(file):
                     directory.add_file('[COLOR red][B]Datos Guardados:[/B][/COLOR] [COLOR azure] Guardar Archivo Encontrado(Import Data)[/COLOR]', {'mode': 'importtrakt', 'name': trakt}, icon=icon, fanart=fanart, menu=menu2)
                 else:
                     directory.add_file('[COLOR red][B]Datos Guardados:[/B][/COLOR] [COLOR azure] No Guardado[/COLOR]', {'mode': 'savetrakt', 'name': trakt}, icon=icon, fanart=fanart, menu=menu2)
             else:
-                directory.add_file('[COLOR springgreen][B]Datos Guardados:[/B][/COLOR] [COLOR azure] {0}[/COLOR]'.format(user), icon=icon, fanart=fanart, menu=menu2)
+                directory.add_file('[COLOR cyan][B]Datos Guardados:[/B][/COLOR] [COLOR azure] {0}[/COLOR]'.format(user), icon=icon, fanart=fanart, menu=menu2)
 
     directory.add_separator()
     directory.add_file('[COLOR azure]Guardar Todos los Datos de Trakt[/COLOR]', {'mode': 'savetrakt', 'name': 'all'}, icon=CONFIG.ICONTRAKT, themeit=CONFIG.THEME3)
@@ -428,14 +428,14 @@ def debrid_menu():
             elif not auser:
                 directory.add_file('[COLOR red][B]Datos Addon:[/B][/COLOR] [COLOR azure] No Registrado[/COLOR]', {'mode': 'authdebrid', 'name': debrid}, icon=icon, fanart=fanart, menu=menu)
             else:
-                directory.add_file('[COLOR springgreen][B]Datos Addon:[/B][/COLOR] [COLOR azure] {0}[/COLOR]'.format(auser), {'mode': 'authdebrid', 'name': debrid}, icon=icon, fanart=fanart, menu=menu)
+                directory.add_file('[COLOR cyan][B]Datos Addon:[/B][/COLOR] [COLOR azure] {0}[/COLOR]'.format(auser), {'mode': 'authdebrid', 'name': debrid}, icon=icon, fanart=fanart, menu=menu)
             if user == "":
                 if os.path.exists(file):
                     directory.add_file('[COLOR red][B]Datos Guardados:[/B][/COLOR] [COLOR azure] Guardar Archivo Encontrado (Datos Importados)[/COLOR]', {'mode': 'importdebrid', 'name': debrid}, icon=icon, fanart=fanart, menu=menu2)
                 else:
                     directory.add_file('[COLOR red][B]Datos Guardados:[/B][/COLOR] [COLOR azure] No Guardados[/COLOR]', {'mode': 'savedebrid', 'name': debrid}, icon=icon, fanart=fanart, menu=menu2)
             else:
-                directory.add_file('[COLOR springgreen][B]Datos Guardados:[/B][/COLOR] [COLOR azure] {0}[/COLOR]'.format(user), icon=icon, fanart=fanart, menu=menu2)
+                directory.add_file('[COLOR cyan][B]Datos Guardados:[/B][/COLOR] [COLOR azure] {0}[/COLOR]'.format(user), icon=icon, fanart=fanart, menu=menu2)
 
     directory.add_separator(themeit=CONFIG.THEME3)
     directory.add_file('[COLOR azure]Guardar Todos los Datos Debrid[/COLOR]', {'mode': 'savedebrid', 'name': 'all'}, icon=CONFIG.ICONDEBRID, themeit=CONFIG.THEME3)
@@ -476,14 +476,14 @@ def login_menu():
             elif not auser:
                 directory.add_file('[COLOR red][B]Datos Addon:[/B][/COLOR] [COLOR azure] No Registrado[/COLOR]', {'mode': 'authlogin', 'name': login}, icon=icon, fanart=fanart, menu=menu)
             else:
-                directory.add_file('[COLOR springgreen][B]Datos Addon:[/B][/COLOR] [COLOR azure] {0}[/COLOR]'.format(auser), {'mode': 'authlogin', 'name': login}, icon=icon, fanart=fanart, menu=menu)
+                directory.add_file('[COLOR cyan][B]Datos Addon:[/B][/COLOR] [COLOR azure] {0}[/COLOR]'.format(auser), {'mode': 'authlogin', 'name': login}, icon=icon, fanart=fanart, menu=menu)
             if user == "":
                 if os.path.exists(file):
                     directory.add_file('[COLOR red][B]Datos Guardados:[/B][/COLOR] [COLOR azure] Guardar Archivo Encontrado (Datos Importados)[/COLOR]', {'mode': 'importlogin', 'name': login}, icon=icon, fanart=fanart, menu=menu2)
                 else:
                     directory.add_file('[COLOR red][B]Datos Guardados:[/B][/COLOR] [COLOR azure] No Guardado[/COLOR]', {'mode': 'savelogin', 'name': login}, icon=icon, fanart=fanart, menu=menu2)
             else:
-                directory.add_file('[COLOR springgreen][B]Datos Guardados:[/B][/COLOR] [COLOR azure] {0}[/COLOR]'.format(user), icon=icon, fanart=fanart, menu=menu2)
+                directory.add_file('[COLOR cyan][B]Datos Guardados:[/B][/COLOR] [COLOR azure] {0}[/COLOR]'.format(user), icon=icon, fanart=fanart, menu=menu2)
 
     directory.add_separator(themeit=CONFIG.THEME3)
     directory.add_file('[COLOR azure]Guardar Toda la Info del Login[/COLOR]', {'mode': 'savelogin', 'name': 'all'}, icon=CONFIG.ICONLOGIN, themeit=CONFIG.THEME3)
@@ -527,7 +527,7 @@ def enable_addons(add=False):
                 icon = os.path.join(folder, 'icon.png') if os.path.exists(os.path.join(folder, 'icon.png')) else CONFIG.ADDON_ICON
                 fanart = os.path.join(folder, 'fanart.jpg') if os.path.exists(os.path.join(folder, 'fanart.jpg')) else CONFIG.ADDON_FANART
                 if tools.get_addon_info(addonids[i], 'name'):
-                    state = "[COLOR springgreen][Activado][/COLOR]"
+                    state = "[COLOR cyan][Activado][/COLOR]"
                     goto = "false"
                 else:
                     state = "[COLOR red][Desactivado][/COLOR]"
@@ -557,13 +557,13 @@ def remove_addon_data_menu():
             replace = {'audio.': '[COLOR orange][AUDIO] [/COLOR]', 'metadata.': '[COLOR cyan][METADATA] [/COLOR]',
                        'module.': '[COLOR orange][MODULO] [/COLOR]', 'plugin.': '[COLOR blue][PLUGIN] [/COLOR]',
                        'program.': '[COLOR orange][PROGRAMA] [/COLOR]', 'repository.': '[COLOR lime][REPO] [/COLOR]',
-                       'script.': '[COLOR springgreen][SCRIPT] [/COLOR]',
-                       'service.': '[COLOR springgreen][SERVICIO] [/COLOR]', 'skin.': '[COLOR dodgerblue][SKIN] [/COLOR]',
+                       'script.': '[COLOR cyan][SCRIPT] [/COLOR]',
+                       'service.': '[COLOR cyan][SERVICIO] [/COLOR]', 'skin.': '[COLOR dodgerblue][SKIN] [/COLOR]',
                        'video.': '[COLOR orange][VIDEO] [/COLOR]', 'weather.': '[COLOR yellow][WEATHER] [/COLOR]'}
             for rep in replace:
                 folderdisplay = folderdisplay.replace(rep, replace[rep])
             if foldername in CONFIG.EXCLUDES:
-                folderdisplay = '[COLOR springgreen][B][PROTEGIDO][/B][/COLOR] [COLOR white]{0}[/COLOR]'.format(folderdisplay)
+                folderdisplay = '[COLOR cyan][B][PROTEGIDO][/B][/COLOR] [COLOR white]{0}[/COLOR]'.format(folderdisplay)
             else:
                 folderdisplay = '[COLOR red][B][ELIMINAR][/B][/COLOR] [COLOR white]{0}[/COLOR]'.format(folderdisplay)
             directory.add_file(' [COLOR white]{0}[/COLOR]'.format(folderdisplay), {'mode': 'removedata', 'name': foldername}, icon=icon, fanart=fanart, themeit=CONFIG.THEME2)

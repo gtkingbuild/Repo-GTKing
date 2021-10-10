@@ -36,7 +36,7 @@ def view_current():
 def remove_current():
     dialog = xbmcgui.Dialog()
     ok = dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}]Está seguro de que desea eliminar el advancedsettings.xml actual?[/COLOR]".format(CONFIG.COLOR2),
-                                           yeslabel="[B][COLOR springgreen]Si[/COLOR][/B]",
+                                           yeslabel="[B][COLOR cyan]Si[/COLOR][/B]",
                                            nolabel="[B][COLOR red]No[/COLOR][/B]")
 
     if ok:
@@ -262,13 +262,13 @@ class AdvancedMenu:
                 choice = self.dialog.yesno(CONFIG.ADDONTITLE,
                                            "[COLOR {0}]Le gustaría sobrescribir su Advanced Settings actual [COLOR {1}]{2}[/COLOR]?[/COLOR]".format(
                                                CONFIG.COLOR2, CONFIG.COLOR1, name),
-                                           yeslabel="[B][COLOR springgreen]Sobrescribir[/COLOR][/B]",
+                                           yeslabel="[B][COLOR cyan]Sobrescribir[/COLOR][/B]",
                                            nolabel="[B][COLOR red]Cancelar[/COLOR][/B]")
             else:
                 choice = self.dialog.yesno(CONFIG.ADDONTITLE,
                                            "[COLOR {0}]Le gustaría descargar e instalar [COLOR {1}]{2}[/COLOR]?[/COLOR]".format(
                                                CONFIG.COLOR2, CONFIG.COLOR1, name),
-                                           yeslabel="[B][COLOR springgreen]Instalar[/COLOR][/B]",
+                                           yeslabel="[B][COLOR cyan]Instalar[/COLOR][/B]",
                                            nolabel="[B][COLOR red]Cancelar[/COLOR][/B]")
 
             if choice == 1:
