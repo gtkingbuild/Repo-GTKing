@@ -334,27 +334,27 @@
 
 
     <!-- Widget Spotlight -->
-    <property property="widgetSpotlighttype">Movies</property>
-    <property property="widgetSpotlighttype">TVShows</property>
-    <property property="widgetSpotlighttype">NextAiredTV</property>
-    <property property="widgetSpotlighttype">LiveTV</property>
+    <property property="widgetSpotlighttype">Películas</property>
+    <property property="widgetSpotlighttype">Programas de Televisión</property>
+    <property property="widgetSpotlighttype">Siguiente TV transmitida</property>
+    <property property="widgetSpotlighttype">Televisión en Vivo</property>
     <propertySettings property="widgetSpotlighttype" showNone="false" buttonID="9906" title="Spotlight Widget" />
 
     <!-- Widget Hub -->
-    <property property="widgethubselect">MoviesLists1</property>
+    <property property="widgethubselect">PelículasLists1</property>
     <property property="widgethubselect">TVLists1</property>
-    <propertySettings property="widgethubselect" showNone="false" buttonID="9908" title="Widget Hub" />
+    <propertySettings property="widgethubselect" showNone="false" buttonID="9908" title="Centro de Widgets" />
 
     <!-- Widget Hub -->
-    <property property="widgethubscrollselect">TVNetflixHub</property>
-    <property property="widgethubscrollselect">TVAuraHub</property>
-    <property property="widgethubscrollselect">MovieNetflixHub</property>
-    <property property="widgethubscrollselect">MovieAuraHub</property>
-    <propertySettings property="widgethubscrollselect" showNone="false" buttonID="9910" title="Widget Scroll Hub" />
+    <property property="widgethubscrollselect">Centro TV Netflix</property>
+    <property property="widgethubscrollselect">Centro TV Aura</property>
+    <property property="widgethubscrollselect">Centro Película Netflix</property>
+    <property property="widgethubscrollselect">Centro Película Aura</property>
+    <propertySettings property="widgethubscrollselect" showNone="false" buttonID="9910" title="Centro de Desplazamiento de Widgets" />
 
-    <property property="menulist">TV Menu</property>
-    <property property="menulist">Movie Menu</property>
-    <propertySettings property="menulist" showNone="false" buttonID="99101" title="Menu List" />
+    <property property="menulist">Menu de TV</property>
+    <property property="menulist">Menu de Películas</property>
+    <propertySettings property="menulist" showNone="false" buttonID="99101" title="Lista de Menú" />
 
 
     <!--Widget My List Aspect -->
@@ -367,11 +367,11 @@
     <propertySettings property="widgetmylistaspect" showNone="false" buttonID="99103" title="Widget My List Aspect Ratio" />
 
     <!-- Widget Type -->
-    <property property="widgetType">Default</property>
-    <property property="widgetType">Settings Widget</property>
-    <property property="widgetType">Weather Widget</property>
+    <property property="widgetType">Por Defecto</property>
+    <property property="widgetType">Widget de Configuración</property>
+    <property property="widgetType">Widget del Tiempo</property>
     <propertydefault property="widgetType">Default</propertydefault>
-    <propertySettings property="widgetType" showNone="false" buttonID="99102" title="Widget Type" />
+    <propertySettings property="widgetType" showNone="false" buttonID="99102" title="Tipo de Widget" />
 
 
 
@@ -400,7 +400,7 @@
     <property property="widgetAspect" icon="special://skin/extras/widgettype/widget-genres.png">Genre</property>
     <property property="widgetAspect" icon="special://skin/extras/backgrounds/viewmodes/submenu-large.jpg">Submenu</property>
     <property property="widgetAspect" icon="special://skin/extras/widgettype/widget-poster.png" condition="!Skin.HasSetting(DisableAuraHomeLayout) | [Skin.HasSetting(DisableAuraHomeLayout) + !Skin.HasSetting(DisableNetflixLargeWidget)]">SquareLabel</property>
-    <propertySettings property="widgetAspect" showNone="false" buttonID="9901" title="Widget Aspect Ratio" />
+    <propertySettings property="widgetAspect" showNone="false" buttonID="9901" title="Relación de Aspecto del Widget" />
 
 
     <propertydefault labelID="programs" group="24001.1" property="widgetAspect">Square</propertydefault>
@@ -416,46 +416,46 @@
 
     <!-- Widget Target -->
     <property property="widgetTarget">videos</property>
-    <property property="widgetTarget">music</property>
-    <property property="widgetTarget">pictures</property>
-    <property property="widgetTarget">programs</property>
-    <propertySettings property="widgetTarget" buttonID="9902" title="Widget Content Type" />
+    <property property="widgetTarget">musica</property>
+    <property property="widgetTarget">imágenes</property>
+    <property property="widgetTarget">programas</property>
+    <propertySettings property="widgetTarget" buttonID="9902" title="Tipo de Contenido del Widget" />
 
     <!-- Widget Sort -->
-    <property property="widgetSortby">name</property>
-    <property property="widgetSortby">random</property>
-    <property property="widgetSortby">dateadded</property>
-    <property property="widgetSortby">lastplayed</property>
-    <property property="widgetSortby">playcount</property>
-    <property property="widgetSortby">year</property>
-    <property property="widgetSortby">rating</property>
-    <property property="widgetSortby">userrating</property>
-    <property property="widgetSortby">votes</property>
-    <property property="widgetSortby">genre</property>
-    <property property="widgetSortby">country</property>
-    <property property="widgetSortby">studio</property>
-    <property property="widgetSortby">playlistorder</property>
-    <property property="widgetSortby">episodenumber</property>
-    <property property="widgetSortby">season</property>
-    <property property="widgetSortby">numberofepisodes</property>
-    <property property="widgetSortby">numberofwatchedepisodes</property>
-    <property property="widgetSortby">tvshowstatus</property>
-    <property property="widgetSortby">tvshowtitle</property>
-    <property property="widgetSortby">file</property>
-    <property property="widgetSortby">title</property>
-    <property property="widgetSortby">tracknumber</property>
-    <property property="widgetSortby">time</property>
-    <property property="widgetSortby">artist</property>
-    <property property="widgetSortby">album</property>
-    <property property="widgetSortby">lastupdated</property>
-    <property property="widgetSortby">lastused</property>
+    <property property="widgetSortby">nombre</property>
+    <property property="widgetSortby">aleatorio</property>
+    <property property="widgetSortby">Fecha Agregada</property>
+    <property property="widgetSortby">último reproducido</property>
+    <property property="widgetSortby">contador</property>
+    <property property="widgetSortby">año</property>
+    <property property="widgetSortby">clasificación</property>
+    <property property="widgetSortby">opiniones de los usuarios</property>
+    <property property="widgetSortby">votos</property>
+    <property property="widgetSortby">género</property>
+    <property property="widgetSortby">país</property>
+    <property property="widgetSortby">estudio</property>
+    <property property="widgetSortby">orden de la lista de reproducción</property>
+    <property property="widgetSortby">número de episodio</property>
+    <property property="widgetSortby">temporada</property>
+    <property property="widgetSortby">número de episodios</property>
+    <property property="widgetSortby">número de episodios vistos</property>
+    <property property="widgetSortby">estado del programa de televisión</property>
+    <property property="widgetSortby">título del programa de televisión</property>
+    <property property="widgetSortby">expediente</property>
+    <property property="widgetSortby">título</property>
+    <property property="widgetSortby">número de pista</property>
+    <property property="widgetSortby">tiempo</property>
+    <property property="widgetSortby">artista</property>
+    <property property="widgetSortby">álbum</property>
+    <property property="widgetSortby">última actualización</property>
+    <property property="widgetSortby">utilizado por última vez</property>
     
-    <propertySettings property="widgetSortby" buttonID="9903" title="Widget Sort Method" />
+    <propertySettings property="widgetSortby" buttonID="9903" title="Método de Clasificación de Widgets" />
 
     <!-- Widget Direction -->
-    <property property="widgetSortorder">ascending</property>
-    <property property="widgetSortorder">descending</property>
-    <propertySettings property="widgetSortorder" buttonID="9904" title="Widget Sort Direction" />
+    <property property="widgetSortorder">ascendente</property>
+    <property property="widgetSortorder">descendente</property>
+    <propertySettings property="widgetSortorder" buttonID="9904" title="Dirección de Clasificación de Widgets" />
 
 
 
@@ -549,7 +549,7 @@
             </node>
         </node>
         <node label="32031">
-            <content>music</content>
+            <content>musicA</content>
             <node label="32040">
                 <content>playlist-audio</content>
             </node>
