@@ -421,19 +421,19 @@ def old_thumbs():
     else:
         logging.log('{0} no encontrado.'.format(dbfile), level=xbmc.LOGERROR)
         return False
-    textexe.execute("SELECCIONE id textura DESDE tamaños DONDE contar el usado < ? Y ultima hora de uso < ?", (use, str(week)))
+    textexe.execute("SELECT idtexture FROM sizes WHERE usecount < ? AND lastusetime < ?", (use, str(week)))
     found = textexe.fetchall()
     for rows in found:
         idfound = rows[0]
         ids.append(idfound)
-        textexe.execute("SELECCIONAR cache url DE textura DONDE id = ?", (idfound, ))
+        textexe.execute("SELECT cachedurl FROM texture WHERE id = ?", (idfound, ))
         found2 = textexe.fetchall()
         for rows2 in found2:
             images.append(rows2[0])
     logging.log("{0} total de pulgares limpios.".format(str(len(images))))
     for id in ids:
-        textexe.execute("BORRAR DE tamaños DONDE id textura = ?", (id, ))
-        textexe.execute("BORRAR DE textura DONDE id = ?", (id, ))
+        textexe.execute("DELETE FROM sizes WHERE idtexture = ?", (id, ))
+        textexe.execute("DELETE FROM texture WHERE id = ?", (id, ))
     textexe.execute("VACUUM")
     textdb.commit()
     textexe.close()
