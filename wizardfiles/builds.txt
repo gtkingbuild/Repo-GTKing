@@ -1,3 +1,7 @@
+id="plugin.program.GTKing-Matrix-1.0.zip"
+version="1.0"
+zip="https://github.com/gtkingbuild/gtkingbuild.github.io/tree/master/addons.de.programa/"
+
 name="GTKing Matrix"
 version="1.0"
 url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/1.0/GTKing.MATRIX.zip"
@@ -11,11 +15,12 @@ fanart="https://gtkingbuild.github.io/wizard/wizardmatrix/fanart.jpg"
 preview="http://"
 adult="No"
 info="http://"
-description="[COLOR azure][B]GTKing[/COLOR] [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 19.X Matrix.[/B][/COLOR] [COLOR dodgerblue][B]Developers:[/B][/COLOR] [B]DavidZgZ, JoseaTEBA.[/B] [COLOR orange][B]Colaboradores-Test:[/B][/COLOR] [COLOR cyan][B]Sugea, Tete6776, Vicente, Mapache, Malibu y galaico11.[/B][/COLOR]"
+description="[COLOR azure][B]GTKing[/COLOR] [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 19.X Matrix.[/B][/COLOR]                                                       [COLOR dodgerblue][B]Developers:[/B][/COLOR] [B]DavidZgZ, JoseaTEBA.[/B]                         [COLOR orange][B]Colaboradores-Test:[/B][/COLOR] [COLOR cyan][B]Sugea, Tete6776, Vicente, Mapache, Malibu y galaico11.[/B][/COLOR]"
+
 
 name=""
-version="10.0"
-url="http://"
+version=""
+url=""
 minor="http://"
 gui="http://"
 kodi="19"
@@ -25,5 +30,6 @@ fanart="https://github.com/gtkingbuild/gtkingbuild.github.io/blob/master/wizard/
 preview="http://"
 adult="No"
 info="http://"
-description="[COLOR azure][B]GTKing[/COLOR] [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 19.X Matrix.[/B][/COLOR] [COLOR dodgerblue][B]Developers:[/B][/COLOR] [B]DavidZgZ, JoseaTEBA.[/B] [COLOR orange][B]Colaboradores-Test:[/B][/COLOR] [COLOR cyan][B]Sugea, Tete6776, Vicente, Mapache, Malibu y galaico11.[/B][/COLOR]"
+description="[COLOR azure][B]GTKing[/COLOR] [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 19.X Matrix.[/B][/COLOR] 
+                  [COLOR dodgerblue][B]Developers:[/B][/COLOR] [B]DavidZgZ, JoseaTEBA.[/B]                         [COLOR orange][B]Colaboradores-Test:[/B][/COLOR] [COLOR cyan][B]Sugea, Tete6776, Vicente, Mapache, Malibu y galaico11.[/B][/COLOR]"
 
