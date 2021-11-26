@@ -15,7 +15,7 @@ description="[COLOR azure][B]GTKing[/COLOR] [COLOR limegreen]MATRIX[/B][/COLOR] 
 
 name=""
 version="10.0"
-url=""
+url="http://"
 minor="http://"
 gui="http://"
 kodi="19"
