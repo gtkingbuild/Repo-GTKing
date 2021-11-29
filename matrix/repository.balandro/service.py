@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 
 import sys, os
-import xbmc, xbmcgui, xbmcvfs
+import xbmc, xbmcvfs
 
 if sys.version_info[0] >= 3:
     translatePath = xbmcvfs.translatePath
