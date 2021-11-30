@@ -1,29 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.program.autocompletion" name="AutoCompletion for virtual keyboard" version="2.0.3" provider-name="Philipp Temminghoff (phil65),sualfred">
-    <requires>
-        <import addon="xbmc.python" version="3.0.0" />
-        <import addon="script.module.autocompletion" version="2.0.0"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource" library="plugin.py" />
-    <extension point="xbmc.python.script" library="default.py">
-        <provides>executable</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="en_GB">AutoCompletion for the virtual keyboard (needs skin support)</summary>
-        <description lang="en_GB">AutoCompletion for the virtual keyboard (needs skin support)</description>
-        <platform>all</platform>
-        <license>GPL-2.0-or-later</license>
-        <source>https://github.com/phil65/plugin.program.autocompletion</source>
-        <assets>
-            <icon>resources/icon.png</icon>
-            <screenshot>resources/screenshot-01.jpg</screenshot>
-            <screenshot>resources/screenshot-02.jpg</screenshot>
-            <screenshot>resources/screenshot-03.jpg</screenshot>
-        </assets>
-    </extension>
-</addon>
-
 <addon id="plugin.program.autowidget" name="AutoWidget" version="3.4.2" provider-name="drinfernoo">
     <requires>
         <import addon="script.module.pil" />
@@ -371,7 +347,7 @@
     </extension>
 </addon>
 
-<addon id="plugin.program.GTKing-Matrix" name="[COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]" version="1.5" provider-name="GTKing TEAM">
+<addon id="plugin.program.GTKing-Matrix-PRUEBA" name="[COLOR azure][B]GTKing [COLOR lime][B]MATRIX[/B][/COLOR]" version="1.5" provider-name="[B][COLOR gold]GTKing TEAM[/COLOR][/B]">
 	<requires>
     	<import addon="xbmc.python" version="3.0.0"/>
     	<import addon="script.module.requests" />
@@ -386,11 +362,11 @@
 	<extension point="xbmc.service" library="startup.py" start="startup" />
 
 	<extension point="xbmc.addon.metadata">
-		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR lime]MATRIX[/COLOR] tu Wizard para [COLOR teal]KODI 19.x[/COLOR]!!</summary>
+		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR lime]MATRIX [B][COLOR white]PRUEBA[/B][/COLOR] tu Wizard para [COLOR teal]KODI 19.x[/COLOR]!!</summary>
 
     	<description lang="es">
 [B]• Developers:[/B] [COLOR gold]JoseaTEBA y DavidZgZ[/COLOR]
-[B]• Testers:[/B]        [COLOR dodgerblue]Sugea, Vicente,
+[B]• Testers:[/B]        [COLOR dodgerblue]ehSugea, Vicente,
                          Tete6776, Mapache,
                          Malibu, galaico11.[/COLOR]
 [B]• Telegram:[/B]    [COLOR lime]t.me/beelinkking[/COLOR]</description>
@@ -398,17 +374,15 @@
 		<reuselanguageinvoker>false</reuselanguageinvoker>
         <source>https://www.github.com/gtkingbuild/Repo-GTKing/plugin.program.GTKing-Matrix/</source>
 		<news>
-• plugin.program [COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]
-
-• 26/09/2021
-- Tradución en Limpieza.
-
-• 26/08/2021
-- Finalizadas las pruebas con Build Prime GTKing MATRIX.
+• plugin.program [COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX [B][COLOR white]PRUEBA[/B][/COLOR]
 
 • 10/07/2021
-- Instalador renombrado a la versión 1.0
+- Instalador renombrado a la versión 7.0
 - Añadidas notificaciones para actualizar el parche de la Build.
+- Corregido el Parche despúes de instalar la Build.
+
+• 27/06/2021
+- Pide el Parche despúes de instalar la Build.
 
 • 05/03/2021
 - Instalador actualizado a la versión 3.0.4
