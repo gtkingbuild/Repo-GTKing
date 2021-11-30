@@ -362,7 +362,7 @@
 	<extension point="xbmc.service" library="startup.py" start="startup" />
 
 	<extension point="xbmc.addon.metadata">
-		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR lime]MATRIX [B][COLOR white]PRUEBA[/B][/COLOR] tu Wizard para [COLOR teal]KODI 19.x[/COLOR]!!</summary>
+		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR lime]MATRIX[/B][/COLOR] tu Wizard para [COLOR teal]KODI 19.x[/COLOR]!!</summary>
 
     	<description lang="es">
 [B]• Developers:[/B] [COLOR gold]JoseaTEBA y DavidZgZ[/COLOR]
@@ -374,7 +374,7 @@
 		<reuselanguageinvoker>false</reuselanguageinvoker>
         <source>https://www.github.com/gtkingbuild/Repo-GTKing/plugin.program.GTKing-Matrix/</source>
 		<news>
-• plugin.program [COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX [B][COLOR white]PRUEBA[/B][/COLOR]
+• plugin.program [COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]
 
 • 10/07/2021
 - Instalador renombrado a la versión 7.0

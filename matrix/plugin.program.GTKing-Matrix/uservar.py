@@ -1,4 +1,4 @@
-import xbmcaddon
+Ximport xbmcaddon
 
 import os
 
