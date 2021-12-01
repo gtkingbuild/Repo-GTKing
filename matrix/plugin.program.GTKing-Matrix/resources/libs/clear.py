@@ -382,7 +382,7 @@ def clear_cache(over=None):
                         except Exception as e:
                             logging.log("[Fallido] limpiado {0}: {1}".format(item, str(e)))
                     else:
-                        textexe.execute("SELECCIONE el nombre de sqlite_master DONDE tipo = 'table'")
+                        textexe.execute"SELECT name FROM sqlite_master WHERE type = 'table'")
                         for table in textexe.fetchall():
                             try:
                                 textexe.execute("BORRAR DE {0}".format(table[0]))
