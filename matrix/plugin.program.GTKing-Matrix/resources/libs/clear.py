@@ -421,7 +421,7 @@ def old_thumbs():
     else:
         logging.log('{0} no encontrado.'.format(dbfile), level=xbmc.LOGERROR)
         return False
-    textexe.execute("SELECCIONE id textura DESDE tamaños DONDE contar el usado < ? Y ultima hora de uso < ?", (use, str(week)))
+    textexe.execute("SELECT idtexture FROM sizes WHERE usecount < ? AND lastusetime < ?", (use, str(week)))
     found = textexe.fetchall()
     for rows in found:
         idfound = rows[0]

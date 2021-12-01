@@ -347,7 +347,7 @@
     </extension>
 </addon>
 
-<addon id="plugin.program.GTKing-Matrix" name="[COLOR azure][B]GTKing [COLOR lime][B]MATRIX[/B][/COLOR]" version="1.5" provider-name="[B][COLOR gold]GTKing TEAM[/COLOR][/B]">
+<addon id="plugin.program.GTKing-Matrix" name="[COLOR azure][B]GTKing [COLOR lime][B]MATRIX[/B][/COLOR]" version="1.6" provider-name="[B][COLOR gold]GTKing TEAM[/COLOR][/B]">
 	<requires>
     	<import addon="xbmc.python" version="3.0.0"/>
     	<import addon="script.module.requests" />
