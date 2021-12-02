@@ -121,7 +121,7 @@ NOTIFICATION = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master
 HEADERTYPE = 'Image'
 # Font size of header
 FONTHEADER = ''
-HEADERMESSAGE = '[COLOR azure][B]GTKing [COLOR lime][B]MATRIX[/B][/COLOR]'
+HEADERMESSAGE = '[COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]'
 # url to image if using Image 424x180
 HEADERIMAGE = 'https://i.imgur.com/7tsuHwV.png'
 # Font for Notification Window

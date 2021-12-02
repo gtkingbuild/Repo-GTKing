@@ -382,7 +382,7 @@ def clear_cache(over=None):
                         except Exception as e:
                             logging.log("[Fallido] limpiado {0}: {1}".format(item, str(e)))
                     else:
-                        textexe.execute("SELECCIONE el nombre de sqlite_master DONDE tipo = 'table'")
+                        textexe.execute("SELECCIONAR nombre DE sqlite_master DONDE type = 'table'")
                         for table in textexe.fetchall():
                             try:
                                 textexe.execute("BORRAR DE {0}".format(table[0]))
@@ -426,14 +426,14 @@ def old_thumbs():
     for rows in found:
         idfound = rows[0]
         ids.append(idfound)
-        textexe.execute("SELECCIONAR cache url DE textura DONDE id = ?", (idfound, ))
+        textexe.execute("SELECT cachedurl FROM texture WHERE id = ?", (idfound, ))
         found2 = textexe.fetchall()
         for rows2 in found2:
             images.append(rows2[0])
     logging.log("{0} total de pulgares limpios.".format(str(len(images))))
     for id in ids:
-        textexe.execute("BORRAR DE tamaños DONDE id textura = ?", (id, ))
-        textexe.execute("BORRAR DE textura DONDE id = ?", (id, ))
+        textexe.execute("DELETE FROM sizes WHERE idtexture = ?", (id, ))
+        textexe.execute("DELETE FROM texture WHERE id = ?", (id, ))
     textexe.execute("VACUUM")
     textdb.commit()
     textexe.close()
