@@ -33,11 +33,11 @@ description="[COLOR azure][B]GTactil[/COLOR] [COLOR limegreen]MATRIX[/B][/COLOR]
 
 name=""
 version=""
-url=""
+url="http://"
 minor="http://"
 gui="http://"
 kodi="19"
-theme=""
+theme="http://"
 icon="https://github.com/gtkingbuild/gtkingbuild.github.io/blob/master/wizard/wizardmatrix/Icon_tactil.jpg"
 fanart="https://github.com/gtkingbuild/gtkingbuild.github.io/blob/master/wizard/wizardmatrix/fanart_tactil.jpg"
 preview="http://"
