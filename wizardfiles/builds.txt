@@ -31,13 +31,13 @@ adult="No"
 info="http://"
 description="[COLOR azure][B]GTactil[/COLOR] [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 19.X Matrix.[/B][/COLOR]                                                       [COLOR dodgerblue][B]Developers:[/B][/COLOR] [B]DavidZgZ, JoseaTEBA.[/B]                         [COLOR orange][B]Colaboradores-Test:[/B][/COLOR] [COLOR cyan][B]Sugea, Tete6776, Vicente, Mapache, Malibu y galaico11.[/B][/COLOR]"
 
-name="Parche GTKing MATRIX"
-version="1.0"
-url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/1.0-matrix.parche.Prime/Parche.GTKing.Prime.MATRIX.zip"
+name=""
+version=""
+url=""
 minor="http://"
 gui="http://"
 kodi="19"
-theme="https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardfiles/GTKing/themes.txt"
+theme=""
 icon="https://github.com/gtkingbuild/gtkingbuild.github.io/blob/master/wizard/wizardmatrix/Icon_tactil.jpg"
 fanart="https://github.com/gtkingbuild/gtkingbuild.github.io/blob/master/wizard/wizardmatrix/fanart_tactil.jpg"
 preview="http://"
@@ -45,6 +45,4 @@ adult="No"
 info="http://"
 description="[COLOR azure][B]GTKing[/COLOR] [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 19.X Matrix.[/B][/COLOR] 
                   [COLOR dodgerblue][B]Developers:[/B][/COLOR] [B]DavidZgZ, JoseaTEBA.[/B]                         [COLOR orange][B]Colaboradores-Test:[/B][/COLOR] [COLOR cyan][B]Sugea, Tete6776, Vicente, Mapache, Malibu y galaico11.[/B][/COLOR]"
-
-
 
