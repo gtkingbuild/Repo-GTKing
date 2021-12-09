@@ -1,1 +1,51 @@
+id="plugin.program.GTKing-Matrix-1.0.zip"
+version="1.0"
+zip="https://github.com/gtkingbuild/gtkingbuild.github.io/tree/master/addons.de.programa/"
+
+name="GTKing Prime MATRIX"
+version="1.0"
+url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/1.0/GTKing.MATRIX.zip"
+minor="http://"
+gui="http://"
+kodi="19"
+theme='http://'
+#theme="https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardfiles/GTKing/themes.txt"
+icon="https://gtkingbuild.github.io/wizard/wizardmatrix/icon.jpg"
+fanart="https://gtkingbuild.github.io/wizard/wizardmatrix/fanart.jpg"
+preview="http://"
+adult="No"
+info="http://"
+description="[COLOR azure][B]GTKing [COLOR white]Prime [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 19.X Matrix.[/B][/COLOR]                                                       [COLOR dodgerblue][B]Developers:[/B][/COLOR] [B]DavidZgZ, JoseaTEBA.[/B]                         [COLOR orange][B]Colaboradores-Test:[/B][/COLOR] [COLOR cyan][B]Sugea, Tete6776, Vicente, Mapache, Malibu y galaico11.[/B][/COLOR]"
+
+
+name="GTactil MATRIX"
+version="1.0"
+url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/1.0-matrix.tactil/GTactil.MATRIX.zip"
+minor="http://"
+gui="http://"
+kodi="19"
+theme="http://"
+icon="https://gtkingbuild.github.io/wizard/wizardmatrix/Icon_tactil.jpg"
+fanart="https://gtkingbuild.github.io/wizard/wizardmatrix/fanartGtactil.jpg"
+preview="http://"
+adult="No"
+info="http://"
+description="[COLOR azure][B]GTactil[/COLOR] [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 19.X Matrix.[/B][/COLOR]                                                       [COLOR dodgerblue][B]Developers:[/B][/COLOR] [B]DavidZgZ, JoseaTEBA.[/B]                         [COLOR orange][B]Colaboradores-Test:[/B][/COLOR] [COLOR cyan][B]Sugea, Tete6776, Vicente, Mapache, Malibu y galaico11.[/B][/COLOR]"
+
+name=""
+version=""
+url="http://"
+minor="http://"
+gui="http://"
+kodi="19"
+theme="http://"
+icon="https://github.com/gtkingbuild/gtkingbuild.github.io/blob/master/wizard/wizardmatrix/Icon_tactil.jpg"
+fanart="https://github.com/gtkingbuild/gtkingbuild.github.io/blob/master/wizard/wizardmatrix/fanart_tactil.jpg"
+preview="http://"
+adult="No"
+info="http://"
+description="[COLOR azure][B]GTKing[/COLOR] [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 19.X Matrix.[/B][/COLOR] 
+                  [COLOR dodgerblue][B]Developers:[/B][/COLOR] [B]DavidZgZ, JoseaTEBA.[/B]                         [COLOR orange][B]Colaboradores-Test:[/B][/COLOR] [COLOR cyan][B]Sugea, Tete6776, Vicente, Mapache, Malibu y galaico11.[/B][/COLOR]"
+
+
 
