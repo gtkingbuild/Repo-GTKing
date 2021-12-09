@@ -32,7 +32,7 @@ description="[COLOR azure][B]GTactil[/COLOR] [COLOR limegreen]MATRIX[/B][/COLOR]
 
 name="Parche GTKing MATRIX"
 version="1.0"
-url=""
+url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/1.0-matrix.parche.Prime/Parche.GTKing.Prime.MATRIX.zip"
 minor="http://"
 gui="http://"
 kodi="19"
