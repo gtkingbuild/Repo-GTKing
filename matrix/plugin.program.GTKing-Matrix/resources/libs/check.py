@@ -40,7 +40,7 @@ def check_paths():
 
     dialog = xbmcgui.Dialog()
     
-    logging.log("[Path Check] Comenzó")
+    logging.log("[Path Check] Started")
     path = CONFIG.ADDON_PATH
     pathclean = CONFIG.ADDON_PATH.replace('\\','/')
     folderpath = pathclean.split('/')[-2]
