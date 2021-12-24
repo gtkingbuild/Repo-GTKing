@@ -334,10 +334,10 @@
 
 
     <!-- Widget Spotlight -->
-    <property property="widgetSpotlighttype">Películas</property>
-    <property property="widgetSpotlighttype">Programas de Televisión</property>
+    <property property="widgetSpotlighttype">Movies</property>
+    <property property="widgetSpotlighttype">TVShows</property>
     <property property="widgetSpotlighttype">Siguiente TV transmitida</property>
-    <property property="widgetSpotlighttype">Televisión en Vivo</property>
+    <property property="widgetSpotlighttype">LiveTV</property>
     <propertySettings property="widgetSpotlighttype" showNone="false" buttonID="9906" title="Spotlight Widget" />
 
     <!-- Widget Hub -->
@@ -368,8 +368,8 @@
 
     <!-- Widget Type -->
     <property property="widgetType">Por Defecto</property>
-    <property property="widgetType">Widget de Configuración</property>
-    <property property="widgetType">Widget del Tiempo</property>
+    <property property="widgetType">Settings Widget</property>
+    <property property="widgetType">Weather Widget</property>
     <propertydefault property="widgetType">Default</propertydefault>
     <propertySettings property="widgetType" showNone="false" buttonID="99102" title="Tipo de Widget" />
 
