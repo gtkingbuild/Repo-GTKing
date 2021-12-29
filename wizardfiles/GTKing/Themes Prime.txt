@@ -1,6 +1,6 @@
-name="[B][COLOR gold]•[/COLOR]Parche GTKing MATRIX 1.0[/B]"
+name="[B][COLOR gold]•[/COLOR]Parche GTKing Prime MATRIX 1.2[/B]"
 url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/1.0-matrix.parche.Prime/Parche.GTKing.Prime.MATRIX.zip"
 icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
 fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
 adult="no"
-description="Parche PRUEBA GTKing Prime Matrix"
+description="Parche GTKing Prime MATRIX"
