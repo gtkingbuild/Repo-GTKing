@@ -1143,34 +1143,44 @@
 		</category>
 		<category id="cuentas" label="30010" help="">
 			<group id="Top" label="30011">
-				<setting id="TOP_user" type="string" label="30012" help="">
-					<level>0</level>
-					<default/>
-					<constraints>
-						<allowempty>true</allowempty>
-					</constraints>
-					<control type="edit" format="string">
-						<heading>30012</heading>
-					</control>
-				</setting>
-				<setting id="TOP_password" type="string" label="30013" help="">
+				<setting id="Top_enabled" type="boolean" label="30072" help="">
 					<level>0</level>
 					<dependencies>
-						<dependency type="visible" operator="!is" setting="TOP_user"></dependency>
+						<dependency type="enable" operator="!is" setting="Alldebrid_enabled">true</dependency>
+						<dependency type="enable" operator="!is" setting="Realdebrid_enabled">true</dependency>
 					</dependencies>
+					<default>false</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="TOP_type" type="string" label="30019" help="" parent="Top_enabled">
+					<level>0</level>
+					<dependencies>
+						<dependency type="visible" operator="is" setting="Top_enabled">true</dependency>
+					</dependencies>
+					<default>premium</default>
+					<constraints>
+						<options>
+							<option label="30021">premium</option>
+							<option label="30022">free</option>
+
+						</options>
+						<allowempty>true</allowempty>
+					</constraints>
+					<control type="spinner" format="string"/>
+				</setting>
+				<setting id="TOP_token" type="string" label="" help="">
+					<visible>False</visible>
+					<level>0</level>
 					<default/>
 					<constraints>
 						<allowempty>true</allowempty>
 					</constraints>
-					<control type="edit" format="string">
-						<heading>30013</heading>
-					</control>
+					<control type="edit" format="string" />
 				</setting>
-				<setting id="TOP_onlyOrigin" type="boolean" label="30017" help="">
+				<setting id="TOP_onlyOrigin" type="boolean" label="30073" help="" parent="Top_enabled">
 					<level>0</level>
 					<dependencies>
-						<dependency type="visible" operator="!is" setting="TOP_user"></dependency>
-						<dependency type="visible" operator="!is" setting="TOP_password"></dependency>
+						<dependency type="visible" operator="is" setting="Top_enabled">true</dependency>
 					</dependencies>
 					<default>true</default>
 					<control type="toggle"/>
@@ -1179,10 +1189,14 @@
 			<group id="Alldebrid" label="30014">
 				<setting id="Alldebrid_enabled" type="boolean" label="30072" help="">
 					<level>0</level>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="Top_enabled">true</dependency>
+						<dependency type="enable" operator="!is" setting="Realdebrid_enabled">true</dependency>
+					</dependencies>
 					<default>false</default>
 					<control type="toggle"/>
 				</setting>
-				<setting id="Alldebrid_onlyOrigin" type="boolean" label="30073" help="">
+				<setting id="Alldebrid_onlyOrigin" type="boolean" label="30073" help="" parent="Alldebrid_enabled">
 					<level>0</level>
 					<dependencies>
 						<dependency type="visible" operator="is" setting="Alldebrid_enabled">true</dependency>
@@ -1203,6 +1217,10 @@
 			<group id="Realdebrid" label="30015">
 				<setting id="Realdebrid_enabled" type="boolean" label="30072" help="">
 					<level>0</level>
+					<dependencies>
+						<dependency type="enable" operator="!is" setting="Top_enabled">true</dependency>
+						<dependency type="enable" operator="!is" setting="Alldebrid_enabled">true</dependency>
+					</dependencies>
 					<default>false</default>
 					<control type="toggle"/>
 				</setting>
@@ -1234,14 +1252,12 @@
 					<default>false</default>
 					<control type="toggle"/>
 				</setting>
-				<!--setting id="Always_resolveUrl" type="boolean" label="30029" help="">
+				<setting id="Autoplay_maxHD" type="boolean" label="30029" help="" parent="Autoplay">
 					<level>0</level>
+					<dependencies>
+						<dependency type="visible" operator="is" setting="Autoplay">true</dependency>
+					</dependencies>
 					<default>false</default>
-					<control type="toggle"/>
-				</setting-->
-				<setting id="MPD_hidde" type="boolean" label="30058" help="">
-					<level>0</level>
-					<default>true</default>
 					<control type="toggle"/>
 				</setting>
 			</group>

@@ -69,26 +69,36 @@ msgid "Top/Uptobox server"
 msgstr "Servidor Top/Uptobox"
 
 msgctxt "#30012"
-msgid "Add Email or User"
-msgstr "Añadir Email o Usuario"
+msgid "Add Registration Email or Uptobox User"
+msgstr "Añadir Email de registro o Usuario de Uptobox"
 
 msgctxt "#30013"
-msgid "Password"
-msgstr "Contraseña"
+msgid "Password Uptobox"
+msgstr "Contraseña Uptobox"
 
 msgctxt "#30017"
-msgid "Always play at full resolution (only Premium)"
-msgstr "Reproducir siempre a máxima resolución (solo Premium)"
+msgid ""
+msgstr ""
 
 msgctxt "#30018"
 msgid "The duration of the video is %s minutes and you only have %s view.\nWould you like to cancel the playback?"
 msgstr "La duración del vídeo es de %s minutos y solo dispones de %s de visualización.\n¿Desea cancelar la reproducción?"
 
-# empty strings from id 30019 to 30020
+msgctxt "#30019"
+msgid "Account type"
+msgstr "Tipo de cuenta"
 
 msgctxt "#30020"
-msgid More..."
-msgstr "Mas..."
+msgid "More..."
+msgstr "Más..."
+
+msgctxt "#30021"
+msgid "Premium"
+msgstr ""
+
+msgctxt "#30022"
+msgid "Free"
+msgstr "Gratis"
 
 msgctxt "#30025"
 msgid "Maintenance"
@@ -107,11 +117,11 @@ msgid "Sort Movies ..."
 msgstr "Ordenar películas..."
 
 msgctxt "#30029"
-msgid "Always use resolveUrl"
-msgstr "Usar siempre resolverUrl"
+msgid "Maximum quality when automatically playing HD"
+msgstr "Calidad máxima al reproducir automaticamente HD"
 
 msgctxt "#30030"
-msgid "Starting [COLOR %s]%s (%sx%s) [/ COLOR] in %s seconds"
+msgid "Starting [COLOR %s]%s (%sx%s) [/COLOR] in %s seconds"
 msgstr "Iniciando [COLOR %s]%s (%sx%s)[/COLOR] en %s segundos"
 
 
@@ -143,7 +153,7 @@ msgstr "Selecciona un enlace"
 
 msgctxt "#30037"
 msgid "To reproduce files MPD you must install inputstream.adaptive"
-msgstr "Para reproducir archivos MPD debes instalar inputstream.adaptive"
+msgstr "Para reproducir archivos MPD debes instalar inputstream Helper"
 
 msgctxt "#30038"
 msgid "This video cannot be played. We'll try to fix it as soon as possible."
@@ -274,8 +284,8 @@ msgid "It is not possible to automatically identify the next episode of this ser
 msgstr "No es posible indentificar automaticamente el próximo episodio de esta serie"
 
 msgctxt "#30071"
-msgid " Register for free at uptobox.com and add your account in the Palantir 2 settings, to be able to use this server"
-msgstr " Regístrate gratis en uptobox.com y añade tu cuenta en los ajustes de Palantir 2, para poder utilizar este servidor"
+msgid " Register for free at uptobox.com and add your account in Palantir 2, to be able to use this server"
+msgstr " Regístrate gratis en uptobox.com y añade tu cuenta en Palantir 2, para poder utilizar este servidor"
 
 msgctxt "#30072"
 msgid "Activate"
@@ -286,7 +296,7 @@ msgid "Always play at full resolution"
 msgstr "Reproducir siempre a máxima resolución"
 
 msgctxt "#30074"
-msgid "Enter [COLOR blue]'%s'[/ COLOR] with your user data and enter the pin [COLOR red]%s[/ COLOR] "
+msgid "Enter [COLOR blue]'%s'[/COLOR] with your user data and enter the pin [COLOR red]%s[/COLOR] "
 msgstr "Entra en [COLOR blue]'%s'[/COLOR] con tus datos de usuario e introduce el pin [COLOR red]%s[/COLOR] "
 
 msgctxt "#30075"
@@ -294,8 +304,8 @@ msgid "before %s minutes and %s seconds."
 msgstr "antes de %s minutos y %s segundos."
 
 msgctxt "#30076"
-msgid "Your Alldebrid account has been paired with Palantir 2"
-msgstr "Su cuenta de Alldebrid ha sido emparejada con Palantir 2"
+msgid "Your %s account has been paired with Palantir 2"
+msgstr "Su cuenta de %s ha sido emparejada con Palantir 2"
 
 msgctxt "#30077"
 msgid "Failed to pair your %s account"
@@ -341,7 +351,7 @@ msgstr "Anime"
 
 msgctxt "#30104"
 msgid "Music"
-msgstr "Musica"
+msgstr "Música"
 
 msgctxt "#30105"
 msgid "Documentaries"
@@ -401,7 +411,7 @@ msgstr "Ajustes"
 
 msgctxt "#30119"
 msgid "For sagas"
-msgstr "Por sagas"
+msgstr "Sagas"
 
 msgctxt "#30120"
 msgid "New series"
@@ -486,6 +496,10 @@ msgstr "Películas Anime favoritas"
 msgctxt "#30141"
 msgid "Favorite Anime Series"
 msgstr "Series Anime favoritas"
+
+msgctxt "#30142"
+msgid "Concerts"
+msgstr "Conciertos"
 
 msgctxt "#30143"
 msgid "Autoplay"

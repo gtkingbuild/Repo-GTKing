@@ -69,26 +69,36 @@ msgid "Top/Uptobox server"
 msgstr "Serveur Top/Uptobox"
 
 msgctxt "#30012"
-msgid "Add Email or User"
-msgstr "Ajouter un e-mail ou un utilisateur"
+msgid "Add Registration Email or Uptobox User"
+msgstr "Ajouter un e-mail d'inscription ou un utilisateur Uptobox"
 
 msgctxt "#30013"
-msgid "Password"
-msgstr "Code"
+msgid "Password Uptobox"
+msgstr "Mot de passe Uptobox"
 
 msgctxt "#30017"
-msgid "Always play at full resolution (only Premium)"
-msgstr "Jouez toujours en pleine résolution (uniquement Premium)"
+msgid ""
+msgstr ""
 
 msgctxt "#30018"
 msgid "The duration of the video is %s minutes and you only have %s view.\nWould you like to cancel the playback?"
 msgstr "La durée de la vidéo est de %s minutes et vous n'avez que %s d'une visualisation.\nVoulez-vous annuler la lecture?"
 
-# empty strings from id 30019 to 30020
+msgctxt "#30019"
+msgid "Account type"
+msgstr "Type de compte"
 
 msgctxt "#30020"
-msgid More..."
-msgstr "Plus..."
+msgid "More..."
+msgstr "Suite..."
+
+msgctxt "#30021"
+msgid "Premium"
+msgstr ""
+
+msgctxt "#30022"
+msgid "Free"
+msgstr "Gratuit"
 
 msgctxt "#30025"
 msgid "Maintenance"
@@ -103,12 +113,12 @@ msgid "Sort Movies ..."
 msgstr "Ordonner des films..."
 
 msgctxt "#30029"
-msgid "Always use resolveUrl"
-msgstr "Utilisez toujours resolveUrl "
+msgid "Maximum quality when automatically playing HD"
+msgstr "Qualité maximale lors de la lecture automatique en HD"
 
 msgctxt "#30030"
-msgid "Starting [COLOR %s]%s (%sx%s) [/ COLOR] in %s seconds"
-msgstr "Démarrage de [COLOR %s]%s (%sx%s) [/ COLOR] en %s secondes"
+msgid "Starting [COLOR %s]%s (%sx%s) [/COLOR] in %s seconds"
+msgstr "Démarrage de [COLOR %s]%s (%sx%s) [/COLOR] en %s secondes"
 
 # Palantir
 
@@ -270,8 +280,8 @@ msgid "It is not possible to automatically identify the next episode of this ser
 msgstr "Il n'est pas possible d'identifier automatiquement le prochain épisode de cette série"
 
 msgctxt "#30071"
-msgid " Register for free at uptobox.com and add your account in the Palantir 2 settings, to be able to use this server"
-msgstr " Inscrivez-vous gratuitement sur uptobox.com et ajoutez votre compte dans les paramètres Palantir 2, pour pouvoir utiliser ce serveur"
+msgid " Register for free at uptobox.com and add your account in Palantir 2, to be able to use this server"
+msgstr " Inscrivez-vous gratuitement sur uptobox.com et ajoutez votre compte dans Palantir 2, pour pouvoir utiliser ce serveur"
 
 msgctxt "#30072"
 msgid "Activate"
@@ -282,16 +292,16 @@ msgid "Always play at full resolution"
 msgstr "Jouez toujours en pleine résolution"
 
 msgctxt "#30074"
-msgid "Enter [COLOR blue]'%s'[/ COLOR] with your user data and enter the pin [COLOR red]%s[/ COLOR] "
-msgstr "Entrez [COLOR blue]'%s'[/ COLOR] avec vos données utilisateur et entrez le code PIN [COLOR red]%s[/ COLOR] "
+msgid "Enter [COLOR blue]'%s'[/COLOR] with your user data and enter the pin [COLOR red]%s[/COLOR] "
+msgstr "Entrez [COLOR blue]'%s'[/COLOR] avec vos données utilisateur et entrez le code PIN [COLOR red]%s[/COLOR] "
 
 msgctxt "#30075"
 msgid "before %s minutes and %s seconds."
 msgstr "avant %s minutes et %s secondes."
 
 msgctxt "#30076"
-msgid "Your Alldebrid account has been paired with Palantir 2"
-msgstr "Votre compte Alldebrid a été associé à Palantir 2"
+msgid "Your %s account has been paired with Palantir 2"
+msgstr "Votre compte %s a été associé à Palantir 2"
 
 msgctxt "#30077"
 msgid "Failed to pair your %s account"
@@ -482,6 +492,10 @@ msgstr "Films Anime préférés"
 msgctxt "#30141"
 msgid "Favorite Anime Series"
 msgstr "Série Anime préférée"
+
+msgctxt "#30142"
+msgid "Concerts"
+msgstr "Concerts"
 
 msgctxt "#30143"
 msgid "Autoplay"

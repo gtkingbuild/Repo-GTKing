@@ -679,11 +679,11 @@ msgid "Top/Uptobox server"
 msgstr ""
 
 msgctxt "#30012"
-msgid "Add Email or User"
+msgid "Add Registration Email or Uptobox User"
 msgstr ""
 
 msgctxt "#30013"
-msgid "Password"
+msgid "Password Uptobox"
 msgstr ""
 
 msgctxt "#30014"
@@ -695,17 +695,27 @@ msgid "RealDebrid"
 msgstr ""
 
 msgctxt "#30017"
-msgid "Always play at full resolution (only Premium)"
+msgid ""
 msgstr ""
 
 msgctxt "#30018"
 msgid "The duration of the video is %s minutes and you only have %s view.\nWould you like to cancel the playback?"
 msgstr ""
 
-# empty strings from id 30019 to 30020
+msgctxt "#30019"
+msgid "Account type"
+msgstr ""
 
 msgctxt "#30020"
 msgid "More..."
+msgstr ""
+
+msgctxt "#30021"
+msgid "Premium"
+msgstr ""
+
+msgctxt "#30022"
+msgid "Free"
 msgstr ""
 
 msgctxt "#30025"
@@ -725,11 +735,11 @@ msgid "Sort Movies ..."
 msgstr ""
 
 msgctxt "#30029"
-msgid "Always use resolveUrl"
+msgid "Maximum quality when automatically playing HD"
 msgstr ""
 
 msgctxt "#30030"
-msgid "Starting [COLOR %s]%s (%sx%s) [/ COLOR] in %s seconds"
+msgid "Starting [COLOR %s]%s (%sx%s) [/COLOR] in %s seconds"
 msgstr ""
 
 # Palantir
@@ -892,7 +902,7 @@ msgid "It is not possible to automatically identify the next episode of this ser
 msgstr ""
 
 msgctxt "#30071"
-msgid " Register for free at uptobox.com and add your account in the Palantir 2 settings, to be able to use this server"
+msgid " Register for free at uptobox.com and add your account in Palantir 2, to be able to use this server"
 msgstr ""
 
 msgctxt "#30072"
@@ -904,7 +914,7 @@ msgid "Always play at full resolution"
 msgstr ""
 
 msgctxt "#30074"
-msgid "Enter [COLOR blue]'%s'[/ COLOR] with your user data and enter the pin [COLOR red]%s[/ COLOR] "
+msgid "Enter [COLOR blue]'%s'[/COLOR] with your user data and enter the pin [COLOR red]%s[/COLOR] "
 msgstr ""
 
 msgctxt "#30075"
@@ -912,7 +922,7 @@ msgid "before %s minutes and %s seconds."
 msgstr ""
 
 msgctxt "#30076"
-msgid "Your Alldebrid account has been paired with Palantir 2"
+msgid "Your %s account has been paired with Palantir 2"
 msgstr ""
 
 msgctxt "#30077"
@@ -1099,6 +1109,10 @@ msgstr ""
 
 msgctxt "#30141"
 msgid "Favorite Anime Series"
+msgstr ""
+
+msgctxt "#30142"
+msgid "Concerts"
 msgstr ""
 
 msgctxt "#30143"
