@@ -21,6 +21,7 @@ Se cerrará Kodi y ya sólo nos quedará iniciar de nuevo Kodi, darle unos minut
 [COLOR aquamarine][B]INSTALACIÓN DE PARCHE:[B][/COLOR]
 
 Para instalar un parche, deberemos seleccionar la build correspondiente que tengamos instalada y dentro nos saldrá el parche a instalar.
+Después de la instalacion del parche, una vez cargado KODI se tiene que ir a la sección MANTENIMIENTO en AJUSTES, una vez allí entrar en HERRAMIENTAS ADDON y pulsar HABILITAR/DESHABILITAR ADDONS, para la correcta activación de los Addons añadidos.
 
 
 [COLOR red]                   ****** DAVIDZGZ, JOSEATEBA y GTKing TEAM ******                 [/COLOR] 
