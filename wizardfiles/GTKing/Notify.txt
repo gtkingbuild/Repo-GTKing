@@ -12,7 +12,7 @@ Seleccionamos la Build que deseas instalar de[COLOR yellowgreen][B]GTKing[/B][/C
 Cuando termine de instalar, nos saldrá una ventana [COLOR white][B]"Necesita Forzar el Cierre de Kodi"[/B][/COLOR]. Pulsaremos en [COLOR white][B]"OK"[/B][/COLOR].
 Se cerrará Kodi y ya sólo nos quedará iniciar de nuevo Kodi, darle unos minutos para que cargue el menú correctamente.
 
-[COLOR gold][B]01/04/2022 ¡¡¡PARCHE ACTUALIZADOR PARA TODAS LA BUILD GTKing MATRIX!!![B][/COLOR]
+[COLOR gold][B]01/04/2022 ¡¡¡PARCHE ACTUALIZADOR PARA LA BUILD GTKing MATRIX!!![B][/COLOR]
 
 [COLOR red][B]* CORRECCIÓN DE CONTENIDOS.[B][/COLOR]
 [COLOR red][B]* AÑADIDO ADDON RAMSES TV EN LA SECCIÓN DEPORTES.[B][/COLOR]
