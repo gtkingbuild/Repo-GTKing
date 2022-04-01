@@ -914,11 +914,11 @@ msgid "Always play at full resolution"
 msgstr ""
 
 msgctxt "#30074"
-msgid "Enter [COLOR blue]'%s'[/COLOR] with your user data and enter the pin [COLOR red]%s[/COLOR] "
+msgid "Register for free at [COLOR lime]https://uptobox.com/register[/COLOR], Enter [COLOR blue]'%s '[/COLOR] with your user data and enter the pin [COLOR red]%s [/COLOUR] "
 msgstr ""
 
 msgctxt "#30075"
-msgid "before %s minutes and %s seconds."
+msgid "before %s minutes and %s seconds or the pin will expire."
 msgstr ""
 
 msgctxt "#30076"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.program.autowidget" name="AutoWidget" version="3.4.2" provider-name="drinfernoo">
+<addon id="plugin.program.autowidget" name="AutoWidget" version="3.6.0" provider-name="drinfernoo">
     <requires>
         <import addon="script.module.pil" />
         <import addon="script.module.six" />
@@ -23,11 +23,11 @@
                 <visible>String.Contains(ListItem.FolderPath, plugin://plugin.program.autowidget)</visible>
             </item>
 			<item library="context_refresh_single.py">
-                <label>$ADDON[plugin.program.autowidget 30047]</label>
+                <label>$ADDON[plugin.program.autowidget 30046]</label>
                 <visible>!String.IsEmpty(ListItem.Property(autoID)) + [!String.IsEqual(ListItem.Property(autoAction),static) + !String.IsEqual(ListItem.Property(autoAction),merged)]</visible>
             </item>
 			<item library="clear_cache_single.py">
-                <label>$ADDON[plugin.program.autowidget 30117]</label>
+                <label>$ADDON[plugin.program.autowidget 30116]</label>
                 <visible>!String.IsEmpty(ListItem.Property(autoCache))</visible>
             </item>
         </menu>
@@ -44,6 +44,17 @@
         <website>https://www.github.com/drinfernoo/</website>
         <source>https://www.github.com/drinfernoo/plugin.program.autowidget/</source>
         <news>
+3.6.0
+ - Convert all file and path handling to xbmcvfs
+ - Add more feedback and granular controls during backup/restore
+3.5.1
+ - Fix sorting bug with higher group counts
+3.5.0
+ - Allow bulk operations in some groups
+ - More informative dialogs
+ - Allow manually sorting groups in "My Groups"
+ - Fixes for direct shortcuts
+ - Update "version" attribute in metafiles when updating
 3.4.2
  - Some fixes for constant notification
 3.4.1
@@ -421,7 +432,49 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.palantir2" name="[COLOR gold]Palantir 2[/COLOR]" version="2.1.24" provider-name="TierraMedia">
+<addon id="plugin.video.live.Ramses-Tv_Arena" name="[COLOR yellow]Ramses-TV[/COLOR] Arena" version="2.0" provider-name="[COLOR red]Ramses_[/COLOR]">
+	<requires>
+		<import addon="script.module.six" />
+		<import addon="script.module.kodi-six" />
+		<import addon="script.module.requests" optional="true"/>
+		<import addon="script.module.websocket" version="0.50.0"  optional="true"/>
+		<import addon="script.module.youtube.dl" optional="true"/>
+		<import addon="plugin.video.youtube" optional="true" />
+		<import addon="script.module.dateutil" optional="true" />
+		<import addon="script.module.resolveurl" optional="true"/>
+		<import addon="script.module.urlresolver" optional="true"/>
+		<import addon="script.module.cloudscraper" optional="true"/>
+		<import addon="script.module.inputstreamhelper" optional="true"/>
+		<import addon="script.module.slproxy" optional="true"/>
+		<import addon="script.module.web-pdb" optional="true"/>
+	</requires>
+	<extension point="xbmc.python.pluginsource" library="default.py">
+		<provides>video</provides>
+	</extension>
+
+	<extension point="xbmc.addon.metadata">
+		<summary>[COLOR red]Streaming de emisiones Arenavision.site[/COLOR]</summary>
+		<description>
+[COLOR red]Streaming de cadenas de Arenavision.site[/COLOR]
+[COLOR yellow]Repositorio: https://missing-stator.000webhostapp.com/Ramses-Tv/[/COLOR]
+[COLOR yellow]Agradecimientos a @Javixxx[/COLOR]
+[COLOR red]By Ramses_[/COLOR]
+
+AVISO LEGAL:
+
+[COLOR red]Complemento gratuito que no aloja ningun contenido.[/COLOR]
+[COLOR yellow]Todo el contenido se encuentra en internet.[/COLOR]
+[COLOR red]No se acepta ninguna responsabilidad por el uso de este addon.[/COLOR]
+		</description>
+		<platform>all</platform>
+		<assets>
+			<icon>icon.png</icon>
+			<fanart>fanart.jpg</fanart>
+		</assets>
+	</extension>
+</addon>
+
+<addon id="plugin.video.palantir2" name="[COLOR gold]Palantir 2[/COLOR]" version="2.2.4" provider-name="TierraMedia">
   <requires>
     <import addon="script.module.six" version="1.11.0"/>
     <import addon="plugin.video.duffyou" version="0.1.3" optional="true"/>
@@ -496,6 +549,24 @@
 		</assets>
 		<news>Primera versión también compatible con Kodi 19 Matrix</news>
 	</extension>
+</addon>
+
+<addon id="plugin.video.TorrentAcestream" name="[COLOR mediumslateblue]Torrents-Acestream[/COLOR]" version="0.0.2" provider-name="AceTorr">
+  <requires>
+   <import addon="script.module.six" />
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="es">Multitud de Peliculas Torrent con motor Acestream</summary>
+    <description>Cine de alta calidad usando [COLOR red]Acestream[/COLOR] como Motor [COLOR blue]Torrent[/COLOR].[CR]*Precisa del addon [COLOR yellow]Horus[/COLOR] para arrancar el motor Acestream.[CR][CR]Acestream tiene la particularidad de usar la memoria [COLOR green]RAM[/COLOR], por lo que al usarlo como Motor Torrent gestiona la visualización sin dejar a el equipo sin espacio de almacenamiento.[CR]Se puede usar como sustituto de Elementum en aquellos equipos que tienen Kodi 19 y Android 10 (o superior), en los que Elementum no funciona.</description>
+    <platform>all</platform>
+    <assets>
+        <icon>icon.png</icon>
+        <fanart>fanart.jpg</fanart>
+    </assets>
+  </extension>
 </addon>
 
 <addon id="plugin.video.torrest" name="Torrest" provider-name="i96751414" version="0.0.12">
@@ -854,7 +925,7 @@ Testers: Luisma, Toni, Zarat, SuperTopo, Jorge, Bojbit, MiKeL, Chikiry, Pau, Ale
     </extension>
 </addon>
 
-<addon id="skin.auramod.GTKing-Matrix" version="1.1.7" name="AuraMod [COLOR FF1e90ff]GTKING[/COLOR]" provider-name="Auramod,[COLOR FF1e90ff]GTKING[/COLOR]">
+<addon id="skin.auramod.GTKing-Matrix" version="1.1.7.1" name="AuraMod [COLOR FF1e90ff]GTKING[/COLOR]" provider-name="Auramod,[COLOR FF1e90ff]GTKING[/COLOR]">
     <requires>
         <import addon="xbmc.gui" version="5.15.0"/>
         <import addon="script.skin.helper.service" version="1.1.24"/>

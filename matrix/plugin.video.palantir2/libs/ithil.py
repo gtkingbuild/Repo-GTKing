@@ -13,10 +13,18 @@ import copy
 import time
 import zlib
 
+import datetime
 
+#fix for datatetime.strptime returns None
+class proxydt(datetime.datetime):
+    @staticmethod
+    def strptime(date_string, format):
+        import time
+        return datetime.datetime(*(time.strptime(date_string, format)[0:6]))
+
+datetime.datetime = proxydt
 
 from threading import Lock
-
 from six.moves import urllib_parse
 from six.moves import reload_module
 from six.moves import urllib_request
@@ -41,89 +49,6 @@ kodi_version = float(kodi_version.group(0)) if kodi_version else 0.0
 
 
 # Clases auxiliares
-class Item(object):
-    defaults = {}
-
-    def __init__(self, **kwargs):
-        for k, v in kwargs.items():
-            setattr(self, k, v)
-
-    def __contains__(self, item):
-        return item in self.__dict__
-
-    def __getattribute__(self, item):
-        return object.__getattribute__(self, item)
-
-    def __getattr__(self, item):
-        if item.startswith("__"):
-            return object.__getattribute__(self, item)
-        else:
-            return self.defaults.get(item, '')
-
-    def __eq__(self, other):
-        return isinstance(other, Item) and self.action == other.action and self.content == other.content and \
-               self.tmdb == other.tmdb and self.season == other.season and self.episode == other.episode
-
-    def __str__(self):
-        return '{%s}' % (', '.join(['\'%s\': %s' % (k, repr(self.__dict__[k])) for k in sorted(self.__dict__.keys())]))
-
-    def pop(self, attr):
-        return self.__dict__.pop(attr, None)
-
-    def getart(self):
-        if 'fanart' not in self.__dict__:
-            self.__dict__['fanart'] = os.path.join(runtime_path,'fanart.gif')
-        d = {k:self.__dict__.get(k) for k in ['poster', 'icon', 'fanart', 'thumb'] if k in self.__dict__}
-        if not d.get('thumb'):
-            d['thumb'] = d.get('poster') or d.get('icon')
-        if not d.get('icon'):
-            d['icon'] = d.get('poster','')
-        return d
-
-    def tourl(self):
-        value = self.__str__()
-        if not isinstance(value, six.binary_type):
-            value = six.binary_type(value, 'utf8')
-        return six.ensure_str(urllib_parse.quote(base64.b64encode(value)))
-
-    def fromurl(self, url):
-        str_item = base64.b64decode(urllib_parse.unquote(url))
-        self.__dict__.update(eval(str_item))
-        return self
-
-    def tojson(self, path=""):
-        if path:
-            open(path, "wb").write(six.ensure_binary(dump_json(self.__dict__)))
-        else:
-            return six.ensure_str(dump_json(self.__dict__))
-
-    def fromjson(self, json_item=None, path=""):
-        if path:
-            json_item = six.ensure_str(open(path, "rb").read())
-
-        if isinstance(json_item, dict):
-            item = json_item
-        else:
-            item = load_json(json_item)
-        self.__dict__.update(item)
-        return self
-
-    def is_label(self):
-        return not self.__dict__.get('action') and not self.__dict__.get('sql')
-
-    def clone(self, **kwargs):
-        newitem = copy.deepcopy(self)
-        if 'label' in newitem.__dict__:
-            newitem.__dict__.pop('label')
-        if 'sql' in newitem.__dict__:
-            newitem.__dict__.pop('sql')
-        if 'contextMenu' in newitem.__dict__:
-            newitem.__dict__.pop('contextMenu')
-        for k, v in kwargs.items():
-            setattr(newitem, k, v)
-        return newitem
-
-
 class Video(object):
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
@@ -408,5 +333,4 @@ except Exception as e:
     exit()
 else:
     O011 = ii11.MODE_OFB
-
 

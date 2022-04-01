@@ -296,12 +296,12 @@ msgid "Always play at full resolution"
 msgstr "Reproducir siempre a máxima resolución"
 
 msgctxt "#30074"
-msgid "Enter [COLOR blue]'%s'[/COLOR] with your user data and enter the pin [COLOR red]%s[/COLOR] "
-msgstr "Entra en [COLOR blue]'%s'[/COLOR] con tus datos de usuario e introduce el pin [COLOR red]%s[/COLOR] "
+msgid "Register for free at [COLOR lime]https://uptobox.com/register[/COLOR], Enter [COLOR blue]'%s '[/COLOR] with your user data and enter the pin [COLOR red]%s [/COLOUR] "
+msgstr "Regístrarte gratis en [COLOR lime]https://uptobox.com/register[/COLOR], Entra en [COLOR blue]'%s '[/COLOR] con tus datos de usuario e introduce el pin [COLOR red]%s[/COLOR] "
 
 msgctxt "#30075"
-msgid "before %s minutes and %s seconds."
-msgstr "antes de %s minutos y %s segundos."
+msgid "before %s minutes and %s seconds or the pin will expire."
+msgstr "antes de %s minutos y %s segundos o el pin caducara."
 
 msgctxt "#30076"
 msgid "Your %s account has been paired with Palantir 2"
