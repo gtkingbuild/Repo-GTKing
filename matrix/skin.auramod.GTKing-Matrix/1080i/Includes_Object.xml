@@ -780,8 +780,7 @@
         <scrolltime>500</scrolltime>
         <onup>300</onup>
         <ondown condition="!Skin.HasSetting(DisableNetflixCatWidget) + !$EXP[noSubMenu]">30222</ondown>
-        <ondown condition="!Skin.HasSetting(HideSubmenuWidget) + [Skin.HasSetting(DisableNetflixCatWidget) | $EXP[noSubMenu]]">30222</ondown>
-        <ondown condition="Skin.HasSetting(HideSubmenuWidget) + [Skin.HasSetting(DisableNetflixCatWidget) | $EXP[noSubMenu]]">330</ondown>
+        <ondown condition="Skin.HasSetting(DisableNetflixCatWidget) | $EXP[noSubMenu]">30222</ondown>
         <movement>1</movement>
         <include content="Widget_Common">
           <param name="top" value="$PARAM[top]" />
@@ -977,9 +976,8 @@
         <visible>!String.IsEqual(Container(300).ListItem.Property(widget),Weather) + !String.IsEqual(Container(300).ListItem.Property(widget),Settings) + !String.IsEqual(Container(300).ListItem.Property(widgetType),Settings Widget) + !String.IsEqual(Container(300).ListItem.Property(widgetType),Weather Widget)</visible>
         <defaultcontrol>4000</defaultcontrol>
         <orientation>horizontal</orientation>
-        <ondown condition="!Skin.HasSetting(DisableNetflixCatWidget) + !$EXP[noSubMenu]">30222</ondown>
-        <ondown condition="!Skin.HasSetting(HideSubmenuWidget) + [Skin.HasSetting(DisableNetflixCatWidget) | $EXP[noSubMenu]]">30222</ondown>
-        <ondown condition="Skin.HasSetting(HideSubmenuWidget) + [Skin.HasSetting(DisableNetflixCatWidget) | $EXP[noSubMenu]]">330</ondown>
+        <ondown condition="!Skin.HasSetting(DisableNetflixCatWidget)">30222</ondown>
+        <ondown condition="Skin.HasSetting(DisableNetflixCatWidget)">330</ondown>
         <onleft>300</onleft>
         <onup condition="">505</onup>
         <onfocus condition="!String.IsEmpty(Window(Home).Property(ShowSpotlightInfo))">Action(Info)</onfocus>
@@ -1026,9 +1024,8 @@
       <onup condition="!Skin.HasSetting(DisableSpotlightAutoplay) + Player.HasVideo + !String.IsEmpty(Window(home).Property(trailer_trailerwillplaying))">ClearProperty(trailer_trailerwillplaying)</onup>
       <onup condition="!Skin.HasSetting(DisableSpotlightAutoplay) + System.HasAlarm(trailer_delay)">CancelAlarm(trailer_delay,true)</onup>
       <onup condition="Skin.HasSetting(DisableMenuHor)">300</onup>
-      <ondown condition="!Skin.HasSetting(DisableNetflixCatWidget) + !$EXP[noSubMenu]">30222</ondown>
-      <ondown condition="!Skin.HasSetting(HideSubmenuWidget) + [Skin.HasSetting(DisableNetflixCatWidget) | $EXP[noSubMenu]]">30222</ondown>
-      <ondown condition="Skin.HasSetting(HideSubmenuWidget) + [Skin.HasSetting(DisableNetflixCatWidget) | $EXP[noSubMenu]]">330</ondown>
+      <ondown condition="!Skin.HasSetting(DisableNetflixCatWidget)">30222</ondown>
+      <ondown condition="Skin.HasSetting(DisableNetflixCatWidget)">330</ondown>
       <onright>Control.Move(1505,1)</onright>
       <onleft>300</onleft>
       <width>600</width>
@@ -1041,10 +1038,10 @@
         <!-- play -->
         <visible>Integer.IsGreater(Container(1505).NumItems,0)</visible>
         <description>Play</description>
-        <width>238</width>
+        <width>250</width>
         <height>80</height>
         <label>[CAPITALIZE][B]$LOCALIZE[31714][/B][/CAPITALIZE]</label> <!-- Play -->
-        <align>right</align>
+        <align>center</align>
         <textcolor>grey</textcolor>
         <focusedcolor>black</focusedcolor>
         <texturefocus colordiffuse="d9ffffff" border="5">common/rounded-shadow8.png</texturefocus>
@@ -1053,7 +1050,7 @@
         <textureradioofffocus colordiffuse="black">netflix/play.png</textureradioofffocus>
         <textureradioonnofocus colordiffuse="white">netflix/play.png</textureradioonnofocus>
         <textureradiooffnofocus colordiffuse="white">netflix/play.png</textureradiooffnofocus>
-        <radioposx>32</radioposx>
+        <radioposx>45</radioposx>
         <radiowidth>25</radiowidth>
         <radioheight>35</radioheight>
         <font>Reg28</font>
@@ -1092,9 +1089,8 @@
         <visible>!String.IsEqual(Container(300).ListItem.Property(widget),Weather) + !String.IsEqual(Container(300).ListItem.Property(widget),Settings) + !String.IsEqual(Container(300).ListItem.Property(widgetType),Settings Widget) + !String.IsEqual(Container(300).ListItem.Property(widgetType),Weather Widget)</visible>
         <defaultcontrol>4000</defaultcontrol>
         <orientation>horizontal</orientation>
-        <ondown condition="!Skin.HasSetting(DisableNetflixCatWidget) + !$EXP[noSubMenu]">30222</ondown>
-        <ondown condition="!Skin.HasSetting(HideSubmenuWidget) + [Skin.HasSetting(DisableNetflixCatWidget) | $EXP[noSubMenu]]">30222</ondown>
-        <ondown condition="Skin.HasSetting(HideSubmenuWidget) + [Skin.HasSetting(DisableNetflixCatWidget) | $EXP[noSubMenu]]">330</ondown>
+        <ondown condition="!Skin.HasSetting(DisableNetflixCatWidget)">30222</ondown>
+        <ondown condition="Skin.HasSetting(DisableNetflixCatWidget)">330</ondown>
         <onleft>300</onleft>
         <onup>505</onup>
         <onfocus condition="!String.IsEmpty(Window(Home).Property(ShowSpotlightInfo))">Action(Info)</onfocus>
@@ -1282,9 +1278,8 @@
         <visible>!String.IsEqual(Container(300).ListItem.Property(widget),Weather) + !String.IsEqual(Container(300).ListItem.Property(widget),Settings) + !String.IsEqual(Container(300).ListItem.Property(widgetType),Settings Widget) + !String.IsEqual(Container(300).ListItem.Property(widgetType),Weather Widget)</visible>
         <defaultcontrol>4000</defaultcontrol>
         <orientation>horizontal</orientation>
-        <ondown condition="!Skin.HasSetting(DisableNetflixCatWidget) + !$EXP[noSubMenu]">30222</ondown>
-        <ondown condition="!Skin.HasSetting(HideSubmenuWidget) + [Skin.HasSetting(DisableNetflixCatWidget) | $EXP[noSubMenu]]">30222</ondown>
-        <ondown condition="Skin.HasSetting(HideSubmenuWidget) + [Skin.HasSetting(DisableNetflixCatWidget) | $EXP[noSubMenu]]">330</ondown>
+        <ondown condition="!Skin.HasSetting(DisableNetflixCatWidget)">30222</ondown>
+        <ondown condition="Skin.HasSetting(DisableNetflixCatWidget)">330</ondown>
         <onup>300</onup>
 	<onback>300</onback>
         <onleft>300</onleft>
@@ -1366,9 +1361,8 @@
       <onup condition="!Skin.HasSetting(DisableSpotlightAutoplay) + Player.HasVideo + !String.IsEmpty(Window(home).Property(trailer_trailerwillplaying))">ClearProperty(trailer_trailerwillplaying)</onup>
       <onup condition="!Skin.HasSetting(DisableSpotlightAutoplay) + System.HasAlarm(trailer_delay)">CancelAlarm(trailer_delay,true)</onup>
       <onup condition="Skin.HasSetting(DisableMenuHor)">300</onup>
-      <ondown condition="!Skin.HasSetting(DisableNetflixCatWidget) + !$EXP[noSubMenu]">30222</ondown>
-      <ondown condition="!Skin.HasSetting(HideSubmenuWidget) + [Skin.HasSetting(DisableNetflixCatWidget) | $EXP[noSubMenu]]">30222</ondown>
-      <ondown condition="Skin.HasSetting(HideSubmenuWidget) + [Skin.HasSetting(DisableNetflixCatWidget) | $EXP[noSubMenu]]">330</ondown>
+      <ondown condition="!Skin.HasSetting(DisableNetflixCatWidget)">30222</ondown>
+      <ondown condition="Skin.HasSetting(DisableNetflixCatWidget)">330</ondown>
       <onright>Control.Move(1506,1)</onright>
       <onleft>300</onleft>
       <width>600</width>
@@ -6189,7 +6183,7 @@
           <height>60</height>
           <font>font_tiny_bold</font>
           <align>left</align>
-          <textcolor>white</textcolor>
+          <textcolor>ff76f110</textcolor> <!--white  -->
           <label>[B]$INFO[Weather.Temperature][/B]</label>
           <visible>Weather.IsFetched</visible>
         </control>
@@ -6256,7 +6250,7 @@
           <align>right</align>
           <alignx>right</alignx>
           <textcolor>white</textcolor>
-          <label>[B]$INFO[System.Time(hh:mm)][COLOR dodgerblue] | [/COLOR]$INFO[System.Date(d.m.yyyy)][/B]</label>
+          <label>[B]$INFO[System.Time(hh:mm)][COLOR ff76f110] | [/COLOR]$INFO[System.Date(d.m.yyyy)][/B]</label> <!--dodgerblue -->
           <animation effect="fade" start="100" end="0" time="200" condition="Window.IsActive(extendedprogressdialog)">Conditional</animation>
         </control>
       <control type="grouplist">
@@ -8484,10 +8478,10 @@
         <left>170</left>
         <width>450</width>
         <height>20</height>
-        <label>GTKING</label>
+        <label>TVBAN</label>
         <align>left</align>
         <font>font_tiny_bold</font>
-        <textcolor>dodgerblue</textcolor>
+        <textcolor>dodgerblue</textcolor> <!-- ff76f110 -->
       </control>
       <control type="list" id="9000">
         <onleft condition="Window.IsVisible(Home)">300</onleft>
@@ -8547,7 +8541,7 @@
         <fadetime>0</fadetime>
 	    <texture border="9" flipy="true" flipx="false">common/white.png</texture>
 		<!-- <bordertexture colordiffuse="$VAR[ColorHighlight]">common/white.png</bordertexture> -->
-        <bordertexture colordiffuse="dodgerblue">common/white.png</bordertexture>
+        <bordertexture colordiffuse="dodgerblue">common/white.png</bordertexture> <!--ff76f110 -->
         <bordersize>9</bordersize>
         <aspectratio>escale</aspectratio>
 	        </control>
@@ -8624,10 +8618,10 @@
         <left>130</left>
         <width>300</width>
         <height>20</height>
-        <label>GTKING BUILD</label>
+        <label>TVBAN BUILD</label>
         <align>left</align>
         <font>font_tiny_bold</font>
-        <textcolor>ff32cd32</textcolor>
+        <textcolor>ff76f110</textcolor>
       </control>
       <control type="list" id="9001">
         <onleft condition="Window.IsVisible(Home)">300</onleft>
@@ -8687,7 +8681,7 @@
         <fadetime>0</fadetime>
 	    <texture border="9" flipy="true" flipx="false">common/white.png</texture>
         <!-- <bordertexture colordiffuse="$VAR[ColorHighlight]">common/white.png</bordertexture> -->
-		<bordertexture colordiffuse="FF32cd32">common/white.png</bordertexture>
+		<bordertexture colordiffuse="FF76f110">common/white.png</bordertexture>
         <bordersize>9</bordersize>
         <aspectratio>escale</aspectratio>
 	        </control>
@@ -8723,17 +8717,17 @@
           </item>
           <item>
 		    <label>Builds</label>
-            <onclick>ActivateWindow(Programs,"plugin://plugin.program.GTKing-Matrix/?mode=builds",return)</onclick>
+            <onclick>ActivateWindow(Programs,"plugin://plugin.program.tvban-Matrix/?mode=builds",return)</onclick>
             <thumb>special://skin/extras/icons/GTkingMa.png</thumb>
           </item>
           <item>
             <label>Mantenimiento</label>
-            <onclick>ActivateWindow(Programs,"plugin://plugin.program.GTKing-Matrix/?mode=maint",return)</onclick>
+            <onclick>ActivateWindow(Programs,"plugin://plugin.program.tvban-Matrix/?mode=maint",return)</onclick>
             <thumb>special://skin/extras/icons/GTKingBeelink.png</thumb>			
           </item>
           <item>
             <label>Gestionar Buffer</label>
-            <onclick>ActivateWindow(Programs,"plugin://plugin.program.GTKing-Matrix/?mode=advanced_settings&amp;url=https%3A%2F%2Fraw.githubusercontent.com%2Fgtkingbuild%2Fgtkingbuild.github.io%2Fmaster%2Fwizard%2Fxml%2FAdvance-Matrix.json",return)</onclick>
+            <onclick>ActivateWindow(Programs,"plugin://plugin.program.tvban-Matrix/?mode=advanced_settings&amp;url=https%3A%2F%2Fraw.githubusercontent.com%2Fandtv%2Fandtv.github.io%2Fmaster%2Ftvban%2Fwizard%2Fxml%2FAdvance-Matrix.json",return)</onclick>
             <thumb>special://skin/extras/icons/hourglass2.png</thumb>
           </item>		  
           <item>
@@ -8748,7 +8742,7 @@
 		   <item>
 		   <label>Archivos - Log</label>
 		   <thumb>special://skin/extras/icons/log.png</thumb>
-		   <onclick>ActivateWindow(Programs,"plugin://plugin.program.GTKing-Matrix/?mode=maint&amp;name=logging",return)</onclick>
+		   <onclick>ActivateWindow(Programs,"plugin://plugin.program.tvban-Matrix/?mode=maint&amp;name=logging",return)</onclick>
 		 </item>
         </content>
       </control>
@@ -8894,7 +8888,7 @@
           </item>
           <item>
 		    <label>Test Velocidad</label>
-            <onclick>ActivateWindow(Programs,"plugin://plugin.program.GTKing-Matrix/?mode=speedtest",return)</onclick>
+            <onclick>ActivateWindow(Programs,"plugin://plugin.program.tvban-Matrix/?mode=speedtest",return)</onclick>
             <thumb>special://skin/extras/icons/timer.png</thumb>         
           </item>
        </content>

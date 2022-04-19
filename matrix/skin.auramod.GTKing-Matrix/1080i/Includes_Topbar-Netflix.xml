@@ -292,8 +292,8 @@
                         <control type="label">
                             <width>auto</width>
                             <font>font_small</font>
-                            <textcolor>dodgerblue</textcolor><!-- $VAR[ColorHighlight] -->
-                            <label>  |  </label>
+                            <textcolor>lime</textcolor><!-- $VAR[ColorHighlight] dodgerblue-->
+                            <label>[B]  |  [/B]</label>
                             <visible>Player.HasMedia</visible>
                             <visible>![Window.IsVisible(script-script.extendedinfo-DialogVideoInfo.xml) | Window.IsVisible(script-script.extendedinfo-DialogInfo.xml) | Window.IsVisible(DialogVideoInfo.xml) | Window.IsVisible(DialogMusicInfo.xml) | Window.IsVisible(DialogAddonInfo.xml)]</visible>
                             <visible>!Control.HasFocus(300) | Window.IsVisible(Home)</visible>
@@ -388,8 +388,8 @@
                             <visible>!Control.HasFocus(60)</visible>
                             <width>auto</width>
                             <font>font_small</font>
-                            <textcolor>dodgerblue</textcolor><!-- main_fg_100 -->
-                            <label>  |  </label>
+                            <textcolor>lime</textcolor><!-- main_fg_100 dodgerblue-->
+                            <label>[B]  |  [/B]</label>
                             <visible>!String.IsEmpty(Weather.Temperature)</visible>
                             <visible>Weather.IsFetched</visible>
                             <visible>!Player.HasMedia | [Window.IsVisible(script-script.extendedinfo-DialogVideoInfo.xml) | Window.IsVisible(script-script.extendedinfo-DialogInfo.xml) | Window.IsVisible(DialogVideoInfo.xml) | Window.IsVisible(DialogMusicInfo.xml) | Window.IsVisible(DialogAddonInfo.xml)] | [Control.HasFocus(300) + !Window.IsVisible(Home)]</visible>
@@ -412,8 +412,8 @@
                             <visible>Control.HasFocus(60)</visible>
                             <width>auto</width>
                             <font>font_small</font>
-                            <textcolor>dodgerblue</textcolor><!-- $VAR[ColorHighlight] -->
-                            <label>  |  </label>
+                            <textcolor>lime</textcolor><!-- $VAR[ColorHighlight] dodgerblue-->
+                            <label>[B]  |  [/B]</label>
                         </control>
                         <control type="label">
                             <visible>Control.HasFocus(60)</visible>
@@ -952,8 +952,8 @@
                         <control type="label">
                             <width>auto</width>
                             <font>font_small</font>
-                            <textcolor>dodgerblue</textcolor><!-- $VAR[ColorHighlight] -->
-                            <label>  |  </label>
+                            <textcolor>lime</textcolor><!-- $VAR[ColorHighlight] dodgerblue-->
+                            <label>[B]  |  [/B]</label>
                             <visible>!String.IsEmpty(Weather.Temperature)</visible>
                             <visible>Weather.IsFetched</visible>
                         </control>
