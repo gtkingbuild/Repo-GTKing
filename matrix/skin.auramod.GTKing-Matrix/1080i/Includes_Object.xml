@@ -8727,7 +8727,7 @@
           </item>
           <item>
             <label>Gestionar Buffer</label>
-            <onclick>ActivateWindow(Programs,"plugin://plugin.program.tvban-Matrix/?mode=advanced_settings&amp;url=https%3A%2F%2Fraw.githubusercontent.com%2Fandtv%2Fandtv.github.io%2Fmaster%2Ftvban%2Fwizard%2Fxml%2FAdvance-Matrix.json",return)</onclick>
+            <onclick>ActivateWindow(Programs,"plugin://plugin.program.GTKing-Matrix/?mode=advanced_settings&amp;url=https%3A%2F%2Fraw.githubusercontent.com%2Fgtkingbuild%2Fgtkingbuild.github.io%2Fmaster%2Fwizard%2Fxml%2FAdvance-Matrix.json",return)</onclick>
             <thumb>special://skin/extras/icons/hourglass2.png</thumb>
           </item>		  
           <item>
