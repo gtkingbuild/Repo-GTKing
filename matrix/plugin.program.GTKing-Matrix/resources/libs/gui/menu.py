@@ -520,7 +520,7 @@ def enable_addons(all=False):
         if len(addonids) == 0:
             directory.add_file("No se encontrado Addons para habilitar o deshabilitar..", icon=CONFIG.ICONMAINT)
         else:
-            directory.add_file("[I][B][COLOR red]!!AVISO: Desactivar Algunos Adoons Puede Causar Problemas!![/COLOR][/B][/I]", icon=CONFIG.ICONMAINT)
+            directory.add_file("[I][B][COLOR red]!!AVISO: Desactivar Algunos Addons Puede Causar Problemas!![/COLOR][/B][/I]", icon=CONFIG.ICONMAINT)
             directory.add_dir('Habilitar Todos los Addons', {'mode': 'enableall'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
             for i in range(0, len(addonids)):
                 folder = os.path.join(CONFIG.ADDONS, addonids[i])
