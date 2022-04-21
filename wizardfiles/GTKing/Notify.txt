@@ -12,7 +12,7 @@ Seleccionamos la Build que deseas instalar de[COLOR yellowgreen][B]GTKing[/B][/C
 Cuando termine de instalar, nos saldrá una ventana [COLOR white][B]"Necesita Forzar el Cierre de Kodi"[/B][/COLOR]. Pulsaremos en [COLOR white][B]"OK"[/B][/COLOR].
 Se cerrará Kodi y ya sólo nos quedará iniciar de nuevo Kodi, darle unos minutos para que cargue el menú correctamente.
 
-[COLOR gold][B]21/04/2022 ¡¡¡PARCHE ACTUALIZADOR PARA LAS 2 BUILDS MATRIX!!![/B][/COLOR]
+[COLOR gold][B]21/04/2022 ¡¡¡PARCHE ACTUALIZADOR MATRIX!!![/B][/COLOR]
 
 [COLOR red][B]* ELIMINADO ADDON VAVOO POR ERRORES Y BUGS EN LAS BUILDS.[/B][/COLOR]
 [COLOR red][B]* CORREGIDO FALLO AL ESCONDER LA BARRA OSD DE REPRODUCCIÓN AUTOMÁTICAMENTE.[/B][/COLOR]
