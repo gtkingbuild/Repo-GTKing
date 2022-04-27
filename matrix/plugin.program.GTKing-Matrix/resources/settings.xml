@@ -4,7 +4,7 @@
         <setting type="lsep" label="Build Actual:"/>
         <setting id="buildname" type="text" label="Build Instalada: " enable="false" default=""/>
         <setting id="buildversion" type="text" label="Version Instalada : " enable="false" default=""/>
-        <setting id="buildtheme" type="text" label="Tema Actual: " enable="false" default=""/>
+        <setting id="buildtheme" type="text" label="Parche Actual: " enable="false" default=""/>
         <setting id="latestversion" type="text" label="Ultima Version: " enable="false" default=""/>
         <setting id="nextbuildcheck" type="text" label="A continuación, compruebe la actualización de la build: " enable="false" default="2021-03-17 00:00:00" />
         <setting id="disableupdate" type="bool" label="Deshabilitar la Notificación de Actualización" default="false"/>
