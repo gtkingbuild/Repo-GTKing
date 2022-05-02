@@ -16,7 +16,7 @@ description="kodi-19.4-arm64-v8a Nvidia"
 
 name="[COLOR lawngreen]Kodi 19.4 [COLOR white]Mod - Android_+10 armeabi-v7a[/COLOR]"
 section="no"
-url="https://github.com/gtkingbuild/gtkingbuild.github.io/releases/download/2.5/GTKing.19.4.v7a.and+10.apk"
+url="https://github.com/gtkingbuild/gtkingbuild.github.io/releases/download/2.5/GTKing.Team.19.4.v7a_And+10.apk"
 icon="https://i.imgur.com/awX188j.png" 
 fanart="https://i.imgur.com/JgCXbwJ.jpg"
 adult="no"
