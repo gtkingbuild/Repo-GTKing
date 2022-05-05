@@ -71,7 +71,7 @@ def apk_menu(url=None):
     from resources.libs.common import tools
 
     if check_for_fm():
-        directory.add_dir('Official Kodi APK\'s', {'mode': 'kodiapk'}, icon=CONFIG.ICONAPK, themeit=CONFIG.THEME1)
+        directory.add_dir('[B]APK\'s OFICIAL DE KODI[/B]', {'mode': 'kodiapk'}, icon=CONFIG.ICONAPK, themeit=CONFIG.THEME1)
         directory.add_separator()
 
     response = tools.open_url(CONFIG.APKFILE)
@@ -96,9 +96,9 @@ def apk_menu(url=None):
                     if x == 0:
                         directory.add_file("¡Todavía no se agregaron addons a este menú!", themeit=CONFIG.THEME2)
             else:
-                logging.log("[APK Menu] ERROR: Formato inválido..", level=xbmc.LOGERROR)
+                logging.log("[APK Menu] ERROR: [COLOR gold]Formato inválido..[/COLOR]", level=xbmc.LOGERROR)
         else:
-            logging.log("[APK Menu] ERROR: La URL de la lista de apk no funciona.", level=xbmc.LOGERROR)
+            logging.log("[APK Menu] ERROR: [COLOR gold]La URL de la lista de apk no funciona.[/COLOR]", level=xbmc.LOGERROR)
             directory.add_file('La URL del archivo txt no es válida', themeit=CONFIG.THEME3)
             directory.add_file('{0}'.format(CONFIG.APKFILE), themeit=CONFIG.THEME3)
     else:
@@ -125,9 +125,9 @@ def youtube_menu(url=None):
                     else:
                         directory.add_file(name, {'mode': 'viewVideo', 'url': url}, description=description, icon=icon, fanart=fanart, themeit=CONFIG.THEME2)
             else:
-                logging.log("[YouTube Menu] ERROR: Formato inválido.")
+                logging.log("[YouTube Menu] ERROR: [COLOR gold]Formato inválido.[/COLOR]")
         else:
-            logging.log("[YouTube Menu] ERROR: La URL de la lista de YouTube no funciona.")
+            logging.log("[YouTube Menu] ERROR: [COLOR gold]La URL de la lista de YouTube no funciona.[/COLOR]")
             directory.add_file('La URL del archivo txt no es válida', themeit=CONFIG.THEME3)
             directory.add_file('{0}'.format(CONFIG.YOUTUBEFILE), themeit=CONFIG.THEME3)
     else:
@@ -137,10 +137,10 @@ def youtube_menu(url=None):
 
 
 def net_tools():
-    directory.add_dir('Prueba de Velocidad', {'mode': 'speedtest'}, icon=CONFIG.ICONSPEED, themeit=CONFIG.THEME1)
+    directory.add_dir('[B]Prueba de Velocidad[/B]', {'mode': 'speedtest'}, icon=CONFIG.ICONSPEED, themeit=CONFIG.THEME1)
     if CONFIG.HIDESPACERS == 'No':
         directory.add_separator()
-    directory.add_dir('Ver Dirección IP y Dirección MAC', {'mode': 'viewIP'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME1)
+    directory.add_dir('[B]Ver Dirección IP y Dirección MAC[/B]', {'mode': 'viewIP'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME1)
 
 
 def view_ip():
@@ -200,7 +200,7 @@ def run_speed_test():
         urlretrieve(found[0], dest)
         view_speed_test(urlsplits[-1])
     except Exception as e:
-        logging.log("[Prueba de Velocidad] Error al Ejecutar la Prueba de Velocidad {0}".format(e), level=xbmc.LOGDEBUG)
+        logging.log("[Prueba de Velocidad] [COLOR gold]Error al Ejecutar la Prueba de Velocidad {0}[/COLOR]".format(e), level=xbmc.LOGDEBUG)
         pass
 
 

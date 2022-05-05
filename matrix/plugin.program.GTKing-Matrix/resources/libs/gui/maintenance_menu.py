@@ -164,12 +164,12 @@ class MaintenanceMenu:
                                themeit=CONFIG.THEME3)
 
     def addon_menu(self):
-        directory.add_file('Eliminar Addons', {'mode': 'removeaddons'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_dir('Eliminar Addon Data', {'mode': 'removeaddondata'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_dir('Habilitar/Deshabilitar Addons', {'mode': 'enableaddons'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('[B][COLOR red]Eliminar Addons[/COLOR][/B]', {'mode': 'removeaddons'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_dir('[B][COLOR red]Eliminar Addon Data[/COLOR][/B]', {'mode': 'removeaddondata'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_dir('[B]Habilitar/Deshabilitar Addons[/B]', {'mode': 'enableaddons'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
         # directory.add_file('Enable/Disable Adult Addons', 'toggleadult', icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('Forzar Actualización de Todos los Repositorios', {'mode': 'forceupdate'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
-        directory.add_file('Forzar Actualización de todos los Addons', {'mode': 'forceupdate', 'action': 'auto'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('[B]Forzar Actualización de Todos los Repositorios[/B]', {'mode': 'forceupdate'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
+        directory.add_file('[B]Forzar Actualización de todos los Addons[/B]', {'mode': 'forceupdate', 'action': 'auto'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME3)
 
    
     def logging_menu(self):

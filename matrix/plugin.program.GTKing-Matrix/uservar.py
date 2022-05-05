@@ -22,7 +22,7 @@ BUILDFILE = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wi
 # 0 being every startup of kodi
 UPDATECHECK = 0
 # Text File with apk info in it.  Leave as 'http://' to ignore
-APKFILE = 'http://'
+APKFILE = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardfiles/apks.txt'
 # Text File with Youtube Videos urls.  Leave as 'http://' to ignore
 YOUTUBETITLE = ''
 YOUTUBEFILE = 'http://'

@@ -183,7 +183,7 @@ class BuildMenu:
                     fanart=fanart, icon=icon, themeit=CONFIG.THEME3)    
                     
             directory.add_separator('[B]INSTALACION BUILD[/B]', fanart=fanart, icon=icon, themeit=CONFIG.THEME3)
-            directory.add_file('[B][COLOR azure]- Instalar Build[/COLOR][/B]', {'mode': 'install', 'action': 'build', 'name': name}, description=description, fanart=fanart,
+            directory.add_file('[B][COLOR azure]• INSTALAR BUILD[/COLOR][/B]', {'mode': 'install', 'action': 'build', 'name': name}, description=description, fanart=fanart,
                                icon=icon, themeit=CONFIG.THEME3)
                                
             if guicheck:
