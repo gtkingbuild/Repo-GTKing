@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <colors>
+    <!-- New -->
+	<color name="main_bg_50">ff32CD32</color>
     <!-- Main -->
     <color name="main_bg_100">ff181818</color>
     <color name="main_bg_70">b3181818</color>
     <color name="main_bg_30">4d181818</color>
     <color name="main_bg_12">1f181818</color>
-
+    
     <color name="main_fg_100">ffcccccc</color>
     <color name="main_fg_70">b3cccccc</color>
     <color name="main_fg_Eps">FF18db69</color>
