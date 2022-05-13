@@ -1,5 +1,5 @@
 name="[B][COLOR white]•  [COLOR orange]MOTOR:[/COLOR] Elementum-All_0.186[/B]"
-url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/0.186/Elementum_all_v0.186.zip"
+url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/0.186/Elementum_all_v0.186.zip"
 icon="https://andtv.github.io/tvban/wizard/imagenes/elementum-All-One.png"
 fanart="https://andtv.github.io/tvban/wizard/imagenes/elementum.jpg"
 adult="no"
