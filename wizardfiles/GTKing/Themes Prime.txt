@@ -5,7 +5,7 @@ fanart="https://andtv.github.io/tvban/wizard/imagenes/elementum.jpg"
 adult="no"
 description="[B][COLOR orange]Motor: [COLOR white]Elementum.[/COLOR][/B]"
 
-name="[B][COLOR white]•• [COLOR green]Parche[/COLOR] GTKing Prime MATRIX[/B]"
+name="[B][COLOR white]•• [COLOR green]Parche: [/COLOR] GTKing Prime MATRIX[/B]"
 url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/1.0-matrix.parche.Prime/Parche.GTKing.Prime.MATRIX.zip"
 icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
 fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
