@@ -1,11 +1,11 @@
-name=" [B][COLOR red]•  [COLOR orange]MOTOR:[/COLOR] Elementum-All_0.186[/B]"
+name=" [B][COLOR white]•  [COLOR orange]MOTOR:[/COLOR] Elementum-All_0.186[/B]"
 url="https://github.com/gtkingbuild/Repo-Prueba/releases/download/0.186/Elementum_all_v0.186.zip"
 icon="https://andtv.github.io/tvban/wizard/imagenes/elementum-All-One.png"
 fanart="https://andtv.github.io/tvban/wizard/imagenes/elementum.jpg"
 adult="no"
 description="[B][COLOR orange]Motor: [COLOR white]Elementum.[/COLOR][/B]"
 
-name="[B][COLOR steelblue]• [/COLOR][COLOR steelblue]•[/COLOR] [COLOR gold]Parche [COLOR limegreen]GTKing Prime [COLOR white]MATRIX[/COLOR][/B]"
+name="[B][COLOR white]•• [COLOR green]Parche [COLOR dodgerblue]GTKing Prime [COLOR white]MATRIX[/COLOR][/B]"
 url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/1.0-matrix.parche.Prime/Parche.GTKing.Prime.MATRIX.zip"
 icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
 fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
