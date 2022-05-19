@@ -72,7 +72,7 @@ description="Aplicación Avast One gratuita (modificada) para dispositivos Andro
 
 name="[COLOR red]Ch[COLOR green]ro[COLOR gold]me [COLOR white]99.0.4844.88-484408820_minAPI24.armeabi-v7a.nodpi[/COLOR]"
 section="no"
-url="https://github.com/andtv/andtv.github.io/releases/download/1.0/com.android.chrome_99.0.4844.88-484408820_minAPI24.armeabi-v7a.nodpi._apkmirror.com.apk"
+url="https://github.com/gtkingbuild/gtkingbuild.github.io/releases/download/2.5/com.android.chrome_99.0.4844.88-484408820_minAPI24.armeabi-v7a.nodpi._apkmirror.com.apk"
 icon="https://i.imgur.com/9jUziUW.png" 
 fanart="https://i.imgur.com/tIofVq7.jpg"
 adult="no"
