@@ -358,7 +358,7 @@
     </extension>
 </addon>
 
-<addon id="plugin.program.GTKing-Matrix" name="[COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]" version="2.2" provider-name="GTKing TEAM">
+<addon id="plugin.program.GTKing-Matrix" name="[COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]" version="2.3" provider-name="GTKing TEAM">
 	<requires>
     	<import addon="xbmc.python" version="3.0.0"/>
     	<import addon="script.module.requests" />
@@ -933,7 +933,7 @@ Testers: Luisma, Toni, Zarat, SuperTopo, Jorge, Bojbit, MiKeL, Chikiry, Pau, Ale
   </extension>
 </addon>
 
-<addon id="script.module.horus" name="Horus" version="1.1.5" provider-name="Caperucitaferoz">
+<addon id="script.module.horus" name="Horus" version="1.1.7" provider-name="Caperucitaferoz">
     <requires>
         <import addon="script.module.six" />
     </requires>
