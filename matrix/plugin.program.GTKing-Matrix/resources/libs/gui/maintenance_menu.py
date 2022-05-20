@@ -174,7 +174,7 @@ class MaintenanceMenu:
    
     def logging_menu(self):
         errors = int(logging.error_checking(count=True))
-        errorsfound = str(errors) + ' Error(es) Encontrado' if errors > 0 else 'Nada Encontrado'
+        errorsfound = str(errors) + ' Error(es) Encontrado' if errors > 0 else '[COLOR gold]Nada Encontrado[/COLOR]'
         wizlogsize = ': [COLOR red]No Encontrado[/COLOR]' if not os.path.exists(
             CONFIG.WIZLOG) else ": [COLOR azure]{0}[/COLOR]".format(
             tools.convert_size(os.path.getsize(CONFIG.WIZLOG)))

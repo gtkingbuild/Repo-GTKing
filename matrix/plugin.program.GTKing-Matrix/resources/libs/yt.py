@@ -47,10 +47,10 @@ import xbmc
 import xbmcgui
 
 import re
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import urllib
 import cgi
-import HTMLParser
+import html.parser
 
 try:
     import simplejson as json
@@ -71,12 +71,12 @@ def Clean(text):
     text = text.replace('<b>',     '')
     text = text.replace('</b>',    '')
     text = text.replace('&amp;',   '&')
-    text = text.replace('\ufeff', '')
+    text = text.replace('\\ufeff', '')
     return text
 
 def PlayVideo(id, forcePlayer=False):
     import sys
-    dp.create("Loading video",'','Please Wait','')
+    dp.create("Loading video", 'Please Wait')
 
     video, links = GetVideoInformation(id)
 
@@ -579,4 +579,4 @@ def play_video(url):
         xbmc.Player().play(url)
     xbmc.sleep(2000)
     if xbmc.Player().isPlayingVideo() == 0:
-        PlayVideo(url)
+        'playvideo(url)'

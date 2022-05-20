@@ -24,8 +24,8 @@ UPDATECHECK = 0
 # Text File with apk info in it.  Leave as 'http://' to ignore
 APKFILE = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardfiles/apks.txt'
 # Text File with Youtube Videos urls.  Leave as 'http://' to ignore
-YOUTUBETITLE = ''
-YOUTUBEFILE = 'http://'
+YOUTUBETITLE = 'DETALLE de GTKing Team'
+YOUTUBEFILE = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardfiles/youtube.txt'
 # Text File for addon installer.  Leave as 'http://' to ignore
 ADDONFILE = 'http://'
 # Text File for advanced settings.  Leave as 'http://' to ignore
