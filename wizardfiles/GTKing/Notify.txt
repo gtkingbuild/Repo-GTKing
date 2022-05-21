@@ -14,20 +14,22 @@ Se cerrará Kodi y ya sólo nos quedará iniciar de nuevo Kodi, darle unos minut
 
 [COLOR gold][B]06/05/2022 ¡¡¡PARCHE ACTUALIZADOR MATRIX!!![/B][/COLOR]
 
-[COLOR red][B]* NUEVOS COLORES EN EL SKIN Y NUEVO ICONO EN LA ESQUINA SUPERIOR DERECHA.[/B][/COLOR]
-[COLOR red][B]* CAMBIADO EL AUTOWIDGET HHDFULLS POR CINECALIDAD, EN PELICULAS[/B][/COLOR]
-[COLOR red][B]* AÑADIDO SECCION DE APLICACIONES DENTRO DE AJUSTES - BUILDS, PULSANDO OK ENCIMA DE LOS TRES PUNTOS.[/B][/COLOR]
-[COLOR red][B]* NUEVOS COLORES DENTRO DE MANTENIMIENTO.[/B][/COLOR]
+[COLOR red][B]* CORREGIDO CONTENIDO EN LA SECCIÓN DEPORTES CON EL NUEVO ADDON WINNER 2.[/B][/COLOR]
 
 
 [COLOR aquamarine][B]INSTALACIÓN DE PARCHE:[/B][/COLOR]
 
 Para instalar un parche, deberemos seleccionar la build correspondiente que tengamos instalada y dentro nos saldrá el parche a instalar.
-Después de la instalacion del parche, una vez cargado KODI se tiene que ir a la sección MANTENIMIENTO en AJUSTES, una vez allí entrar en HERRAMIENTAS ADDON y pulsar HABILITAR/DESHABILITAR ADDONS, para la correcta activación de los Addons añadidos.
+
+Después de la instalacion del parche, una vez cargado KODI se tiene que ir a la sección MANTENIMIENTO en AJUSTES, una vez allí entrar en HERRAMIENTAS ADDON, pulsar HABILITAR/DESHABILITAR ADDONS y luego HABILITAR TODOS para la correcta activación de los Addons añadidos.
 
 
-[COLOR red]                   ****** DAVIDZGZ, JOSEATEBA y GTKing TEAM ******                 [/COLOR] 
-  
+[COLOR red]                   ****** DAVIDZGZ, JOSEATEBA y GTKing TEAM ******                 [/COLOR]
+
+
 [COLOR dodgerblue]https://t.me/beelinkking[/COLOR]
 
 [COLOR white][B]GRACIAS POR UTILIZAR [COLOR dodgerblue]GTKING [COLOR lime]MATRIX![/B][/COLOR]
+
+  
+
