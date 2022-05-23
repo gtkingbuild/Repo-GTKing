@@ -52,13 +52,13 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/QO5MWaJ.jpg)</onfocus>
                         </control>
 				
-                        <!-- <control type="radiobutton" id="9002" description="Instalar Torrest">
+                        <control type="radiobutton" id="9002" description="Instalar Winner 2">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
-                            <label>Torrest</label>
-							<selected>System.HasAddon(plugin.video.torrest)</selected>
-                            <onclick>InstallAddon(plugin.video.torrest)</onclick>	
-							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/laUXBbZ.png)</onfocus>
+                            <label>Winner 2</label>
+							<selected>System.HasAddon(plugin.video.winner)</selected>
+                            <onclick>InstallAddon(plugin.video.winner)</onclick>	
+							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/hEAC8cq.jpg)</onfocus>
                         </control> -->
 						
                        <control type="radiobutton" id="9003" description="Instalar Horus">

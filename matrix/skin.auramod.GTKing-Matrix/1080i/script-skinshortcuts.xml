@@ -29,9 +29,9 @@
                 <left>22</left>
                 <right>22</right>
                 <height>66</height>
-                <width>625</width>
+                <width>450</width>
                 <font>font_heading_small</font>
-                <align>left</align>
+                <align>center</align>
                 <textcolor>dialog_fg_70</textcolor>
                 <wrapmultiline>true</wrapmultiline>
             </control>
