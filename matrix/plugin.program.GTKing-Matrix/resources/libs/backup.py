@@ -51,7 +51,7 @@ def cleanup_backup():
 
     if len(folder) == 0:
         logging.log_notify(CONFIG.ADDONTITLE,
-                           "[COLOR {0}]Ubicación de la Copia de sSeguridad Vacío[/COLOR]".format(CONFIG.COLOR2))
+                           "[COLOR {0}]Ubicación de la Copia de Seguridad: [COLOR gold] Vacío[/COLOR]".format(CONFIG.COLOR2))
         return
     for item in sorted(folder, key=os.path.getmtime):
         filelist.append(item)
@@ -60,7 +60,7 @@ def cleanup_backup():
             list.append('/{0}/'.format(base))
         elif os.path.isfile(item):
             list.append(base)
-    list = ['--- Remove All Items ---'] + list
+    list = ['--- Quitar Todos los elementos ---'] + list
     selected = dialog.select("{0}: Seleccione los elementos que desee eliminar de la carpeta '⁫Mis_Builds'.".format(CONFIG.ADDONTITLE),
                              list)
 
@@ -82,7 +82,7 @@ def cleanup_backup():
         path = filelist[selected - 1]
         passed = False
 
-        if dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}]Le gustaria eliminar[COLOR {1}]{2}[/COLOR] de la carpeta "⁫Mis_Builds"?[/COLOR]".format(CONFIG.COLOR2, CONFIG.COLOR1, list[selected]) + '\n' + "[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, path),
+        if dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}]Le gustaria eliminar[COLOR {1}]{2}[/COLOR] de la carpeta 'Mis_Builds'?[/COLOR]".format(CONFIG.COLOR2, CONFIG.COLOR1, list[selected]) + '\n' + "[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, path),
                         yeslabel="[B][COLOR cyan]Limpiar[/COLOR][/B]",
                         nolabel="[B][COLOR red]No, Cancelar[/COLOR][/B]"):
             if os.path.isfile(path):
@@ -138,7 +138,7 @@ class Backup:
                 except:
                     logging.log("Incapaz de crear {0}.zip".format(name), level=xbmc.LOGERROR)
                     if self.dialog.yesno(CONFIG.ADDONTITLE,
-                                         "[COLOR {0}]No podemos escribir en el directorio de respaldo actual, le gustaría cambiar la ubicación??[/COLOR]".format(CONFIG.COLOR2),
+                                         "[COLOR {0}]No podemos escribir en el directorio de respaldo actual, le gustaría cambiar la ubicación?[/COLOR]".format(CONFIG.COLOR2),
                                          yeslabel="[B][COLOR cyan]Cambiar Directorio[/COLOR][/B]",
                                          nolabel="[B][COLOR red]Cancelar[/COLOR][/B]"):
                         CONFIG.open_settings()
@@ -172,7 +172,7 @@ class Backup:
                 selected = []
 
             logging.log(selected)
-            self.progress_dialog.create(CONFIG.ADDONTITLE, '[COLOR {0}][B]Creando el archivo Zip:[/B][/COLOR]'.format(CONFIG.COLOR2) + '\n' + 'Espere por Favor')
+            self.progress_dialog.create(CONFIG.ADDONTITLE, '[COLOR {0}][B]Creando el archivo Zip:[/B][/COLOR]'.format(CONFIG.COLOR2) + '\n' + 'Espere por Favor...')
             if len(selected) > 0:
                 added = []
                 for item in selected:
