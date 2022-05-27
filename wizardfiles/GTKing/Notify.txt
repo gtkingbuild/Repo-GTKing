@@ -1,4 +1,4 @@
-10
+11
 |||
 
 [COLOR greenyellow][B]¡¡¡BIENVENIDOS A LA BUILD GTKing MATRIX!!![B][/COLOR]
@@ -12,9 +12,10 @@ Seleccionamos la Build que deseas instalar de[COLOR yellowgreen][B]GTKing[/B][/C
 Cuando termine de instalar, nos saldrá una ventana [COLOR white][B]"Necesita Forzar el Cierre de Kodi"[/B][/COLOR]. Pulsaremos en [COLOR white][B]"OK"[/B][/COLOR].
 Se cerrará Kodi y ya sólo nos quedará iniciar de nuevo Kodi, darle unos minutos para que cargue el menú correctamente.
 
-[COLOR gold][B]21/05/2022 ¡¡¡PARCHE ACTUALIZADOR MATRIX!!![/B][/COLOR]
+[COLOR gold][B]27/05/2022 ¡¡¡PARCHE ACTUALIZADOR MATRIX!!![/B][/COLOR]
 
-[COLOR red][B]* CORREGIDO CONTENIDO EN LA SECCIÓN DEPORTES CON EL NUEVO ADDON WINNER 2.[/B][/COLOR]
+[COLOR red][B]* CORREGIDO CONTENIDO EN LA SECCIÓN DEPORTES CON LA ACTUALIZACIÓN DE WINNER 2.[/B][/COLOR]
+[COLOR red][B]* CAMBIADO WIDGET PELÍCULAS PREMIUM POR HDFULLS.[/B][/COLOR]
 
 
 [COLOR aquamarine][B]INSTALACIÓN DE PARCHE:[/B][/COLOR]
