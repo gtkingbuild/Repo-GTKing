@@ -5,6 +5,13 @@ icon="https://i.ytimg.com/vi/9MXLUGopCz0/maxresdefault.jpg"
 fanart="http://"
 description="Depeche Mode."
 
+name="[B][COLOR red]Iron Maiden[/COLOR] [COLOR white]Live After death 1985 full concert[/COLOR][/B]"
+section="no"
+url="https://www.youtube.com/watch?v=RwnyQTxTdJg"
+icon="https://townsquare.media/site/295/files/2015/10/EMI1.jpg?w=1200&h=0&zc=1&s=0&a=t&q=89"
+fanart="http://"
+description="Iron Maiden."
+
 name="[B][COLOR red]Scorpions[/COLOR] [COLOR white]Live in Munich 2012 HD[/COLOR][/B]"
 section="no"
 url="https://www.youtube.com/watch?v=sLmJAJFNwsA"
