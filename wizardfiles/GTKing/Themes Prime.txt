@@ -1,7 +1,7 @@
 name="[B][COLOR white]•  [COLOR orange]MOTOR:[/COLOR] Elementum-All_0.186[/B]"
 url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/0.186/Elementum_all_v0.186.zip"
-icon="https://andtv.github.io/tvban/wizard/imagenes/elementum-All-One.png"
-fanart="https://andtv.github.io/tvban/wizard/imagenes/elementum.jpg"
+icon="https://gtkingbuild.github.io/wizard/wizardmatrix/elementum-All-One.png"
+fanart="https://gtkingbuild.github.io/wizard/wizardmatrix/elementum.jpg"
 adult="no"
 description="[B][COLOR orange]Motor: [COLOR white]Elementum.[/COLOR][/B]"
 
