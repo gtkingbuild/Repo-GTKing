@@ -1,6 +1,6 @@
-name="[B][COLOR red]DEPECHE MODE[/COLOR] [COLOR white]live at VOLT FESTIVAL 2018[/COLOR][/B]"
+name="[B][COLOR red]DEPECHE MODE[/COLOR] [COLOR white]Live Full Concert[/COLOR][/B]"
 section="no"
-url="https://www.youtube.com/watch?v=kzkoCU07kPU"
+url="https://www.youtube.com/watch?v=lVvsFwKsefY"
 icon="https://i.ytimg.com/vi/9MXLUGopCz0/maxresdefault.jpg"
 fanart="http://"
 description="Depeche Mode."
