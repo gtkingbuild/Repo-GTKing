@@ -1,3 +1,10 @@
+name="[B][COLOR red]DEPECHE MODE[/COLOR] [COLOR white]live at VOLT FESTIVAL 2018[/COLOR][/B]"
+section="no"
+url="https://www.youtube.com/watch?v=kzkoCU07kPU"
+icon="https://i.ytimg.com/vi/9MXLUGopCz0/maxresdefault.jpg"
+fanart="http://"
+description="Depeche Mode."
+
 name="[B][COLOR red]Scorpions[/COLOR] [COLOR white]Live in Munich 2012 HD[/COLOR][/B]"
 section="no"
 url="https://www.youtube.com/watch?v=sLmJAJFNwsA"
