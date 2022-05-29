@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<addon id="skin.auramod.GTKing-Matrix" version="1.1.7.7" name="AuraMod [COLOR FF1e90ff]GTKING[/COLOR]" provider-name="Auramod,[COLOR FF1e90ff]GTKING[/COLOR]">
+<addon id="skin.auramod.GTKing-Matrix" version="1.1.7.7.000" name="AuraMod [COLOR FF1e90ff]GTKING[/COLOR]" provider-name="Auramod,[COLOR FF1e90ff]GTKING[/COLOR]">
     <requires>
         <import addon="xbmc.gui" version="5.15.0"/>
         <import addon="script.skin.helper.service" version="1.1.24"/>
