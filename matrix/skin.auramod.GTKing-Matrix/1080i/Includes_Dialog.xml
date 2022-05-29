@@ -321,7 +321,7 @@
                 <description>Line 1</description>
                 <left>15</left>
                 <right>15</right>
-                <top>108</top>
+                <top>90</top>
                 <height>300</height>
                 <label>$PARAM[textbox_label]</label>
             </control>
