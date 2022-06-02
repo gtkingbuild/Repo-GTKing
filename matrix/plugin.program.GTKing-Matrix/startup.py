@@ -122,7 +122,7 @@ def show_notification():
         elif note_id > CONFIG.NOTEID:
             logging.log('[Notifications] Mostrando Notificación {0}'
                         .format(note_id))
-            CONFIG.set_setting('noteid', note_id)
+            CONFIG.set_setting('noteid', '{}'.format(note_id))
             CONFIG.set_setting('notedismiss', 'false')
             window.show_notification(msg)
     else:

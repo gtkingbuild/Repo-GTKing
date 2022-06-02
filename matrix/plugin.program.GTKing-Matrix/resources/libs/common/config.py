@@ -244,7 +244,7 @@ class Config:
         
         # Notification variables
         self.NOTIFY = self.get_setting('notify')
-        self.NOTEID = self.get_setting('noteid')
+        self.NOTEID = int(self.get_setting('noteid'))
         self.NOTEDISMISS = self.get_setting('notedismiss')
         
         # Save Data variables
