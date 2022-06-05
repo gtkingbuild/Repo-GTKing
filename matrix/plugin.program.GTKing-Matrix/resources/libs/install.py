@@ -191,19 +191,22 @@ def fresh_start(install=None, over=False):
 
     elif install == 'restore':
         yes_pressed = dialog.yesno(CONFIG.ADDONTITLE,
-                                       "[COLOR {0}][B]Desea restaurar su[/B]".format(CONFIG.COLOR2)
-                                       +'\n'+"[B]Configuración de Kodi a la configuración predeterminada[/B]"
-                                       +'\n'+"[B]¿Antes de instalar la copia de seguridad local?[/B][/COLOR]",                                       
+                                       "[COLOR {0}][B]Desea Restaurar su Configuración de Kodi[/B]".format(CONFIG.COLOR2)
+                                       +'\n'+"[B] a la Configuración Predeterminada,[/B]"
+                                       +'\n'+"[B]Antes de instalar la Copia de Seguridad local?[/B][/COLOR]",                                       
 									   nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]',
                                        yeslabel='[B][COLOR cyan]Continuar[/COLOR][/B]')
     elif install:
-        yes_pressed = dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}][B]Desea restaurar su[/B]".format(CONFIG.COLOR2)
-                                       +'\n'+"[B]Configuración de Kodi a la configuración predeterminada[/B]"
+        yes_pressed = dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}][B]Desea Restaurar su Configuración de Kodi[/B]".format(CONFIG.COLOR2)
+                                       +'\n'+"[B] a la Configuración Predeterminada[/B]"
                                        +'\n'+"[B]Antes de instalar[/B] [COLOR {0}]{1}[/COLOR][B]?[/B]".format(CONFIG.COLOR1, install),
                                        nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]',
                                        yeslabel='[B][COLOR cyan]Continuar[/COLOR][/B]')
     else:
-        yes_pressed = dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}][B]Desea restaurar su[/B]".format(CONFIG.COLOR2) +' \n' + "[B]Configuración de Kodi a la configuración predeterminada[/B][/COLOR]", nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]', yeslabel='[B][COLOR cyan]Continuar[/COLOR][/B]')
+        yes_pressed = dialog.yesno(CONFIG.ADDONTITLE, "[COLOR {0}][B]Desea Restaurar su Configuración de Kodi[/B]".format(CONFIG.COLOR2) 
+                                       +'\n'+ "[B] a la Configuración Predeterminada?[/B][/COLOR]", 
+                                       nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]', 
+                                       yeslabel='[B][COLOR cyan]Continuar[/COLOR][/B]')
     if yes_pressed:
         wipe()
         
@@ -223,7 +226,7 @@ def fresh_start(install=None, over=False):
     else:
         if not install == 'restore':
             logging.log_notify(CONFIG.ADDONTITLE,
-                               '[COLOR {0}][B]Instalación Nueva:[/B] Cancelada![/COLOR]'.format(CONFIG.COLOR2))
+                               '[COLOR {0}][B]Instalación Nueva:[/B][/COLOR] [COLOR gold]Cancelada![/COLOR]'.format(CONFIG.COLOR2))
             xbmc.executebuiltin('Container.Refresh()')
 
 
@@ -287,14 +290,14 @@ def install_apk(name, url):
                                    
             if not yes:
                 logging.log_notify(CONFIG.ADDONTITLE,
-                               '[COLOR {0}]ERROR: Instalación Cancelada[/COLOR]'.format(CONFIG.COLOR2))
+                               '[COLOR {0}]ERROR:[/COLOR] [COLOR gold]Instalación Cancelada[/COLOR]'.format(CONFIG.COLOR2))
                 return
         
         if yes or redownload:
             response = tools.open_url(url, check=True)
             if not response:
                 logging.log_notify(CONFIG.ADDONTITLE,
-                                   '[COLOR {0}]APK Instalador: Apk Url Invalida![/COLOR]'.format(CONFIG.COLOR2))
+                                   '[COLOR {0}]APK Instalador:[/COLOR] [COLOR gold]Apk Url Invalida![/COLOR]'.format(CONFIG.COLOR2))
                 return
                 
             progress_dialog.create(CONFIG.ADDONTITLE,
@@ -316,4 +319,4 @@ def install_apk(name, url):
         xbmc.executebuiltin('StartAndroidActivity({},,,"content://{}")'.format(use_manager, lib))
     else:
         logging.log_notify(CONFIG.ADDONTITLE,
-                           '[COLOR {0}]ERROR: Ningun Dispositivo Android[/COLOR]'.format(CONFIG.COLOR2))
+                           '[COLOR {0}]ERROR:[/COLOR] [COLOR gold]Ningun Dispositivo Android[/COLOR]'.format(CONFIG.COLOR2))
