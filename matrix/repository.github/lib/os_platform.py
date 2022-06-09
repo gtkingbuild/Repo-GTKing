@@ -5,14 +5,20 @@ import sys
 from collections import namedtuple
 
 
-class System:
+class Enum:
+    @classmethod
+    def values(cls):
+        return [value for name, value in vars(cls).items() if not name.startswith("_")]
+
+
+class System(Enum):
     linux = "linux"
     android = "android"
     darwin = "darwin"
     windows = "windows"
 
 
-class Arch:
+class Arch(Enum):
     x64 = "x64"
     x86 = "x86"
     arm = "arm"
@@ -32,27 +38,31 @@ def get_platform():
     version = platform.release()
     arch = Arch.x64 if sys.maxsize > 2 ** 32 else Arch.x86
     machine = platform.machine().lower()
+    is_arch64 = "64" in machine and arch == Arch.x64
+
+    logging.warning("## Resolving platform - system=%s, version=%s, arch=%s, machine=%s", system, version, arch, machine)
 
     if "ANDROID_STORAGE" in os.environ:
         system = System.android
         if "arm" in machine or "aarch" in machine:
-            if "64" in machine and arch == Arch.x64:
-                arch = Arch.arm64
-            else:
-                arch = Arch.arm
+            arch = Arch.arm64 if is_arch64 else Arch.arm
     elif system == System.linux:
         if "armv7" in machine:
             arch = Arch.armv7
+        elif "aarch" in machine:
+            arch = Arch.arm64 if is_arch64 else Arch.armv7
         elif "arm" in machine:
-            if "64" in machine and arch == Arch.x64:
-                arch = Arch.arm64
-            else:
-                arch = Arch.arm
+            arch = Arch.arm64 if is_arch64 else Arch.arm
     elif system == System.windows:
         if machine.endswith("64"):
             arch = Arch.x64
     elif system == System.darwin:
         arch = Arch.x64
+    
+    logging.warning("## Resolved platform - system=%s, arch=%s", system, arch)
+
+    if system not in System.values() or arch not in Arch.values():
+        logging.warning("Unknown system (%s) and/or arch (%s) values", system, arch)
 
     return Platform(system, version, arch)
 
@@ -67,7 +77,8 @@ try:
 except Exception as _e:
     logging.fatal(_e, exc_info=True)
     logging.fatal(dump_platform())
+    raise _e
 
 
-def get_platform_arch():
-    return "{}_{}".format(PLATFORM.system, PLATFORM.arch)
+def get_platform_arch(sep="-"):
+    return PLATFORM.system + sep + PLATFORM.arch
