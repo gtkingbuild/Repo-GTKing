@@ -1,0 +1,14 @@
+
+cristal azul 3.0.3:
+  - cristal Lsp + tools.
+
+-cristal azul 3.0.2:
+  - se añaden mejoras como el tag killregex para poder andar a traves de los regex siendo de distitnas webs.
+
+-cristal azul 3.0.1:
+  - se reparan errores de la version inicial.
+
+-cristal azul version 3.0.0
+
+
+  - version compatible con python2 y python3, para más detalles estamos en el grupo de telegram @addonfestaycristal

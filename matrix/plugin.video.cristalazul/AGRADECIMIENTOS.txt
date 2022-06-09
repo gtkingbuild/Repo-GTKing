@@ -1,0 +1,19 @@
+Addon Cristal Azul
+
+    Últimos agradecimientos:
+	
+- Agradecer a Gujal por crear la base lsp compatible con python3, sin él éste proyecto no sería posible, también a George que gracias a él la base hace cosas que nadie más habría conseguido, muchas gracias a los 2.
+
+
+
+
+    Agradecimientos originales:
+	
+- Éste addon se basa en el addon livestreampro, dar las gracias a shani por la base que dejó para la comunidad kodi, ésta base está modificada y no es la original de shani, asique a todos los que han ayudado a actualizarla, tambien darles las gracias, queremos agradacer a tvaddons por urlresolve y por todos sus aportes, a jrsergio por resolverurl, a los creadores del addon youtube, a los creadores del addon horus, a shani de nuevo por f4mtester y f4mproxy, a los creadores de pelisalacarta, mediaexplorer, alfa...etc, por sus aportes a la comunidad y que ya sea de una manera directa o indirecta todos nos beneficiamos y a todos los desarrolladores que emplean su tiempo en kodi, a todos ellos, gracias y darles sus créditos correspondientes por todos los aportes con los cuales completamos cristalazul.
+
+
+
+-gracias de parte del equipo de cristal azul.
+
+
+-Especial mención a Luisma, miembro del equipo que nos dejó en 2021, siempre estarás con nosotros.

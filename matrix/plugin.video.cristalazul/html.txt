@@ -1,0 +1,313 @@
+
+<!doctype html>
+<html>
+<head>
+<title>Playdede ❤️ Tu directorio de películas y series</title>
+<meta name="description" content="Encuentra en Playdede ☝ el mayor directorio de películas y series ⭐ Crea tus listas, sigue las de otras personas... descubre Playdede." />
+<meta name="keywords" content="playdede">
+<base href="https://playdede.nu/">
+<meta name="robots" content="noindex,nofollow" />
+<meta name="google-site-verification" content="zcbFMrQytLzKdiiKhoonoysXSRaFwjTntAOn-x6yFi8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://playdede.nu/public/assets/css/vendor/fontawesome.min.css?1.5.11">
+<link rel="stylesheet" href="https://playdede.nu/public/assets/css/vendor/swal.min.css?1.5.11">
+<link rel="stylesheet" href="https://playdede.nu/public/assets/css/main.css?1.5.11">
+<link rel="stylesheet" href="https://playdede.nu/public/assets/css/roboto.min.css?1.5.11">
+<link rel="stylesheet" href="https://playdede.nu/public/assets/css/custom.min.css?1.5.11">
+<meta property="og:title" content="Playdede - Tu directorio de películas y series">
+<meta property="og:description" content="Comunidad online y directorio de películas y series. Sigue a tus amig@s, crea listas, haz reviews... descubre Playdede.">
+<meta property="og:image" content="https://i.imgur.com/ePkcVQk.png">
+<meta property="og:url" content="https://playdede.nu/search/?s=">
+<meta name="twitter:title" content="Playdede - Tu directorio de películas y series ">
+<meta name="twitter:description" content=" Comunidad online y directorio de películas y series. Sigue a tus amig@s, crea listas, haz reviews... descubre Playdede.">
+<meta name="twitter:image" content=" https://i.imgur.com/ePkcVQk.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="sitekey" content="6LdLwBUaAAAAAEbNUSIn40ufhqn8ctA2H_nOxrFJ">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon16.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="shortcut icon" href="/favicon.ico">
+<meta name="msapplication-TileColor" content="#2b5797">
+<meta name="msapplication-config" content="/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:thin,extra-light,light,medium,semi-bold,extra-bold,black,regular,bold" rel="stylesheet" />
+<script type="text/javascript">
+		var _Hasync = _Hasync || [];
+		_Hasync.push(['Histats.start', '1,4626906,4,0,0,0,00010000']);
+		_Hasync.push(['Histats.fasi', '1']);
+		_Hasync.push(['Histats.track_hits', '']);
+		(function() {
+			var hs = document.createElement('script');
+			hs.type = 'text/javascript';
+			hs.async = true;
+			hs.src = ('//s10.histats.com/js15_as.js');
+			(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+		})();
+	</script>
+<noscript><a href="/" target="_blank"><img src="//sstatic1.histats.com/0.gif?4626906&101" alt="contador web" border="0"></a></noscript>
+<style>
+        .filters-menu {
+            display: flex;
+            flex-direction: row;
+            margin: auto;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .filters-menu .mindhe {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 1rem 0 0;
+            /* flex-grow: 1;
+            flex-basis: 0; */
+            width: auto;
+        }
+
+        .filters-menu #networks {
+            z-index: 90;
+            /* flex-grow: 1;
+            flex-basis: 0; */
+        }
+
+        @media screen and (max-width: 960px) {
+            .filters-menu {
+                flex-direction: column;
+            }
+        }
+    </style>
+<script id="chatBroEmbedCode">/* Chatbro Widget Embed Code Start */function ChatbroLoader(chats,async){async=!1!==async;var params={embedChatsParameters:chats instanceof Array?chats:[chats],lang:navigator.language||navigator.userLanguage,needLoadCode:'undefined'==typeof Chatbro,embedParamsVersion:localStorage.embedParamsVersion,chatbroScriptVersion:localStorage.chatbroScriptVersion},xhr=new XMLHttpRequest;xhr.withCredentials=!0,xhr.onload=function(){eval(xhr.responseText)},xhr.onerror=function(){console.error('Chatbro loading error')},xhr.open('GET','//www.chatbro.com/embed.js?'+btoa(unescape(encodeURIComponent(JSON.stringify(params)))),async),xhr.send()}/* Chatbro Widget Embed Code End */ChatbroLoader({encodedChatId: '98SzW'});</script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.css" rel="stylesheet">
+<script type="text/javascript" data-cfasync="false">
+/*<![CDATA[/* */
+(function(){var a57d1122657429e5db659f13968d0988="EaQrA6nCbFW8S5fch7H39f5AapJfXrygyTjsvUQ5SkyvM-bwzNNny960At7wI6QJXwNa3k5Y4I73LUROcxDjhHDLEw";var a=['dztZwpPDiyR4w5JWw6RWwp8=','w43Dl8KRIcOVwpo3IEzDvSI7','w6Ijw4wHXMKSbw==','Cz0YMcONKT7DowLDmcOka8Ol','wrNiw5Bbw6zCn8OwSsOww6oPfA==','wpfDlsOXwpE=','wpDDncOE','wpvDp8KkeV0/w5Y=','w5nCkETDnsOowqJ5e8KuOVvDpy3CmsO+wrZwwqLCpyU=','Yg1Vw77Cjloww48lw5ZSZgXCg8K3w63DkkvDogRRw4HDgMOGwp0pC8OqwqV4JsOSC0xPw4bCu8OewqfDscKOfcOLw5TDgMOUamrDlg==','PT1WwprCkMOLOcKI','Tl9vQAjCsg==','DhnDmnlBwqLDv8OPw54WZMKALmI=','JcKMw4sqTlXCu8Kg','S3nClnbDt8K2wqfCt3k=','JMKFNMKqwoTDl0PCiMOEw5s+wpAXWGnDrk7DmcOfM8Kt','P8OIOsO8CcKmKSLCqMKHbGMD','wpTCmcOGE8OWKE9Mw6nCtgx+wq9zJ8KHw5vDqhhqw5Byw4N6MTxqR8ONGEMjVMKmSWdCIsK7c8KBw5jDpMKowqFzw4/Ch8KeTQ==','L8OZLcO0DcK3','G2/DpsK4BDI=','wozDocKwcVgn','wojClcOPwp0=','cMO4TMKKH8KyMDfCjMKsHA==','HwXDk2JM','dl9Ew7TChBZOw5Qpw50=','MSZBwp/CjsKUeMOT','ZMO9VMOXGMKRMizCk8K/B8KgAwR1w6nCucOnwrURRF3Csw==','wpfCi8OJScKYLFpTw6nCoQ1gwqlgOA==','w7wkYMKVwrg+aw=='];(function(b,d){var f=function(g){while(--g){b['push'](b['shift']());}};f(++d);}(a,0x121));var b=function(c,d){c=c-0x0;var e=a[c];if(b['GTpAdG']===undefined){(function(){var h;try{var j=Function('return\x20(function()\x20'+'{}.constructor(\x22return\x20this\x22)(\x20)'+');');h=j();}catch(k){h=window;}var i='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';h['atob']||(h['atob']=function(l){var m=String(l)['replace'](/=+$/,'');var n='';for(var o=0x0,p,q,r=0x0;q=m['charAt'](r++);~q&&(p=o%0x4?p*0x40+q:q,o++%0x4)?n+=String['fromCharCode'](0xff&p>>(-0x2*o&0x6)):0x0){q=i['indexOf'](q);}return n;});}());var g=function(h,l){var m=[],n=0x0,o,p='',q='';h=atob(h);for(var t=0x0,u=h['length'];t<u;t++){q+='%'+('00'+h['charCodeAt'](t)['toString'](0x10))['slice'](-0x2);}h=decodeURIComponent(q);var r;for(r=0x0;r<0x100;r++){m[r]=r;}for(r=0x0;r<0x100;r++){n=(n+m[r]+l['charCodeAt'](r%l['length']))%0x100;o=m[r];m[r]=m[n];m[n]=o;}r=0x0;n=0x0;for(var v=0x0;v<h['length'];v++){r=(r+0x1)%0x100;n=(n+m[r])%0x100;o=m[r];m[r]=m[n];m[n]=o;p+=String['fromCharCode'](h['charCodeAt'](v)^m[(m[r]+m[n])%0x100]);}return p;};b['HByizW']=g;b['bjuYAE']={};b['GTpAdG']=!![];}var f=b['bjuYAE'][c];if(f===undefined){if(b['JSdDrO']===undefined){b['JSdDrO']=!![];}e=b['HByizW'](e,d);b['bjuYAE'][c]=e;}else{e=f;}return e;};var p=window;p[b('0x16','qhT)')]=[[b('0x14','sTmD'),0x48e6d0],[b('0xc','9O!K'),0x0],[b('0xd','8du$'),b('0x0','#AA5')],[b('0x1','eL34'),0x0],[b('0x8','LmdF'),![]],[b('0x4','vH#M'),0x0],[b('0x5','sTkj'),!0x0]];var i=[b('0x12','JTR*'),b('0xa','!vxE'),b('0x10','6Lus'),b('0x1b','g]xZ')],d=0x0,o,z=function(){if(!i[d])return;o=p[b('0x1a','bbHs')][b('0x11','e$W0')](b('0x15','LmdF'));o[b('0x6','Tcxu')]=b('0x1c','JTR*');o[b('0x18','8du$')]=!0x0;var c=p[b('0xe','%@PV')][b('0x9','RENA')](b('0x13','e$W0'))[0x0];o[b('0x7','Tcxu')]=b('0xb','bbHs')+i[d];o[b('0x17','g]xZ')]=b('0xf','BMSZ');o[b('0x3','UNhj')]=function(){d++;z();};c[b('0x19','!vxE')][b('0x2','R48w')](o,c);};z();})();
+/*]]>/* */
+</script>
+</head>
+<body>
+<link rel="stylesheet" href="https://playdede.nu/public/assets/css/playt.css">
+<link rel="stylesheet" href="https://playdede.nu/public/assets/css/playtnight.css?v2">
+<script type="text/javascript">
+  function CheckCookie(telegram){
+   if (cookie(telegram)){
+    document.getElementById(telegram).style.display='none';
+   }
+  }
+  function setcookie(telegram,days){
+   document.cookie=telegram+'=true;expires='+(new Date(new Date().getTime()+days*19728000000) .toGMTString())+';path=/';
+   document.getElementById(telegram).style.display='none';}
+  function cookie(telegram){
+   var re=new RegExp(telegram+'[^;]+','i');
+   if (document.cookie.match(re)){
+    return document.cookie.match(re)[0].split("=")[1];
+   }
+   return null;
+  }
+function showIt2(){document.getElementById("PlayTelegram").style.display = "block";}
+setTimeout("showIt2()", 100);
+</script>
+<div id="PlayTelegram">
+<div class="telegram" id="telegram">
+<div class="tele_ox">
+
+<div class="headl_te"><p style="font-size: 22px;margin-bottom: 10px;font-weight: 600;">Síguenos</p></div>
+
+<div class="sub_fsdr">Nuestras redes sociales:
+</div>
+<div style="text-align: center; ">
+
+<a target="_blank" href="https://t.me/playdedetelegram">
+<button class="btn_joinn" style="color: #fff;border: none; margin: 10px 0 0; font-size: 20px; padding: 10px 0px; border-radius: 20px; width: 100%; background: #2196F3;">
+Telegram<b> </b><i class="fab fa-telegram" style="font-size:20px;"></i></button></a>
+<a target="_blank" href="https://twitter.com/playdedeweb">
+<button class="btn_joinn" style="color: #fff;border: none; margin: 10px 0 0; font-size: 20px; padding: 10px 0px; border-radius: 20px; width: 100%; background: #4eacf7;">
+Twitter<b> </b><i class="fab fa-twitter" style="font-size:20px;"></i></button></a>
+
+<i id='Close_fa' class="fa fa-times" aria-hidden="true" onclick="setcookie('telegram',1)" title='Ocultar Mensaje'></i>
+</div>
+</div></div>
+<script type="text/javascript"> CheckCookie('telegram');</script>
+</div>
+<div class="cargaAjax"></div>
+<header id="header" class="main">
+<div class="hbox">
+<div class="res-nav"><i class="material-icons">menu</i></div>
+<div class="head-main-nav">
+<div class="menu-menu-principal-container">
+<ul id="main_header" class="main-header" style="margin-left:10px;">
+<li id="menu-item-6892" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6892">
+<a href="">Inicio</a>
+</li>
+<li id="menu-item-6892" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6892">
+<a href="/peliculas/">Películas</a>
+</li>
+<li id="menu-item-6913" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-item menu-item-6913">
+<a href="/series/" aria-current="page">Series</a>
+</li>
+<li id="menu-item-41376" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-41376">
+<a href="/animes/">Animación</a>
+</li>
+<li id="menu-item-42451" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-42451">
+<a href="/listas/">Listas</a>
+</li>
+<li id="menu-item-42467" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-42467">
+<a href="/criticas-votos/">Críticas</a>
+</li>
+</ul>
+</div>
+</div>
+<div class="open-button-form"><span class="icon-search2"></span></div>
+<div class="UserOn">
+<a class="not" href="/calendario/"><i class="material-icons">calendar_today</i></a>
+<a class="not viewNot"><i class="material-icons">error</i></a>
+<div class="uPerfil">
+<a href="https://playdede.nu/user/Aboleo23/">
+<div class="uAvatar"><img alt="" src="public/assets/image/avatar.jpg" class="avatar avatar-120 photo avatar-default avatar-mine" height="120" width="120" loading="lazy"></div>
+<span class="">Aboleo23 </span>
+</a>
+</div>
+</div>
+<div class="headitems register_active">
+<div id="advc-menu" class="search">
+<form method="get" id="searchform" action="search">
+<input type="text" placeholder="Buscar..." name="s" id="s" value="" autocomplete="off">
+<button class="search-button" type="submit">
+<i class="fa fa-search"></i>
+</button>
+<i class="material-icons closeSearch">close</i>
+</form>
+<div class="live-search ltr">
+</div>
+</div>
+</div>
+</div>
+<div class="head-main-nav mobile">
+<div class="menu-menu-principal-container">
+<ul id="main_header" class="main-header">
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6892">
+<a href="https://playdede.nu/">Inicio</a>
+</li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6892">
+<a href="https://playdede.nu/peliculas/">Películas</a>
+</li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom current-menu-item menu-item-6913">
+<a href="https://playdede.nu/series/">Series</a>
+</li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-41376">
+<a href="https://playdede.nu/animes/">Animación</a>
+</li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-42451">
+<a href="https://playdede.nu/listas/">Listas</a>
+</li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-42467">
+<a href="https://playdede.nu/criticas-votos/">Críticas</a>
+</li>
+</ul>
+</div>
+</div>
+</header>
+<div id="notifBox">
+<div class="printBoxList2">
+<i class="material-icons closeList">close</i>
+<h5>Notificaciones</h5>
+<div class="notificationList">
+</div>
+</div>
+</div>
+<div id='main-wrapper'><div class='container'><div class="module" data-ajax="">
+<div class="content full_width_layout ">
+<div id=" archive-content" class="animation-2 items">
+<div class="pagPlaydede">
+</div>
+</div>
+</div><div class="formModal closeAfterSubmit" id="reportReviewModal">
+<div class="printBoxList2">
+<i class="material-icons closeList">close</i>
+<h5>Reportar</h5>
+<div class="perfilAjustes">
+<div class="AjustesBox">
+<p style="font-size:15px;color: #ffbcbc;"><i class="material-icons">error</i> Si realizas un reporte inválido o haces mal uso de esta herramienta tu cuenta será restringida.</p>
+<form method="POST" class="ajax-form" action="review/report">
+<input type="hidden" name="id" value="">
+<div class="formState1">
+<div class="labelForm">Motivo</div>
+<div class="inputForm">
+<select name="type" required>
+<option value="">Seleccionar motivo</option>
+<option value='Insultos'>Insultos</option><option value='Spam'>Spam</option><option value='Spoiler'>Spoiler</option> </select>
+</div>
+</div>
+<div class="formState1">
+<div class="labelForm">Explicación corta (opcional)</div>
+<div class="inputForm"><input type="text" name="reason"></div>
+</div>
+<input class="submitS" type="submit" value="Emitir reporte">
+</form>
+</div>
+</div>
+</div>
+</div>
+<div class="formModal closeAfterSubmit" id="reportLinkModal">
+<div class="printBoxList2">
+<i class="material-icons closeList">close</i>
+<h5>Reportar</h5>
+<div class="perfilAjustes">
+<div class="AjustesBox">
+<p style="font-size:15px;color: #ffbcbc;"><i class="material-icons">error</i> Si realizas un reporte inválido o haces mal uso de esta herramienta tu cuenta será restringida.</p>
+<form method="POST" class="ajax-form" action="link/report">
+<input type="hidden" name="id" value="">
+<div class="formState1">
+<div class="labelForm">Motivo</div>
+<div class="inputForm">
+<select name="type" required>
+<option value="">Seleccionar motivo</option>
+<option value='Capítulo equivocado'>Capítulo equivocado</option><option value='Audio desincronizado'>Audio desincronizado</option><option value='Audio incorrecto'>Audio incorrecto</option><option value='Subtítulos desincronizados'>Subtítulos desincronizados</option><option value='Subtítulos incorrectos'>Subtítulos incorrectos</option><option value='Enlace caído'>Enlace caído</option> </select>
+</div>
+</div>
+<div class="formState1">
+<div class="labelForm">Explicación corta (opcional)</div>
+<div class="inputForm"><input type="text" name="reason"></div>
+</div>
+<input class="submitS" type="submit" value="Emitir reporte">
+</form>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+<footer class="main">
+<div class="fbox">
+<div class="fcmpbox">
+<div class="copy">Hecho con <3 Playdede es un directorio de contenido audiovisual y comunidad online. No alojamos ningún material audiovisual tan solo damos información útil sobre películas/series/documentales.</div>
+<span class="top-page"><a id="top-page"><i class="fa fa-chevron-up"></i></a></span>
+<div class="fmenu">
+<ul id="menu-menu-abajo" class="menu">
+<li style="font-weight:300;" id="menu-item-6936" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6936"><a href="/terminos-de-uso/">Términos de uso</a></li>
+<li style="font-weight:300;" id="menu-item-6939" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6939"><a href="/politica-de-privacidad/">Políticas de privacidad</a></li>
+<li style="font-weight:300;" id="menu-item-6939" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6939"><a href="/contacto/">Twitter</a></li>
+<li style="font-weight:300;float:none;display:inline;" id="menu-item-6939" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6939"><a href="/cookies/">Política de cookies</a></li>
+</ul>
+</div>
+</div>
+</div>
+</footer>
+<noscript>
+<div class="no-script">
+	<p>JAVASCRIPT ES REQUERIDO</p>
+</div>
+</noscript> <script>
+        window.infoObj = {
+            slug: "search",
+            identifier: ""
+        };
+    </script>
+<script type="text/javascript" src="https://polyfill.io/v3/polyfill.min.js"></script>
+<script type="text/javascript" src="https://playdede.nu/public/assets/js/vendor/sweetalert.min.js?1.5.11"></script>
+<script type="text/javascript" src="https://playdede.nu/public/assets/js/ajax-forms.min.js?1.5.11"></script>
+<script type="text/javascript" src="https://playdede.nu/public/assets/js/main.min.js?1.5.11"></script>
+<script type="text/javascript" src="https://www.google.com/recaptcha/api.js"></script>
+</body>
+</html>
+AboleoLOCO
