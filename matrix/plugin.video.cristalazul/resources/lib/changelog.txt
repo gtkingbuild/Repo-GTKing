@@ -1,5 +1,9 @@
 
-cristal azul 3.0.3:
+
+-cristal azul 3.0.4:
+  - reparado f4mtester interno
+
+-cristal azul 3.0.3:
   - cristal Lsp + tools.
 
 -cristal azul 3.0.2:

@@ -1,4 +1,4 @@
-3
+4
 |||
 
 [COLOR greenyellow][B]¡¡¡BIENVENIDOS A LA BUILD GTKing MATRIX!!![B][/COLOR]
@@ -12,10 +12,12 @@ Seleccionamos la Build que deseas instalar de[COLOR yellowgreen][B]GTKing[/B][/C
 Cuando termine de instalar, nos saldrá una ventana [COLOR white][B]"Necesita Forzar el Cierre de Kodi"[/B][/COLOR]. Pulsaremos en [COLOR white][B]"OK"[/B][/COLOR].
 Se cerrará Kodi y ya sólo nos quedará iniciar de nuevo Kodi, darle unos minutos para que cargue el menú correctamente.
 
-[COLOR gold][B]09/06/2022 ¡¡¡PARCHE ACTUALIZADOR BUILDS MATRIX!!![/B][/COLOR]
+[COLOR gold][B]20/07/2022 ¡¡¡PARCHE ACTUALIZADOR BUILDS MATRIX!!![/B][/COLOR]
 
-[COLOR red][B]* AÑADIDA VISTA A LA BUILD GTactil DE PÓSTER MEDIA INFO IMPORTADA DE AURAMOD PARA UN MEJOR SCROLL EN EL LISTADO DE PELÍCULAS Y SERIES[/B][/COLOR]
-[COLOR red][B]* CORREGIDOS ATAJOS AL BUSCADOR DE CRISTAL AZUL[/B][/COLOR]
+[COLOR red][B]* AÑADIDO BUSCADOR DE CINE DEL ADDON TACONES[/B][/COLOR]
+[COLOR red][B]* CORREGIDOS WIDGETS VIDEOTECA GTKing PRIME[/B][/COLOR]
+[COLOR red][B]* CORREGIDO ATAJO SERIES NETFLIX[/B][/COLOR]
+[COLOR red][B]* REDIRIGIDO WIDGET HDFULLS A ESTRENOS CINESA (GTKing PRIME), A ENTRE CINES Y SERIES (GTactil)[/B][/COLOR]
 
 [COLOR aquamarine][B]INSTALACIÓN DE PARCHE:[/B][/COLOR]
 
