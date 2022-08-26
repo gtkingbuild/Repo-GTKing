@@ -23,16 +23,16 @@ except ImportError:
     from urlparse import unquote
 
 try:
-    translate_path = xbmcvfs.translatePath
+    translatePath = xbmcvfs.translatePath
 except AttributeError:
-    translate_path = xbmc.translatePath
+    translatePath = xbmc.translatePath
 
 _addon_id = settings.get_addon_info("id")
 _addon_data = settings.get_addon_info("profile")
-_addon_root = translate_path(settings.get_addon_info("path"))
+_addon_root = translatePath(settings.get_addon_info("path"))
 
 _art_path = os.path.join(_addon_root, "resources", "media")
-_home = translate_path("special://home/")
+_home = translatePath("special://home/")
 
 windows = {
     "programs": ["program", "script"],
@@ -264,7 +264,7 @@ def wipe(folder=_addon_data, over=False):
     if choice or over:
         dirs = xbmcvfs.listdir(folder)[0]
         files = xbmcvfs.listdir(folder)[1]
-        
+
         for f in files:
             path = os.path.join(folder, f)
             remove_file(path)
@@ -427,7 +427,7 @@ def remove_file(file):
 def read_file(file):
     content = None
     if xbmcvfs.exists(file):
-        with xbmcvfs.File(file) as f:
+        with contextlib.closing(xbmcvfs.File(file)) as f:
             try:
                 content = f.read()
             except Exception as e:
@@ -439,7 +439,7 @@ def read_file(file):
 
 
 def write_file(file, content, mode="w"):
-    with xbmcvfs.File(file, mode) as f:
+    with contextlib.closing(xbmcvfs.File(file, mode)) as f:
         try:
             f.write(content)
             return True
@@ -449,31 +449,35 @@ def write_file(file, content, mode="w"):
     return False
 
 
-def read_json(file, log_file=False, default=None):
+def read_json(file, log_file=False, default={}):
     data = None
-    if xbmcvfs.exists(file):
-        with xbmcvfs.File(file) as f:
-            content = six.ensure_text(f.read())
-            try:
-                data = json.loads(content)
-            except (ValueError, TypeError) as e:
-                log("Could not read JSON from {}: {}".format(file, e), level="error")
-                if log_file:
-                    log(content, level="debug")
-                return default
-    else:
+    # path = os.path.join(_addon_data, file) if _addon_data not in file else file
+    path = translatePath(file)
+    if not os.path.exists(path):
         log("{} does not exist.".format(file), level="error")
         return default
+    with contextlib.closing(xbmcvfs.File(file, "r")) as f:
+        try:
+            content = six.ensure_text(f.read())
+            data = json.loads(content)
+        except (ValueError, TypeError, UnicodeDecodeError, NameError, FileNotFoundError) as e:
+            log("Could not read JSON from {}: {}".format(file, e), level="error")
+            if log_file:
+                log(content, level="info")
+            os.remove(path)
+            return default
 
     return convert(data)
 
 
 def write_json(file, content):
-    with xbmcvfs.File(file, "w") as f:
+    with contextlib.closing(xbmcvfs.File(file, "w")) as f:
         try:
-            json.dump(content, f, indent=4)
+            f.write(bytearray(json.dumps(content, indent=4).encode('utf-8')))
         except Exception as e:
             log("Could not write to {}: {}".format(file, e), level="error")
+            return False
+    return True
 
 
 def get_string(_id, kodi=False):

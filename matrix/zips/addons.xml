@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.program.autowidget" name="AutoWidget" version="3.6.1" provider-name="drinfernoo">
+<addon id="plugin.program.autowidget" name="AutoWidget" version="3.7.0" provider-name="drinfernoo">
     <requires>
         <import addon="script.module.pil" />
         <import addon="script.module.six" />
@@ -44,6 +44,10 @@
         <website>https://www.github.com/drinfernoo/</website>
         <source>https://www.github.com/drinfernoo/plugin.program.autowidget/</source>
         <news>
+3.7.0
+ - Optimize caching for performance and reliability
+ - Fix direct shortcuts
+ - Fix Settings Shortcuts for dependency add-ons
 3.6.1
  - Fix playing direct shortcuts for some items
  - Fix cache clearing again
@@ -1006,7 +1010,7 @@ AVISO LEGAL:
     </extension>
 </addon>
 
-<addon id="skin.auramod.GTKing-Matrix" version="1.1.9" name="AuraMod [COLOR FF1e90ff]GTKING[/COLOR]" provider-name="Auramod,[COLOR FF1e90ff]GTKING[/COLOR]">
+<addon id="skin.auramod.GTKing-Matrix" version="1.1.9.1" name="AuraMod [COLOR FF1e90ff]GTKING[/COLOR]" provider-name="Auramod,[COLOR FF1e90ff]GTKING[/COLOR]">
     <requires>
         <import addon="xbmc.gui" version="5.15.0"/>
         <import addon="script.skin.helper.service" version="1.1.24"/>
