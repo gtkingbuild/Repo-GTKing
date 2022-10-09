@@ -12,11 +12,12 @@ Seleccionamos la Build que deseas instalar de[COLOR yellowgreen][B]GTKing[/B][/C
 Cuando termine de instalar, nos saldrá una ventana [COLOR white][B]"Necesita Forzar el Cierre de Kodi"[/B][/COLOR]. Pulsaremos en [COLOR white][B]"OK"[/B][/COLOR].
 Se cerrará Kodi y ya sólo nos quedará iniciar de nuevo Kodi, darle unos minutos para que cargue el menú correctamente.
 
-[COLOR gold][B]26/08/2022 ¡¡¡PARCHE ACTUALIZADOR BUILDS MATRIX!!![/B][/COLOR]
+[COLOR gold][B]09/10/2022 ¡¡¡PARCHE ACTUALIZADOR BUILDS MATRIX!!![/B][/COLOR]
 
-[COLOR red][B]* ACTUALIZADO ADDON TORRENTS ACESTREAM[/B][/COLOR]
-[COLOR red][B]* CAMBIOS EN LA IMAGEN DE INICIO[/B][/COLOR]
-[COLOR red][B]* CORREGIDOS CONTENIDOS EN ATAJOS DE SERIES Y WIDGET PELISMARATON EN PELICULAS[/B][/COLOR]
+[COLOR red][B]* CORREGIDO FALLO AL DESPLEGAR LA BARRA SUPERIOR CUANDO SE PULSABA INFORMACIÓN DE LOS ADDONS (GTACTIL) [/B][/COLOR]
+[COLOR red][B]* CORREGIDO FALLO AL ABRIR LA VENTANA PARA ACTUALIZAR LOS ADDONS MANUALMENTE (GTACTIL)[/B][/COLOR]
+[COLOR red][B]* ACTUALIZADO ADDONS "THEMOVIEDBHELPER" Y "RESOLVERURL"[/B][/COLOR]
+
 
 [COLOR aquamarine][B]INSTALACIÓN DE PARCHE:[/B][/COLOR]
 
