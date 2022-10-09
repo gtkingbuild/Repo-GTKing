@@ -203,7 +203,7 @@ def clear_packages_startup():
                             logging.log("No se pudo eliminar {0}: {1}".format(file, str(e), xbmc.LOGERROR))
             if file_count > 0:
                 logging.log_notify(CONFIG.ADDONTITLE,
-                          '[COLOR {0}]Eliminar Paquetes:  [COLOR gold]Correcto:[/COLOR] {1}'.format(CONFIG.COLOR2, tools.convert_size(cleanupsize)))
+                          '[COLOR {0}]Eliminar Paquetes:  [COLOR gold]Correcto: {1}[/COLOR]'.format(CONFIG.COLOR2, tools.convert_size(cleanupsize)))
             else:
                 logging.log_notify(CONFIG.ADDONTITLE,
                           '[COLOR {0}]Eliminar Paquetes: [COLOR gold]Ninguno Encontrado![/COLOR]'.format(CONFIG.COLOR2))
@@ -222,7 +222,7 @@ def clear_archive():
     if dialog.yesno(CONFIG.ADDONTITLE,
                         '[COLOR {0}]Le gustaria Eliminar la carpeta \'[B]Cache_Archivo[/B]\'?[/COLOR]'.format(CONFIG.COLOR2),
                         nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]',
-                        yeslabel='[B][COLOR cyan]Si Eliminar[/COLOR][/B]'):
+                        yeslabel='[B][COLOR cyan]Si, Eliminar[/COLOR][/B]'):
         if os.path.exists(CONFIG.ARCHIVE_CACHE):
             from resources.libs.common import tools
             tools.clean_house(CONFIG.ARCHIVE_CACHE)
@@ -233,12 +233,12 @@ def clear_function_cache(over=True):
 
     if not over:
         if dialog.yesno(CONFIG.ADDONTITLE,
-                            '[COLOR {0}]Le gustaria eliminar las caches de la función de resolver?[/COLOR]'.format(CONFIG.COLOR2),
+                            '[COLOR {0}]Le gustaria eliminar las caches de la función de resolución?[/COLOR]'.format(CONFIG.COLOR2),
                             nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]',
                             yeslabel='[B][COLOR cyan]Eliminar Cache[/COLOR][/B]'):
-            clear =True
+            clear = True
     else:
-            clear =True   
+        clear = True
         
     if 'clear':
         if xbmc.getCondVisibility('System.HasAddon(script.module.resolveurl)'):
@@ -427,10 +427,10 @@ def old_thumbs():
         idfound = rows[0]
         ids.append(idfound)
         textexe.execute("SELECT cachedurl FROM texture WHERE id = ?", (idfound, ))
-        found = textexe.fetchall()
-        for rows in found:
-            images.append(rows[0])
-    logging.log("{0} total de miniaturas limpios.".format(str(len(images))))
+        found2 = textexe.fetchall()
+        for rows2 in found2:
+            images.append(rows2[0])
+    logging.log("{0} total de pulgares limpios.".format(str(len(images))))
     for id in ids:
         textexe.execute("DELETE FROM sizes WHERE idtexture = ?", (id, ))
         textexe.execute("DELETE FROM texture WHERE id = ?", (id, ))
@@ -448,10 +448,10 @@ def old_thumbs():
     removed = tools.convert_size(size)
     if len(images) > 0:
         logging.log_notify(CONFIG.ADDONTITLE,
-                           '[COLOR {0}]Miniaturas Borradas: {1} [COLOR gold]Archivos[/COLOR] / {2} MB[/COLOR]!'.format(CONFIG.COLOR2, str(len(images)), removed))
+                           '[COLOR {0}]Pulgares Borrados: {1} [COLOR gold]Archivos[/COLOR] / {2} MB[/COLOR]!'.format(CONFIG.COLOR2, str(len(images)), removed))
     else:
         logging.log_notify(CONFIG.ADDONTITLE,
-                           '[COLOR {0}]Miniaturas Borradas: [COLOR gold]Ninguno Encontrado![/COLOR]'.format(CONFIG.COLOR2))
+                           '[COLOR {0}]Pulgares Borrados: [COLOR gold]Ninguno Encontrado![/COLOR]'.format(CONFIG.COLOR2))
 
 
 def clear_crash():
@@ -500,7 +500,7 @@ def toggle_cache(state):
                               "[COLOR {0}]Debera desactivar [COLOR {1}]Incluir Todos los Addons[/COLOR] para deshabilitar[/COLOR] [COLOR {2}]{3}[/COLOR]".format(CONFIG.COLOR2, CONFIG.COLOR1, CONFIG.COLOR1, item))
             except:
                 logging.log_notify("[COLOR {0}]Alternar Cache[/COLOR]".format(CONFIG.COLOR1),
-                                   "[COLOR {0}]Add-on ID Invalido: {1}[/COLOR]".format(CONFIG.COLOR2, state))
+                                   "[COLOR {0}]Invalido Add-on ID: {1}[/COLOR]".format(CONFIG.COLOR2, state))
         else:
             new = 'true' if CONFIG.get_setting(state) == 'false' else 'false'
             CONFIG.set_setting(state, new)
@@ -533,7 +533,7 @@ def clear_thumbs(type=None):
     if type is not None:
         choice = 1
     else:
-        choice = dialog.yesno(CONFIG.ADDONTITLE, '[COLOR {0}]Le gustaria eliminar [B]{1}[/B] y las carpetas de miniaturas relacionadas?'.format(CONFIG.COLOR2, latest) + '\n' + '\n' + "Ellas se repoblarán en la próxima puesta en marcha.[/COLOR]", nolabel='[B][COLOR red]No Eliminar[/COLOR][/B]', yeslabel='[B][COLOR cyan]Eliminar Miniaturas[/COLOR][/B]')
+        choice = dialog.yesno(CONFIG.ADDONTITLE, '[COLOR {0}]Le gustaria eliminar [B]{1}[/B] y las carpetas de miniaturas relacionadas?'.format(CONFIG.COLOR2, latest) + '\n' + '\n' + "Ellas se repoblarán en la próxima puesta en marcha.[/COLOR]", nolabel='[B][COLOR red]No Eliminar[/COLOR][/B]', yeslabel='[B][COLOR cyan]Eliminar Pulgares[/COLOR][/B]')
     if choice == 1:
         try:
             tools.remove_file(os.path.join(CONFIG.DATABASE, latest))
@@ -699,7 +699,7 @@ def remove_addon_menu():
         logging.log_notify(CONFIG.ADDONTITLE,
                            "[COLOR {0}]No hay Addons Para Eliminar[/COLOR]".format(CONFIG.COLOR2))
         return
-    selected = dialog.multiselect("{0}: Seleccione los Addons que desea eliminar.".format(CONFIG.ADDONTITLE), addonnames)
+    selected = dialog.multiselect("{0}   Seleccione los Addons                       ".format(CONFIG.ADDONTITLE), addonnames)
     if not selected:
         return
     if len(selected) > 0:
