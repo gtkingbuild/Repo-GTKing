@@ -284,38 +284,6 @@ def select_option(vit, titulo = "Selecciona una calidad/resolución"):
     return ret
 
 
-def select_option(vit, titulo = "Selecciona una calidad/resolución"):
-    select = 0
-    ret = None
-
-    if isinstance(vit, list):
-        if len(vit) > 1:
-            vit = sorted_videolist(vit)
-            labels = list()
-            no_repetidos = list()
-            i = 0
-            for li in vit[:]:
-                key = str(li.url) + li.type
-                if (key) not in no_repetidos:
-                    i += 1
-                    label = '%s. %s' % (i, li.label)
-                    labels.append(label)
-                    no_repetidos.append(key)
-                else:
-                    vit.remove(li)
-
-            if len(vit) > 1:
-                select = xbmcgui.Dialog().select(titulo, labels)
-
-    else:
-        vit = [vit]
-
-    if select > -1:
-        ret= vit[select]
-
-    return ret
-
-
 def natural_sort_key(s):
     import unicodedata
     s = six.ensure_text(str(s).lower())
@@ -439,57 +407,6 @@ def get_idioma(code):
         
     return idioma
 
-""""
-def get_setting(name, default=None):
-    value = xbmcaddon.Addon().getSetting(name)
-
-    if not value:
-        return default
-
-    elif value == 'true':
-        return True
-
-    elif value == 'false':
-        return False
-
-    else:
-        try:
-            value = int(value)
-        except ValueError:
-            try:
-                value = long(value)
-            except ValueError:
-                try:
-                    aux = load_json(value)
-                    if aux: value = aux
-                except ValueError:
-                    pass
-
-        return value
-
-
-def set_setting(name, value):
-    try:
-        if isinstance(value, bool):
-            if value:
-                value = "true"
-            else:
-                value = "false"
-
-        elif isinstance(value, (int, long)):
-            value = str(value)
-
-        elif not isinstance(value, str):
-            value = dump_json(value)
-
-        xbmcaddon.Addon().setSetting(name, value)
-
-    except Exception as ex:
-        logger("Error al convertir '%s' no se guarda el valor \n%s" % (name, ex), 'error')
-        return None
-
-    return value
-"""
 
 # Main
 from libs import httptools
