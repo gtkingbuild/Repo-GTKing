@@ -493,6 +493,46 @@
     </extension>
 </addon>
 
+<addon
+	id="plugin.video.koditv" version="3" name="[B][COLOR white]kodi[COLOR aqua]tv[/COLOR][/B]" provider-name="equipo tvchopo">
+<requires>
+    <import addon="plugin.video.youtube" />
+    <import addon="script.module.requests" />
+    <import addon="script.module.resolveurl" />
+    <import addon="script.module.six" />
+  </requires>
+	<extension point="xbmc.python.pluginsource" library="default.py">
+		<provides>video</provides>
+	</extension>
+
+	 <extension point="xbmc.addon.repository" name="tvchopo">
+        <info>https://raw.githubusercontent.com/elchocolate/repotvchopo/master/Repositorio/addons.xml</info>
+        <checksum>https://raw.githubusercontent.com/elchocolate/repotvchopo/master/Repositorio/addons.xml.md5</checksum>
+        <datadir zip="true">https://raw.githubusercontent.com/elchocolate/repotvchopo/master/Repositorio/</datadir>
+    </extension>
+
+
+	<extension point="xbmc.addon.metadata">
+                <platform>all</platform>
+		<summary lang="en"></summary>
+		<summary lang="da"></summary>
+		<description lang="en"></description>
+		<website></website>
+		<license>GPL 2.0</license>
+		<platform>all</platform>
+<assets>
+        <icon>icon.jpg</icon>
+  <screenshot>resources/screenshots/screenshot1.jpg</screenshot>
+  <screenshot>resources/screenshots/screenshot2.jpg</screenshot>
+  <screenshot>resources/screenshots/screenshot3.jpg</screenshot>
+  <screenshot>resources/screenshots/screenshot4.jpg</screenshot>
+  <screenshot>resources/screenshots/screenshot5.jpg</screenshot>
+        <fanart>fanart.png</fanart>
+    </assets>
+		<language>es</language>
+	</extension>
+</addon>
+
 <addon id="plugin.video.live.Ramses-Tv_Arena" name="[COLOR yellow]Ramses-TV[/COLOR] Arena" version="2.0" provider-name="[COLOR red]Ramses_[/COLOR]">
 	<requires>
 		<import addon="script.module.six" />
@@ -670,6 +710,24 @@ AVISO LEGAL:
   </extension>
 </addon>
 
+<addon id="plugin.video.TorrentsTV" name="[COLOR moccasin]TorrentsTV[/COLOR]" version="1.0.2" provider-name="AceTorr">
+  <requires>
+   <import addon="script.module.six" />
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="es">La mayor colección de Peliculas y Series Torrent</summary>
+    <description>Cine y Series de alta calidad usando [COLOR blue]Elementum[/COLOR] o [COLOR red]Acestream[/COLOR] como Motor Torrent.[CR][CR]*En Ajustes puedes elegir el motor a usar en los Torrents.[CR]*Precisa del addon [COLOR blue]Elementum[/COLOR] si se elige este para lanzar los Torrents.[CR]*Precisa del addon [COLOR yellow]Horus+Acestream[/COLOR] si se elige como motor Acestream.[CR]  -Si elige [COLOR yellow]Horus+Acestream[/COLOR] no dispondrá de las opciones de SERIES, sólo Peliculas.[CR][CR]**Este addon se suministra GRATIS exclusivamente desde [COLOR red]KELEBEK[/COLOR].</description>
+    <platform>all</platform>
+    <assets>
+        <icon>icon.png</icon>
+        <fanart>fanart.jpg</fanart>
+    </assets>
+  </extension>
+</addon>
+
 <addon id="plugin.video.torrest" name="Torrest" provider-name="i96751414" version="0.0.12">
     <requires>
         <!--<import addon="xbmc.python" version="3.0.0"/>-->
@@ -696,6 +754,21 @@ AVISO LEGAL:
             <screenshot>resources/screenshots/screenshot-4.jpg</screenshot>
         </assets>
         <reuselanguageinvoker>true</reuselanguageinvoker>
+    </extension>
+</addon>
+
+<addon id="plugin.video.vavooto" name="VAVOO.TO" version="5.2" provider-name="michaz">
+    <requires>
+        <import addon="script.module.requests"/>
+        <import addon="inputstream.ffmpegdirect" optional="true" />
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="lib/main.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <assets>
+            <icon>icon.png</icon>
+        </assets>
     </extension>
 </addon>
 

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+	<category label="Configuración">
+		<setting id="lanzarCon" type="enum" label="[COLOR white]Motor para lanzar los Torrents......:[/COLOR]" values="Elementum|Horus+Acestream" default="0" />
+		
+		<setting id="coment0" type="action" label="  " action=""/>
+		<setting id="coment1" type="action" label="[COLOR blue]*Elementum: [COLOR aqua]Válido tanto para Películas como para Series.[/COLOR]" action=""/>
+		<setting id="coment2" type="action" label="[COLOR blue]*Horus+Ace: [COLOR aqua]Se encarga de lanzar con Acestream. [COLOR orange][B]Sólo para Películas.[/B][/COLOR]" action=""/>
+		
+	</category>
+</settings>
