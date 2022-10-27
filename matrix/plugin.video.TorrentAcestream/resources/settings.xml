@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<settings>
-	<category label="Configuración">
-		<setting id="marcar_visto" type="bool" label="Marcar Videos Vistos (ralentiza la carga de las listas de cine)" default="false" />
-		<setting id="pregunta_marcar" type="bool" label="Preguntar si Desea Marcar como Visto (si no, marca sin preguntar)" default="false" enable="eq(-1,true)" />
-	</category>
-</settings>
