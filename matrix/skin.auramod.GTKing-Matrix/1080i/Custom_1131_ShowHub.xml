@@ -43,16 +43,25 @@
                 <orientation>vertical</orientation>
                 <pagecontrol>60</pagecontrol>
                 <usecontrolcoords>true</usecontrolcoords>
-                        <control type="radiobutton" id="9001" description="Instalar PVR IPTV Simple Client">
+                        <control type="radiobutton" id="9003" description="Instalar PVR IPTV Simple Client">
                             <include>Dialog_Standard_ListButton</include>
 							<radioposx>630</radioposx>
                             <label>PVR IPTV Simple Client (necesario)</label>
 							<selected>System.HasAddon(pvr.iptvsimple)</selected>							
                             <onclick>InstallAddon(pvr.iptvsimple)</onclick>	
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/QO5MWaJ.jpg)</onfocus>
+                        </control>						
+						
+						<control type="radiobutton" id="9004" description="Moe's TV">
+                            <include>Dialog_Standard_ListButton</include>
+                            <radioposx>630</radioposx>
+                            <label>Moe's TV</label>
+							<selected>System.HasAddon(plugin.video.moestv)</selected>							
+                            <onclick>InstallAddon(plugin.video.moestv)</onclick>
+							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/dfPvQz2.jpg)</onfocus>
                         </control>
 				
-                        <control type="radiobutton" id="9002" description="Instalar Winner 2">
+                        <control type="radiobutton" id="9005" description="Instalar Winner 2">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Winner 2</label>
@@ -61,7 +70,7 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/hEAC8cq.jpg)</onfocus>
                         </control> -->
 						
-                       <control type="radiobutton" id="9003" description="Instalar Horus">
+                       <control type="radiobutton" id="9006" description="Instalar Horus">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Horus</label>
@@ -69,26 +78,26 @@
                             <onclick>InstallAddon(script.module.horus)</onclick>	
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/zOhCSGc.png)</onfocus>
                         </control>
-						
-						<!-- <control type="radiobutton" id="9004" description="Instalar Winner">
-                            <include>Dialog_Standard_ListButton</include>
-                            <radioposx>630</radioposx>
-                            <label>Winner</label>
-							<selected>System.HasAddon(script.module.winner)</selected>
-                            <onclick>InstallAddon(script.module.winner)</onclick>	
-							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/kPSZtP8.png)</onfocus>
-                        </control> -->
 
-						<control type="radiobutton" id="9005" description="Instalar Palantir 2">
+						<control type="radiobutton" id="9007" description="Instalar Palantir 2">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
-                            <label>Palantir 2</label>
+                            <label>[COLOR gold]Palantir 2[/COLOR]</label>
 							<selected>System.HasAddon(plugin.video.palantir2)</selected>							
                             <onclick>InstallAddon(plugin.video.palantir2)</onclick>	
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/WlWLdLl.png)</onfocus>
                         </control>
-
-						<control type="radiobutton" id="9006" description="Instalar Alfa">
+						
+						<control type="radiobutton" id="9008" description="Instalar Tacones">
+                            <include>Dialog_Standard_ListButton</include>
+                            <radioposx>630</radioposx>
+                            <label>[COLOR red]Tacones[/COLOR]</label>
+							<selected>System.HasAddon(plugin.video.tacones)</selected>
+                            <onclick>InstallAddon(plugin.video.tacones)</onclick>	
+							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/aciSu1i.png)</onfocus>
+                        </control>
+						
+						<control type="radiobutton" id="9009" description="Instalar Alfa">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Alfa</label>
@@ -97,7 +106,7 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/Ii3dBvu.png)</onfocus>
                         </control>
 
-						<control type="radiobutton" id="9007" description="Instalar Balandro">
+						<control type="radiobutton" id="9010" description="Instalar Balandro">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Balandro</label>
@@ -106,16 +115,8 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/dKLvZFr.png)</onfocus>
                         </control>
 
-						<control type="radiobutton" id="9008" description="Moe's TV">
-                            <include>Dialog_Standard_ListButton</include>
-                            <radioposx>630</radioposx>
-                            <label>Moe's TV</label>
-							<selected>System.HasAddon(plugin.video.moestv)</selected>							
-                            <onclick>InstallAddon(plugin.video.moestv)</onclick>
-							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/dfPvQz2.jpg)</onfocus>
-                        </control>
 
-						<control type="radiobutton" id="9009" description="Pluto TV">
+						<control type="radiobutton" id="9011" description="Pluto TV">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Pluto TV</label>
@@ -124,7 +125,7 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/vy04p7L.png)</onfocus>
                         </control>
 
-						<control type="radiobutton" id="9010" description="Samsung TV+">
+						<control type="radiobutton" id="9012" description="Samsung TV+">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Samsung TV+</label>
@@ -133,7 +134,7 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/uwEvfRF.png)</onfocus>
                         </control>
 
-						<control type="radiobutton" id="9011" description="Red Bull TV">
+						<control type="radiobutton" id="9013" description="Red Bull TV">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Red Bull TV</label>
@@ -142,7 +143,7 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/i1rxlN4.png)</onfocus>
                         </control>
 						
-						<control type="radiobutton" id="9013" description="Instalar Apex Sports">
+						<control type="radiobutton" id="9014" description="Instalar Apex Sports">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Apex Sports</label>
@@ -151,7 +152,7 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/p7hOgnd.png)</onfocus>
                         </control>
 						
-						<control type="radiobutton" id="9014" description="Instalar Sport HD">
+						<control type="radiobutton" id="9015" description="Instalar Sport HD">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Sport HD</label>
@@ -160,16 +161,8 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/0TjmyAX.png)</onfocus>
                         </control>
 						
-					 <!--<control type="radiobutton" id="9004" description="Instalar Tacones">
-                            <include>Dialog_Standard_ListButton</include>
-                            <radioposx>630</radioposx>
-                            <label>Tacones</label>
-							<selected>System.HasAddon(plugin.video.tacones)</selected>
-                            <onclick>InstallAddon(plugin.video.tacones)</onclick>	
-							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/aciSu1i.png)</onfocus>
-                        </control> oculto -->
 
-                       <control type="radiobutton" id="9012" description="Continuar">
+                       <control type="radiobutton" id="9001" description="Continuar">
                             <include>Dialog_Standard_ListButton</include>
                             <label>Continuar</label>
                             <onclick condition="String.IsEmpty(Window(Home).Property(RunWizard))">ReloadSkin()</onclick>
