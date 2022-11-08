@@ -1045,7 +1045,7 @@ AVISO LEGAL:
     </extension>
 </addon>
 
-<addon id="skin.auramod.GTKing-Matrix" version="1.1.9.1" name="AuraMod [COLOR FF1e90ff]GTKING[/COLOR]" provider-name="Auramod,[COLOR FF1e90ff]GTKING[/COLOR]">
+<addon id="skin.auramod.GTKing-Matrix" version="1.1.9.2" name="AuraMod [COLOR FF1e90ff]GTKING[/COLOR]" provider-name="Auramod,[COLOR FF1e90ff]GTKING[/COLOR]">
     <requires>
         <import addon="xbmc.gui" version="5.15.0"/>
         <import addon="script.skin.helper.service" version="1.1.24"/>
