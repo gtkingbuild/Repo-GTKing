@@ -1041,10 +1041,10 @@
         <!-- play -->
         <visible>Integer.IsGreater(Container(1505).NumItems,0)</visible>
         <description>Play</description>
-        <width>250</width>
+        <width>238</width>
         <height>80</height>
         <label>[CAPITALIZE][B]$LOCALIZE[31714][/B][/CAPITALIZE]</label> <!-- Play -->
-        <align>center</align>
+        <align>right</align>
         <textcolor>grey</textcolor>
         <focusedcolor>black</focusedcolor>
         <texturefocus colordiffuse="d9ffffff" border="5">common/rounded-shadow8.png</texturefocus>
@@ -1053,7 +1053,7 @@
         <textureradioofffocus colordiffuse="black">netflix/play.png</textureradioofffocus>
         <textureradioonnofocus colordiffuse="white">netflix/play.png</textureradioonnofocus>
         <textureradiooffnofocus colordiffuse="white">netflix/play.png</textureradiooffnofocus>
-        <radioposx>45</radioposx>
+        <radioposx>32</radioposx>
         <radiowidth>25</radiowidth>
         <radioheight>35</radioheight>
         <font>Reg28</font>
