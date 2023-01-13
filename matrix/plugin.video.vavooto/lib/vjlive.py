@@ -2,7 +2,7 @@
 import sys, re, requests, time, os, xbmcplugin, xbmcgui, xbmc, json, utils
 groupfile = os.path.join(utils.addonpath,"groups")
 favoritenfile = os.path.join(utils.addonpath,"tvfavoriten")
-url="https://www2.vjackson.info/live2/index"
+url="https://www2.vavoo.to/live2/index"
 home = xbmcgui.Window(10000)
 
 def getchannels():

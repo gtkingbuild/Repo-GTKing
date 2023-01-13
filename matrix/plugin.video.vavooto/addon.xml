@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.vavooto" name="VAVOO.TO" version="5.2" provider-name="michaz">
+<addon id="plugin.video.vavooto" name="VAVOO.TO" version="5.3" provider-name="michaz">
     <requires>
         <import addon="script.module.requests"/>
         <import addon="inputstream.ffmpegdirect" optional="true" /> 

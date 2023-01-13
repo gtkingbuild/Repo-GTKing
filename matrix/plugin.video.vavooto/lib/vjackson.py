@@ -6,7 +6,7 @@ from xbmcgui import ListItem, DialogProgressBG, Dialog
 urllib3.disable_warnings()
 session = requests.session()
 from base64 import b64encode, b64decode 
-BASEURL = 'https://www2.vjackson.info/ccapi/'
+BASEURL = 'https://www2.vavoo.to/ccapi/'
 
 favoritenfile = os.path.join(utils.addonpath,"tvfavoriten")
 
