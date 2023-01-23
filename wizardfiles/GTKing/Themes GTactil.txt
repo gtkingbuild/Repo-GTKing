@@ -1,4 +1,4 @@
-name="[B][COLOR white]•  [COLOR orange]MOTOR:[/COLOR] Elementum_TACTIL_-All_0.186[/B]"
+name="[B][COLOR white]•  [COLOR orange]MOTOR:[/COLOR] Elementum_TACTIL_-All_0.187[/B]"
 url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/0.18x/Elementum_TACTIL_all_v0.187.zip"
 icon="https://gtkingbuild.github.io/wizard/wizardmatrix/elementum-All-One.png"
 fanart="https://gtkingbuild.github.io/wizard/wizardmatrix/elementum.jpg"
