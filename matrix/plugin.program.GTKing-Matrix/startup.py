@@ -119,7 +119,7 @@ def show_notification():
                 window.show_notification(msg)
             else:
                 logging.log('[Notifications] No hay notificaciones nuevas.', level=xbmc.LOGINFO)
-        elif note_id > CONFIG.NOTEID:
+        elif note_id == CONFIG.NOTEID:
             logging.log('[Notifications] Mostrando Notificación {0}'
                         .format(note_id))
             CONFIG.set_setting('noteid', '{}'.format(note_id))
@@ -213,7 +213,7 @@ def build_update_check():
         if CONFIG.SKIN in ['skin.confluence', 'skin.estuary', 'skin.estouchy'] and not CONFIG.DEFAULTIGNORE == 'true':
             check.check_skin()
 
-        logging.log("[Build Check] Build Instalado: Comprobando Actualizaciones", level=xbmc.LOGINFO)
+        logging.log("[Build Check] Build Instalado: [COLOR gold]Comprobando Actualizaciones", level=xbmc.LOGINFO)
         check.check_build_update()
 
     CONFIG.set_setting('nextbuildcheck', tools.get_date(days=CONFIG.UPDATECHECK, formatted=True))
@@ -279,17 +279,17 @@ def auto_clean():
     else:
         logging.log("[Auto Clean Up] Next Clean Up {0}".format(CONFIG.NEXTCLEANDATE),
                     level=xbmc.LOGINFO)
+    if CONFIG.AUTOTHUMBS == 'true':
+            logging.log('[Auto Clean Up] Old Thumbs: On', level=xbmc.LOGINFO)
+            clear.clear_thumbs(type=1)
+    else:
+        logging.log('[Auto Clean Up] Old Thumbs: Off', level=xbmc.LOGINFO)
     if service:
         if CONFIG.AUTOCACHE == 'true':
             logging.log('[Auto Clean Up] Cache: On', level=xbmc.LOGINFO)
             clear.clear_cache(True)
         else:
             logging.log('[Auto Clean Up] Cache: Off', level=xbmc.LOGINFO)
-        if CONFIG.AUTOTHUMBS == 'true':
-            logging.log('[Auto Clean Up] Old Thumbs: On', level=xbmc.LOGINFO)
-            clear.old_thumbs()
-        else:
-            logging.log('[Auto Clean Up] Old Thumbs: Off', level=xbmc.LOGINFO)
         if CONFIG.AUTOPACKAGES == 'true':
             logging.log('[Auto Clean Up] Packages: On', level=xbmc.LOGINFO)
             clear.clear_packages_startup()
@@ -347,23 +347,7 @@ if tools.open_url(CONFIG.BUILDFILE, check=True) and CONFIG.get_setting('installe
 else:
     logging.log("[Current Build Check] Build Instalado: {0}".format(CONFIG.BUILDNAME), level=xbmc.LOGINFO)
 
-# ENABLE ALL ADDONS AFTER INSTALL
-if CONFIG.get_setting('enable_all') == 'true':
-    logging.log("[Post Install] Enabling all Add-ons", level=xbmc.LOGINFO)
-    from resources.libs.gui import menu
-    menu.enable_addons(all=True)
-    if os.path.exists(os.path.join(CONFIG.USERDATA, '.enableall')):
-    	logging.log("[Post Install] .enableall file found in userdata. Deleting..", level=xbmc.LOGINFO)
-    	import xbmcvfs
-    	xbmcvfs.delete(os.path.join(CONFIG.USERDATA, '.enableall'))
-    xbmc.executebuiltin('UpdateLocalAddons')
-    xbmc.executebuiltin('UpdateAddonRepos')
-    db.force_check_updates(auto=True)
-    CONFIG.set_setting('enable_all', 'false')
-    xbmc.executebuiltin("ReloadSkin()")
-    tools.reload_profile(xbmc.getInfoLabel('System.ProfileName'))
-
-    # BUILD UPDATE CHECK
+# BUILD UPDATE CHECK
 buildcheck = CONFIG.get_setting('nextbuildcheck')
 if CONFIG.get_setting('buildname'):
     current_time = time.time()
@@ -405,7 +389,7 @@ else:
     logging.log('[Notifications] Not Enabled', level=xbmc.LOGINFO)
 
 # INSTALLED BUILD CHECK
-if CONFIG.get_setting('instalADO') == 'true':
+if CONFIG.get_setting('instalado') == 'true':
     logging.log("[Build Instalado Check] Started", level=xbmc.LOGINFO)
     installed_build_check()
 else:
