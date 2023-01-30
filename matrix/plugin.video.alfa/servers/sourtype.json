@@ -1,0 +1,94 @@
+{
+  "active": true,
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "(https://(?:www.|)(?:nonktube|udvl).com/video(?:s|)/[0-9]+/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://(?:www.|en.|)(?:fuqer|luxuretv).com/video(?:s|)/[A-z0-9-]+.html)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://(?:www.|)(?:justporn|pulpo69).com/video/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://(?:www.|)porn300.com(?:/es|)/video/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://(?:www.|)canalporno.com/ver/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://(?:www.|)(?:drpornofilme|pornobereich|pornodiamant).com/film(?:e|)/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(http://(?:www.|)incestflix.com/watch/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(vagina.nl/sexfilms/view/[A-z0-9-]+(?:/|))",
+        "url": "https://en.\\1"
+      },
+     {
+        "pattern": "(https://(?:www.|)errrotica.com/[a-z]/[A-z0-9-]+/[0-9]+(?:/|))",
+        "url": "\\1"
+      },
+     {
+        "pattern": "(https://(?:www.|)(?:pornvid69|sextube).(?:com|nl)/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+     {
+        "pattern": "(https://(?:www.|)(?:yrprno|youcrazyx|trendyporn|yespornplease|hentaiprno|tubehentai).(?:com|sexy)/video/[A-z0-9-]+.html)",
+        "url": "\\1"
+      },
+     {
+        "pattern": "(https://(?:www.|)pornxs.com/(?:embed/|)[0-9]+)",
+        "url": "\\1"
+      },
+     {
+        "pattern": "(https://(?:www.|)pornovideow.com/content_video/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://(?:www.|)bustybus.com/video\\?play=[0-9]+)",
+        "url": "\\1"
+      }
+    ]
+  },
+  "free": true,
+  "id": "sourtype",
+  "name": "sourtype",
+  "settings": [
+    {
+      "default": false,
+      "enabled": true,
+      "id": "black_list",
+      "label": "@60654",
+      "type": "bool",
+      "visible": true
+    },
+    {
+      "default": 0,
+      "enabled": true,
+      "id": "favorites_servers_list",
+      "label": "@60655",
+      "lvalues": [
+        "No",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "type": "list",
+      "visible": false
+    }
+  ],
+  "thumbnail": ""
+}

@@ -1,0 +1,17 @@
+{
+  "id": "pelisencastellano",
+  "name": "PelisEnCastellano",
+  "thumbnail": "pelisencastellano.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie"],
+  "language": ["cast"],
+
+  "clusters": ["suggested", "kids", "docs"],
+
+  "notes": "Películas en español, por géneros."
+}

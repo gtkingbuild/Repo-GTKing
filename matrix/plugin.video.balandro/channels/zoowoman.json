@@ -1,0 +1,17 @@
+{
+  "id": "zoowoman",
+  "name": "Zoowoman",
+  "thumbnail": "zoowoman.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie", "torrent"],
+  "language": ["cast", "lat", "vose", "vo"],
+
+  "clusters": ["torrents", "classic", "adults", "rankings", "lists", "epochs", "years", "directors", "kids", "docs", "vos"],
+
+  "notes": "Web CERRADA. Películas clásicas y cine independiente, por géneros, subgéneros, año."
+}

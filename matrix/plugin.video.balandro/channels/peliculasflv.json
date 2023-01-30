@@ -1,0 +1,17 @@
+{
+  "id": "peliculasflv",
+  "name": "PeliculasFlv",
+  "thumbnail": "peliculasflv.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["suggested", "kids", "docs", "vos"],
+
+  "notes": "Películas por géneros."
+}

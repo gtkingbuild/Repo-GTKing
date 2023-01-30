@@ -393,10 +393,11 @@ def load_json(*args, **kwargs):
     if "object_hook" not in kwargs:
         kwargs["object_hook"] = set_encoding
 
+
     try:
         value = json.loads(*args, **kwargs)
     except Exception as e:
-        # logger(e)
+        #logger(e)
         value = {}
 
     return value

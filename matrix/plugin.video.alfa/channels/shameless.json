@@ -1,0 +1,15 @@
+{
+  "id": "shameless",
+  "name": "Shameless",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://www.shameless.com/favicon/apple-touch-icon.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

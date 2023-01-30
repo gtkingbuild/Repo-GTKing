@@ -1,0 +1,18 @@
+{
+  "id": "hxload",
+  "name": "Hxload",
+
+  "active": false,
+  "notes": "Cerrado en Diciembre 2020",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "https://hxload.(?:co|io)/(?:embed/|\\?e=)([A-z0-9]+)",
+        "url": "https://hxload.co/embed/\\1"
+      }
+    ]
+  }
+
+}

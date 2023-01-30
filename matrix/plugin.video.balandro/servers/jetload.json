@@ -1,0 +1,18 @@
+{
+  "id": "jetload",
+  "name": "Jetload",
+ 
+  "active": false,
+  "notes": "Requiere recaptcha, y requería pairing desde navegador web, pero está anulado",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "jetload.net/(?:e|p|#!/v|#!/d)/([A-z0-9]+)",
+        "url": "https://jetload.net/e/\\1"
+      }
+    ]
+  }
+
+}

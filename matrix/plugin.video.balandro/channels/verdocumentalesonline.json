@@ -1,0 +1,17 @@
+{
+  "id": "verdocumentalesonline",
+  "name": "VerDocumentalesOnline",
+  "thumbnail": "verdocumentalesonline.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["documentary"],
+
+  "categories": ["documentary"],
+  "language": ["cast"],
+
+  "clusters": ["suggested", "rankings", "lists", "docs"],
+
+  "notes": "Documentales en castellano."
+}

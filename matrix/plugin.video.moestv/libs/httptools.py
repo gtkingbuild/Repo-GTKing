@@ -34,7 +34,7 @@ cookies_path = os.path.join(DATA_PATH, "cookies.dat")
 
 # Headers por defecto, si no se especifica nada
 default_headers = dict()
-default_headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0"
+default_headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
 default_headers["Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
 default_headers["Accept-Language"] = "es-ES,es;q=0.8,en-US;q=0.5,en;q=0.3"
 default_headers["Accept-Charset"] = "UTF-8"
@@ -284,9 +284,12 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
         response['data'] = six.ensure_str(response['data'], errors='replace')
 
         if not no_decode:
-            response["data"] = six.ensure_str(HTMLParser().unescape(
-                six.ensure_text(response['data'], errors='replace')
-            ))
+            try:
+                response["data"] = six.ensure_str(HTMLParser().unescape(
+                    six.ensure_text(response['data'], errors='replace')))
+            except:
+                import html
+                response["data"] = six.ensure_str(html.unescape(six.ensure_text(response['data'], errors='replace')))
 
         # Anti TestCookie
         if bypass_testcookie:

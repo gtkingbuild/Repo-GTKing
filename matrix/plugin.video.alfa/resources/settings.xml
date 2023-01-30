@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <category label="70168">
+        <setting label="70753" type="lsep"/>
+        <setting id="player_mode" type="enum" values="Direct|SetResolvedUrl|Built-In|Download and Play" label="30044"
+                 default="0"/>
+        <setting id="default_action" type="enum" lvalues="30006|30007|30008" label="30005" default="0"/>
+
+        <setting label="60391" type="lsep"/>
+        <setting id="autoplay" type="bool" label="70562" default="false" visible="true"/>
+        <setting id="second_language" type="labelenum" values="No|CAST|LAT|VOSE|VOS|VO"
+                 label="80001" default="No" subsetting="true"/>
+        <setting id="autoplay_qlty" type="labelenum" label="80002"
+                 values="Alta|Baja" default="Alta" subsetting="true"/>
+
+        <setting label="60544" type="lsep"/>
+        <setting id="channel_language" type="labelenum" values="all|cast|lat" label="30019" default="all"/>
+        <setting id="trakt_sync" type="bool" label="70109" default="false"/>
+        <setting id="forceview" type="bool" label="30043" default="false"/>
+<!--        <setting id="faster_item_serialization" type="bool" label="30300" default="false"/>-->
+        <setting id="show_fixes" type="bool" label="Mostrar informe de correcciones" default="true"/>
+        <setting id="debug" type="bool" label="30003" default="false"/>
+
+        <setting label="70169" type="lsep"/>
+        <setting id="resolve_priority" type="enum" label="70110" lvalues="70164|70165|70166" default="0"/>
+        <setting id="resolve_stop" type="bool" label="70111" default="true"/>
+        <setting id="hidepremium" type="bool" label="70112" default="false"/>
+
+        <setting label="60305" type="lsep"/>
+        <setting id="adult_aux_intro_password" type="text" label="70113" option="hidden" default=""/>
+        <setting id="adult_mode" type="enum" lvalues="60602|60616|70114" label="30002" enable="!eq(-1,)" default="0"/>
+        <setting id="adult_request_password" type="bool" label="70115" enable="!eq(-1,0)+!eq(-2,)" default="true"/>
+        <setting id="adult_aux_new_password1" type="text" label="70116" option="hidden" enable="!eq(-3,)" default=""/>
+        <setting id="adult_aux_new_password2" type="text" label="70117" option="hidden" enable="!eq(-1,)" default=""/>
+        <setting id="chrome_ua_version" type="text" default="86.0.4240.75" visible="False"/>
+    </category>
+
+    <!-- Path downloads -->
+    <category label="30501">
+        <setting label="30101" type="lsep"/>
+        <setting id="downloadpath" type="folder" label="30017" default=""/>
+        <setting id="downloadlistpath" type="folder" label="30018" default=""/>
+
+        <setting label="60331" type="lsep"/>
+        <setting id="videolibrarypath" type="folder" label="30067" default=""/>
+    </category>
+
+    <category label="30131">
+        <setting label="30131" type="lsep"/>
+        <setting id="folder_tvshows" type="text" label="70118" default="SERIES"/>
+        <setting id="folder_movies" type="text" label="70119" default="CINE"/>
+        <setting id="videolibrary_kodi_flag" type="number" label="" default="0" visible="false"/>
+        <setting id="videolibrary_kodi" type="bool" label="70120" enable="lt(-1,2)+eq(0,false)" default="true"/>
+        <setting id="next_ep" type="enum" label="70746" lvalues="70752|70748" default="1"/>
+        <setting id="next_ep_seconds" type="labelenum" values="20|30|40|50|60|70|80|100|120" label="70749" default="30"
+                 visible="eq(-1,1)"/>
+        <setting id="next_ep_type" type="bool" label="70754" default="false" visible="eq(-2, 1)"/>
+    </category>
+
+    <category label="70126">
+        <setting label="70121" type="lsep"/>
+        <setting id="start_page" type="bool" label="70121" default="false"/>
+        <setting id="custom_start" type="bool" label="70122" default="false"
+                 visible="eq(-1,True)" enable="eq(1,False)"/>
+        <setting id="news_start" type="bool" label="70123" default="false" visible="eq(-2,True)"
+                 enable="eq(-1,False)+eq(-2,True"/>
+        <setting id="category" type="labelenum" label="70124"
+                 lvalues="70137|30123|30124|70018|60513|70013|70014|59976|70171"
+                 default="70137" visible="eq(-3,True)+eq(-1,True)+eq(-2,False)"
+                 enable="eq(-3,True)+eq(-1,True)+(-2,false)"/>
+
+        <setting label="70167" type="lsep"/>
+        <setting id="unify" type="bool" label="70134" default="false"/>
+        <setting id="color_test" type="action" label="80516" visible="eq(-1,true)" subsetting="true"
+                 action="RunPlugin(plugin://plugin.video.alfa/?action=function&folder=platformcode&function=colors&method=show_window)"/>
+
+        <setting label="80510" type="lsep"/>
+        <setting label="80510" type="lsep"/>
+        <setting id="frequents" type="bool" label="80511" default="false"/>
+        <setting id="max_frequents" type="labelenum" label="80512"
+                 values="5|10|15" default="5" visible="eq(-1,true)" subsetting="true"/>
+        <setting id="frequents_folder" type="bool" label="80513" default="false"/>
+        <setting id="max_frequents_folder" type="labelenum" label="80514"
+                 values="0|10|20|30|50" default="0" visible="eq(-1,true)" subsetting="true"/>
+
+        <setting label="60216" type="lsep"/>
+        <setting id="thumbnail_type" type="enum" lvalues="30011|30012|30200" label="30010" default="2"/>
+        <setting id="video_thumbnail_type" type="enum" label="70131" lvalues="70132|70133" default="0"/>
+        <setting id="icon_set" type="action" label="80515" default="default"
+                 action="RunPlugin(plugin://plugin.video.alfa/?action=function&folder=channels&function=setting&method=icon_set_selector)"/>
+        <setting id="infoplus_set" type="labelenum" label="70128" lvalues="70129|70130" default="70129"/>
+    </category>
+
+    <category label="80610">
+        <setting label="80610" type="lsep"/>
+        <setting id="assistant_mode" label="80611" type="labelenum" values="este|otro" default="este"/>
+        <setting id="assistant_custom_address" label="80612" type="text" default="192.168.0.1" visible="eq(-1,otro)" subsetting="true"/>
+        <setting id="assistant_flag_install" type="bool" label="80613" default="true"/>
+        <setting id="assistant_auto_install" type="action" label="80614"
+                 action="RunPlugin(plugin://plugin.video.alfa/?ew0KICAgICJhY3Rpb24iOiAiZnVuY3Rpb24iLA0KICAgICJmb2xkZXIiOiAibGliIiwNCiAgICAiZnVuY3Rpb24iOiAiYWxmYV9hc3Npc3RhbnQiLA0KICAgICJtZXRob2QiOiAiaW5zdGFsbF9hbGZhX2Fzc2lzdGFudCIsDQogICAgIm9wdGlvbnMiOiAiYXV0byINCn0=)"/>
+        <setting id="assistant_manual_install" type="action" label="80615"
+                 action="RunPlugin(plugin://plugin.video.alfa/?ew0KICAgICJhY3Rpb24iOiAiZnVuY3Rpb24iLA0KICAgICJmb2xkZXIiOiAibGliIiwNCiAgICAiZnVuY3Rpb24iOiAiZ2VuZXJpY3Rvb2xzIiwNCiAgICAibWV0aG9kIjogImNhbGxfYnJvd3NlciIsDQogICAgIm9wdGlvbnMiOiAiaHR0cHM6Ly9iaXQubHkvMlp3cGZ6cSINCn0=)"/>
+        <setting id="is_rooted_device" label="80616" type="labelenum" values="check|rooted|no_rooted" default="check"/>
+        <setting id="cf_assistant_bl_expiration" type="number" label="80782" default="5"/>
+    </category>
+
+    <category label="70149">
+        <setting label="70150" type="lsep"/>
+        <setting id="infoplus" type="bool" label="70151" default="true"/>
+        <setting id="extended_info" type="bool" label="70152" default="false"/>
+
+        <setting label="70153" type="lsep"/>
+        <setting id="shortcut_key" type="action" label="30999"
+                 action="RunPlugin(plugin://plugin.video.alfa/?ew0KICAgICJhY3Rpb24iOiAia2V5bWFwIg0KfQ==)"/>
+
+        <setting label="70154" type="lsep"/>
+        <setting id="tmdb_lang" type="enum" lvalues="60436|70423|70425|70422|70421|70420|70419" label="70418" default="0"/>
+        <setting id="tmdb_threads" type="labelenum" values="5|10|15|20|25|30" label="70155" default="20"/>
+        <setting id="tmdb_plus_info" type="bool" label="70156" default="false"/>
+        <setting id="tmdb_cache" type="bool" label="70157" default="true"/>
+        <setting id="tmdb_cache_expire" type="enum" lvalues="70158|70159|70160|70161|70170" label="70162"
+                 enable="eq(-1,true)" default="2"/>
+        <setting id="tmdb_clean_db_cache" type="action" label="70163"
+                 action="RunPlugin(plugin://plugin.video.alfa/?ew0KICAgICJhY3Rpb24iOiAic2NyaXB0Ig0KfQ==)"/>
+
+        <setting label="80740" type="lsep"/>
+        <setting id="httptools_timeout" type="labelenum" values="0|5|10|15|20|25|30"
+                 label="80741" default="15"/>
+
+        <setting label="80750" type="lsep"/>
+        <setting id="addon_update_timer" type="labelenum" values="0|6|12|24"
+                 label="80751" default="12"/>
+        <setting id="addon_update_message" type="bool" label="80752"
+                 default="false"/>
+
+        <!-- <setting label="80760" type="lsep"/> -->
+        <setting label="80761" type="text" id="lista_activa" default="alfavorites-default.json" visible="false"/>
+
+        <setting label="80770" type="lsep"/>
+        <setting id="addon_quasar_update" type="bool" label="80771"
+                 default="false"/>
+
+        <setting label="80780" type="lsep"/>
+        <setting id="alternative_web_access" type="bool" label="80781"
+                 default="false"/>
+        
+        <setting label="80785" type="lsep"/>
+        <setting id="caching" type="bool" label="80786"
+                 default="true"/>
+    </category>
+
+</settings>

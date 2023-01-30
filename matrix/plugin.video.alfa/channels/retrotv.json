@@ -1,0 +1,36 @@
+{
+  "id": "retrotv",
+  "name": "RetroTV",
+  "active": true,
+  "adult": false,
+  "language": ["lat"],
+  "thumbnail": "https://retrotv.org/wp-content/uploads/2021/07/Sin-titulo-1-2.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "tvshow",
+    "movie"
+  ],
+  "force_unify": true,
+  "settings": [
+    {
+      "id": "include_in_global_search",
+      "type": "bool",
+      "label": "Incluir en busqueda global",
+      "default": false,
+      "enabled": false,
+      "visible": false
+    },
+    {
+      "id": "filter_languages",
+      "type": "list",
+      "label": "Mostrar enlaces en idioma...",
+      "default": 0,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "No filtrar"
+      ]
+    }
+  ]
+}

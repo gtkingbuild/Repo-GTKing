@@ -1,0 +1,15 @@
+{
+  "id": "LIKUOO",
+  "name": "LIKUOO",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://likuoo.video/files_static/images/logo.jpg",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

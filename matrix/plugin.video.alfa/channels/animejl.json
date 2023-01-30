@@ -1,0 +1,31 @@
+{
+  "id": "animejl",
+  "name": "AnimeJL",
+  "active": true,
+  "adult": false,
+  "language": ["cast", "lat"],
+  "thumbnail": "https://i.imgur.com/S6foTE9.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "anime"
+  ],
+  "settings": [
+    {
+      "id": "include_in_global_search",
+      "type": "bool",
+      "label": "Incluir en busqueda global",
+      "default": false,
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "include_in_newest_anime",
+      "type": "bool",
+      "label": "Incluir en Novedades - Episodios de anime",
+      "default": true,
+      "enabled": true,
+      "visible": true
+    }
+  ]
+}

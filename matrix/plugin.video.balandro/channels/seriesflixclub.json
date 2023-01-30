@@ -1,0 +1,17 @@
+{
+  "id": "seriesflixclub",
+  "name": "SeriesFlixClub",
+  "thumbnail": "seriesflixclub.png",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["producers", "kids", "docs", "vos"],
+
+  "notes": "WEB CERRADA. Series por Géneros y productoras."
+}

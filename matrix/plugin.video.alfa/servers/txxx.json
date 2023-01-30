@@ -1,0 +1,78 @@
+{
+  "active": true,
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "(?:video|)((?:txxx|hclips).com/(?:video|videos|embed)/[0-9]+)",
+        "url": "https://\\1/a/"
+      },
+      {
+        "pattern": "https://(?:www.|)((?:privatehomeclips|hdzog|hotmovs|tubepornclassic|upornia|vjav|voyeurhit).(:?com|tube)/embed/[0-9]+)",
+        "url": "https://\\1"
+      },
+      {
+        "pattern": "https://(?:www.|)((?:privatehomeclips|hdzog|hotmovs|tubepornclassic|upornia|vjav|voyeurhit).(?:com|tube)/video(?:s|)/[0-9]+/[A-z0-9-]+/)",
+        "url": "https://\\1"
+      },
+      {
+        "pattern": "(https://(?:www.|)(?:privatehomeclips|voyeurhit).com/videos/[A-z0-9-]+/)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "https://pornclassic.tube/videos/([0-9-]+/)",
+        "url": "https://tubepornclassic.com/videos/\\1/a/"
+      },
+      {
+        "pattern": "(https://(?:desiporn|inporn|manysex|pornzog|xmilf|see|shemalez|thegay).(?:com|tube|xxx)/(:?\\w{2}/|)embed/[0-9]+)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://(?:desiporn|inporn|porntop|manysex|pornzog|xmilf|see|shemalez|thegay).(?:com|tube|xxx)/(:?\\w{2}/|)video(?:s|)/[0-9]+/[A-z0-9-]+/)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://tporn.xxx/\\w{2}/video(?:s|)/[0-9]+/[A-z0-9-]+/)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://porntop.com)/embed.php\\?id=([0-9]+)",
+        "url": "\\1/video/\\2/"
+      },
+      {
+        "pattern": "(https://vxxx.com/video-[0-9]+)",
+        "url": "\\1"
+      }
+    ]
+  },
+  "free": true,
+  "id": "txxx",
+  "name": "txxx",
+  "settings": [
+    {
+      "default": false,
+      "enabled": true,
+      "id": "black_list",
+      "label": "@60654",
+      "type": "bool",
+      "visible": true
+    },
+    {
+      "default": 0,
+      "enabled": true,
+      "id": "favorites_servers_list",
+      "label": "@60655",
+      "lvalues": [
+        "No",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "type": "list",
+      "visible": false
+    }
+  ],
+  "thumbnail": ""
+}

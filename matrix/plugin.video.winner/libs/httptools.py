@@ -285,9 +285,12 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
         response['data'] = six.ensure_str(response['data'], errors='replace')
 
         if not no_decode:
-            response["data"] = six.ensure_str(HTMLParser().unescape(
-                six.ensure_text(response['data'], errors='replace')
-            ))
+            try:
+                response["data"] = six.ensure_str(HTMLParser().unescape(
+                    six.ensure_text(response['data'], errors='replace')))
+            except:
+                import html
+                response["data"] = six.ensure_str(html.unescape(six.ensure_text(response['data'], errors='replace')))
 
         # Anti TestCookie
         if bypass_testcookie:

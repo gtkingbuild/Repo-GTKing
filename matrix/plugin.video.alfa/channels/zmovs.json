@@ -1,0 +1,15 @@
+{
+  "id": "zmovs",
+  "name": "zmovs",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://zmovs.com/favicon-96x96.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

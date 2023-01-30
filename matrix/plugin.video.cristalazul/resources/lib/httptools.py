@@ -6,6 +6,7 @@ import hashlib
 import inspect
 from io import BytesIO
 import os
+import six
 from six.moves.html_parser import HTMLParser
 from six.moves.http_cookiejar import Cookie
 from six.moves.http_cookiejar import MozillaCookieJar
@@ -14,10 +15,6 @@ from threading import Lock
 from threading import Thread
 import time
 
-import six
-import xbmc
-import xbmcaddon
-
 import simplecache
 from six.moves import http_client
 from six.moves import queue
@@ -25,7 +22,18 @@ from six.moves import urllib_parse
 from six.moves import urllib_request
 from six.moves import urllib_response
 from six.moves.urllib_error import HTTPError
+import xbmc
+import xbmcaddon
+import xbmcvfs
+import sys
 
+py38 = sys.version_info.major == 3 and sys.version_info.minor > 7
+if py38:
+    import html
+    unescape = html.unescape
+else:
+    from six.moves.html_parser import HTMLParser
+    unescape = HTMLParser().unescape
 
 try:
     translatePath = xbmcvfs.translatePath
@@ -300,7 +308,7 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
         response['data'] = six.ensure_str(response['data'], errors='replace')
 
         if not no_decode:
-            response["data"] = six.ensure_str(HTMLParser().unescape(
+            response["data"] = six.ensure_str(unescape(
                 six.ensure_text(response['data'], errors='replace')
             ))
 

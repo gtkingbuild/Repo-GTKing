@@ -1,0 +1,17 @@
+{
+  "id": "megadede2",
+  "name": "MegaDede2",
+  "thumbnail": "megadede2.png",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["news", "years", "lists", "lasts", "kids", "docs", "vos"],
+
+  "notes": "Web CERRADA. Películas por géneros y año. Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

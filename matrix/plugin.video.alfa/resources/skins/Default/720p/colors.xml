@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<window>
+    <coordinates>
+        <left>150</left>
+        <top>50</top>
+    </coordinates>
+    <animation type="WindowOpen">
+        <effect type="zoom" start= "0,90" end="100,100" center="auto" time="200" delay="150"/>
+    </animation>
+    <animation type="WindowClose">
+        <effect type="fade" start= "100,100" end="50,50" center="auto" time="200" delay="100"/>
+    </animation>
+    <controls>
+        <control type="image">
+            <left>0</left>
+            <top>0</top>
+            <width>995</width>
+            <height>600</height>
+            <texture>Windows/DialogBack.png</texture>
+        </control>
+        <control type="image">
+            <left>210</left>
+            <top>210</top>
+            <width>765</width>
+            <height>320</height>
+            <texture>Windows/BackControls.png</texture>
+        </control>
+        <control type="image">
+            <top>0</top>
+            <height>40</height>
+            <width>995</width>
+            <texture>Windows/Header.png</texture>
+        </control>
+        <control type="label">
+            <top>8</top>
+            <left>100</left>
+            <height>34</height>
+            <width>800</width>
+            <font>font25_title</font>
+            <textcolor>white</textcolor>
+            <shadowcolor>FF504416</shadowcolor>
+            <visible>true</visible>
+            <align>center</align>
+            <info>Window.Property("title")</info>
+        </control>
+        <control type="button" id="3070">
+            <top>5</top>
+            <left>950</left>
+            <width>32</width>
+            <height>34</height>
+            <texturefocus>Controls/DialogCloseButton-focus.png</texturefocus>
+            <texturenofocus>Controls/logo.png</texturenofocus>
+        </control>
+        <control type="image">
+            <left>210</left>
+            <top>50</top>
+            <width>765</width>
+            <height>150</height>
+            <aspectratio>scale</aspectratio>
+            <texture>https://i.postimg.cc/g0kkQT5p/lista-unify.png</texture>
+        </control>
+        <control type="label">
+            <top>215</top>
+            <left>220</left>
+            <height>34</height>
+            <width>800</width>
+            <textcolor>white</textcolor>
+            <font>font14_title</font>
+            <align>left</align>
+            <label>Peliculas:</label>
+        </control>
+        <control type="label">
+            <top>255</top>
+            <left>220</left>
+            <height>34</height>
+            <width>800</width>
+            <textcolor>white</textcolor>
+            <font>font14_title</font>
+            <align>left</align>
+            <label>Series:</label>
+        </control>
+        <control type="label">
+            <top>295</top>
+            <left>220</left>
+            <height>34</height>
+            <width>800</width>
+            <textcolor>white</textcolor>
+            <font>font14_title</font>
+            <align>left</align>
+            <label>Servidores:</label>
+        </control>
+        <control type="label">
+            <top>335</top>
+            <left>220</left>
+            <height>34</height>
+            <width>800</width>
+            <textcolor>white</textcolor>
+            <font>font14_title</font>
+            <align>left</align>
+            <label>Valoración:</label>
+        </control>
+        <control type="label">
+            <top>375</top>
+            <left>220</left>
+            <height>34</height>
+            <width>800</width>
+            <textcolor>white</textcolor>
+            <font>font14_title</font>
+            <align>left</align>
+            <label>Idioma:</label>
+        </control>
+        <control type="label">
+            <top>415</top>
+            <left>220</left>
+            <height>34</height>
+            <width>800</width>
+            <textcolor>white</textcolor>
+            <font>font14_title</font>
+            <align>left</align>
+            <label>Videoteca (Agregar):</label>
+        </control>
+        <control type="label">
+            <top>455</top>
+            <left>220</left>
+            <height>34</height>
+            <width>800</width>
+            <textcolor>white</textcolor>
+            <font>font14_title</font>
+            <align>left</align>
+            <label>Videoteca (Actualizar):</label>
+        </control>
+        <control type="label">
+            <top>495</top>
+            <left>220</left>
+            <height>34</height>
+            <width>800</width>
+            <textcolor>white</textcolor>
+            <font>font14_title</font>
+            <align>left</align>
+            <label>Videoteca (No Actualizar):</label>
+        </control>
+    </controls>
+</window>

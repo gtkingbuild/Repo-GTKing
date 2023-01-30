@@ -1,0 +1,38 @@
+{
+  "id": "legalmentegratis",
+  "name": "Legalmente Gratis (clasicos)",
+  "active": true,
+  "adult": false,
+  "language": ["cast"],
+  "thumbnail": "https://i.postimg.cc/NFGv0pN3/legalgratis.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "movie",
+    "vos"
+  ],
+  "version": 1,
+  "settings": [
+    {
+      "id": "include_in_global_search",
+      "type": "bool",
+      "label": "Incluir en busqueda global",
+      "default": false,
+      "enabled": false,
+      "visible": false
+    },
+    {
+      "id": "filter_languages",
+      "type": "list",
+      "label": "Mostrar enlaces en idioma...",
+      "default": 0,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "No filtrar",
+        "CAST",
+        "VOSE"
+      ]
+    }
+  ]
+}

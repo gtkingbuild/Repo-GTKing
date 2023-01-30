@@ -1,0 +1,17 @@
+{
+  "id": "pelisflixnu",
+  "name": "PelisFlixNu",
+  "thumbnail": "pelisflixnu.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["years", "vos"],
+
+  "notes": "WEB CERRADA. Películas por géneros, año. También Series"
+}

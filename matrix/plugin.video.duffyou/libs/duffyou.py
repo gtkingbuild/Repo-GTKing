@@ -4,7 +4,7 @@ import plugin, re
 def play(id, title="", plot="", thumb=""):
     if id.startswith('list='):
         id = '?' + id
-        
+
     list = re.findall(r'[&?]list=([^&\s]+)', id)
     if list:
         plugin.reproducir_videos_playlist(plugin.Item(

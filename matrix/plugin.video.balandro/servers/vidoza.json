@@ -1,0 +1,20 @@
+{
+  "id": "vidoza",
+  "name": "Vidoza",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "vidoza.(net|co|org)/(?:embed-|)([A-z0-9]+)",
+        "url": "https://vidoza.\\1/embed-\\2.html"
+      },
+      {
+        "pattern": "vidoza.(net|co|org)/([a-z0-9]+).html",
+        "url": "https://vidoza.net/embed-\\1"
+      }
+    ]
+  }
+}

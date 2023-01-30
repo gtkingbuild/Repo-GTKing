@@ -1,0 +1,17 @@
+{
+  "id": "dospelis",
+  "name": "DosPelis",
+  "thumbnail": "dospelis.jpg",
+
+  "active": false,
+
+  "searchable": false,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["news", "lasts", "rankings", "languages", "producers", "years", "adults", "kids", "docs", "vos", "anime"],
+
+  "notes": "Web CERRADA. Películas por idioma, calidad, géneros y año. También Series"
+}

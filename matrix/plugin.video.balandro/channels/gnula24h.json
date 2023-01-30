@@ -1,0 +1,17 @@
+{
+  "id": "gnula24h",
+  "name": "Gnula24h",
+  "thumbnail": "gnula24h.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["lasts", "rankings", "producers", "docs", "kids", "vos", "anime", "tales"],
+
+  "notes": "Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

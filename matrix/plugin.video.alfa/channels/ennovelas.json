@@ -1,0 +1,25 @@
+{
+  "id": "ennovelas",
+  "name": "Ennovelas",
+  "active": true,
+  "adult": false,
+  "language": ["lat"],
+  "thumbnail": "https://www.ennovelas.com/LOGOO.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "tvshow",
+    "anime",
+    "vos"
+  ],
+  "settings": [
+    {
+      "id": "include_in_global_search",
+      "type": "bool",
+      "label": "Incluir en busqueda global",
+      "default": true,
+      "enabled": true,
+      "visible": true
+    }
+  ]
+}

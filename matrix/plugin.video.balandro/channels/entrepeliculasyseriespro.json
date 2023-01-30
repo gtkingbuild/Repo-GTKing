@@ -1,0 +1,17 @@
+{
+  "id": "entrepeliculasyseriespro",
+  "name": "EntrePeliculasySeriesPro",
+  "thumbnail": "entrepeliculasyseriespro.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": [ "movie", "tvshow" ],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["news", "rankings", "lasts", "kids", "docs", "vos"],
+
+  "notes": "Películas por géneros y año. Series por Géneros."
+}

@@ -1,0 +1,17 @@
+{
+  "id": "torrentsdepeliculas",
+  "name": "TorrentsDePeliculas",
+  "thumbnail": "torrentsdepeliculas.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie", "torrent"],
+  "language": ["cast"],
+
+  "clusters": ["torrents", "years", "docs"],
+
+  "notes": "Canal con enlaces Torrent exclusivamente. Películas por géneros y año."
+}

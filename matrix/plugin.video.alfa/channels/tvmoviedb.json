@@ -1,0 +1,180 @@
+{
+  "id": "tvmoviedb",
+  "name": "TvMovieDB",
+  "active": false,
+  "adult": false,
+  "language": ["*"],
+  "thumbnail": "http://i.imgur.com/HA7fvgD.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "movie",
+    "tvshow",
+    "anime"
+  ],
+  "settings": [
+    {
+      "id": "tmdb",
+      "type": "list",
+      "label": "@70418",
+      "default": 4,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "@70419",
+        "@70420",
+        "@70421",
+        "@70422",
+        "@70423",
+        "@70424",
+        "@70425",
+        "@70014"
+      ]
+    },
+    {
+      "id": "tmdb_alternativo",
+      "type": "list",
+      "label": "@70426",
+      "default": 6,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "@70419",
+        "@70420",
+        "@70421",
+        "@70422",
+        "@70423",
+        "@70424",
+        "@70425",
+        "@70014"
+      ]
+    },
+    {
+      "id": "imdb",
+      "type": "list",
+      "label": "@70427",
+      "color": "0xFFE0F04B",
+      "default": 4,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "@70419",
+        "@70420",
+        "@70421",
+        "@70422",
+        "@70423",
+        "@70424",
+        "@70425",
+        "@70014"
+      ]
+    },
+    {
+      "id": "label1",
+      "type": "label",
+      "label": "",
+      "enabled": false,
+      "visible": true
+    },
+    {
+      "id": "filmaff",
+      "type": "list",
+      "label": "@70428",
+      "color": "0xFF25AA48",
+      "default": 5,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "@70429",
+        "@70430",
+        "@70431",
+        "@70432",
+        "@70433",
+        "@70434"
+      ]
+    },
+    {
+      "id": "usuariofa",
+      "type": "text",
+      "label": "@70435",
+      "color": "0xFFd50b0b",
+      "default": "",
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "passfa",
+      "type": "text",
+      "label": "@70436",
+      "color": "0xFFd50b0b",
+      "default": "",
+      "enabled": "!eq(-1,'')",
+      "hidden": true,
+      "visible": true
+    },
+    {
+      "id": "orderfa",
+      "type": "list",
+      "label": "@70437",
+      "color": "0xFF25AA48",
+      "default": 0,
+      "enabled": "!eq(-1,'')",
+      "visible": true,
+      "lvalues": [
+        "@70438",
+        "@60230",
+        "@70042",
+        "@70439",
+        "@70440"
+      ]
+    },
+    {
+      "id": "label2",
+      "type": "label",
+      "label": "",
+      "enabled": false,
+      "visible": true
+    },
+    {
+      "id": "usuariomal",
+      "type": "text",
+      "label": "@70441",
+      "color": "0xFF25AA48",
+      "default": "",
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "passmal",
+      "type": "text",
+      "label": "@70442",
+      "color": "0xFF25AA48",
+      "default": "",
+      "enabled": "!eq(-1,'')",
+      "hidden": true,
+      "visible": true
+    },
+    {
+      "id": "adult_mal",
+      "type": "bool",
+      "label": "@70443",
+      "color": "0xFFd50b0b",
+      "default": false,
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "perfil",
+      "type": "list",
+      "label": "@60666",
+      "default": 2,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "@70444",
+        "@70445",
+        "@70446",
+        "@59992"
+      ]
+    }
+  ]
+}

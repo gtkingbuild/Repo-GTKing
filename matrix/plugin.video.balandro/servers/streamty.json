@@ -1,0 +1,17 @@
+{
+  "id": "streamty",
+  "name": "Streamty",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "streamty.com/(?:embed-|)([A-z0-9]+)",
+        "url": "https://streamty.com/embed-\\1.html"
+      }
+    ]
+  }
+
+}

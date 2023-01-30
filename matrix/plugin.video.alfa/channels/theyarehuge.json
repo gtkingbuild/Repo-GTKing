@@ -1,0 +1,15 @@
+{
+  "id": "theyarehuge",
+  "name": "theyarehuge",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://www.theyarehuge.com/static/images/tah-logo-m.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

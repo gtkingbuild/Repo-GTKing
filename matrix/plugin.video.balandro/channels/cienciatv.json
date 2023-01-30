@@ -1,0 +1,17 @@
+{
+  "id": "cienciatv",
+  "name": "CienciaTv",
+  "thumbnail": "cienciatv.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["documentary"],
+
+  "categories": ["documentary"],
+  "language": ["cast"],
+
+  "clusters": ["categories"],
+
+  "notes": "Web CERRADA. Documentales en castellano."
+}

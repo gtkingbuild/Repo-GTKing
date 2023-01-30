@@ -1,0 +1,17 @@
+{
+  "id": "uploadsmobi",
+  "name": "Uploadsmobi",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "http(?:s|)://uploads.mobi/(?:embed-|)([A-z0-9]+)",
+        "url": "https://uploads.mobi/embed-\\1.html"
+      }
+    ]
+  }
+
+}

@@ -1,0 +1,23 @@
+{
+  "id": "seriesantiguas",
+  "name": "SeriesAntiguas",
+  "active": true,
+  "adult": false,
+  "language": ["lat"],
+  "thumbnail": "https://1.bp.blogspot.com/-EE6L51tqCU4/XqS_TzOXBjI/AAAAAAAADkI/6XaqjDeHe1EMrzIxpMYx_tp2vQ2YAdLdACK4BGAYYCw/s1600/SERIESANTIGUASBLANCO.png",
+  "banner": "",
+  "fanart": "https://i.imgur.com/5ZGG3p7.png",
+  "categories": [
+    "tvshow"
+  ],
+  "settings": [
+    {
+      "id": "include_in_global_search",
+      "type": "bool",
+      "label": "Incluir en busqueda global",
+      "default": true,
+      "enabled": true,
+      "visible": true
+    }
+  ]
+}

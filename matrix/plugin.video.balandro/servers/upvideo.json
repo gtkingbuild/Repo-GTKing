@@ -1,0 +1,45 @@
+{
+  "id": "upvideo",
+  "name": "Upvideo",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "https://upvideo.to/(?:embed-|v/|)([A-z0-9]+)",
+        "url": "https://upvideo.to/v/\\1"
+      },
+      {
+        "pattern": "https://upvideo.to/(?:embed-|d/|e/|f/)([A-z0-9]+)",
+        "url": "https://upvideo.to/v/\\1"
+      },
+      {
+        "pattern": "https://videoloca.xyz/(?:embed-|v/|)([A-z0-9]+)",
+        "url": "https://upvideo.to/v/\\1"
+      },
+      {
+        "pattern": "https://videoloca.xyz/(?:embed-|d/|e/|f/)([A-z0-9]+)",
+        "url": "https://upvideo.to/v/\\1"
+      },
+      {
+        "pattern": "https://tnaket.xyz/(?:embed-|v/|)([A-z0-9]+)",
+        "url": "https://upvideo.to/v/\\1"
+      },
+      {
+        "pattern": "https://tnaket.xyz/(?:embed-|d/|e/|f/)([A-z0-9]+)",
+        "url": "https://upvideo.to/v/\\1"
+      },
+      {
+        "pattern": "https://makaveli.xyz/(?:embed-|v/|)([A-z0-9]+)",
+        "url": "https://upvideo.to/v/\\1"
+      },
+      {
+        "pattern": "https://makaveli.xyz/(?:embed-|d/|e/|f/)([A-z0-9]+)",
+        "url": "https://upvideo.to/v/\\1"
+      }
+    ]
+  }
+
+}

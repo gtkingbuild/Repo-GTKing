@@ -1,0 +1,17 @@
+{
+  "id": "mejortorrents",
+  "name": "MejorTorrents",
+  "thumbnail": "mejortorrents.png",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow", "torrent"],
+  "language": ["cast"],
+
+  "clusters": ["torrents", "classic", "news", "rankings", "years", "lasts", "kids", "docs"],
+
+  "notes": "Web CERRADA. Canal con enlaces Torrent exclusivamente. Películas y Series, por géneros, calidad y año. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

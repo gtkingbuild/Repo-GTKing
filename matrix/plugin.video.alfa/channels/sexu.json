@@ -1,0 +1,15 @@
+{
+  "id": "sexu",
+  "name": "sexu",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://i.postimg.cc/s11vmsm9/sexu.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

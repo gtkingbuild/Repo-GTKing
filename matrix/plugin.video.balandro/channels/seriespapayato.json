@@ -1,0 +1,17 @@
+{
+  "id": "seriespapayato",
+  "name": "SeriesPapayaTo",
+  "thumbnail": "seriespapayato.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["kids", "vos"],
+
+  "notes": "Series por Géneros."
+}

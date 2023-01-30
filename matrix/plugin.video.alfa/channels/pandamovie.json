@@ -1,0 +1,23 @@
+{
+  "id": "pandamovie",
+  "name": "pandamovie",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "http://www.pandamovies.com/templates/pandamovies/images/logo.png?v1482157699",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+    {
+      "id": "include_in_global_search",
+      "type": "bool",
+      "label": "Incluir en busqueda global",
+      "default": false,
+      "enabled": true,
+      "visible": true
+    }
+  ]
+}

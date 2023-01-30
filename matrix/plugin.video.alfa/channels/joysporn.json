@@ -1,0 +1,15 @@
+{
+  "id": "joysporn",
+  "name": "joysporn",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://i.postimg.cc/KvSQtFfr/joysporn.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

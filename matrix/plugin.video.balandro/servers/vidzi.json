@@ -1,0 +1,17 @@
+{
+  "id": "vidzi",
+  "name": "Vidzi",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "vidzi.tv/(?:embed-|embed/|)([a-z0-9A-Z]+)",
+        "url": "http://vidzi.tv/embed-\\1.html"
+      }
+    ]
+  }
+
+}

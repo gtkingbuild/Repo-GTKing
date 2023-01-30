@@ -1,0 +1,17 @@
+{
+  "id": "pepecine",
+  "name": "PepeCine",
+  "thumbnail": "pepecine.png",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast"],
+
+  "clusters": ["adults", "news", "rankings", "years", "countries", "lists", "lasts", "vos"],
+
+  "notes": "Web CERRADA. Películas y Series, por géneros. Esta web intercala películas/series para adultos en algunas secciones, pero puedes desactivarlas en la configuración del addon."
+}

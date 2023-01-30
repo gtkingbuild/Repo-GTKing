@@ -1,0 +1,17 @@
+{
+  "id": "burstcloud",
+  "name": "Burstcloud",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "(https://www.burstcloud.co/embed/.*?.mp4)",
+        "url": "\\1"
+      }
+    ]
+  }
+
+}

@@ -1,0 +1,23 @@
+{
+  "id": "documentalesonline",
+  "name": "Documentales Online",
+  "active": true,
+  "adult": false,
+  "language": ["cast", "lat"],
+  "thumbnail": "http://i.imgur.com/fsrnC4m.jpg",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "documentary"
+  ],
+  "settings": [
+    {
+      "id": "include_in_global_search",
+      "type": "bool",
+      "label": "Incluir en busqueda global",
+      "default": true,
+      "enabled": true,
+      "visible": true
+    }
+  ]
+}

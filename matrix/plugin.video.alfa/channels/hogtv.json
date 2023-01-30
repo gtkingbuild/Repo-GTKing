@@ -1,0 +1,15 @@
+{
+  "id": "hogtv",
+  "name": "hogtv",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://hog.tv/images/favicon/hog/64-hog.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

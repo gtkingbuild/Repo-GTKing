@@ -1,0 +1,17 @@
+{
+  "id": "pornhd",
+  "name": "PornHd",
+  "thumbnail": "pornhd.jpg",
+
+  "active": false,
+
+  "searchable": false,
+  "search_types": ["movie"],
+
+  "categories": ["movie"],
+  "language": ["vo"],
+
+  "clusters": ["adults"],
+
+  "notes": "WEB SOLO CON ENLACES A OTRAS WEBS. Vídeos en versión Original para Adultos +18"
+}

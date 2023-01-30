@@ -1,0 +1,17 @@
+{
+  "id": "yestorrent",
+  "name": "YesTorrent",
+  "thumbnail": "yestorrent.png",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["torrent", "movie", "tvshow"],
+  "language": ["cast", "last", "vose"],
+
+  "clusters": ["torrents", "qualityes", "languages", "years", "kids", "docs", "vos", "3d", "4k"],
+
+  "notes": "Canal con enlaces Torrent exclusivamente. Películas y Series por géneros, calidad, idioma y año."
+}

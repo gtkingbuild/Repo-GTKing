@@ -1,0 +1,15 @@
+{
+  "id": "xtits",
+  "name": "xtits",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://i.xtits.com/static/images/logo.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "id": "voe",
+  "name": "Voe",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "voe.sx/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "(?:voe-unblock.com|voe-unblock.net|voeunblock.com|voeunbl0ck.com|voeunblck.com|voeunblk.com|voe-un-block.com|voeun-block.net|un-block-voe.net|v-o-e-unblock.com)/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "reputationsheriffkennethsand.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "fittingcentermondaysunday.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "tinycat-voe-fashion.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      }
+    ]
+  }
+
+}

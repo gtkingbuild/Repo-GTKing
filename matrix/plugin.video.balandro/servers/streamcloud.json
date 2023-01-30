@@ -1,0 +1,32 @@
+{
+  "id": "streamcloud",
+  "name": "Streamcloud",
+
+  "active": false,
+  "notes": "Ya no existe",
+
+  "find_videos": {
+    "ignore_urls": [
+      "http://streamcloud.eu/stylesheets",
+      "http://streamcloud.eu/control",
+      "http://streamcloud.eu/xupload",
+      "http://streamcloud.eu/js",
+      "http://streamcloud.eu/favicon",
+      "http://streamcloud.eu/reward",
+      "http://streamcloud.eu/login",
+      "http://streamcloud.eu/deliver",
+      "http://streamcloud.eu/faq",
+      "http://streamcloud.eu/tos",
+      "http://streamcloud.eu/checkfiles",
+      "http://streamcloud.eu/contact",
+      "http://streamcloud.eu/serve"
+    ],
+    "patterns": [
+      {
+        "pattern": "(streamcloud.eu/[a-z0-9]+)",
+        "url": "http://\\1"
+      }
+    ]
+  }
+
+}
