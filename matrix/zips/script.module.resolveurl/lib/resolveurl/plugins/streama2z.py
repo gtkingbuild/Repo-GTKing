@@ -1,6 +1,6 @@
 """
     Plugin for ResolveURL
-    Copyright (C) 2022 shellc0de
+    Copyright (C) 2023 shellc0de
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,44 +17,38 @@
 """
 
 import re
-import base64
-from six.moves import urllib_parse
 from resolveurl import common
 from resolveurl.lib import helpers
 from resolveurl.resolver import ResolveUrl, ResolverError
 
 
-class UploadEverResolver(ResolveUrl):
-    name = 'UploadEver'
-    domains = ['uploadever.com', 'uploadever.in']
-    pattern = r'(?://|\.)(uploadever\.(?:com|in))/([0-9a-zA-Z]+)'
+class Streama2zResolver(ResolveUrl):
+    name = 'Streama2z'
+    domains = ['streama2z.com', 'streama2z.xyz']
+    pattern = r'(?://|\.)(streama2z\.(?:com|xyz))/(?:embed-)?([0-9a-zA-Z]+)'
 
     def get_media_url(self, host, media_id):
         web_url = self.get_url(host, media_id)
+        rurl = 'https://streama2z.xyz/'
         headers = {
-            'Origin': web_url.rsplit('/', 1)[0],
-            'Referer': web_url,
+            'Origin': rurl[:-1],
+            'Referer': rurl,
             'User-Agent': common.RAND_UA
         }
         payload = {
-            'op': 'download2',
+            'op': 'embed',
+            'streama2z': '1',
             'id': media_id,
-            'rand': '',
-            'referer': web_url,
-            'method_free': '',
-            'method_premium': ''
+            'file_code': media_id,
+            'referer': rurl
         }
         html = self.net.http_POST(web_url, form_data=payload, headers=headers).content
-        url = re.search(r'btn\s*btn-dow\s*(?:recaptchav2)?"\s*href="(http[^"]+)', html)
-        if url:
-            path = urllib_parse.urlparse(url.group(1)).path[1:]
-            try:
-                url = base64.b64decode(path).decode('utf-8')
-            except Exception:
-                url = url.group(1)
-            return url.replace(' ', '%20') + helpers.append_headers(headers)
+        html += helpers.get_packed_data(html)
+        source = re.search(r'''sources:\s*\[{\s*src:\s*["']([^"']+)''', html)
+        if source:
+            return source.group(1) + helpers.append_headers(headers)
 
         raise ResolverError('File Not Found or Removed')
 
     def get_url(self, host, media_id):
-        return self._default_get_url(host, media_id, template='https://uploadever.in/{media_id}')
+        return self._default_get_url(host, media_id, template='https://streama2z.com/embed-{media_id}.html')

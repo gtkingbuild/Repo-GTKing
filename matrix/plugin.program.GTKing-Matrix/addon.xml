@@ -16,9 +16,9 @@
 	<extension point="xbmc.addon.metadata">
 		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR lime]MATRIX[/COLOR] tu Wizard para [COLOR teal]KODI 19.x[/COLOR]!!</summary>
 		<description>
-				[B]• Developers:[/B][COLOR gold] JoseaTEBA y DavidZgZ[/COLOR]
-				[B]• Testers:[/B][COLOR dodgerblue] ehSugea, Vicente, Tete6776, Mapache, Keto.[/COLOR]
-				[B]• Telegram:[/B] [COLOR lime]t.me/beelinkking[/COLOR]
+			• Developers:[COLOR gold] JoseaTEBA y DavidZgZ[/COLOR]
+			• Testers:[COLOR dodgerblue] ehSugea, Vicente, Tete6776, Mapache, Keto y Th3action[/COLOR]
+			• Telegram:[COLOR lime]t.me/beelinkking[/COLOR]
 		</description>
 		<platform>all</platform>
 		<reuselanguageinvoker>false</reuselanguageinvoker>
