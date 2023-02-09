@@ -4,8 +4,9 @@ Never write another polling function again.
 
 """
 
-__version__ = '0.4.6'
+__version__ = '0.5.0'
 
+from functools import wraps
 import logging
 import time
 try:
@@ -104,10 +105,11 @@ def poll(target, step, args=(), kwargs=None, timeout=None, max_tries=None, check
     :param kwargs: Keyword arguments to be passed to the target function
 
     :param timeout: The target function will be called until the time elapsed is greater than the maximum timeout
-        (in seconds). NOTE that the actual execution time of the function *can* exceed the time specified in the timeout.
+        (in seconds). NOTE timeout == 0 or timeout == None is equivalent to setting poll_forever=True.
+        NOTE that the actual execution time of the function *can* exceed the time specified in the timeout.
         For instance, if the target function takes 10 seconds to execute and the timeout is 21 seconds, the polling
         function will take a total of 30 seconds (two iterations of the target --20s which is less than the timeout--21s,
-        and a final iteration)
+        and a final iteration).
 
     :param max_tries: Maximum number of times the target function will be called before failing
 
@@ -214,3 +216,19 @@ def poll(target, step, args=(), kwargs=None, timeout=None, max_tries=None, check
 
         time.sleep(step)
         step = step_function(step)
+
+
+def poll_decorator(step, timeout=None, max_tries=None, check_success=is_truthy,
+                   step_function=step_constant, ignore_exceptions=(), poll_forever=False,
+                   collect_values=None, log=logging.NOTSET, log_error=logging.NOTSET):
+    """Use poll() as a decorator.
+
+    :return: decorator using poll()"""
+    def decorator(target):
+        @wraps(target)
+        def wrapper(*args, **kwargs):
+            return poll(target=target, step=step, args=args, kwargs=kwargs, timeout=timeout, max_tries=max_tries,
+                        check_success=check_success, step_function=step_function, ignore_exceptions=ignore_exceptions,
+                        poll_forever=poll_forever, collect_values=collect_values, log=log, log_error=log_error)
+        return wrapper
+    return decorator

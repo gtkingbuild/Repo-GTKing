@@ -39,8 +39,8 @@ list_servers = [
 canonical = {
              'channel': 'zonaleros', 
              'host': config.get_setting("current_host", 'zonaleros', default=''), 
-             'host_alt': ["https://www.zonaleros.org/"], 
-             'host_black_list': ["https://www.zona-leros.net/"], 
+             'host_alt': ["https://www.zona-leros.com/"], 
+             'host_black_list': ["https://www.zonaleros.org/", "https://www.zona-leros.net/"], 
              'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'forced_proxy_ifnot_assistant': 'ProxyCF', 
              'CF': False, 'CF_test': False, 'alfa_s': True
             }

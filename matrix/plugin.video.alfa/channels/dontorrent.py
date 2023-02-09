@@ -31,9 +31,9 @@ list_servers = ['torrent']
 canonical = {
              'channel': 'dontorrent', 
              'host': config.get_setting("current_host", 'dontorrent', default=''), 
-             'host_alt': ['https://dontorrent.surf/', 'https://todotorrents.net/', 'https://dontorrent.in/', 
+             'host_alt': ['https://dontorrent.how/', 'https://todotorrents.net/', 'https://dontorrent.in/', 
                           'https://verdetorrent.com/', 'https://tomadivx.net/', 'https://donproxies.com/'], 
-             'host_black_list': ['https://dontorrent.beer/', 'https://dontorrent.blue/', 
+             'host_black_list': ['https://dontorrent.surf/', 'https://dontorrent.beer/', 'https://dontorrent.blue/', 
                                  'https://dontorrent.army/', 'https://dontorrent.mba/', 'https://dontorrent.futbol/', 
                                  'https://dontorrent.fail/', 'https://dontorrent.click/', 'https://dontorrent.gy/',
                                  'https://dontorrent.gs/', 'https://dontorrent.me/', 'https://dontorrent.ltd/', 
@@ -49,6 +49,7 @@ canonical = {
                                  'https://dontorrent.cat/', 'https://dontorrent.run/', 'https://dontorrent.wf/', 
                                  'https://dontorrent.pm/', 'https://dontorrent.top/', 'https://dontorrent.re/'], 
              'pattern_proxy': '<a[^>]*class="text-white[^"]+"\s*style="font-size[^"]+"\s*href="([^"]+)"[^>]*>\s*Descargar\s*<\/a>', 
+             'proxy_url_test': 'pelicula/25159/The-Batman', 
              'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'CF_stat': False, 'cf_assistant': False, 
              'CF': False, 'CF_test': False, 'alfa_s': True
             }

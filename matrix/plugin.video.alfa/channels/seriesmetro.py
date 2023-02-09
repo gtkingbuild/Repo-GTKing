@@ -24,8 +24,8 @@ list_servers = ['cinemaupload']
 canonical = {
              'channel': 'seriesmetro', 
              'host': config.get_setting("current_host", 'seriesmetro', default=''), 
-             'host_alt': ["https://seriesmetro.net/"], 
-             'host_black_list': [], 
+             'host_alt': ["https://metroseries.net/"], 
+             'host_black_list': ["https://seriesmetro.net/"], 
              'pattern': '<figure\s*class="logo">\s*<a\s*href="([^"]+)"', 
              'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 
              'CF': False, 'CF_test': False, 'alfa_s': True

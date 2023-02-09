@@ -36,7 +36,7 @@ canonical = {
             }
 host = canonical['host'] or canonical['host_alt'][0]
 
-forced_proxy_opt = 'ProxyDirect'
+forced_proxy_opt = 'ProxyCF|FORCE'
 under_proxy = False
 
 
@@ -416,7 +416,7 @@ def play(item):
     
     for x in range(2):
         resp = httptools.downloadpage(base_url, post=post, headers=headers, follow_redirects=False, 
-                                     forced_proxy_opt=forced_proxy_opt, CF=False, **kwargs)
+                                     forced_proxy_opt=forced_proxy_opt, CF=True, **kwargs)
         if resp.code in httptools.REDIRECTION_CODES:
             url = resp.headers.get("location", "")
             break

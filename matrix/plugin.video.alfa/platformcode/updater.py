@@ -245,12 +245,15 @@ def check_addon_updates(verbose=False, monitor=None):
         if resp_broadcast.sucess and not 'login' in str(resp_broadcast.url):
             broadcast = jsontools.load(resp_broadcast.data)
             if broadcast:
-                try:
-                    help_window.show_info(0, wait=False, title="[COLOR limegreen]Alfa BROADCAST: [/COLOR][COLOR hotpink]Noticia IMPORTANTE[/COLOR]", 
-                                          text=broadcast.get('broadcast', ''))
-                    logger.info('Mensaje de Broadcast enviado: %s ' % str(broadcast), force=True)
-                except:
-                    logger.error('ERROR en mensaje de Broadcast: %s ' % str(broadcast))
+                if broadcast.get('fix_version', '') and verify_addon_version(lastfix['fix_version'] , broadcast['fix_version']):
+                    try:
+                        help_window.show_info(0, wait=False, title="[COLOR limegreen]Alfa BROADCAST: [/COLOR][COLOR hotpink]Noticia IMPORTANTE[/COLOR]", 
+                                              text=broadcast.get('broadcast', ''))
+                        logger.info('Mensaje de Broadcast enviado: %s ' % str(broadcast), force=True)
+                    except:
+                        logger.error('ERROR en mensaje de Broadcast: %s ' % str(broadcast))
+                else:
+                    logger.info('Broadcast existe pero no aplica: %s' % str(broadcast), force=True)
 
         # Descargar zip con las actualizaciones
         # -------------------------------------

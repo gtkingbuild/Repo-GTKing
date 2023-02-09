@@ -22,7 +22,7 @@ from platformcode import config, logger
 from lib import generictools
 from channels import filtertools
 from channels import autoplay
-from lib.AlfaChannelHelper import DictionaryChannel
+from lib.AlfaChannelHelper import DictionaryAllChannel
 
 
 IDIOMAS = {'Castellano': 'CAST', 'Latino': 'LAT', 'Version Original': 'VO'}
@@ -61,15 +61,20 @@ finds = {'find': {'find': [{'tag': ['div'], 'id': ['archive-content']}],
                         'find_all': [{'tag': ['article'], 'class': ['item']}]}, 
          'search': {'find_all': [{'tag': ['div'], 'class': ['result-item']}]}, 
          'next_page': [], 
+         'last_page': {'find': [{'tag': ['div'], 'class': ['pagination']}, {'tag': ['span']}], 
+                       'get_text': [{'@TEXT': '..gina \d+ de (\d+)'}]}, 
          'season_episode': [], 
          'season': [], 
          'episode_url': '', 
          'episodes': [], 
          'episode_num': [], 
          'episode_clean': [], 
-         'findvideos': [], 
-         'title_clean': []}
-AlfaChannel = DictionaryChannel(host, movie_path="/peliculas", canonical=canonical, finds=finds)
+         'findvideos': {'find': [{'tag': ['tbody']}], 'find_all': [{'tag': ['tr']}]}, 
+         'title_clean': [],
+         'quality_clean': [],
+         'language_clean': []}
+AlfaChannel = DictionaryAllChannel(host, movie_path="/peliculas", canonical=canonical, finds=finds, 
+                                   list_language=list_language, list_servers=list_servers)
 
 
 def mainlist(item):
@@ -86,13 +91,13 @@ def mainlist(item):
     
     autoplay.init(item.channel, list_servers, list_quality)
     
-    itemlist.append(Item(channel=item.channel, title="Películas", action="listado", 
+    itemlist.append(Item(channel=item.channel, title="Películas", action="list_all", c_type='peliculas', 
                 url=host + 'peliculas/page/1/', thumbnail=thumb_pelis, extra="peliculas", extra2="PELICULA"))
-    itemlist.append(Item(channel=item.channel, title="    - por Género", action="genero", 
+    itemlist.append(Item(channel=item.channel, title="    - por Género", action="genero", c_type='peliculas', 
                 url=host, thumbnail=thumb_genero, extra="peliculas", extra2="GENERO"))
-    #itemlist.append(Item(channel=item.channel, title="    - por Netflix", action="submenu", 
+    #itemlist.append(Item(channel=item.channel, title="    - por Netflix", action="submenu", c_type='peliculas', 
     #            url=host, thumbnail=thumb_pelis, extra="peliculas", extra2="NETFLIX"))
-    itemlist.append(Item(channel=item.channel, title="    - por Tendencias", action="submenu", 
+    itemlist.append(Item(channel=item.channel, title="    - por Tendencias", action="submenu", c_type='peliculas', 
                 url=host, thumbnail=thumb_calidad, extra="peliculas", extra2="TENDENCIAS"))
     
     itemlist.append(Item(channel=item.channel, title="Buscar...", action="search",
@@ -148,7 +153,7 @@ def submenu(item):
             item.url = scrapedurl
             if not item.url.endswith('/'): item.url += '/'
             item.url += 'page/1/'
-            return listado(item)
+            return list_all(item)
             
     return itemlist
 
@@ -182,7 +187,7 @@ def genero(item):
         return itemlist                                         #si no hay más datos, algo no funciona, pintamos lo que tenemos
 
     for scrapedurl, gen in matches:
-        itemlist.append(item.clone(action="listado", title=gen.capitalize(), url=scrapedurl + 'page/1/'))
+        itemlist.append(item.clone(action="list_all", title=gen.capitalize(), url=scrapedurl + 'page/1/'))
         
     if len(itemlist) > 1:
         itemlist = sorted(itemlist, key=lambda it: it.title)                    #clasificamos
@@ -190,305 +195,50 @@ def genero(item):
     return itemlist
 
 
-def listado(item):                                                              # Listado principal y de búsquedas
+def list_all(item):                                                             # Listado principal y de búsquedas
     logger.info()
     
-    itemlist = []
-    item.category = categoria
-    thumb_pelis = get_thumb("channels_movie.png")
-    thumb_series = get_thumb("channels_tvshow.png")
+    finds['controls'] = {
+                         'timeout': timeout
+                        }
+    finds['title_clean'] = [
+                            ['(?i)TV|Online|(4k-hdr)|(fullbluray)|4k| - 4k|(3d)|miniserie', ''],
+                            ['[\(|\[]\s*[\)|\]]', '']
+                           ]
+    finds['quality_clean'] = [
+                              ['(?i)proper|unrated|directors|cut|repack|internal|real|extended|masted|docu|super|duper|amzn|uncensored|hulu', '']
+                             ]
 
-    #logger.debug(item)
-    
-    curr_page = 1                                                               # Página inicial
-    last_page = 99999                                                           # Última página inicial
-    last_page_print = 1                                                         # Última página inicial, para píe de página
-    page_factor = 1.0                                                           # Factor de conversión de pag. web a pag. Alfa
-    if item.curr_page:
-        curr_page = int(item.curr_page)                                         # Si viene de una pasada anterior, lo usamos
-        del item.curr_page                                                      # ... y lo borramos
-    if item.last_page:
-        last_page = int(item.last_page)                                         # Si viene de una pasada anterior, lo usamos
-        del item.last_page                                                      # ... y lo borramos
-    if item.page_factor:
-        page_factor = float(item.page_factor)                                   # Si viene de una pasada anterior, lo usamos
-        del item.page_factor                                                    # ... y lo borramos
-    if item.last_page_print:
-        last_page_print = item.last_page_print                                  # Si viene de una pasada anterior, lo usamos
-        del item.last_page_print                                                # ... y lo borramos
-    
-    cnt_tot = 30                                                                # Poner el num. máximo de items por página
-    cnt_title = 0                                                               # Contador de líneas insertadas en Itemlist
-    if item.cnt_tot_match:
-        cnt_tot_match = float(item.cnt_tot_match)                               # restauramos el contador TOTAL de líneas procesadas de matches
-        del item.cnt_tot_match
-    else:
-        cnt_tot_match = 0.0                                                     # Contador TOTAL de líneas procesadas de matches
-    inicio = time.time()                                    # Controlaremos que el proceso no exceda de un tiempo razonable
-    fin = inicio + 5                                                            # Después de este tiempo pintamos (segundos)
-    timeout_search = timeout * 2                                                # Timeout para descargas
-    if item.extra == 'search' and item.extra2 == 'episodios':                   # Si viene de episodio que quitan los límites
-        cnt_tot = 999
-        fin = inicio + 30
+    if item.extra2 in ["GENERO", "TENDENCIAS"]: 
+        finds['find'] = finds.get('categories', {})
+    elif item.extra == "search":
+        finds['find'] = finds.get('search', {})
+                       
+    return AlfaChannel.list_all(item, matches_post=list_all_matches, generictools=True, finds=finds)
+                        
 
-    #Sistema de paginado para evitar páginas vacías o semi-vacías en casos de búsquedas con series con muchos episodios
-    title_lista = []                                        # Guarda la lista de series que ya están en Itemlist, para no duplicar lineas
-    if item.title_lista:                                    # Si viene de una pasada anterior, la lista ya estará guardada
-        title_lista.extend(item.title_lista)                                    # Se usa la lista de páginas anteriores en Item
-        del item.title_lista                                                    # ... limpiamos
+def list_all_matches(item, matches_int):                                        # Listado principal: procesado de matches
+    logger.info()
+    
     matches = []
-        
-    if not item.extra2:                                                         # Si viene de Catálogo o de Alfabeto
-        item.extra2 = ''
-        
-    post = None
-    if item.post:                                                               # Rescatamos el Post, si lo hay
-        post = item.post
-    
-    next_page_url = item.url
-    # Máximo num. de líneas permitidas por TMDB. Máx de 5 segundos por Itemlist para no degradar el rendimiento
-    while (cnt_title < cnt_tot and curr_page <= last_page and fin > time.time()) or item.matches:
-    
-        # Descarga la página
-        data = ''
-        cnt_match = 0                                                           # Contador de líneas procesadas de matches
-        
-        if not item.matches:                                                    # si no viene de una pasada anterior, descargamos
-            data, response, item, itemlist = generictools.downloadpage(next_page_url, canonical=canonical, soup=True, 
-                                                                       timeout=timeout_search, post=post, s2=False, 
-                                                                       item=item, itemlist=itemlist)    # Descargamos la página)
-            # Verificamos si ha cambiado el Host
-            if response.host:
-                next_page_url = response.url_new
-            
-            # Verificamos si se ha cargado una página correcta
-            curr_page += 1                                                      # Apunto ya a la página siguiente
-            if not data or not response.sucess:                                 # Si la web está caída salimos sin dar error
-                if len(itemlist) > 1:                                           # Si hay algo que pintar lo pintamos 
-                    last_page = 0
-                    break
-                return itemlist                                                 # Si no hay nada más, salimos directamente
-        
-        if item.extra2 == 'PELICULA':
-            #Patrón para seleccionar el bloque
-            patron = '(?i)<header\s*class="archive_post">\s*<h2>\s*A.adido\s*recientemente\s*<\/h2>'
-            patron += '\s*<span>\s*[^<]*\s*<\/span>\s*<\/header>\s*<div\s*id="archive-content"'
-            patron += '\s*class="animation[^"]*">(.*?<\/article>\s*<\/div>'
-            patron += '(?:\s*<div\s*class="pagination">.*?<\/div>))'
-            data = scrapertools.find_single_match(data, patron)
 
-            #logger.debug(data)
+    for elem in matches_int:
+        elem_json = {}
         
-        #Patrón para búsquedas, pelis y series
-        if item.extra == 'search':
-            patron = '<article><div\s*class="image">.*?<img\s*src="([^"]+)".*?<span\s*'
-            patron += 'class="movies">()[^<]*<\/span>.*?<a\s*href="([^"]+)">\s*([^<]*)'
-            patron += '<\/a>\s*<\/div>\s*<div[^<]*<span[^<]*<\/span>\s*<span\s*'
-            patron += 'class="year">\s*(?:(\d{4}))?\s*<\/span>'
+        elem_json['url'] = elem.a.get('href', '')
+        elem_json['title'] = elem.img.get('alt', '')
+        elem_json['thumbnail'] = elem.img.get('src', '')
+        if item.extra == "search":
+            elem_json['year'] = elem.find('span', class_="year").text
         else:
-            patron = '<article\s*id="post[^>]+>.*?<img\s*src="([^"]+)"[^>]+>\s*<[^>]+>'
-            patron += '\s*[^>]+>\s*[^<]+<\s*[^>]+>\s*[^>]+>\s*(?:<span\s*class="quality">'
-            patron += '\s*([^<]*)<\/span>)?.*?<h3>\s*<a\s*href="([^"]+)">\s*([^<]*)<\/a>'
-            patron += '\s*<\/h3>\s*<span>(?:.*?(\d{4}))?\s*<\/span>'
-
-        if not item.matches:                                                    # De pasada anterior?
-            if response.soup:
-                if item.extra2 in ["GENERO", "TENDENCIAS"]: 
-                    patron = finds.get('categories', {})
-                elif item.extra == "search":
-                    patron = finds.get('search', {})
-                else:
-                    patron = finds.get('find', {})
-                data = response.soup
-                matches_int = AlfaChannel.parse_finds_dict(data, patron)
-                matches = []
-                for elem in matches_int:
-                    if item.extra == "search":
-                        year = elem.find('span', class_="year").text
-                    else:
-                        year = elem.find('div', class_='data').find('span').text
-                    matches.append((elem.img.get('src', ''), '', elem.a.get('href', ''), 
-                                    elem.img.get('alt', ''), year))
-            else:
-                matches = re.compile(patron, re.DOTALL).findall(data)
-        else:
-            matches = item.matches
-            del item.matches
-            
-        #logger.debug("PATRON: %s" % patron)
-        #logger.debug(matches)
-        #logger.debug(data)
-
-        if not matches and item.extra != 'search' and not item.extra2:          #error
-            logger.error("ERROR 02: LISTADO: Ha cambiado la estructura de la Web " 
-                        + " / PATRON: " + patron + " / DATA: " + data)
-            itemlist.append(item.clone(action='', title=item.channel.capitalize() + 
-                        ': ERROR 02: LISTADO: Ha cambiado la estructura de la Web.  ' 
-                        + 'Reportar el error con el log'))
-            break                                                               #si no hay más datos, algo no funciona, pintamos lo que tenemos
+            elem_json['year'] = elem.find('div', class_='data').find('span').text
+        elem_json['year'] = scrapertools.find_single_match(elem_json['year'], '\d{4}')
         
-        if not matches and item.extra == 'search':                              #búsqueda vacía
-            if len(itemlist) > 0:                                               # Si hay algo que pintar lo pintamos
-                last_page = 0
-                break
-            return itemlist                                                     #Salimos
-
-        # Buscamos la próxima página
-        next_page_url = re.sub(r'page\/(\d+)', 'page/%s' % str(curr_page), item.url)
-        #logger.debug('curr_page: ' + str(curr_page) + ' / last_page: ' + str(last_page))
-        
-        # Buscamos la última página
-        if last_page == 99999:                                                  #Si es el valor inicial, buscamos
-            patron_last = '<div\s*class="pagination">\s*<span>P.gina\s*\d+\s*de\s*(\d+)\s*<\/span>'
-            try:
-                last_page = int(scrapertools.find_single_match(str(data), patron_last))
-                page_factor = float(len(matches)) / float(cnt_tot)
-            except:                                                             #Si no lo encuentra, lo ponemos a 999
-                last_page = 1
-                last_page_print = int((float(len(matches)) / float(cnt_tot)) + 0.999999)
-
-            #logger.debug('curr_page: ' + str(curr_page) + ' / last_page: ' + str(last_page))
-        
-        #Empezamos el procesado de matches
-        for scrapedthumb, scrapedquality, scrapedurl, scrapedtitle, scrapedyear in matches:
-            scrapedlanguage = ''
-            cnt_match += 1
-
-            title = scrapedtitle
-
-            title = scrapertools.remove_htmltags(title).rstrip('.')             # Removemos Tags del título
-            url = scrapedurl
-            
-            title_subs = []                                                     #creamos una lista para guardar info importante
-            
-            # Slugify, pero más light
-            title = title.replace("á", "a").replace("é", "e").replace("í", "i")\
-                    .replace("ó", "o").replace("ú", "u").replace("ü", "u")\
-                    .replace("ï¿½", "ñ").replace("Ã±", "ñ")
-            title = scrapertools.decode_utf8_error(title)
-            
-            cnt_title += 1                                                      # Incrementamos el contador de entradas válidas
-            
-            item_local = item.clone()                                           #Creamos copia de Item para trabajar
-            if item_local.tipo:                                                 #... y limpiamos
-                del item_local.tipo
-            if item_local.totalItems:
-                del item_local.totalItems
-            if item_local.intervencion:
-                del item_local.intervencion
-            if item_local.viewmode:
-                del item_local.viewmode
-            item_local.extra2 = True
-            del item_local.extra2
-            item_local.text_bold = True
-            del item_local.text_bold
-            item_local.text_color = True
-            del item_local.text_color
-
-            # Procesamos idiomas
-            item_local.language = []                                            #creamos lista para los idiomas
-            if '[Subs. integrados]' in scrapedquality or '(Sub Forzados)' in scrapedquality \
-                        or 'Sub' in scrapedquality or 'ing' in scrapedlanguage.lower():
-                item_local.language = ['VOS']                                   # añadimos VOS
-            if 'lat' in scrapedlanguage.lower():
-                item_local.language += ['LAT']                                  # añadimos LAT
-            if 'castellano' in scrapedquality.lower() or ('español' in scrapedquality.lower() \
-                        and not 'latino' in scrapedquality.lower()) or 'cas' in scrapedlanguage.lower(): 
-                item_local.language += ['CAST']                                 # añadimos CAST
-            if '[Dual' in title or 'dual' in scrapedquality.lower() or 'dual' in scrapedlanguage.lower():
-                title = re.sub(r'(?i)\[dual.*?\]', '', title)
-                item_local.language += ['DUAL']                                 # añadimos DUAL
-            if not item_local.language:
-                item_local.language = ['LAT']                                   # [LAT] por defecto
-                
-            # Procesamos Calidad
-            if scrapedquality:
-                item_local.quality = scrapertools.remove_htmltags(scrapedquality)   # iniciamos calidad
-                if '[720p]' in scrapedquality.lower() or '720p' in scrapedquality.lower():
-                    item_local.quality = '720p'
-                if '[1080p]' in scrapedquality.lower() or '1080p' in scrapedquality.lower():
-                    item_local.quality = '1080p'
-                if '4k' in scrapedquality.lower():
-                    item_local.quality = '4K'
-                if '3d' in scrapedquality.lower() and not '3d' in item_local.quality.lower():
-                    item_local.quality += ', 3D'
-            if not item_local.quality:
-                item_local.quality = '1080p'
-                
-            item_local.thumbnail = urlparse.urljoin(host, scrapedthumb)         #iniciamos thumbnail
-
-            item_local.url = urlparse.urljoin(host, url)                        #guardamos la url final
-            item_local.context = "['buscar_trailer']"                           #... y el contexto
-
-            # Guardamos los formatos para películas
-            item_local.contentType = "movie"
-            item_local.action = "findvideos"
-
-            title = re.sub(r'(?i)TV|Online|(4k-hdr)|(fullbluray)|4k| - 4k|(3d)|miniserie', '', title).strip()
-            item_local.quality = re.sub(r'(?i)proper|unrated|directors|cut|repack|internal|real|extended|masted|docu|super|duper|amzn|uncensored|hulu', 
-                        '', item_local.quality).strip()
-
-            #Analizamos el año.  Si no está claro ponemos '-'
-            item_local.infoLabels["year"] = '-'
-            try:
-                if scrapedyear:
-                    item_local.infoLabels["year"] = int(scrapedyear)
-            except:
-                pass
-            
-            #Terminamos de limpiar el título
-            title = re.sub(r'[\(|\[]\s+[\)|\]]', '', title)
-            title = title.replace('()', '').replace('[]', '').replace('[4K]', '').replace('(4K)', '').strip().lower().title()
-            title = title.strip().lower().title()
-            item_local.from_title = title                                       #Guardamos esta etiqueta para posible desambiguación de título
-            item_local.contentTitle = title
-            item_local.title = title
-            
-            #Guarda la variable temporal que almacena la info adicional del título a ser restaurada después de TMDB
-            item_local.title_subs = title_subs
-
-            #Ahora se filtra por idioma, si procede, y se pinta lo que vale
-            if filter_languages > 0:                                            #Si hay idioma seleccionado, se filtra
-                itemlist = filtertools.get_link(itemlist, item_local, list_language)
-            else:
-                itemlist.append(item_local.clone())                             #Si no, pintar pantalla
-            
-            cnt_title = len(itemlist)                                           # Recalculamos los items después del filtrado
-            if cnt_title >= cnt_tot and (len(matches) - cnt_match) + cnt_title > cnt_tot * 1.3:     #Contador de líneas añadidas
-                break
-            
-            #logger.debug(item_local)
+        matches.append(elem_json.copy())
     
-        matches = matches[cnt_match:]                                           # Salvamos la entradas no procesadas
-        cnt_tot_match += cnt_match                                              # Calcular el num. total de items mostrados
-    
-    #Pasamos a TMDB la lista completa Itemlist
-    tmdb.set_infoLabels(itemlist, __modo_grafico__, idioma_busqueda=idioma_busqueda)
-    
-    #Llamamos al método para el maquillaje de los títulos obtenidos desde TMDB
-    item, itemlist = generictools.post_tmdb_listado(item, itemlist)
+    return matches
 
-    # Si es necesario añadir paginacion
-    if curr_page <= last_page or len(matches) > 0:
-        curr_page_print = int(cnt_tot_match / float(cnt_tot))
-        if curr_page_print < 1:
-            curr_page_print = 1
-        if last_page:
-            if last_page > 1:
-                last_page_print = int((last_page * page_factor) + 0.999999)
-            title = '%s de %s' % (curr_page_print, last_page_print)
-        else:
-            title = '%s' % curr_page_print
 
-        itemlist.append(Item(channel=item.channel, action="listado", title=">> Página siguiente " 
-                        + title, title_lista=title_lista, url=next_page_url, extra=item.extra, 
-                        extra2=item.extra2, last_page=str(last_page), curr_page=str(curr_page), 
-                        page_factor=str(page_factor), cnt_tot_match=str(cnt_tot_match), matches=matches, 
-                        last_page_print=last_page_print, post=post))
-
-    return itemlist
-
-    
 def findvideos(item):
     logger.info()
     
@@ -516,6 +266,17 @@ def findvideos(item):
                       }
     
     #logger.debug(item)
+    
+    item.matches = []
+    soup = AlfaChannel.create_soup(item.url)
+    matches = AlfaChannel.parse_finds_dict(soup, finds['findvideos'])
+    for elem in matches:
+        for x, td in enumerate(elem.find_all('td')):
+            if x == 0: scrapedurl = td.a['href']
+            if x == 1: scrapedquality = td.get_text()
+            if x == 2: scrapedlanguage = td.img['src']
+            if x == 3: scrapedsize = td.get_text()
+        item.matches.append((scrapedurl, scrapedquality, scrapedlanguage, scrapedsize))
 
     #Bajamos los datos de la página
     #patron = '<div\s*id="torrent".*?class="quality">\s*([^<]*)<\/strong>\s*<\/td>'
@@ -623,7 +384,7 @@ def findvideos(item):
         if '[Subs. integrados]' in scrapedlanguage or '(Sub Forzados)' in scrapedlanguage \
                     or 'Subs integrados' in scrapedlanguage:
             item_local.language = ['VOS']                                       # añadimos VOS
-        if 'castellano' in scrapedlanguage.lower() or ('español' in scrapedlanguage.lower() and not 'latino' in scrapedlanguage.lower()):
+        if 'castellano' in scrapedlanguage.lower() or ('espa' in scrapedlanguage.lower() and not 'latino' in scrapedlanguage.lower()):
             item_local.language += ['CAST']                                     # añadimos CAST
         if 'dual' in item_local.quality.lower():
             item_local.quality = re.sub(r'(?i)dual.*?', '', item_local.quality).strip()
@@ -784,7 +545,7 @@ def search(item, texto):
         item.extra = 'search'
 
         if texto:
-            return listado(item)
+            return list_all(item)
         else:
             return []
     except:
@@ -809,8 +570,8 @@ def newest(categoria):
             item.url = host + "peliculas/page/1/"
             item.extra = "peliculas"
             item.extra2 = "novedades"
-            item.action = "listado"
-            itemlist.extend(listado(item))
+            item.action = "list_all"
+            itemlist.extend(list_all(item))
                 
         if len(itemlist) > 0 and (">> Página siguiente" in itemlist[-1].title or "Pagina siguiente >>" in itemlist[-1].title):
             itemlist[-1].pop()

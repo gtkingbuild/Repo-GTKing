@@ -330,24 +330,36 @@ def save_CF_list(domain, **opt):
            window.setProperty("alfa_CF_list", str(alfa_CF_list))
 
 
-def random_useragent():
+def random_useragent(browser='chrome'):
     """
-    Based on code from https://github.com/theriley106/RandomHeaders
-    
-    Python Method that generates fake user agents with a locally saved DB (.csv file).
-
+    Python Method that generates fake user agents with a locally saved DB ('cloudscraper', 'user_agent', 'browsers.json').
     This is useful for webscraping, and testing programs that identify devices based on the user agent.
     """
-    
-    import random
+    try:
+        import random
 
-    UserAgentPath = os.path.join(config.get_runtime_path(), 'tools', 'UserAgent.csv')
-    if os.path.exists(UserAgentPath):
-        with open(UserAgentPath, "r") as uap:
-            UserAgentIem = random.choice(list(uap.read())).strip()
-            if UserAgentIem:
-                return UserAgentIem
-    
+        UserAgentPath = os.path.join(config.get_runtime_path(), 'lib', 'cloudscraper', 'user_agent', 'browsers.json')
+        if os.path.exists(UserAgentPath):
+            with open(UserAgentPath, "r") as uap:
+                json_ua = json.loads(uap.read())
+                platform_ua = __platform.replace('raspberry', 'linux').replace('osx', 'darwin')\
+                                        .replace('xbox', 'windows').replace('tvos', 'ios')\
+                                        .replace('atv2', 'android').replace('unknown', 'windows')
+                if json_ua and (platform_ua in json_ua['user_agents']['desktop'] or platform_ua in json_ua['user_agents']['mobile']):
+                    if platform_ua in json_ua['user_agents']['desktop']:
+                        browser_json = json_ua['user_agents']['desktop'][platform_ua].get(browser, [])
+                    else:
+                        browser_json = json_ua['user_agents']['mobile'][platform_ua].get(browser, [])
+
+                    UserAgentIem = random.choice(browser_json).strip()
+                    logger.debug('Found %s' % UserAgentIem)
+                    if UserAgentIem:
+                        return UserAgentIem
+
+    except:
+        logger.error(traceback.format_exc())
+
+    logger.debug('NOT Found, default %s' % default_headers["User-Agent"])
     return default_headers["User-Agent"]
 
 
@@ -907,8 +919,10 @@ def downloadpage(url, **opt):
                 HTTPResponse.proxy__: | str      | Si la página se descarga con proxy, datos del proxy usado: proxy-type:addr:estado
     """
     global CF_LIST, CS_stat
+    
+    if 'api.themoviedb' in url: opt['hide_infobox'] = True
 
-    if not opt.get('alfa_s', False):
+    if not opt.get('alfa_s', False) and not opt.get('hide_infobox', False):
         logger.info()
     url = str(url)
 
@@ -947,7 +961,7 @@ def downloadpage(url, **opt):
     CF_LIST = load_CF_list(domain, **opt)
 
     # Cargando Cookies
-    load_cookies(opt.get('alfa_s', False))
+    load_cookies(opt.get('alfa_s', False) or opt.get('hide_infobox', False))
 
     # Cargando UA
     cf_ua = config.get_setting('cf_assistant_ua', None)
@@ -1213,7 +1227,7 @@ def downloadpage(url, **opt):
                         and not opt.get('check_blocked_IP_save', {}):
             domain = urlparse.urlparse(opt['url_save'])[1]
             if (domain not in CF_LIST and opt['retries_cloudflare'] >= 0) or opt['retries_cloudflare'] > 0:
-                if not '__cpo=' in url:
+                if not '__cpo=' in url and domain not in CF_LIST:
                     CF_LIST += [domain]
                     save_CF_list(domain, **opt)
                 opt['proxy_retries'] = 1 if PY3 and not TEST_ON_AIR else 0 if opt['retries_cloudflare'] < 1 else 1
@@ -1342,7 +1356,7 @@ def downloadpage(url, **opt):
                     raise WebErrorException(urlparse.urlparse(url)[1])
 
         info_dict, response = fill_fields_post(url, info_dict, req, response, req_headers, inicio, **opt)
-        if not 'api.themoviedb' in url and not opt.get('alfa_s', False):
+        if not opt.get('alfa_s', False):
             if not response['sucess'] or opt.get("hide_infobox") is None:
                 show_infobox(info_dict, force=True)
             elif not opt.get("hide_infobox"):

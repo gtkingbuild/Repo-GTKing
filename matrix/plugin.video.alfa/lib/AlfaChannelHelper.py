@@ -313,7 +313,7 @@ class DictionaryChannel(AlfaChannelHelper):
 
         matches, next_limit, next_page = self.limit_results(item, matches, lim_max=lim_max)
 
-        next_page = next_page or self.parse_finds_dict(soup, finds_next_page, next_page=True, c_type=item.c_type).lstrip('#')
+        next_page = self.parse_finds_dict(soup, finds_next_page, next_page=True, c_type=item.c_type)
         if next_page: next_page = urlparse.urljoin(self.host, next_page)
 
         for elem in matches:
@@ -389,7 +389,7 @@ class DictionaryChannel(AlfaChannelHelper):
         logger.info()
 
         if not finds: finds = self.finds
-        finds_out = finds.get('categories', {}) or finds.get('find', {})
+        finds_out = finds.get('find', {})
         itemlist = list()
         matches = list()
         soup = {}
@@ -404,11 +404,10 @@ class DictionaryChannel(AlfaChannelHelper):
         elif finds_out:
             soup = data or self.create_soup(item.url)
 
-            matches_section = self.parse_finds_dict(soup, finds_out)
-            for elem in matches_section:
-                logger.error(elem)
-                url = elem.a["href"]
+            matches = self.parse_finds_dict(soup, finds_out)
+            for elem in matches:
                 title = elem.a.text
+                url = elem.a["href"]
                 matches.append([title, url])
 
         if not matches:
@@ -538,7 +537,6 @@ class DictionaryChannel(AlfaChannelHelper):
                 except:
                     infolabels["episode"] = 1
                 infolabels["mediatype"] = 'episode'
-                title = scrapertools.slugify(title.strip(), strict=False)
                 infolabels = episode_title(title, infolabels)
                 title = "%sx%s - %s" % (season, infolabels["episode"], title)
 
@@ -568,14 +566,9 @@ class DictionaryChannel(AlfaChannelHelper):
             for elem in matches:
                 try:
                     url = elem.a["href"]
-                    title = elem.h2.text.strip()
+                    title = scrapertools.slugify(elem.h2.text.strip(), strict=False)
                 except:
-                    try:
-                        url = elem.a["href"]
-                        title = elem.a["title"]
-                        logger.error(title)
-                    except:
-                        continue
+                    continue
 
                 for episode_num in finds.get('episode_num', []):
                     if scrapertools.find_single_match(title, episode_num):
@@ -590,7 +583,6 @@ class DictionaryChannel(AlfaChannelHelper):
                         break
 
                 infolabels["mediatype"] = 'episode'
-                title = scrapertools.slugify(title.strip(), strict=False)
                 infolabels = episode_title(title.capitalize(), infolabels)
                 title = "%sx%s - %s" % (season, infolabels["episode"], title)
 

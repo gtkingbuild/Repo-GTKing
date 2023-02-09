@@ -67,6 +67,7 @@ import os
 import re
 import shutil
 import struct
+import warnings
 from binascii import crc32, hexlify
 from datetime import datetime, timezone
 from hashlib import blake2s, pbkdf2_hmac, sha1
@@ -74,6 +75,8 @@ from pathlib import Path
 from struct import Struct, pack, unpack
 from subprocess import DEVNULL, PIPE, STDOUT, Popen
 from tempfile import mkstemp
+
+AES = None
 
 # only needed for encrypted headers
 try:
@@ -100,10 +103,10 @@ class AES_CBC_Decrypt:
             self.decrypt = ciph.decryptor().update
 
 
-__version__ = "4.0"
+__version__ = "4.1a1"
 
 # export only interesting items
-__all__ = ["is_rarfile", "is_rarfile_sfx", "RarInfo", "RarFile", "RarExtFile"]
+__all__ = ["get_rar_version", "is_rarfile", "is_rarfile_sfx", "RarInfo", "RarFile", "RarExtFile"]
 
 ##
 ## Module configuration.  Can be tuned after importing.
@@ -309,18 +312,6 @@ RC_BAD_CHARS_UNIX = re.compile(r"[%s]" % _BAD_CHARS)
 RC_BAD_CHARS_WIN32 = re.compile(r"[%s:^\\]" % _BAD_CHARS)
 
 
-def _get_rar_version(xfile):
-    """Check quickly whether file is rar archive.
-    """
-    with XFile(xfile) as fd:
-        buf = fd.read(len(RAR5_ID))
-    if buf.startswith(RAR_ID):
-        return RAR_V3
-    elif buf.startswith(RAR5_ID):
-        return RAR_V5
-    return 0
-
-
 def _find_sfx_header(xfile):
     sig = RAR_ID[:-1]
     buf = io.BytesIO()
@@ -350,10 +341,27 @@ def _find_sfx_header(xfile):
 ## Public interface
 ##
 
+
+def get_rar_version(xfile):
+    """Check quickly whether file is rar archive.
+    """
+    with XFile(xfile) as fd:
+        buf = fd.read(len(RAR5_ID))
+    if buf.startswith(RAR_ID):
+        return RAR_V3
+    elif buf.startswith(RAR5_ID):
+        return RAR_V5
+    return 0
+
+
 def is_rarfile(xfile):
     """Check quickly whether file is rar archive.
     """
-    return _get_rar_version(xfile) > 0
+    try:
+        return get_rar_version(xfile) > 0
+    except OSError:
+        # File not found or not accessible, ignore
+        return False
 
 
 def is_rarfile_sfx(xfile):
@@ -653,7 +661,7 @@ class RarFile:
     comment = None
 
     def __init__(self, file, mode="r", charset=None, info_callback=None,
-                 crc_check=True, errors="stop"):
+                 crc_check=True, errors="stop", part_only=False):
         """Open and parse a RAR archive.
 
         Parameters:
@@ -671,6 +679,9 @@ class RarFile:
             errors
                 Either "stop" to quietly stop parsing on errors,
                 or "strict" to raise errors.  Default is "stop".
+            part_only
+                If True, read only single file and allow it to be middle-part
+                of multi-volume archive.
         """
         if is_filelike(file):
             self.filename = getattr(file, "name", None)
@@ -683,6 +694,7 @@ class RarFile:
         self._charset = charset or DEFAULT_CHARSET
         self._info_callback = info_callback
         self._crc_check = crc_check
+        self._part_only = part_only
         self._password = None
         self._file_parser = None
 
@@ -890,12 +902,12 @@ class RarFile:
         if ver == RAR_V3:
             p3 = RAR3Parser(self._rarfile, self._password, self._crc_check,
                             self._charset, self._strict, self._info_callback,
-                            sfx_ofs)
+                            sfx_ofs, self._part_only)
             self._file_parser = p3  # noqa
         elif ver == RAR_V5:
             p5 = RAR5Parser(self._rarfile, self._password, self._crc_check,
                             self._charset, self._strict, self._info_callback,
-                            sfx_ofs)
+                            sfx_ofs, self._part_only)
             self._file_parser = p5  # noqa
         else:
             raise NotRarFile("Not a RAR file")
@@ -994,7 +1006,8 @@ class CommonParser:
     _password = None
     comment = None
 
-    def __init__(self, rarfile, password, crc_check, charset, strict, info_cb, sfx_offset):
+    def __init__(self, rarfile, password, crc_check, charset, strict,
+                 info_cb, sfx_offset, part_only):
         self._rarfile = rarfile
         self._password = password
         self._crc_check = crc_check
@@ -1005,6 +1018,7 @@ class CommonParser:
         self._info_map = {}
         self._vol_list = []
         self._sfx_offset = sfx_offset
+        self._part_only = part_only
 
     def has_header_encryption(self):
         """Returns True if headers are encrypted
@@ -1092,7 +1106,7 @@ class CommonParser:
                 if raise_need_first_vol:
                     # did not find ENDARC with VOLNR
                     raise NeedFirstVolume("Need to start from first volume", None)
-                if more_vols:
+                if more_vols and not self._part_only:
                     volume += 1
                     fd.close()
                     try:
@@ -1117,7 +1131,7 @@ class CommonParser:
 
             if h.type == RAR_BLOCK_MAIN and not self._main:
                 self._main = h
-                if volume == 0 and (h.flags & RAR_MAIN_NEWNUMBERING):
+                if volume == 0 and (h.flags & RAR_MAIN_NEWNUMBERING) and not self._part_only:
                     # RAR 2.x does not set FIRSTVOLUME,
                     # so check it only if NEWNUMBERING is used
                     if (h.flags & RAR_MAIN_FIRSTVOLUME) == 0:
@@ -1149,7 +1163,8 @@ class CommonParser:
                     more_vols = True
                 # RAR 2.x does not set RAR_MAIN_FIRSTVOLUME
                 if volume == 0 and h.flags & RAR_FILE_SPLIT_BEFORE:
-                    raise_need_first_vol = True
+                    if not self._part_only:
+                        raise_need_first_vol = True
 
             if h.needs_password():
                 self._needs_password = True
@@ -1402,6 +1417,9 @@ class RAR3Parser(CommonParser):
         # read and parse base header
         buf = fd.read(S_BLK_HDR.size)
         if not buf:
+            return None
+        if len(buf) < S_BLK_HDR.size:
+            self._set_error("Unexpected EOF when reading header")
             return None
         t = S_BLK_HDR.unpack_from(buf)
         h.header_crc, h.type, h.flags, h.header_size = t
@@ -1800,8 +1818,17 @@ class RAR5Parser(CommonParser):
         """
         header_offset = fd.tell()
 
-        preload = 4 + 3
+        preload = 4 + 1
         start_bytes = fd.read(preload)
+        if len(start_bytes) < preload:
+            self._set_error("Unexpected EOF when reading header")
+            return None
+        while start_bytes[-1] & 0x80:
+            b = fd.read(1)
+            if not b:
+                self._set_error("Unexpected EOF when reading header")
+                return None
+            start_bytes += b
         header_crc, pos = load_le32(start_bytes, 0)
         hdrlen, pos = load_vint(start_bytes, pos)
         if hdrlen > 2 * 1024 * 1024:
@@ -2820,7 +2847,7 @@ def load_le32(buf, pos):
     #logger.debug('load_le32: buf: %s, end: %s' % (len(buf), end))
     if end > len(buf):
         raise BadRarFile("cannot load le32")
-    return S_LONG.unpack_from(buf, pos)[0], pos + 4
+    return S_LONG.unpack_from(buf, pos)[0], end
 
 
 def load_bytes(buf, num, pos):
@@ -2864,13 +2891,25 @@ def load_windowstime(buf, pos):
     return dt, pos
 
 
+#
+# volume numbering
+#
+
+_rc_num = re.compile('^[0-9]+$')
+
+
 def _next_newvol(volfile):
     """New-style next volume
     """
+    name, ext = os.path.splitext(volfile)
+    if ext.lower() in ("", ".exe", ".sfx"):
+        volfile = name + ".rar"
     i = len(volfile) - 1
     while i >= 0:
-        if volfile[i] >= "0" and volfile[i] <= "9":
-            return _inc_volname(volfile, i)
+        if "0" <= volfile[i] <= "9":
+            return _inc_volname(volfile, i, False)
+        if volfile[i] in ("/", os.sep):
+            break
         i -= 1
     raise BadRarName("Cannot construct volume name: " + volfile)
 
@@ -2878,22 +2917,34 @@ def _next_newvol(volfile):
 def _next_oldvol(volfile):
     """Old-style next volume
     """
-    # rar -> r00
-    if volfile[-4:].lower() == ".rar":
-        return volfile[:-2] + "00"
-    return _inc_volname(volfile, len(volfile) - 1)
+    name, ext = os.path.splitext(volfile)
+    if ext.lower() in ("", ".exe", ".sfx"):
+        ext = ".rar"
+    sfx = ext[2:]
+    if _rc_num.match(sfx):
+        ext = _inc_volname(ext, len(ext) - 1, True)
+    else:
+        # .rar -> .r00
+        ext = ext[:2] + "00"
+    return name + ext
 
 
-def _inc_volname(volfile, i):
+def _inc_volname(volfile, i, inc_chars):
     """increase digits with carry, otherwise just increment char
     """
     fn = list(volfile)
     while i >= 0:
-        if fn[i] != "9":
+        if fn[i] == "9":
+            fn[i] = "0"
+            i -= 1
+            if i < 0:
+                fn.insert(0, "1")
+        elif "0" <= fn[i] < "9" or inc_chars:
             fn[i] = chr(ord(fn[i]) + 1)
             break
-        fn[i] = "0"
-        i -= 1
+        else:
+            fn.insert(i + 1, "1")
+            break
     return "".join(fn)
 
 
@@ -2988,7 +3039,7 @@ def rar3_decompress(vers, meth, data, declen=0, flags=0, crc=0, pwd=None, salt=N
     # file header
     fname = b"data"
     date = ((2010 - 1980) << 25) + (12 << 21) + (31 << 16)
-    mode = 0x20
+    mode = DOS_MODE_ARCHIVE
     fhdr = S_FILE_HDR.pack(len(data), declen, RAR_OS_MSDOS, crc,
                            date, vers, meth, len(fname), mode)
     fhdr += fname
@@ -3106,7 +3157,7 @@ class nsdatetime(datetime):
     __slots__ = ("nanosecond",)
     nanosecond: int     #: Number of nanoseconds, 0 <= nanosecond < 999999999
 
-    def __new__(cls, year, month, day, hour=0, minute=0, second=0,
+    def __new__(cls, year, month=None, day=None, hour=0, minute=0, second=0,
                 microsecond=0, tzinfo=None, *, fold=0, nanosecond=0):
         usec, mod = divmod(nanosecond, 1000) if nanosecond else (microsecond, 0)
         if mod == 0:
@@ -3319,7 +3370,10 @@ class ToolSetup:
             if not isinstance(pwd, str):
                 pwd = pwd.decode("utf8")
             args = self.setup["password"]
-            if isinstance(args, str):
+            if args is None:
+                tool = self.setup["open_cmd"][0]
+                raise RarCannotExec(f"{tool} does not support passwords")
+            elif isinstance(args, str):
                 cmdline.append(args + pwd)
             else:
                 cmdline.extend(args)
