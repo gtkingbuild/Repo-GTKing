@@ -1,0 +1,22 @@
+{
+  "id": "megaup",
+  "name": "Megaup",
+ 
+  "active": true,
+  "notes": "Alternative vía: Script.Module.ResolveUrl",
+
+  "find_videos": {
+    "ignore_urls": ["http://soon.megaup.net/"],
+    "patterns": [
+      {
+        "pattern": "(megaup.net/[A-z0-9]+/.*?.(?:mp4|avi|mkv))",
+        "url": "https://\\1"
+      },
+      {
+        "pattern": "megaup.net/([A-z0-9]+)",
+        "url": "https://megaup.net/\\1"
+      }
+    ]
+  }
+
+}

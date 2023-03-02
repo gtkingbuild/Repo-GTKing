@@ -1,0 +1,17 @@
+{
+  "id": "pepecinepro",
+  "name": "PepeCinePro",
+  "thumbnail": "pepecinepro.png",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["years", "kids", "docs", "vos"],
+
+  "notes": "Web CERRADA. Películas y Series por géneros, año."
+}

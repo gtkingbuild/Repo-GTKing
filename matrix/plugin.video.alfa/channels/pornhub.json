@@ -1,0 +1,23 @@
+{
+  "id": "pornhub",
+  "name": "PornHub",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "http://s22.postimg.cc/5lzcocfqp/pornhub_logo.jpg",
+  "banner": "pornhub.png",
+  "fanart": "http://i.imgur.com/PwFvoss.jpg",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+    {
+      "id": "include_in_global_search",
+      "type": "bool",
+      "label": "Incluir en busqueda global",
+      "default": false,
+      "enabled": true,
+      "visible": true
+    }
+  ]
+}

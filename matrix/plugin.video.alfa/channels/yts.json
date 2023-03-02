@@ -1,0 +1,25 @@
+{
+  "id": "yts",
+  "name": "Yts",
+  "active": true,
+  "adult": false,
+  "language": ["*"],
+  "thumbnail": "https://i.postimg.cc/mtCM3TZp/yts.jpg",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "movie",
+    "torrent",
+    "vos"
+  ],
+  "settings":[
+    {
+      "id": "include_in_global_search",
+      "type": "bool",
+      "label": "Incluir en busqueda global",
+      "default": false,
+      "enabled": true,
+      "visible": true
+    }
+  ]
+}

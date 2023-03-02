@@ -1,0 +1,6 @@
+{
+    "patch_platforms": ["android", "atv2"],
+    "patch_python": "Py3",
+    "patch_version_high": "0.0.14",
+    "patch_version_low": "0.0.11"
+}

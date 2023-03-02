@@ -1,0 +1,54 @@
+{
+  "active": true,
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "xhamster.com/(?:xembed.php\\?video=|embed/|movies/)([A-z0-9]+)",
+        "url": "https://xhamster.com/embed/\\1"
+      },
+      {
+        "pattern": "xhamster.com/videos/[A-z0-9-]+-([A-z0-9]+)",
+        "url": "https://xhamster.com/embed/\\1"
+      },
+      {
+        "pattern": "(?:xhgeo|xhwide).com/embed/([A-z0-9-]+)",
+        "url": "https://xhamster.com/embed/\\1"
+      },
+      {
+        "pattern": "https://xh.video/(?:v|p)/([A-z0-9]+)",
+        "url": "https://xhamster.com/embed/\\1"
+      }
+    ]
+  },
+  "free": true,
+  "id": "xhamster",
+  "name": "xhamster",
+  "settings": [
+    {
+      "default": false,
+      "enabled": true,
+      "id": "black_list",
+      "label": "@60654",
+      "type": "bool",
+      "visible": true
+    },
+    {
+      "default": 0,
+      "enabled": true,
+      "id": "favorites_servers_list",
+      "label": "@60655",
+      "lvalues": [
+        "No",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "type": "list",
+      "visible": false
+    }
+  ],
+  "thumbnail": ""
+}

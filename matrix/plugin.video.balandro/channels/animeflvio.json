@@ -1,0 +1,17 @@
+{
+  "id": "animeflvio",
+  "name": "AnimeFlvIo",
+  "thumbnail": "animeflvio.jpg",
+
+  "active": true,
+
+  "searchable": false,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["lat", "vose"],
+
+  "clusters": ["anime"],
+
+  "notes": "Web dedicada exclusivamente al anime"
+}

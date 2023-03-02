@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<window>
+    <controls>
+        <control type="group">
+            <left>360</left>
+            <top>180</top>
+            <animation type="WindowOpen">
+                <effect type="zoom" start="0,90" end="100,100" center="auto" time="200" delay="150"/>
+            </animation>
+            <animation type="WindowClose">
+                <effect type="fade" start="100,100" end="50,50" center="auto" time="200" delay="100"/>
+            </animation>
+            <control type="image">
+                <width>600</width>
+                <height>400</height>
+                <texture border="2">Windows/DialogBack.png</texture>
+            </control>
+            <control type="image">
+                <top>-40</top>
+                <width>600</width>
+                <height>40</height>
+                <texture border="2">Windows/Header.png</texture>
+            </control>
+            <control type="label">
+                <top>-33</top>
+                <left>5</left>
+                <height>40</height>
+                <width>600</width>
+                <font>font25_title</font>
+                <textcolor>white</textcolor>
+                <shadowcolor>FF504416</shadowcolor>
+                <visible>true</visible>
+                <align>center</align>
+                <label>ALFA - YA DISPONIBLE</label>
+            </control>
+            <control type="label">
+                <top>10</top>
+                <left>10</left>
+                <height>40</height>
+                <width>590</width>
+                <font>font25_title</font>
+                <textcolor>white</textcolor>
+                <shadowcolor>FF504416</shadowcolor>
+                <visible>true</visible>
+                <align>center</align>
+                <info>Window.Property("title")</info>
+            </control>
+            <control type="button" id="39999">
+                <top>-36</top>
+                <left>556</left>
+                <width>32</width>
+                <height>34</height>
+                <texturefocus>Controls/DialogCloseButton-focus.png</texturefocus>
+                <texturenofocus>Controls/logo.png</texturenofocus>
+                <ondown>40002</ondown>
+            </control>
+            <control type="image" id="40000">
+                <top>50</top>
+                <left>10</left>
+                <width>200</width>
+                <height>345</height>
+                <texture border="2">Windows/Header.png</texture>
+            </control>
+            <control type="image">
+                <left>220</left>
+                <top>50</top>
+                <width>370</width>
+                <height>300</height>
+                <texture>Windows/BackControls.png</texture>
+            </control>
+            <control type="image">
+                <top>5</top>
+                <left>10</left>
+                <width>590</width>
+                <height>35</height>
+                <texture border="2">Controls/MenuItemNF.png</texture>
+            </control>
+            <control type="textbox" id="2">
+                <left>230</left>
+                <top>52</top>
+                <width>360</width>
+                <height>290</height>
+                <font>font12</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <shadowcolor>FF504416</shadowcolor>
+                <pagecontrol>3</pagecontrol>
+                <scrolltime>800</scrolltime>
+                <autoscroll delay="12000" time="1000" repeat="15000"></autoscroll>
+                <enable>false</enable>
+            </control>
+            <control type="button" id="40001">
+                <top>360</top>
+                <left>318</left>
+                <width>26</width>
+                <height>34</height>
+                <font>font20_title</font>
+                <label>[B]&lt;[/B]</label>
+                <align>center</align>
+                <texturenofocus>Controls/MenuItemNOFO.png</texturenofocus>
+                <texturefocus>Controls/MenuItemFO.png</texturefocus>
+                <onup>3</onup>
+                <onright>40002</onright>
+            </control>
+            <control type="button" id="40002">
+                <top>360</top>
+                <left>346</left>
+                <width>111</width>
+                <height>34</height>
+                <font>font20_title</font>
+                <align>center</align>
+                <texturenofocus>Controls/MenuItemNOFO.png</texturenofocus>
+                <texturefocus>Controls/MenuItemFO.png</texturefocus>
+                <onup>39999</onup>
+                <onleft>40001</onleft>
+                <onright>40003</onright>
+            </control>
+            <control type="button" id="40003">
+                <top>360</top>
+                <left>460</left>
+                <width>26</width>
+                <height>34</height>
+                <font>font20_title</font>
+                <label>[B]&gt;[/B]</label>
+                <align>center</align>
+                <texturenofocus>Controls/MenuItemNOFO.png</texturenofocus>
+                <texturefocus>Controls/MenuItemFO.png</texturefocus>
+                <onup>39999</onup>
+                <onleft>40002</onleft>
+                <onright>40004</onright>
+            </control>
+            <control type="button" id="40004">
+                <top>360</top>
+                <left>500</left>
+                <width>80</width>
+                <height>34</height>
+                <font>font20_title</font>
+                <label>Tráiler</label>
+                <align>center</align>
+                <texturenofocus>Controls/MenuItemNOFO.png</texturenofocus>
+                <texturefocus>Controls/MenuItemFO.png</texturefocus>
+                <onup>39999</onup>
+                <onleft>40002</onleft>
+            </control>
+        </control>
+    </controls>
+</window>

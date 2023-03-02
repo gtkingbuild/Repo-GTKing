@@ -1,0 +1,14 @@
+{
+  "id": "help",
+  "name": "Ayuda",
+  "active": false,
+  "adult": false,
+  "language": ["*"],
+  "thumbnail": "",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+  ],
+  "settings": [
+  ]
+}

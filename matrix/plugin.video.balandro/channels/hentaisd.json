@@ -1,0 +1,17 @@
+{
+  "id": "hentaisd",
+  "name": "HentaiSd",
+  "thumbnail": "hentaisd.jpg",
+
+  "active": true,
+
+  "searchable": false,
+  "search_types": ["movie"],
+
+  "categories": ["movie", "adults"],
+  "language": ["vo"],
+
+  "clusters": ["adults"],
+
+  "notes": "Vídeos en versión Original para Adultos +18"
+}

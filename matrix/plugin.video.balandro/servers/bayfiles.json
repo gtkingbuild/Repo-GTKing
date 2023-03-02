@@ -1,0 +1,17 @@
+{
+  "id": "bayfiles",
+  "name": "Bayfiles",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "(https://bayfiles.com/\\w+)",
+        "url": "\\1"
+      }
+    ]
+  }
+
+}

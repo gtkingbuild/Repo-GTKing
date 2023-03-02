@@ -1,0 +1,17 @@
+{
+  "id": "clicknupload",
+  "name": "Clicknupload",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "https://clicknupload.(?:org|com|me|co|cc|to|link|club)/([A-z0-9]+)",
+        "url": "https://clicknupload.cc/\\1"
+      }
+    ]
+  }
+
+}

@@ -1,0 +1,18 @@
+{
+  "id": "videomegatv",
+  "name": "Videomegatv",
+ 
+  "active": false,
+  "notes": "Ya no existe",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "videomega.tv/([^ ]+)",
+        "url": "http://videomega.tv/\\1"
+      }
+    ]
+  }
+
+}

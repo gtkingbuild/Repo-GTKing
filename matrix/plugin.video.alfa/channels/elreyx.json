@@ -1,0 +1,15 @@
+{
+  "id": "elreyx",
+  "name": "elreyx",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://elreyx.co/wp-content/uploads/2020/01/elreyxlogo.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

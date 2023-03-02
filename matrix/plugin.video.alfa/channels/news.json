@@ -1,0 +1,52 @@
+{
+  "id": "news",
+  "name": "Novedades",
+  "active": false,
+  "adult": false,
+  "language": ["*"],
+  "thumbnail": "",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "movie"
+  ],
+  "force_unify": true,
+  "settings": [
+    {
+      "id": "news_range",
+      "type": "list",
+      "label": "Maximo de años para buscar novedades",
+      "default": 0,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "Sin limite"
+      ]
+    },
+    {
+     "id": "max_workers",
+      "type": "list",
+      "label": "Maximo de hilos para multiproceso",
+      "default": 0,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "auto",
+        "1",
+        "2",
+        "4",
+        "6",
+        "8",
+        "16",
+        "24",
+        "32",
+        "64"
+      ]
+    }
+  ]
+}

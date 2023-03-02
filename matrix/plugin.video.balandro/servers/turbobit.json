@@ -1,0 +1,18 @@
+{
+  "id": "turbobit",
+  "name": "Turbobit",
+ 
+  "active": false,
+  "notes": "Requiere Debrider",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "(turbobit.net/[0-9a-z]+)",
+        "url": "http://\\1.html"
+      }
+    ]
+  }
+
+}

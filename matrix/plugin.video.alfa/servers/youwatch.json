@@ -1,0 +1,44 @@
+{
+  "active": true,
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "http://(?:youwatch.org|chouhaa.info)/(?:embed-|)([a-z0-9]+)",
+        "url": "http://youwatch.org/embed-\\1.html"
+      }
+    ]
+  },
+  "free": true,
+  "id": "youwatch",
+  "name": "youwatch",
+  "premium": [
+    "realdebrid"
+  ],
+  "settings": [
+    {
+      "default": false,
+      "enabled": true,
+      "id": "black_list",
+      "label": "@60654",
+      "type": "bool",
+      "visible": true
+    },
+    {
+      "default": 0,
+      "enabled": true,
+      "id": "favorites_servers_list",
+      "label": "@60655",
+      "lvalues": [
+        "No",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "type": "list",
+      "visible": false
+    }
+  ]
+}

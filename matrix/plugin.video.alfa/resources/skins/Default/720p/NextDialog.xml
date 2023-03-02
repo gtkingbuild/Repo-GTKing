@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+    <defaultcontrol always="true">3012</defaultcontrol>
+    <onload>Dialog.Close(fullscreeninfo,true)</onload>
+    <onload>Dialog.Close(videoosd,true)</onload>
+    <controls>
+        <control type="group">
+            <animation type="WindowOpen" reversible="false">
+                <effect type="fade" start="0" end="100" time="600"/>
+                <effect type="slide" start="115,0" end="0,0" time="600"/>
+            </animation>
+            <animation type="WindowClose" reversible="false">
+                <effect type="fade" start="100" end="0" time="400"/>
+                <effect type="slide" start="0,0" end="115,0" time="400"/>
+            </animation>
+            <control type="group">
+                <width>360</width>
+                <top>380</top>
+                <align>right</align>
+                <right>0</right>
+                <control type="image">
+                    <top>30</top>
+                    <right>4</right>
+                    <height>300</height>
+                    <colordiffuse>bb000000</colordiffuse>
+                    <texture>NextDialog/background.png</texture>
+                </control>
+                <control type="label">
+                    <visible>true</visible>
+                    <align>center</align>
+                    <top>-10</top>
+                    <label>$ADDON[plugin.video.alfa 70755]</label>
+                    <font>font14</font>
+                </control>
+                <control type="label">
+                    <top>30</top>
+                    <visible>true</visible>
+                    <align>center</align>
+                    <scroll>true</scroll>
+                    <scrollspeed>50</scrollspeed>
+                    <info>Window.Property(next_title)</info>
+                    <font>font30_title</font>
+                </control>
+                <control type="label">
+                    <top>60</top>
+                    <height>30</height>
+                    <aligny>center</aligny>
+                    <visible>true</visible>
+                    <align>center</align>
+                    <scroll>true</scroll>
+                    <scrollspeed>50</scrollspeed>
+                    <info>Window.Property(epi_title)</info>
+                    <font>font10</font>
+                </control>
+                <control type="image">
+                    <top>90</top>
+                    <width>326</width>
+                    <height>180</height>
+                    <left>16</left>
+                    <texture>$INFO[Window.Property(next_img)]</texture>
+                </control>
+                <control type="image">
+                    <top>92</top>
+                    <align>left</align>
+                    <left>18</left>
+                    <width>60</width>
+                    <height>60</height>
+                    <height>150</height>
+                    <visible>Integer.IsGreater(Player.TimeRemaining,10)</visible>
+                    <texture>NextDialog/counter.png</texture>
+                </control>
+                <control type="image">
+                    <top>92</top>
+                    <align>left</align>
+                    <left>18</left>
+                    <width>60</width>
+                    <height>60</height>
+                    <height>150</height>
+                    <visible>Integer.IsLessOrEqual(Player.TimeRemaining,10)</visible>
+                    <animation effect="zoom" start="105,105" end="125, 125" center="auto" time="480" condition="Integer.IsLessOrEqual(Player.TimeRemaining,10)" pulse="true">Conditional</animation>
+                    <colordiffuse>FFFF0000</colordiffuse>
+                    <texture>NextDialog/counter.png</texture>
+                </control>
+                <control type="label">
+                    <top>112</top>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <width>40</width>
+                    <height>20</height>
+                    <left>27.5</left>
+                    <visible>Integer.IsGreater(Player.TimeRemaining,10)</visible>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <font>font30_title</font>
+                    <label>[B]$INFO[Player.TimeRemaining(secs),,][/B]</label>
+                </control>
+                <control type="label">
+                    <top>101</top>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <width>60</width>
+                    <height>40</height>
+                    <left>17.5</left>
+                    <visible>Integer.IsLessOrEqual(Player.TimeRemaining,10)</visible>
+                    <textcolor>FFFF0000</textcolor>
+                    <font>font45_title</font>
+                    <label>[B]$INFO[Player.TimeRemaining(secs),,][/B]</label>
+                </control>
+                <!-- buttons -->
+                <control type="grouplist" id="20">
+                    <top>280</top>
+                    <align>center</align>
+                    <orientation>horizontal</orientation>
+                    <itemgap>4</itemgap>
+                    <control type="button" id="3012">
+                        <label>$ADDON[plugin.video.alfa 70756]</label>
+                        <onclick>SendClick(3012)</onclick>
+                        <left>2</left>
+                        <width>160</width>
+                        <height>40</height>
+                        <textoffsetx>40</textoffsetx>
+                        <font>font20_title</font>
+                        <textcolor>80FFFFFF</textcolor>
+                        <focusedcolor>FFFFFFFF</focusedcolor>
+                        <texturefocus>NextDialog/focus_play.png</texturefocus>
+                        <texturenofocus>NextDialog/nofocus_play.png</texturenofocus>
+                        <pulseonselect>no</pulseonselect>
+                    </control>
+                    <control type="button" id="3013">
+                        <label>$ADDON[plugin.video.alfa 70757]</label>
+                        <left>2</left>
+                        <width>160</width>
+                        <height>40</height>
+                        <textoffsetx>40</textoffsetx>
+                        <font>font20_title</font>
+                        <textcolor>80FFFFFF</textcolor>
+                        <focusedcolor>FFFFFFFF</focusedcolor>
+                        <texturefocus>NextDialog/focus_cancel.png</texturefocus>
+                        <texturenofocus>NextDialog/nofocus_cancel.png</texturenofocus>
+                        <pulseonselect>no</pulseonselect>
+                    </control>
+                </control>
+            </control>
+        </control>
+    </controls>
+</window>

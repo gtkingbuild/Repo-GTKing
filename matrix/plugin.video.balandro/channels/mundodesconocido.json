@@ -1,0 +1,17 @@
+{
+  "id": "mundodesconocido",
+  "name": "MundoDesconocido",
+  "thumbnail": "mundodesconocido.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["documentary"],
+
+  "categories": ["documentary"],
+  "language": ["cast"],
+
+  "clusters": ["categories", "docs"],
+
+  "notes": "Documentales narrativos en castellano."
+}

@@ -1,0 +1,17 @@
+{
+  "id": "dixmaxlive",
+  "name": "DixMaxLive",
+  "thumbnail": "dixmaxlive.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["news", "years", "lists", "lasts", "kids", "docs", "vos"],
+
+  "notes": "Web CERRADA. Películas y Series por géneros y año. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

@@ -1,0 +1,18 @@
+{
+  "id": "novamov",
+  "name": "Novamov",
+ 
+  "active": false,
+  "notes": "Ya no existe",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "((?:novamov.com|movshare.net)/video/[0-9a-z]+)",
+        "url": "http://\\1.html"
+      }
+    ]
+  }
+
+}

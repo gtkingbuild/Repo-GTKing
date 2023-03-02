@@ -1,0 +1,194 @@
+{
+  "active": true,
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "(https://(?:www.|)(?:0dayporn|severeporn|3movs|xtits|sleazyneasy|babestube|wankoz|vikiporn|katestube|pornomovies|lesbian8|pornsexer|pornmega|xxxymovies|pornestro|exoav|fapcat|pornmeka|deviants).com/video(?:s|)/[0-9]+/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://(?:www.|)(?:fetishshrine|javbangers|fapnado|xozilla|camwhoresbay|pornrewind|megatube|zbporn|momvids|wankoz|4kporn|freeporn8|porndictator|fapster|rat|pornwhite|pornicom|hqbang|homemade|ebony8|bobs-tuber|pornditt|filtercams).(?:com|xxx)/(?:video|videos)/[0-9]+/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://(?:www.|)(?:shooshtime|love4porn|submityourflicks|freehardcore|moviesand|interracial|feetporno|chubbyporn|cartoonporn|trannylime|gotgayporn|myporntape|bigtitslust|amateur8|thepornarea|motherporno).com/videos/[0-9]+/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://(?:www.|)(?:vipporns|porngem|frprn|shameless).com/(?:video|videos|clips)/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://www.analdin.com/es/videos/[0-9]+/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://(?:www.|)(?:severeporn|anon-v|myporntape).com/embed/\\w+)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(http(?:s|)://(?:www.|)(?:camwhores|camwhoreshd|lesbianbliss|goodporn|sunporno|porntrex|tonicporn|whoreshub).(?:tv|com|org|to)/video(?:s|)/[0-9]+/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(http(?:s|)://www.(?:camwhores|camwhoreshd|camvideos|cwtvembeds|lesbianbliss).(?:tv|com|org)/embed/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "((?:http|https)://(?:www.|)(?:datoporn|tubedupe).(?:co|com)/video(?:s|)/([0-9]+)/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "((?:http|https)://(?:www.|)datoporn.(?:co|com)/embed-[A-z0-9]+.html)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://(?:www.|my.|)(?:porn00|xmegadrive|uiporn|pornhat|familyporn|hobby).(?:org|tv|com|porn)/video(?:s|)/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://www.theyarehuge.com/v/[A-z0-9-.]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "https://www.((?:bigtitslust|analdin|xozilla|amateur8|sleazyneasy|babestube)).com/embed/([0-9]+(?:/|))",
+        "url": "https://www.\\1.com/videos/\\2/a/"
+      },
+      {
+        "pattern": "https://www.((?:uiporn|porngem)).com/embed/([0-9]+(?:/|))",
+        "url": "https://www.\\1.com/videos/a-\\2/"
+      },
+      {
+        "pattern": "https://www.porntrex.com/embed/([0-9]+(?:/|))",
+        "url": "https://www.porntrex.com/video/\\1/a"
+      },
+      {
+        "pattern": "(https://www.bigwank.com/embed/[0-9]+/[A-z0-9-.]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "https://fapster.xxx/embed/([0-9]+(?:/|))",
+        "url": "https://fapster.xxx/videos/\\1/a/"
+      },
+      {
+        "pattern": "https://((?:4kporn|hoes|crazyporn).(?:xxx|tube))/embed/([0-9]+(?:/|))",
+        "url": "https://\\1/videos/\\2/a/"
+      },
+      {
+        "pattern": "https://frprn.com/embed/([0-9]+(?:/|))",
+        "url": "https://frprn.com/videos/\\1/"
+      },
+      {
+        "pattern": "(https://ok.xxx/video/[0-9]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(http(?:s|)://www.(?:cambro|camvideos).tv/[0-9]+/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://www.fpo.xxx/videos/[0-9]+/[A-z0-9-.]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "https://embeds.sunporno.com/embed/([0-9]+)",
+        "url": "https://www.sunporno.com/videos/\\1/a"
+      },
+      {
+        "pattern": "(https://www.tabooporn.tv/videos/[0-9]+/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://max.porn/videos/[0-9]+/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://(?:hello|3prn).(?:porn|com)/videos/[0-9]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://www.pervclips.com/tube/videos/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://www.(?:crockotube|tube-bunny).com/watch/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(?:http|https)://www.sexvid.xxx/([A-z0-9-]+.html)",
+        "url": "https://www.sexvid.xxx/\\1"
+      },
+      {
+        "pattern": "(https://www.teenpornvideo.sex/videos/[0-9]+/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://pornwild.to(?:/es|)/embed/\\w+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://jizzberry.com/vids/[0-9]+/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://(?:www.|)(?:pornestro|love4porn).com/embed/[0-9]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "https://mangovideoTTTT.(?:pw|club)/(?:embed|videos)/(\\d+)",
+        "url": "https://mangovideo.pw/embed/\\1"
+      },
+      {
+        "pattern": "(https://watch-my-gf.com/view(?:_|-)video.php\\?v\\=[0-9]+)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://onlineporno.cc/(?:video|embed/)[0-9]+)(?:/|)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://tittykings.com/videos/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://www.tabootube.xxx/[A-z0-9-]+)(?:/|)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://pornwild.(?:to|com)(?:/es|)/videos/[0-9]+/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      }
+      ]
+  },
+  "free": true,
+  "id": "ktp",
+  "name": "ktp",
+  "settings": [
+    {
+      "default": false,
+      "enabled": true,
+      "id": "black_list",
+      "label": "@60654",
+      "type": "bool",
+      "visible": true
+    },
+    {
+      "default": 0,
+      "enabled": true,
+      "id": "favorites_servers_list",
+      "label": "@60655",
+      "lvalues": [
+        "No",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "type": "list",
+      "visible": false
+    }
+  ],
+  "thumbnail": ""
+}

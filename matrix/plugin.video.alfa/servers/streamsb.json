@@ -1,0 +1,46 @@
+{
+  "active": true,
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "(?:sblongvu|cloudemb|embedsb|sbchill).\\w{2,4}/(?:st/|e/|v/)?([A-z0-9]+)",
+        "url": "https://streamsb.net/play/\\1"
+      },
+      {
+        "pattern": "(?:sblongvu|streamsb|sbembed|sbembed1|sbplay\\d+|sbplay|pelistop|tubesb|playersb|watchsb|sbfast|sbfull|viewsb|sbthe|watchmo|sblanh|sbanh|ssbstream).\\w{2,4}/(?:embed-|d/|e/|play/)?([A-z0-9]+)",
+        "url": "https://streamsb.net/play/\\1"
+      }
+    ]
+  },
+  "free": true,
+  "id": "streamsb",
+  "name": "streamsb",
+  "settings": [
+    {
+      "default": false,
+      "enabled": true,
+      "id": "black_list",
+      "label": "@60654",
+      "type": "bool",
+      "visible": true
+    },
+    {
+      "default": 0,
+      "enabled": true,
+      "id": "favorites_servers_list",
+      "label": "@60655",
+      "lvalues": [
+        "No",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "type": "list",
+      "visible": false
+    }
+  ],
+  "thumbnail": "https://streamsb.com/xfilesharingtemplates_images/logo.png"
+}

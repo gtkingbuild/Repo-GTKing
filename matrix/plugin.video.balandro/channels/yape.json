@@ -1,0 +1,17 @@
+{
+  "id": "yape",
+  "name": "Yape",
+  "thumbnail": "yape.png",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["rankings", "languages", "qualityes", "years", "countries", "kids", "docs", "vos"],
+
+  "notes": "Web CERADA. Películas por idioma, géneros, calidad, año, país. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

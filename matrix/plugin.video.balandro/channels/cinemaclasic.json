@@ -1,0 +1,17 @@
+{
+  "id": "cinemaclasic",
+  "name": "CinemaClasic",
+  "thumbnail": "cinemaclasic.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie"],
+  "language": ["cast", "vose"],
+
+  "clusters": ["classic", "years", "kids", "docs", "stars", "directors"],
+
+  "notes": "Web CERRADA. Películas clásicas, por géneros, años, directores, actores."
+}

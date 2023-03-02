@@ -1,0 +1,17 @@
+{
+  "id": "mega1link",
+  "name": "Mega1Link",
+  "thumbnail": "mega1link.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie", "torrent"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["torrents", "languages", "qualityes", "kids", "docs", "vos"],
+
+  "notes": "Canal con enlaces Streaming y Torrent. Películas por idiomas, géneros y calidad."
+}

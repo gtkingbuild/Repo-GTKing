@@ -1,0 +1,17 @@
+{
+  "id": "seriespapayaxyz",
+  "name": "SeriesPapayaXyz",
+  "thumbnail": "seriespapayaxyz.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["mismatched", "lasts", "years", "kids", "docs", "vos"],
+
+  "notes": "Películas por géneros, año. Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

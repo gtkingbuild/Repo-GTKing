@@ -1,0 +1,17 @@
+{
+  "id": "seriesflix",
+  "name": "SeriesFlix",
+  "thumbnail": "seriesflix.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["producers", "countries", "kids", "docs", "vos"],
+
+  "notes": "Web CERRADA. Series por géneros, productora. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

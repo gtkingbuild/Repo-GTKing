@@ -1,0 +1,17 @@
+{
+  "id": "videossh",
+  "name": "Videossh",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "http(?:s|)://videos.sh/(?:embed-|)([A-z0-9]+)",
+        "url": "https://videos.sh/embed-\\1.html"
+      }
+    ]
+  }
+
+}

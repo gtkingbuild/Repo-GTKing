@@ -1,0 +1,134 @@
+{
+  "id": "cinetux",
+  "name": "Cinetux",
+  "active": true,
+  "adult": false,
+  "language": ["cast", "lat"],
+  "thumbnail": "https://i.postimg.cc/dD8SCD4x/cinetux.png",
+  "banner": "cinetux.png",
+  "fanart": "https://i.postimg.cc/1R8fZDgz/cinetux.jpg",
+  "categories": [
+    "movie",
+    "direct"
+  ],
+  "settings": [
+    {
+      "id": "filter_languages",
+      "type": "list",
+      "label": "Mostrar enlaces en idioma...",
+      "default": 0,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "No filtrar",
+        "CAST",
+        "LAT",
+        "VOSE",
+        "VO"
+      ]
+    },
+    {
+      "id": "include_in_global_search",
+      "type": "bool",
+      "label": "Incluir en busqueda global",
+      "default": true,
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "include_in_newest_peliculas",
+      "type": "bool",
+      "label": "Incluir en Novedades - Películas",
+      "default": false,
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "include_in_newest_documentales",
+      "type": "bool",
+      "label": "Incluir en Novedades - Documentales",
+      "default": false,
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "include_in_newest_infantiles",
+      "type": "bool",
+      "label": "Incluir en Novedades - Infantiles",
+      "default": false,
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "include_in_newest_terror",
+      "type": "bool",
+      "label": "Incluir en Novedades - terror",
+      "default": false,
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "include_in_newest_castellano",
+      "type": "bool",
+      "label": "Incluir en Novedades - Castellano",
+      "default": false,
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "include_in_newest_latino",
+      "type": "bool",
+      "label": "Incluir en Novedades - Latino",
+      "default": false,
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "modo_grafico",
+      "type": "bool",
+      "label": "Buscar información extra",
+      "default": true,
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "perfil",
+      "type": "list",
+      "label": "Perfil de color",
+      "default": 0,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "Perfil 3",
+        "Perfil 2",
+        "Perfil 1"
+      ]
+    },
+    {
+      "id": "filterlinks",
+      "type": "list",
+      "label": "Mostrar enlaces de tipo...",
+      "default": 2,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "Solo Descarga",
+        "Solo Online",
+        "No filtrar"
+      ]
+    },
+    {
+      "id": "viewmode",
+      "type": "list",
+      "label": "Elegir vista por defecto (Confluence)...",
+      "default": 2,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "Sinopsis",
+        "Miniatura",
+        "Lista"
+      ]
+    }
+  ]
+}

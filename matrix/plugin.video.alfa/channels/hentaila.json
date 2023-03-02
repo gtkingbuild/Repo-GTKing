@@ -1,0 +1,48 @@
+{
+  "id": "hentaila",
+  "name": "HentaiLA",
+  "active": true,
+  "adult": true,
+  "language": ["vos"],
+  "thumbnail": "https://hentaila.com/assets/img/media.webp",
+  "banner": "",
+  "fanart": "https://hentaila.com/uploads/fondos/13.jpg",
+  "categories": [
+    "adult",
+    "vos"
+  ],
+  "settings": [
+    {
+      "id": "include_in_global_search",
+      "type": "bool",
+      "label": "Incluir en busqueda global",
+      "default": false,
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "seek_tmdb",
+      "type": "bool",
+      "label": "Buscar información en TMDB",
+      "default": true,
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "seek_tmdb_only_in_episodes",
+      "type": "bool",
+      "label": "Buscar solo en episodios (mejora la precisión de la búsqueda)",
+      "default": true,
+      "enabled": "eq(-1,true)",
+      "visible": true
+    },
+    {
+      "id": "prefer_tmdb_review",
+      "type": "bool",
+      "label": "Preferir reseñas de TMDB sobre las de HLA (si existen)",
+      "default": true,
+      "enabled": true,
+      "visible": true
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "adnstream",
+  "name": "AdnStream",
+  "thumbnail": "adnstream.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["documentary"],
+
+  "categories": ["documentary"],
+  "language": ["cast"],
+
+  "clusters": ["rankings"],
+
+  "notes": "Documentales y películas en castellano."
+}

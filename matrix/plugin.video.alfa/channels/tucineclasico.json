@@ -1,0 +1,31 @@
+{
+  "id": "tucineclasico",
+  "name": "TuCineClasico",
+  "active": true,
+  "adult": false,
+  "language": ["cast", "lat"],
+  "thumbnail":"http://www.online.tucineclasico.es/wp-content/uploads/2019/02/tcconline2.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "movie",
+    "vos"
+  ],
+  "force_unify": true,
+  "version": 1,
+  "settings": [
+    {
+      "id": "filter_languages",
+      "type": "list",
+      "label": "Mostrar enlaces en idioma...",
+      "default": 0,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "No filtrar",
+        "CAST",
+        "VOSE"
+      ]
+    }
+  ]
+}

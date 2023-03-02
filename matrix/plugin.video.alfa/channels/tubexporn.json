@@ -1,0 +1,15 @@
+{
+  "id": "tubexporn",
+  "name": "tubexporn",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://i.postimg.cc/DZwqyf2C/logo.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

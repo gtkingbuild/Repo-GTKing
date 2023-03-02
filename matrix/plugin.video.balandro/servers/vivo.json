@@ -1,0 +1,17 @@
+{
+  "id": "vivo",
+  "name": "Vivo",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "(vivo.sx/[a-zA-Z0-9]+)",
+        "url": "https://\\1"
+      }
+    ]
+  }
+
+}

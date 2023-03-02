@@ -1,0 +1,25 @@
+{
+  "id": "bdupload",
+  "name": "Bdupload",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "https://bdupload.(?:info|asia|in|pw)/([A-z0-9]+)",
+        "url": "https://bdupload.asia/\\1"
+      },
+      {
+        "pattern": "https://dl.bdupload.(?:info|asia|in|pw)/([A-z0-9]+)",
+        "url": "https://bdupload.asia/\\1"
+      },
+      {
+        "pattern": "https://fs.bdupload.(?:info|asia|in|pw)/([A-z0-9]+)",
+        "url": "https://bdupload.asia/\\1"
+      }
+    ]
+  }
+
+}

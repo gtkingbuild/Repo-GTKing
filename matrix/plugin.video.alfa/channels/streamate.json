@@ -1,0 +1,15 @@
+{
+  "id": "streamate",
+  "name": "cam_streamate",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://i.postimg.cc/bwBsP8c2/streamate.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

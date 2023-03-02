@@ -1,0 +1,17 @@
+{
+  "id": "lacartoons",
+  "name": "LaCartoons",
+  "thumbnail": "lacartoons.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["lat"],
+
+  "clusters": ["suggested", "infantil", "classic", "rankings", "producers", "kids"],
+
+  "notes": "Series cartoons en idioma orignal de emisión."
+}

@@ -1,0 +1,15 @@
+{
+  "id": "thumbzilla",
+  "name": "ThumbZilla",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://ci.phncdn.com/www-static/thumbzilla/images/pc/logo.png?cache=2018110203",
+  "banner": "",
+  "fanart": "https://raw.githubusercontent.com/Inter95/tvguia/master/thumbnails/adults/xthearebg.jpg",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<window>
+    <controls>
+        <control type="image">
+            <width>100%</width>
+            <height>100%</height>
+            <texture>Windows/BG.png</texture>
+            <animation type="WindowOpen">
+                <effect type="fade" start="0" end="100" time="300" tween="cubic"/>
+            </animation>
+            <animation type="WindowClose">
+                <effect type="fade" start="100" end="0" time="200" tween="cubic" ease="out"/>
+            </animation>
+        </control>
+        <control type="group">
+            <left>200</left>
+            <top>180</top>
+            <animation type="WindowOpen">
+                <effect type="zoom" start="0,90" end="100,100" center="auto" time="200" delay="150"/>
+            </animation>
+            <animation type="WindowClose">
+                <effect type="fade" start="100,100" end="50,50" center="auto" time="200" delay="100"/>
+            </animation>
+
+            <control type="image">
+                <width>900</width>
+                <height>360</height>
+                <texture border="2">Windows/DialogBack.png</texture>
+            </control>
+            <control type="image">
+                <left>10</left>
+                <top>10</top>
+                <width>880</width>
+                <height>300</height>
+                <texture>Windows/BackControls.png</texture>
+            </control>
+            <control type="image">
+                <top>-40</top>
+                <width>900</width>
+                <height>40</height>
+                <texture border="2">Windows/Header.png</texture>
+            </control>
+            <control type="label">
+                <top>-33</top>
+                <left>5</left>
+                <height>40</height>
+                <width>900</width>
+                <font>font25_title</font>
+                <textcolor>white</textcolor>
+                <shadowcolor>FF504416</shadowcolor>
+                <visible>true</visible>
+                <align>center</align>
+                <info>Window.Property("title")</info>
+            </control>
+            <control type="textbox" id="2">
+                <left>25</left>
+                <top>10</top>
+                <width>855</width>
+                <height>280</height>
+                <font>Mono26</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <shadowcolor>FF504416</shadowcolor>
+                <pagecontrol>3</pagecontrol>
+                <enable>false</enable>
+            </control>
+            <control type="scrollbar" id="3">
+                <top>10</top>
+                <left>880</left>
+                <width>10</width>
+                <height>300</height>
+                <visible>true</visible>
+                <texturesliderbackground>Controls/bg.png</texturesliderbackground>
+                <texturesliderbar>Controls/nofocus.png</texturesliderbar>
+                <texturesliderbarfocus>Controls/top.png</texturesliderbarfocus>
+                <orientation>vertical</orientation>
+                <showonepage>false</showonepage>
+                <onup>3</onup>
+                <ondown>40000</ondown>
+            </control>
+            <control type="button" id="40000">
+                <top>320</top>
+                <left>380</left>
+                <width>140</width>
+                <height>34</height>
+                <label>Entendido</label>
+                <align>center</align>
+                <texturenofocus>Controls/MenuItemNOFO.png</texturenofocus>
+                <texturefocus>Controls/MenuItemFO.png</texturefocus>
+                <onup>3</onup>
+            </control>
+        </control>
+    </controls>
+</window>

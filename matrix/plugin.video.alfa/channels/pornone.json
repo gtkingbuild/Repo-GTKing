@@ -1,0 +1,15 @@
+{
+  "id": "pornone",
+  "name": "Pornone",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://th-eu4.pornone.com/images/logo-dark-theme.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}
