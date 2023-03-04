@@ -1,4 +1,4 @@
-name="[B][COLOR white]•• [COLOR green]Parche: [COLOR white]GTKing Prime MATRIX [COLOR gold]09/02/2023[/COLOR][/B]"
+name="[B][COLOR white]•• [COLOR red]Parche: [COLOR white]GTKing Prime MATRIX [COLOR gold]09/02/2023[/COLOR][/B]"
 url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/1.0-matrix.parche.Prime/Parche.GTKing.Prime.MATRIX.zip"
 icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
 fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
