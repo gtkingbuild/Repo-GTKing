@@ -341,19 +341,19 @@ def install_acestream():
         ruta = translatePath("special://home")
         ruta_zip = os.path.join(ruta, "userdata", "acestream_win.zip")
         ruta_extract = data_path
-        url ="https://rb.gy/hiajbj" # acestream_win
+        url ="http://tierramedia.com.es/horus_modulos/windows/acestream_win.zip" # acestream_win
 
     elif arquitectura == "arm" or (arquitectura == "aarch" and root):
         ruta = translatePath("special://home")
         ruta_zip = os.path.join(ruta, "userdata", "acestream.tar.gz")
         ruta_extract = data_path
-        url = "https://rb.gy/mwvqje" # linaroNDK
+        url = "http://tierramedia.com.es/horus_modulos/linux/acestream_elec.tar.gz" # linaroNDK
 
     elif arquitectura == "x86" and root:
         ruta = translatePath("special://home")
         ruta_zip = os.path.join(ruta, "userdata", "acestream.tar.gz")
         ruta_extract = data_path
-        url = "https://rb.gy/cnssig" # acestream_x86
+        url = "http://tierramedia.com.es/horus_modulos/linux/acestream_x86.tar.gz" # acestream_x86
 
     else:
         logger("install_acestream: motor externo system_platform = %s" % str((system_platform, arquitectura, root)))

@@ -628,6 +628,9 @@ def search(url):
     # Ejemplos de urls validas:
     #   https://fastestvpn.com/blog/acestream-channels/
     #   http://acetv.org/js/data.json
+    #   https://raw.githubusercontent.com/digitaimadness/digitaimadness.github.io/59c454b198f65c6e17ae106f1312b8e0be204211/alpaca.tv/ace.world.m3u
+
+
 
     try:
         data = six.ensure_str(urllib_request.urlopen(url).read())
@@ -654,19 +657,24 @@ def search(url):
                             new_item.icon = icon
 
                         itemlist.append(new_item)
-
                 except:
-                    itemlist = []
-                    for patron in [r"acestream://([0-9a-f]{40})", r'(?:"|>)([0-9a-f]{40})(?:"|<)']:
-                        n = 1
-                        for id in re.findall(patron, data, re.I):
-                            if id not in ids:
-                                ids.append(id)
-                                itemlist.append(Item(label= translate(30030) % (n,id),
-                                                     action='play',
-                                                     id= id))
-                                n += 1
-                        if itemlist: break
+                    try:
+                        for label, id in re.findall(r'#EXTINF:-1.*?,(.*?)http.*?id=([0-9a-f]{40})', data):
+                            itemlist.append(Item(label=label, action='play', id=id))
+
+                    except:
+                        itemlist = []
+                        for patron in [r"acestream://([0-9a-f]{40})", r'(?:"|>)([0-9a-f]{40})(?:"|<)']:
+                            n = 1
+                            for id in re.findall(patron, data, re.I):
+                                if id not in ids:
+                                    ids.append(id)
+                                    itemlist.append(Item(label= translate(30030) % (n,id),
+                                                         action='play',
+                                                         id= id))
+                                    n += 1
+                            if itemlist: break
+
 
     except: pass
 
