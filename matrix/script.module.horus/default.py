@@ -630,8 +630,6 @@ def search(url):
     #   http://acetv.org/js/data.json
     #   https://raw.githubusercontent.com/digitaimadness/digitaimadness.github.io/59c454b198f65c6e17ae106f1312b8e0be204211/alpaca.tv/ace.world.m3u
 
-
-
     try:
         data = six.ensure_str(urllib_request.urlopen(url).read())
         data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;", "", data)
@@ -658,11 +656,12 @@ def search(url):
 
                         itemlist.append(new_item)
                 except:
-                    try:
-                        for label, id in re.findall(r'#EXTINF:-1.*?,(.*?)http.*?id=([0-9a-f]{40})', data):
+                    for patron in [r'#EXTINF:-1.*?id="([^"]+)".*?([0-9a-f]{40})', '#EXTINF:-1,(.*?)http.*?([0-9a-f]{40})']:
+                        for label, id in re.findall(patron, data):
                             itemlist.append(Item(label=label, action='play', id=id))
+                        if itemlist: break
 
-                    except:
+                    if not itemlist:
                         itemlist = []
                         for patron in [r"acestream://([0-9a-f]{40})", r'(?:"|>)([0-9a-f]{40})(?:"|<)']:
                             n = 1
@@ -674,8 +673,6 @@ def search(url):
                                                          id= id))
                                     n += 1
                             if itemlist: break
-
-
     except: pass
 
     if itemlist:
