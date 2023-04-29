@@ -19,13 +19,14 @@ from core import servertools, channeltools
 from channels import filtertools
 from bs4 import BeautifulSoup
 from channelselector import get_thumb
+forced_proxy_opt = 'ProxyCF'
 
 canonical = {
              'channel': 'animeonlineninja', 
              'host': config.get_setting("current_host", 'animeonlineninja', default=''), 
              'host_alt': ["https://www1.animeonline.ninja/"], 
              'host_black_list': [], 
-             'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 
+             'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'forced_proxy_ifnot_assistant': forced_proxy_opt, 
              'CF': False, 'CF_test': False, 'alfa_s': True
             }
 host = canonical['host'] or canonical['host_alt'][0]

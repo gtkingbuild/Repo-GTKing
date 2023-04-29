@@ -19,7 +19,6 @@ from core import httptools
 from bs4 import BeautifulSoup
 from channels import autoplay
 from lib import alfa_assistant
-import ssl
 
 list_quality = ['default']
 list_servers = ['gounlimited']
@@ -36,8 +35,8 @@ host = canonical['host'] or canonical['host_alt'][0]
 
 
 def mainlist(item):
-    if ssl.OPENSSL_VERSION_INFO < (1, 1, 1):
-        if not alfa_assistant.open_alfa_assistant():
+    if httptools.OPENSSL_VERSION < (1, 1, 1):
+        if not config.get_setting('assistant_version', default=None):
             platformtools.dialog_ok("Alfa Assistant: Error", "NECESITAS la app Alfa Assistant para ver este canal")
             return
     logger.info()
@@ -97,8 +96,8 @@ def canal(item):
 def create_soup(url):
     logger.info()
     data = ""
-    if ssl.OPENSSL_VERSION_INFO >= (1, 1, 1):
-        response = httptools.downloadpage(url, ignore_response_code=True)
+    if httptools.OPENSSL_VERSION >= (1, 1, 1):
+        response = httptools.downloadpage(url, ignore_response_code=True, canonical=canonical)
         if response.sucess:
             data = response.data
     elif alfa_assistant.open_alfa_assistant():

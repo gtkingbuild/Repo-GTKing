@@ -28,7 +28,7 @@ list_servers = ['sharedvid']
 canonical = {
              'channel': 'hentaisd', 
              'host': config.get_setting("current_host", 'hentaisd', default=''), 
-             'host_alt': ["http://hentaisd.tv"], 
+             'host_alt': ["https://hentaisd.tv"], 
              'host_black_list': [], 
              'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'cf_assistant': False, 
              'CF': False, 'CF_test': False, 'alfa_s': True

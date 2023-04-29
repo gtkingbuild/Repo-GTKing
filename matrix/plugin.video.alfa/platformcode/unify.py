@@ -260,13 +260,15 @@ def add_languages(title, languages):
     return title
 
 
-def add_info_plot(plot, languages, quality, vextend, plot_extend, contentTitle, infoLabels):
+def add_info_plot(plot, languages, quality, vextend, plot_extend, contentTitle, item):
     #logger.info()
+
     last = '[/I][/B]\n'
     c_content = ''
     s_studio = ''
     g_genres = ''
     t_part = '[COLOR aquamarine][B][I]%s:[/COLOR] '
+    infoLabels = item.infoLabels
 
     if infoLabels['genre']:
         g_part = t_part % 'Género'
@@ -296,18 +298,22 @@ def add_info_plot(plot, languages, quality, vextend, plot_extend, contentTitle, 
         c_content = '%s%s%s' % (c_part, contentTitle, last if not plot_extend else '')
     if plot_extend:
         c_content += '%s[B][I]%s%s' % ('' if not c_content else ' ', plot_extend, last)
+    if item.filtertools:
+        c_content += '%s[B][I][COLOR hotpink]%s[/COLOR]%s' % ('' if not c_content else ' ', '**Filtrado', last)
 
     if vextend:
         v_part = t_part % 'Tipo'
         p_vextend = '%s%s%s' % (v_part, "[Versión Extendida]", last)
     
-    if infoLabels.get('studio', '') or (infoLabels.get('status', '') and infoLabels['mediatype'] != 'movie'):
+    if (infoLabels.get('studio', '') or (infoLabels.get('status', '')) and infoLabels['mediatype'] != 'movie'):
         s_part = t_part % 'Estudio'
         s_studio = '%s%s' % (s_part, infoLabels.get('studio', '-'))
         if infoLabels['mediatype'] != 'movie':
             sea_epi = ''
+            if infoLabels['mediatype'] in ['season', 'episode'] and infoLabels.get('temporada_num_episodios'):
+                sea_epi += '%s epis de ' % str(infoLabels['temporada_num_episodios'])
             if infoLabels.get('number_of_seasons') and infoLabels.get('number_of_episodes'):
-                sea_epi = '%sx%s, ' % (str(infoLabels['number_of_seasons']), str(infoLabels['number_of_episodes']).zfill(2))
+                sea_epi += '%sx%s, ' % (str(infoLabels['number_of_seasons']), str(infoLabels['number_of_episodes']).zfill(2))
             if infoLabels.get('status') and (infoLabels['status'].lower() == "ended" \
                                         or infoLabels['status'].lower() == "canceled"):
                 s_studio = '%s; (%sTERM' % (s_studio, sea_epi)
@@ -318,6 +324,14 @@ def add_info_plot(plot, languages, quality, vextend, plot_extend, contentTitle, 
             elif infoLabels.get('last_air_date', ''):
                 s_studio = '%s, %s' % (s_studio, set_color(infoLabels['last_air_date'], 'year'))
             s_studio += ')'
+        s_studio = '%s%s' % (s_studio, last)
+    elif infoLabels.get('temporada_nombre', '') and infoLabels['mediatype'] in ['season', 'episode']:
+        s_studio = t_part % 'Emisión'
+        if infoLabels.get('temporada_num_episodios'):
+            s_studio += '%sx%s ' % (str(infoLabels['season']), str(infoLabels['temporada_num_episodios']))
+        if infoLabels['mediatype'] in ['season', 'episode'] and infoLabels.get('aired', ''):
+            s_studio = '%s, %s %s' % (s_studio, set_color(infoLabels['aired'], 'year'), format_rating(infoLabels["rating"]))
+        s_studio += ')'
         s_studio = '%s%s' % (s_studio, last)
 
     if languages and quality and vextend:
@@ -382,7 +396,8 @@ def set_lang(language):
                       'ingles sub español'],
              "vos": ['vos', 'sub ingles', 'engsub', 'vosi','ingles subtitulado', 'sub: ingles'],
              "vo": ['ingles', 'en','vo', 'ovos', 'eng','v.o', 'english'],
-             "dual": ['dual']
+             "dual": ['dual'], 
+             "no filtrar": ['no filtrar']
              }
 
     language = scrapertools.decodeHtmlentities(language)
@@ -535,7 +550,7 @@ def title_format(item, c_file=colors_file, srv_lst={}):
     
     plot_extend = item.plot_extend
     if item.plot_extend and (item.contentType in ["movie", "tvshow"] and item.action not in ['play']): plot_extend = ''
-    item.plot = add_info_plot(item.plot, simple_language, item.quality, vextend, plot_extend, contentTitle, item.infoLabels)
+    item.plot = add_info_plot(item.plot, simple_language, item.quality, vextend, plot_extend, contentTitle, item)
 
     item = add_extra_info(item, checks)
 

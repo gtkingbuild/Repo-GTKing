@@ -268,7 +268,7 @@ def set_infoLabels_itemlist(item_list, seekTmdb=False, idioma_busqueda=tmdb_lang
     if not extended_info:
         for item in item_list:
             if not item.infoLabels.get('tmdb_id', ''): continue
-            if item.infoLabels.get('mediatype', 'movie') == 'movie': continue
+            if item.infoLabels.get('mediatype', 'movie') in ['movie', 'season', 'episode']: continue
             tvshow = True
             if item.infoLabels.get('status', ''): break
         else:
@@ -537,7 +537,7 @@ def get_nfo(item):
     @rtype: str
     @return:
     """
-    if "season" in item.infoLabels and "episode" in item.infoLabels:
+    if "season" in item.infoLabels and "episode" in item.infoLabels and not item.add_videolibrary:
         info_nfo = "https://www.themoviedb.org/tv/%s/season/%s/episode/%s\n" % \
                    (item.infoLabels['tmdb_id'], item.contentSeason, item.contentEpisodeNumber)
     else:

@@ -165,10 +165,12 @@ def run(item=None):
                     getattr(function, item.method)(item.options)
 
                 else:
-                    logger.error("ERROR Running function %s(%s)" % (item.function, item.options))
+                    logger.error('Function "%s(%s)" missing (%s: %s) or not imported: %s' \
+                                  % (item.function, item.options, channel_file, os.path.exists(channel_file), function))
 
             else:
-                logger.error("ERROR Running function %s(%s) | %s" % (function.__name__, item.options, function.__file__))
+                logger.error('Function "%s(%s)" missing (%s: %s) or not imported: %s' \
+                              % (item.function, item.options, channel_file, os.path.exists(channel_file), function))
 
         
         # Action in certain channel specified in "action" and "channel" parameters
@@ -209,7 +211,8 @@ def run(item=None):
             if channel:
                 logger.info("Running channel %s | %s" % (channel.__name__, channel.__file__))
             else:
-                logger.error("ERROR on loading channel %s" % (item.channel))
+                logger.error('Channel "%s" missing (%s: %s) or not imported: %s' \
+                              % (item.channel, channel_file, os.path.exists(channel_file), channel))
                 return
 
             if item.channel == "test" and item.contentChannel:
@@ -352,6 +355,10 @@ def run(item=None):
                                                  None, ["channels.%s" % item.contentChannel])
                         except ImportError:
                             exec("import channels." + item.contentChannel + " as channel")
+
+                    if not channel:
+                        logger.error('Channel "%s" missing (%s: %s) or not imported: %s' \
+                                      % (item.contentChannel, channel_file, os.path.exists(channel_file), channel))
 
                     logger.info("Running channel %s | %s" % (channel.__name__, channel.__file__))
                     itemlist = getattr(channel, item.action)(item)
@@ -609,7 +616,12 @@ def play_from_library(item):
                         if item.action == 'play':
                             platformtools.play_video(item)
                         else:
+                            channel_file = os.path.join(config.get_runtime_path(),
+                                                  'channels', item.contentChannel + ".py")
                             channel = __import__('channels.%s' % item.contentChannel, None, None, ["channels.%s" % item.contentChannel])
+                            if not channel:
+                                logger.error('Channel "%s" missing (%s: %s) or not imported: %s' \
+                                              % (item.contentChannel, channel_file, os.path.exists(channel_file), channel))
                             if hasattr(channel, item.action):
                                 play_items = getattr(channel, item.action)(item.clone(action=item.action, 
                                                      channel=item.contentChannel))

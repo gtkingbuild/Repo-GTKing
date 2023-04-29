@@ -140,7 +140,7 @@ def mainlist(item):
                     i_bis.infoLabels['mediatype'] = 'tvshow'
                     itemlist.append(i_bis.clone(channel="downloads", action="mainlist", title=title, 
                                                 quality=i_bis.quality, 
-                                                plot=unify.add_info_plot(i_bis.plot, i_bis.language, i_bis.quality, '', '', '', i_bis.infoLabels), 
+                                                plot=unify.add_info_plot(i_bis.plot, i_bis.language, i_bis.quality, '', '', '', i_bis), 
                                                 downloadProgress=[i_bis.downloadProgress], 
                                                 remote_download=remote_download))
 
@@ -186,7 +186,7 @@ def mainlist(item):
                                         unify.set_color(i.contentChannel.capitalize(), 'channel'))
                 if remote_download: i.remote_download = remote_download
                 itemlist.append(i.clone(quality=i.quality, 
-                                        plot=unify.add_info_plot(i.plot, i.language, i.quality, '', '', i.contentSerieName, i.infoLabels)))
+                                        plot=unify.add_info_plot(i.plot, i.language, i.quality, '', '', i.contentSerieName, i)))
 
     estados = [i.downloadStatus for i in itemlist]
     itemlist = sorted(itemlist, key=lambda i: i.title)
@@ -2275,6 +2275,7 @@ def get_episodes(item):
                             episode.emergency_urls[3] = []
                             episode.quality = epis_filter[0].quality
                             for x, epi_filter in enumerate(epis_filter):
+                                if not epi_filter.contentSeason or not epi_filter.contentEpisodeNumber: continue
                                 episode.emergency_urls[0].append(epi_filter.url)
                                 episode.emergency_urls[2].append(epi_filter.url)
                                 episode.emergency_urls[3].append(emergency_urls_3[epi_filter.order])
@@ -2371,13 +2372,15 @@ def get_episodes(item):
     except:
         logger.error(traceback.format_exc(1))
 
-    channel = None
-    try:
-        channel = __import__('channels.%s' % item.contentChannel, None, None, ["channels.%s" % item.contentChannel])
-    except ImportError:
-        pass
-    if channel and itemlist and hasattr(channel, 'post_episodes'):
-        itemlist = getattr(channel, 'post_episodes')(item, itemlist)
+    if item.add_videolibrary:
+        from channels import filtertools
+        channel = None
+        try:
+            channel = __import__('channels.%s' % item.contentChannel, None, None, ["channels.%s" % item.contentChannel])
+        except ImportError:
+            pass
+        if channel and itemlist:
+            itemlist = filtertools.get_links(itemlist, item, channel.list_language, channel.list_quality_tvshow, replace_label=config.BTDIGG_LABEL)
     
     return itemlist
 
@@ -2455,6 +2458,7 @@ def save_download(item, silent=False):
 
     # Descarga desde menú contextual
     if item.from_action and item.from_channel:
+        if 'list' in item.contentChannel: item.contentChannel = item.channel
         item.channel = item.from_channel
         item.action = item.from_action
         item.contextual = True

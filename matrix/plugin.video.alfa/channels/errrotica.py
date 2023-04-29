@@ -16,7 +16,7 @@ from core import scrapertools
 from core.item import Item
 from core import servertools
 from core import httptools
-
+# NO COGE CANONICAL
 canonical = {
              'channel': 'errrotica', 
              'host': config.get_setting("current_host", 'errrotica', default=''), 

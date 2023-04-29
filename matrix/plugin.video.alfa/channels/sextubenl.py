@@ -45,7 +45,7 @@ def mainlist(item):
 def search(item, texto):
     logger.info()
     texto = texto.replace(" ", "+")
-    item.url = "%s?s=%s" % (host,texto)
+    item.url = "%s?s=%s&filter=latest" % (host,texto)
     try:
         return lista(item)
     except:
@@ -58,15 +58,21 @@ def search(item, texto):
 def categorias(item):
     logger.info()
     itemlist = []
-    itemlist.append(Item(channel=item.channel, title="Borsten" , action="lista", url=host + "/?s=borsten",
+    itemlist.append(Item(channel=item.channel, title="Borsten" , action="lista", url=host + "/?s=borsten&filter=latest",
                                 thumbnail = "https://images.sextube.nl/output/1670347e76ec08d7713496749c2a4068/poster.jpg"))
     soup = create_soup(item.url)
-    soup = create_soup(item.url)
-    matches = soup.find_all('article', id=re.compile(r"^post-\d+"))
+    matches = soup.find_all('div', class_='video-block-cat')
     for elem in matches:
+        logger.debug(elem)
         url = elem.a['href']
-        title = elem.find('span', class_='cat-title').text.strip()
-        thumbnail = elem.img['src']
+        title = elem.find('span', class_='title').text.strip()
+        if elem.img.get("src", ""):
+            thumbnail = elem.img['src']
+        else:
+            thumbnail = elem.img['data-src']
+        cantidad = elem.find('div', class_='video-datas')
+        if cantidad:
+            title = "%s (%s)" %(title,cantidad.text.strip())
         url = urlparse.urljoin(item.url,url)
         thumbnail = urlparse.urljoin(item.url,thumbnail)
         plot = ""
@@ -91,10 +97,10 @@ def lista(item):
     logger.info()
     itemlist = []
     soup = create_soup(item.url)
-    matches = soup.find_all('article', id=re.compile(r"^post-\d+"))
+    matches = soup.find_all('div', class_='video-block')
     for elem in matches:
-        url = elem.a['href']
-        title = elem.a['title']
+        url = elem.find('a', class_='infos')['href']
+        title = elem.find('a', class_='infos')['title']
         thumbnail = elem.img['data-src']
         time = elem.find('span', class_='duration').text.strip()
         quality = elem.find('span', class_='is-hd')
@@ -108,9 +114,9 @@ def lista(item):
             action = "findvideos"
         itemlist.append(Item(channel=item.channel, action=action, title=title, contentTitle=title, url=url,
                              fanart=thumbnail, thumbnail=thumbnail , plot=plot) )
-    next_page = soup.find('a', class_='current')
+    next_page = soup.find('a', class_='next')
     if next_page:
-        next_page = next_page.find_next('a')['href']
+        next_page = next_page['href']
         next_page = urlparse.urljoin(item.url,next_page)
         itemlist.append(Item(channel=item.channel, action="lista", title="[COLOR blue]Página Siguiente >>[/COLOR]", url=next_page) )
     return itemlist
@@ -127,6 +133,14 @@ def findvideos(item):
 def play(item):
     logger.info()
     itemlist = []
-    itemlist.append(Item(channel=item.channel, action="play", title= "%s", contentTitle = item.title, url=item.url))
+    soup = create_soup(item.url)
+    url = soup.iframe['src']
+    if "/player-x.php?q=" in url:
+        import base64
+        url = scrapertools.find_single_match(url, "q=([^']+)")
+        url = base64.b64decode(url).decode('utf-8')
+        url = urlparse.unquote(url)
+        url = scrapertools.find_single_match(url, '<(?:iframe|source) src="([^"]+)"')
+    itemlist.append(Item(channel=item.channel, action="play", title= "%s", contentTitle = item.title, url=url))
     itemlist = servertools.get_servers_itemlist(itemlist, lambda i: i.title % i.server.capitalize())
     return itemlist

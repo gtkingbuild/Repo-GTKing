@@ -16,6 +16,7 @@ else:
 import os
 import re
 import string
+import traceback
 
 from unicodedata import normalize
 from core import filetools
@@ -351,3 +352,41 @@ def extract_file_online(path, filename):
     filetools.write(extracted_path, data_dl)
 
     return extracted_path
+
+
+def download_subtitles(item):
+    #Permite preparar la descarga de los subtítulos externos
+    logger.info()
+
+    kwargs = {'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 0, 'ignore_response_code': True, 'timeout': 5, 
+              'canonical': {}, 'headers': item.headers or {}, 'hide_infobox': True}
+
+    if not item.subtitle:
+        return item
+
+    if not isinstance(item.subtitle, list):
+        subtitles = [item.subtitle]
+    else:
+        subtitles = item.subtitle[:]
+    item.subtitle = ''
+
+    try:
+        subtitles_path = config.get_kodi_setting('subtitles.custompath')
+        if not subtitles_path:
+            subtitles_path = filetools.join(config.get_videolibrary_path(), "subtitles")
+            filetools.mkdir(subtitles_path)
+
+        for x, subtitle in enumerate(subtitles):
+            if not subtitle.startswith('http'):
+                if not item.subtitle: item.subtitle = subtitle
+                continue
+
+            subtitle_path_name = filetools.join(subtitles_path, subtitle.split('/')[-1])
+
+            data_dl = httptools.downloadpage(subtitle, **kwargs).data
+            if data_dl: res = filetools.write(subtitle_path_name, data_dl)
+            if res and not item.subtitle: item.subtitle = subtitle_path_name
+    except:
+        logger.error(traceback.format_exc())
+
+    return item

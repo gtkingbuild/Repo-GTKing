@@ -272,6 +272,9 @@ def render_items(itemlist, parent_item):
 
         if item.text_italic:
             item.title = '[I]%s[/I]' % item.title
+        
+        if item.action in ["search"]:
+            item.title = unify.set_color(item.title, 'tvshow')
 
         if use_unify and parent_item.channel not in ['alfavorites']:
             # Formatear titulo con unify
@@ -927,6 +930,14 @@ def set_context_commands(item, item_url, parent_item, categories_channel=[], **k
                 context_commands.append((config.get_localized_string(60353), "RunPlugin(%s?%s&%s)" %
                                          (sys.argv[0], item_url,
                                           'action=add_pelicula_to_library&from_action=' + item.action)))
+                                          
+            if item.action in ["episodios", "get_episodios", "seasons", "detail", "findvideos"]:
+                channel = __import__('channels.%s' % item.channel, None, None, ["channels.%s" % item.channel])
+                if hasattr(channel, 'actualizar_titulos'):
+                    context_commands.append(('Actualizar título', "RunPlugin(%s?%s&%s)" %
+                                             (sys.argv[0], item_url,
+                                              'action=actualizar_titulos&from_action=%s&from_title_tmdb=%s&from_update=%s' \
+                                              % (item.action, item.contentSerieName or item.contentTitle, True))))
 
         # Descargar
         if item.channel not in ["downloads", "search"]:
@@ -963,7 +974,8 @@ def set_context_commands(item, item_url, parent_item, categories_channel=[], **k
             elif item.contentSerieName or (
                     item.contentType in ["tvshow", "episode"] and item.infoLabels['tmdb_id'] == 'None'):
                 # Descargar serie
-                if item.contentType == "tvshow" or (item.contentType == "episode" and \
+                if item.contentType in ["tvshow", "season"] or \
+                                                    (item.contentType == "episode" and \
                                                     item.server == 'torrent' and item.infoLabels['tmdb_id'] != 'None' \
                                                     and not item.channel_recovery):
                     context_commands.append((config.get_localized_string(60355), "RunPlugin(%s?%s&%s)" %
@@ -973,8 +985,8 @@ def set_context_commands(item, item_url, parent_item, categories_channel=[], **k
                     if tc:
                         context_commands.append((config.get_localized_string(60355) + en, "RunPlugin(%s?%s&%s)" %
                                                  (sys.argv[0], item_url,
-                                                  'channel=downloads&action=save_download%s&from_channel=' % tc + channel_p + '&sub_action=tvshow' +
-                                                  '&from_action=' + item.action)))
+                                                  'channel=downloads&action=save_download%s&from_channel=' % tc + channel_p + 
+                                                  '&sub_action=tvshow' + '&from_action=' + item.action)))
                 # Descargar serie NO vistos
                 if (
                         item.contentType == "episode" and item.server == 'torrent' and item.channel == 'videolibrary' \
@@ -996,7 +1008,8 @@ def set_context_commands(item, item_url, parent_item, categories_channel=[], **k
                                                   'channel=downloads&action=save_download%s&from_channel=' % tc + channel_p +
                                                   '&from_action=' + item.action)))
                 # Descargar temporada
-                if item.contentType == "season" or (item.contentType == "episode" \
+                if item.contentType == "season" or parent_item.action in ["episodios", "episodesxseason"] or \
+                                                    (item.contentType == "episode" \
                                                     and item.server == 'torrent' and item.infoLabels[
                                                         'tmdb_id'] != 'None' and not item.channel_recovery):
                     context_commands.append((config.get_localized_string(60357), "RunPlugin(%s?%s&%s)" %
@@ -1503,7 +1516,7 @@ def set_player(item, xlistitem, mediaurl, view, strm, autoplay):
             logger.info("Tras setResolvedUrl")
             # si es un archivo de la videoteca enviar a marcar como visto
 
-            if strm or item.strm_path:
+            if strm or item.strm_path or item.video_path:
                 from platformcode import xbmc_videolibrary
                 xbmc_videolibrary.mark_auto_as_watched(item)
             # logger.debug(item)
@@ -1521,7 +1534,7 @@ def set_player(item, xlistitem, mediaurl, view, strm, autoplay):
         xbmc_player.setSubtitles(item.subtitle)
 
     # si es un archivo de la videoteca enviar a marcar como visto
-    if strm or item.strm_path:
+    if strm or item.strm_path or item.video_path:
         from platformcode import xbmc_videolibrary
         xbmc_videolibrary.mark_auto_as_watched(item)
 
@@ -1895,11 +1908,14 @@ def play_torrent(item, xlistitem, mediaurl):
     
     if seleccion >= 0:
         if item.subtitle:
-            if not filetools.exists(item.subtitle):
-                item.subtitle = filetools.join(videolibrary_path, folder, item.subtitle)
-            log("##### 'Subtítulos externos: %s" % item.subtitle)
-            time.sleep(1)
-            xbmc_player.setSubtitles(item.subtitle)  # Activamos los subtítulos
+            from platformcode import subtitletools
+            item = subtitletools.download_subtitles(item)
+            if item.subtitle:
+                if not filetools.exists(item.subtitle):
+                    item.subtitle = filetools.join(videolibrary_path, folder, item.subtitle)
+                log("##### 'Subtítulos externos: %s" % item.subtitle)
+                time.sleep(1)
+                xbmc_player.setSubtitles(item.subtitle)  # Activamos los subtítulos
 
         # Si no existe, creamos un archivo de control para que sea gestionado desde Descargas
         if torrent_paths.get(torr_client.upper(), ''):  # Es un cliente monitorizable?
@@ -2048,13 +2064,11 @@ def play_torrent(item, xlistitem, mediaurl):
             # Plugins externos
             else:
                 from lib.alfa_assistant import is_alfa_installed
-                if xbmc.getCondVisibility("system.platform.android") and torr_client in ['quasar',
-                                                                                         'torrest'] and config.get_setting(
-                    'assistant_binary', default=False) and not is_alfa_installed():
+                if xbmc.getCondVisibility("system.platform.android") and torr_client in ['quasar'] \
+                                and config.get_setting('assistant_binary', default=False) and not is_alfa_installed():
                     dialog_notification('Alfa Assistant es requerido', '%s lo requiere en esta versión de Android' \
                                         % torr_client.capitalize(), time=10000)
-                    logger.error(
-                        'Alfa Assistant es requerido. %s lo requiere en esta versión de Android' % torr_client.capitalize())
+                    logger.error('Alfa Assistant es requerido. %s lo requiere en esta versión de Android' % torr_client.capitalize())
                 mediaurl = urllib.quote_plus(item.url)
                 # Llamada con más parámetros para completar el título
                 if torr_client in ['quasar', 'elementum'] and item.infoLabels['tmdb_id']:
@@ -2137,8 +2151,10 @@ def play_torrent(item, xlistitem, mediaurl):
                         filetools.copy(subtitle, filetools.join(rar_path, filetools.basename(subtitle)))
                 log("##### Subtítulos copiados junto a vídeo: %s" % str(subtitles_list))
             if item.subtitle and filetools.isfile(item.subtitle) and rar_path:
-                filetools.copy(item.subtitle, filetools.join(rar_path, filetools.basename(item.subtitle)))
-                log("##### Subtítulo copiado junto a vídeo: %s" % str(item.subtitle))
+                rar_path_folder = rar_path if filetools.isdir(rar_path) else filetools.dirname(rar_path)
+                dest_file = filetools.join(rar_path_folder, filetools.basename(item.subtitle))
+                filetools.copy(item.subtitle, dest_file, silent=True)
+                log("##### Subtítulo copiado junto a vídeo: %s" % str(dest_file))
 
         except Exception as e:
             config.set_setting("LIBTORRENT_in_use", False, server="torrent")  # Marcamos Libtorrent como disponible
@@ -2165,7 +2181,7 @@ def rar_control_mng(item, xlistitem, mediaurl, rar_files, torr_client, password,
         # Si es un archivo RAR, monitorizamos el cliente Torrent hasta que haya descargado el archivo,
         # y después lo extraemos, incluso con RAR's anidados y con contraseña
         if torrent_paths[torr_client.upper()] != 'Memory':
-            rar_file, save_path_videos, torr_folder, rar_control = wait_for_download(item, mediaurl,
+            rar_file, save_path_videos, torr_folder, rar_control = wait_for_download(item, xlistitem, mediaurl,
                                                                                      rar_files, torr_client,
                                                                                      password, size,
                                                                                      rar_control)  # Esperamos mientras se descarga el TORRENT

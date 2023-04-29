@@ -37,6 +37,7 @@ def mainlist(item):
 
     if not config.get_setting("debug"):
         config.set_setting("debug", True)
+    config.set_setting("debug_report", True)
     if not config.get_setting("report_started", default=False):
         msg = "Por favor reproduzca el problema y vuelva a esta sección"
         platformtools.dialog_ok("Alfa - Reporte de errores", msg)
@@ -625,6 +626,7 @@ def report_send(item, description=False, fatal=False):
     if not filetools.exists(channel_custom):
         config.set_setting("debug", False)
 
+    config.set_setting("debug_report", False)
     config.set_setting("report_started", False)
 
     return item

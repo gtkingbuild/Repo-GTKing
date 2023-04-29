@@ -13,12 +13,15 @@ from core import channeltools
 
 TAG_TVSHOW_FILTER = "TVSHOW_FILTER"
 TAG_NAME = "name"
+TAG_MEDIA = "media_type"
+TAG_MEDIA_DEF = "tvshow"
 TAG_ACTIVE = "active"
 TAG_TITLE = "season_search"
 TAG_LANGUAGE = "language"
 TAG_QUALITY_ALLOWED = "quality_allowed"
+TAG_ALL = 'No filtrar'
 
-COLOR = {"parent_item": "yellow", "error": "red", "selected": "blue", 
+COLOR = {"parent_item": "yellow", "error": "red", "warning": "orange", "selected": "blue", 
          "striped_even_active": "blue", "striped_even_inactive": "limegreen", 
          "striped_odd_active": "aqua", "striped_odd_inactive": "yellowgreen"
          }
@@ -34,13 +37,14 @@ __channel__ = "filtertools"
 class ResultFilter(object):
     def __init__(self, dict_filter):
         self.active = dict_filter.get(TAG_ACTIVE, False)
+        self.media_type = dict_filter.get(TAG_MEDIA, TAG_MEDIA_DEF)
         self.title = dict_filter.get(TAG_TITLE, '')
         self.language = dict_filter.get(TAG_LANGUAGE, '')
         self.quality_allowed = dict_filter.get(TAG_QUALITY_ALLOWED, [])
 
     def __str__(self):
-        return "{active: '%s', title: '%s', language: '%s', quality_allowed: '%s'}" % \
-               (self.active, self.title, self.language, self.quality_allowed)
+        return "{active: '%s', media_type: '%s', title: '%s', language: '%s', quality_allowed: '%s'}" % \
+               (self.active, self.media_type, self.title, self.language, self.quality_allowed)
 
 
 class Filter(object):
@@ -51,16 +55,25 @@ class Filter(object):
     def __get_data(self, item, global_filter_lang_id):
 
         dict_filtered_shows = jsontools.get_node_from_file(item.channel, TAG_TVSHOW_FILTER)
-        tvshow = normalize(item.show)
-        if tvshow not in list(dict_filtered_shows.keys()) and '*' in list(dict_filtered_shows.keys()) \
+        
+        tvshow = normalize(item.show or item.contentTitle)
+        media_type = item.media_type or item.contentType.replace('episode', TAG_MEDIA_DEF)\
+                                                        .replace('season', TAG_MEDIA_DEF) or TAG_MEDIA_DEF
+        if tvshow not in list(dict_filtered_shows.keys()) and '*' in str(dict_filtered_shows.keys()) \
                   and item.action not in ['buscartrailer', 'add_serie_to_library', 'add_pelicula_to_library']:
-            tvshow = '*'
+            if media_type and '*_%s' % media_type in dict_filtered_shows.keys():
+                tvshow = '*_%s' % media_type
+            else:
+                tvshow = '*'
+                media_type = item.media_type or item.contentType.replace('episode', TAG_MEDIA_DEF)\
+                                                                .replace('season', TAG_MEDIA_DEF) or TAG_MEDIA_DEF
 
         global_filter_language = config.get_setting(global_filter_lang_id, item.channel)
 
         if tvshow in list(dict_filtered_shows.keys()):
 
             self.result = ResultFilter({TAG_ACTIVE: dict_filtered_shows[tvshow].get(TAG_ACTIVE, False),
+                                        TAG_MEDIA: dict_filtered_shows[tvshow].get(TAG_MEDIA, TAG_MEDIA_DEF),
                                         TAG_TITLE: dict_filtered_shows[tvshow].get(TAG_TITLE, ''),
                                         TAG_LANGUAGE: dict_filtered_shows[tvshow].get(TAG_LANGUAGE, ''),
                                         TAG_QUALITY_ALLOWED: dict_filtered_shows[tvshow].get(TAG_QUALITY_ALLOWED, [])})
@@ -168,25 +181,48 @@ def context(item, list_language=None, list_quality=None, exist=False):
                     _context.append({"title": "FILTRO: Borrar '%s'" % language, "action": "delete_from_context",
                                      "channel": "filtertools", "from_channel": item.channel})
         
-        # Añadimos item.season_search si exist en el diccionario
+        # Añadimos item.season_search si existe en el diccionario
         get_season_search(item)
 
     return _context
 
 
-def show_option(itemlist, channel, list_language, list_quality):
+def show_option(itemlist, channel, list_language, list_quality_tvshow, list_quality_movies=[]):
     if access():
         from channelselector import get_thumb
-        itemlist.append(Item(channel=__channel__, title="[COLOR %s]Configurar filtro para series...[/COLOR]" %
+
+        try:
+            channel_obj = __import__('channels.%s' % channel, None, None, ["channels.%s" % channel])
+        except ImportError:
+            channel_obj = None
+
+        if channel and not list_quality_movies:
+            list_quality_tvshow_save = list_quality_tvshow
+            if channel_obj:
+                try:
+                    list_quality_tvshow = channel_obj.list_quality_tvshow
+                    list_quality_movies = channel_obj.list_quality_movies
+                except:
+                    list_quality_tvshow = list_quality_tvshow_save
+                
+        from lib.generictools import post_btdigg
+        itemlist = post_btdigg(itemlist, channel, channel_obj)
+
+        if TAG_ALL not in list_language: list_language += [TAG_ALL]
+        if TAG_ALL.lower() not in list_quality_tvshow: list_quality_tvshow += [TAG_ALL.lower()]
+        if TAG_ALL.lower() not in list_quality_movies: list_quality_movies += [TAG_ALL.lower()]
+        itemlist.append(Item(channel=__channel__, title="[COLOR %s]Configurar filtro para Series y Películas...[/COLOR]" %
                                                         COLOR.get("parent_item", "auto"), action="load",
                              list_language=list_language, thumbnail=get_thumb('wishlist.png'), 
-                             list_quality=list_quality, from_channel=channel))
+                             list_quality_tvshow=list_quality_tvshow or list_quality, list_quality_movies=list_quality_movies, 
+                             from_channel=channel))
 
     return itemlist
 
 
 def load(item):
-    return mainlist(channel=item.from_channel, list_language=item.list_language, list_quality=item.list_quality)
+    return mainlist(channel=item.from_channel, list_language=item.list_language, 
+                    list_quality_tvshow=item.list_quality_tvshow, list_quality_movies=item.list_quality_movies)
 
 
 def check_conditions(_filter, list_item, item, list_language, list_quality, quality_count=0, language_count=0):
@@ -195,12 +231,17 @@ def check_conditions(_filter, list_item, item, list_language, list_quality, qual
     if _filter.language:
         # logger.debug("title es %s" % item.title)
         #2nd lang
+        
+        media_type = _filter.media_type or item.media_type or item.contentType.replace('episode', TAG_MEDIA_DEF)\
+                                                                              .replace('season', TAG_MEDIA_DEF) or TAG_MEDIA_DEF
 
         from platformcode import unify
         _filter.language = unify.set_lang(_filter.language).upper()
 
+        if not item.language or TAG_ALL.upper() in _filter.language:
+            is_language_valid = True
         # viene de episodios
-        if isinstance(item.language, list):
+        elif isinstance(item.language, list):
             #2nd lang
             for n, lang in enumerate(item.language):
                 item.language[n] = unify.set_lang(lang).upper()
@@ -237,12 +278,22 @@ def check_conditions(_filter, list_item, item, list_language, list_quality, qual
             else:
                 quality_list = [item.quality]
 
-            for quality in quality_list:
-                if quality.lower() in _filter.quality_allowed or quality.lower().replace(' ', '-') in _filter.quality_allowed:
-                    quality_count += 1
-                    break
-            else:
-                is_quality_valid = False
+            if TAG_ALL.lower() not in _filter.quality_allowed and list_quality:
+                if media_type == TAG_MEDIA_DEF:
+                    for quality in quality_list:
+                        if quality.replace(config.BTDIGG_LABEL, '').lower() in _filter.quality_allowed \
+                                           or quality.lower().replace(' ', '-') in _filter.quality_allowed:
+                            quality_count += 1
+                            break
+                    else:
+                        is_quality_valid = False
+                else:
+                    for quality in _filter.quality_allowed:
+                        if quality in str(quality_list).lower():
+                            quality_count += 1
+                            break
+                    else:
+                        is_quality_valid = False
 
         if is_language_valid and is_quality_valid:
             #TODO 2nd lang: habría que ver si conviene unificar el idioma aqui o no
@@ -257,7 +308,7 @@ def check_conditions(_filter, list_item, item, list_language, list_quality, qual
         logger.debug(" idioma valido?: %s, item.language: %s, filter.language: %s" %
                      (is_language_valid, item.language, _filter.language))
         logger.debug(" calidad valida?: %s, item.quality: %s, filter.quality_allowed: %s"
-                     % (is_quality_valid, quality, _filter.quality_allowed))
+                     % (is_quality_valid, quality.replace(config.BTDIGG_LABEL, '').lower(), _filter.quality_allowed))
 
     return list_item, quality_count, language_count, _filter.language
 
@@ -291,7 +342,7 @@ def get_link(list_item, item, list_language, list_quality=None, global_filter_la
 
     if not filter_global:
         filter_global = Filter(item, global_filter_lang_id).result
-    logger.debug("filter: '%s' datos: '%s'" % (normalize(item.show).title(), filter_global))
+    logger.debug("filter: '%s' datos: '%s'" % (normalize(item.show or item.contentTitle).title(), filter_global))
 
     if filter_global and filter_global.active:
         list_item, quality_count, language_count = \
@@ -303,7 +354,7 @@ def get_link(list_item, item, list_language, list_quality=None, global_filter_la
     return list_item
 
 
-def get_links(list_item, item, list_language, list_quality=None, global_filter_lang_id="filter_languages", replace_label=None):
+def get_links(list_item, item_in, list_language, list_quality=None, global_filter_lang_id="filter_languages", replace_label=None):
     """
     Devuelve una lista de enlaces filtrados.
 
@@ -322,9 +373,8 @@ def get_links(list_item, item, list_language, list_quality=None, global_filter_l
     """
     logger.info()
 
-
     # si los campos obligatorios son None salimos
-    if list_item is None or item is None:
+    if list_item is None or item_in is None:
         return []
 
     # si list_item está vacío volvemos, no se añade validación de plataforma para que Plex pueda hacer filtro global
@@ -344,11 +394,11 @@ def get_links(list_item, item, list_language, list_quality=None, global_filter_l
     quality_count = 0
     language_count = 0
 
-    _filter = Filter(item, global_filter_lang_id).result
-    logger.debug("filter: '%s' datos: '%s'" % (normalize(item.show).title(), _filter))
-
+    _filter = Filter(item_in, global_filter_lang_id).result
+    logger.debug("filter: '%s' datos: '%s'" % (normalize(item_in.show or item_in.contentTitle).title(), _filter))
 
     if _filter and _filter.active:
+        generic_filter = False
 
         for item in list_item:
             if item.quality:
@@ -360,7 +410,7 @@ def get_links(list_item, item, list_language, list_quality=None, global_filter_l
                     item.quality_alt = item.quality_alt.split(',')
             new_itemlist, quality_count, language_count, first_lang = check_conditions(_filter, new_itemlist, item, list_language,
                                                                                        list_quality, quality_count, language_count)
-
+  
         #2nd lang
         if second_lang and second_lang != 'No' and first_lang.lower() != second_lang.lower() :
             second_list= []
@@ -378,20 +428,23 @@ def get_links(list_item, item, list_language, list_quality=None, global_filter_l
                 new_itemlist, quality_count, language_count, second_lang = check_conditions(_filter2, second_list, item, list_language,
                                                                                             list_quality, quality_count, language_count)
 
+        if _filter.title.startswith('*') and len(new_itemlist) != len(list_item): generic_filter = True
+        
         logger.debug("ITEMS FILTRADOS: %s/%s, idioma [%s]: %s, calidad_permitida %s: %s"
                     % (len(new_itemlist), len(list_item), _filter.language, language_count, _filter.quality_allowed,
                        quality_count))
 
-        if (not new_itemlist and item.sub_action not in ["tvshow", "season", "unseen", "auto"]) \
-                             or (new_itemlist and new_itemlist[-1].action not in ["findvideos", "play", "episodios"]):
+        if (not new_itemlist and item_in.sub_action not in ["tvshow", "season", "unseen", "auto"]) \
+                             or (new_itemlist and new_itemlist[-1].action not in ["findvideos", "play", "episodios"]) \
+                             or (new_itemlist and generic_filter and new_itemlist[-1].action in ["play"]):
             list_item_all = []
             for i in list_item:
                 list_item_all.append(i.tourl())
 
             _context = [{"title": "FILTRO: Borrar '%s'" % _filter.language, "action": "delete_from_context",
-                         "channel": "filtertools", "to_channel": item.channel},
+                         "channel": "filtertools", "to_channel": item_in.channel},
                          {"title": "FILTRO: Configurar", "action": "config_item", "channel": "filtertools", 
-                         "from_channel_save": item.channel, "from_action_save": item.action, 
+                         "from_channel_save": item_in.channel, "from_action_save": item_in.action, 
                          "list_language": list_language, "list_quality": list_quality}]
             
             if _filter.quality_allowed:
@@ -403,12 +456,16 @@ def get_links(list_item, item, list_language, list_quality=None, global_filter_l
             if second_lang and second_lang != 'No':
                 msg_lang = 's %s ni %s' % (first_lang.upper(), second_lang.upper())
             
+            title = "[COLOR %s]Pulsa para mostrar sin filtro: idioma%s%s, [/COLOR]" \
+                                     % (COLOR.get("error", "auto"), msg_lang, msg_quality_allowed)
+            if new_itemlist and generic_filter and new_itemlist[-1].action in ["play"]:
+                title = "[COLOR %s]Pulsa para mostrar sin filtro: idioma%s%s[/COLOR]" \
+                                     % (COLOR.get("warning", "auto"), msg_lang, msg_quality_allowed)
+
             new_itemlist.append(Item(channel=__channel__, action="no_filter", list_item_all=list_item_all,
-                                     show=normalize(item.show).title(),
-                                     title="[COLOR %s]No hay elementos con idioma%s%s, pulsa para mostrar "
-                                           "sin filtro[/COLOR]"
-                                           % (COLOR.get("error", "auto"), msg_lang, msg_quality_allowed),
-                                     context=_context))
+                                     show=normalize(item_in.show).title(),
+                                     contentTitle = normalize(item_in.contentTitle).title(), 
+                                     title=title, context=_context))
 
     else:
         for item in list_item:
@@ -439,7 +496,7 @@ def no_filter(item):
     return itemlist
 
 
-def mainlist(channel, list_language, list_quality):
+def mainlist(channel, list_language, list_quality_tvshow, list_quality_movies=[]):
     """
     Muestra una lista de las series filtradas
 
@@ -472,14 +529,16 @@ def mainlist(channel, list_language, list_quality):
 
         idx += 1
         name = dict_series.get(tvshow, {}).get(TAG_NAME, tvshow)
-        if name == '*': name = '* Genérico para el Canal'
+        if name.startswith('*'): name = '* Genérico para el Canal'
         activo = " (desactivado)"
         if dict_series[tvshow][TAG_ACTIVE]:
             activo = ""
-        title = "Configurar [COLOR %s][%s][/COLOR]%s" % (tag_color, name, activo)
+        media_type = dict_series.get(tvshow, {}).get(TAG_MEDIA, TAG_MEDIA_DEF)
+        title = "Configurar [COLOR %s][%s][/COLOR] [%s] %s" % (tag_color, name, media_type.capitalize(), activo)
 
         itemlist.append(Item(channel=__channel__, action="config_item", title=title, show=name, unify=False, 
-                             list_language=list_language, list_quality=list_quality, from_channel=channel))
+                             list_language=list_language, list_quality_tvshow=list_quality_tvshow, 
+                             list_quality_movies=list_quality_movies, from_channel=channel, media_type=media_type))
 
     if len(itemlist) == 0:
         itemlist.append(Item(channel=channel, action="mainlist", title="No existen filtros, busca una serie y "
@@ -520,15 +579,20 @@ def config_item(item):
     # OBTENEMOS LOS DATOS DEL JSON
     dict_series = jsontools.get_node_from_file(item.from_channel, TAG_TVSHOW_FILTER)
 
-    if str(item.show).startswith('*'):
+    if str(item.show).startswith('*') or str(item.contentTitle).startswith('*'):
         tvshow = '*'
     else:
-        tvshow = normalize(item.show)
+        tvshow = normalize(item.show or item.contentTitle)
         get_season_search(item, dict_series=dict_series)
     default_lang = ''
+    
+    media_type = item.media_type = str(dict_series.get(tvshow, {}).get(TAG_MEDIA, '') \
+                                   or item.media_type or item.contentType.replace('episode', TAG_MEDIA_DEF)\
+                                                                         .replace('season', TAG_MEDIA_DEF) or TAG_MEDIA_DEF)
+    if tvshow.startswith('*'): tvshow = '*_%s' % media_type
 
     channel_parameters = channeltools.get_channel_parameters(item.from_channel)
-    list_language = channel_parameters["filter_languages"]
+    list_language = channel_parameters.get("filter_languages", [])
     try:
         if channel_parameters["filter_languages"] and len(list_language) > 0:
             default_lang = list_language[1]
@@ -539,12 +603,27 @@ def config_item(item):
         platformtools.dialog_notification("FilterTools", "No hay idiomas definidos")
         return
     else:
-        title_selected = str(item.season_search.title() or tvshow.title())
+        
+        if not item.list_quality:
+            if media_type == TAG_MEDIA_DEF and item.list_quality_tvshow:
+                item.list_quality = item.list_quality_tvshow
+            elif media_type != TAG_MEDIA_DEF and item.list_quality_movies:
+                item.list_quality = item.list_quality_movies
+        title_selected = str(item.season_search.title() or dict_series.get(tvshow, {}).get(TAG_TITLE) or tvshow.title())
         lang_selected = str(dict_series.get(tvshow, {}).get(TAG_LANGUAGE, default_lang))
         list_quality = dict_series.get(tvshow, {}).get(TAG_QUALITY_ALLOWED, [x.lower() for x in item.list_quality])
-        # logger.info("title selected {}".format(title_selected))
-        # logger.info("lang selected {}".format(lang_selected))
-        # logger.info("list quality {}".format(list_quality))
+        #logger.info("title selected {}".format(title_selected))
+        #logger.info("lang selected {}".format(lang_selected))
+        #logger.info("list quality {}".format(list_quality))
+        #logger.info("list languages {}".format(item.list_language))
+        #logger.info("media_type: {}".format(media_type))
+        if item.list_language and TAG_ALL not in item.list_language: 
+            list_language.insert(0, TAG_ALL)
+            item.list_language.insert(0, TAG_ALL)
+        item.list_quality = sorted(item.list_quality, key=str.lower)
+        if list_quality and TAG_ALL not in list_quality: 
+            if TAG_ALL.lower() in item.list_quality: item.list_quality.remove(TAG_ALL.lower())
+            item.list_quality.insert(0, TAG_ALL)
 
         active = True
         custom_button = {'visible': False}
@@ -555,6 +634,18 @@ def config_item(item):
             custom_button = {'label': 'Borrar', 'function': 'delete', 'visible': True, 'close': True}
 
         list_controls = []
+
+        if media_type:
+            media_type = {
+                "id": "media_type",
+                "type": "text",
+                "label": "Tipo de Medio",
+                "color": "0xFFBBFFFF",
+                "default": item.media_type,
+                "enabled": False,
+                "visible": True,
+            }
+            list_controls.append(media_type)
 
         if allow_option:
             active_control = {
@@ -605,7 +696,7 @@ def config_item(item):
                     "visible": True,
                 },
             ]
-            for element in sorted(item.list_quality, key=str.lower):
+            for element in item.list_quality:
                 list_controls_calidad.append({
                     "id": element,
                     "type": "bool",
@@ -629,10 +720,13 @@ def delete(item, dict_values):
 
     if item:
         dict_series = jsontools.get_node_from_file(item.from_channel, TAG_TVSHOW_FILTER)
-        if str(item.show).startswith('*'):
-            tvshow = '*'
+        
+        media_type = dict_values.get('media_type', item.media_type or item.contentType.replace('episode', TAG_MEDIA_DEF)\
+                                                                          .replace('season', TAG_MEDIA_DEF) or TAG_MEDIA_DEF)
+        if dict_values.get(TAG_TITLE, "") == '*' or str(item.show).startswith('*') or str(item.contentTitle).startswith('*'):
+            tvshow = '*_%s' % media_type
         else:
-            tvshow = normalize(item.show)
+            tvshow = normalize(item.show or item.contentTitle)
 
         heading = "¿Está seguro que desea eliminar el filtro?"
         line1 = "Pulse 'Si' para eliminar el filtro de [COLOR %s]%s[/COLOR], pulse 'No' o cierre la ventana para " \
@@ -643,6 +737,7 @@ def delete(item, dict_values):
             dict_series.pop(tvshow, None)
 
             result, json_data = jsontools.update_node(dict_series, item.from_channel, TAG_TVSHOW_FILTER)
+            if 'filtertools' in item: del item.filtertools
 
             sound = False
             if result:
@@ -676,13 +771,16 @@ def save(item, dict_data_saved):
             item.from_channel = item.contentChannel
         dict_series = jsontools.get_node_from_file(item.from_channel, TAG_TVSHOW_FILTER)
         
-        tvshow = normalize(item.show)
-        if dict_series.get(tvshow, {}).get(TAG_TITLE, "") == '*' or dict_data_saved.get(TAG_TITLE, "") == '*':
+        tvshow = tvshow_key = normalize(item.show or item.contentTitle)
+        media_type = dict_data_saved.get('media_type', item.media_type or item.contentType.replace('episode', TAG_MEDIA_DEF)\
+                                                                              .replace('season', TAG_MEDIA_DEF) or TAG_MEDIA_DEF)
+        if dict_data_saved.get(TAG_TITLE, "") == '*':
             tvshow = '*'
+            tvshow_key = '*_%s' % media_type
 
         logger.info("Se actualiza los datos de: %s" % tvshow)
         
-        title_selected = str(dict_data_saved.get(TAG_TITLE, item.season_search or tvshow.title))
+        title_selected = str(dict_data_saved.get(TAG_TITLE, item.season_search or tvshow.title()))
 
         list_quality = []
         for _id, value in list(dict_data_saved.items()):
@@ -691,10 +789,11 @@ def save(item, dict_data_saved):
 
         lang_selected = item.list_language[dict_data_saved[TAG_LANGUAGE]]
         dict_filter = {TAG_NAME: tvshow.title(), TAG_ACTIVE: dict_data_saved.get(TAG_ACTIVE, True),
-                       TAG_TITLE: title_selected, TAG_LANGUAGE: lang_selected, TAG_QUALITY_ALLOWED: list_quality}
-        dict_series[tvshow] = dict_filter
+                       TAG_TITLE: title_selected, TAG_MEDIA: media_type, TAG_LANGUAGE: lang_selected, TAG_QUALITY_ALLOWED: list_quality}
+        dict_series[tvshow_key] = dict_filter
 
         result, json_data = jsontools.update_node(dict_series, item.from_channel, TAG_TVSHOW_FILTER)
+        item.filtertools = True
 
         sound = False
         if result:
@@ -703,7 +802,7 @@ def save(item, dict_data_saved):
             message = "Error al guardar en disco"
             sound = True
 
-        heading = "%s [%s]" % (tvshow.title(), lang_selected)
+        heading = "%s [%s]" % (tvshow_key.title(), lang_selected)
         platformtools.dialog_notification(heading, message, sound=sound)
 
         if item.from_action in ["findvideos", "play", "no_filter"]:  # 'no_filter' es el mismo caso que L#601
@@ -722,7 +821,7 @@ def save_from_context(item):
     if item.from_channel == "videolibrary":
         item.from_channel = item.contentChannel
     dict_series = jsontools.get_node_from_file(item.from_channel, TAG_TVSHOW_FILTER)
-    tvshow = normalize(item.show)
+    tvshow = normalize(item.show or item.contentTitle)
 
     language = item.language[0] if isinstance(item.language, list) else item.language
     
@@ -730,6 +829,7 @@ def save_from_context(item):
     dict_series[tvshow] = dict_filter
 
     result, json_data = jsontools.update_node(dict_series, item.from_channel, TAG_TVSHOW_FILTER)
+    item.filtertools = True
 
     sound = False
     if result:
@@ -761,15 +861,19 @@ def delete_from_context(item):
         item.from_channel = item.contentChannel
 
     dict_series = jsontools.get_node_from_file(item.from_channel, TAG_TVSHOW_FILTER)
-    if str(item.show).startswith('*'):
-        tvshow = '*'
+
+    media_type = item.media_type or item.contentType.replace('episode', TAG_MEDIA_DEF)\
+                                                    .replace('season', TAG_MEDIA_DEF) or TAG_MEDIA_DEF
+    if str(item.show).startswith('*') or str(item.contentTitle).startswith('*'):
+        tvshow = '*_%s' % media_type
     else:
-        tvshow = normalize(item.show)
+        tvshow = normalize(item.show or item.contentTitle)
         if tvshow not in dict_series.keys():
-            tvshow = '*'
+            tvshow = '*_%s' % media_type
 
     lang_selected = dict_series.get(tvshow, {}).get(TAG_LANGUAGE, "")
     dict_series.pop(tvshow, None)
+    if 'filtertools' in item: del item.filtertools
 
     result, json_data = jsontools.update_node(dict_series, item.from_channel, TAG_TVSHOW_FILTER)
 
@@ -788,17 +892,40 @@ def delete_from_context(item):
 
 
 def get_season_search(item, dict_series={}):
-
-    tvshow = normalize(item.show)
-    item.season_search = item.season_search.title() or tvshow.title()
     
     # OBTENEMOS LOS DATOS DEL JSON
     channel = item.contentChannel if item.contentChannel and item.contentChannel not in ['list', 'videolibrary'] else None \
                                   or item.from_channel if item.from_channel and item.from_channel not in ['list', 'videolibrary'] else None \
                                   or item.channel
-    if channel:
-        if not dict_series: dict_series = jsontools.get_node_from_file(channel, TAG_TVSHOW_FILTER)
+    if not dict_series: dict_series = jsontools.get_node_from_file(channel, TAG_TVSHOW_FILTER)
 
-        if dict_series and dict_series.get(tvshow, {}).get(TAG_TITLE, ""):
-            if dict_series[tvshow][TAG_TITLE] != '*':
-                item.season_search = dict_series[tvshow][TAG_TITLE]
+    tvshow = tvshow_key = normalize(item.show or item.contentTitle)
+    media_type = item.media_type or item.contentType.replace('episode', TAG_MEDIA_DEF)\
+                                                    .replace('season', TAG_MEDIA_DEF) or TAG_MEDIA_DEF
+    if tvshow_key not in list(dict_series.keys()) and '*' in str(dict_series.keys()):
+        if media_type and '*_%s' % media_type in dict_series.keys():
+            tvshow_key = '*_%s' % media_type
+        else:
+            tvshow_key = '*'
+            media_type = item.media_type or item.contentType or TAG_MEDIA_DEF
+
+    item.season_search = item.season_search.title() or tvshow.title()
+
+    if channel:
+        if dict_series and dict_series.get(tvshow_key, {}).get(TAG_TITLE, ""):
+            if not dict_series[tvshow_key][TAG_TITLE].startswith('*'):
+                item.season_search = dict_series[tvshow_key][TAG_TITLE]
+
+
+def check_filter(item, itemlist):
+    
+    dict_series = jsontools.get_node_from_file(item.channel, TAG_TVSHOW_FILTER)
+    
+    for it in itemlist:
+        tvshow = normalize(it.contentSerieName if it.contentType == TAG_MEDIA_DEF else it.contentTitle)
+        if dict_series.get(tvshow, {}):
+            it.filtertools = True
+        elif 'filtertools' in it:
+            del it.filtertools
+    
+    return itemlist

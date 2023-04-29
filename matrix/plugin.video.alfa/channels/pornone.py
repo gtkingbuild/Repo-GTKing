@@ -33,22 +33,22 @@ def mainlist(item):
     logger.info()
     itemlist = []
     itemlist.append(Item(channel=item.channel, title="Hetero" , action="submenu", url=host, pornstars = True))
-    itemlist.append(Item(channel=item.channel, title="Female" , action="submenu", url=host + "female"))
-    itemlist.append(Item(channel=item.channel, title="Shemale" , action="submenu", url=host + "shemale"))
-    itemlist.append(Item(channel=item.channel, title="Gay" , action="submenu", url=host + "gay"))
+    itemlist.append(Item(channel=item.channel, title="Female" , action="submenu", url=host + "female/"))
+    itemlist.append(Item(channel=item.channel, title="Shemale" , action="submenu", url=host + "shemale/"))
+    itemlist.append(Item(channel=item.channel, title="Gay" , action="submenu", url=host + "gay/"))
     return itemlist
 
 def submenu(item):
     logger.info()
     itemlist = []
-    itemlist.append(Item(channel=item.channel, title="Nuevos" , action="lista", url=item.url + "/newest/"))
-    itemlist.append(Item(channel=item.channel, title="Mas vistos" , action="lista", url=item.url + "/views/month/"))
-    itemlist.append(Item(channel=item.channel, title="Mejor valorado" , action="lista", url=item.url + "/rating/month/"))
-    itemlist.append(Item(channel=item.channel, title="Mas comentado" , action="lista", url=item.url + "/comments/month/"))
-    itemlist.append(Item(channel=item.channel, title="Mas metraje" , action="lista", url=item.url + "/longest/month/"))
+    itemlist.append(Item(channel=item.channel, title="Nuevos" , action="lista", url=item.url + "newest/"))
+    itemlist.append(Item(channel=item.channel, title="Mas vistos" , action="lista", url=item.url + "views/month/"))
+    itemlist.append(Item(channel=item.channel, title="Mejor valorado" , action="lista", url=item.url + "rating/month/"))
+    itemlist.append(Item(channel=item.channel, title="Mas comentado" , action="lista", url=item.url + "comments/month/"))
+    itemlist.append(Item(channel=item.channel, title="Mas metraje" , action="lista", url=item.url + "longest/month/"))
     if item.pornstars: 
-        itemlist.append(Item(channel=item.channel, title="PornStar" , action="categorias", url=host + "/pornstars/"))
-        itemlist.append(Item(channel=item.channel, title="Categorias" , action="categorias", url=item.url + "/categories/"))
+        itemlist.append(Item(channel=item.channel, title="PornStar" , action="categorias", url=host + "pornstars/"))
+        itemlist.append(Item(channel=item.channel, title="Categorias" , action="categorias", url=item.url + "categories/"))
         itemlist.append(Item(channel=item.channel, title="Buscar", action="search", url=item.url))
     return itemlist
 
@@ -124,7 +124,7 @@ def lista(item):
             continue
         title = elem.find('img', class_='imgvideo')['alt']
         thumbnail = elem.find('img', class_='imgvideo')['src']
-        time = elem.find('span', class_='md:hidden')
+        time = elem.find('span', class_='text-f13')
         quality = time.find('img', alt='HD Video')
         if quality:
             title = "[COLOR yellow]%s[/COLOR] [COLOR red]HD[/COLOR] %s" % (time.text.strip(),title)

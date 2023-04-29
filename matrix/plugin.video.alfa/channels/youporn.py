@@ -60,9 +60,9 @@ def catalogo(item):
     itemlist = []
     soup = create_soup(item.url)
     if "/pornstars/" in item.url:
-        matches = soup.find('div', class_='grid-row-sub').find_all('div', class_='porn-star-list')
+        matches = soup.find_all('div', class_='porn-star-list')
     else:
-        matches = soup.find('div', class_='full-row-channel').find_all('div', class_='channel-box')
+        matches = soup.find('ul', class_='list').find_all('li')
     for elem in matches:
         url = elem.a['href']
         title = elem.img['alt']
@@ -83,17 +83,16 @@ def catalogo(item):
         itemlist.append(Item(channel=item.channel, action="catalogo", title="[COLOR blue]Página Siguiente >>[/COLOR]", url=next_page) )
     return itemlist
 
-
 def categorias(item):
     logger.info()
     itemlist = []
-    soup = create_soup(item.url).find('div', class_='row grouped')
-    matches = soup.find_all('div', class_='categories-row')
+    soup = create_soup(item.url).find('div', class_='grouped-categories-list-wrapper')
+    matches = soup.find_all('a', attrs={"data-espnode": re.compile(r"^category_[a-z0-9]+")})
     for elem in matches:
-        url = elem.a['href']
+        url = elem['href']
         title = elem.img['alt']
         thumbnail = elem.img['data-original']
-        cantidad = elem.find('span').text
+        cantidad = elem.find('span', class_='views').text
         title = "%s (%s)" %(title,cantidad)
         url = urlparse.urljoin(item.url,url)
         itemlist.append(Item(channel=item.channel, action="lista", title=title, url=url,
@@ -118,13 +117,13 @@ def lista(item):
     logger.info()
     itemlist = []
     soup = create_soup(item.url)
-    matches = soup.find_all('div', class_='video-box')
+    matches = soup.find_all('li', class_='video-box')
     for elem in matches:
         url = elem.a['href']
         title = elem.img['alt']
         thumbnail = elem.img['data-original']
-        time = elem.find('div', class_='video-duration').text
-        quality = elem.find('div', class_='video-best-resolution')
+        time = elem.find('span', class_='video-duration').text
+        quality = elem.find('span', class_='video-best-resolution')
         if quality:
             title = "[COLOR yellow]%s[/COLOR] [COLOR red]%s[/COLOR] %s" % (time,quality.text,title)
         else:
@@ -156,7 +155,20 @@ def findvideos(item):
 def play(item):
     logger.info()
     itemlist = []
-    itemlist.append(Item(channel=item.channel, action="play", title= "%s", contentTitle = item.title, url=item.url))
+    # soup = create_soup(item.url)
+    # pornstars = soup.find_all('a', attrs={"data-espnode": "pornstar_tag"})
+    # for x , value in enumerate(pornstars):
+        # pornstars[x] = value.text.strip()
+    # pornstar = ' & '.join(pornstars)
+    # pornstar = "[COLOR cyan]%s[/COLOR]" % pornstar
+    # lista = item.contentTitle.split()
+    # if "\d+p" in item.title:
+        # lista.insert (4, pornstar)
+    # else:
+        # lista.insert (2, pornstar)
+    # item.contentTitle = ' '.join(lista)
+    
+    itemlist.append(Item(channel=item.channel, action="play", title= "%s", contentTitle = item.contentTitle, url=item.url))
     itemlist = servertools.get_servers_itemlist(itemlist, lambda i: i.title % i.server.capitalize())
     return itemlist
 

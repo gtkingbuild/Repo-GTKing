@@ -53,7 +53,7 @@ DEBUG = None
 set_tls_VALUES = {
                   'set_tls': True, 
                   'set_tls_min': True, 
-                  'retries_cloudflare': 2
+                  'retries_cloudflare': 1
                  }
 set_tls_VALUES_BKP = set_tls_VALUES.copy()
 
@@ -107,6 +107,8 @@ patron_canal = '(?:http.*\:)?\/\/(?:ww[^\.]*)?\.?(\w+)\.\w+(?:\/|\?|$)'
 
 domain_CF_blacklist = ['atomohd', 'atomixhq', 'atomtt']                         ############# TEMPORAL
 
+torrent_paths = {}
+
 
 # Returns an array of possible video url's from the page_url
 def get_video_url(page_url, premium=False, user="", password="", video_password=""):
@@ -139,7 +141,8 @@ def bt_client(mediaurl, xlistitem, rar_files, subtitle=None, password=None, item
 
     played = False
     debug = False
-    torrent_paths = torrent_dirs()
+    global torrent_paths
+    if not torrent_paths: torrent_paths = torrent_dirs()
 
     try:
         save_path_videos = ''
@@ -618,7 +621,7 @@ def bt_client(mediaurl, xlistitem, rar_files, subtitle=None, password=None, item
             filetools.remove(torrent_path, silent=True)
 
 
-def caching_torrents(url, torrent_params={}, **kwargs):
+def caching_torrents(url, torrent_params={}, retry=False, **kwargs):
     logger.info("Url: %s / Path: %s / Local: %s" % (url or torrent_params.get('torrents_path', ''), 
                  torrent_params.get('torrents_path', None) if torrent_params.get('torrents_path', None) != url else '', 
                  torrent_params.get('local_torr', None) if torrent_params.get('local_torr', None) \
@@ -627,7 +630,11 @@ def caching_torrents(url, torrent_params={}, **kwargs):
     if (monitor and monitor.abortRequested()) or (not monitor and xbmc and xbmc.abortRequested):
         torrent_params['torrents_path'] = ''
         return '', torrent_params
-        
+
+    DEBUG = config.get_setting('debug_report', default=False)
+    if DEBUG: logger.debug('KWARGS: %s: TORRENT_PARAMS: %s: RETRY: %s' % (str(kwargs), str(torrent_params), retry))
+
+    kwargs_save = kwargs.copy()
     item = kwargs.pop('item', Item())
     url_domain = False
     if scrapertools.find_single_match(url, patron_domain):
@@ -746,12 +753,13 @@ def caching_torrents(url, torrent_params={}, **kwargs):
                         return url, torrent_params                              # Si hay un error, devolvemos el "path" vacío
             
             elif (torrent_params.get('local_torr', None) and filetools.exists(torrent_params['local_torr'])) or not url.startswith("http"):
-                if filetools.exists(torrent_params['local_torr']):
+                if filetools.exists(torrent_params['local_torr'] or url):
                     torrent_file = filetools.read(torrent_params.get('local_torr', None) or url, silent=True, mode='rb', vfs=VFS)
                 else:
                     torrent_file = filetools.read(url, silent=True, mode='rb', vfs=VFS)
                 if not torrent_file:
-                    logger.error('1.- No es un archivo Torrent: %s' % torrent_params.get('local_torr', None) or url)
+                    logger.error('1.- No es un archivo Torrent: "%s" - %s - %s' \
+                                  % (url, torrent_params, filetools.file_info(filetools.dirname(url or torrent_params['local_torr']))))
                     if not url.startswith("http"):
                         torrent_params['torrents_path'] = ''
                         return torrent_file, torrent_params                     # Si hay un error, devolvemos el "path" vacío
@@ -762,9 +770,9 @@ def caching_torrents(url, torrent_params={}, **kwargs):
                 from core import httptools
                 if torrent_params.get('lookup', False):
                     proxy_retries = 0
-                follow_redirects = True
+                follow_redirects = kwargs.get('follow_redirects', True)
                 if post:
-                    follow_redirects = False
+                    follow_redirects = kwargs.get('follow_redirects', False)
                 if timeout < 20 and httptools.channel_proxy_list(url):          # Si usa proxy, duplicamos el timeout
                     timeout *= 3
                 
@@ -785,10 +793,11 @@ def caching_torrents(url, torrent_params={}, **kwargs):
                 torrent_params['code'] = response.code
                 torrent_params['time_elapsed'] = response.time_elapsed
                 
-                if not response.sucess or (torrent_params['torrents_path'] == 'CF_BLOCKED' \
-                                           and not scrapertools.find_single_match(response.data, patron)) \
-                                           or (isinstance(response.data, str) and 'recaptcha' in response.data \
-                                           and not scrapertools.find_single_match(response.data, patron)):
+                if response.code not in httptools.SUCCESS_CODES+httptools.REDIRECTION_CODES \
+                                        or (torrent_params['torrents_path'] == 'CF_BLOCKED' \
+                                        and not scrapertools.find_single_match(response.data, patron)) \
+                                        or (isinstance(response.data, str) and 'recaptcha' in response.data \
+                                        and not scrapertools.find_single_match(response.data, patron)):
                     # Si hay un bloqueo de CloudFlare, intenta descargarlo directamente desde el Browser y lo recoge de descargas
                     cf_error = ''
                     for cf_error in CF_BLOCKING_ERRORS:
@@ -839,6 +848,13 @@ def caching_torrents(url, torrent_params={}, **kwargs):
                         return torrent_file, torrent_params                     # Si hay un error, devolvemos el "path" vacío
                 
                 else:
+                    if response.code in httptools.REDIRECTION_CODES:
+                        torrent_params['url'] = url = response.headers.get('Location', '')
+                        if url.startswith("magnet"):
+                            return url, torrent_params                          # Si es un magnet lo devolvemos
+                        if not retry: 
+                            return caching_torrents(url, torrent_params=torrent_params, retry=True, **kwargs_save)
+                    
                     # En caso de que sea necesaria la conversión js2py
                     from lib.generictools import js2py_conversion
                     torrent_file = response.data
@@ -942,6 +958,7 @@ def caching_torrents(url, torrent_params={}, **kwargs):
         if t_hash and not scrapertools.find_single_match(torrent_params['torrents_path'], '(?:\d+x\d+)?\s+\[.*?\]_\d+'):
             torrent_params['torrents_path'] = filetools.encode(filetools.join(filetools.dirname(torrent_params.get('local_torr', None) \
                                                                or torrent_params['torrents_path']), t_hash + '.torrent'))
+            if url.startswith("magnet"): torrent_params['url'] = torrent_params['torrents_path']
             torrents_path_encode = filetools.join(filetools.dirname(torrent_params.get('local_torr', None) or torrents_path_encode), 
                                                   t_hash + '.torrent')
             if not cached_torrent and 'cliente_torrent_Alfa.torrent' not in url:
@@ -1199,7 +1216,7 @@ def magnet2torrent(magnet, headers={}):
 
         # Tratamos de convertir el magnet on-line (opción más rápida, pero no se puede convertir más de un magnet a la vez)
         url_list = [
-                    ('https://itorrents.org/torrent/', 2, '', '.torrent')
+                    ('https://itorrents.org/torrent/', 5, '', '.torrent')
                    ]                                                            # Lista de servicios on-line testeados
         for url, timeout, id, sufix in url_list:
             if id:
@@ -1209,8 +1226,8 @@ def magnet2torrent(magnet, headers={}):
 
             response = httptools.downloadpage(url, timeout=timeout, headers=headers, post=post, retry_alt=False, 
                                               proxy_retries=0, proxy__test=False, alfa_s=True, set_tls=set_tls_VALUES['set_tls'], 
-                                                  set_tls_min=set_tls_VALUES['set_tls_min'], 
-                                                  retries_cloudflare=set_tls_VALUES['retries_cloudflare'])
+                                              set_tls_min=set_tls_VALUES['set_tls_min'], 
+                                              retries_cloudflare=set_tls_VALUES['retries_cloudflare'])
             if not response.sucess:
                 logger.debug('ERROR: %s: Elapsed: %s' % (response.code, response.time_elapsed))
                 continue
@@ -1478,21 +1495,35 @@ def videolibray_populate_cached_torrents(url, torrent_file='', find=False, item=
 def call_torrent_via_web(mediaurl, torr_client, torrent_action='add',oper=2, alfa_s=True, timeout=5):
     # Usado para llamar a los clientes externos de Torrents para automatizar la descarga de archivos que contienen .RAR
     logger.info()
+    global torrent_paths
     from core import httptools
-    
+
+    if not torrent_paths: torrent_paths = torrent_dirs()
+
     if (monitor and monitor.abortRequested()) or (not monitor and xbmc and xbmc.abortRequested):
         sys.exit()
-    
+
     post = None
     files = {}
     if mediaurl.startswith('magnet'):
         mediaurl = urllib.unquote_plus(mediaurl).replace('&amp;', '&') + magnet_trackets
     torrent_type = 'torrent'
+    method = 'get'
     if torr_client == "torrest":
-        if mediaurl.startswith('magnet'): torrent_type = 'magnet'
-        torrent_action = "add/%s?ignore_duplicate=true&download=true" % torrent_type
-        if mediaurl.startswith('magnet') or mediaurl.startswith('http'): torrent_action += '&uri=%s' % mediaurl
-    torrent_paths = torrent_dirs()
+        method = 'post'
+        if mediaurl.startswith('magnet'): 
+            torrent_type = 'magnet'
+            method = torrent_paths['TORREST_verbs']['add_magnet'][0]
+            torrent_action = torrent_paths['TORREST_verbs']['add_magnet'][1] % mediaurl
+        elif mediaurl.startswith('http'):
+            torrent_type = 'torrent'
+            method = torrent_paths['TORREST_verbs']['add_magnet'][0]
+            torrent_action = torrent_paths['TORREST_verbs']['add_torrent'][1] % mediaurl
+        else:
+            method = torrent_paths['TORREST_verbs']['add_magnet'][0]
+            torrent_type = 'torrent'
+            torrent_action = torrent_paths['TORREST_verbs']['add_torrent_local'][1]
+
     local_host = {"quasar": ["http://localhost:65251/torrents/", "%s?uri" % torrent_action], \
                   "elementum": ["%storrents/" % torrent_paths['ELEMENTUM_web'], torrent_action], \
                   "torrest": ["%s" % torrent_paths['TORREST_web'], torrent_action]}
@@ -1502,14 +1533,17 @@ def call_torrent_via_web(mediaurl, torr_client, torrent_action='add',oper=2, alf
     elif torr_client == "elementum":
         uri = '%s%s' % (local_host[torr_client][0], local_host[torr_client][1])
         post = 'uri=%s&file=null&all=1' % mediaurl
+        method = 'post'
     elif torr_client == "torrest":
         uri = '%s%s' % (local_host[torr_client][0], local_host[torr_client][1])  
         if torrent_type == 'torrent' and not mediaurl.startswith('http'):
             mediaurl = urllib.unquote_plus(mediaurl)
             files = {"torrent": open(mediaurl, 'rb')}
 
-    logger.info('url: %s%s, mediaurl: %s, post: %s' % (local_host[torr_client][0], local_host[torr_client][1], urllib.unquote_plus(mediaurl), post))
-    response = httptools.downloadpage(uri, post=post, files=files, timeout=timeout, alfa_s=alfa_s, ignore_response_code=True)
+    logger.info('method: %s, url: %s%s, mediaurl: %s, post: %s' % (method, local_host[torr_client][0], 
+                 local_host[torr_client][1], urllib.unquote_plus(mediaurl), post))
+    response = httptools.downloadpage(uri, method=method, post=post, files=files, timeout=timeout, 
+                                      alfa_s=alfa_s, ignore_response_code=True)
 
     if not response.sucess:
         logger.error('Error %s al acceder al la web de %s' % (str(response.code), torr_client.upper()))
@@ -1518,6 +1552,10 @@ def call_torrent_via_web(mediaurl, torr_client, torrent_action='add',oper=2, alf
 
 def get_tclient_data(folder, torr_client, port=65220, web='', action='', folder_new='', alfa_s=True):
     # Monitoriza el estado de descarga del torrent en Quasar y Elementum
+    global torrent_paths
+    
+    if not torrent_paths: torrent_paths = torrent_dirs()
+    torrest_verbs = torrent_paths.get('TORREST_verbs', {})
 
     if not web:
         web = 'http://127.0.0.1:%s/' % port
@@ -1525,7 +1563,7 @@ def get_tclient_data(folder, torr_client, port=65220, web='', action='', folder_
         web = '%s:%s/' % (web, port)
 
     local_host = {"quasar": web+"torrents/", "elementum": web+"torrents/", \
-                  "torrest":  web+"torrents/"}
+                  "torrest":  web+torrest_verbs['root'][1]}
 
     torr = ''
     torr_id = ''
@@ -1545,11 +1583,13 @@ def get_tclient_data(folder, torr_client, port=65220, web='', action='', folder_
     
     try:
         from core import httptools
+        method = 'get'
         uri = '%s/list' % (local_host[torr_client])
         if "torrest" in torr_client:
-            uri = '%s?status=true' % (local_host[torr_client].rstrip('/'))
+            method = torrest_verbs['list'][0]
+            uri = '%s%s' % (local_host[torr_client].rstrip('/'), torrest_verbs['list'][1])
         for z in range(10): 
-            res = httptools.downloadpage(uri, timeout=10, alfa_s=alfa_s)
+            res = httptools.downloadpage(uri, method=method, timeout=10, alfa_s=alfa_s)
             if not res.data:
                 log('##### Servicio de %s TEMPORALMENTE no disponible: %s - ERROR Code: %s' % \
                                     (torr_client, local_host[torr_client], str(res.code)))
@@ -1656,16 +1696,16 @@ def get_tclient_data(folder, torr_client, port=65220, web='', action='', folder_
                 action_f = action
                 if action_f == 'reset': action_f = 'delete'
                 if torr_client in ['torrest']:
-                    if action_f == 'delete': action_f = 'remove?delete=true'
-                    if action_f == 'stop': action_f = 'remove?delete=false'
-                    uri = '%s%s/%s' % (local_host[torr_client], y, action_f)
+                    method = torrest_verbs[action_f][0]
+                    action_f = torrest_verbs[action_f][1]
+                    uri = '%s%s%s' % (local_host[torr_client], y, action_f)
                 else:
                     if action_f == 'stop': action_f = 'pause'
                     uri = '%s%s/%s' % (local_host[torr_client], action_f, y)
                     if torr_client in ['elementum'] and action_f == 'delete': uri += '?files=true'
 
                 for z in range(10):
-                    res = httptools.downloadpage(uri, timeout=10, alfa_s=alfa_s, ignore_response_code=True)
+                    res = httptools.downloadpage(uri, method=method, timeout=10, alfa_s=alfa_s, ignore_response_code=True)
                     if not res.sucess:
                         time.sleep(1)
                         continue
@@ -1714,6 +1754,7 @@ def delete_torrent_folder(folder_new):
 
 def torrent_dirs():
     from platformcode.platformtools import torrent_client_installed
+    global torrent_paths
     
     torrent_options = []
     torrent_options.append(("Cliente interno BT", ""))
@@ -1765,7 +1806,31 @@ def torrent_dirs():
                      'TORREST_buffer': 0,
                      'TORREST_version': '',
                      'TORREST_port': 61235,
-                     'TORREST_web': 'http://%s:'
+                     'TORREST_web': 'http://%s:',
+                     'TORREST_verbs': {
+                                       'add_torrent': ['GET', 'add/torrent?ignore_duplicate=true&download=true&uri=%s'],
+                                       'add_torrent_local': ['GET', 'add/torrent?ignore_duplicate=true&download=true'],
+                                       'add_magnet': ['GET', 'add/magnet?ignore_duplicate=true&download=true&uri=%s'],
+                                       'root': ['', 'torrents/'],
+                                       'list': ['GET', '?status=true'],
+                                       'stop': ['GET', '/remove?delete=false'],
+                                       'delete': ['GET', '/remove?delete=true'],
+                                       'pause': ['GET', '/pause'],
+                                       'resume': ['GET', '/resume'],
+                                       'download': ['GET', '/download']
+                                      },
+                     'TORREST_verbs_15': {
+                                       'add_torrent': ['POST', 'add/torrent?ignore_duplicate=true&download=true&uri=%s'],
+                                       'add_torrent_local': ['POST', 'add/torrent?ignore_duplicate=true&download=true'],
+                                       'add_magnet': ['POST', 'add/magnet?ignore_duplicate=true&download=true&uri=%s'],
+                                       'root': ['', 'torrents/'],
+                                       'list': ['GET', '?status=true'],
+                                       'stop': ['DELETE', '?delete=false'],
+                                       'delete': ['DELETE', '?delete=true'],
+                                       'pause': ['PUT', '/pause'],
+                                       'resume': ['PUT', '/resume'],
+                                       'download': ['PUT', '/download']
+                                      }
                     }
     
     try:
@@ -1880,6 +1945,15 @@ def torrent_dirs():
                 torrent_paths[torr_client.upper() + '_port'] = __settings__.getSetting('port')
                 torrent_paths[torr_client.upper() + '_web'] = '%s%s/' % (torrent_paths[torr_client.upper() + '_web'] \
                             % __settings__.getSetting('service_ip'), str(torrent_paths[torr_client.upper() + '_port']))
+
+                ### TEMPORAL: migración de versión 0.0.14 a 0.0.15+ por cambio de API
+                try:
+                    t_version = tuple(int(x) for x in torrent_paths[torr_client.upper() + '_version'].split('.'))
+                    if t_version >= (0, 0, 15):
+                        torrent_paths[torr_client.upper() + '_verbs'] = torrent_paths[torr_client.upper() + '_verbs_15']
+                except:
+                    logger.error(traceback.format_exc())
+
             except:
                 logger.error(traceback.format_exc(1))
         else:
@@ -2088,6 +2162,7 @@ def mark_torrent_as_watched():
 
 def restart_unfinished_downloads():
     logger.info()
+    global torrent_paths
     
     try:
         config.set_setting("LIBTORRENT_in_use", False, server="torrent")        # Marcamos Libtorrent como disponible
@@ -2358,7 +2433,8 @@ def check_seen_torrents():
         # con los registros en las Videotecas de Kody y Alfa
         from platformcode import xbmc_videolibrary
         
-        torrent_paths = torrent_dirs()
+        global torrent_paths
+        if not torrent_paths: torrent_paths = torrent_dirs()
         DOWNLOAD_PATH_ALFA = config.get_setting("downloadpath", debug=DEBUG)
         DOWNLOAD_LIST_PATH = config.get_setting("downloadlistpath", debug=DEBUG)
         MOVIES = filetools.join(config.get_videolibrary_path(), config.get_setting("folder_movies", debug=DEBUG))
@@ -2590,7 +2666,8 @@ def check_torrent_is_buffering(item, magnet_retries=60, torrent_retries=30):
     logger.info()
     
     try:
-        torrent_paths = torrent_dirs()
+        global torrent_paths
+        if not torrent_paths: torrent_paths = torrent_dirs()
         torr_client = torrent_paths['TORR_client']
         torrent_analysis = analyze_torrent(item, {}, magnet_retries=magnet_retries, 
                                            torrent_retries=torrent_retries, torrent_paths=torrent_paths)
@@ -2838,14 +2915,15 @@ def analyze_torrent(item, rar_files, rar_control={}, magnet_retries=60, torrent_
            }
 
 
-def wait_for_download(item, mediaurl, rar_files, torr_client, password='', size='', \
+def wait_for_download(item, xlistitem, mediaurl, rar_files, torr_client, password='', size='', \
                       rar_control={}):
     logger.info()
 
     from subprocess import Popen, PIPE, STDOUT
     from platformcode.platformtools import dialog_notification, dialog_yesno, dialog_progress_bg, dialog_progress, itemlist_refresh
     
-    torrent_paths = torrent_dirs()
+    global torrent_paths
+    if not torrent_paths: torrent_paths = torrent_dirs()
     
     # Analizamos los archivos dentro del .torrent
     torrent_analysis = analyze_torrent(item, rar_files, rar_control, torrent_paths=torrent_paths, mediaurl=mediaurl)
@@ -2920,7 +2998,17 @@ def wait_for_download(item, mediaurl, rar_files, torr_client, password='', size=
     
     # Plan A: usar el monitor del cliente torrent para ver el status de la descarga
     if torrent_paths.get(torr_client.upper()+'_web', ''):                       # Tiene web para monitorizar?
-    
+
+        # Intentamos reproducir mientras se descarga el RAR: EXPERIMENTAL
+        if rar and not password and PY3 and item.downloadStatus == 5 \
+                                and config.get_setting('debug_report', False) and not config.get_setting('report_started', False):
+            try:
+                threading.Thread(target=stream_rar_video, args=(rar_file, save_path_videos, password, 
+                                 xlistitem, item, torr_client, rar_control, size, mediaurl)).start()
+            except:
+                logger.error('Error en el streaming del vídeo %s' % folder)
+                logger.error(traceback.format_exc())
+
         progreso = ''
         if torr_client.upper() in ['TORREST'] and item.downloadStatus != 5 and not xbmc.getCondVisibility('Player.Playing'):
             progreso = dialog_progress_bg('Alfa %s Cliente Torrent' % torr_client.upper())
@@ -3552,11 +3640,244 @@ def extract_files(rar_file, save_path_videos, password, dp, item=None, \
                     return str(video_list[0]), True, save_path_videos, erase_file_path
 
 
+def stream_rar_video(rar_file, save_path_videos, password, xlistitem, item, \
+                        torr_client, rar_control, size, mediaurl):
+    logger.info()
+    
+    if (monitor and monitor.abortRequested()) or (not monitor and xbmc and xbmc.abortRequested):
+        logger.debug('ABORTING...')
+        sys.exit()
+
+    try:
+        if PY3 and config.get_system_platform() in ['windows', 'xbox', 'android', 'atv2'] and not password:
+            rarfile_PY = 3
+            import rarfile
+        else:
+            return False
+    except:
+        log("##### ERROR en import rarfile_PY%s" % rarfile_PY)
+        log(traceback.format_exc())
+        return False
+        
+    if not torr_client:
+        return False
+
+    from platformcode import custom_code
+    from platformcode.platformtools import dialog_notification, dialog_input
+    
+    global torrent_paths
+    if not torrent_paths: torrent_paths = torrent_dirs()
+
+    update_control(item, function='stream_rar_video_START')
+    
+    if not rar_control:
+        rar_control = {
+                       'torr_client': torr_client,
+                       'rar_files': [{"__name": "%s" % rar_file.split("/")[0]}],
+                       'rar_names': [filetools.basename(rar_file)],
+                       'size': size,
+                       'password': password,
+                       'download_path': filetools.join(save_path_videos, rar_file.split("/")[0]),
+                       'status': 'streaming',
+                       'error': 0,
+                       'error_msg': '',
+                       'item': item.tourl(),
+                       'mediaurl': mediaurl,
+                       'path_control': item.path
+                      }
+
+    # Verificamos si hay path para UnRAR
+    rarfile.UNRAR_TOOL = config.get_setting("unrar_path", server="torrent", default="")
+    rarfile.DEFAULT_CHARSET = 'utf-8'
+
+    # Calculamos el path para del RAR
+    folders = []
+    if "/" in rar_file:
+        folders = rar_file.split("/")
+        erase_file_path = filetools.join(save_path_videos, folders[0])
+        file_path = save_path_videos
+        for f in folders:
+            file_path = filetools.join(file_path, f)
+    else:
+        file_path = save_path_videos
+        erase_file_path = save_path_videos
+    file_path = file_path if PY3 else file_path.decode("utf8")
+    file_path_org = file_path
+
+    # Abrimos el archivo RAR
+    try:
+        log("##### COMIENZO Proceso STREAMING rar_file: %s" % rar_file)
+        while not filetools.exists(file_path):
+            time.sleep(1)
+        time.sleep(5)
+        log("##### ABRIENDO rar_file: %s" % rar_file)
+        archive = rarfile.RarFile(file_path, crc_check=False)
+        if archive.needs_password():
+            return False
+    except:
+        log("##### ERROR en Carpeta del rar: %s" % file_path)
+        log(traceback.format_exc())
+        error_msg = "RAR inaccesible"
+        error_msg1 = "No se puede reproducir ahora"
+        dialog_notification(error_msg, error_msg1)
+        return False
+
+    # Miramos el contenido del RAR a extraer
+    extensions_list = ['.aaf', '.3gp', '.asf', '.avi', '.flv', '.mpeg',
+                       '.m1v', '.m2v', '.m4v', '.mkv', '.mov', '.mpg',
+                       '.mpe', '.mp4', '.ogg', '.wmv']
+    files = archive.infolist()
+    info = []
+    for idx, i in enumerate(files):
+        if i.file_size == 0:
+            files.pop(idx)
+            continue
+        filename = i.filename
+        if "/" in filename:
+            filename = filename.rsplit("/", 1)[1]
+        if os.path.splitext(filename)[1] not in extensions_list:
+            continue
+        info.append((filename, i.file_size))
+
+    if info:
+        info.append("Extraer todo sin reproducir")
+    else:
+        log("##### El RAR está vacío o no contiene archivos válidos #####")
+        error_msg = "El RAR está vacío"
+        error_msg1 = "O no contiene archivos válidos"
+        dialog_notification(error_msg, error_msg1)
+        return False
+
+    # Seleccionamos extraer TODOS los archivos del RAR
+    selection = len(info) - 1
+    if selection < 0:
+        log("##### El RAR está vacío o no contiene archivos válidos #####")
+        error_msg = "El RAR está vacío"
+        error_msg1 = "O no contiene archivos válidos"
+        dialog_notification(error_msg, error_msg1)
+        return False
+    else:
+        try:
+            log("##### RAR Streaming INI #####")
+            t = None
+            filename_selected = info[selection-1][0]
+            size_filename_selected = info[selection-1][1]
+            if torrent_paths[torr_client.upper() + '_buffer'] and int(torrent_paths[torr_client.upper() + '_buffer']) < 1000:
+                buffer_size = torrent_paths[torr_client.upper() + '_buffer'] * 1024*1024
+            else:
+                buffer_size = int(torrent_paths[torr_client.upper() + '_buffer'] or 1024*1024*20)
+            port = random.choice(range(49550, 49999))
+
+            log("##### rar_file: %s; length: %s; buffer: %s MB: port: %s" \
+                        % (filename_selected, size_filename_selected, buffer_size / (1024*1024), port))
+            while xbmc_player.isPlaying():
+                if monitor and monitor.waitForAbort(2):
+                    return False
+                elif not monitor and xbmc:
+                    if xbmc.abortRequested: 
+                        return False
+                    xbmc.sleep(2*1000)
+
+            with archive.open(files[selection-1]) as rar_content:
+                
+                #from wsgiref import simple_server
+                from lib.bottle import route, run, app, request, HTTPResponse
+
+                @route('/xbmc_player')
+                def read_rar():
+                    status = 206
+                    pos = rar_content.tell()
+                    logger.debug('TELL: %s' % pos)
+                    if request.headers.get('Range'):
+                        next_pos = int(scrapertools.find_single_match(request.headers.get('Range', 0), '=(\d+)-') or 0)
+                        pos = next_pos if pos + buffer_size >= next_pos else pos
+                        rar_content.seek(pos, 0)
+                        logger.debug('RANGE: %s; %s' % (request.headers.get('Range', ''), pos))
+                        payload = rar_content.read(buffer_size)
+                        if pos + len(payload) >= size_filename_selected:
+                            status = 200
+                            logger.debug('LAST BUFFER: %s' % str(len(payload) / (1024*1024)))
+                        else:
+                            logger.debug('PAYLOAD: %s' % len(payload))
+                        response = HTTPResponse(body=payload, status=status)
+                        response.add_header('Accept-Ranges', 'bytes')
+                        response.add_header('Content-Range', 'bytes %i-%i/%i' % (pos, pos+len(payload), size_filename_selected))
+                        logger.debug('%s: %s' %('Content-Range', response.headers['Content-Range']))
+                    else:                                                       # @HEAD
+                        status = 200
+                        payload = ''
+                        response = HTTPResponse(body=payload, status=status)
+                    response.add_header('Content-Type', 'video/mp4')
+                    response.add_header('Content-Length', str(len(payload)))
+                    return response
+
+                t = threading.Thread(target=run, kwargs={'host': '127.0.0.1', 'port': port, 'debug': True}, daemon=True)
+                t.start()
+                #logger.error(t.pid)
+                #with simple_server.make_server('127.0.0.1', port, app) as httpd:
+                #threading.Thread(target=httpd.serve_forever, daemon=True).start()
+
+                # Iniciamos el reproductor
+                videourl = 'http://127.0.0.1:%i/xbmc_player' % port
+                log("##### videourl: %s" % videourl)
+                #https://forum.kodi.tv/showthread.php?tid=354960
+                #i = xbmcgui.ListItem(par.name, path=urllib.unquote(par.url), thumbnailImage=par.img)
+                #i.setProperty("IsPlayable", "true")
+                #xbmcplugin.setResolvedUrl(h, True, i)
+                xlistitem.setContentLookup(False)
+                xlistitem.setMimeType('video/mp4')
+                xlistitem.setProperty("IsPlayable","true")
+                playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+                playlist.clear()
+                playlist.add(videourl, xlistitem)
+                xbmc_player.play(playlist)
+                #httpd.serve_forever()
+
+                #mark_auto_as_watched(item)
+                
+                # Y esperamos a que el reproductor se cierre
+                for x in range(120):
+                    if xbmc_player.isPlaying():
+                        break
+                    xbmc.sleep(1*1000)
+                else:
+                    error_msg = "Descarga LENTA"
+                    error_msg1 = "No se puede reproducir ahora"
+                    log("##### %s, %s: %s" % (error_msg, error_msg1, file_path))
+                    dialog_notification(error_msg, error_msg1)
+                    if t and t.is_alive(): t.terminate()
+                    return False
+                
+                item.downloadStatus = 4
+                while xbmc_player.isPlaying():
+                    if monitor and monitor.waitForAbort(2):
+                        if t and t.is_alive(): t.terminate()
+                        return False
+                    elif not monitor and xbmc:
+                        if xbmc.abortRequested: 
+                            if t and t.is_alive(): t.terminate()
+                            return False
+                        xbmc.sleep(2*1000)
+
+            log("##### RAR Streaming END #####")
+            if t and t.is_alive(): t.terminate()
+            return True
+        except:
+            error_msg = "Error al extraer para STREAMING"
+            error_msg1 = "Comprueba el log para más detalles"
+            dialog_notification(error_msg, error_msg1)
+            log("##### %s" % error_msg)
+            logger.error(traceback.format_exc())
+            if t and t.is_alive(): t.terminate()
+            return False
+
+
 def rename_rar_dir(item, rar_file, save_path_videos, video_path, torr_client):
     logger.info()
 
     rename_status = False
-    torrent_paths = torrent_dirs()
+    global torrent_paths
+    if not torrent_paths: torrent_paths = torrent_dirs()
     
     if PLATFORM not in ['windows', 'xbox']:                                     # Si no es Windows, no hay problema de longitud del path
         return rename_status, rar_file, item
@@ -3838,4 +4159,3 @@ def import_libtorrent(LIBTORRENT_PATH):
 
 def log(texto):
     logger.info(texto, force=True)
-    

@@ -21,7 +21,7 @@ from channelselector import get_thumb
 canonical = {
              'channel': 'thumbzilla', 
              'host': config.get_setting("current_host", 'thumbzilla', default=''), 
-             'host_alt': ["https://thumbzilla.com/"], 
+             'host_alt': ["https://www.thumbzilla.com/"], 
              'host_black_list': [], 
              'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'cf_assistant': False, 
              'CF': False, 'CF_test': False, 'alfa_s': True

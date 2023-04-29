@@ -492,6 +492,9 @@ if __name__ == "__main__":
     # sistema actual 0: Nunca, 1:Siempre, 2:Solo hasta que se reinicie Kodi
     # si es == 2 lo desactivamos.
 
+    # Reseteamos caches por si se acaba de actualizar la versión de Alfa
+    alfa_caching = config.cache_reset()
+    
     # Detecta la versión correcta de marshal
     if PY3:
         from platformcode import custom_code

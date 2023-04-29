@@ -64,8 +64,8 @@ def mark_auto_as_watched(item):
                 logger.debug("marcado")
                 item.playcount = 1
                 sync_with_trakt = True
-                from channels import videolibrary
-                videolibrary.mark_content_as_watched2(item)
+                from channels.videolibrary import mark_content_as_watched2
+                mark_content_as_watched2(item)
                 break
 
             time.sleep(30)
@@ -124,9 +124,9 @@ def sync_trakt_addon(path_folder):
             return
 
         # obtenemos los valores de la serie
-        from core import videolibrarytools
+        from core.videolibrarytools import read_nfo, write_nfo
         tvshow_file = filetools.join(path_folder, "tvshow.nfo")
-        head_nfo, serie = videolibrarytools.read_nfo(tvshow_file)
+        head_nfo, serie = read_nfo(tvshow_file)
 
         # buscamos en las series de trakt
         for show in shows:
@@ -193,7 +193,7 @@ def sync_trakt_addon(path_folder):
                             serie.library_playcounts.update({serie.title: 1})
 
                         logger.debug("los valores nuevos %s " % serie.library_playcounts)
-                        res = videolibrarytools.write_nfo(tvshow_file, head_nfo, serie)
+                        res = write_nfo(tvshow_file, head_nfo, serie)
 
                         break
                     else:
@@ -408,12 +408,21 @@ def get_videos_watched_on_kodi(item, value=1, list_videos=False):
     else:
         path = item.path
     
+    fields = 'strFileName, playCount'
     if item.contentType == 'movie':
         video_path = filetools.join(config.get_videolibrary_path(), config.get_setting("folder_movies"))
         view = 'movie'
+        search = ' or uniqueid_value like "%s"' % item.infoLabels['tmdb_id']
     else:
         video_path = filetools.join(config.get_videolibrary_path(), config.get_setting("folder_tvshows"))
-        view = 'episode'
+        if item.contentType == 'tvshow':
+            view = 'season'
+            fields = 'season, playCount, episodes'
+            search = ' or showTitle like "*%s*" or strPath like "*%s*"' % (item.contentSerieName, item.contentSerieName)
+            search = search.replace('*', '%')
+        else:
+            view = 'episode'
+            search = ''
     
     tvshows_path = filetools.join(config.get_videolibrary_path(), config.get_setting("folder_tvshows"))
     item_path1 = "%" + path.replace("\\\\", "\\").replace(tvshows_path, "")
@@ -425,8 +434,8 @@ def get_videos_watched_on_kodi(item, value=1, list_videos=False):
         item_path3 = scrapertools.slugify(item_path1, strict=False, convert=['.=', '-= ', ':=', '&= ', '  = '])
     item_path3 = '%' + item_path3 + '%'
 
-    sql = 'select strFileName, playCount from %s_view where (strPath like "%s" or strPath like "%s" or strPath like "%s")' \
-                                                             % (view, item_path1, item_path2, item_path3)
+    sql = 'select %s from %s_view where (strPath like "%s" or strPath like "%s" or strPath like "%s"%s)' \
+                                                             % (fields, view, item_path1, item_path2, item_path3, search)
 
     nun_records, records = execute_sql_kodi(sql, silent=True)
 
@@ -437,7 +446,13 @@ def get_videos_watched_on_kodi(item, value=1, list_videos=False):
             return False
 
     records = filetools.decode(records, trans_none=0)
-    records = dict(records)
+    if view != 'season':
+        records = dict(records)
+    else:
+        records_out = {}
+        for season, playCount, episodes in records:
+            records_out[season] = [playCount, episodes]
+        records = records_out
     
     if list_videos:
         return records
@@ -449,8 +464,8 @@ def get_videos_watched_on_kodi(item, value=1, list_videos=False):
 
 
 def mark_content_as_watched_on_alfa(path):
-    from channels import videolibrary
-    from core import videolibrarytools
+    from channels.videolibrary import check_season_playcount
+    from core.videolibrarytools import read_nfo, write_nfo
     
     """
         marca toda la serie o película como vista o no vista en la Videoteca de Alfa basado en su estado en la Videoteca de Kodi
@@ -480,7 +495,7 @@ def mark_content_as_watched_on_alfa(path):
 
     if "\\" in path:
         path = path.replace("/", "\\")
-    head_nfo, item = videolibrarytools.read_nfo(path)                   #Leo el .nfo del contenido
+    head_nfo, item = read_nfo(path)                                     #Leo el .nfo del contenido
     if not item or not isinstance(item.library_playcounts, dict):
         logger.error('.NFO no encontrado o erroneo: ' + path)
         return
@@ -533,9 +548,9 @@ def mark_content_as_watched_on_alfa(path):
         for season in item.library_playcounts.copy():
             if "season" in season:                                      #buscamos las etiquetas "season" dentro de playCounts
                 season_num = int(scrapertools.find_single_match(season, 'season (\d+)'))    #salvamos el núm, de Temporada
-                item = videolibrary.check_season_playcount(item, season_num)    #llamamos al método que actualiza Temps. y Series
+                item = check_season_playcount(item, season_num)    #llamamos al método que actualiza Temps. y Series
 
-    res = videolibrarytools.write_nfo(path, head_nfo, item)
+    res = write_nfo(path, head_nfo, item)
     
     #logger.debug(item)
     

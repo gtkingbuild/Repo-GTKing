@@ -5211,3 +5211,11 @@ msgstr "Lista de deseos"
 msgctxt "#80788"
 msgid "Configure Wishlist"
 msgstr "Configurar Lista de deseos"
+
+msgctxt "#80789"
+msgid "External VPN"
+msgstr "VPN Externa"
+
+msgctxt "#80790"
+msgid "Are you using an external VPN?"
+msgstr "¿Está usando una VPN externa?"

@@ -22,7 +22,7 @@ from bs4 import BeautifulSoup
 canonical = {
              'channel': 'joysporn', 
              'host': config.get_setting("current_host", 'joysporn', default=''), 
-             'host_alt': ["https://joysporn.sex/"], 
+             'host_alt': ["https://wwv.joysporn.sex/"], 
              'host_black_list': [], 
              'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'cf_assistant': False, 
              'CF': False, 'CF_test': False, 'alfa_s': True
@@ -33,10 +33,10 @@ host = canonical['host'] or canonical['host_alt'][0]
 def mainlist(item):
     logger.info()
     itemlist = []
-    itemlist.append(Item(channel=item.channel, title="Nuevos" , action="lista", url=host + "videos/"))
-    itemlist.append(Item(channel=item.channel, title="Mas vistos" , action="lista", url=host + "most-popular/"))
-    itemlist.append(Item(channel=item.channel, title="Mejor valorado" , action="lista", url=host + "top-rated/"))
-    itemlist.append(Item(channel=item.channel, title="Categorias" , action="categorias", url=host + "categories.html"))
+    itemlist.append(Item(channel=item.channel, title="Nuevos" , action="lista", url=host + "en/"))
+    itemlist.append(Item(channel=item.channel, title="Mas vistos" , action="lista", url=host + "popular/"))
+    itemlist.append(Item(channel=item.channel, title="Mejor valorado" , action="lista", url=host + "top-view/"))
+    itemlist.append(Item(channel=item.channel, title="Categorias" , action="categorias", url=host + "list.html"))
     itemlist.append(Item(channel=item.channel, title="Buscar", action="search"))
     return itemlist
 

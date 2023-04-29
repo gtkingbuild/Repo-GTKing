@@ -107,12 +107,16 @@ def unescape(text):
                     text = text.decode("utf-8")
             except KeyError:
                 from platformcode import logger
-                logger.error("keyerror")
+                logger.error("keyerror: %s" % str(text))
                 pass
             except Exception:
                 pass
         return text  # leave as is
 
+    if PY3:
+        text = text.replace(u'\xa0', ' ').replace('\xa0', ' ')
+    else:
+        text = text.replace(u'\xa0', ' ')
     return re.sub("&#?\w+;", fixup, str(text))
 
     # Convierte los codigos html "&ntilde;" y lo reemplaza por "ñ" caracter unicode utf-8

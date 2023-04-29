@@ -28,7 +28,7 @@
         "url": "\\1"
       },
       {
-        "pattern": "(https://(?:desiporn|inporn|porntop|manysex|pornzog|xmilf|see|shemalez|thegay).(?:com|tube|xxx)/(:?\\w{2}/|)video(?:s|)/[0-9]+/[A-z0-9-]+/)",
+        "pattern": "(https://(?:desiporn|inporn|porntop|manysex|pornzog|xmilf|see|shemalez|thegay|blackporn).(?:com|tube|xxx)/(:?\\w{2}/|)video(?:s|)/[0-9]+/[A-z0-9-]+/)",
         "url": "\\1"
       },
       {

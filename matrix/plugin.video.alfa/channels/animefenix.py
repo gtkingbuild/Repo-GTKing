@@ -29,6 +29,7 @@ IDIOMAS = {'vose': 'VOSE'}
 list_language = list(IDIOMAS.values())
 list_quality = []
 list_servers = ['directo', 'verystream', 'openload',  'streamango', 'uploadmp4', 'fembed']
+forced_proxy_opt = 'ProxyCF'
 
 canonical = {
              'channel': 'animefenix', 
@@ -36,7 +37,8 @@ canonical = {
              'host_alt': ["https://animefenix.tv/"], 
              'host_black_list': ["https://www.animefenix.tv/", "https://www.animefenix.com/"], 
              'pattern': '<div\s*class="navbar-start">\s*<a\s*class="navbar-item"\s*href="([^"]+)"', 
-             'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'forced_proxy_ifnot_assistant': 'ProxyCF', 
+             'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'forced_proxy_ifnot_assistant': forced_proxy_opt, 
+             'CF_if_assistant': True, 'CF_stat': False, 'session_verify': False, 
              'CF': False, 'CF_test': False, 'alfa_s': True
             }
 host = canonical['host'] or canonical['host_alt'][0]

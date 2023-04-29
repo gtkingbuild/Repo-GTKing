@@ -10,7 +10,7 @@ def test_video_exists(page_url):
     logger.info("(page_url='%s')" % page_url)
     global data, server
     data = httptools.downloadpage(page_url).data
-    server = scrapertools.find_single_match(page_url, '//(?:www.|es.|)([A-z0-9-]+).(?:tv|com|vip|xxx|sex)')
+    server = scrapertools.find_single_match(page_url, '//(?:www.|es.|wwv.|)([A-z0-9-]+).(?:tv|com|vip|xxx|sex)')
     if "<h2>WE ARE SORRY</h2>" in data or '<title>404 Not Found</title>' in data:
         return False, "[%s] El fichero no existe o ha sido borrado" %server
     return True, ""

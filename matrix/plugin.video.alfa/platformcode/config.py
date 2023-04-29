@@ -25,6 +25,10 @@ PLUGIN_NAME = "alfa"
 DEBUG = False
 DEBUG_JSON = DEBUG or False
 GLOBAL_SEARCH_CANCELLED = False
+BTDIGG_URL = 'https://btdig.com/'
+BTDIGG_LABEL = ' [COLOR limegreen]BT[/COLOR][COLOR red]Digg[/COLOR]'
+BTDIGG_LABEL_B = '[B][COLOR limegreen]BT[/COLOR][COLOR red]Digg[/COLOR][/B] '
+BTDIGG_POST = '[B]Canal potenciado con [COLOR limegreen]BT[/COLOR][COLOR red]Digg[/COLOR][/B]\n\n'
 
 __settings__ = xbmcaddon.Addon(id="plugin.video.{}".format(PLUGIN_NAME))
 __language__ = __settings__.getLocalizedString
@@ -51,6 +55,8 @@ try:
         window.setProperty("alfa_servers_jsons", json.dumps(alfa_servers_jsons))
         window.setProperty("alfa_cookies", '')
         window.setProperty("alfa_CF_list", '')
+        window.setProperty("alfa_videolab_movies_list", '')
+        window.setProperty("alfa_videolab_series_list", '')
         window.setProperty("alfa_colors_file", json.dumps({}))
 except:
     alfa_caching = False
@@ -67,7 +73,8 @@ except:
 
 class CacheInit(xbmc.Monitor, threading.Thread):
     def __init__(self, *args, **kwargs):
-        global window, __settings__, alfa_caching, alfa_system_platform, alfa_kodi_platform, alfa_settings, alfa_channels, alfa_servers
+        global window, __settings__, alfa_caching, alfa_system_platform, alfa_kodi_platform, \
+                                     alfa_settings, alfa_channels, alfa_servers, alfa_servers_jsons
         xbmc.Monitor.__init__(self)
         threading.Thread.__init__(self)
 
@@ -95,6 +102,9 @@ class CacheInit(xbmc.Monitor, threading.Thread):
             window.setProperty("alfa_servers_jsons", json.dumps(alfa_servers_jsons))
             window.setProperty("alfa_cookies", '')
             window.setProperty("alfa_CF_list", '')
+            window.setProperty("alfa_videolab_movies_list", '')
+            window.setProperty("alfa_videolab_series_list", '')
+            window.setProperty("alfa_domain_web_list", '')
             styles_path = os.path.join(get_runtime_path(), 'resources', 'color_styles.json')
             with open(styles_path, "r") as cf:
                 window.setProperty("alfa_colors_file", cf.read())
@@ -104,13 +114,13 @@ class CacheInit(xbmc.Monitor, threading.Thread):
     def run(self):
         timer = 3600
 
-        while not self.abortRequested():  # Loop infinito hasta cancelar Kodi
-            window.setProperty("alfa_channels", json.dumps({}))  # Limpiamos esta variable por si ha crecido mucho
-            window.setProperty("alfa_servers", json.dumps({}))  # Limpiamos esta variable por si ha crecido mucho
-            if self.waitForAbort(timer):  # Espera el tiempo programado o hasta que cancele Kodi
-                break  # Cancelación de Kodi, salimos
+        while not self.abortRequested():                                        # Loop infinito hasta cancelar Kodi
+            window.setProperty("alfa_channels", json.dumps({}))                 # Limpiamos esta variable por si ha crecido mucho
+            window.setProperty("alfa_servers", json.dumps({}))                  # Limpiamos esta variable por si ha crecido mucho
+            if self.waitForAbort(timer):                                        # Espera el tiempo programado o hasta que cancele Kodi
+                break                                                           # Cancelación de Kodi, salimos
 
-    def onSettingsChanged(self):  # Si se modifican los ajuste de Alfa, se activa esta función
+    def onSettingsChanged(self):                                                # Si se modifican los ajuste de Alfa, se activa esta función
         global window, __settings__, alfa_settings, alfa_caching
         settings_pre = alfa_settings.copy() or None
         alfa_caching = __settings__.getSetting('caching')
@@ -120,7 +130,8 @@ class CacheInit(xbmc.Monitor, threading.Thread):
         else:
             alfa_caching = False
             window.setProperty("alfa_caching", "")
-        open_settings(settings_pre=settings_pre)
+
+        return open_settings(settings_pre=settings_pre)
 
 
 def cache_init():
@@ -128,10 +139,10 @@ def cache_init():
 
     # Lanzamos en Servicio de actualización de FIXES
     try:
-        monitor = CacheInit()  # Creamos una clase con un Thread independiente, hasta el fin de Kodi
+        monitor = CacheInit()                                                   # Creamos una clase con un Thread independiente, hasta el fin de Kodi
         monitor.start()
-        time.sleep(1)  # Dejamos terminar inicialización...
-    except:  # Si hay problemas de threading, nos vamos
+        time.sleep(2)                                                           # Dejamos terminar inicialización...
+    except:                                                                     # Si hay problemas de threading, nos vamos
         alfa_caching = False
         alfa_settings = {}
         from platformcode import logger
@@ -143,26 +154,49 @@ def cache_init():
             pass
 
 
-def cache_reset(action='OFF'):
-    
-    alfa_caching = False
-    if not window: return alfa_caching
-    if not __settings__.getSetting('caching'): return alfa_caching
-    
-    alfa_caching = bool(window.getProperty("alfa_caching"))
-    
+def cache_reset(action='OFF', label=''):
     try:
-        if action == 'OFF': window.setProperty("alfa_caching", '')
-        window.setProperty("alfa_system_platform", '')
-        window.setProperty("alfa_settings", json.dumps({}))
-        window.setProperty("alfa_channels", json.dumps({}))
-        window.setProperty("alfa_servers", json.dumps({}))
-        window.setProperty("alfa_servers_jsons", json.dumps({}))
-        window.setProperty("alfa_cookies", '')
-        window.setProperty("alfa_CF_list", '')
-        window.setProperty("alfa_colors_file", json.dumps({}))
-        window.setProperty("CAPTURE_THRU_BROWSER_in_use", '')
-        if action == 'ON': window.setProperty("alfa_caching", str(True))
+        global window, __settings__, alfa_caching, alfa_system_platform, alfa_kodi_platform, \
+                                     alfa_settings, alfa_channels, alfa_servers, alfa_servers_jsons
+        from platformcode import logger
+        logger.info("action='%s', label='%s'" % (action, label), force=True)
+
+        if not window: 
+            return alfa_caching
+
+        alfa_caching = bool(window.getProperty("alfa_caching"))
+
+        if label:
+            window.setProperty(label, '')
+
+        else:
+            if action == 'OFF':
+                alfa_caching = False
+                window.setProperty("alfa_caching", '')
+            alfa_system_platform = ''
+            alfa_settings = {}
+            alfa_channels = {}
+            alfa_servers = {}
+            alfa_servers_jsons = {}
+            window.setProperty("alfa_system_platform", alfa_system_platform)
+            window.setProperty("alfa_settings", json.dumps(alfa_settings))
+            window.setProperty("alfa_channels", json.dumps(alfa_channels))
+            window.setProperty("alfa_servers", json.dumps(alfa_servers))
+            window.setProperty("alfa_servers_jsons", json.dumps(alfa_servers_jsons))
+            window.setProperty("alfa_cookies", '')
+            window.setProperty("alfa_CF_list", '')
+            window.setProperty("alfa_videolab_movies_list", '')
+            window.setProperty("alfa_videolab_series_list", '')
+            window.setProperty("alfa_colors_file", json.dumps({}))
+            window.setProperty("CAPTURE_THRU_BROWSER_in_use", '')
+            if action == 'ON': 
+                alfa_caching = __settings__.getSetting('caching')
+                if alfa_caching == 'true' or alfa_caching == None:
+                    alfa_caching = True
+                    window.setProperty("alfa_caching", str(alfa_caching))
+                else:
+                    alfa_caching = False
+                    window.setProperty("alfa_caching", "")
     except:
         from platformcode import logger
         logger.error(traceback.format_exc())
@@ -526,7 +560,7 @@ def get_all_settings_addon(caching_var=True):
             setting = decode_var(setting_)
             ret[setting['@id']] = get_setting_values(setting['@id'], setting.get(tag, ''), decode_var_=False)
 
-        if DEBUG: logger.error('READ File ALL Alfa SETTINGS')
+        if DEBUG: logger.error('READ File ALL Alfa SETTINGS: alfa_caching: %s; caching_var: %s' % (alfa_caching, caching_var))
         alfa_settings = ret.copy()
         alfa_caching = False
         if alfa_settings: alfa_caching = alfa_settings.get('caching', True)
@@ -556,6 +590,8 @@ def get_all_settings_addon(caching_var=True):
         window.setProperty("alfa_servers_jsons", json.dumps(alfa_servers_jsons))
         window.setProperty("alfa_cookies", '')
         window.setProperty("alfa_CF_list", '')
+        window.setProperty("alfa_videolab_movies_list", '')
+        window.setProperty("alfa_videolab_series_list", '')
         window.setProperty("alfa_colors_file", json.dumps({}))
         if DEBUG: logger.error('DROPING ALL Cached SETTINGS')
     
@@ -566,15 +602,20 @@ def get_all_settings_addon(caching_var=True):
 
 
 def open_settings(settings_pre={}):
+    global alfa_settings
     if isinstance(settings_pre, dict) and not settings_pre:
         settings_pre = get_all_settings_addon()
         __settings__.openSettings()
+        time.sleep(1)
+    alfa_settings = {}
+    window.setProperty("alfa_settings", json.dumps(alfa_settings))
     settings_post = get_all_settings_addon(caching_var=False)
     if not settings_pre:
         settings_pre = settings_post.copy()
 
     # cb_validate_config (util para validar cambios realizados en el cuadro de dialogo)
     if settings_post:
+
         if settings_post.get('adult_aux_intro_password', None):
             # Hemos accedido a la seccion de Canales para adultos
             from platformcode import platformtools

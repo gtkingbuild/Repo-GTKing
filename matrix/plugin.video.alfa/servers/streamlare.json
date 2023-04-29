@@ -4,8 +4,8 @@
     "ignore_urls": [],
     "patterns": [
       {
-        "pattern": "https://(?:streamlare|slwatch).(?:com|co)/(?:v|e)/(\\w+)",
-        "url": "https://slwatch.co/e/\\1"
+        "pattern": "https://(?:streamlare|slwatch|sltube|slmaxed).(?:com|co|org)/(?:v|e)/(\\w+)",
+        "url": "https://slmaxed.com/e/\\1"
       }
     ]
   },

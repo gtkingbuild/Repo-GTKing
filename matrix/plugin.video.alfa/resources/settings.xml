@@ -94,7 +94,7 @@
     <category label="80610">
         <setting label="80610" type="lsep"/>
         <setting id="assistant_mode" label="80611" type="labelenum" values="este|otro" default="este"/>
-        <setting id="assistant_custom_address" label="80612" type="text" default="192.168.0.1" visible="eq(-1,otro)" subsetting="true"/>
+        <setting id="assistant_custom_address" label="80612" type="text" default="127.0.0.1" visible="eq(-1,otro)" subsetting="true"/>
         <setting id="assistant_flag_install" type="bool" label="80613" default="true"/>
         <setting id="assistant_auto_install" type="action" label="80614"
                  action="RunPlugin(plugin://plugin.video.alfa/?ew0KICAgICJhY3Rpb24iOiAiZnVuY3Rpb24iLA0KICAgICJmb2xkZXIiOiAibGliIiwNCiAgICAiZnVuY3Rpb24iOiAiYWxmYV9hc3Npc3RhbnQiLA0KICAgICJtZXRob2QiOiAiaW5zdGFsbF9hbGZhX2Fzc2lzdGFudCIsDQogICAgIm9wdGlvbnMiOiAiYXV0byINCn0=)"/>
@@ -147,6 +147,10 @@
         <setting label="80785" type="lsep"/>
         <setting id="caching" type="bool" label="80786"
                  default="true"/>
+        
+        <setting label="80789" type="lsep"/>
+        <setting id="external_vpn" type="bool" label="80790"
+                 default="false"/>
     </category>
 
 </settings>

@@ -8,7 +8,7 @@
         "url": "\\1"
       },
       {
-        "pattern": "(https://(?:www.|en.|)(?:fuqer|luxuretv).com/video(?:s|)/[A-z0-9-]+.html)",
+        "pattern": "(https://(?:www.|en.|)(?:fuqer|luxuretv|sextubefun|freehdporn).(?:com|xxx)/video(?:s|)/[A-z0-9-]+.html)",
         "url": "\\1"
       },
       {
@@ -40,15 +40,23 @@
         "url": "\\1"
       },
      {
-        "pattern": "(https://(?:www.|)(?:pornvid69|sextube).(?:com|nl)/[A-z0-9-]+(?:/|))",
+        "pattern": "(https://(?:www.|)(?:pornvid69|sextube|ultrahorny).(?:com|nl)/[A-z0-9-]+(?:/|))",
         "url": "\\1"
       },
      {
-        "pattern": "(https://(?:www.|)(?:yrprno|youcrazyx|trendyporn|yespornplease|hentaiprno|tubehentai).(?:com|sexy)/video/[A-z0-9-]+.html)",
+        "pattern": "(https://(?:www.|)(?:yrprno|youcrazyx|trendyporn|yespornplease|hentaiprno|tubehentai|wetsins|pornyteen).(?:com|sexy)/video/[A-z0-9-]+.html)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://bigfuck.tv/video/[0-9]+/[A-z0-9-]+(?:/|))",
         "url": "\\1"
       },
      {
         "pattern": "(https://(?:www.|)pornxs.com/(?:embed/|)[0-9]+)",
+        "url": "\\1"
+      },
+     {
+        "pattern": "(https://(?:www.|)biguz.net/(?:watch.php|video/)\\?id=[0-9]+&name=[A-z0-9-]+)",
         "url": "\\1"
       },
      {

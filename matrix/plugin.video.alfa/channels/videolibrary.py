@@ -814,6 +814,7 @@ def play(item):
     else:
         itemlist = [item.clone(url=item.url, server="local")]
 
+    if not itemlist: return []
     # Para enlaces directo en formato lista
     if isinstance(itemlist[0], list):
         item.video_urls = itemlist
@@ -961,9 +962,18 @@ def mark_content_as_watched2(item):
     logger.info()
     # logger.debug("item:\n" + item.tostring('\n'))
 
+    video_path = ''
+    if item.video_path:
+        FOLDER =  config.get_setting('folder_movies') if item.contentType == 'movie' else config.get_setting('folder_tvshows')
+        video_path = filetools.join(config.get_videolibrary_path(), FOLDER, item.video_path)
+        if item.contentType in ['movie', 'tvshow']: item.path = video_path
+        if item.contentType == 'episode': 
+            item.strm_path = filetools.join(video_path, '%sx%s.strm' % (item.contentSeason, str(item.contentEpisodeNumber).zfill(2)))
+        video_path = filetools.join(video_path, '%s.nfo' % item.video_path if item.contentType == 'movie' else 'tvshow.nfo')
+
+    item.nfo = item.nfo or video_path
     if filetools.exists(item.nfo):
         head_nfo, it = videolibrarytools.read_nfo(item.nfo) 
-        #logger.debug(it) 
         name_file = ""
         if item.contentType == 'movie' or item.contentType == 'tvshow':
             name_file = os.path.splitext(filetools.basename(item.nfo))[0]
@@ -972,7 +982,7 @@ def mark_content_as_watched2(item):
                 it.library_playcounts.update({name_file: item.playcount}) 
 
         if item.contentType == 'episode' or item.contentType == 'list' or name_file == 'tvshow':
-       # elif item.contentType == 'episode':
+        # elif item.contentType == 'episode':
             name_file = os.path.splitext(filetools.basename(item.strm_path))[0]
             num_season = name_file [0]
             item.__setattr__('contentType', 'episode') 
@@ -1003,11 +1013,11 @@ def mark_content_as_watched2(item):
                 #mark_season_as_watched(new_item)
 
             if config.is_xbmc():
-                from platformcode import xbmc_videolibrary
-                xbmc_videolibrary.mark_content_as_watched_on_kodi(item , item.playcount)
-               # logger.debug(item) 
+                from platformcode.xbmc_videolibrary import mark_content_as_watched_on_kodi
+                mark_content_as_watched_on_kodi(item , item.playcount)
+                # logger.debug(item) 
 
-            platformtools.itemlist_refresh() 
+            platformtools.itemlist_refresh()
 
 
 def mark_content_as_watched(item):
@@ -1042,8 +1052,8 @@ def mark_content_as_watched(item):
                 mark_season_as_watched(new_item)
 
             if config.is_xbmc(): #and item.contentType == 'episode':
-                from platformcode import xbmc_videolibrary
-                xbmc_videolibrary.mark_content_as_watched_on_kodi(item, item.playcount)
+                from platformcode.xbmc_videolibrary import mark_content_as_watched_on_kodi
+                mark_content_as_watched_on_kodi(item, item.playcount)
 
             platformtools.itemlist_refresh()
 
@@ -1054,8 +1064,8 @@ def mark_video_as_watched(item):
 
     if config.is_xbmc():
         # Actualizamos la BBDD de Kodi
-        from platformcode import xbmc_videolibrary
-        xbmc_videolibrary.mark_season_as_watched_on_kodi(item, item.playcount)
+        from platformcode.xbmc_videolibrary import mark_season_as_watched_on_kodi
+        mark_season_as_watched_on_kodi(item, item.playcount)
 
     platformtools.itemlist_refresh()
 
@@ -1107,8 +1117,8 @@ def mark_season_as_watched(item):
 
         if config.is_xbmc():
             # Actualizamos la BBDD de Kodi
-            from platformcode import xbmc_videolibrary
-            xbmc_videolibrary.mark_season_as_watched_on_kodi(item, item.playcount)
+            from platformcode.xbmc_videolibrary import mark_season_as_watched_on_kodi
+            mark_season_as_watched_on_kodi(item, item.playcount)
 
     platformtools.itemlist_refresh()
 
@@ -1145,6 +1155,7 @@ def delete(item):
 
     # logger.info(item.contentTitle)
     # logger.debug(item.tostring('\n'))
+    config.cache_reset(label='alfa_videolab_series_list')
 
     if item.contentType == 'movie':
         heading = config.get_localized_string(70084)
@@ -1203,6 +1214,7 @@ def reset_movie(item):
     logger.info()
     
     if item.nfo:
+        config.cache_reset(label='alfa_videolab_series_list')
         videolibrarytools.reset_movie(item.nfo)
     else:
         logger.error("Error al crear de nuevo la película. No .nfo")
@@ -1212,6 +1224,7 @@ def reset_serie(item):
     logger.info()
     
     if item.nfo:
+        config.cache_reset(label='alfa_videolab_series_list')
         videolibrarytools.reset_serie(item.nfo)
     else:
         logger.error("Error al crear de nuevo la serie. No .nfo")

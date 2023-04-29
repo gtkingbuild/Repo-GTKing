@@ -4,26 +4,30 @@
 # -*- By the Alfa Development Group -*-
 
 import sys
-
 PY3 = False
 if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int
 
-import base64
+import re
+import traceback
 
-from channels import filtertools
-from bs4 import BeautifulSoup
-from core import servertools, scrapertools
 from core.item import Item
-from channels import autoplay
-from lib.AlfaChannelHelper import ToroPlay
-from platformcode import config, logger
+from core import servertools
+from core import scrapertools
+from core import jsontools
 from channelselector import get_thumb
+from platformcode import config, logger
+from channels import filtertools, autoplay
+from lib.AlfaChannelHelper import DictionaryAllChannel
 
-IDIOMAS = {'la': 'LAT', 'ca': 'CAST', 'su': 'VOSE'}
-list_idiomas = list(set(IDIOMAS.values()))
-
-list_servers = ['okru', 'yourupload', 'mega', 'doodstream', 'fembed']
+IDIOMAS = {'la': 'Latino', 'lat': 'Latino', 'LAT': 'Latino', 'latino': 'Latino', 'es': 'Castellano', 
+           'castellano': 'Castellano', 'subtitulado': 'VOSE', 'us': 'VOSE'}
+list_language = list(set(IDIOMAS.values()))
 list_quality = []
+list_quality_movies = ['DVDR', 'HDRip', 'VHSRip', 'HD', '2160p', '1080p', '720p', '4K', '3D', 'Screener', 'BluRay']
+list_quality_tvshow = ['HDTV', 'HDTV-720p', 'WEB-DL 1080p', '4KWebRip']
+list_servers = ['okru', 'yourupload', 'mega', 'doodstream', 'fembed']
+forced_proxy_opt = 'ProxyCF'
+
 
 canonical = {
              'channel': 'sinpeli', 
@@ -34,7 +38,50 @@ canonical = {
              'CF': False, 'CF_test': False, 'alfa_s': True
             }
 host = canonical['host'] or canonical['host_alt'][0]
-AlfaChannel = ToroPlay(host, canonical=canonical)
+
+timeout = 5
+kwargs = {}
+debug = config.get_setting('debug_report', default=False)
+movie_path = "/pelicula"
+tv_path = '/tv'
+language = []
+url_replace = []
+
+finds = {'find': {'find': [{'tag': ['ul'], 'class': ['MovieList']}], 
+                  'find_all': [{'tag': ['article',], 'class': re.compile("TPost C")}]},
+         'categories': {}, 
+         'search': {}, 
+         'get_language': {'find_all': [{'tag': ['span'], 'class': ['languages']}, {'tag': ['img'], '@ARG': 'src'}]}, 
+         'get_language_rgx': '(?:flags\/||d{4}\/\d{2}\/)(\w+)\.(?:png|jpg|jpeg|webp)', 
+         'get_quality': {}, 
+         'get_quality_rgx': '', 
+         'next_page': {}, 
+         'next_page_rgx': [['\/page\/\d+', '/page/%s/']], 
+         'last_page': {'find': [{'tag': ['a'], 'class': ['last'], '@ARG': 'href', '@TEXT': '(\d+)'}]}, 
+         'year': {'find': [{'tag': ['h3']}], 'get_text': [{'tag': '', '@STRIP': True, '@TEXT': '\((\d+)\)'}]}, 
+         'season_episode': {}, 
+         'seasons': {}, 
+         'season_num': {}, 
+         'seasons_search_num_rgx': '', 
+         'seasons_search_qty_rgx': '', 
+         'episode_url': '', 
+         'episodes': {}, 
+         'episode_num': [], 
+         'episode_clean': [], 
+         'plot': {'find': [{'tag': ['div'], 'class': ['Description']}, {'tag': ['p']}], 'get_text': [{'tag': '', '@STRIP': True}]}, 
+         'findvideos': {'find': [{'tag': ['ul'], 'class': ['TPlayerNv']}], 'find_all': [{'tag': ['li']}]}, 
+         'title_clean': [['(?i)TV|Online|(4k-hdr)|(fullbluray)|4k| - 4k|(3d)|miniserie|\s*\(\d{4}\)', ''],
+                         ['[\(|\[]\s*[\)|\]]', '']],
+         'quality_clean': [['(?i)proper|unrated|directors|cut|repack|internal|real-*|extended|masted|docu|super|duper|amzn|uncensored|hulu', '']],
+         'language_clean': [], 
+         'url_replace': [], 
+         'controls': {'duplicates': [], 'min_temp': False, 'url_base64': False, 'add_video_to_videolibrary': True, 'cnt_tot': 14, 
+                      'get_lang': False, 'reverse': False, 'videolab_status': True, 'tmdb_extended_info': True, 'seasons_search': False}, 
+         'timeout': timeout}
+AlfaChannel = DictionaryAllChannel(host, movie_path=movie_path, tv_path=tv_path, canonical=canonical, finds=finds, 
+                                   idiomas=IDIOMAS, language=language, list_language=list_language, list_servers=list_servers, 
+                                   list_quality_movies=list_quality_movies, list_quality_tvshow=list_quality_tvshow, 
+                                   channel=canonical['channel'], actualizar_titulos=True, url_replace=url_replace, debug=debug)
 
 
 def mainlist(item):
@@ -48,6 +95,7 @@ def mainlist(item):
                          action="list_all",
                          thumbnail=get_thumb("All", auto=True),
                          title="Todas",
+                         c_type='peliculas', 
                          url=host
                          )
                     )
@@ -56,6 +104,7 @@ def mainlist(item):
                          action="section",
                          thumbnail=get_thumb("language", auto=True),
                          title="Idiomas",
+                         c_type='peliculas', 
                          url=host
                          )
                     )
@@ -64,6 +113,7 @@ def mainlist(item):
                          action="section",
                          thumbnail=get_thumb("quality", auto=True),
                          title="Calidad",
+                         c_type='peliculas', 
                          url=host
                          )
                     )
@@ -72,6 +122,7 @@ def mainlist(item):
                          action="section",
                          thumbnail=get_thumb("genres", auto=True),
                          title="Generos",
+                         c_type='peliculas', 
                          url=host
                          )
                     )
@@ -79,139 +130,174 @@ def mainlist(item):
     itemlist.append(Item(channel=item.channel,
                          action="search",
                          thumbnail=get_thumb("search", auto=True),
-                         url=host + "?s=",
+                         url=host,
+                         c_type='search', 
                          title="Buscar..."
                          )
                     )
+
+    itemlist = filtertools.show_option(itemlist, item.channel, list_language, list_quality_tvshow, list_quality_movies)
 
     autoplay.show_option(item.channel, itemlist)
 
     return itemlist
 
 
-def list_all(item):
-    logger.info()
-
-    return AlfaChannel.list_all(item, postprocess=get_languages)
-
-
 def section(item):
     logger.info()
 
-    if item.title == "Generos":
-        return AlfaChannel.section(item, menu_id="351")
-    elif item.title == "Idiomas":
-        return AlfaChannel.section(item, menu_id="415")
-    else:
-        return AlfaChannel.section(item, menu_id="421")
+    if item.title == "Generos": menu_id="351"
+    elif item.title == "Idiomas": menu_id="415"
+    else: menu_id="421"
+    
+    findS = finds.copy()
+
+    findS['categories'] = {'find': [{'tag': ['li'], 'id': ['menu-item-%s' % menu_id]}], 
+                           'find_all': [{'tag': ['li']}]}
+
+    return AlfaChannel.section(item, finds=findS, **kwargs)
+
+
+def list_all(item):
+    logger.info()
+
+    return AlfaChannel.list_all(item, matches_post=list_all_matches, **kwargs)
+
+
+def list_all_matches(item, matches_int, **AHkwargs):
+    logger.info()
+
+    matches = []
+    findS = AHkwargs.get('finds', finds)
+
+    for elem in matches_int:
+        elem_json = {}
+        #logger.error(elem)
+
+        try:
+            if item.extra == 'alpha':
+                if not elem.find("a", class_="MvTbImg"): continue
+                elem_json['url'] = elem.find("a", class_="MvTbImg").get("href", "")
+                elem_json['title'] = elem.find("td", class_="MvTbTtl").get_text(strip=True)
+            else:
+                elem_json['url'] = elem.a.get("href", "")
+                elem_json['title'] = elem.a.h3.get_text(strip=True)
+            elem_json['thumbnail'] = elem.find("img")
+            elem_json['thumbnail'] = elem_json['thumbnail']["data-src"] if elem_json['thumbnail']\
+                                               .has_attr("data-src") else elem_json['thumbnail']["src"]
+            if elem.find('span', class_="Qlty"): elem_json['quality'] = '*%s' \
+                                                 % elem.find('span', class_="Qlty").get_text(strip=True).replace('Desconocido', '')
+            elem_json['year'] = elem_json.get('year', AlfaChannel.parse_finds_dict(elem, findS.get('year', {}), year=True, c_type=item.c_type))
+            AlfaChannel.get_language_and_set_filter(elem, elem_json)
+            elem_json['plot'] = AlfaChannel.parse_finds_dict(elem, findS.get('plot', {}), c_type=item.c_type)
+        except:
+            logger.error(elem)
+            logger.error(traceback.format_exc())
+            continue
+
+        if not elem_json['url']: continue
+
+        matches.append(elem_json.copy())
+
+    return matches
 
 
 def findvideos(item):
     logger.info()
 
-    itemlist = list()
+    return AlfaChannel.get_video_options(item, item.url, data='', matches_post=findvideos_matches, 
+                                         verify_links=False, findvideos_proc=True, **kwargs)
+
+
+def findvideos_matches(item, matches_int, langs, response, **AHkwargs):
+    logger.info()
+    import base64
+
+    matches = []
+    findS = AHkwargs.get('finds', finds)
+
+    servers = {"femax20": "fembed", "embed": "mystream", "dood": "doodstream", "ok": "okru"}
     patron_php = "<iframe\s*src='([^']+)'"
     patron_link = "\('([^']+)'"
-    lang = "la"
-    infoLabels = item.infoLabels
 
-    soup, matches = AlfaChannel.get_video_options(item.url)
+    for elem in matches_int:
+        elem_json = {}
+        #logger.error(elem)
 
-    for btn in matches:
-        b_data = btn["data-player"]
-        b_data = base64.b64decode(b_data).decode('utf-8')
-        if not b_data: 
-            continue
-        if scrapertools.find_single_match(b_data, patron_php):
-            b_data = scrapertools.find_single_match(b_data, patron_php)
-            
-            if 'links.cuevana3' in b_data:
-                soup, matches = AlfaChannel.get_video_options(b_data)
+        try:
+            elem_json['server'] = ''
+            elem_json['url'] = elem.get("data-player", '')
+            elem_json['url'] = base64.b64decode(elem_json['url']).decode('utf-8')
+            if not elem_json['url']: 
+                continue
+            if scrapertools.find_single_match(elem_json['url'], patron_php):
+                elem_json['url'] = scrapertools.find_single_match(elem_json['url'], patron_php)
 
-                if not matches:
-                    try:
-                        matches = soup.find("div", class_="REactiv").find_all("li")
-                    except:
+            if 'links.cuevana3' in elem_json['url']:
+                elem_json['url'] = re.sub("amp;|#038;", "", elem_json['url'])
+
+                links = AlfaChannel.create_soup( elem_json['url'], referer=item.url).find("div", class_="REactiv").find_all("li")
+                
+                for link in links:
+                    elem_json = {}
+                    #logger.error(link)
+
+                    elem_json['url'] = link.get("onclick", '')
+                    if not scrapertools.find_single_match(elem_json['url'], patron_link): 
                         continue
+                    elem_json['url'] = scrapertools.find_single_match(elem_json['url'], patron_link)
+                    elem_json['url'] = re.sub("amp;|#038;", "", elem_json['url'])
 
-                for link in matches:
-                    link_url = link["onclick"]
-                    if not scrapertools.find_single_match(link_url, patron_link): 
+                    elem_json['server'] = link.span.get_text(strip=True).lower().split('.')[0]
+                    if "trailer" in elem_json['server']:
                         continue
-                    b_data = scrapertools.find_single_match(link_url, patron_link)
-                    srv = link.span.text.lower()
-                    if "trailer" in srv:
-                        continue
-                    try:
-                        lang = link.p.text
-                        if 'Espanol' in lang: lang = 'ca'
-                        if 'Latino' in lang: lang = 'la'
-                        if 'Subtitulado' in lang: lang = 'su'
-                    except:
-                        lang = "la"
-                        
-                    itemlist.append(Item(channel=item.channel,
-                                         action='play',
-                                         infoLabels=infoLabels,
-                                         language=IDIOMAS.get(lang.lower(), "LAT"),
-                                         server=srv.split('.')[0],
-                                         title=srv.split('.')[0].capitalize(),
-                                         url=b_data
-                                        )
-                                    )
+                    if elem_json['server'].lower() in servers: elem_json['server'] = servers[elem_json['server'].lower()]
+                    if elem_json['server'].lower() in ["waaw", "jetload", "player"]: continue
+                    if 'mega.' in elem_json['url']: elem_json['url'] = elem_json['url'].replace("/embed/", "/file/")
+
+                    elem_json['title'] = '%s'
+
+                    elem_json['language'] = item.language
+
+                    if not elem_json['url']: continue
+
+                    matches.append(elem_json.copy())
+
             else:
-                srv = btn.span.text.lower()
-                if "trailer" in srv.lower():
+                elem_json['url'] = re.sub("amp;|#038;", "", elem_json['url'])
+
+                elem_json['server'] = elem.span.get_text(strip=True).lower().split('.')[0]
+                if elem_json['server'].lower() in servers: elem_json['server'] = servers[elem_json['server'].lower()]
+                if elem_json['server'].lower() in ["waaw", "jetload", "player"]: continue
+                if "trailer" in elem_json['server']:
                     continue
-                try:
-                    lang = btn.span.next_sibling.text[:2]
-                    if 'Espanol' in lang: lang = 'ca'
-                    if 'Latino' in lang: lang = 'la'
-                    if 'Subtitulado' in lang: lang = 'su'
-                except:
-                    lang = "la"
 
-                itemlist.append(Item(channel=item.channel,
-                                     action='play',
-                                     infoLabels=infoLabels,
-                                     language=IDIOMAS.get(lang.lower(), "LAT"),
-                                     server='',
-                                     title=srv.capitalize(),
-                                     url=b_data
-                                    )
-                                )
+                elem_json['title'] = '%s'
 
-    itemlist = sorted(itemlist, key=lambda i: i.server)
-    itemlist = servertools.get_servers_itemlist(itemlist)
+                elem_json['language'] = item.language
 
-    # Requerido para FilterTools
-    itemlist = filtertools.get_links(itemlist, item, list_idiomas, list_quality)
+                if not elem_json['url']: continue
 
-    # Requerido para AutoPlay
-    autoplay.start(itemlist, item)
+                matches.append(elem_json.copy())
+        except:
+            logger.error(elem)
+            logger.error(traceback.format_exc())
+            continue
 
-    if config.get_videolibrary_support() and len(itemlist) > 0 and (
-            not item.videolibrary or item.extra != 'findvideos'):
-        itemlist.append(Item(action="add_pelicula_to_library",
-                             contentTitle=item.contentTitle,
-                             channel=item.channel,
-                             extra="findvideos",
-                             title='[COLOR yellow]Añadir esta pelicula a la videoteca[/COLOR]',
-                             url=item.url
-                            )
-                        )
-
-    return itemlist
+    return matches, langs
 
 
-def search(item, texto):
+def search(item, texto, **AHkwargs):
     logger.info()
+    global kwargs
+    kwargs = AHkwargs
     
     try:
         texto = texto.replace(" ", "+")
-        if texto != '':
-            item.url += texto
-            item.search = True
+        if texto:
+            item.url += "?s=" + texto
+            item.c_type = 'search'
+            item.texto = texto
             return list_all(item)
         else:
             return []
@@ -222,8 +308,10 @@ def search(item, texto):
         return []
 
 
-def newest(categoria):
+def newest(categoria, **AHkwargs):
     logger.info()
+    global kwargs
+    kwargs = AHkwargs
 
     item = Item()
     try:
@@ -237,8 +325,10 @@ def newest(categoria):
             item.url = host + 'animacion'
         elif categoria == 'terror':
             item.url = host + 'terror'
+        
+        item.c_type = "movies"
         itemlist = list_all(item)
-        if itemlist[-1].title == 'Siguiente >>':
+        if len(itemlist) > 0 and ">> Página siguiente" in itemlist[-1].title:
             itemlist.pop()
     except:
         import sys
@@ -247,16 +337,3 @@ def newest(categoria):
         return []
 
     return itemlist
-
-
-def get_languages(*args):
-    logger.info()
-
-    try:
-        lang = args[1].find("span", class_="languages").text.strip()[:2]
-    except:
-        lang = "la"
-
-    args[2].language = IDIOMAS.get(lang.lower(), "la")
-
-    return args[2]

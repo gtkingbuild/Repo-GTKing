@@ -23,6 +23,7 @@ canonical = {
              'host': config.get_setting("current_host", 'sunporno', default=''), 
              'host_alt': ["https://www.sunporno.com/"], 
              'host_black_list': [], 
+             'pattern': ['toplogo" href="?([^"|\s*]+)["|\s*]'], 
              'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'cf_assistant': False, 
              'CF': False, 'CF_test': False, 'alfa_s': True
             }

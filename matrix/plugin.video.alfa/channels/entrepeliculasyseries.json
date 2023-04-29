@@ -26,7 +26,7 @@
       "id": "filter_languages",
       "type": "list",
       "label": "Mostrar enlaces en idioma...",
-      "default": 0,
+      "default": 1,
       "enabled": true,
       "visible": true,
       "lvalues": [

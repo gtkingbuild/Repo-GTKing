@@ -28,7 +28,7 @@ from bs4 import BeautifulSoup
 canonical = {
              'channel': 'sleazemovies', 
              'host': config.get_setting("current_host", 'sleazemovies', default=''), 
-             'host_alt': ["http://www.eroti.ga/"], 
+             'host_alt': ["https://www.eroti.ga/"], 
              'host_black_list': [], 
              'pattern': ['<h1 class="site-title"><a href="?([^"|\s*]+)["|\s*]\s*rel="?home"?'], 
              'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'cf_assistant': False, 
@@ -97,6 +97,8 @@ def lista(item):
         title = elem.h2.text.strip()
         title = title.replace("&#8217;", "'")
         thumbnail = elem.find('div', class_='twp-article-post-thumbnail').img['src']
+        if "gif" in thumbnail:
+            thumbnail = elem.find('div', class_='twp-article-post-thumbnail').img['data-src']
         contentTitle = scrapertools.find_single_match(title, '([^\(]+)')
         year = scrapertools.find_single_match(title, '(\d{4})')
         if not year:

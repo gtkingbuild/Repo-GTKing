@@ -9,7 +9,7 @@ def test_video_exists(page_url):
     logger.info("(page_url='%s')" % page_url)
     global data
     data = httptools.downloadpage(page_url).data
-    if "<h2>WE ARE SORRY</h2>" in data or '<title>404 Not Found</title>' in data:
+    if "This video is no longer available" in data or '<title>404 Not Found</title>' in data:
         return False, "[eporner] El fichero no existe o ha sido borrado"
     return True, ""
 

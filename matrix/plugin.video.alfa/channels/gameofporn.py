@@ -19,12 +19,14 @@ from core import httptools
 from bs4 import BeautifulSoup
 
 # gameofporn  veporns  https://www.veporno.net  https://www.fxporn.net      http://www.veporns.com    
+#NO COGE PATRON CANONICAL
+
 canonical = {
              'channel': 'gameofporn', 
              'host': config.get_setting("current_host", 'gameofporn', default=''), 
              'host_alt': ["https://www.veporno.net/"], 
              'host_black_list': [], 
-             'pattern': ['href="?([^"|\s*]+)["|\s*]\s*type="?application/rss+xml"?'], 
+             'pattern': ['href="([^"]+)" rel="alternate"'], 
              'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'cf_assistant': False, 
              'CF': False, 'CF_test': False, 'alfa_s': True
             }

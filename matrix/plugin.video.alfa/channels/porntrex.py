@@ -19,13 +19,13 @@ from core import scrapertools
 from core import servertools
 from platformcode import config, logger
 
+# NO COGE CANONICAL
 canonical = {
              'channel': 'porntrex', 
              'host': config.get_setting("current_host", 'porntrex', default=''), 
              'host_alt': ["https://www.porntrex.com/"], 
              'host_black_list': [], 
              'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'cf_assistant': False, 
-             # 'pattern': ['<link href="([^"]+)" rel="canonical"'], 
              'CF': False, 'CF_test': False, 'alfa_s': True
             }
 host = canonical['host'] or canonical['host_alt'][0]

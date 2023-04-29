@@ -576,7 +576,7 @@ def check_webview_version(wvbVersion):
         return
 
     # Comparar la versión de WebView que tiene el Android donde reside la APP con la versión mínima adecuada
-    ver_min = 109
+    ver_min = 110
     
     wvbVersion_list = wvbVersion.split('.')
     wvbVersion_msg = config.get_setting('wvbVersion_msg', default=0)
@@ -777,7 +777,7 @@ def execute_binary_from_alfa_assistant(function, cmd, wait=False, init=False, re
         # Check if other add-ons may need the Assistant app
         import xbmcaddon
         app_needed = ''
-        for addon_binary in ['torrest', 'quasar']:
+        for addon_binary in ['quasar']:
             if xbmc.getCondVisibility('System.HasAddon("plugin.video.%s")' % addon_binary):
                 try:
                     __settings__ = xbmcaddon.Addon(id="plugin.video.%s" % addon_binary)

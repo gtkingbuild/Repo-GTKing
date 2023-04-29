@@ -20,7 +20,7 @@ def test_video_exists(page_url):
         page_url, ignore_response_code = page_url.split("|")[0], True 
     referer = None
     if "|Referer" in page_url or "|referer" in page_url:
-        url, referer = page_url.split("|")
+        page_url, referer = page_url.split("|")
         referer = referer.replace('Referer=', '').replace('referer=', '')
 
     if page_url:

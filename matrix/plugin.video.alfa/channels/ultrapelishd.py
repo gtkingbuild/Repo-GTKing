@@ -2,27 +2,28 @@
 # -*- Channel UltraPelisHD -*-
 # -*- Created for Alfa-addon -*-
 # -*- By the Alfa Develop Group -*-
+
 import sys
 PY3 = False
 if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int
 
+import traceback
+
 from core.item import Item
-from core import scrapertools
 from core import servertools
+from core import scrapertools
+from core import jsontools
 from channelselector import get_thumb
 from platformcode import config, logger
-from lib.AlfaChannelHelper import DooPlay
 from channels import filtertools, autoplay
+from lib.AlfaChannelHelper import DictionaryAllChannel, DooPlay
 
-IDIOMAS = {'la': 'LAT', 'ca': 'CAST', 'su': 'VOSE', 'en': 'VOSE'}
+IDIOMAS = {'la': 'LAT', 'mx': 'LAT', 'ca': 'CAST', 'su': 'VOSE', 'en': 'VOSE'}
 list_language = list(IDIOMAS.values())
-
 list_quality = []
-
-list_servers = [
-    'fembed',
-    'uqload',
-    ]
+list_quality_movies = ['DVDR', 'HDRip', 'VHSRip', 'HD', '2160p', '1080p', '720p', '4K', '3D', 'Screener', 'BluRay']
+list_quality_tvshow = ['HDTV', 'HDTV-720p', 'WEB-DL 1080p', '4KWebRip']
+list_servers = ['fembed', 'uqload',]
 
 canonical = {
              'channel': 'ultrapelishd', 
@@ -33,7 +34,25 @@ canonical = {
              'CF': False, 'CF_test': False, 'alfa_s': True
             }
 host = canonical['host'] or canonical['host_alt'][0]
-AlfaChannel = DooPlay(host, "/pelicula", canonical=canonical)
+forced_proxy_opt = 'ProxyCF'
+
+timeout = 5
+kwargs = {}
+debug = config.get_setting('debug_report', default=False)
+movie_path = "/pelicula"
+tv_path = '/serie'
+language = ['LAT']
+url_replace = []
+
+AlfaChannel_class = DooPlay(host, canonical=canonical, channel=canonical['channel'], language=language, idiomas=IDIOMAS, 
+                            list_language=list_language, list_servers=list_servers, url_replace=url_replace, debug=debug)
+finds = AlfaChannel_class.finds
+finds['controls']['add_video_to_videolibrary'] = True
+
+AlfaChannel = DictionaryAllChannel(host, movie_path=movie_path, tv_path=tv_path, canonical=canonical, finds=finds, 
+                                   idiomas=IDIOMAS, language=language, list_language=list_language, list_servers=list_servers, 
+                                   list_quality_movies=list_quality_movies, list_quality_tvshow=list_quality_tvshow, 
+                                   channel=canonical['channel'], actualizar_titulos=True, url_replace=url_replace, debug=debug)
 
 
 def mainlist(item):
@@ -43,84 +62,82 @@ def mainlist(item):
 
     itemlist = list()
 
-    itemlist.append(Item(channel=item.channel, title='Ultimas', url=host + 'genre/estrenos-hd', action='list_all',
-                         thumbnail=get_thumb('all', auto=True)))
+    itemlist.append(Item(channel=item.channel, title='Ultimas', url=host + 'genre/estrenos-hd/', action='list_all',
+                         thumbnail=get_thumb('all', auto=True), c_type='peliculas'))
 
-    itemlist.append(Item(channel=item.channel, title='Todas', url=host + 'pelicula', action='list_all',
-                         thumbnail=get_thumb('all', auto=True)))
+    itemlist.append(Item(channel=item.channel, title='Todas', url=host + 'pelicula/', action='list_all',
+                         thumbnail=get_thumb('all', auto=True), c_type='peliculas'))
 
     itemlist.append(Item(channel=item.channel, title='Netflix', url=host + 'genre/netflix/', action='list_all',
-                         thumbnail=get_thumb('movies', auto=True)))
+                         thumbnail=get_thumb('movies', auto=True), c_type='peliculas'))
 
     itemlist.append(Item(channel=item.channel, title='Generos', action='section', url=host,
-                         thumbnail=get_thumb('genres', auto=True)))
+                         thumbnail=get_thumb('genres', auto=True), c_type='peliculas'))
 
-    itemlist.append(Item(channel=item.channel, title="Buscar...", action="search", url=host + '?s=',
-                         thumbnail=get_thumb("search", auto=True)))
+    itemlist.append(Item(channel=item.channel, title="Buscar...", action="search", url=host,
+                         thumbnail=get_thumb("search", auto=True), c_type='search'))
+
+    itemlist = filtertools.show_option(itemlist, item.channel, list_language, list_quality_tvshow, list_quality_movies)
 
     autoplay.show_option(item.channel, itemlist)
 
     return itemlist
 
 
-def list_all(item):
-    logger.info()
-
-    return AlfaChannel.list_all(item)
-
-
 def section(item):
     logger.info()
 
-    if item.title == "Generos":
-        return AlfaChannel.section(item, section="genre")
+    findS = finds.copy()
+
+    findS['categories']['find'][0]['id'][0] = 'menu-item-1957'
+
+    return AlfaChannel.section(item, finds=findS, **kwargs)
+
+
+def list_all(item):
+    logger.info()
+
+    findS = finds.copy()
+
+    if item.c_type == 'search':
+        findS['find'] = findS.get('search', findS['find'])
+        findS['controls']['get_lang'] = True
+        return AlfaChannel.list_all(item, matches_post=AlfaChannel_class.list_all_matches, **kwargs)
+
+    return AlfaChannel.list_all(item, matches_post=AlfaChannel_class.list_all_matches, finds=findS, **kwargs)
 
 
 def findvideos(item):
     logger.info()
 
-    itemlist = list()
+    findS = finds.copy()
 
-    soup, matches = AlfaChannel.get_video_options(item.url)
+    findS['controls']['get_lang'] = True
 
-    for elem in matches:
-        lang = elem.find("span", class_="title").text[:2].lower()
-        
-        data = AlfaChannel.get_data_by_post(elem).json
-        
-        url = data.get("embed_url", "")
-        if not url or "youtube" in url:
-            continue
-        
-        itemlist.append(Item(channel=item.channel, title="%s", action="play", url=url,
-                             language=IDIOMAS.get(lang, "LAT"), infoLabels=item.infoLabels))
-
-    itemlist = servertools.get_servers_itemlist(itemlist, lambda i: i.title % i.server)
-
-    # Requerido para FilterTools
-    itemlist = filtertools.get_links(itemlist, item, list_language)
-
-    # Requerido para AutoPlay
-    autoplay.start(itemlist, item)
-    
-    if item.contentType != "episode":
-        if config.get_videolibrary_support() and len(itemlist) > 0 and item.extra != "findvideos":
-            itemlist.append(Item(channel=item.channel, title="[COLOR yellow]Añadir esta pelicula a la videoteca[/COLOR]",
-                                 url=item.url, action="add_pelicula_to_library", extra="findvideos",
-                                 contentTitle=item.contentTitle))
-
-    return itemlist
+    return AlfaChannel.get_video_options(item, item.url, matches_post=AlfaChannel_class.findvideos_matches, 
+                                         verify_links=False, findvideos_proc=True, finds=findS, **kwargs)
 
 
-def search(item, texto):
+def actualizar_titulos(item):
     logger.info()
+    #Llamamos al método que actualiza el título con tmdb.find_and_set_infoLabels
+
+    return AlfaChannel.do_actualizar_titulos(item)
+
+
+def search(item, texto, **AHkwargs):
+    logger.info()
+    global kwargs
+    kwargs = AHkwargs
     
     try:
         texto = texto.replace(" ", "+")
-        item.url = item.url + texto
+        item.url = host + '?s=' + texto
 
-        if texto != '':
-            return AlfaChannel.search_results(item, postprocess=get_lang)
+        if texto:
+            item.c_type = "search"
+            item.texto = texto
+            return list_all(item)
         else:
             return []
     # Se captura la excepción, para no interrumpir al buscador global si un canal falla
@@ -130,19 +147,21 @@ def search(item, texto):
         return []
 
 
-def newest(categoria):
+def newest(categoria, **AHkwargs):
     logger.info()
+    global kwargs
+    kwargs = AHkwargs
 
     item = Item()
     try:
         if categoria in ['peliculas', 'latino']:
-            item.url = host + 'genre/estrenos-hd'
+            item.url = host + 'genre/estrenos-hd/'
         elif categoria == 'infantiles':
             item.url = host + 'genre/infantil/'
         elif categoria == 'terror':
             item.url = host + 'genre/terror/'
         itemlist = list_all(item)
-        if itemlist[-1].title == 'Siguiente >>':
+        if len(itemlist) > 0 and ">> Página siguiente" in itemlist[-1].title:
             itemlist.pop()
     except:
         import sys
@@ -151,20 +170,3 @@ def newest(categoria):
         return []
 
     return itemlist
-
-
-def get_lang(*args):
-
-    langs = list()
-    try:
-        lang_list = args[1].find_all("span", class_="flag")
-        for lang in lang_list:
-            lang = scrapertools.find_single_match(lang["style"], r'/flags/(.*?).png\)')
-            if not lang in langs:
-                langs.append(lang)
-    except:
-        langs = ""
-
-    args[2].language = langs
-    
-    return args[2]

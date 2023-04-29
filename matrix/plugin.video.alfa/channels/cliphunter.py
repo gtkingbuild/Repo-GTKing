@@ -18,16 +18,25 @@ from core import servertools
 from core import httptools
 
 
-host = "https://www.cliphunter.com"
-
+canonical = {
+             'channel': 'cliphunter', 
+             'host': config.get_setting("current_host", 'cliphunter', default=''), 
+             'host_alt': ["https://www.cliphunter.com/"], 
+             'host_black_list': [], 
+             'pattern': ['<link href="([^"]+)" rel="alternate"'], 
+             'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'cf_assistant': False, 
+             'CF': False, 'CF_test': False, 'alfa_s': True
+            }
+host = canonical['host'] or canonical['host_alt'][0]
+httptools.downloadpage(host, canonical=canonical).data
 
 def mainlist(item):
     logger.info()
     itemlist = []
-    itemlist.append(item.clone(title="Nuevas" , action="lista", url=host + "/categories/All"))
-    itemlist.append(item.clone(title="Popular" , action="lista", url=host + "/popular/ratings/yesterday"))
-    itemlist.append(item.clone(title="Pornstars" , action="catalogo", url=host + "/pornstars/"))
-    itemlist.append(item.clone(title="Categorias" , action="categorias", url=host + "/categories/"))
+    itemlist.append(item.clone(title="Nuevas" , action="lista", url=host + "categories/All"))
+    itemlist.append(item.clone(title="Popular" , action="lista", url=host + "popular/ratings/yesterday"))
+    itemlist.append(item.clone(title="Pornstars" , action="catalogo", url=host + "pornstars/"))
+    itemlist.append(item.clone(title="Categorias" , action="categorias", url=host + "categories/"))
     itemlist.append(item.clone(title="Buscar", action="search"))
     return itemlist
 
@@ -35,7 +44,7 @@ def mainlist(item):
 def search(item, texto):
     logger.info()
     texto = texto.replace(" ", "+")
-    item.url = "%s/search/%s" % (host, texto)
+    item.url = "%ssearch/%s" % (host, texto)
     try:
         return lista(item)
     except:

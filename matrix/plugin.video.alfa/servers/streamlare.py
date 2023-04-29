@@ -32,10 +32,9 @@ def test_video_exists(page_url):
     
     if not response.sucess or "Not Found" in response.data or "File was deleted" in response.data or "is no longer available" in response.data:
         return False, "[streamlare] El fichero no existe o ha sido borrado"
-
-    url_new = response.url if response.url and response.url != page_url else ''
-    if not url_new: id = scrapertools.find_single_match(page_url,'<link\s*href="([^"]+)"')
-   
+    id = scrapertools.find_single_match(page_url,'/e/(\w+)')
+    url_new = response.url #if response.url and response.url != page_url else ''
+    # if not url_new: id = scrapertools.find_single_match(page_url,'<link\s*href="([^"]+)"')
     return True, ""
 
 
@@ -45,42 +44,44 @@ def get_video_url(page_url, premium=False, user="", password="", video_password=
     
     video_urls = []
     matches = []
-    server_url = "https://slwatch.co/api/video/stream/get"
+    server_url = "%s/api/video/stream/get" %httptools.obtain_domain(url_new, scheme=True)
     
-    if not url_new:
-        if not id: id = scrapertools.find_single_match(page_url,'/e/(\w+)')
-        post = {"id": id}
-        
-        response = httptools.downloadpage(server_url, post=post, **kwargs)
+    # if url_new:
+    if not id: id = scrapertools.find_single_match(page_url,'/e/(\w+)')
+    post = {"id": id}
+    
+    response = httptools.downloadpage(server_url, post=post, **kwargs)
 
-        if response.json:
-            json = response.json
-            media_url = json.get('result', {}).get('file', '')
+    if response.json:
+        json = response.json
+        logger.debug(json)
+        media_url = json.get('result', {}).get('file', '')
+        
+        if "xxxxxxxxxxxxxxmaster.m3u8" in media_url:
+            data = httptools.downloadpage(media_url, **kwargs).data
+            if PY3 and isinstance(data, bytes):
+                data = "".join(chr(x) for x in bytes(data))
             
-            if "xxxxxxxxxxxxxxmaster.m3u8" in media_url:
-                data = httptools.downloadpage(media_url, **kwargs).data
-                if PY3 and isinstance(data, bytes):
-                    data = "".join(chr(x) for x in bytes(data))
-                
-                if data:
-                    matches_m3u8 = re.compile('#EXT-X-STREAM-INF\:[^\n]*\n([^\n]*)\n', re.DOTALL).findall(data)
-                    matches_m3u8.reverse()
-                    for media_url in matches_m3u8:
-                        ext = "m3u8" if "m3u8" in media_url else ''
-                        matches.append(["%s [streamlare]" % (ext), urlparse.urljoin(server_url, media_url)])
-                        break
-            else:
-                ext = "m3u8" if "m3u8" in media_url else ''
-                matches.append(["%s [streamlare]" % (ext), media_url])
+            if data:
+                matches_m3u8 = re.compile('#EXT-X-STREAM-INF\:[^\n]*\n([^\n]*)\n', re.DOTALL).findall(data)
+                matches_m3u8.reverse()
+                for media_url in matches_m3u8:
+                    ext = "m3u8" if "m3u8" in media_url else ''
+                    matches.append(["%s [streamlare]" % (ext), urlparse.urljoin(server_url, media_url)])
+                    break
         else:
-            data = response.data.replace("\\","")
-            if response.url_new:
-                url_new = response.url_new
-                matches.append(['', url_new])
-            else:
-                matches = scrapertools.find_multiple_matches(data, 'label":"([^"]+).*?file":"([^"]+)')
+            ext = "m3u8" if "m3u8" in media_url else ''
+            matches.append(["%s [streamlare]" % (ext), media_url])
     else:
-        matches.append(['', url_new])
+        data = response.data.replace("\\","")
+        if response.url_new:
+            url_new = response.url_new
+            matches.append(['', url_new])
+        else:
+            matches = scrapertools.find_multiple_matches(data, 'label":"([^"]+).*?file":"([^"]+)')
+    # else:   
+        # logger.debug('Aqui')
+        # matches.append(['', url_new])
     
     for res, media_url in matches:
         media_url += "|User-Agent=%s" % (httptools.get_user_agent(quoted=True))

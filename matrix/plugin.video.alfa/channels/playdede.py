@@ -23,15 +23,18 @@ SERVIDORES = {'11': 'clipwatching', '57': 'aparatcam', '12': 'gamovideo', '56': 
 list_language = list(IDIOMAS.values())
 list_quality = ['HD1080', 'HD720', 'HDTV', 'DVDRIP']
 list_servers = list(SERVIDORES.values())
+host = "https://playdede.to/"
+assistant = config.get_setting('assistant_version', default='') and not httptools.channel_proxy_list(host)
 
 canonical = {
              'channel': 'playdede', 
              'host': config.get_setting("current_host", 'playdede', default=''), 
-             'host_alt': ["https://playdede.nu/"], 
-             'host_black_list': ["https://playdede.org/", "https://playdede.com/"], 
+             'host_alt': [host], 
+             'host_black_list': ["https://playdede.nu/", "https://playdede.org/", "https://playdede.com/"], 
              'pattern': '<link\s*rel="shortcut\s*icon"[^>]+href="([^"]+)"', 
              'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 
-             'session_verify': False, 'CF_stat': True, 
+             'CF_stat': True if assistant else False, 'session_verify': True if assistant else False, 
+             'CF_if_assistant': True if assistant else False, 'CF_if_NO_assistant': False,  
              'CF': False, 'CF_test': False, 'alfa_s': True
             }
 host = canonical['host'] or canonical['host_alt'][0]
@@ -316,8 +319,10 @@ def list_all(item):
         url = article.find('a')['href']
         url = "{}%s".format(host) % url
         
+        """
         if 'tmdb.org' in thumbnail:
             infoLabels['filtro'] = scrapertools.find_single_match(thumbnail, "/(\w+)\.\w+$")
+        """
 
         it = Item(
                 action = 'findvideos',
@@ -336,7 +341,7 @@ def list_all(item):
             list_type = item.list_type
 
         else:
-            if 'serie' in it.url:
+            if 'serie' in it.url or 'anime' in it.url:
                 list_type = 'tvshows'
 
             elif 'pelicula' in it.url:
@@ -400,13 +405,17 @@ def seasons(item):
     items = soup.find('div', id='seasons').find_all('div', class_='se-c')
 
     for div in items:
-        season = div['data-season']
+        try:
+            season = int(div['data-season'])
+        except:
+            season = 1
 
         itemlist.append(
             item.clone(
                 action = 'episodesxseason',
                 contentSeason = season,
                 episode_data = str(div),
+                contentType='season', 
                 title = config.get_localized_string(60027) % season
             )
         )
@@ -423,7 +432,7 @@ def episodios(item):
     templist = seasons(item)
 
     for tempitem in templist:
-        itemlist.append(episodesxseason(tempitem))
+        itemlist += episodesxseason(tempitem)
 
     return itemlist
 

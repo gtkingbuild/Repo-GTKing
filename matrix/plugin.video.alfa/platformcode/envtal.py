@@ -420,13 +420,15 @@ def get_environment():
         if filetools.exists(filetools.join(config.get_data_path(), 'alfa-desktop-assistant.version')) \
                             and config.get_setting("assistant_mode") == "este":
             environment['assistant_version'] = filetools.read(filetools.join(config.get_data_path(), 'alfa-desktop-assistant.version'))
+            config.set_setting('assistant_version', environment['assistant_version'])
             environment['assistant_version'] = '%s, %s' % (environment['assistant_version'], str(config.get_setting("assistant_mode")))
             environment['assistant_path'] = str(filetools.file_info(filetools.join(config.get_data_path(), 'assistant')))
         elif filetools.exists(filetools.join(config.get_data_path(), 'alfa-mobile-assistant.version')):
             environment['assistant_version'] = filetools.read(filetools.join(config.get_data_path(), 'alfa-mobile-assistant.version'))
+            config.set_setting('assistant_version', environment['assistant_version'])
             environment['assistant_version'] = '%s, %s, %s' % (environment['assistant_version'], str(config.get_setting("assistant_mode")), 
                                                                str(config.get_setting("assistant_custom_address")))
-        environment['assistant_version'] += '; Req: %s' % str(config.get_setting('assistant_binary', default=False))
+        environment['assistant_version'] += ', Req: %s' % str(config.get_setting('assistant_binary', default=False))
         environment['assistant_cf_ua'] = str(config.get_setting('cf_assistant_ua', default=None))
         assistant_path = filetools.join(os.getenv('ANDROID_STORAGE'), 'emulated', '0', 'Android', 'data', 'com.alfa.alfamobileassistant')
         if PLATFORM in ['android', 'atv2'] and filetools.exists(assistant_path):
@@ -492,37 +494,34 @@ def get_environment():
 def list_env(environment={}):
     if not environment:
         environment = get_environment()
-        
-    if environment['debug'] == 'False':
-        logger.log_enable(True)
-    
-    logger.info('----------------------------------------------')
+
+    logger.info('----------------------------------------------', force=True)
     logger.info('Variables de entorno Alfa: ' + environment['addon_version'] + 
-                ' Debug: ' + environment['debug'])
-    logger.info("----------------------------------------------")
-    logger.info('** OS Environ: %s' % os.environ)
-    logger.info("----------------------------------------------")
+                ' Debug: ' + environment['debug'], force=True)
+    logger.info("----------------------------------------------", force=True)
+    logger.info('** OS Environ: %s' % os.environ, force=True)
+    logger.info("----------------------------------------------", force=True)
 
     logger.info(environment['os_name'] + ' ' + environment['os_release'] + ' ' + 
                 environment['prod_model'] + ' ' + environment['machine'] + ' ' + 
-                environment['architecture'] + ' ' + environment['language'])
+                environment['architecture'] + ' ' + environment['language'], force=True)
     
     logger.info('Kodi ' + environment['num_version'] + ', Vídeo: ' + 
-                environment['video_db'] + ', Python ' + environment['python_version'])
+                environment['video_db'] + ', Python ' + environment['python_version'], force=True)
     
     if environment['cpu_usage']:
-        logger.info('CPU: ' + environment['cpu_usage'])
+        logger.info('CPU: ' + environment['cpu_usage'], force=True)
     
     if environment['mem_total'] or environment['mem_free']: 
         logger.info('Memoria: Total: ' + environment['mem_total'] + ' MB / Disp.: ' + 
                     environment['mem_free'] + ' MB / Buffers: ' + 
                     str(int(environment['kodi_buffer']) * 3) + ' MB / Buffermode: ' + 
                     environment['kodi_bmode']  + ' / Readfactor: ' + 
-                    environment['kodi_rfactor'])
+                    environment['kodi_rfactor'], force=True)
 
     logger.info('Userdata: ' + environment['userdata_path'] + ' - Libre: ' + 
                 environment['userdata_free'].replace('.', ',') +  ' GB' + 
-                ' - Idioma: ' + environment['torrent_lang'])
+                ' - Idioma: ' + environment['torrent_lang'], force=True)
     
     logger.info('Videoteca: Series/Epis (%s): ' % environment['videolab_series_scraper'] + 
                     environment['videolab_series'] + '/' + 
@@ -530,7 +529,7 @@ def list_env(environment={}):
                     environment['videolab_pelis'] + ' - Upd: ' + 
                     environment['videolab_update'] + ' - Path: ' + 
                     environment['videolab_path_perm'] + ' - Libre: ' + 
-                    environment['videolab_free'].replace('.', ',') +  ' GB')
+                    environment['videolab_free'].replace('.', ',') +  ' GB', force=True)
     
     if environment['torrent_list']:
         for x, cliente in enumerate(environment['torrent_list']):
@@ -539,10 +538,10 @@ def list_env(environment={}):
                 del cliente_alt['Torrent_opt']
                 logger.info('Torrent: Opt: %s, %s' % (str(cliente['Torrent_opt']), \
                             str(cliente_alt).replace('{', '').replace('}', '')\
-                            .replace("'", '').replace('_', ' ')))
+                            .replace("'", '').replace('_', ' ')), force=True)
             elif x == 1 and environment['torrent_error']:
                 logger.info('- ' + str(cliente).replace('{', '').replace('}', '')\
-                            .replace("'", '').replace('_', ' '))
+                            .replace("'", '').replace('_', ' '), force=True)
             else:
                 cliente_alt = cliente.copy()
                 del cliente_alt['Plug_in']
@@ -550,21 +549,18 @@ def list_env(environment={}):
                 cliente_alt['Libre'] = cliente_alt['Libre'].replace('.', ',') + ' GB'
                 logger.info('- %s v.%s: %s' % (str(cliente['Plug_in']), str(cliente['Version']), \
                             str(cliente_alt).replace('{', '').replace('}', '').replace("'", '')\
-                            .replace('\\\\', '\\')))
+                            .replace('\\\\', '\\')), force=True)
     
-    logger.info('Proxy: ' + environment['proxy_active'])
+    logger.info('Proxy: ' + environment['proxy_active'], force=True)
     
-    logger.info('SSL version: ' + environment['ssl_version'])
+    logger.info('SSL version: ' + environment['ssl_version'], force=True)
     
     logger.info('Assistant ver.: ' + environment['assistant_version'] + \
                             ' - Assistant UA: ' + environment['assistant_cf_ua'] + \
-                            ' - Assistant path: ' + environment.get('assistant_path', ''))
+                            ' - Assistant path: ' + environment.get('assistant_path', ''), force=True)
     
-    logger.info('TAMAÑO del LOG: ' + environment['log_size'].replace('.', ',') + ' MB')
-    logger.info("----------------------------------------------")
-    
-    if environment['debug'] == 'False':
-        logger.log_enable(False)
+    logger.info('TAMAÑO del LOG: ' + environment['log_size'].replace('.', ',') + ' MB', force=True)
+    logger.info("----------------------------------------------", force=True)
     
     return environment
     
@@ -756,7 +752,7 @@ def paint_env(item, environment={}):
                     folder=False))
                     
     itemlist.append(Item(title="[COLOR hotpink][B]==> Reportar un fallo[/B][/COLOR]", 
-                    channel="setting", action="report_menu", category='Configuración', 
+                    channel="report", action="mainlist", category='Configuración', 
                     unify=False, plot=reporte, thumbnail=get_thumb("error.png")))
     
     return (itemlist, environment)

@@ -18,11 +18,6 @@ if loggeractive == "true": loggeractive = True
 elif loggeractive == "false":  loggeractive = False
 
 
-def log_enable(active):
-    global loggeractive
-    loggeractive = active
-
-
 def encode_log(message=""):
     
     # Unicode to utf8

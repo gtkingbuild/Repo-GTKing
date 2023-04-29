@@ -231,9 +231,9 @@ def getmainlist(view="thumb_"):
         Item(
             channel = "setting",
             action = browser_dict['action'],
-            url = 'https://alfa-addon.com/threads/dontorrent-potenciado-con-busquedas-en-btdigg.4798/', 
-            title = "-     [COLOR yellow]Dontorrent potenciado con búsquedas en [COLOR limegreen]BT[/COLOR][COLOR red]Digg[/COLOR][/COLOR]   " + 
-                    "https://alfa-addon.com/threads/dontorrent-potenciado-con-busquedas-en-btdigg.4798/",
+            url = 'https://alfa-addon.com/threads/manual-de-alfa-assistant-herramienta-de-apoyo.3797/', 
+            title = "-     [COLOR yellow]Usa [COLOR hotpink][B]Alfa ASSISTANT[/B][/COLOR] para desbloquear webs y torrents[/COLOR]   " + 
+                    "https://alfa-addon.com/threads/manual-de-alfa-assistant-herramienta-de-apoyo.3797/",
             thumbnail = get_thumb("on_the_air.png", view),
             unify = False,
             folder = False,

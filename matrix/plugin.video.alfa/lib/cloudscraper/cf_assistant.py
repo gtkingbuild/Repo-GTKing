@@ -36,8 +36,15 @@ def get_cl(self, resp, timeout=20, debug=False, CF_testing = False, extraPostDel
     from lib import alfa_assistant
     from core import httptools
     
-    url = self.cloudscraper.user_url
-    opt = self.cloudscraper.user_opt
+    try:
+        url = self.cloudscraper.user_url
+        opt = self.cloudscraper.user_opt
+        proxies = self.cloudscraper.proxies
+    except:
+        url = self.get('url', '')
+        opt = self
+        proxies = {}
+
     if opt.get('canonical', {}).get('global_search_cancelled', False) or (config.GLOBAL_SEARCH_CANCELLED \
                                 and opt.get('canonical', {}).get('global_search_active', False)):
         logger.info('## Búsqueda global cancelada: %s: %s' % (opt.get('canonical', {}).get('channel', ''), url), force=True)
@@ -70,7 +77,7 @@ def get_cl(self, resp, timeout=20, debug=False, CF_testing = False, extraPostDel
     if (opt.get('cf_assistant_if_proxy', False) or opt.get('canonical', {}).get('cf_assistant_if_proxy', False)) and not httptools.TEST_ON_AIR:
         retry = True
     elif 'hideproxy' in url or 'webproxy' in url or 'hidester' in url \
-                          or '__cpo=' in url or self.cloudscraper.proxies \
+                          or '__cpo=' in url or proxies \
                           or httptools.TEST_ON_AIR or domain in pcb:
         blacklist_clear = False
         blacklist = False
@@ -179,7 +186,7 @@ def get_cl(self, resp, timeout=20, debug=False, CF_testing = False, extraPostDel
                             rin = {'Server': 'Alfa'}
 
                             resp.headers.update(dict(rin))
-                            logger.info("cf_clearence=%s" % val, force=True)
+                            logger.info("Dominio=%s: cf_clearence=%s" % (dom[0], val), force=True)
                             
                             if not retry:
                                 freequent_data[1] += 'OK'
@@ -469,44 +476,7 @@ def get_jscode(count, key, n_iframe, timeout=3):
     focus = str(n_iframe)
     timeout = str(timeout * 1000)
 
-    js = '''((() => {
-
-    const KEYCODE_ENTER = 'KEYCODE_ENTER';
-    const KEYCODE_TAB = 'KEYCODE_TAB';
-
-    function sendKeyAfterNTabs(count, key) {
-        try {
-            for (var i = 0; i <= count; i++) {
-                if (i > 0) {
-                    alfaAssistantAndroidPI.sendKey(KEYCODE_TAB);
-                }
-                if (i == count) {
-                    alfaAssistantAndroidPI.sendKey(key);
-                    break;
-                }
-            }
-        } catch (e) {
-            console.error('##Error sending key ' + key, e);
-        };
-    };
-
-   function setFocusToIframeNumber(nmb) {
-    document.querySelectorAll('iframe')[nmb - 1].focus();
-   }
-    try {
-
-        setFocusToIframeNumber('''+ focus +''');
-
-        sendKeyAfterNTabs('''+ count +''', '''+ key +''');
-
-        setTimeout(function() { 
-            window.location.href = alfaAssistantAndroidPI.getMainURL();
-            }, '''+ timeout +''');
-    }
-    catch(e){
-            console.error('##Error focus ', e);
-        };
-}))();
+    js = '''(()=>{function e(e,t,n,o,i){var c,s,u,a;try{let d=alfaAssistantAndroidPI.getDPINeutral();x=t*d,y=n*d,r(o,i),c=l(o,i).x,s=l(o,i).y,u=c-0,a=s-0;let f=document.createElement("div");f.style.width="10px",f.style.height="10px",f.style.background="red",f.style.display="inline-block",f.style.borderRadius="25px",f.style.position="absolute";let $=(window.pageXOffset||document.documentElement.scrollLeft)-(document.documentElement.clientLeft||0);f.style.left=$+x/window.devicePixelRatio-5-1+u+"px";let m=(window.pageYOffset||document.documentElement.scrollTop)-(document.documentElement.clientTop||0);f.style.top=m+y/window.devicePixelRatio-5-1+a+"px",f.style.zIndex="9999999999",f.innerHTML="",document.body.appendChild(f),setTimeout(()=>{document.body.removeChild(f)},500)}catch(_){}try{setTimeout(()=>{r(o,i),console.log("alfaAssistantAndroidPI.sendMouse =>",x+u,y+a),alfaAssistantAndroidPI.sendMouse(e,x+u,y+a)},600)}catch(p){console.error("##Error sending mouse keys ",e,x,y,p)}}function t(e,t){try{for(var r=0;r<=e;r++)if(r>0&&alfaAssistantAndroidPI.sendKey("KEYCODE_TAB"),r==e){alfaAssistantAndroidPI.sendKey(t),console.log("#Current item focused:",document.activeElement);break}}catch(l){console.error("##Error sending key "+t,l)}}function r(e,t){try{document.querySelectorAll(null!=t?t:"iframe")[e-1].focus(),console.log("#Current item focused:",document.activeElement)}catch(r){console.error("##Error on setFocusToElementNumber",r)}}function l(e,t){return document.querySelectorAll(null!=t?t:"iframe")[e-1].getBoundingClientRect()}function n(e,t){let r=document.querySelectorAll(null!=t?t:"iframe")[e-1];r.style.margin=0,r.style.padding=0,r.style.left=0,r.style.top=0,r.style.border=0,r.style.position="absolute",r.style.zIndex="99999"}async function o(e){let t=null!=e?e:"iframe";for(;!document.querySelectorAll(t)[nmb-1];)await s(100)}function i(e,t){return Math.random()*(t-e)+e}function c(e,t){return i(e*(100-t)/100,e*(100+t)/100)}function s(e){return new Promise(t=>setTimeout(t,e))}async function u(){o(thisSelector='iframe[src*="challenge"]'),n(1,thisSelector),e([0,1],c(314,DIFF_PERCENTAGE=8),c(120,DIFF_PERCENTAGE),1)}try{u()}catch(a){console.error("##Error",a)}})();
 '''
     return js
 

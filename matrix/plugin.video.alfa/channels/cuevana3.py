@@ -38,9 +38,9 @@ list_servers = ['fastplay', 'directo', 'streamplay', 'flashx', 'streamito', 'str
 canonical = {
              'channel': 'cuevana3', 
              'host': config.get_setting("current_host", 'cuevana3', default=''), 
-             'host_alt': ["https://www3.cuevana3.ai/"], 
+             'host_alt': ["https://w4.cuevana3.ai/"], 
              'host_api': 'api.cuevana3.me', 
-             'host_black_list': ["https://cuevana3.be/", "https://www4.cuevana3.ai/", 
+             'host_black_list': ["https://www3.cuevana3.ai/", "https://cuevana3.be/", "https://www4.cuevana3.ai/", 
                                  "https://www1.cuevana3.ai/", "https://ww1.cuevana3.ai/", "https://cuevana3.ai/", 
                                  "https://h3.cuevana3.me/", "https://v1.cuevana3.me/", "https://v3.cuevana3.me/", 
                                  "https://s2.cuevana3.me/", "https://z2.cuevana3.me/", "https://a2.cuevana3.me/", 

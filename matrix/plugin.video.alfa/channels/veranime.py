@@ -24,13 +24,14 @@ IDIOMAS = {"audio castellano": "CAST", "audio latino": "LAT", "subtitulado": "VO
 list_language = list(IDIOMAS.values())
 list_quality = []
 list_servers = ["aparatcam", "streamtape", "fembed", "mixdrop", "doodstream", "clipwatching"]
+forced_proxy_opt = 'ProxyCF'
 
 canonical = {
              'channel': 'veranime', 
              'host': config.get_setting("current_host", 'veranime', default=''), 
              'host_alt': ["https://www1.animeonline.ninja/"], 
              'host_black_list': [], 
-             'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 
+             'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'forced_proxy_ifnot_assistant': forced_proxy_opt, 
              'CF': False, 'CF_test': False, 'alfa_s': True
             }
 host = canonical['host'] or canonical['host_alt'][0]

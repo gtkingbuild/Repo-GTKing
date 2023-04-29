@@ -22,8 +22,8 @@ from bs4 import BeautifulSoup
 canonical = {
              'channel': 'pornktube', 
              'host': config.get_setting("current_host", 'pornktube', default=''), 
-             'host_alt': ["https://pornktube.tv/"], 
-             'host_black_list': [], 
+             'host_alt': ["https://vwv.pornktube.com/"], 
+             'host_black_list': ['https://pornktube.tv', 'https://wwv.pornktube.com/'], 
              'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'cf_assistant': False, 
              'CF': False, 'CF_test': False, 'alfa_s': True
             }
@@ -33,9 +33,9 @@ host = canonical['host'] or canonical['host_alt'][0]
 def mainlist(item):
     logger.info()
     itemlist = []
-    itemlist.append(Item(channel=item.channel, title="Nuevos" , action="lista", url=host + "latest-updates/1/"))
-    itemlist.append(Item(channel=item.channel, title="Mas vistos" , action="lista", url=host + "most-popular/month/1/"))
-    itemlist.append(Item(channel=item.channel, title="Mejor valorado" , action="lista", url=host + "top-rated/month/1/"))
+    itemlist.append(Item(channel=item.channel, title="Nuevos" , action="lista", url=host + "updates/"))
+    itemlist.append(Item(channel=item.channel, title="Mas vistos" , action="lista", url=host + "popular/month/"))
+    itemlist.append(Item(channel=item.channel, title="Mejor valorado" , action="lista", url=host + "rated/month/"))
     itemlist.append(Item(channel=item.channel, title="Categorias" , action="categorias", url=host + "categories/"))
     itemlist.append(Item(channel=item.channel, title="Buscar", action="search"))
     return itemlist

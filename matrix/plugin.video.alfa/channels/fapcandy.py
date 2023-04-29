@@ -28,7 +28,7 @@ canonical = {
              'host': config.get_setting("current_host", 'fapcandy', default=''), 
              'host_alt': ["https://www.fapcandy.com/"], 
              'host_black_list': [], 
-             'pattern': ['href="?([^"|\s*]+)["|\s*]\s*hrefLang="?en"?'], 
+             'pattern': ['rel="alternate"\s*href="?([^"|\s*]+)["|\s*]\s*hrefLang="?en"?'], 
              'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'cf_assistant': False, 
              'CF': False, 'CF_test': False, 'alfa_s': True
             }

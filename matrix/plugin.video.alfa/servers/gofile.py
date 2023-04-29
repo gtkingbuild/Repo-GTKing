@@ -12,7 +12,7 @@ def test_video_exists(page_url):
     global data
     logger.info("(page_url='%s')" % page_url)
     data = httptools.downloadpage(page_url)
-    status = data.get('success', '')
+    status = data.sucess
     if status == False:
         return False, "[GoFile] El video ha sido borrado"
     elif not status:

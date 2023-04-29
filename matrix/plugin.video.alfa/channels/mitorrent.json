@@ -75,8 +75,8 @@
       "visible": true,
       "lvalues": [
         "No filtrar",
-        "CAST",
         "LAT",
+        "CAST",
         "VO",
         "VOS",
         "VOSE"

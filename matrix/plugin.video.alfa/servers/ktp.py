@@ -29,6 +29,7 @@ def test_video_exists(page_url):
     or "cwtvembeds" in page_url \
     or "Page not Found" in response.data \
     or "File was deleted" in response.data \
+    or "not allowed to watch this video" in response.data \
     or "video is a private" in response.data \
     or "is no longer available" in response.data\
     or "Embed Player Error" in response.data:
@@ -59,11 +60,13 @@ def get_video_url(page_url, premium=False, user="", password="", video_password=
         patron += 'postfix:\s*(?:\'|")([^\,]+)(?:\'|")'
     matches = re.compile(patron,re.DOTALL).findall(data)
     for url, quality in matches:
-        if not "?login" in url and not "signup" in url:
+        if not "?login" in url and not "signup" in url and ".mp4" in url:
             if "function/" in url:
                 url = decode(url, license_code)
             elif url.startswith("/get_file/"):
                 url = urlparse.urljoin(page_url, url)
+            if "HD" in quality:
+                quality = "720p"
             # url += "|verifypeer=false"
             url += "|Referer=%s" % page_url
             video_urls.append(['[ktplayer] %s' % quality, url])

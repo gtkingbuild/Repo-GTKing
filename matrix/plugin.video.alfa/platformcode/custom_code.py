@@ -124,6 +124,10 @@ def init():
             config.set_setting('cf_assistant_ua', '')                           # Se limpia CF_UA. Mejora de rendimiento en httptools CF
             config.set_setting("current_host", '', channel='dontorrent')        # Se resetea el host de algunos canales que tienen alternativas
             config.set_setting("current_host", '', channel='mejortorrent')      # Se resetea el host de algunos canales que tienen alternativas
+            config.set_setting("debug_report", False)                           # Se resetea el DEBUG extendido
+            config.set_setting("report_started", False)                         # Se resetea el Reporte de error
+        if config.get_setting("debug_report") and not config.get_setting("debug"):
+            config.set_setting("debug_report", False)                           # Se resetea el DEBUG extendido
             
         # Periodicamente se resetean los valores de "current_host" de los canales para eliminar asignaciones antiguas
         round_level = 1
@@ -1218,6 +1222,16 @@ def verify_data_jsons(json_file=None):
     counter_jsons = 0
 
     try:
+        # Verificamos si existe "resources/videolab_list.json" para cachear los accesos a la Videoteca de Alfa.  Si no está, lo creamos
+        json_path = filetools.join(ADDON_PATH, 'resources', 'videolab_list.json')
+        if not filetools.exists(json_path):
+            from lib.generictools import create_videolab_list
+            try:
+                threading.Thread(target=create_videolab_list).start()
+                time.sleep(1)
+            except:
+                logger.error(traceback.format_exc())
+        
         from core.channeltools import IGNORE_NULL_LABELS
         # Vemos si ya se ha limpiado, si no marcamos
         if filetools.exists(ADDON_CUSTOMCODE_JSON):

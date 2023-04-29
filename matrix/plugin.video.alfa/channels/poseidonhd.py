@@ -13,37 +13,78 @@ import traceback
 from core.item import Item
 from core import servertools
 from core import scrapertools
+from core import jsontools
 from channelselector import get_thumb
 from platformcode import config, logger
-from lib.AlfaChannelHelper import ToroFilm, ToroPdon
 from channels import filtertools, autoplay
+from lib.AlfaChannelHelper import DictionaryAllChannel
 
-
-IDIOMAS = {'mx': 'Latino', 'dk': 'Latino', 'es': 'Castellano', 'en': 'VOSE', 'gb': 'VOSE', 'de': 'Alemán',
-           "Latino": "Latino", "Español": "Castellano", "Subtitulado": "VOSE", "usa": "VOSE", "mexico": "Latino",
-           "espana": "Castellano"}
-
+IDIOMAS = {'mx': 'Latino', 'dk': 'Latino', 'es': 'Castellano', 'en': 'VOSE', 'gb': 'VOSE', 
+           'sub': 'VOSE', 'su': 'VOSE', 'eng': 'VOSE', "subtitulado": "VOSE", "usa": "VOSE", 
+           'de': 'VOSE', "español": "Castellano", "espana": "Castellano", 'cas': 'Castellano', 
+           "mexico": "Latino", "latino": "Latino", 'lat': 'Latino', 'LAT': 'Latino', 'jp': 'VOSE',
+           'spain': 'Castellano'}
 list_language = list(set(IDIOMAS.values()))
-
 list_quality = []
-
-list_servers = [
-    'gvideo',
-    'fembed'
-    ]
+list_quality_movies = ['DVDR', 'HDRip', 'VHSRip', 'HD', '2160p', '1080p', '720p', '4K', '3D', 'Screener', 'BluRay']
+list_quality_tvshow = ['HDTV', 'HDTV-720p', 'WEB-DL 1080p', '4KWebRip']
+list_servers = ['gvideo', 'fembed']
+forced_proxy_opt = 'ProxyCF'
 
 canonical = {
              'channel': 'poseidonhd', 
              'host': config.get_setting("current_host", 'poseidonhd', default=''), 
-             'host_alt': ["https://tekilaz.co/"], 
-             'host_black_list': [], 
-             'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'CF_stat': False, 
+             'host_alt': ["https://www.poseidonhd2.com/"], 
+             'host_black_list': ["https://tekilaz.co/"], 
+             'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'forced_proxy_ifnot_assistant': forced_proxy_opt, 
              'CF': False, 'CF_test': False, 'alfa_s': True
             }
 host = canonical['host'] or canonical['host_alt'][0]
+
+timeout = 5
+kwargs = {}
+debug = config.get_setting('debug_report', default=False)
+movie_path = "/pelicula"
+tv_path = '/serie'
+language = []
 url_replace = [("/series/", "/serie/")]
-AlfaChannel = ToroPdon(host, movie_path="/pelicula", tv_path="/serie", canonical=canonical, url_replace=url_replace)
-forced_proxy_opt = 'ProxyCF'
+
+finds = {'find': {'find': [{'tag': ['ul'], 'class': ['MovieList Rows', 'MovieList Rows episodes']}], 
+                  'find_all': [{'tag': ['li'], 'class': ['TPostMv']}]},
+         'categories': {'find': [{'tag': ['li'], 'id': ['menu-item-1953']}], 'find_all': [{'tag': ['li']}]}, 
+         'search': {}, 
+         'get_language': {'find_all': [{'tag': ['span'], 'class': ['flag']}]}, 
+         'get_language_rgx': '(?:flags\/|-)(\w+)\.(?:png|jpg|jpeg|webp)', 
+         'get_quality': {}, 
+         'get_quality_rgx': '', 
+         'next_page': {}, 
+         'next_page_rgx': [['\/page\/\d+', '/page/%s']], 
+         'last_page': {'find': [{'tag': ['a'], 'class': ['next page-numbers']}], 
+                       'find_previous': [{'tag': ['span'], 'class': ['page-link'], '@TEXT': '(\d+)'}]}, 
+         'year': {'find': [{'tag': ['span']}], 'get_text': [{'tag': '', '@STRIP': True, '@TEXT': '(\d+)'}]}, 
+         'season_episode': {'find': [{'tag': ['img'], '@ARG': 'alt', '@TEXT': '(?i)(\d+x\d+)'}]}, 
+         'seasons': {'find': [{'tag': ['select'], 'id': ['select-season']}], 'find_all': [{'tag': ['option']}]}, 
+         'season_num': {}, 
+         'seasons_search_num_rgx': '', 
+         'seasons_search_qty_rgx': '', 
+         'episode_url': '', 
+         'episodes': {'find': [{'tag': ['script'], 'id': ['__NEXT_DATA__']}], 'get_text': [{'tag': '', '@STRIP': False, '@JSON': 'DEFAULT'}]}, 
+         'episode_num': [], 
+         'episode_clean': [], 
+         'plot': {'find': [{'tag': ['div'], 'class': ['Description']}, {'tag': ['p']}], 'get_text': [{'tag': '', '@STRIP': True}]}, 
+         'findvideos': {'find': [{'tag': ['script'], 'id': ['__NEXT_DATA__']}], 'get_text': [{'tag': '', '@STRIP': False, '@JSON': 'DEFAULT'}]}, 
+         'title_clean': [['(?i)TV|Online|(4k-hdr)|(fullbluray)|4k| - 4k|(3d)|miniserie|\s*\(\d{4}\)', ''],
+                         ['[\(|\[]\s*[\)|\]]', '']],
+         'quality_clean': [['(?i)proper|unrated|directors|cut|repack|internal|real|extended|masted|docu|super|duper|amzn|uncensored|hulu', '']],
+         'language_clean': [], 
+         'url_replace': [], 
+         'controls': {'duplicates': [], 'min_temp': False, 'url_base64': False, 'add_video_to_videolibrary': True, 
+                      'get_lang': False, 'reverse': False, 'videolab_status': True, 'tmdb_extended_info': True, 'seasons_search': False}, 
+         'timeout': timeout}
+AlfaChannel = DictionaryAllChannel(host, movie_path=movie_path, tv_path=tv_path, canonical=canonical, finds=finds, 
+                                   idiomas=IDIOMAS, language=language, list_language=list_language, list_servers=list_servers, 
+                                   list_quality_movies=list_quality_movies, list_quality_tvshow=list_quality_tvshow, 
+                                   channel=canonical['channel'], actualizar_titulos=True, url_replace=url_replace, debug=debug)
 
 
 def mainlist(item):
@@ -59,13 +100,10 @@ def mainlist(item):
     itemlist.append(Item(channel=item.channel, title='Series',  action='sub_menu', url=host+'series/', 
                          thumbnail=get_thumb('tvshows', auto=True), c_type='series'))
 
-    #itemlist.append(Item(channel=item.channel, title='Por Año', action='section', url=host,
-    #                     thumbnail=get_thumb('year', auto=True)))
-
-    itemlist.append(Item(channel=item.channel, title="Buscar...", action="search", url=host + 'search?q=',
+    itemlist.append(Item(channel=item.channel, title="Buscar...", action="search", url=host,
                          thumbnail=get_thumb("search", auto=True)))
 
-    itemlist = filtertools.show_option(itemlist, item.channel, list_language, list_quality)
+    itemlist = filtertools.show_option(itemlist, item.channel, list_language, list_quality_tvshow, list_quality_movies)
 
     autoplay.show_option(item.channel, itemlist)
 
@@ -99,85 +137,163 @@ def sub_menu(item):
     return itemlist
 
 
-def list_all(item):
-    logger.info()
-
-    #if item.c_type != "search" and not "?type=" in item.url:
-    #    item.url += "?type=%s" % item.c_type
-    return AlfaChannel.list_all(item, lim_max=24)
-
-
 def section(item):
     logger.info()
 
-    if item.title == "Generos":
-        return AlfaChannel.section(item, menu_id="1953")[1:]
-    else:
-        return AlfaChannel.section(item, section="year")
+    return AlfaChannel.section(item, **kwargs)
+
+
+def list_all(item):
+    logger.info()
+
+    return AlfaChannel.list_all(item, matches_post=list_all_matches, **kwargs)
+
+
+def list_all_matches(item, matches_int, **AHkwargs):
+    logger.info()
+
+    matches = []
+    findS = AHkwargs.get('finds', finds)
+
+    for elem in matches_int:
+        elem_json = {}
+        #logger.error(elem)
+
+        try:
+            if item.c_type == 'episodios':
+                sxe = AlfaChannel.parse_finds_dict(elem, findS.get('season_episode', {}), c_type=item.c_type)
+                elem_json['season'], elem_json['episode'] = sxe.split('x')
+                elem_json['season'] = int(elem_json['season'] or 1)
+                elem_json['episode'] = int(elem_json['episode'] or 1)
+                elem_json['year'] = '-'
+
+            elem_json['url'] = elem.a.get('href', '')
+            elem_json['title'] = elem.img.get('alt', '') if item.c_type != 'episodios' else elem.img.get('alt', '').replace(sxe, '').strip()
+            elem_json['thumbnail'] = elem.img.get('src', '')
+            elem_json['year'] = elem_json.get('year', AlfaChannel.parse_finds_dict(elem, findS.get('year', {}), year=True, c_type=item.c_type))
+            if findS.get('plot', {}) and AlfaChannel.parse_finds_dict(elem, findS.get('plot', {}), c_type=item.c_type):
+                elem_json['plot'] = AlfaChannel.parse_finds_dict(elem, findS.get('plot', {}), c_type=item.c_type)
+        except:
+            logger.error(elem)
+            logger.error(traceback.format_exc())
+            continue
+        
+        if not elem_json['url']: continue
+
+        matches.append(elem_json.copy())
+
+    return matches
 
 
 def seasons(item):
     logger.info()
 
-    return AlfaChannel.seasons(item)
-
-
-def episodesxseason(item):
-    logger.info()
-
-    return AlfaChannel.episodes(item)
+    return AlfaChannel.seasons(item, **kwargs)
 
 
 def episodios(item):
     logger.info()
+
     itemlist = []
+
     templist = seasons(item)
+
     for tempitem in templist:
         itemlist += episodesxseason(tempitem)
 
     return itemlist
 
 
+def episodesxseason(item):
+    logger.info()
+
+    kwargs['matches_post_get_video_options'] = findvideos_matches
+
+    return AlfaChannel.episodes(item, matches_post=episodesxseason_matches, **kwargs)
+
+
+def episodesxseason_matches(item, matches_int, **AHkwargs):
+    logger.info()
+
+    matches = []
+    findS = AHkwargs.get('finds', finds)
+
+    if not isinstance(matches_int, dict): matches_int = jsontools.load(matches_int)
+    matches_int = matches_int.get('props', {}).get('pageProps', {}).get('thisSerie', {}).get('seasons', {})
+
+    for x, elem_season in enumerate(matches_int):
+
+        if item.contentSeason != elem_season.get('number', 1): continue
+        for elem in elem_season.get('episodes', []):
+            elem_json = {}
+            #logger.error(elem)
+
+            try:
+                elem_json['url'] = elem.get('url', {}).get('slug', '').replace('seasons', 'temporada').replace('episodes', 'episodio')
+                elem_json['title'] = elem.get('title', '')
+                elem_json['season'] = item.contentSeason
+                elem_json['episode'] = int(elem.get('number', '1') or '1')
+                elem_json['thumbnail'] = elem.get('image', '')
+            except:
+                logger.error(elem)
+                logger.error(traceback.format_exc())
+                continue
+
+            if not elem_json.get('url', ''): 
+                continue
+
+            matches.append(elem_json.copy())
+
+    return matches
+
+
 def findvideos(item):
     logger.info()
 
-    itemlist = list()
+    kwargs['matches_post_episodes'] = episodesxseason_matches
+
+    return AlfaChannel.get_video_options(item, item.url, data='', matches_post=findvideos_matches, 
+                                         verify_links=False, findvideos_proc=True, **kwargs)
+
+
+def findvideos_matches(item, matches_int, langs, response, **AHkwargs):
+    logger.info()
+
+    matches = []
+    findS = AHkwargs.get('finds', finds)
+    if not isinstance(matches_int, dict): matches_int = jsontools.load(matches_int)
+
     servers = {'drive': 'gvideo', 'fembed': 'fembed', "player": "oprem", "openplay": "oprem", "embed": "mystream"}
+    action = item.contentType if item.contentType == 'episode' else 'thisMovie' if item.contentType == 'movie' else 'thisSerie'
 
-    soup, matches = AlfaChannel.get_video_options(item.url)
+    matches_int = matches_int.get('props', {}).get('pageProps', {}).get(action, {}).get('videos', [])
 
-    for lang, elem in matches:
+    for lang, elem in list(matches_int.items()):
 
-        #srv = re.sub(r"\s+", "", elem.find("span", class_="server"))
-        srv = scrapertools.find_single_match(str(elem), '<span>\d+<!--\s*-->.\s*<!--\s*-->\s*([^<]+)<')
-        
-        try:
-            #url = soup.find("div", id="%s" % opt).find("iframe")["data-src"]
-            url = scrapertools.find_single_match(str(elem), 'data-tr="([^"]+)"')
-        except:
-            continue
-        if srv.lower() in ["waaw", "jetload"]:
-           continue
-        if srv.lower() in servers:
-           srv = servers[srv.lower()]
+        for link in elem:
+            elem_json = {}
+            #logger.error(elem)
 
-        itemlist.append(Item(channel=item.channel, title=srv, url=url, action="play", infoLabels=item.infoLabels,
-                             language=IDIOMAS.get(lang, lang), server=srv))
+            try:
+                elem_json['server'] = link.get('cyberlocker', '')
+                elem_json['url'] = link.get('result', '')
+                elem_json['language'] = '*%s' % lang
+                elem_json['quality'] = '*%s' % link.get('quality', '')
+                elem_json['title'] = '%s'
+            except:
+                logger.error(link)
+                logger.error(traceback.format_exc())
+                continue
 
-    # Requerido para FilterTools
+            if not elem_json['url']: continue
 
-    itemlist = filtertools.get_links(itemlist, item, list_language)
+            if elem_json['server'].lower() in ["waaw", "jetload"]: continue
+            if elem_json['server'].lower() in servers:
+               elem_json['server'] = servers[elem_json['server'].lower()]
 
-    # Requerido para AutoPlay
+            matches.append(elem_json.copy())
 
-    autoplay.start(itemlist, item)
-
-    if config.get_videolibrary_support() and len(itemlist) > 0 and item.extra != 'findvideos':
-        itemlist.append(Item(channel=item.channel, title='[COLOR yellow]Añadir esta pelicula a la videoteca[/COLOR]',
-                             url=item.url, action="add_pelicula_to_library", extra="findvideos",
-                             contentTitle=item.contentTitle))
-
-    return itemlist
+    return matches, langs
 
 
 def play(item):
@@ -188,20 +304,22 @@ def play(item):
               'CF': False, 'cf_assistant': False, 'canonical': {}}
     
     try:
-        #data = AlfaChannel.create_soup(item.url, forced_proxy_opt=forced_proxy_opt, **kwargs).find("input")["value"]
         data = AlfaChannel.create_soup(item.url, forced_proxy_opt=forced_proxy_opt, **kwargs).find("script")
         data = url = scrapertools.find_single_match(str(data), "url\s*=\s*'([^']+)'")
+        
         if not data.startswith('http'):
             base_url = "%sr.php" % host
             post = {"data": data}
-            url = AlfaChannel.create_soup(base_url, post=post, forced_proxy_opt=forced_proxy_opt, soup=False, **kwargs).url
+            kwargs['soup'] = False
+            url = AlfaChannel.create_soup(base_url, post=post, forced_proxy_opt=forced_proxy_opt, **kwargs).url
             if not url: return itemlist
         
         if "fs.%s" % host.replace("https://", "") in url:
             api_url = "%sr.php" % host.replace("https://", "https://fs.")
             v_id = scrapertools.find_single_match(url, r"\?h=([A-z0-9]+)")
             post = {"h": v_id}
-            url = AlfaChannel.create_soup(api_url, post=post, forced_proxy_opt=forced_proxy_opt, soup=False, **kwargs).url
+            kwargs['soup'] = False
+            url = AlfaChannel.create_soup(api_url, post=post, forced_proxy_opt=forced_proxy_opt, **kwargs).url
         
         itemlist.append(item.clone(url=url, server=""))
         itemlist = servertools.get_servers_itemlist(itemlist)
@@ -211,16 +329,29 @@ def play(item):
     return itemlist
 
 
-def search(item, texto):
+def actualizar_titulos(item):
     logger.info()
+    #Llamamos al método que actualiza el título con tmdb.find_and_set_infoLabels
+
+    return AlfaChannel.do_actualizar_titulos(item)
+
+
+def search(item, texto, **AHkwargs):
+    logger.info()
+    global kwargs
+    kwargs = AHkwargs
+
     try:
         texto = texto.replace(" ", "+")
-        item.url = item.url + texto
-        item.c_type = "search"
-        if texto != '':
+        item.url = host + 'search?q=' + texto
+
+        if texto:
+            item.c_type = "search"
+            item.texto = texto
             return list_all(item)
         else:
             return []
+
     # Se captura la excepción, para no interrumpir al buscador global si un canal falla
     except:
         for line in sys.exc_info():
@@ -228,10 +359,13 @@ def search(item, texto):
         return []
 
 
-def newest(categoria):
+def newest(categoria, **AHkwargs):
     logger.info()
+    global kwargs
+    kwargs = AHkwargs
 
     item = Item()
+
     try:
         if categoria in ['peliculas']:
             item.url = host + 'movies'
@@ -241,8 +375,9 @@ def newest(categoria):
             item.url = host + 'category/terror/'
         item.type = "movies"
         itemlist = list_all(item)
-        if itemlist[-1].title == 'Siguiente >>':
+        if len(itemlist) > 0 and ">> Página siguiente" in itemlist[-1].title:
             itemlist.pop()
+
     except:
         import sys
         for line in sys.exc_info():
@@ -250,25 +385,3 @@ def newest(categoria):
         return []
 
     return itemlist
-
-
-def get_language_and_set_filter(*args):
-    logger.info()
-
-    langs = list()
-
-    if "/series" in args[2].url:
-        args[2].context = filtertools.context(args[3], list_language, list_quality)
-    else:
-        lang_list = args[1].find("span", class_="lang").find_all("img")
-        try:
-            for lang in lang_list:
-                flag = scrapertools.find_single_match(lang["src"], '/flag-([^\.]+)\.')
-                langs.append(IDIOMAS.get(flag.lower(), "VOSE"))
-        except:
-           pass
-
-        args[2].language = langs
-
-    return args[2]
-

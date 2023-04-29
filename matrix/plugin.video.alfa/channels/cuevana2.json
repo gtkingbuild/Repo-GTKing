@@ -14,6 +14,21 @@
   ],
   "settings": [
     {
+      "id": "filter_languages",
+      "type": "list",
+      "label": "Mostrar enlaces en idioma...",
+      "default": 1,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "No filtrar",
+        "Latino",
+        "Castellano",
+        "Alemán",
+        "VOSE"
+      ]
+    },
+    {
       "id": "modo_grafico",
       "type": "bool",
       "label": "Buscar información extra",

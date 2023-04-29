@@ -4,12 +4,16 @@ from core import httptools
 from core import scrapertools
 from platformcode import logger
 
+kwargs = {'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'ignore_response_code': True, 
+          'timeout': 5, 'cf_assistant': False}
+
 
 def test_video_exists(page_url):
     logger.info("(page_url='%s')" % page_url)
     global data
-    data = httptools.downloadpage(page_url).data
-    if "<h2>WE ARE SORRY</h2>" in data or '<title>404 Not Found</title>' in data:
+    data = httptools.downloadpage(page_url, **kwargs).data
+    #logger.debug(data)
+    if "This video is no longer available" in data or 'no está disponible' in data:
         return False, "[spankbang] El fichero no existe o ha sido borrado"
     return True, ""
 
@@ -17,7 +21,7 @@ def test_video_exists(page_url):
 def get_video_url(page_url, video_password):
     logger.info("(page_url='%s')" % page_url)
     video_urls = []
-    data = httptools.downloadpage(page_url).data
+    data = httptools.downloadpage(page_url, **kwargs).data
     # url = scrapertools.find_single_match(data,'<source src="(.*?)"')
     # video_urls.append(['[.mp4]', url])
     if "embed" in page_url:
@@ -27,7 +31,7 @@ def get_video_url(page_url, video_password):
     post = {"id": skey, "data": 0}
     headers = {'Referer': page_url}
     url = "https://spankbang.com/api/videos/stream_embed"
-    data = httptools.downloadpage(url, post=post, headers=headers).data
+    data = httptools.downloadpage(url, post=post, headers=headers, **kwargs).data
     patron = '"(\d+(?:p|k))":\["([^"]+)"'
     matches = re.compile(patron,re.DOTALL).findall(data)
     for quality,url in matches:

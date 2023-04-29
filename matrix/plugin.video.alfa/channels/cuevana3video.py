@@ -31,8 +31,10 @@ __channel__='allcalidad'
 canonical = {
              'channel': 'cuevana3video', 
              'host': config.get_setting("current_host", 'cuevana3video', default=''), 
-             'host_alt': ["https://www4.cuevana3.ch/"], 
-             'host_black_list': ["https://www3.cuevana3.ch/", "https://www2.cuevana3.ch/", 
+             'host_alt': ["https://www8.cuevana3.ch/"], 
+             'host_black_list': ["https://www10.cuevana3.ch/", 
+                                 "https://www7.cuevana3.ch/", "https://www6.cuevana3.ch/", "https://www5.cuevana3.ch/", 
+                                 "https://www4.cuevana3.ch/", "https://www3.cuevana3.ch/", "https://www2.cuevana3.ch/", 
                                  "https://www1.cuevana3.ch/", "https://cuevana3.ch/", "https://www1.cuevana3.fm/", 
                                  "https://cuevana3.fm/", "https://www1.cuevana3.vc/", "https://cuevana3.vc/", 
                                  "https://www2.cuevana3.pe/", "https://www1.cuevana3.pe/", "https://cuevana3.pe/", 

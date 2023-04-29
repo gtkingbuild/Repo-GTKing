@@ -321,7 +321,7 @@ def resolve_video_urls_for_playing(server, url, video_password="", muestra_dialo
     else:
         server_parameters = {}
 
-    if server_parameters:
+    if server_parameters and server_parameters.get("name"):
         # Muestra un diágo de progreso
         if muestra_dialogo:
             from platformcode.platformtools import dialog_progress
@@ -491,6 +491,8 @@ def is_server_enabled(server, domain=''):
     """
 
     server = get_server_name(server)
+    if server in ['torrent']:
+        return True
     server_parameters = get_server_parameters(server)
     
     if domain:
@@ -896,7 +898,7 @@ def filter_servers(servers_list):
         servers_list_alt = []
         for i in servers_list:
             if i.server:
-                channel = i.contentChannel if i.contentChannel and i.contentChannel != 'list' else i.channel
+                channel = i.contentChannel if i.contentChannel and i.contentChannel not in ['list', 'videolibrary'] else i.channel
                 domain = find_single_match(i.url, patron_domain)
                 if domain and domain in config.get_setting('current_host', channel=channel, default=''): domain = ''
                 if not is_server_enabled(i.server, domain=domain): continue

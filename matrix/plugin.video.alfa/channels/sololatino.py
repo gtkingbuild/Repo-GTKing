@@ -321,7 +321,6 @@ def findvideos(item):
         doo_url = "%swp-admin/admin-ajax.php" % host
 
         data = httptools.downloadpage(doo_url, timeout=TIMEOUT, post=post, headers=headers, canonical=canonical).data
-
         if not data:
             continue
         
@@ -339,6 +338,7 @@ def findvideos(item):
         else:
             player = httptools.downloadpage(player_url, timeout=TIMEOUT, headers={"referer": item.url}).data
             soup = BeautifulSoup(player, "html5lib")
+
             if soup.find("div", id="ErrorWin"):
                 continue
             matches = soup.find_all("li", {"onclick": True})
@@ -356,6 +356,11 @@ def findvideos(item):
                     url = base64.b64decode(elem["data-r"]).decode('utf-8')
                 if not url or "short." in url:
                     continue
+                if "embedsito" in player_url:
+                    url = "https://embedsito.net/player/?id=%s" %url
+                    data = httptools.downloadpage(url, timeout=TIMEOUT, headers={"referer": item.url}).data
+                    url = BeautifulSoup(data, "html5lib").find("iframe")["src"]
+
                 urls = process_url(url)
                 for url in urls:
                     if not url:
@@ -381,7 +386,7 @@ def findvideos(item):
 
 def process_url(url):
     logger.info()
-
+    
     if "animekao.club/player.php" in url:
         url = url.replace("animekao.club/player.php?x", "player.premiumstream.live/player.php?id")
 
@@ -447,7 +452,8 @@ def process_url(url):
         url = ""
 
     elif "api.mycdn.moe" in url:
-        url = ""
+        data = httptools.downloadpage(url, timeout=TIMEOUT).data
+        url = BeautifulSoup(data, "html5lib").find("a", string=re.compile(r"^Haz click para Descargar"))["href"]
 
     elif "sbspeed.com" in url:
         url = ""

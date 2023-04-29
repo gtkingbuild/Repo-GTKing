@@ -35,8 +35,7 @@ def mainlist(item):
     itemlist.append(Item(channel=item.channel, title="Peliculas" , action="lista", url=host + "/full-movie/?asgtbndr=1"))
     itemlist.append(Item(channel=item.channel, title="Nuevos" , action="lista", url=host + "/porn-videos/?filter=latest&asgtbndr=1"))
     itemlist.append(Item(channel=item.channel, title="Mas vistos" , action="lista", url=host + "/porn-videos/?filter=most-viewed&asgtbndr=1"))
-    itemlist.append(Item(channel=item.channel, title="Mejor valorado" , action="lista", url=host + "/porn-videos/?filter=popular&asgtbndr=1"))
-    itemlist.append(Item(channel=item.channel, title="Mas largo" , action="lista", url=host + "/porn-videos/?filter=longest&asgtbndr=1"))
+    # itemlist.append(Item(channel=item.channel, title="Mas largo" , action="lista", url=host + "/porn-videos/?filter=longest&asgtbndr=1"))
     itemlist.append(Item(channel=item.channel, title="PornStar" , action="categorias", url=host + "/actors/"))
     # itemlist.append(Item(channel=item.channel, title="Canal" , action="categorias", url=host + "/sites/?sort_by=avg_videos_popularity&from=01"))
     itemlist.append(Item(channel=item.channel, title="Categorias" , action="categorias", url=host + "/categories/"))
@@ -47,7 +46,7 @@ def mainlist(item):
 def search(item, texto):
     logger.info()
     texto = texto.replace(" ", "+")
-    item.url = "%s/?s=%s" % (host,texto)
+    item.url = "%s/?s=%s&filter=latest&asgtbndr=1" % (host,texto)
     try:
         return lista(item)
     except:

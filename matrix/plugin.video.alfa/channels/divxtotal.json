@@ -67,6 +67,22 @@
       "visible": true
     },
     {
+      "id": "find_alt_link_option",
+      "type": "bool",
+      "label": "Quiere usar la funcionalidad del buscador BTDigg para nuevos enlaces o episodios?",
+      "default": true,
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "find_alt_search",
+      "type": "bool",
+      "label": "Quiere usar también la funcionalidad de BTDigg en las búsquedas de Películas o Series?",
+      "default": true,
+      "enabled": true,
+      "visible": "!eq(-1,false)"
+    },
+    {
       "id": "filter_languages",
       "type": "list",
       "label": "Mostrar enlaces en idioma...",

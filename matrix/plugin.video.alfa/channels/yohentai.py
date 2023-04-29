@@ -17,7 +17,7 @@ from lib import strptime_fix
 IDIOMAS = {'VOSE': 'VOSE', 'CAST': 'CAST'}
 
 list_language = list(IDIOMAS.values())
-list_servers = ['fembed', 'uqload', 'streamtape', 'videobin', 'mp4upload']
+list_servers = ['streamsb', 'fembed', 'uqload', 'streamtape', 'videobin', 'mp4upload']
 list_quality = []
 
 meses = {'Enero':    1, 'Febrero':    2, 'Marzo':       3,
@@ -352,8 +352,10 @@ def findvideos(item):
     urls = [scrapertools.find_single_match(str(x), pattern) for x in urls]
     servers = soup.find('ul', class_='TPlayerNv').find_all('li')
     servers = [x['title'].lower() for x in servers]
-
+    
     for i in range(len(servers)):
+        if "sbchill" in servers[i]:
+            servers[i] = 'streamsb'
         itemlist.append(
             item.clone(
                 action = "play",
