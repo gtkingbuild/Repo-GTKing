@@ -28,11 +28,11 @@ description="[COLOR azure][B]GTactil[/COLOR] [COLOR limegreen]MATRIX[/B][/COLOR]
 
 name="GTKing Prime BASE (TESTER)"
 version="1.0"
-url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/1.0-nexus.prime/GTKing.Base.Kodi20.zip"
+url="https://"
 minor="http://"
 gui="http://"
 kodi="19"
-theme="https://"
+theme="https://github.com/gtkingbuild/Repo-GTKing/blob/master/wizardfiles/GTKing/Themes%20Nexus-Prime.txt"
 icon="https://gtkingbuild.github.io/wizard/wizardmatrix/icon.jpg"
 fanart="https://gtkingbuild.github.io/wizard/wizardmatrix/fanart.jpg"
 preview="http://"
