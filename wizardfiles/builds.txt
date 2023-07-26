@@ -26,7 +26,7 @@ adult="No"
 info="http://"
 description="[COLOR azure][B]GTactil[/COLOR] [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 19.X Matrix.[/B][/COLOR]                                                       [COLOR dodgerblue][B]Developers:[/B][/COLOR] [B]DavidZgZ[/B]                         [COLOR orange][B]Colaboradores-Test:[/B][/COLOR] [COLOR cyan][B]Sugea, Tete6776, Vicente, Mapache y Keto.[/B][/COLOR]"
 
-name="GTKing Prime (TESTER)"
+name="GTKing Prime TESTER"
 version="1.0"
 url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/1.0-nexus.prime/GTKing.Base.Kodi20.zip"
 minor="http://"
