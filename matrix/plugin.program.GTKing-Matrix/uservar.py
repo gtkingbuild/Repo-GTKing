@@ -82,7 +82,7 @@ THEME6 = u'[COLOR {color1}]{{}}[/COLOR]'.format(color1=COLOR4)
 # Enable 'Contact' menu item 'Yes' hide or 'No' dont hide
 HIDECONTACT = 'No'
 # You can add \n to do line breaks
-CONTACT = 'Gracias por elegir [COLOR azure]GTKingBuild.[/COLOR]\n\nContáctenos en el Grupo Telegram [COLOR white]https://t.me/beelinkking[/COLOR]'
+CONTACT = 'Gracias por elegir [COLOR azure]GTKingBuild.[/COLOR]\n\n'
 # Images used for the contact window.  http:// for default icon and fanart
 CONTACTICON = os.path.join(ART, 'qricon.png')
 CONTACTFANART = 'http://'
