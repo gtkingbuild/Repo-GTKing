@@ -24,10 +24,9 @@ Para instalar un parche, deberemos seleccionar la build correspondiente que teng
 Después de la instalacion del parche, una vez cargado KODI se tiene que ir a la sección MANTENIMIENTO en AJUSTES, una vez allí entrar en HERRAMIENTAS ADDON, pulsar HABILITAR/DESHABILITAR ADDONS y luego HABILITAR TODOS para la correcta activación de los Addons añadidos.
 
 
-[COLOR red]                   ****** DAVIDZGZ, JOSEATEBA y GTKing TEAM ******                 [/COLOR]
+[COLOR red]                   ****** DAVIDZGZ y GTKing TEAM ******                 [/COLOR]
 
 
-[COLOR dodgerblue]https://t.me/beelinkking[/COLOR]
 
 [COLOR white][B]GRACIAS POR UTILIZAR [COLOR dodgerblue]GTKING [COLOR lime]MATRIX![/B][/COLOR]
 
