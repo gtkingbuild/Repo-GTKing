@@ -40,7 +40,7 @@ adult="No"
 info="http://"
 description="[COLOR azure][B]GTKing [COLOR white]Prime [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 20.X Nexus.[/B][/COLOR]
 
-name="GTKing Prime TESTER MIDFULL"
+name="GTKing Prime MIDFULL-TESTER"
 version="1.0"
 url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/2.0-Nexus.prime/GTKing.BASE.KODI20.MIDFULL.zip"
 minor="http://"
