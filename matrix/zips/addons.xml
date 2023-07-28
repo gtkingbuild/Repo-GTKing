@@ -365,7 +365,7 @@
     </extension>
 </addon>
 
-<addon id="plugin.program.GTKing-Matrix" name="[COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]" version="3.2" provider-name="GTKing PHOENIX TEAM">
+<addon id="plugin.program.GTKing-Matrix" name="[B][COLOR azure]GTKing[/COLOR] [COLOR red]PHOENIX[/COLOR] [COLOR lime]TEAM[/COLOR][/B]" version="3.2" provider-name="GTKing PHOENIX TEAM">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0"/>
 		<import addon="script.module.requests"/>
