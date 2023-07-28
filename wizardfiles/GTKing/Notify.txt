@@ -1,7 +1,8 @@
-13
+14
 |||
 
-[COLOR greenyellow][B]¡¡¡BIENVENIDOS A LA BUILD GTKing MATRIX!!![B][/COLOR]
+[COLOR greenyellow][B]¡¡¡BIENVENIDOS A LAS BUILDS GTKing PHOENIX TEAM!!![B][/COLOR]
+[COLOR greenyellow][B]¡¡¡LAS UNICAS Y AUNTENTICAS BUILDS DE GTKing PHOENIX TEAM... RECHAZA LAS IMITACIONES!!![B][/COLOR]
 
 [COLOR aquamarine][B]INSTALACIÓN:[B][/COLOR]
 
@@ -12,7 +13,7 @@ Seleccionamos la Build que deseas instalar de[COLOR yellowgreen][B]GTKing[/B][/C
 Cuando termine de instalar, nos saldrá una ventana [COLOR white][B]"Necesita Forzar el Cierre de Kodi"[/B][/COLOR]. Pulsaremos en [COLOR white][B]"OK"[/B][/COLOR].
 Se cerrará Kodi y ya sólo nos quedará iniciar de nuevo Kodi, darle unos minutos para que cargue el menú correctamente.
 
-[COLOR gold][B]22/03/2023 ¡¡¡PARCHE ACTUALIZADOR BUILDS MATRIX!!![/B][/COLOR]
+[COLOR gold][B]22/03/2023 ¡¡¡PARCHE ACTUALIZADOR BUILDS GTKing PHOENIX TEAM!!![/B][/COLOR]
 
 [COLOR red][B]* AÑADIDOS ATAJOS POR PLATAFORMAS EN EL APARTADO SERIES[/B][/COLOR]
 [COLOR red][B]* CAMBIO DE CONTENIDOS EN PVR SIMPLE CLIENT[/B][/COLOR]
@@ -28,7 +29,7 @@ Después de la instalacion del parche, una vez cargado KODI se tiene que ir a la
 
 
 
-[COLOR white][B]GRACIAS POR UTILIZAR [COLOR dodgerblue]GTKING [COLOR lime]MATRIX![/B][/COLOR]
+[COLOR white][B]GRACIAS POR UTILIZAR [COLOR dodgerblue]GTKING [COLOR red]PHOENIX[/COLOR] [COLOR lime]TEAM[/COLOR][/B]
 
   
 
