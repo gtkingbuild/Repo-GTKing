@@ -380,7 +380,7 @@
 	<extension point="xbmc.service" library="startup.py" start="startup"/>
 
 	<extension point="xbmc.addon.metadata">
-		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR lime]MATRIX[/COLOR] tu Wizard para [COLOR teal]KODI[/COLOR]!!</summary>
+		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR red]PHOENIX[/COLOR] [COLOR lime]TEAM[/COLOR] tu Wizard para [COLOR teal]KODI[/COLOR]!!</summary>
 		<description>
 [B]• Developer:[/B] [COLOR gold]DavidZgZ[/COLOR]
 [B]• Testers:[/B]        [COLOR dodgerblue]GTKing PHOENIX TEAM[/COLOR]
