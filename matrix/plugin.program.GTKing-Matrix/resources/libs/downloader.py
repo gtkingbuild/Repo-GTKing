@@ -80,7 +80,7 @@ class Downloader:
                         kbps_speed = kbps_speed / 1024
                         type_speed = 'MB'
                         
-                    currently_downloaded = '[COLOR azure][B]Descargando: [COLOR green]GTking PHOENIX...[/COLOR] [COLOR azure] -  Espere por Favor.[/B][/COLOR]'.format(CONFIG.ADDONTITLE)  + '\n' + '[COLOR %s][B]Tamaño:[/B] [COLOR %s]%.02f[/COLOR] MB de [COLOR %s]%.02f[/COLOR] MB' % (CONFIG.COLOR2, CONFIG.COLOR1, downloaded / mb, CONFIG.COLOR1, total / mb)
+                    currently_downloaded = '[COLOR azure][B]Descargando: [COLOR green]GTking PHOENIX TEAM...[/COLOR] [COLOR azure] -  Espere por Favor.[/B][/COLOR]'.format(CONFIG.ADDONTITLE)  + '\n' + '[COLOR %s][B]Tamaño:[/B] [COLOR %s]%.02f[/COLOR] MB de [COLOR %s]%.02f[/COLOR] MB' % (CONFIG.COLOR2, CONFIG.COLOR1, downloaded / mb, CONFIG.COLOR1, total / mb)
                     speed = '[COLOR %s][B]Velocidad:[/B] [COLOR %s]%.02f [/COLOR]%s/s ' % (CONFIG.COLOR2, CONFIG.COLOR1, kbps_speed, type_speed)
                     div = divmod(eta, 60)
                     speed += '[B]ESTIMADO:[/B] [COLOR %s]%02d:%02d[/COLOR][/COLOR]' % (CONFIG.COLOR1, div[0], div[1])
@@ -93,6 +93,6 @@ class Downloader:
         	xbmc.sleep(1000)
         	os.unlink(dest)
         	dialog = xbmcgui.Dialog()
-        	dialog.ok('[B][COLOR azure]GTKing[/COLOR] [COLOR red][B]PHOENIX[/COLOR] [COLOR lime][B]PHOENIX[/COLOR][/B]', '\n' + '[COLOR azure][B]Descarga Cancelada!![/B][/COLOR]')
+        	dialog.ok('[B][COLOR azure]GTKing[/COLOR] [COLOR red][B]PHOENIX[/COLOR] [COLOR lime][B]TEAM[/COLOR][/B]', '\n' + '[COLOR azure][B]Descarga Cancelada!![/B][/COLOR]')
         	quit()
         
