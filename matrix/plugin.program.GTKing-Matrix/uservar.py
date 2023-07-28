@@ -13,8 +13,8 @@ ART = os.path.join(PATH, 'resources', 'media')
 #########################################################
 #        User Edit Variables                            #
 #########################################################
-ADDONTITLE = '[COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]'
-BUILDERNAME = 'JoseaTEBA & DavidZgZ'
+ADDONTITLE = '[B][COLOR azure]GTKing[/COLOR] [COLOR red]PHOENIX[/COLOR] [COLOR lime]PHOENIX[/COLOR][/B]'
+BUILDERNAME = 'DavidZgZ'
 EXCLUDES = [ADDON_ID, 'repository.GTKing-Matrix']
 # Text File with build info in it.
 BUILDFILE = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardfiles/builds.txt'
@@ -121,7 +121,7 @@ NOTIFICATION = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master
 HEADERTYPE = 'Image'
 # Font size of header
 FONTHEADER = ''
-HEADERMESSAGE = '[COLOR azure][B]GTKing[/B][/COLOR] [COLOR lime][B]MATRIX[/B][/COLOR]'
+HEADERMESSAGE = '[B][COLOR azure]GTKing[/COLOR] [COLOR red]PHOENIX[/COLOR] [COLOR lime]PHOENIX[/COLOR][/B]'
 # url to image if using Image 424x180
 HEADERIMAGE = 'https://i.imgur.com/7tsuHwV.png'
 # Font for Notification Window
