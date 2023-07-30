@@ -10,7 +10,9 @@ fanart="https://gtkingbuild.github.io/wizard/wizardmatrix/fanart.jpg"
 preview="http://"
 adult="No"
 info="http://"
-description="[COLOR azure][B]GTKing [COLOR white]Prime [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 19.X Matrix.[/B][/COLOR]                                                       [COLOR dodgerblue][B]Developer:[/B][/COLOR] [B]DavidZgZ[/B]                         [COLOR orange][B]Colaboradores-Test:[/B][/COLOR] [COLOR cyan][B]Sugea, Tete6776, Vicente, Mapache y Keto.[/B][/COLOR]"
+description="[COLOR azure][B]GTKing [COLOR white]Prime [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 19.X Matrix.[/B][/COLOR]
+[B][COLOR dodgerblue]Developer:[/COLOR] DavidZgZ[/B]
+[B][COLOR orange]Colaboradores-Test:[/COLOR] [COLOR cyan]GTKing PHOENIX TEAM.[/B][/COLOR]"
 
 name="GTactil MATRIX"
 version="1.0"
@@ -24,7 +26,9 @@ fanart="https://gtkingbuild.github.io/wizard/wizardmatrix/fanartGtactil.jpg"
 preview="http://"
 adult="No"
 info="http://"
-description="[COLOR azure][B]GTactil[/COLOR] [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 19.X Matrix.[/B][/COLOR]                                                       [COLOR dodgerblue][B]Developer:[/B][/COLOR] [B]DavidZgZ[/B]                         [COLOR orange][B]Colaboradores-Test:[/B][/COLOR] [COLOR cyan][B]Sugea, Tete6776, Vicente, Mapache y Keto.[/B][/COLOR]"
+description="[COLOR azure][B]GTactil [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 19.X Matrix.[/B][/COLOR]
+[B][COLOR dodgerblue]Developer:[/COLOR] DavidZgZ[/B]
+[B][COLOR orange]Colaboradores-Test:[/COLOR] [COLOR cyan]GTKing PHOENIX TEAM.[/B][/COLOR]"
 
 name="GTKing Prime TESTER"
 version="1.0"
@@ -38,7 +42,9 @@ fanart="https://gtkingbuild.github.io/wizard/wizardmatrix/fanart.jpg"
 preview="http://"
 adult="No"
 info="http://"
-description="[COLOR azure][B]GTKing [COLOR white]Prime [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 20.X Nexus.[/B][/COLOR]                                                       [COLOR dodgerblue][B]Developer:[/B][/COLOR] [B]DavidZgZ[/B]                         [COLOR orange][B]Colaboradores-Test:[/B][/COLOR] [COLOR cyan][B]Sugea, Tete6776, Vicente, Mapache y Keto.[/B][/COLOR]"
+description="[COLOR azure][B]GTKing [COLOR white]Prime [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 20.X Nexus.[/B][/COLOR]
+[B][COLOR dodgerblue]Developer:[/COLOR] DavidZgZ[/B]
+[B][COLOR orange]Colaboradores-Test:[/COLOR] [COLOR cyan]GTKing PHOENIX TEAM.[/B][/COLOR]"
 
 name="GTKing Prime MIDFULL"
 version="1.0"
@@ -52,6 +58,6 @@ fanart="https://gtkingbuild.github.io/wizard/wizardmatrix/fanart.jpg"
 preview="http://"
 adult="No"
 info="http://"
-description="[COLOR azure][B]GTKing [COLOR white]Prime [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 19.X Matrix.[/B][/COLOR]                                                       
-[COLOR dodgerblue][B]Developer:[/B][/COLOR] [B]DavidZgZ[/B]                        
-[COLOR orange][B]Colaboradores-Test:[/B][/COLOR] [COLOR cyan][B]Sugea, Tete6776, Vicente, Mapache y Keto.[/B][/COLOR]"
+description="[COLOR azure][B]GTKing [COLOR white]Prime [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 20.X Nexus.[/B][/COLOR]
+[B][COLOR dodgerblue]Developer:[/COLOR] DavidZgZ[/B]
+[B][COLOR orange]Colaboradores-Test:[/COLOR] [COLOR cyan]GTKing PHOENIX TEAM.[/B][/COLOR]"
