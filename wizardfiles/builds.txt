@@ -48,7 +48,7 @@ description="[COLOR azure][B]GTKing [COLOR white]Prime [COLOR limegreen]MATRIX[/
 
 name="GTKing Prime MIDFULL"
 version="1.0"
-url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/2.0-Nexus.prime/GTKing.BASE.KODI20.FULL.zip"
+url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/2.0-Nexus.prime/GTKing.BASE.KODI20.MIDFULL.zip"
 minor="http://"
 gui="http://"
 kodi="19"
