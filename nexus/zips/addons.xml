@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addons>
+<addon id="plugin.program.GTKing-Phoenix" name="[B][COLOR azure]GTKing[/COLOR] [COLOR gold]PHOENIX[/COLOR] [COLOR lime]TEAM[/COLOR][/B]" version="3.2" provider-name="GTKing PHOENIX TEAM">
+	<requires>
+		<import addon="xbmc.python" version="3.0.0"/>
+		<import addon="script.module.requests"/>
+		<import addon="script.module.six"/>
+		<import addon="script.kodi.android.update" optional="true" version="1.1.7"/>
+	</requires>
+
+	<extension point="xbmc.python.pluginsource" debugging="true" library="default.py">
+		<provides>executable</provides>
+	</extension>
+
+	<extension point="xbmc.service" library="startup.py" start="startup"/>
+
+	<extension point="xbmc.addon.metadata">
+		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR lime]MATRIX[/COLOR] tu Wizard para [COLOR teal]KODI 19.x[/COLOR]!!</summary>
+		<description>
+[B]• Developer:[/B] [COLOR gold]DavidZgZ[/COLOR]
+[B]• Testers:[/B]   [COLOR dodgerblue]GTKing PHOENIX TEAM[/COLOR]
+		</description>
+		<platform>all</platform>
+		<reuselanguageinvoker>false</reuselanguageinvoker>
+		<source>https://www.github.com/gtkingbuild/Repo-GTKing/plugin.program.GTKing-Matrix/</source>
+		<news>
+• 05/03/2021
+- Instalador actualizado a la versión 3.0.4
+- Iniciada la compatibilidad con Kodi 19.0 Matrix
+
+• 25/07/2023
+- Instalador actualizado a la versión 3.3
+- Iniciada la compatibilidad con Kodi 20.x Nexus
+		</news>
+		<assets>
+			<icon>icon.png</icon>
+			<fanart>fanart.jpg</fanart>
+		</assets>
+	</extension>
+</addon>
+
+<addon id="repository.GTKing-Phoenix" name="[B][COLOR steelblue]Repo [COLOR azure]GTKing [COLOR gold]PHOENIX [COLOR limegreen]TEAM[/COLOR][/B]" version="1.9" provider-name="GTKing PHOENIX TEAM">
+    <extension point="xbmc.addon.repository" name="[B][COLOR dodgerblue]Repo [COLOR azure]GTKing [COLOR gold]PHOENIX [COLOR limegreen]TEAM[/COLOR][/B]">
+        <dir minversion="18.0" maxversion="18.9.0">
+            <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/leia/zips/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/leia/zips/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/leia/zips/</datadir>
+        </dir>
+        <dir minversion="18.9.0">
+            <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/matrix/zips/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/matrix/zips/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/matrix/zips/</datadir>
+        </dir>
+		<dir minversion="19.9.1">
+            <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/nexus/zips/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/nexus/zips/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/nexus/zips/</datadir>
+        </dir>
+    </extension>
+
+    <extension point="xbmc.addon.metadata">
+        <summary>[COLOR steelblue]Repo [COLOR azure]GTKing [COLOR gold]PHOENIX [COLOR limegreen]TEAM[/COLOR]</summary>
+        <description>Repositorio de addons [COLOR dodgerblue]GTKING [COLOR gold]PHOENIX[/COLOR].
+[COLOR gold]Developers:[/COLOR] DavidZgZ y GTKing PHOENIX TEAM</description>
+        <disclaimer>Éste repositorio sólo recoge addons válidos para Kodi 20.x Nexus.</disclaimer>
+        <platform>all</platform>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+		<source>https://github.com/gtkingbuild/Repo-GTKing/</source>
+    </extension>
+</addon>
+
+<addon id="skin.auramod.GTKing-Phoenix" version="1.1.9.2" name="AuraMod [COLOR FF1e90ff]GTKING[/COLOR]" provider-name="Auramod,[COLOR FF1e90ff]GTKING[/COLOR]">
+    <requires>
+        <import addon="xbmc.gui" version="5.15.0"/>
+        <import addon="script.skin.helper.service" version="1.1.24"/>
+        <import addon="script.skin.helper.widgets" version="1.0.0"/>
+        <import addon="script.skinshortcuts" version="1.0.20"/>
+        <import addon="script.image.resource.select" version="0.0.5"/>
+        <import addon="plugin.program.autocompletion" version="1.0.1"/>
+        <import addon="resource.images.studios.white" version="0.0.10"/>
+        <import addon="resource.images.studios.coloured" version="0.0.18"/>
+        <import addon="resource.images.moviegenreicons.transparent" version="0.0.6"/>
+    </requires>
+    <extension point="xbmc.gui.skin" defaultthemename="Textures.xbt" debugging="false" effectslowdown="1">
+        <res width="1920" height="1080" aspect="16:9" default="true" folder="1080i"/>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="es">Mod [COLOR FF1e90ff]GTKING[/COLOR] de Auramod para Kodi, Minimalista, Personalizable, Multiple Widgets. </summary>
+        <description lang="es">Mod [COLOR FF1e90ff]GTKING[/COLOR] de AuraMod. Esta versión de Aura está basada para todos los usuarios. Gracias al grupo de [COLOR green]GTKing PHOENIX TEAM[/COLOR]</description>
+		<news>Nuevos cambios:
+		- Skin modificada para Kodi [COLOR azure]GTKING [COLOR gold]PHOENIX [COLOR lime]TEAM[/COLOR]
+		</news>
+        <platform>all</platform>
+        <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
+        <forum/>
+        <source/>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+            <screenshot>resources/screenshot-01.jpg</screenshot>
+            <screenshot>resources/screenshot-02.jpg</screenshot>
+            <screenshot>resources/screenshot-03.jpg</screenshot>
+            <screenshot>resources/screenshot-04.jpg</screenshot>
+            <screenshot>resources/screenshot-05.jpg</screenshot>
+        </assets>
+    </extension>
+</addon>
+</addons>
