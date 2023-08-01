@@ -1,4 +1,4 @@
-name="[B][COLOR red]DEDICATORIA PARA @JOSEATEBA[/COLOR] [COLOR white]SORPRESA!!!![/COLOR][/B]"
+name="[B][COLOR red]DEDICATORIA PARA @JoseaTeb[/COLOR] [COLOR white]SORPRESA!!!![/COLOR][/B]"
 section="no"
 url="https://www.youtube.com/watch?v=QEVRBR-7ubg&list=RDQEVRBR-7ubg&start_radio=1"
 fanart="http://"
