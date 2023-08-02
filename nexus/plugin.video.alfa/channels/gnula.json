@@ -1,0 +1,24 @@
+{
+  "id": "gnula",
+  "name": "Gnula",
+  "active": true,
+  "adult": false,
+  "language": ["cast", "lat"],
+  "thumbnail": "https://i.postimg.cc/Xr4B5LkG/gnula.png",
+  "banner": "gnula.png",
+  "fanart": "",
+  "categories": [
+    "movie",
+    "vos"
+  ],
+  "settings": [
+    {
+        "id": "include_in_global_search",
+        "type": "bool",
+        "label": "Incluir en busqueda global",
+        "default": false,
+        "enabled": true,
+        "visible": true
+    }
+  ]  
+}

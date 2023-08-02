@@ -1,0 +1,15 @@
+{
+  "id": "LIKUOO",
+  "name": "LIKUOO",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://likuoo.net/wp-content/uploads/2023/04/logo.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

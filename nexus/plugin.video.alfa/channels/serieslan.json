@@ -1,0 +1,23 @@
+{
+  "id": "serieslan",
+  "name": "SeriesLan",
+  "active": true,
+  "adult": false,
+  "language": ["lat"],
+  "thumbnail": "http://i.imgur.com/s6CBxlw.png",
+  "banner": "http://i.imgur.com/c1YTgNT.png",
+  "fanart": "",
+  "categories": [
+    "tvshow"
+  ],
+  "settings": [
+    {
+      "id": "include_in_global_search",
+      "type": "bool",
+      "label": "Incluir en busqueda global",
+      "default": true,
+      "enabled": false,
+      "visible": true
+    }
+  ]
+}

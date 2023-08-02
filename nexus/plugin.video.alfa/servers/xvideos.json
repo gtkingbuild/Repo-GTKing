@@ -1,0 +1,56 @@
+{
+  "active": true,
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "(https://(?:flashservice|www).xvideos.com/embedframe/[0-9]+)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(www.xvideos.com/video[0-9]+)",
+        "url": "https://\\1/a"
+      },
+      {
+        "pattern": "(https://www.xnxx.com/embedframe/[0-9]+)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://www.xnxx.com/video-\\w+)",
+        "url": "\\1/a"
+      }
+    ]
+  },
+  "free": true,
+  "id": "xvideos",
+  "name": "xvideos",
+  "premium": [
+    "alldebrid"
+  ],
+  "settings": [
+    {
+      "default": false,
+      "enabled": true,
+      "id": "black_list",
+      "label": "@60654",
+      "type": "bool",
+      "visible": true
+    },
+    {
+      "default": 0,
+      "enabled": true,
+      "id": "favorites_servers_list",
+      "label": "@60655",
+      "lvalues": [
+        "No",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "type": "list",
+      "visible": false
+    }
+  ]
+}

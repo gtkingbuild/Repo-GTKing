@@ -1,0 +1,58 @@
+{
+  "active": true,
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "(https://wolfstream.tv/embed-[A-z0-9]+.html)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "https://wolfstream.tv/([A-z0-9]+)/[A-z0-9-.]+.html",
+        "url": "https://wolfstream.tv/embed-\\1.html"
+      },
+      {
+        "pattern": "https://aparat.cam/([A-z0-9]+/[A-z0-9-_.]+.html)",
+        "url": "https://wolfstream.tv/\\1"
+      },
+      {
+        "pattern": "https://aparat.cam/([A-z0-9-_.]+(?:.html|))",
+        "url": "https://wolfstream.tv/\\1"
+      }
+    ]
+  },
+  "free": true,
+  "id": {
+    "value": [
+      "wolfstream"
+    ]
+  },
+  "name": "wolfstream",
+  "settings": [
+    {
+      "default": false,
+      "enabled": true,
+      "id": "black_list",
+      "label": "@60654",
+      "type": "bool",
+      "visible": true
+    },
+    {
+      "default": 0,
+      "enabled": true,
+      "id": "favorites_servers_list",
+      "label": "@60655",
+      "lvalues": [
+        "No",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "type": "list",
+      "visible": false
+    }
+  ],
+  "thumbnail": "https://wolfstream.tv/xfst_images/wolfstream.tv3.png"
+}

@@ -1,0 +1,15 @@
+{
+  "id": "ecarteleratrailers",
+  "name": "Trailers ecartelera",
+  "active": true,
+  "adult": false,
+  "language": ["cast", "lat"],
+  "thumbnail": "https://i.postimg.cc/BLqmw23X/ecarteleratrailers.png",
+  "banner": "ecarteleratrailers.png",
+  "fanart": "",
+  "categories": [
+    "movie"
+  ],
+  "settings": [
+  ]
+}

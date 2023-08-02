@@ -1,0 +1,15 @@
+{
+  "id": "chaturbate",
+  "name": "chaturbate",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://i.postimg.cc/LsRbrCn2/chaturbate.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

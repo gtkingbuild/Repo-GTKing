@@ -1,0 +1,39 @@
+{
+  "id": "ennovelas",
+  "name": "Ennovelas",
+  "active": true,
+  "adult": false,
+  "language": ["lat"],
+  "thumbnail": "https://w.ennovelas.net/wp-content/uploads/2022/04/cropped-Ennovelas-192x192.jpg",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "tvshow",
+    "anime",
+    "vos"
+  ],
+  "settings": [
+    {
+      "id": "include_in_global_search",
+      "type": "bool",
+      "label": "Incluir en busqueda global",
+      "default": true,
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "filter_languages",
+      "type": "list",
+      "label": "Mostrar enlaces en idioma...",
+      "default": 0,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "No filtrar",
+        "LAT",
+        "CAST",
+        "VOSE"
+      ]
+    }
+  ]
+}

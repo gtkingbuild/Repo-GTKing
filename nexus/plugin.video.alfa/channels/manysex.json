@@ -1,0 +1,15 @@
+{
+  "id": "manysex",
+  "name": "manysex",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://i.postimg.cc/N0yPjGNT/manysex.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

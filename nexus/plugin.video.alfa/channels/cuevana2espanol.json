@@ -1,0 +1,45 @@
+{
+  "id": "cuevana2espanol",
+  "name": "Cuevana2español",
+  "active": true,
+  "adult": false,
+  "force_unify": true,
+  "language": ["lat", "cast"],
+  "thumbnail": "https://i.postimg.cc/gr9Cqxbz/cuevana2espanol.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "movie"
+  ],
+  "settings": [
+    {
+    "id": "include_in_global_search",
+    "type": "bool",
+    "label": "Incluir en busqueda global",
+    "default": false,
+    "enabled": true,
+    "visible": true
+    },
+    {
+      "id": "filter_languages",
+      "type": "list",
+      "label": "Mostrar enlaces en idioma...",
+      "default": 0,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "No filtrar",
+        "LAT",
+        "CAST"
+      ]
+    },
+    {
+      "id": "include_in_newest_peliculas",
+      "type": "bool",
+      "label": "Incluir en Novedades - Peliculas",
+      "default": true,
+      "enabled": true,
+      "visible": true
+    }
+  ]
+}

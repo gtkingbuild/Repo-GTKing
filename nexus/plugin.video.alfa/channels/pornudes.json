@@ -1,0 +1,15 @@
+{
+  "id": "pornudes",
+  "name": "pornudes",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://www.pornudes.com/images/logo/logo.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

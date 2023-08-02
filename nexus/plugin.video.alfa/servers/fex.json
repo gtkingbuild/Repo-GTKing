@@ -1,0 +1,43 @@
+{
+  "active": true,
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "(https://fex.net/load/[A-z0-9]+/[A-z0-9]+)",
+        "url": "\\1"
+      }
+    ]
+  },
+  "free": true,
+  "id": "fex",
+  "name": "Fex",
+  "settings": [
+    {
+      "default": false,
+      "enabled": true,
+      "id": "black_list",
+      "label": "@60654",
+      "type": "bool",
+      "visible": true
+    },
+    {
+      "default": 0,
+      "enabled": true,
+      "id": "favorites_servers_list",
+      "label": "@60655",
+      "lvalues": [
+        "No",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "type": "list",
+      "visible": false
+    }
+  ],
+  "thumbnail": "https://i.postimg.cc/pdswzj8G/fex.png",
+  "version": 1
+}

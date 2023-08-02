@@ -1,0 +1,48 @@
+{
+  "id": "cuevana2",
+  "name": "Cuevana2",
+  "active": true,
+  "adult": false,
+  "language": [],
+  "thumbnail": "https://i.postimg.cc/GHK7MV0P/cuevana2.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "movie",
+    "tvshow",
+    "vos"
+  ],
+  "settings": [
+    {
+      "id": "filter_languages",
+      "type": "list",
+      "label": "Mostrar enlaces en idioma...",
+      "default": 1,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "No filtrar",
+        "Latino",
+        "Castellano",
+        "Alemán",
+        "VOSE"
+      ]
+    },
+    {
+      "id": "modo_grafico",
+      "type": "bool",
+      "label": "Buscar información extra",
+      "default": true,
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "include_in_global_search",
+      "type": "bool",
+      "label": "Incluir en busqueda global",
+      "default": false,
+      "enabled": true,
+      "visible": true
+    }
+  ]
+}
