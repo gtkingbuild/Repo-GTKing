@@ -14,12 +14,18 @@ from core import scrapertools
 from platformcode import logger
 from bs4 import BeautifulSoup
 
+forced_proxy_opt = 'ProxySSL'
+
+kwargs = {'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 0, 'forced_proxy_ifnot_assistant': forced_proxy_opt, 'ignore_response_code': True, 'cf_assistant': False}
+
 
 def test_video_exists(page_url):
     logger.info("(page_url='%s')" % page_url)
-    global data, server
-    data = httptools.downloadpage(page_url).data
-    server = scrapertools.find_single_match(page_url, '//(?:www.|es.|en.|)([A-z0-9-]+).(?:com|net|nl|sexy|xxx|tv)')
+    global server,  data
+    server = scrapertools.get_domain_from_url(page_url).split(".")[-2]
+    if "send" in server:
+        data = httptools.downloadpage(page_url, timeout=20, **kwargs).data
+    data = httptools.downloadpage(page_url, **kwargs).data
     if "<h2>WE ARE SORRY</h2>" in data or '<title>404 Not Found</title>' in data:
         return False, "[%s] El fichero no existe o ha sido borrado" %server
     return True, ""
@@ -30,7 +36,9 @@ def get_video_url(page_url, video_password):
     video_urls = []
     soup = BeautifulSoup(data, "html5lib", from_encoding="utf-8")
     try:
-        matches  = soup.video.find_all('source', type='video/mp4')
+        if soup.video.source:
+            tipo = soup.video.source['type']    # application/x-mpegURL & video/mp4
+        matches  = soup.video.find_all('source', type=tipo)
     except:
         matches = scrapertools.find_multiple_matches(data, '<source src="([^"]+)" type="video/mp4"')
         for url in matches:

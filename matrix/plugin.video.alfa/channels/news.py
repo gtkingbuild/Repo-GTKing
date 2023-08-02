@@ -18,6 +18,8 @@ import math
 import os
 import datetime
 
+DEBUG = config.get_setting('debug_report', default=False)
+
 
 workers = [None, 1, 2, 4, 6, 8, 16, 24, 32, 64]
 max_workers = config.get_setting("max_workers", "news")
@@ -212,6 +214,7 @@ def get_channel_news(channel, category, all=False):
 
     total_results = len(results)
     results = sorted(results, reverse=True, key=lambda it: (str(it.infoLabels["year"])))
+    if DEBUG: logger.debug('channel: %s, items_IN: %s' % (channel, len(results)))
 
     if not all and news_range != 100:
         if total_results > 40:
@@ -246,6 +249,8 @@ def get_channel_news(channel, category, all=False):
                              "switch_to": True}]
 
         brand_new.append(elem)
+
+    if DEBUG: logger.debug('channel: %s, items_OUT: %s' % (channel, len(brand_new)))
 
     return channel, brand_new, category
 

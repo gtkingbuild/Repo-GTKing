@@ -4,11 +4,15 @@
     "ignore_urls": [],
     "patterns": [
       {
-        "pattern": "(?:sblongvu|cloudemb|embedsb|sbchill|nsfwzone|leakslove|sbhight|sbbrisk|view345).\\w{2,4}/(?:embed-|st/|e/|v/|play/|)?([A-z0-9]+)",
+        "pattern": "(?:sbrapid|sblongvu|cloudemb|embedsb|sbchill|nsfwzone|leakslove|sbhight|sbbrisk|view345|lvturbo).\\w{2,4}/(?:embed-|st/|e/|v/|play/|)?([A-z0-9]+)",
         "url": "https://streamsb.net/play/\\1"
       },
       {
         "pattern": "(?:streamsb|sbembed|sbembed1|sbplay\\d+|sbplay|pelistop|tubesb|playersb|watchsb|sbfast|sbfull|viewsb|sbthe|watchmo|sblanh|sbanh|ssbstream).\\w{2,4}/(?:embed-|d/|e/|play/|)?([A-z0-9]+)",
+        "url": "https://streamsb.net/play/\\1"
+      },
+      {
+        "pattern": "(?:sblona|likessb).com/(?:e/|d/|)([A-z0-9]+)",
         "url": "https://streamsb.net/play/\\1"
       },
       {

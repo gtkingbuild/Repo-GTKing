@@ -6,7 +6,8 @@ from platformcode import logger
 def test_video_exists(page_url):
     logger.info()
     global server, vid
-    server = scrapertools.find_single_match(page_url, 'www.([A-z0-9-]+).com')
+    server = scrapertools.get_domain_from_url(page_url).split(".")[-2]
+    # server = scrapertools.find_single_match(page_url, '(?:www.|)([A-z0-9-]+).com')
     vid = scrapertools.find_single_match(page_url, '([0-9]+)')
 
     data = httptools.downloadpage(page_url).data

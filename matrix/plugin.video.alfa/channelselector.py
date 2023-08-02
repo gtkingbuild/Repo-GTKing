@@ -22,7 +22,7 @@ def getmainlist(view="thumb_"):
     itemlist.append(
         Item(
             title = get_string(30130),
-            channel = "news",
+            module = "news",
             action = "mainlist",
             thumbnail = get_thumb("news.png", view),
             category = get_string(30119),
@@ -30,7 +30,7 @@ def getmainlist(view="thumb_"):
             context = [
                 {
                     "title": get_string(70285),
-                    "channel": "news", 
+                    "module": "news", 
                     "action":"news_setting"
                 }
             ]
@@ -40,7 +40,7 @@ def getmainlist(view="thumb_"):
     itemlist.append(
         Item(
             title = get_string(30118),
-            channel = "channelselector",
+            module = "channelselector",
             action = "getchanneltypes",
             thumbnail = get_thumb("channels.png", view),
             view = view,
@@ -52,7 +52,7 @@ def getmainlist(view="thumb_"):
     itemlist.append(
         Item(
             title = get_string(80787),
-            channel = "info_popup",
+            module = "info_popup",
             action = "mainlist",
             thumbnail = get_thumb("wishlist.png", view),
             category = "wishlist",
@@ -60,7 +60,7 @@ def getmainlist(view="thumb_"):
             context = [
                 {
                     "title": get_string(80788),
-                    "channel": "info_popup",
+                    "module": "info_popup",
                     "action": "show_settings"
                 }
             ]
@@ -70,7 +70,7 @@ def getmainlist(view="thumb_"):
     itemlist.append(
         Item(
             title = get_string(70527),
-            channel = "alfavorites",
+            module = "alfavorites",
             action ="mainlist",
             thumbnail = get_thumb("mylink.png", view),
             view = view,
@@ -82,7 +82,7 @@ def getmainlist(view="thumb_"):
     itemlist.append(
         Item(
             title = get_string(30103),
-            channel = "search",
+            module = "search",
             action = "mainlist",
             thumbnail = get_thumb("search.png", view),
             category = get_string(30119),
@@ -90,7 +90,7 @@ def getmainlist(view="thumb_"):
             context = [
                 {
                     "title": get_string(70286),
-                    "channel": "search",
+                    "module": "search",
                     "action": "opciones",
                     "goto": True
                 }
@@ -101,7 +101,7 @@ def getmainlist(view="thumb_"):
     itemlist.append(
         Item(
             title = get_string(30102),
-            channel = "favorites",
+            module = "favorites",
             action = "mainlist",
             thumbnail = get_thumb("favorites.png", view),
             category = get_string(30102),
@@ -113,7 +113,7 @@ def getmainlist(view="thumb_"):
         itemlist.append(
             Item(
                 title = get_string(30131),
-                channel = "videolibrary",
+                module = "videolibrary",
                 action = "mainlist",
                 thumbnail = get_thumb("videolibrary.png", view),
                 category = get_string(30119),
@@ -121,7 +121,7 @@ def getmainlist(view="thumb_"):
                 context = [
                     {
                         "title": get_string(70287),
-                        "channel": "videolibrary",
+                        "module": "videolibrary",
                         "action": "channel_config"
                     }
                 ]
@@ -131,14 +131,14 @@ def getmainlist(view="thumb_"):
     itemlist.append(
         Item(
             title = get_string(30101),
-            channel = "downloads",
+            module = "downloads",
             action = "mainlist",
             thumbnail = get_thumb("downloads.png", view),
             viewmode = "list",
             context = [
                 {
                     "title": get_string(70288),
-                    "channel": "setting",
+                    "module": "setting",
                     "config": "downloads",
                     "action": "channel_config"
                 }
@@ -152,7 +152,7 @@ def getmainlist(view="thumb_"):
     itemlist.append(
         Item(
             title = get_string(30100),
-            channel = "setting",
+            module = "setting",
             action = "mainlist",
             thumbnail = get_thumb(thumb_setting, view),
             category = get_string(30100),
@@ -164,7 +164,7 @@ def getmainlist(view="thumb_"):
         itemlist.append(
             Item(
                 title = get_string(70761),
-                channel = "report",
+                module = "report",
                 action = "mainlist",
                 thumbnail = get_thumb("error.png", view),
                 category = get_string(30104),
@@ -175,7 +175,7 @@ def getmainlist(view="thumb_"):
     itemlist.append(
         Item(
             title = '{} ({} {})'.format(get_string(30104), get_string(20000), addon_version),
-            channel = "help",
+            module = "help",
             action = "mainlist",
             thumbnail = os.path.join(config.get_runtime_path(), "resources", 'Screenshot.jpg'),
             category = get_string(30104),
@@ -194,7 +194,7 @@ def getmainlist(view="thumb_"):
         itemlist.append(
             Item(
                 title = "[COLOR hotpink][B]Actualizar a versión[/B][/COLOR] [COLOR gold][B]%s[/B][/COLOR] (versión instalada: %s)" %  (versiones['plugin.video.alfa'], addon_version),
-                channel = "channelselector",
+                module = "channelselector",
                 action = "install_alfa",
                 thumbnail = os.path.join(config.get_runtime_path(), "resources", 'Screenshot.jpg'),
                 category = get_string(30104),
@@ -215,7 +215,7 @@ def getmainlist(view="thumb_"):
 
     itemlist.append(
         Item(
-            channel = "setting",
+            module = "setting",
             action = browser_dict['action'],
             url = 'https://alfa-addon.com/foros/tutoriales.11/', 
             title = browser_dict['title'],
@@ -229,7 +229,7 @@ def getmainlist(view="thumb_"):
     
     itemlist.append(
         Item(
-            channel = "setting",
+            module = "setting",
             action = browser_dict['action'],
             url = 'https://alfa-addon.com/threads/manual-de-alfa-assistant-herramienta-de-apoyo.3797/', 
             title = "-     [COLOR yellow]Usa [COLOR hotpink][B]Alfa ASSISTANT[/B][/COLOR] para desbloquear webs y torrents[/COLOR]   " + 
@@ -266,7 +266,7 @@ def getchanneltypes(view="thumb_"):
     itemlist.append(
         Item(
             title = title,
-            channel = "channelselector",
+            module = "channelselector",
             action = "filterchannels",
             view = view,
             category = title,
@@ -281,7 +281,7 @@ def getchanneltypes(view="thumb_"):
         itemlist.append(
             Item(
                 title = 'Frecuentes',
-                channel = "channelselector",
+                module = "channelselector",
                 action = "filterchannels",
                 view = view,
                 category = 'all',
@@ -297,7 +297,7 @@ def getchanneltypes(view="thumb_"):
         itemlist.append(
             Item(
                 title = title,
-                channel = "channelselector",
+                module = "channelselector",
                 action = "filterchannels",
                 category = title,
                 channel_type = channel_type,
@@ -310,7 +310,7 @@ def getchanneltypes(view="thumb_"):
     itemlist.append(
         Item(
             title = 'Comunidad',
-            channel = "community",
+            module = "community",
             action = "mainlist",
             view = view,
             category = title,
@@ -410,7 +410,7 @@ def filterchannels(category, view="thumb_", alfa_s=True, settings=False):
                 context.append(
                     {
                         "title": config.get_localized_string(70525),
-                        "channel": "setting",
+                        "module": "setting",
                         "action": "channel_config",
                         "config": channel_parameters["channel"]
                     }
@@ -501,14 +501,15 @@ def filterchannels(category, view="thumb_", alfa_s=True, settings=False):
     channelslist.sort(key=lambda item: item.title.lower().strip())
 
     if category == "all":
-        channel_parameters = channeltools.get_channel_parameters('url')
-        # Si prefiere el banner y el canal lo tiene, cambia ahora de idea
-        if view == "banner_" and "banner" in channel_parameters:
-            channel_parameters["thumbnail"] = channel_parameters["banner"]
+        # Si prefiere el banner, cambia ahora de idea
+        if view == "banner_":
+            thumbnail = get_thumb("url.png", "banner_")
+        else:
+            thumbnail = get_thumb("url.png")
 
-        channelslist.insert(0, Item(title=config.get_localized_string(60088), action="mainlist", channel="url", 
-                                    settings=[], active=channel_parameters["active"], 
-                                    thumbnail=channel_parameters["thumbnail"], type="generic", viewmode="list"))
+        channelslist.insert(0, Item(title=config.get_localized_string(60088), action="mainlist", module="url", 
+                                    settings=[], active=True, 
+                                    thumbnail=thumbnail, type="generic", viewmode="list"))
 
     if frequent_list and config.get_setting('frequents'):
         channelslist =  frequent_list + channelslist
@@ -524,18 +525,18 @@ def filterchannels(category, view="thumb_", alfa_s=True, settings=False):
                 title = titles[x]
                 id = ids[x]
             channelslist.insert(x,
-                Item(channel='search', action='discover_list', title=title, search_type='list', 
-                     settings=[], active=channel_parameters["active"], 
+                Item(module='search', action='discover_list', title=title, search_type='list', 
+                     settings=[], active=True,
                      list_type='%s/%s' % (category.replace('show',''), id), thumbnail=get_thumb(id+".png"),
                      mode=category))
 
-        channelslist.insert(3, Item(channel='search', action='years_menu', title='Por Años', 
-                                    settings=[], active=channel_parameters["active"], 
+        channelslist.insert(3, Item(module='search', action='years_menu', title='Por Años', 
+                                    settings=[], active=True, 
                                     type=category.replace('show', ''), thumbnail=get_thumb("years.png"),
                                     mode=category))
 
-        channelslist.insert(4, Item(channel='search', action='genres_menu', title='Generos', 
-                                    settings=[], active=channel_parameters["active"], 
+        channelslist.insert(4, Item(module='search', action='genres_menu', title='Generos', 
+                                    settings=[], active=True, 
                                     type=category.replace('show',''), thumbnail=get_thumb("genres.png"),
                                     mode=category))
 
@@ -550,8 +551,8 @@ def filterchannels(category, view="thumb_", alfa_s=True, settings=False):
         discovery = {"url": "discover/movie", "with_genres": "27", "primary_release_date.lte": "%s" % today,
                      "primary_release_date.gte": from_date, "page": "1"}
 
-        channelslist.insert(0, Item(channel="search", title="Halloween %s" % this_year, page=1, action='discover_list', 
-                                    settings=[], active=channel_parameters["active"], 
+        channelslist.insert(0, Item(module="search", title="Halloween %s" % this_year, page=1, action='discover_list', 
+                                    settings=[], active=True,
                                     discovery=discovery, mode="movie", thumbnail=get_thumb("channels_horror.png")))
     return channelslist
 

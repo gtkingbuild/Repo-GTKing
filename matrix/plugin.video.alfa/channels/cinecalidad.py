@@ -5,10 +5,11 @@
 
 import sys
 PY3 = False
-if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int
+if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
 import re
 import traceback
+if not PY3: _dict = dict; from collections import OrderedDict as dict
 
 from core.item import Item
 from core import servertools
@@ -30,8 +31,9 @@ forced_proxy_opt = 'ProxySSL'
 canonical = {
              'channel': 'cinecalidad', 
              'host': config.get_setting("current_host", 'cinecalidad', default=''), 
-             'host_alt': ["https://www3.cinecalidad.ms/"], 
-             'host_black_list': ["https://cinecalidad.ms/", "https://cinecalidad.dev/", "https://www.cinecalidad.lat/", 
+             'host_alt': ["https://www.cinecalidad.tf/"], 
+             'host_black_list': ["https://www3.cinecalidad.ms/", "https://startgaming.net/", 
+                                 "https://cinecalidad.ms/", "https://cinecalidad.dev/", "https://www.cinecalidad.lat/", 
                                  "https://v3.cine-calidad.com/", "https://www5.cine-calidad.com/", "https://cinecalidad3.com/"], 
              'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'forced_proxy_ifnot_assistant': forced_proxy_opt, 
              'CF': False, 'CF_test': False, 'alfa_s': True
@@ -70,8 +72,9 @@ finds = {'find': {'find_all': [{'tag': ['article']}]},
          'get_quality_rgx': [], 
          'next_page': {}, 
          'next_page_rgx': [['\/page\/\d+', '/page/%s/']], 
-         'last_page': {'find': [{'tag': ['nav'], 'class': ['navigation']}], 
-                       'find_all': [{'tag': ['a'], '@POS': [-2]}], 'get_text': [{'tag': '', '@STRIP': True, '@TEXT': '(\d+)'}]}, 
+         'last_page': dict([('find', [{'tag': ['nav'], 'class': ['pagination']}]), 
+                            ('find_all',[{'tag': ['a'], '@POS': [-2]}]), 
+                            ('get_text', [{'tag': '', '@STRIP': True, '@TEXT': '(\d+)'}])]), 
          'year': {}, 
          'season_episode': {}, 
          'seasons': {},
@@ -255,9 +258,11 @@ def section(item):
     kwargs['unescape'] = True
 
     if item.title == 'Géneros':
-        findS['categories'] = {'find': [{'tag': ['nav'], 'id': ['menu']}], 'find_all': [{'tag': ['li']}]}
+        findS['categories'] = dict([('find', [{'tag': ['nav'], 'id': ['menu']}]), 
+                                    ('find_all', [{'tag': ['li']}])])
     elif item.title == 'Año':
-        findS['categories'] = {'find': [{'tag': ['div'], 'class': ['year_tcine']}], 'find_all': [{'tag': ['a']}]}
+        findS['categories'] = dict([('find', [{'tag': ['div'], 'class': ['year_tcine']}]), 
+                                    ('find_all', [{'tag': ['a']}])])
         findS['controls'].update({'reverse': True}) 
 
     return AlfaChannel.section(item, matches_post=section_matches, finds=findS, **kwargs)
@@ -317,7 +322,7 @@ def list_all_matches(item, matches_int, **AHkwargs):
                 elem_json['year'] = '-'
                 if elem.find('div'): elem_json['year'] = scrapertools.find_single_match(elem.find('div').get_text(strip=True), '\d{4}') or '-'
 
-            elem_json['thumbnail'] = re.sub(r'(-\d+x\d+.jpg)', '.jpg', elem.find('img', class_="w-full rounded").get("src", ""))
+            elem_json['thumbnail'] = re.sub(r'(-\d+x\d+.jpg)', '.jpg', elem.find('img', class_="w-full").get("src", ""))
 
             elem_json['plot'] = elem.p.get_text(strip=True) if elem.p else ''
             
@@ -436,8 +441,7 @@ def search(item, texto, **AHkwargs):
 
 def newest(categoria, **AHkwargs):
     logger.info()
-    global kwargs
-    kwargs = AHkwargs
+    kwargs.update(AHkwargs)
 
     itemlist = []
     item = Item()

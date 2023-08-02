@@ -57,9 +57,7 @@ torrent_params = {
                   'local_torr': 'Downloads_torrent_file', 
                   'lookup': True
                   }
-blocked_channels = [
-                    'newpct1'
-                   ]
+blocked_channels = []
 
 
 def mainlist(item):
@@ -268,9 +266,10 @@ def get_progress(item):
         folder = scrapertools.find_single_match(item.downloadFilename, '^\:\w+\:\s*(.*?)$')
     
     if folder:
-        torr_data, deamon_url, index = torrent.get_tclient_data(folder, torr_client.lower(), \
-                                    port=torrent_paths.get(torr_client.upper()+'_port', 0), \
-                                    web=DOWNLOAD_HOST or torrent_paths.get(torr_client.upper()+'_web', ''))
+        torr_data, deamon_url, index = torrent.get_tclient_data(folder, torr_client.lower(), 
+                                    port=torrent_paths.get(torr_client.upper()+'_port', 0), 
+                                    web=DOWNLOAD_HOST or torrent_paths.get(torr_client.upper()+'_web', ''),
+                                    item=item)
         if torr_data and isinstance(torr_data, dict):
             try:
                 status = torr_data
@@ -1121,9 +1120,10 @@ def delete_torrent_session(item, delete_RAR=True, action='delete'):
     # Detiene y borra la sesion de los clientes externos Quasar y Elementum
     if torr_client in ['QUASAR', 'ELEMENTUM', 'TORREST']:
         if not delete_RAR or action == 'pause': folder_new = ''
-        torr_data, deamon_url, index = torrent.get_tclient_data(folder, torr_client.lower(), \
-                                port=torrent_paths.get(torr_client.upper()+'_port', 0), action=action, \
-                                web=DOWNLOAD_HOST or torrent_paths.get(torr_client.upper()+'_web', ''), folder_new=folder_new)
+        torr_data, deamon_url, index = torrent.get_tclient_data(folder, torr_client.lower(), 
+                                                                port=torrent_paths.get(torr_client.upper()+'_port', 0), action=action, 
+                                                                web=DOWNLOAD_HOST or torrent_paths.get(torr_client.upper()+'_web', ''), 
+                                                                folder_new=folder_new, item=item)
         
     # Detiene y borra la sesion de los clientes Internos
     if torr_client in ['BT', 'MCT']:
@@ -2077,18 +2077,15 @@ def get_episodes(item):
                 format_tmdb_id(nfo_json)
             
             if nfo_json:
-                if item.contentChannel != 'newpct1':
-                    item.url = nfo_json.library_urls[item.contentChannel]
+                category = item.category.lower()
+                if item.category_alt:
+                    category = item.category_alt.lower()
+                if nfo_json.library_urls.get(category):
+                    item.url = nfo_json.library_urls.get(category)
                 else:
-                    category = item.category.lower()
-                    if item.category_alt:
-                        category = item.category_alt.lower()
-                    if nfo_json.library_urls.get(category):
-                        item.url = nfo_json.library_urls.get(category)
-                    else:
-                        for key, value in list(nfo_json.library_urls.items()):
-                            item.url = value
-                            break
+                    for key, value in list(nfo_json.library_urls.items()):
+                        item.url = value
+                        break
                 if not item.url_tvshow:
                     item.url_tvshow = item.url
             elif item.url_tvshow:
@@ -2149,7 +2146,7 @@ def get_episodes(item):
             if item.torrent_info: del item.torrent_info
             if item.torrent_alt: del item.torrent_alt
 
-        if item.strm_path or item.nfo or nfo_json:                              # Si viene de Videoteca, usamos los .jsons
+        if (item.strm_path or item.nfo or nfo_json) and item.sub_action in ["auto"]:    # Si viene de Videoteca, usamos los .jsons
             if item.strm_path: serie_path = filetools.dirname(item.strm_path)
             if not serie_path and item.nfo: serie_path = filetools.dirname(item.nfo)
             if not serie_path and nfo_json: serie_path = filetools.join(SERIES, item.path.lower())
@@ -2458,7 +2455,7 @@ def save_download(item, silent=False):
 
     # Descarga desde menú contextual
     if item.from_action and item.from_channel:
-        if 'list' in item.contentChannel: item.contentChannel = item.channel
+        if 'list' in item.contentChannel and item.channel != 'downloads': item.contentChannel = item.channel
         item.channel = item.from_channel
         item.action = item.from_action
         item.contextual = True

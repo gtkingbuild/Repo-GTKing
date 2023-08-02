@@ -18,7 +18,8 @@ import base64
 def test_video_exists(page_url):
     logger.info("(page_url='%s')" % page_url)
     global data, server
-    server = scrapertools.find_single_match(page_url, 'www.([A-z0-9-]+).com')
+    server = scrapertools.get_domain_from_url(page_url).split(".")[-2]
+    # server = scrapertools.find_single_match(page_url, 'www.([A-z0-9-]+).com')
     data = httptools.downloadpage(page_url).data
     if "<h2>WE ARE SORRY</h2>" in data or 'Video Not found' in data:
         return False, "[%s] El fichero no existe o ha sido borrado" % server

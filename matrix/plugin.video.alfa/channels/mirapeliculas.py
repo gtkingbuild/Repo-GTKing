@@ -23,6 +23,7 @@ IDIOMAS = {'Latino': 'LAT', 'Español': 'ESP', 'Subtitulado': 'VOSE'}
 list_language = list(IDIOMAS.values())
 list_servers = ['streamango', 'streamplay', 'openload', 'okru']
 list_quality = ['BR-Rip', 'HD-Rip', 'DVD-Rip', 'TS-HQ', 'TS-Screner', 'Cam']
+forced_proxy_opt = 'ProxyCF'
 
 canonical = {
              'channel': 'mirapeliculas', 
@@ -30,7 +31,7 @@ canonical = {
              'host_alt': ["https://mirapeliculasde.com/"], 
              'host_black_list': [], 
              'pattern': '<link\s*rel="[^>]*icon"[^>]+href="([^"]+)"', 
-             'set_tls': True, 'set_tls_min': False, 'retries_cloudflare': 1, 
+             'set_tls': True, 'set_tls_min': False, 'retries_cloudflare': 1, 'forced_proxy_ifnot_assistant': forced_proxy_opt, 
              'CF': False, 'CF_test': False, 'alfa_s': True
             }
 host = canonical['host'] or canonical['host_alt'][0]

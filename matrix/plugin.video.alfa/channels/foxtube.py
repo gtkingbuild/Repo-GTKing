@@ -168,7 +168,9 @@ def lista(item):
 def findvideos(item):
     logger.info()
     itemlist = []
-    soup = create_soup(item.url)
+    # soup = create_soup(item.url)
+    data = httptools.downloadpage(url).data
+    soup = BeautifulSoup(data, "html5lib", from_encoding="utf-8")
     elem = soup.find('section', class_='vg')
     url = elem.find('a', class_='th_if')['href']
     itemlist.append(Item(channel=item.channel, action="play", title= "%s", contentTitle = item.contentTitle, url=url))
@@ -179,7 +181,9 @@ def findvideos(item):
 def play(item):
     logger.info()
     itemlist = []
-    soup = create_soup(item.url)
+    # soup = create_soup(item.url)
+    data = httptools.downloadpage(url).data
+    soup = BeautifulSoup(data, "html5lib", from_encoding="utf-8")
     elem = soup.find('section', class_='vg')
     url = elem.find('a', class_='th_if')['href']
     pornstars = elem.find_all('a', class_='tp')

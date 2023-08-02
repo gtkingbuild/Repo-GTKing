@@ -5,10 +5,11 @@
 
 import sys
 PY3 = False
-if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int
+if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
 import re
 import traceback
+if not PY3: _dict = dict; from collections import OrderedDict as dict
 
 from core.item import Item
 from core import servertools
@@ -46,10 +47,10 @@ tv_path = '/serie'
 language = ['LAT']
 url_replace = []
 
-finds = {'find': {'find': [{'tag': ['ul'], 'class': ['post-lst']}], 
-                  'find_all': [{'tag': ['article'], 'class': ['post']}]},
-         'categories': {'find': [{'tag': ['li'], 'id': ['menu-item-354']}], 
-                        'find_all': [{'tag': ['li']}]}, 
+finds = {'find': dict([('find', [{'tag': ['ul'], 'class': ['post-lst']}]), 
+                       ('find_all', [{'tag': ['article'], 'class': ['post']}])]),
+         'categories': dict([('find', [{'tag': ['li'], 'id': ['menu-item-354']}]), 
+                             ('find_all', [{'tag': ['li']}])]), 
          'search': {}, 
          'get_language': {'find': [{'tag': ['span'], 'class': ['lang']}]}, 
          'get_language_rgx': '(?:flags\/||d{4}\/\d{2}\/)(\w+)\.(?:png|jpg|jpeg|webp)', 
@@ -57,8 +58,9 @@ finds = {'find': {'find': [{'tag': ['ul'], 'class': ['post-lst']}],
          'get_quality_rgx': '', 
          'next_page': {}, 
          'next_page_rgx': [['\/page\/\d+', '/page/%s']], 
-         'last_page': {'find': [{'tag': ['a'], 'string': re.compile('(?i)siguiente')}], 
-                       'find_previous': [{'tag': ['a'], 'class': ['page-link']}], 'get_text': [{'tag': '', '@STRIP': True}]}, 
+         'last_page': dict([('find', [{'tag': ['a'], 'string': re.compile('(?i)siguiente')}]), 
+                            ('find_previous', [{'tag': ['a'], 'class': ['page-link']}]), 
+                            ('get_text', [{'tag': '', '@STRIP': True}])]), 
          'year': {'find': [{'tag': ['span'], 'class': ['year']}], 'get_text': [{'tag': '', '@STRIP': True, '@TEXT': '(\d+)'}]}, 
          'season_episode': {}, 
          'seasons': {'find_all': [{'tag': ['li'], 'class': ['sel-temp']}]}, 
@@ -70,7 +72,8 @@ finds = {'find': {'find': [{'tag': ['ul'], 'class': ['post-lst']}],
          'episode_num': [], 
          'episode_clean': [], 
          'plot': {}, 
-         'findvideos': {'find': [{'tag': ['aside'], 'class': ['video-player']}], 'find_all': [{'tag': ['div'], 'class': ['video']}]}, 
+         'findvideos': dict([('find', [{'tag': ['aside'], 'class': ['video-player']}]), 
+                             ('find_all', [{'tag': ['div'], 'class': ['video']}])]), 
          'title_clean': [['(?i)TV|Online|(4k-hdr)|(fullbluray)|4k| - 4k|(3d)|miniserie|\s*\(\d{4}\)', ''],
                          ['[\(|\[]\s*[\)|\]]', '']],
          'quality_clean': [['(?i)proper|unrated|directors|cut|repack|internal|real-*|extended|masted|docu|super|duper|amzn|uncensored|hulu', '']],
@@ -119,8 +122,9 @@ def sub_menu(item):
     itemlist.append(item.clone(title='Generos', action='section', 
                     thumbnail=get_thumb('genres', auto=True)))
 
-    itemlist.append(item.clone(title='Alfabético', action='alfabetico', 
-                    thumbnail=get_thumb('alphabet', auto=True)))
+    if item.c_type == 'peliculas':
+        itemlist.append(item.clone(title='Alfabético', action='alfabetico', 
+                        thumbnail=get_thumb('alphabet', auto=True)))
 
     return itemlist
 
@@ -304,7 +308,8 @@ def findvideos_matches(item, matches_int, langs, response, **AHkwargs):
     findS = AHkwargs.get('finds', finds)
 
     servers = {"femax20": "fembed", "embed": "mystream", "dood": "doodstream"}
-    findS_findvideos = {'find': [{'tag': ['aside'], 'class': ['video-options']}], 'find_all': [{'tag': ['li']}]}
+    findS_findvideos = dict([('find', [{'tag': ['aside'], 'class': ['video-options']}]), 
+                             ('find_all', [{'tag': ['li']}])])
     server_names = AlfaChannel.parse_finds_dict(AlfaChannel.response.soup, findS_findvideos, c_type=item.c_type)
 
     for server, elem in zip(server_names, matches_int):
@@ -344,8 +349,7 @@ def actualizar_titulos(item):
 
 def search(item, texto, **AHkwargs):
     logger.info()
-    global kwargs
-    kwargs = AHkwargs
+    kwargs.update(AHkwargs)
 
     try:
         texto = texto.replace(" ", "+")
@@ -366,8 +370,7 @@ def search(item, texto, **AHkwargs):
 
 def newest(categoria, **AHkwargs):
     logger.info()
-    global kwargs
-    kwargs = AHkwargs
+    kwargs.update(AHkwargs)
 
     itemlist = []
     item = Item()

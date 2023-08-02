@@ -5,10 +5,11 @@
 
 import sys
 PY3 = False
-if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int
+if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
 import re
 import traceback
+if not PY3: _dict = dict; from collections import OrderedDict as dict
 
 from core.item import Item
 from core import servertools
@@ -51,10 +52,11 @@ tv_path = '/series'
 language = ['CAST']
 url_replace = []
 
-finds = {'find': {'find': [{'tag': ['div'], 'class': ['listagem']}], 
-                  'find_all': [{'tag': ['div'], 'class': ['item hitem']}]}, 
+finds = {'find': dict([('find', [{'tag': ['div'], 'class': ['listagem']}]), 
+                       ('find_all', [{'tag': ['div'], 'class': ['item hitem']}])]), 
          'sub_menu': {}, 
-         'categories': {'find': [{'tag': ['ul'], 'id': ['menu-footer-3-menu']}], 'find_all': [{'tag': ['li']}]},   
+         'categories': dict([('find', [{'tag': ['ul'], 'id': ['menu-footer-3-menu']}]), 
+                             ('find_all', [{'tag': ['li']}])]),   
          'search': {}, 
          'get_language': {}, 
          'get_language_rgx': '(?:flags\/|\/icono_(\w+))\.(?:png|jpg|jpeg|webp)', 
@@ -62,8 +64,8 @@ finds = {'find': {'find': [{'tag': ['div'], 'class': ['listagem']}],
          'get_quality_rgx': [], 
          'next_page': {}, 
          'next_page_rgx': [['\/page\/\d+', '/page/%s/']], 
-         'last_page': {'find': [{'tag': ['div'], 'class': ['wp-pagenavi']}], 
-                       'find_all': [{'tag': ['a'], '@POS': [-1], '@ARG': 'href', '@TEXT': '\/(\d+)\/'}]}, 
+         'last_page': dict([('find', [{'tag': ['div'], 'class': ['wp-pagenavi']}]), 
+                            ('find_all', [{'tag': ['a'], '@POS': [-1], '@ARG': 'href', '@TEXT': '\/(\d+)\/'}])]), 
          'year': {}, 
          'season_episode': {}, 
          'seasons': {},
@@ -75,8 +77,8 @@ finds = {'find': {'find': [{'tag': ['div'], 'class': ['listagem']}],
          'episode_num': [], 
          'episode_clean': [], 
          'plot': {}, 
-         'findvideos': {'find': [{'tag': ['div'], 'class': ['conteudo clearfix']}], 
-                        'find_all': [{'tag': ['div'], 'class': ['content clearfix']}]}, 
+         'findvideos': dict([('find', [{'tag': ['div'], 'class': ['conteudo clearfix']}]), 
+                             ('find_all', [{'tag': ['div'], 'class': ['content clearfix']}])]), 
          'title_clean': [['(?i)TV|Online|(4k-hdr)|(fullbluray)|4k| - 4k|(3d)|miniserie|\s*imax', ''],
                          ['(?i)[\[|\(]?\d{3,4}p[\]|\)]?|[\[|\(]?(?:4k|3d|uhd|hdr)[\]|\)]?', ''], 
                          ['(?i)[-|\(]?\s*HDRip\)?|microHD|\(?BR-LINE\)?|\(?HDTS-SCREENER\)?', ''], 
@@ -107,7 +109,7 @@ def mainlist(item):
 
     itemlist.append(Item(channel=item.channel, title="Películas", action="list_all", 
                 url=host, thumbnail=get_thumb("channels_movie.png"), c_type="peliculas"))
-    itemlist.append(Item(channel=item.channel, title="    - por Género", action="section", 
+    itemlist.append(Item(channel=item.channel, title=" - [COLOR paleturquoise]Por Género[/COLOR]", action="section", 
                 url=host, thumbnail=get_thumb("genres.png"), c_type="peliculas"))
 
     itemlist.append(Item(channel=item.channel, title="Buscar...", action="search",
@@ -237,8 +239,8 @@ def actualizar_titulos(item):
 
 def search(item, texto, **AHkwargs):
     logger.info()
-    global kwargs
-    kwargs = AHkwargs
+    kwargs.update(AHkwargs)
+
     texto = texto.replace(" ", "+")
 
     try:
@@ -258,8 +260,7 @@ def search(item, texto, **AHkwargs):
  
 def newest(categoria, **AHkwargs):
     logger.info()
-    global kwargs
-    kwargs = AHkwargs
+    kwargs.update(AHkwargs)
 
     itemlist = []
     item = Item()

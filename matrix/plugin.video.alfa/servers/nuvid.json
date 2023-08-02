@@ -8,7 +8,7 @@
         "url": "\\1"
       },
       {
-        "pattern": "((?:http|https)://www.(?:nuvid|drtuber|iceporn|viptube|vivatube|tubeon|hd21|yeptube|winporn|proporn).com/(?:es/|[A-z]{2}/|)video/[0-9]+/[A-z0-9-]+)",
+        "pattern": "((?:http|https)://(?:www.|)(?:nuvid|drtuber|iceporn|viptube|vivatube|tubeon|hd21|yeptube|winporn|proporn).com/(?:es/|[A-z]{2}/|)video/[0-9]+/[A-z0-9-]+)",
         "url": "\\1"
       },
       {

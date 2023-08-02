@@ -1,0 +1,15 @@
+{
+  "id": "americass",
+  "name": "americass",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://americass.net/build/fav.cd53535c.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

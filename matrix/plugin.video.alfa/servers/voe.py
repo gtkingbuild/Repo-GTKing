@@ -18,7 +18,7 @@ def test_video_exists(page_url):
     logger.info("(page_url='%s')" % page_url)
     data = httptools.downloadpage(page_url).data
 
-    if "File not found" in data or "File is no longer available" in data:
+    if "Not found" in data or "File is no longer available" in data or "Error 404" in data:
         return False, "[Voe] El fichero no existe o ha sido borrado"
     return True, ""
 
@@ -29,7 +29,7 @@ def get_video_url(page_url, premium=False, user="", password="", video_password=
     video_srcs = scrapertools.find_multiple_matches(data, r"mp4': '([^']+)'")
     if not video_srcs:
         bloque = scrapertools.find_single_match(data, "sources.*?\}")
-        video_srcs = scrapertools.find_multiple_matches(bloque, ': "([^"]+)')
+        video_srcs = scrapertools.find_multiple_matches(bloque, ": '([^']+)")
     for url in video_srcs:
         video_urls.append([" [Voe]", url])
 

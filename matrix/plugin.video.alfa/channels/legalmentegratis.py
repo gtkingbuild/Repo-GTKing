@@ -29,6 +29,7 @@ canonical = {
              'host': config.get_setting("current_host", 'legalmentegratis', default=''), 
              'host_alt': ["http://legalmentegratis.com/"], 
              'host_black_list': [], 
+             'pattern': '<h1\s*class="site-title">\s*<a\s*href="([^"]+)"', 
              'set_tls': False, 'set_tls_min': True, 'retries_cloudflare': 0, 
              'CF': False, 'CF_test': False, 'alfa_s': True
             }

@@ -52,6 +52,10 @@ msgctxt "#30008"
 msgid "Watch in high quality"
 msgstr "Assista com qualidade alta"
 
+msgctxt "#30009"
+msgid "Watch in medium quality"
+msgstr "Assista com qualidade média"
+
 msgctxt "#30010"
 msgid "Channel icons view:"
 msgstr "Visualização de ícones do canal:"

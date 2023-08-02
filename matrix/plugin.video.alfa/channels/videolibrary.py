@@ -61,7 +61,7 @@ def list_movies(item, silent=False):
                     if config.is_xbmc():                #Si es Kodi, lo hacemos
                         from platformcode import xbmc_videolibrary
                         xbmc_videolibrary.mark_content_as_watched_on_alfa(nfo_path)
-                except:
+                except Exception:
                     logger.error(traceback.format_exc())
                 
                 head_nfo, new_item = videolibrarytools.read_nfo(nfo_path)
@@ -83,7 +83,7 @@ def list_movies(item, silent=False):
                     try:
                         channel_verify = __import__('channels.%s' % canal, fromlist=["channels.%s" % canal])
                         logger.debug('El canal %s parece correcto' % channel_verify)
-                    except:
+                    except Exception:
                         dead_item = Item(multicanal=multicanal,
                                          contentType='movie',
                                          dead=canal,
@@ -150,12 +150,6 @@ def list_movies(item, silent=False):
                     # Si se ha eliminado el strm desde la bilbioteca de kodi, no mostrarlo
                     continue
 
-                ###### Redirección al canal NewPct1.py si es un clone, o a otro canal y url si ha intervención judicial
-                try:
-                    new_item, new_item, overwrite = generictools.redirect_clone_newpct1(new_item, head_nfo, new_item, raiz)
-                except:
-                    logger.error(traceback.format_exc())
-                
                 # Menu contextual: Marcar como visto/no visto
                 visto = new_item.library_playcounts.get(os.path.splitext(f)[0], 0)
                 new_item.infoLabels["playcount"] = visto
@@ -233,7 +227,7 @@ def list_tvshows(item):
                     if config.is_xbmc():                    #Si es Kodi, lo hacemos
                         from platformcode import xbmc_videolibrary
                         xbmc_videolibrary.mark_content_as_watched_on_alfa(tvshow_path)
-                except:
+                except Exception:
                     logger.error(traceback.format_exc())
                 
                 head_nfo, item_tvshow = videolibrarytools.read_nfo(tvshow_path)
@@ -262,7 +256,7 @@ def list_tvshows(item):
                     try:
                         channel_verify = __import__('channels.%s' % canal, fromlist=["channels.%s" % canal])
                         logger.debug('El canal %s parece correcto' % channel_verify)
-                    except:
+                    except Exception:
                         dead_item = Item(multicanal=multicanal,
                                          contentType='tvshow',
                                          dead=canal,
@@ -339,7 +333,7 @@ def list_tvshows(item):
                         texto_visto = config.get_localized_string(60021)
                         contador = 1
                 
-                except:
+                except Exception:
                     logger.error('No encuentra: ' + str(tvshow_path))
                     logger.error(traceback.format_exc())
                     continue
@@ -593,6 +587,7 @@ def findvideos(item):
         item.strm_path = filetools.join(videolibrarytools.TVSHOWS_PATH, item.strm_path)
         path_dir = filetools.dirname(item.strm_path)
         item.nfo = filetools.join(path_dir, 'tvshow.nfo')
+    head_nfo, it = videolibrarytools.read_nfo(item.nfo)
 
     for fd in filetools.listdir(path_dir):
         if fd.endswith('.json'):
@@ -606,13 +601,14 @@ def findvideos(item):
     if 'downloads' in list_canales:
         json_path = list_canales['downloads']
         item_json = Item().fromjson(filetools.read(json_path))
-        ###### Redirección al canal NewPct1.py si es un clone, o a otro canal y url si ha intervención judicial
-        try:
-            if item_json:
-                item_json, it, overwrite = generictools.redirect_clone_newpct1(item_json)
-        except:
-            logger.error(traceback.format_exc())
         item_json.contentChannel = "local"
+
+        # Redirige a nuevo dominio en caso de cambio
+        if it.library_urls.get(item_json.channel, '') and config.BTDIGG_URL not in it.library_urls[item_json.channel]:
+            if config.BTDIGG_URL in item_json.url: item_json.url = it.library_urls[item_json.channel]
+            if config.BTDIGG_URL in item_json.url_tvshow: item_json.url_tvshow = it.library_urls[item_json.channel]
+        item_json = videolibrarytools.redirect_url(item_json)
+
         # Soporte para rutas relativas en descargas
         if filetools.is_relative(item_json.url):
             if scrapertools.find_single_match(item_json.url, ':(.+?):'):
@@ -663,12 +659,6 @@ def findvideos(item):
         
         item_canal = Item()
         item_canal.channel = nom_canal
-        ###### Redirección al canal NewPct1.py si es un clone, o a otro canal y url si ha intervención judicial
-        try:
-            item_canal, it, overwrite = generictools.redirect_clone_newpct1(item_canal)
-        except:
-            logger.error(traceback.format_exc())
-        nom_canal = item_canal.channel
             
         # Importamos el canal de la parte seleccionada
         channel = None
@@ -682,6 +672,13 @@ def findvideos(item):
 
         item_json = Item().fromjson(filetools.read(json_path))
         item_json.nfo = item.nfo
+        if 'trailertools' in item_json.channel: continue
+        
+        # Redirige a nuevo dominio en caso de cambio
+        if it.library_urls.get(item_json.channel, '') and config.BTDIGG_URL not in it.library_urls[item_json.channel]:
+            if config.BTDIGG_URL in item_json.url: item_json.url = it.library_urls[item_json.channel]
+            if config.BTDIGG_URL in item_json.url_tvshow: item_json.url_tvshow = it.library_urls[item_json.channel]
+        item_json = videolibrarytools.redirect_url(item_json)
         
         if nom_canal == 'url' and not item_json.emergency_urls:
             platformtools.dialog_notification(item_canal.action.capitalize(), 'Canal %s no existe' % item_canal.channel.upper())
@@ -693,7 +690,9 @@ def findvideos(item):
         try:
             generictools.format_tmdb_id(item_json)                              # Normaliza el formato de los IDs
             if item_json.infoLabels['tmdb_id']:
+                config.set_setting('tmdb_cache_read', False)
                 tmdb.set_infoLabels_item(item_json, seekTmdb=True)
+                config.set_setting('tmdb_cache_read', True)
                 
                 item_json.infoLabels["thumbnail"] = item_json.infoLabels["thumbnail"].replace('http:', 'https:')
                 if item.contentType == 'movie':
@@ -703,17 +702,9 @@ def findvideos(item):
                     if item_json.infoLabels["poster_path"]: item_json.thumbnail = item_json.infoLabels["poster_path"]
                 item_json.infoLabels["fanart"] = item_json.infoLabels["fanart"].replace('http:', 'https:')
                 if item_json.infoLabels["fanart"]: item_json.fanart = item_json.infoLabels["fanart"]
-        except:
+        except Exception:
             logger.error(traceback.format_exc())
 
-        ###### Redirección al canal NewPct1.py si es un clone, o a otro canal y url si ha intervención judicial
-        try:
-            if item_json:
-                item_json, it, overwrite = generictools.redirect_clone_newpct1(item_json)
-                item_json = videolibrarytools.redirect_url(item_json)
-        except:
-            logger.error(traceback.format_exc())
-        
         list_servers = []
         try:
             # FILTERTOOLS
@@ -794,7 +785,7 @@ def findvideos(item):
     # return sorted(itemlist, key=lambda it: it.title.lower())
     autoplay.play_multi_channel(item, itemlist)
     from inspect import stack
-    from channels import nextep
+    from modules import nextep
     if nextep.check(item) and stack()[1][3] == 'run':
         nextep.videolibrary(item)
     return itemlist
@@ -875,8 +866,11 @@ def update_tvshow(item):
         head_nfo, it = videolibrarytools.read_nfo(path)
         it.nfo = path
         it.path = filetools.join(config.get_videolibrary_path(), config.get_setting("folder_tvshows"), it.path)
+        if item.season_search: it.season_search = item.season_search
     else:
         it = item.clone()
+    it.from_action = 'update_tvshow'
+    tmdb.set_infoLabels_item(it, seekTmdb=True)
 
     import videolibrary_service
     if videolibrary_service.update(it.path, p_dialog, 1, 1, it, False) and config.is_xbmc():

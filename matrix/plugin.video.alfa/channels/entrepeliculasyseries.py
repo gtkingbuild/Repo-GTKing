@@ -5,15 +5,17 @@
 
 import sys
 PY3 = False
-if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int
+if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
 import re
 import traceback
+if not PY3: _dict = dict; from collections import OrderedDict as dict
 
 from core.item import Item
 from core import servertools
 from core import scrapertools
 from core import jsontools
+from core.httptools import channel_proxy_list
 from channelselector import get_thumb
 from platformcode import config, logger
 from channels import filtertools, autoplay
@@ -27,7 +29,7 @@ list_quality_tvshow = ['HDTV', 'HDTV-720p', 'WEB-DL 1080p', '4KWebRip']
 list_servers = ['mega', 'fembed', 'vidtodo', 'gvideo']
 forced_proxy_opt = 'ProxyCF'
 host = 'https://entrepeliculasyseries.nz/'
-assistant = config.get_setting('assistant_version', default='') and not DictionaryAllChannel.channel_proxy_list({}, host)
+assistant = config.get_setting('assistant_version', default='') and not channel_proxy_list(host)
 
 canonical = {
              'channel': 'entrepeliculasyseries', 
@@ -50,20 +52,23 @@ tv_path = '/serie'
 language = []
 url_replace = []
 
-finds = {'find': {'find': [{'tag': ['ul'], 'class': ['list-movie', 'MovieList']}], 
-                  'find_all': [{'tag': ['li'], 'class': ['item', 'xxx TPostMv']}]},
+finds = {'find': dict([('find', [{'tag': ['ul'], 'class': ['list-movie', 'MovieList']}]), 
+                       ('find_all', [{'tag': ['li'], 'class': ['item', 'xxx TPostMv']}])]),
          'categories': {}, 
-         'search': {},
-         'get_language': {'find': [{'tag': ['span'], 'class': ["Lang"]}], 'find_all': [{'tag': ['img']}]},
+         'search': {}, 
+         'get_language': dict([('find', [{'tag': ['span'], 'class': ["Lang"]}]), 
+                               ('find_all', [{'tag': ['img']}])]),
          'get_language_rgx': '(?:flags\/|images\/)(\w+)\.(?:png|jpg|jpeg|webp)', 
          'get_quality': {}, 
          'get_quality_rgx': '', 
          'next_page': {}, 
          'next_page_rgx': [['\/page\/\d+', '/page/%s']], 
          'last_page': {'find': [{'tag': ['a'], 'aria-label': ['Last Page'], '@ARG': 'href', '@TEXT': '\/(\d+)\/'}]}, 
-         'year': {'find': [{'tag': ['h4']}], 'get_text': [{'tag': '', '@STRIP': True, '@TEXT': '(\d+)'}]}, 
+         'year': dict([('find', [{'tag': ['h4']}]), 
+                       ('get_text', [{'tag': '', '@STRIP': True, '@TEXT': '(\d+)'}])]), 
          'season_episode': {'find': [{'tag': ['span'], 'class': ['Year'], '@TEXT': '(?i)(\d+x\d+)'}]}, 
-         'seasons': {'find': [{'tag': ['select'], 'id': ['select-season']}], 'find_all': [{'tag': ['option']}]}, 
+         'seasons': dict([('find', [{'tag': ['select'], 'id': ['select-season']}]), 
+                          ('find_all', [{'tag': ['option']}])]), 
          'season_num': [], 
          'seasons_search_num_rgx': '', 
          'seasons_search_qty_rgx': '', 
@@ -71,7 +76,8 @@ finds = {'find': {'find': [{'tag': ['ul'], 'class': ['list-movie', 'MovieList']}
          'episodes': {'find_all': [{'tag': ['article'], 'class': ['TPost C']}]}, 
          'episode_num': {}, 
          'episode_clean': [], 
-         'plot': {'find': [{'tag': ['span'], 'class': ['lg margin-bottom']}], 'get_text': [{'tag': '', '@STRIP': True}]}, 
+         'plot': dict([('find', [{'tag': ['span'], 'class': ['lg margin-bottom']}]), 
+                       ('get_text', [{'tag': '', '@STRIP': True}])]), 
          'findvideos': {'find_all': [{'tag': ['div'], 'class': ['option-lang']}]},
          'title_clean': [['(?i)TV|Online|(4k-hdr)|(fullbluray)|4k| - 4k|(3d)|miniserie|ver\s*|\s*\(\d{4}\)', ''],
                          ['[\(|\[]\s*[\)|\]]', '']],
@@ -97,7 +103,7 @@ def mainlist(item):
     itemlist.append(Item(channel=item.channel, title='Peliculas', action='sub_menu', url=host + 'peliculas/', 
                          thumbnail=get_thumb('movies', auto=True), c_type='peliculas'))
 
-    itemlist.append(Item(channel=item.channel, title='Series',  action='sub_menu', url=host + 'serie/', 
+    itemlist.append(Item(channel=item.channel, title='Series',  action='sub_menu', url=host + 'series/', 
                          thumbnail=get_thumb('tvshows', auto=True), c_type='series'))
 
     itemlist.append(Item(channel=item.channel, title='Anime',  action='list_all', url=host + 'anime/', 
@@ -155,13 +161,13 @@ def section(item):
     findS = finds.copy()
 
     if 'Año' in item.title:
-        findS['categories'] = {'find': [{'tag': ['div'], 'class': ['Wdgt movies_annee']}], 
-                               'find_all': [{'tag': ['li']}]}
+        findS['categories'] = dict([('find', [{'tag': ['div'], 'class': ['Wdgt movies_annee']}]), 
+                                    ('find_all', [{'tag': ['li']}])])
         findS['controls'].update({'reverse': True})
 
     elif 'Productoras' in item.title:
-        findS['categories'] = {'find': [{'tag': ['ul'], 'class': ['owl-carousel']}], 
-                               'find_all': [{'tag': ['li'], 'class': ['item']}]}
+        findS['categories'] = dict([('find', [{'tag': ['ul'], 'class': ['owl-carousel']}]), 
+                                    ('find_all', [{'tag': ['li'], 'class': ['item']}])])
 
     elif 'Géneros' in item.title:
         findS['categories'] = {'find_all': [{'tag': ['li'], 'class': ['AAIco-video_library']}]}
@@ -428,8 +434,7 @@ def play(item):
 
 def search(item, texto, **AHkwargs):
     logger.info()
-    global kwargs
-    kwargs = AHkwargs
+    kwargs.update(AHkwargs)
 
     try:
         texto = texto.replace(" ", "+")
@@ -450,8 +455,7 @@ def search(item, texto, **AHkwargs):
 
 def newest(categoria, **AHkwargs):
     logger.info()
-    global kwargs
-    kwargs = AHkwargs
+    kwargs.update(AHkwargs)
 
     item = Item()
     try:

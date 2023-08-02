@@ -23,7 +23,7 @@ from core.item import Item
 from platformcode import logger, config
 from channels import autoplay
 from channels import filtertools
-from channels import renumbertools
+from modules import renumbertools
 
 canonical = {
              'channel': 'animespace', 

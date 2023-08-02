@@ -5,10 +5,11 @@
 
 import sys
 PY3 = False
-if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int
+if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
 import re
 import traceback
+if not PY3: _dict = dict; from collections import OrderedDict as dict
 
 from core.item import Item
 from core import servertools
@@ -26,15 +27,14 @@ list_quality = []
 list_quality_movies = ['DVDR', 'HDRip', 'VHSRip', 'HD', '2160p', '1080p', '720p', '4K', '3D', 'Screener', 'BluRay']
 list_quality_tvshow = ['HDTV', 'HDTV-720p', 'WEB-DL 1080p', '4KWebRip']
 list_servers = ['okru', 'yourupload', 'mega', 'doodstream', 'fembed']
-forced_proxy_opt = 'ProxyCF'
-
+forced_proxy_opt = 'ProxySSL'
 
 canonical = {
              'channel': 'sinpeli', 
              'host': config.get_setting("current_host", 'sinpeli', default=''), 
              'host_alt': ["https://www.sinpeli.com/"], 
              'host_black_list': [], 
-             'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 
+             'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'forced_proxy_ifnot_assistant': forced_proxy_opt, 
              'CF': False, 'CF_test': False, 'alfa_s': True
             }
 host = canonical['host'] or canonical['host_alt'][0]
@@ -47,18 +47,19 @@ tv_path = '/tv'
 language = []
 url_replace = []
 
-finds = {'find': {'find': [{'tag': ['ul'], 'class': ['MovieList']}], 
-                  'find_all': [{'tag': ['article',], 'class': re.compile("TPost C")}]},
+finds = {'find': dict([('find', [{'tag': ['ul'], 'class': ['MovieList']}]), 
+                       ('find_all', [{'tag': ['article',], 'class': re.compile("TPost C")}])]),
          'categories': {}, 
          'search': {}, 
-         'get_language': {'find_all': [{'tag': ['span'], 'class': ['languages']}, {'tag': ['img'], '@ARG': 'src'}]}, 
+         'get_language': {'find_all': [{'tag': ['span'], 'class': ['languages']}]}, 
          'get_language_rgx': '(?:flags\/||d{4}\/\d{2}\/)(\w+)\.(?:png|jpg|jpeg|webp)', 
          'get_quality': {}, 
          'get_quality_rgx': '', 
          'next_page': {}, 
          'next_page_rgx': [['\/page\/\d+', '/page/%s/']], 
          'last_page': {'find': [{'tag': ['a'], 'class': ['last'], '@ARG': 'href', '@TEXT': '(\d+)'}]}, 
-         'year': {'find': [{'tag': ['h3']}], 'get_text': [{'tag': '', '@STRIP': True, '@TEXT': '\((\d+)\)'}]}, 
+         'year': dict([('find', [{'tag': ['h3']}]), 
+                       ('get_text', [{'tag': '', '@STRIP': True, '@TEXT': '\((\d+)\)'}])]), 
          'season_episode': {}, 
          'seasons': {}, 
          'season_num': {}, 
@@ -68,8 +69,10 @@ finds = {'find': {'find': [{'tag': ['ul'], 'class': ['MovieList']}],
          'episodes': {}, 
          'episode_num': [], 
          'episode_clean': [], 
-         'plot': {'find': [{'tag': ['div'], 'class': ['Description']}, {'tag': ['p']}], 'get_text': [{'tag': '', '@STRIP': True}]}, 
-         'findvideos': {'find': [{'tag': ['ul'], 'class': ['TPlayerNv']}], 'find_all': [{'tag': ['li']}]}, 
+         'plot': dict([('find', [{'tag': ['div'], 'class': ['Description']}, {'tag': ['p']}]), 
+                       ('get_text', [{'tag': '', '@STRIP': True}])]), 
+         'findvideos': dict([('find', [{'tag': ['ul'], 'class': ['TPlayerNv']}]), 
+                             ('find_all', [{'tag': ['li']}])]), 
          'title_clean': [['(?i)TV|Online|(4k-hdr)|(fullbluray)|4k| - 4k|(3d)|miniserie|\s*\(\d{4}\)', ''],
                          ['[\(|\[]\s*[\)|\]]', '']],
          'quality_clean': [['(?i)proper|unrated|directors|cut|repack|internal|real-*|extended|masted|docu|super|duper|amzn|uncensored|hulu', '']],
@@ -103,7 +106,7 @@ def mainlist(item):
     itemlist.append(Item(channel=item.channel,
                          action="section",
                          thumbnail=get_thumb("language", auto=True),
-                         title="Idiomas",
+                         title=" - [COLOR paleturquoise]Idiomas[/COLOR]",
                          c_type='peliculas', 
                          url=host
                          )
@@ -112,7 +115,7 @@ def mainlist(item):
     itemlist.append(Item(channel=item.channel,
                          action="section",
                          thumbnail=get_thumb("quality", auto=True),
-                         title="Calidad",
+                         title=" - [COLOR paleturquoise]Calidad[/COLOR]",
                          c_type='peliculas', 
                          url=host
                          )
@@ -121,7 +124,7 @@ def mainlist(item):
     itemlist.append(Item(channel=item.channel,
                          action="section",
                          thumbnail=get_thumb("genres", auto=True),
-                         title="Generos",
+                         title=" - [COLOR paleturquoise]Géneros[/COLOR]",
                          c_type='peliculas', 
                          url=host
                          )
@@ -146,14 +149,14 @@ def mainlist(item):
 def section(item):
     logger.info()
 
-    if item.title == "Generos": menu_id="351"
-    elif item.title == "Idiomas": menu_id="415"
+    if "Géneros" in item.title: menu_id="351"
+    elif "Idiomas" in item.title: menu_id="415"
     else: menu_id="421"
     
     findS = finds.copy()
 
-    findS['categories'] = {'find': [{'tag': ['li'], 'id': ['menu-item-%s' % menu_id]}], 
-                           'find_all': [{'tag': ['li']}]}
+    findS['categories'] = dict([('find', [{'tag': ['li'], 'id': ['menu-item-%s' % menu_id]}]), 
+                                ('find_all', [{'tag': ['li']}])])
 
     return AlfaChannel.section(item, finds=findS, **kwargs)
 
@@ -289,14 +292,13 @@ def findvideos_matches(item, matches_int, langs, response, **AHkwargs):
 
 def search(item, texto, **AHkwargs):
     logger.info()
-    global kwargs
-    kwargs = AHkwargs
+    kwargs.update(AHkwargs)
     
     try:
         texto = texto.replace(" ", "+")
         if texto:
             item.url += "?s=" + texto
-            item.c_type = 'search'
+            item.c_type = 'peliculas'
             item.texto = texto
             return list_all(item)
         else:
@@ -310,8 +312,7 @@ def search(item, texto, **AHkwargs):
 
 def newest(categoria, **AHkwargs):
     logger.info()
-    global kwargs
-    kwargs = AHkwargs
+    kwargs.update(AHkwargs)
 
     item = Item()
     try:

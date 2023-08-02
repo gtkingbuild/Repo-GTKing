@@ -208,13 +208,17 @@ def set_cookies(dict_cookie, clear=True, alfa_s=False):
     """
     
     #Se le dara a la cookie un dia de vida por defecto
-    expires_plus = dict_cookie.get('expires', 86400)
-    ts = int(time.time())
-    expires = ts + expires_plus
+    expires = None
+    if 'expires' in dict_cookie and dict_cookie['expires'] is not None:
+        expires_plus = dict_cookie.get('expires', 86400)
+        ts = int(time.time())
+        expires = ts + expires_plus
 
     name = dict_cookie.get('name', '')
     value = dict_cookie.get('value', '')
     domain = dict_cookie.get('domain', '')
+    secure = dict_cookie.get('secure', False)
+    domain_initial_dot = dict_cookie.get('domain_initial_dot', False)
 
     #Borramos las cookies ya existentes en dicho dominio (cp)
     if clear:
@@ -225,8 +229,8 @@ def set_cookies(dict_cookie, clear=True, alfa_s=False):
 
     ck = cookielib.Cookie(version=0, name=name, value=value, port=None, 
                     port_specified=False, domain=domain, 
-                    domain_specified=False, domain_initial_dot=False,
-                    path='/', path_specified=True, secure=False, 
+                    domain_specified=False, domain_initial_dot=domain_initial_dot,
+                    path='/', path_specified=True, secure=secure, 
                     expires=expires, discard=True, comment=None, comment_url=None, 
                     rest={'HttpOnly': None}, rfc2109=False)
     
@@ -464,7 +468,8 @@ def proxy_post_processing(url, proxy_data, response, **opt):
     try:
         if response["code"] in NOT_FOUND_CODES:
             opt['proxy_retries'] = -1
-        elif response["code"] not in SUCCESS_CODES+REDIRECTION_CODES and opt.get('forced_proxy_opt', '') == 'ProxyJSON':
+        elif response["code"] not in SUCCESS_CODES+REDIRECTION_CODES and opt.get('forced_proxy_opt', '') == 'ProxyJSON' \
+                              and opt.get('error_check', True):
             opt['forced_proxy_opt'] = 'ProxyCF'
             opt['forced_proxy'] = opt['forced_proxy_opt']
 
@@ -503,7 +508,7 @@ def proxy_post_processing(url, proxy_data, response, **opt):
         elif response["code"] in REDIRECTION_CODES:
             response['sucess'] = True
 
-        if proxy_data.get('stat', '') and not response['sucess'] and \
+        if proxy_data.get('stat', '')  and opt.get('error_check', True) and not response['sucess'] and \
                 opt.get('proxy_retries_counter', 0) <= opt.get('proxy_retries', 1) and \
                 opt.get('count_retries_tot', 5) > 1:
             if not PY3: from . import proxytools
@@ -547,7 +552,8 @@ def proxy_post_processing(url, proxy_data, response, **opt):
 
 def blocking_error(url, req, proxy_data, **opt):
 
-    if opt.get('canonical_check', False): return False
+    if not opt.get('canonical_check', True): return False
+    if not opt.get('error_check', True): return False
     code = str(req.status_code) or ''
     data = ''
     if req.content: data = req.content[:5000]
@@ -654,7 +660,7 @@ def canonical_quick_check(url, **opt):
 
 def canonical_check(url, response, req, **opt):
     
-    if opt.get('canonical_check', False): return response
+    if not opt.get('canonical_check', True): return response
     if not response['data']: return response
     if isinstance(response['data'], dict): return response
     if '//127.0.0.1' in url or '//192.168.' in url or '//10.' in url or '//176.' in url or '//localhost' in url: return response
@@ -947,6 +953,8 @@ def downloadpage(url, **opt):
                             opt['CF_if_NO_assistant'] = opt['canonical']['CF_if_NO_assistant']
     if 'forced_proxy_opt' not in opt and 'forced_proxy_opt' in opt.get('canonical', {}): \
                             opt['forced_proxy_opt'] = opt['canonical']['forced_proxy_opt']
+    if 'forced_proxy' not in opt and 'forced_proxy' in opt.get('canonical', {}): \
+                            opt['forced_proxy'] = opt['canonical']['forced_proxy']
     if 'cf_assistant_if_proxy' not in opt and 'cf_assistant_if_proxy' in opt.get('canonical', {}): \
                             opt['cf_assistant_if_proxy'] = opt['canonical']['cf_assistant_if_proxy']
     if opt.get('canonical', {}).get('forced_proxy_ifnot_assistant', '') or opt.get('forced_proxy_ifnot_assistant', ''):
@@ -958,6 +966,8 @@ def downloadpage(url, **opt):
     if 'set_tls_min' not in opt and 'set_tls_min' in opt.get('canonical', {}): opt['set_tls_min'] = opt['canonical']['set_tls_min']
     if 'check_blocked_IP' not in opt and 'check_blocked_IP' in opt.get('canonical', {}): 
                             opt['check_blocked_IP'] = opt['canonical']['check_blocked_IP']
+    if 'cf_assistant_get_source' not in opt and 'cf_assistant_get_source' in opt.get('canonical', {}): 
+                            opt['cf_assistant_get_source'] = opt['canonical']['cf_assistant_get_source']
 
     # Preparando la url
     if not PY3:
@@ -1099,7 +1109,7 @@ def downloadpage(url, **opt):
         
         if opt.get('timeout', None) is None and HTTPTOOLS_DEFAULT_DOWNLOAD_TIMEOUT is not None: 
             opt['timeout'] = HTTPTOOLS_DEFAULT_DOWNLOAD_TIMEOUT
-        if opt['timeout'] == 0:
+        if opt.get('timeout', 0) == 0:
             opt['timeout'] = None
 
         if len(url) > 0:
@@ -1216,7 +1226,8 @@ def downloadpage(url, **opt):
         
         response = build_response()
         response_code = req.status_code
-        response['data'] = req.content
+        response['data'] = req.content if not opt.get('cf_assistant_get_source', False) \
+                                       else req.reason if req.status_code in [207, 208] else req.content
         response['proxy__'] = proxy_stat(opt['url_save'], proxy_data, **opt)
 
         canonical = opt.get('canonical', {})
@@ -1225,7 +1236,8 @@ def downloadpage(url, **opt):
 
 
         # Retries if host changed but old host in error
-        if block and opt.get('retry_alt', retry_alt_default) and opt.get('proxy__test', '') != 'retry' and not proxy_data.get('stat', ''):
+        if block and opt.get('retry_alt', retry_alt_default) and opt.get('proxy__test', '') != 'retry' \
+                 and not proxy_data.get('stat', '') and response_code not in [404]:
             url_host = scrapertools.find_single_match(url, patron_host)
             url_host = url_host  + '/' if url_host and not url_host.endswith('/') else ''
             
@@ -1239,7 +1251,8 @@ def downloadpage(url, **opt):
         
         # Retries blocked domain with proxy
         if block and opt.get('retry_alt', retry_alt_default) and opt.get('proxy__test', '') != 'retry' \
-                 and not proxy_data.get('stat', '') and opt.get('proxy_retries', 1) and opt.get('forced_proxy_ifnot_assistant', ''):
+                 and not proxy_data.get('stat', '') and opt.get('proxy_retries', 1) and opt.get('forced_proxy_ifnot_assistant', '') \
+                 and response_code not in [404]:
             if not opt.get('alfa_s', False): logger.error('Error: %s in url: %s - Reintentando' % (response_code, url))
             forced_proxy_web = 'ProxyWeb:croxyproxy.com' if not opt.get('CF', False) else 'ProxyWeb:hidester.com'
             opt['forced_proxy'] = opt.get('forced_proxy', '') or opt.get('forced_proxy_retry', '') \
@@ -1267,9 +1280,10 @@ def downloadpage(url, **opt):
 
         # Si falla proxy SSL por timeout, sacarlo de proxy y reejecutarlo si está instalado Assistant, si no pasarlo a ProxyCF
         if ('timeout' in str(response_code).lower() or 'Detected a Cloudflare version 2' in str(response_code) \
-                                                    or response_code in CLOUDFLARE_CODES+NOT_FOUND_CODES) \
+                                                    or response_code in CLOUDFLARE_CODES) \
                                                     and ', Proxy Web' in proxy_data.get('stat', '') \
-                                                    and proxy_data.get('web_name') == 'croxyproxy.com':
+                                                    and proxy_data.get('web_name') == 'croxyproxy.com' \
+                                                    and opt.get('error_check', True):
             update_alfa_domain_web_list(url, 'Timeout=%s' % opt['timeout'], proxy_data, **opt)
 
             if not alfa_domain_web_list or not alfa_domain_web_list.get(proxy_data.get('web_name', ''), []):
@@ -1314,7 +1328,7 @@ def downloadpage(url, **opt):
         # Retries Cloudflare errors
         if req.headers.get('Server', '').startswith('cloudflare') and response_code in CLOUDFLARE_CODES \
                         and (not opt.get('CF', False) or opt['retries_cloudflare'] > 0) and opt.get('CF_test', True) \
-                        and not opt.get('check_blocked_IP_save', {}):
+                        and not opt.get('check_blocked_IP_save', {}) and opt.get('error_check', True):
             domain = urlparse.urlparse(opt['url_save'])[1]
             if (domain not in CF_LIST and opt['retries_cloudflare'] >= 0) or opt['retries_cloudflare'] > 0:
                 if not '__cpo=' in url and domain not in CF_LIST:
@@ -1335,7 +1349,8 @@ def downloadpage(url, **opt):
         
         # Retry con Assistant si falla proxy SSL
         if opt['retries_cloudflare'] <= 0 and response_code in CLOUDFLARE_CODES and opt.get('cf_assistant_if_proxy', True) \
-                        and not opt.get('cf_v2', False) and opt.get('CF_test', True) and ', Proxy Web' in proxy_data.get('stat', ''):
+                        and not opt.get('cf_v2', False) and opt.get('CF_test', True) and ', Proxy Web' in proxy_data.get('stat', '') \
+                        and opt.get('error_check', True) and opt.get('error_check', True):
             update_alfa_domain_web_list(url, response_code, proxy_data, **opt)
             url = opt['url_save']
             domain = obtain_domain(url, sub=True)
@@ -1365,7 +1380,7 @@ def downloadpage(url, **opt):
         # Si hay bloqueo "cf_v2" y no hay Alfa Assistant, se reintenta con Proxy
         if opt.get('forced_proxy_ifnot_assistant', '') \
                            and ('Detected a Cloudflare version 2' in str(response_code) or response_code in CLOUDFLARE_CODES) \
-                           and not channel_proxy_list(opt['url_save']):
+                           and not channel_proxy_list(opt['url_save']) and opt.get('error_check', True):
             if opt.get('cf_v2', False):
                 response['code'] = response_code
                 response['headers'] = req.headers
@@ -1388,6 +1403,14 @@ def downloadpage(url, **opt):
             proxytools.add_domain_retried(domain, proxy__type=opt['forced_proxy'], delete='SSL')
             return downloadpage(opt['url_save'], **opt)
 
+        if proxy_data.get('stat', '') and not proxy_data.get('web_name', '') \
+                                      and response['data'] and '<HTML><HEAD><TITLE>302 Moved</TITLE></HEAD>' in str(response['data']):
+            if not PY3: from . import proxytools
+            else: from . import proxytools_py3 as proxytools
+            proxytools.pop_proxy_entry(proxy_data.get('log', ''))
+            opt['post'] = opt['post_save']
+            return downloadpage(opt['url_save'], **opt)
+        
         try:
             response['encoding'] = str(req.encoding).lower() if req.encoding and req.encoding is not None else None
 
@@ -1433,6 +1456,14 @@ def downloadpage(url, **opt):
         except Exception:
             logger.error(traceback.format_exc(1))
 
+        if req.headers.get('Content-Encoding', '') == 'br':
+            try:
+                from lib.brotlipython.brotlipython import brotlidec
+                response['data'] = brotlidec(response['data'], [])
+            except Exception as e:
+                response['data'] = ''
+                logger.error('Error de descompresión BROTLI: %s' % str(e))
+
         response['url'] = req.url
 
         if not response['data']:
@@ -1458,7 +1489,8 @@ def downloadpage(url, **opt):
         if not response['sucess'] and opt.get('retry_alt', retry_alt_default) \
                                   and opt.get('canonical', {}).get('host_alt', []) \
                                   and len(opt['canonical']['host_alt']) > 1 \
-                                  and opt.get('canonical', {}).get('channel', []):
+                                  and opt.get('canonical', {}).get('channel', []) \
+                                  and response_code not in [404]:
             url, response = retry_alt(url, req, response, proxy_data, **opt)
             if not isinstance(response, dict) and response.host:
                 response.time_elapsed = time.time() - inicio
@@ -1637,10 +1669,10 @@ def fill_fields_post(url, info_dict, req, response, req_headers, inicio, **opt):
         info_dict.append(('Response code', response['code']))
 
         if response['code'] in SUCCESS_CODES:
-            info_dict.append(('Success', 'True'))
+            info_dict.append(('Success', 'True - Error_check: %s' % opt.get('error_check', True)))
             response['sucess'] = True
         else:
-            info_dict.append(('Success', 'False'))
+            info_dict.append(('Success', 'False - Error_check: %s' % opt.get('error_check', True)))
             response['sucess'] = False
 
         info_dict.append(('Response data length', 0 if not response['data'] else len(response['data'])))

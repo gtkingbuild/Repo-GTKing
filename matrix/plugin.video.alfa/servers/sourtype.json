@@ -4,7 +4,7 @@
     "ignore_urls": [],
     "patterns": [
       {
-        "pattern": "(https://(?:www.|)(?:nonktube|udvl).com/video(?:s|)/[0-9]+/[A-z0-9-]+(?:/|))",
+        "pattern": "(https://(?:www.|)(?:nonktube|udvl|leslez|teenxy).com/video(?:s|)/[0-9]+/[A-z0-9-]+(?:/|))",
         "url": "\\1"
       },
       {
@@ -12,11 +12,15 @@
         "url": "\\1"
       },
       {
-        "pattern": "(https://(?:www.|)(?:justporn|pulpo69).com/video/[A-z0-9-]+(?:/|))",
+        "pattern": "(https://(?:www.|)(?:justporn|pulpo69|fapmeifyoucan).(?:com|net)/video/[A-z0-9-]+(?:/|))",
         "url": "\\1"
       },
       {
         "pattern": "(https://(?:www.|)porn300.com(?:/es|)/video/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://(?:www.|)send.cm/[A-z0-9-]+(?:/|))",
         "url": "\\1"
       },
       {
@@ -29,6 +33,10 @@
       },
       {
         "pattern": "(http://(?:www.|)incestflix.com/watch/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://(?:www.|)eroticmv.com/[A-z0-9-]+(?:/|))",
         "url": "\\1"
       },
       {
@@ -49,6 +57,14 @@
       },
       {
         "pattern": "(https://bigfuck.tv/video/[0-9]+/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(http://www.absoluporn.com/(?:en|fr)/[A-z0-9-]+.html)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://cheemsporn.com/videos/[0-9]+/[0-9-]+(?:/|))",
         "url": "\\1"
       },
      {

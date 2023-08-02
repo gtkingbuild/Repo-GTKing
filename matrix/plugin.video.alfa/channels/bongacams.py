@@ -28,12 +28,11 @@ canonical = {
             }
 host = canonical['host'] or canonical['host_alt'][0]
 hosta = "%stools/listing_v3.php?livetab=%s&online_only=true&offset=0&can_pin_models=true&limit=40"  
-# httptools.downloadpage(host, canonical=canonical).data ### Esta en categorias
-
 
 def mainlist(item):
     logger.info()
     itemlist = []
+    # httptools.downloadpage(host, canonical=canonical).data ### Esta en categorias
     itemlist.append(Item(channel = item.channel, title="Female" , action="lista", url=hosta %(host, "female")))
     itemlist.append(Item(channel = item.channel, title="Couples" , action="lista", url=hosta % (host, "couples")))
     itemlist.append(Item(channel = item.channel, title="Male" , action="lista", url=hosta % (host, "male")))
@@ -91,6 +90,7 @@ def lista(item):
     headers={'X-Requested-With' : 'XMLHttpRequest'}
     data = httptools.downloadpage(item.url, headers=headers, canonical=canonical).json
     for elem in data['models']:
+        plot= ""
         thumbnail = elem['thumb_image'].replace("{ext}", "webp")
         title = elem['username']
         name = elem['display_name']
@@ -100,9 +100,8 @@ def lista(item):
         quality = quality.split("x")[-1]
         if "960" in quality: quality = "720"
         title += " [COLOR red]%sp[/COLOR]" %quality
-        plot = elem['topic']
         if elem.get("about_me", ""):
-            plot += "\n" + elem['about_me']
+            plot = elem['about_me']
         action = "play"
         if logger.info() == False:
             action = "findvideos"

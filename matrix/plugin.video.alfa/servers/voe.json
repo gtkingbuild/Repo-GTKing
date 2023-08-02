@@ -4,7 +4,7 @@
     "ignore_urls": [],
     "patterns": [
       {
-        "pattern": "(?:reputationsheriffkennethsand.com|voe.sx)/(?:e/|)([A-z0-9]+)",
+        "pattern": "(?:reputationsheriffkennethsand.com|availedsmallest.com|voe.sx)/(?:e/|)([A-z0-9]+)",
         "url": "https://voe.sx/e/\\1"
       }
     ]

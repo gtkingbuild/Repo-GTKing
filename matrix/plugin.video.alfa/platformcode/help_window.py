@@ -47,23 +47,28 @@ def show_info(id, wait=True, title="", text=""):
         watched = False
         info_file = dict()
         watched_file = dict()
+        ids = []
 
         if filetools.exists(info_file_path):
             info_file = jsontools.load(filetools.read(info_file_path))
             if filetools.exists(data_path):
                 watched_file = jsontools.load(filetools.read(data_path))
 
-        if watched_file.get(id, ''):
-            watched = True
+        if id == 'broadcast' and info_file:
+            ids = [x for x in list(info_file.keys()) if x.startswith(id)]
+        ids = ids or [id]
+        for id in ids:
+            if watched_file.get(id, ''):
+                watched = True
 
-        if info_file.get(id, '') and not watched:
-            title = info_file[id]["title"]
-            text = info_file[id]["text"]
-            t = threading.Thread(target=show_window, args=(title, text))
-            t.start()
-            if wait:
-                t.join()
-            set_watched(id)
+            if info_file.get(id, '') and not watched:
+                title = info_file[id]["title"]
+                text = info_file[id]["text"]
+                t = threading.Thread(target=show_window, args=(title, text))
+                t.start()
+                if wait:
+                    t.join()
+                set_watched(id)
     else:
         t = threading.Thread(target=show_window, args=(title, text))
         t.start()

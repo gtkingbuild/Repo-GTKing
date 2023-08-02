@@ -86,6 +86,8 @@ tmdb_langs = ['es', 'es-MX', 'en', 'it', 'pt', 'fr', 'de']
 langs = config.get_setting('tmdb_lang', default=0)
 tmdb_lang = tmdb_langs[langs]
 timeout = 5
+VIDEOLIBRARY_UPDATE = httptools.VIDEOLIBRARY_UPDATE
+TEST_ON_AIR = httptools.TEST_ON_AIR
 
 
 def drop_bd():
@@ -137,13 +139,14 @@ def cache_response(fn):
                 url = re.sub('&year=-', '', args[0])
                 if PY3: url = str.encode(url)
                 url_base64 = base64.b64encode(url)
-                
-                c.execute("SELECT response, added FROM tmdb_cache WHERE url=?", (url_base64,))
-                row = c.fetchone()
 
-                if row:
-                    #logger.error("Entra en BD %s" % args[0])
-                    result = eval(base64.b64decode(row[0]))
+                if config.get_setting("tmdb_cache_read", default=True):
+                    c.execute("SELECT response, added FROM tmdb_cache WHERE url=?", (url_base64,))
+                    row = c.fetchone()
+
+                    if row:
+                        #logger.error("Entra en BD %s" % args[0])
+                        result = eval(base64.b64decode(row[0]))
                 
                 # si no se ha obtenido información, llamamos a la funcion
                 if not result:
@@ -629,6 +632,9 @@ class ResultDictDefault(dict):
 
             return profiles
 
+        elif key == "last_episode_to_air":
+            return 0
+
         else:
             # El resto de claves devuelven cadenas vacias por defecto
             return ""
@@ -896,7 +902,7 @@ class Tmdb(object):
             url = ('https://api.themoviedb.org/3/genre/%s/list?api_key=a1ab8b8669da03637a4b98fa39c39228&language=%s'
                    % (tipo, idioma))
             try:
-                if not httptools.VIDEOLIBRARY_UPDATE and not httptools.TEST_ON_AIR:
+                if not VIDEOLIBRARY_UPDATE and not TEST_ON_AIR:
                     logger.info("[Tmdb.py] Rellenando dicionario de generos")
 
                 resultado = cls.get_json(url)
@@ -929,7 +935,7 @@ class Tmdb(object):
                        '&language=%s' % (self.busqueda_id, source, self.busqueda_idioma))
                 buscando = "%s: %s" % (source.capitalize(), self.busqueda_id)
 
-            if not httptools.VIDEOLIBRARY_UPDATE and not httptools.TEST_ON_AIR:
+            if not VIDEOLIBRARY_UPDATE and not TEST_ON_AIR:
                 logger.info("[Tmdb.py] Buscando %s:\n%s" % (buscando, url))
             resultado = self.get_json(url)
             if not isinstance(resultado, dict):
@@ -974,7 +980,7 @@ class Tmdb(object):
                 url += '&first_air_date_year=%s' % self.busqueda_year
 
             buscando = self.busqueda_texto.capitalize()
-            if not httptools.VIDEOLIBRARY_UPDATE and not httptools.TEST_ON_AIR:
+            if not VIDEOLIBRARY_UPDATE and not TEST_ON_AIR:
                 logger.info("[Tmdb.py] Buscando %s en pagina %s:\n%s" % (buscando, page, url))
             resultado = self.get_json(url)
             if not isinstance(resultado, dict):
@@ -1036,7 +1042,7 @@ class Tmdb(object):
             url = ('https://api.themoviedb.org/3/%s?api_key=a1ab8b8669da03637a4b98fa39c39228&%s'
                    % (type_search, "&".join(params)))
 
-            if not httptools.VIDEOLIBRARY_UPDATE and not httptools.TEST_ON_AIR:
+            if not VIDEOLIBRARY_UPDATE and not TEST_ON_AIR:
                 logger.info("[Tmdb.py] Buscando %s:\n%s" % (type_search, url))
             resultado = self.get_json(url)
             if not isinstance(resultado, dict):
@@ -1337,7 +1343,7 @@ class Tmdb(object):
                   "&append_to_response=credits" % (self.result["id"], numtemporada, self.busqueda_idioma)
 
             buscando = "id_Tmdb: " + str(self.result["id"]) + " temporada: " + str(numtemporada) + "\nURL: " + url
-            if not httptools.VIDEOLIBRARY_UPDATE and not httptools.TEST_ON_AIR:
+            if not VIDEOLIBRARY_UPDATE and not TEST_ON_AIR:
                 logger.info("[Tmdb.py] Buscando " + buscando)
             try:
                 self.temporada[numtemporada] = self.get_json(url)
@@ -1367,7 +1373,7 @@ class Tmdb(object):
         #   Return: (dic)
         #       Devuelve un dicionario con los siguientes elementos:
         #           "temporada_nombre", "temporada_sinopsis", "temporada_poster", "temporada_num_episodios"(int),
-        #           "temporada_air_date",  "episodio_vote_count", "episodio_vote_average",
+        #           "last_episode_to_air"(int), "temporada_air_date",  "episodio_vote_count", "episodio_vote_average",
         #           "episodio_titulo", "episodio_sinopsis", "episodio_imagen", "episodio_air_date",
         #           "episodio_crew" y "episodio_guest_stars",
         #       Con capitulo == -1 el diccionario solo tendra los elementos referentes a la temporada
@@ -1399,6 +1405,9 @@ class Tmdb(object):
         ret_dic["temporada_nombre"] = temporada["name"]
         ret_dic["temporada_sinopsis"] = temporada["overview"]
         ret_dic["temporada_num_episodios"] = len(temporada["episodes"])
+        ret_dic["last_episode_to_air"] = 0
+        for x, epi in enumerate(temporada["episodes"]):
+            if epi.get('runtime') and epi.get('crew'): ret_dic["last_episode_to_air"] = epi.get('episode_number', x+1)
         if temporada["air_date"]:
             date = temporada["air_date"].split("-")
             ret_dic["temporada_air_date"] = date[2] + "/" + date[1] + "/" + date[0]
@@ -1598,15 +1607,18 @@ class Tmdb(object):
                 ret_infoLabels['genre'] = self.get_generos(origen)
 
             elif k == 'name' or k == 'title':
-                if ret_infoLabels.get('mediatype', '') in ['tvshow', 'episode'] and not ret_infoLabels.get('title_alt', ''):
-                    v_alt = scrapertools.slugify(v, strict=False)
-                    for word in v_alt.split(' '):
-                        if word in ret_infoLabels['tvshowtitle'].lower():
-                            break
-                    else:
-                        if not scrapertools.find_single_match(v_alt, '\-\d+\.\d+'):
-                            ret_infoLabels['title_alt'] = v_alt
-                ret_infoLabels['title'] = v
+                if scrapertools.find_single_match(v, '[a-zA-Z0-9_]+'):
+                    if ret_infoLabels.get('mediatype', '') in ['tvshow', 'episode'] and not ret_infoLabels.get('title_alt', ''):
+                        v_alt = scrapertools.slugify(v, strict=False)
+                        for word in v_alt.split(' '):
+                            if word in ret_infoLabels['tvshowtitle'].lower():
+                                break
+                        else:
+                            if not scrapertools.find_single_match(v_alt, '\-\d+\.\d+'):
+                                ret_infoLabels['title_alt'] = v_alt
+                    ret_infoLabels['title'] = v
+                elif not ret_infoLabels.get('title'):
+                    ret_infoLabels['title'] = v
 
             elif k == 'networks':
                 ret_infoLabels['studio'] = ", ".join(i['name'] for i in v)

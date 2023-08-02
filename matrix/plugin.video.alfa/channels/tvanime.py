@@ -13,7 +13,6 @@ if sys.version_info[0] >= 3:
 
 import re
 import base64
-from bs4 import BeautifulSoup
 
 from channelselector import get_thumb
 from core import httptools
@@ -23,7 +22,7 @@ from core.item import Item
 from platformcode import config, logger
 from channels import filtertools, autoplay
 from core import tmdb
-from channels import renumbertools
+from modules import renumbertools
 from platformcode import platformtools
 
 canonical = {
@@ -135,6 +134,7 @@ def mainlist(item):
 
 def create_soup(url, referer=None, unescape=False):
     logger.info()
+    from bs4 import BeautifulSoup
 
     if referer:
         data = httptools.downloadpage(url, headers={'Referer':referer}, canonical=canonical).data

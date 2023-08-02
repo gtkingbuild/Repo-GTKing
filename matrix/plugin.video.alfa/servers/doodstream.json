@@ -4,8 +4,12 @@
     "ignore_urls": [],
     "patterns": [
       {
-        "pattern": "http(?:s|)://dood(?:stream|).(?:watch|to|so|com|cx|la|ws|sh|pm|wf|re|yt)/(?:e|d)/([a-z0-9#]+)",
-        "url": "https://dood.to/e/\\1"
+        "pattern": "(http(?:s|)://dood(?:stream|).(?:watch|to|so|com|cx|la|ws|sh|pm|wf|re|yt)/(?:e|d)/[a-z0-9#]+)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(http(?:s|)://dooood.(?:watch|to|so|com|cx|la|ws|sh|pm|wf|re|yt)/(?:e|d)/[a-z0-9#]+)",
+        "url": "\\1"
       }
     ]
   },

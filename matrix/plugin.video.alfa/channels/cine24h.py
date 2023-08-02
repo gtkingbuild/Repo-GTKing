@@ -22,8 +22,8 @@ from channelselector import get_thumb
 canonical = {
              'channel': 'cine24h', 
              'host': config.get_setting("current_host", 'cine24h', default=''), 
-             'host_alt': ["https://cine24h.net/"], 
-             'host_black_list': [], 
+             'host_alt': ["https://cine24h.online/"], 
+             'host_black_list': ["https://cine24h.net/"], 
              'pattern': '<link\s*rel="icon"\s*href="([^"]+)"', 
              'CF': False, 'CF_test': False, 'alfa_s': True
             }

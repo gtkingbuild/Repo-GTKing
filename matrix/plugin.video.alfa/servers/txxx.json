@@ -4,7 +4,7 @@
     "ignore_urls": [],
     "patterns": [
       {
-        "pattern": "(?:video|)((?:txxx|hclips).com/(?:video|videos|embed)/[0-9]+)",
+        "pattern": "(?:video|)((?:txxx|hclips|pornhits).com/(?:video|videos|embed)/[0-9]+)",
         "url": "https://\\1/a/"
       },
       {
@@ -12,7 +12,7 @@
         "url": "https://\\1"
       },
       {
-        "pattern": "https://(?:www.|)((?:privatehomeclips|hdzog|hotmovs|tubepornclassic|upornia|vjav|voyeurhit).(?:com|tube)/video(?:s|)/[0-9]+/[A-z0-9-]+/)",
+        "pattern": "https://(?:www.|)((?:privatehomeclips|hdzog|hotmovs|tubepornclassic|upornia|vjav|voyeurhit|onlyporn).(?:com|tube)/video(?:s|)/[0-9]+/[A-z0-9-]+/)",
         "url": "https://\\1"
       },
       {
@@ -36,7 +36,7 @@
         "url": "\\1"
       },
       {
-        "pattern": "(https://porntop.com)/embed.php\\?id=([0-9]+)",
+        "pattern": "(https://(?:porntop|pornhits).com)/embed.php\\?id=([0-9]+)",
         "url": "\\1/video/\\2/"
       },
       {

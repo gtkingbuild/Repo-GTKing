@@ -1,98 +1,184 @@
 # -*- coding: utf-8 -*-
-#------------------------------------------------------------
+# -*- Channel AmateurTV -*-
+# -*- Created for Alfa-addon -*-
+# -*- By the Alfa Develop Group -*-
+
 import sys
 PY3 = False
-if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int
-
-if PY3:
-    import urllib.parse as urlparse                             # Es muy lento en PY2.  En PY3 es nativo
-else:
-    import urlparse                                             # Usamos el nativo de PY2 que es más rápido
+if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
 import re
+import traceback
+if not PY3: _dict = dict; from collections import OrderedDict as dict
 
-from platformcode import config, logger
-from core import scrapertools
 from core.item import Item
 from core import servertools
-from core import httptools
-from core import jsontools as json
+from core import scrapertools
+from core import jsontools
+from channelselector import get_thumb
+from platformcode import config, logger
+from channels import filtertools, autoplay
+from lib.AlfaChannelHelper import DictionaryAdultChannel
+
+IDIOMAS = {}
+list_language = list(set(IDIOMAS.values()))
+list_quality = []
+list_quality_movies = []
+list_quality_tvshow = []
+list_servers = [] 
+forced_proxy_opt = 'ProxySSL'
+
 canonical = {
              'channel': 'amateurtv', 
              'host': config.get_setting("current_host", 'amateurtv', default=''), 
              'host_alt': ["https://www.amateur.tv/"], 
              'host_black_list': [], 
              'pattern': ['property="og:url" content="?([^"|\s*]+)["|\s*]"?'], 
-             'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'cf_assistant': False, 
+             'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'forced_proxy_ifnot_assistant': forced_proxy_opt, 'cf_assistant': False, 
              'CF': False, 'CF_test': False, 'alfa_s': True
             }
 host = canonical['host'] or canonical['host_alt'][0]
-hosta = "%sv3/readmodel/cache/cams/%s/0/50/es"
+# url_api = "%sv3/readmodel/cache/cams/%s/0/50/es"      ##  https://es.amateur.tv/v3/readmodel/cache/onlinecamlist
+# https://es.amateur.tv/v3/readmodel/cache/menu   ##  https://es.amateur.tv/v3/readmodel/cache/sectioncamlist?section=viewers  couples
+url_api = '%sv3/readmodel/cache/sectioncamlist?%s'
 
-httptools.downloadpage(host, canonical=canonical).data
+
+
+timeout = 10
+kwargs = {}
+kwargs['soup'] = False
+kwargs['json'] = True
+debug = config.get_setting('debug_report', default=False)
+movie_path = ''
+tv_path = ''
+language = []
+url_replace = []
+
+
+finds = {'find': {},
+         'categories': {}, 
+         'search': {}, 
+         'get_quality': {}, 
+         'get_quality_rgx': '', 
+         'next_page': {}, 
+         'next_page_rgx': [], 
+         'last_page': {}, 
+         'plot': {}, 
+         'findvideos': {}, 
+         'title_clean': [['[\(|\[]\s*[\)|\]]', ''], ['(?i)\s*videos*\s*', '']],
+         'quality_clean': [['(?i)proper|unrated|directors|cut|repack|internal|real|extended|masted|docu|super|duper|amzn|uncensored|hulu', '']],
+         'url_replace': [], 
+         'controls': {'url_base64': False, 'cnt_tot': 25, 'reverse': False}, 
+         'timeout': timeout}
+AlfaChannel = DictionaryAdultChannel(host, movie_path=movie_path, tv_path=tv_path, movie_action='play', canonical=canonical, finds=finds, 
+                                     idiomas=IDIOMAS, language=language, list_language=list_language, list_servers=list_servers, 
+                                     list_quality_movies=list_quality_movies, list_quality_tvshow=list_quality_tvshow, 
+                                     channel=canonical['channel'], actualizar_titulos=True, url_replace=url_replace, debug=debug)
+
 
 def mainlist(item):
     logger.info()
     itemlist = []
-    itemlist.append(Item(channel = item.channel,title="Destacados" , action="lista", url=hosta % (host,"a")))
-    itemlist.append(Item(channel = item.channel,title="Mujer" , action="lista", url=hosta %(host, "w")))
-    itemlist.append(Item(channel = item.channel,title="Parejas" , action="lista", url=hosta %(host, "c")))
-    itemlist.append(Item(channel = item.channel,title="Hombres" , action="lista", url=hosta %(host, "m")))
-    itemlist.append(Item(channel = item.channel,title="Trans" , action="lista", url=hosta %(host, "t")))
-    itemlist.append(Item(channel = item.channel,title="Privado" , action="lista", url=hosta %(host, "p")))
+    # soup = AlfaChannel.create_soup(host, alfa_s=True) #Para coger canonical
+    AlfaChannel.httptools.downloadpage(host, canonical=canonical).data
+    
+    itemlist.append(Item(channel = item.channel,title="Mujer" , action="list_all", url=url_api %(host, 'genre=["w"]')))
+    itemlist.append(Item(channel = item.channel,title="Parejas" , action="list_all", url=url_api %(host, 'genre=["c"]')))
+    itemlist.append(Item(channel = item.channel,title="Hombres" , action="list_all", url=url_api %(host, 'genre=["m"]')))
+    itemlist.append(Item(channel = item.channel,title="Trans" , action="list_all", url=url_api %(host, 'genre=["t"]')))
+    itemlist.append(Item(channel = item.channel,title="Categorias" , action="section", url=host + "/v3/tag/list"))
+    
     return itemlist
 
 
-def lista(item):
+def section(item):
     logger.info()
-    itemlist = []
-    data = httptools.downloadpage(item.url, canonical=canonical).json
-    data = data['cams']
-    for elem in data['nodes']:
-        id = elem['id']
-        is_on = elem['online']
-        thumbnail = elem['imageURL']
-        country  = elem['country']
-        name = elem['user']['username']
-        age = elem['user']['age']
-        quality = elem['hd']
-        title = "%s %s %s" %(name, age, country)
-        if not is_on:
-            title= "[COLOR red] %s[/COLOR]" % title
-        url = "%sv3/readmodel/show/%s/es" %(host, name)
-        plot = ""
-        action = "play"
-        if logger.info() == False:
-            action = "findvideos"
-        itemlist.append(Item(channel = item.channel,action=action, title=title, url=url, thumbnail=thumbnail,
-                                   plot=plot, fanart=thumbnail, contentTitle=title ))
-    count= data['totalCount']
-    current_page = scrapertools.find_single_match(item.url, ".*?/(\d+)/50/")
-    current_page = int(current_page)
-    if current_page <= int(count) and (int(count) - current_page) > 50:
-        current_page += 50
-        next_page = re.sub(r"\d+/50/", "{0}/50/".format(current_page), item.url)
-        itemlist.append(Item(channel = item.channel,action="lista", title="[COLOR blue]Página Siguiente >>[/COLOR]", url=next_page) )
-    return itemlist
+    
+    return AlfaChannel.section(item, matches_post=section_matches, **kwargs)
+
+
+def section_matches(item, matches_int, **AHkwargs):
+    logger.info()
+    matches = []
+    findS = AHkwargs.get('finds', finds)
+    
+    matches_int = matches_int.get('body', {}).get('tags', {}).copy()
+    if not matches_int: return matches
+    
+    for elem in matches_int:
+        elem_json = {}
+        try:
+            elem_json['title'] = elem.get('tag', '')
+            elem_json['url'] = '%sv3/readmodel/cache/sectioncamlist?genre=["w","m","c","t"]&tag=%s' % (host, elem_json['title'])
+            elem_json['thumbnail'] = ''
+            elem_json['cantidad'] = elem.get('count', '')
+        except:
+            logger.error(elem)
+            logger.error(traceback.format_exc())
+            continue
+        
+        if not elem_json['url']: continue
+        matches.append(elem_json.copy())
+    
+    return matches
+
+
+def list_all(item):
+    logger.info()
+    
+    return AlfaChannel.list_all(item, matches_post=list_all_matches, **kwargs)
+
+
+def list_all_matches(item, matches_int, **AHkwargs):
+    logger.info()
+    matches = []
+    findS = AHkwargs.get('finds', finds)
+    
+    matches_int = matches_int.get('body', {}).get('cams', {}).copy()
+    
+    # AlfaChannel.last_page = int(len(matches_int) / finds['controls'].get('cnt_tot', 25))
+    # AlfaChannel.last_page = int((float(len(matches_int)) / float(finds['controls'].get('cnt_tot', 25)))  + 0.999999)
+    
+    for elem in matches_int:
+        elem_json = {}
+        try:
+            name =  elem.get('username', '')
+            age = elem.get('ages', '')[0]
+            country  = elem.get('countryName', '')
+            
+            elem_json['url'] = "%sv3/readmodel/show/%s/es" %(host, name)
+            elem_json['title'] = "%s [%s] %s" %(name, age, country)
+            elem_json['thumbnail'] = elem.get('capture', '') if elem.get('capture', []) else ''
+            elem_json['quality'] = 'HD' if elem.get('hd') else ''
+        
+        except:
+            logger.error(elem)
+            logger.error(traceback.format_exc())
+            continue
+        
+        if not elem_json['url']: continue
+        
+        matches.append(elem_json.copy())
+    
+    return matches
 
 
 def findvideos(item):
     logger.info()
-    itemlist = []
-    data = httptools.downloadpage(item.url, canonical=canonical).json
-    url = data['videoTechnologies']['fmp4']
-    url += "|ignore_response_code=True"
-    itemlist.append(Item(channel = item.channel,action="play", contentTitle = item.title, url=url))
-    return itemlist
-
+    
+    return AlfaChannel.get_video_options(item, item.url, data='', matches_post=None, 
+                                         verify_links=False, findvideos_proc=True, **kwargs)
 
 def play(item):
     logger.info()
     itemlist = []
-    data = httptools.downloadpage(item.url, canonical=canonical).json
-    url = data['videoTechnologies']['fmp4']
-    # url = httptools.downloadpage(url, follow_redirects=False).headers["location"]
-    url += "|ignore_response_code=True"
-    itemlist.append(Item(channel = item.channel,action="play", title= "Directo", contentTitle = item.title, url=url))
+    soup = AlfaChannel.create_soup(item.url, **kwargs)
+    qualities = soup.get('qualities', [])
+    vid = soup.get('videoTechnologies', {}).get('fmp4', {})
+    for elem in qualities:
+        quality = scrapertools.find_single_match(elem, "\d+x(\d+)") 
+        url = "%s&variant=%s" % (vid, quality)
+        itemlist.append(["[amateurtv] %sp" %quality, url])
+    itemlist.sort(key=lambda item: int( re.sub("\D", "", item[0])))
     return itemlist
 

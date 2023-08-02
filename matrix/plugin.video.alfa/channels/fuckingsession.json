@@ -1,0 +1,15 @@
+{
+  "id": "fuckingsession",
+  "name": "fuckingsession",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://i.postimg.cc/gcvJ2FjV/fuckingsession.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

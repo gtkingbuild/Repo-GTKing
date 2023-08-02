@@ -6,10 +6,11 @@
 
 import sys
 PY3 = False
-if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int
+if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
 import re
 import traceback
+if not PY3: _dict = dict; from collections import OrderedDict as dict
 
 from core.item import Item
 from core import servertools
@@ -27,7 +28,7 @@ list_quality = []
 list_quality_movies = ['DVDR', 'HDRip', 'VHSRip', 'HD', '2160p', '1080p', '720p', '4K', '3D', 'Screener', 'BluRay']
 list_quality_tvshow = []
 list_servers = ['cinemaupload', 'fastream']
-forced_proxy_opt = 'ProxyCF'
+forced_proxy_opt = 'ProxySSL'
 
 canonical = {
              'channel': 'homecine', 
@@ -48,8 +49,8 @@ tv_path = '/series'
 language = []
 url_replace = []
 
-finds = {'find': {'find': [{'tag': ['div'], 'class': ['movies-list']}], 
-                  'find_all': [{'tag': ['div'], 'class': ['ml-item']}]},
+finds = {'find': dict([('find', [{'tag': ['div'], 'class': ['movies-list']}]), 
+                       ('find_all', [{'tag': ['div'], 'class': ['ml-item']}])]),
          'categories': {}, 
          'search': {}, 
          'get_language': {}, 
@@ -59,12 +60,15 @@ finds = {'find': {'find': [{'tag': ['div'], 'class': ['movies-list']}],
          'next_page': {}, 
          'next_page_rgx': [['\/page\/\d+', '/page/%s/']], 
          'last_page': {'find': [{'tag': ['a'], 'rel': ['nofollow'], 'string': re.compile('(?i)Last'), '@ARG': 'href', '@TEXT': '\/(\d+)\/'}]}, 
-         'year': {'find': [{'tag': ['div'], 'class': ['jt-info']}], 
-                   'find_next': [{'tag': ['div'], 'class': ['jt-info']}, {'tag': ['a']}], 
-                   'get_text': [{'tag': '', '@STRIP': True, '@TEXT': '(\d+)'}]}, 
+         'year': dict([('find', [{'tag': ['div'], 'class': ['jt-info']}]), 
+                       ('find_next', [{'tag': ['div'], 'class': ['jt-info']}, 
+                                      {'tag': ['a']}]), 
+                       ('get_text', [{'tag': '', '@STRIP': True, '@TEXT': '(\d+)'}])]), 
          'season_episode': '(?i)\s*Temporada\s*(\d+)\s*Capitulo\s*(\d+)', 
-         'seasons': {'find': [{'tag': ['div'], 'id': ['seasons']}], 'find_all': [{'tag': ['div'], 'class': ['les-title']}]},
-         'season_num': {'find': [{'tag': ['strong']}], 'get_text': [{'tag': '', '@STRIP': True, '@TEXT': '(\d+)'}]}, 
+         'seasons': dict([('find', [{'tag': ['div'], 'id': ['seasons']}]), 
+                          ('find_all', [{'tag': ['div'], 'class': ['les-title']}])]),
+         'season_num': dict([('find', [{'tag': ['strong']}]), 
+                             ('get_text', [{'tag': '', '@STRIP': True, '@TEXT': '(\d+)'}])]), 
          'seasons_search_num_rgx': '', 
          'seasons_search_qty_rgx': '', 
          'episode_url': '', 
@@ -72,7 +76,8 @@ finds = {'find': {'find': [{'tag': ['div'], 'class': ['movies-list']}],
          'episode_num': [], 
          'episode_clean': [], 
          'plot': {}, 
-         'findvideos': {'find': [{'tag': ['ul'], 'class': ['idTabs']}], 'find_all': [{'tag': ['li']}]}, 
+         'findvideos': dict([('find', [{'tag': ['ul'], 'class': ['idTabs']}]), 
+                             ('find_all', [{'tag': ['li']}])]), 
          'title_clean': [['(?i)TV|Online|(4k-hdr)|(fullbluray)|4k| - 4k|(3d)|miniserie|\s*\(\d{4}\)', ''],
                          ['[\(|\[]\s*[\)|\]]', '']],
          'quality_clean': [['(?i)proper|unrated|directors|cut|repack|internal|real-*|extended|masted|docu|super|duper|amzn|uncensored|hulu', '']],
@@ -158,8 +163,9 @@ def section(item):
     logger.info()
     
     findS = finds.copy()
-    findS['categories'] = {'find': [{'tag': ['li'], 'id': ['menu-item-20']}, {'tag': ['ul'], 'class': ['sub-menu']}],
-                           'find_all': [{'tag': ['li']}]}
+    findS['categories'] = dict([('find', [{'tag': ['li'], 'id': ['menu-item-20']}, 
+                                          {'tag': ['ul'], 'class': ['sub-menu']}]), 
+                                ('find_all', [{'tag': ['li']}])])
 
     return AlfaChannel.section(item, finds=findS, **kwargs)
 
@@ -211,6 +217,9 @@ def list_all_matches(item, matches_int, **AHkwargs):
                 elem_json['plot'] = elem.find('p', class_="f-desc").find_next('p').get_text(strip=True)
 
             elem_json['year'] = elem_json.get('year', AlfaChannel.parse_finds_dict(elem, findS.get('year', {}), year=True, c_type=item.c_type))
+            
+            if item.c_type == 'search' and not tv_path in elem_json['url']:
+                elem_json['mediatype'] = 'movie'
 
         except:
             logger.error(elem)
@@ -247,7 +256,8 @@ def episodesxseason(item):
     logger.info()
 
     findS = finds.copy()
-    findS['episodes'] = {'find': [{'tag': ['div'], 'id': ['seasons']}], 'find_all': [{'tag': ['a']}]}
+    findS['episodes'] = dict([('find', [{'tag': ['div'], 'id': ['seasons']}]), 
+                              ('find_all', [{'tag': ['a']}])])
 
     kwargs['matches_post_get_video_options'] = findvideos_matches
 
@@ -344,8 +354,7 @@ def actualizar_titulos(item):
 
 def search(item, texto, **AHkwargs):
     logger.info()
-    global kwargs
-    kwargs = AHkwargs
+    kwargs.update(AHkwargs)
 
     texto = texto.replace(" ", "+")
     item.url = item.url + '?s=' + texto
@@ -366,8 +375,7 @@ def search(item, texto, **AHkwargs):
 
 def newest(categoria, **AHkwargs):
     logger.info()
-    global kwargs
-    kwargs = AHkwargs
+    kwargs.update(AHkwargs)
 
     item = Item()
     try:

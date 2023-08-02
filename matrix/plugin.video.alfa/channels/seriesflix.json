@@ -1,7 +1,7 @@
 {
   "id": "seriesflix",
   "name": "SeriesFlix",
-  "active": true,
+  "active": false,
   "adult": false,
   "language": ["lat","cast"],
   "thumbnail": "https://i.postimg.cc/fScDcPkt/cropped-seriesflix-logo-1.png",

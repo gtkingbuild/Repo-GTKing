@@ -5,9 +5,11 @@
 
 import sys
 PY3 = False
-if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int
+if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
+import re
 import traceback
+if not PY3: _dict = dict; from collections import OrderedDict as dict
 
 from core.item import Item
 from core import servertools
@@ -102,7 +104,6 @@ def list_all(item):
     if item.c_type == 'search':
         findS['find'] = findS.get('search', findS['find'])
         findS['controls']['get_lang'] = True
-        return AlfaChannel.list_all(item, matches_post=AlfaChannel_class.list_all_matches, **kwargs)
 
     return AlfaChannel.list_all(item, matches_post=AlfaChannel_class.list_all_matches, finds=findS, **kwargs)
 
@@ -127,8 +128,7 @@ def actualizar_titulos(item):
 
 def search(item, texto, **AHkwargs):
     logger.info()
-    global kwargs
-    kwargs = AHkwargs
+    kwargs.update(AHkwargs)
     
     try:
         texto = texto.replace(" ", "+")
@@ -149,8 +149,7 @@ def search(item, texto, **AHkwargs):
 
 def newest(categoria, **AHkwargs):
     logger.info()
-    global kwargs
-    kwargs = AHkwargs
+    kwargs.update(AHkwargs)
 
     item = Item()
     try:

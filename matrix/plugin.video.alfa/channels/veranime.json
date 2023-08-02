@@ -10,8 +10,7 @@
   "categories": [
     "anime"
   ],
-  "force_unify": false,
-  "version": 1,
+  "force_unify": true,
   "settings": [
     {
       "id": "filter_languages",

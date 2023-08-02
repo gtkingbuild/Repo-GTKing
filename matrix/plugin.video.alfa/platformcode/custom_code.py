@@ -21,6 +21,11 @@ import base64
 from platformcode import config, logger
 from core import filetools
 
+try:
+    monitor = xbmc.Monitor()
+except:
+    monitor = None
+
 json_data_file_name = 'custom_code.json'
 ADDON_NAME = 'plugin.video.alfa'
 ADDON_PATH = config.get_runtime_path()
@@ -79,6 +84,9 @@ def init():
     """
 
     try:
+        # TORREST: Modificaciones temporales
+        emergency_fixes()
+
         # Comprobando la integridad de la estructura de Settings.xml
         config.verify_settings_integrity()
         
@@ -110,25 +118,24 @@ def init():
                         browser, res = call_browser(articulo.replace(' ' , ''))
             except:
                 logger.error(traceback.format_exc())
-        
-        # Analizamos la estructura de los _data-json con cada nueva versión de Alfa
-        verify_data_jsons()
-        
-        # Limpiamos los mensajes de ayuda obsoletos y restauramos los que tienen "version": True.  Por cada nueva versión
+
+        # Mostramos mensajes de Broadcast y Limpiamos los mensajes de ayuda obsoletos y restauramos los que tienen "version": True.
+        from platformcode import help_window
+        help_window.show_info('broadcast', wait=False)
         if not filetools.exists(ADDON_CUSTOMCODE_JSON):
-            from platformcode import help_window
             help_window.clean_watched_new_version()
         
         # Se realizan algunas funciones con cada nueva versión de Alfa
         if not filetools.exists(ADDON_CUSTOMCODE_JSON):
             config.set_setting('cf_assistant_ua', '')                           # Se limpia CF_UA. Mejora de rendimiento en httptools CF
-            config.set_setting("current_host", '', channel='dontorrent')        # Se resetea el host de algunos canales que tienen alternativas
-            config.set_setting("current_host", '', channel='mejortorrent')      # Se resetea el host de algunos canales que tienen alternativas
-            config.set_setting("debug_report", False)                           # Se resetea el DEBUG extendido
+            config.set_setting("current_host", 0)                               # Se resetea el host de algunos canales que tienen alternativas
             config.set_setting("report_started", False)                         # Se resetea el Reporte de error
         if config.get_setting("debug_report") and not config.get_setting("debug"):
             config.set_setting("debug_report", False)                           # Se resetea el DEBUG extendido
-            
+
+        # Analizamos la estructura de los _data-json con cada nueva versión de Alfa
+        verify_data_jsons()
+
         # Periodicamente se resetean los valores de "current_host" de los canales para eliminar asignaciones antiguas
         round_level = 1
         if config.get_setting('current_host', default=0) < round_level:
@@ -172,21 +179,6 @@ def init():
         
         # LIBTORRENT: se descarga el binario de Libtorrent cada vez que se actualiza Alfa
         update_libtorrent()
-        
-        # TORREST: Modificaciones temporales
-        if xbmc.getCondVisibility('System.HasAddon("plugin.video.torrest")'):
-            try:
-                __settings__ = xbmcaddon.Addon(id="plugin.video.torrest")
-                if __settings__.getSetting("s:check_available_space") == 'true':
-                    __settings__.setSetting("s:check_available_space", "false") # No comprobar espacio disponible hasta que lo arreglen
-                #__settings__.setSetting("s:service_log_level", "2")             # TEMPORAL
-                #__settings__.setSetting("s:alerts_log_level", "5")              # TEMPORAL
-                #__settings__.setSetting("s:api_log_level", "4")                 # TEMPORAL
-                #if not filetools.exists(filetools.join(config.get_data_path(), "quasar.json")) \
-                #    and not config.get_setting('addon_quasar_update', default=False):
-                #    question_update_external_addon("torrest")
-            except:
-                pass
 
         # QUASAR: Preguntamos si se hacen modificaciones a Quasar
         if not filetools.exists(filetools.join(config.get_data_path(), "quasar.json")) \
@@ -311,7 +303,7 @@ def verify_script_alfa_update_helper(silent=True, emergency=False, github_url=''
     alfa_repo = ['repository.alfa-addon', '1.0.8', '*', '']
     alfa_helper = ['script.alfa-update-helper', '0.0.7', '*', '']
     torrest_repo = ['repository.github', '0.0.7', '*', 'V']
-    torrest_addon = ['plugin.video.torrest', '0.0.14', '*', '']
+    torrest_addon = ['plugin.video.torrest', '0.0.16', '*', '']
     futures_script = ['%sscript.module.futures' % repos_dir, '2.2.1', 'PY2', '']
     if emergency:
         alfa_repo[3] = 'F'
@@ -411,20 +403,28 @@ def verify_script_alfa_update_helper(silent=True, emergency=False, github_url=''
     new_version = versiones.get(addonid, ADDON_VERSION)
     updated = bool(xbmc.getCondVisibility("System.HasAddon(%s)" % addonid))
     if updated:
-        if ADDON_VERSION != new_version or emergency:
+        ADDON_VERSION_NUM = ADDON_VERSION.split('.')
+        ADDON_VERSION_NUM = (int(scrapertools.find_single_match(ADDON_VERSION_NUM[0], '(\d+)')), 
+                             int(scrapertools.find_single_match(ADDON_VERSION_NUM[1], '(\d+)')), 
+                             int(scrapertools.find_single_match(ADDON_VERSION_NUM[2], '(\d+)')))
+        new_version_num = new_version.split('.')
+        new_version_num = (int(new_version_num[0]), int(new_version_num[1]), int(new_version_num[2]))
+        if ADDON_VERSION_NUM < new_version_num or emergency:
             def check_alfa_version():
-                logger.info(new_version, force=True)
+                logger.info(new_version_num, force=True)
                 xbmc.executebuiltin('UpdateAddonRepos')
-                rango = 40 if not emergency else 1
+                rango = 150 if not emergency else 1
                 for x in range(rango):
-                    addon_version = config.get_addon_version(with_fix=False, from_xml=True)
-                    if addon_version == new_version: break
-                    time.sleep(2)
-                if addon_version != new_version or emergency:
-                    logger.info("Notifying obsolete version %s ==> %s" % (addon_version, new_version), force=True)
-                    platformtools.dialog_notification("Alfa: versión oficial: [COLOR hotpink][B]%s[/B][/COLOR]" % new_version, \
-                            "[COLOR yellow]Tienes una versión obsoleta: [B]%s[/B][/COLOR]" % addon_version)
-                if emergency:
+                    ADDON_VERSION_NUM = config.get_addon_version(with_fix=False, from_xml=True).split('.')
+                    ADDON_VERSION_NUM = (int(ADDON_VERSION_NUM[0]), int(ADDON_VERSION_NUM[1]), int(ADDON_VERSION_NUM[2]))
+                    if ADDON_VERSION_NUM == new_version_num: break
+                    if monitor: monitor.waitForAbort(2)
+                    else: time.sleep(2)
+                if ADDON_VERSION_NUM < new_version_num or emergency:
+                    logger.info("Notifying obsolete version %s ==> %s" % (str(ADDON_VERSION_NUM), str(new_version_num)), force=True)
+                    platformtools.dialog_notification("Alfa: versión oficial: [COLOR hotpink][B]%s[/B][/COLOR]" % str(new_version_num), \
+                            "[COLOR yellow]Tienes una versión obsoleta: [B]%s[/B][/COLOR]" % str(ADDON_VERSION_NUM))
+                if emergency or (config.get_kodi_setting('general.addonupdates') == 0 and not platformtools.xbmc_player.isPlaying()):
                     return install_alfa_now(github_url=github_url)
             try:
                 threading.Thread(target=check_alfa_version).start()
@@ -975,6 +975,10 @@ def reactivate_unrar(init=False, mute=True):
             torr_client = torr_client.lower()
         if '_' not in torr_client and '_web' not in torr_client and save_path_videos \
                             and save_path_videos not in str(download_paths):
+            if 'BT' in torr_client or 'MCT' in torr_client:
+                save_path_videos = filetools.dirname(save_path_videos)
+                if save_path_videos in str(download_paths): 
+                    continue
             download_paths.append((torr_client, save_path_videos))              # Agregamos el path para este Cliente
 
             # Borramos archivos de control "zombies"
@@ -1330,23 +1334,35 @@ def btdigg_status():
 
 
 def reset_current_host(round_level):
-    
+    logger.info(round_level)
+    from core.channeltools import is_adult
+
+    exclude_list = ['downloads', 'info_popup', 'menu_settings', 'news', 'search', 
+                    'trailertools', 'trakt', 'tvmoviedb', 'url', 'autoplay', 'playdede']
+
     try:
         for channel_json in sorted(filetools.listdir(filetools.join(ADDON_USERDATA_PATH, 'settings_channels'))):
             if not channel_json.endswith('.json'): continue
             channel_name = channel_json.replace('_data.json', '')
-            
-            try:
-                channel = __import__('channels.%s' % channel_name, None,
-                             None, ["channels.%s" % channel_name])
-                host = channel.host
-                new_host = channel.canonical['host_alt'][0]
-                if host != new_host:
-                    config.set_setting('current_host', new_host, channel=channel_name)
-                    logger.info('%s: current_host reseteado desde "%s" a "%s"' % (channel_name.capitalize(), host, new_host))
-                continue
-            except:
-                continue
+            if channel_name in exclude_list: continue
+            if is_adult(channel_name): continue
+            current_host = config.get_setting('current_host', channel=channel_name)
+            if current_host is None or current_host is False:
+                current_host = ''
+                config.set_setting('current_host', current_host, channel=channel_name)
+
+            if current_host:
+                try:
+                    channel = __import__('channels.%s' % channel_name, None,
+                                 None, ["channels.%s" % channel_name])
+                    host = channel.host
+                    new_host = channel.canonical['host_alt'][0]
+                    if host and new_host and host != new_host:
+                        config.set_setting('current_host', new_host, channel=channel_name)
+                        logger.info('%s: current_host reseteado desde "%s" a "%s"' % (channel_name.capitalize(), host, new_host))
+                    continue
+                except:
+                    continue
     except:
         return
     
@@ -1438,3 +1454,27 @@ def set_season_holidays():
     except:
         if xml: logger.error('XML File: %s; XML: %s' % (xml_file, str(xml)))
         logger.error(traceback.format_exc())
+        
+        
+def emergency_fixes():
+
+    if xbmc.getCondVisibility('System.HasAddon("plugin.video.torrest")'):
+        try:
+            __settings__ = xbmcaddon.Addon(id="plugin.video.torrest")
+            if __settings__.getSetting("s:check_available_space") == 'true':
+                __settings__.setSetting("s:check_available_space", "false") # No comprobar espacio disponible hasta que lo arreglen
+            if not PY3 and ADDON_PLATFORM in ["android", "atv2"] \
+                       and __settings__.getSetting("has_libtorrest") == 'true' \
+                       and __settings__.getSetting("force_torrest") == 'false':     # Si es Androdid con Kodi 18...
+                __settings__.setSetting("force_torrest", "true")            # Forzar uso de Binario en vez de .so (crash)
+            if __settings__.getSetting("min_candidate_size") == '100':
+                __settings__.setSetting("min_candidate_size", "50")         # Marcar mínimo tamaño de archivo más pequeño
+            #__settings__.setSetting("s:service_log_level", "2")             # TEMPORAL
+            #__settings__.setSetting("s:alerts_log_level", "5")              # TEMPORAL
+            #__settings__.setSetting("s:api_log_level", "4")                 # TEMPORAL
+            #if not filetools.exists(filetools.join(config.get_data_path(), "quasar.json")) \
+            #    and not config.get_setting('addon_quasar_update', default=False):
+            #    question_update_external_addon("torrest")
+            logger.info('Torrest PATCHED', force=True)
+        except:
+            logger.error(traceback.format_exc())

@@ -18,13 +18,19 @@ from core import servertools
 from core import httptools
 from bs4 import BeautifulSoup
 
+IDIOMAS = {}
+list_language = list(set(IDIOMAS.values()))
+list_quality = []
+list_servers = []
+forced_proxy_opt = 'ProxySSL'
+
 # https://pornktube.tv  https://www.pornktu.be/videos/  https://www.tubxporn.xxx  https://tubxporn.xxx/   https://www.pornky.com  https://www.joysporn.com
 canonical = {
              'channel': 'pornktube', 
              'host': config.get_setting("current_host", 'pornktube', default=''), 
              'host_alt': ["https://vwv.pornktube.com/"], 
              'host_black_list': ['https://pornktube.tv', 'https://wwv.pornktube.com/'], 
-             'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'cf_assistant': False, 
+             'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'forced_proxy_ifnot_assistant': forced_proxy_opt, 'cf_assistant': False, 
              'CF': False, 'CF_test': False, 'alfa_s': True
             }
 host = canonical['host'] or canonical['host_alt'][0]

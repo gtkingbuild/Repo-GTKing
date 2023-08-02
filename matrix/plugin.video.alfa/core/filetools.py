@@ -1020,7 +1020,8 @@ def mkdir(path, silent=False, vfs=True, ch_mod=''):
             if not path.endswith('/') and not path.endswith('\\'):
                 path = join(path, ' ').rstrip()
             result = bool(xbmcvfs.mkdirs(path))
-            if not result:
+            if not result or not exists(path):
+                result = False
                 try:
                     os.makedirs(path)
                     result = True

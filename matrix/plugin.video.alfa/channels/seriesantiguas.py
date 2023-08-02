@@ -5,9 +5,11 @@
 
 import sys
 PY3 = False
-if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int
+if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
 import re
+import traceback
+if not PY3: _dict = dict; from collections import OrderedDict as dict
 
 from core.item import Item
 from core import servertools
@@ -44,8 +46,8 @@ tv_path = '/ver'
 language = []
 url_replace = []
 
-finds = {'find': {'find': [{'tag': ['div'], 'class': ['progression-masonry-margins']}], 
-                  'find_all': [{'tag': ['div'], 'class': ['progression-masonry-item']}]}, 
+finds = {'find': dict([('find', [{'tag': ['div'], 'class': ['progression-masonry-margins']}]), 
+                       ('find_all', [{'tag': ['div'], 'class': ['progression-masonry-item']}])]), 
          'categories': {}, 
          'search': {}, 
          'get_language': {}, 
@@ -57,13 +59,14 @@ finds = {'find': {'find': [{'tag': ['div'], 'class': ['progression-masonry-margi
          'last_page': {}, 
          'year': {}, 
          'season_episode': {}, 
-         'seasons': {'find': [{'tag': ['ul'], 'class': ['video-tabs-nav-aztec nav']}], 'find_all': [['li']]}, 
+         'seasons': dict([('find', [{'tag': ['ul'], 'class': ['video-tabs-nav-aztec nav']}]), 
+                          ('find_all', [['li']])]), 
          'season_num': {}, 
          'seasons_search_num_rgx': '', 
          'seasons_search_qty_rgx': '', 
          'episode_url': '', 
-         'episodes': {'find': [{'tag': ['div'], 'id': ['aztec-tab-%s']}], 
-                      'find_all': [{'tag': ['div'], 'class': ['progression-studios-season-item']}]}, 
+         'episodes': dict([('find', [{'tag': ['div'], 'id': ['aztec-tab-%s']}]), 
+                           ('find_all', [{'tag': ['div'], 'class': ['progression-studios-season-item']}])]), 
          'episode_num': ['(?i)(\d+)\.\s*[^$]+$', '(?i)[a-z_0-9 ]+\s*\((?:temp|epis)\w*\s*(?:\d+\s*x\s*)?(\d+)\)'], 
          'episode_clean': [['(?i)\d+\.\s*([^$]+)$', None], ['(?i)([a-z_0-9 ]+)\s*\((?:temp|epis)\w*\s*(?:\d+\s*x\s*)?\d+\)', None]], 
          'findvideos': {'find_all': [{'tag': ['div'], 'class': ['embed-code-remove-styles-aztec']}]}, 
@@ -217,8 +220,8 @@ def episodesxseason(item):
     findS = finds.copy()
 
     if '/search' in item.url:
-        findS['episodes'] = {'find': [{'tag': ['div'], 'class': ['blog-posts hfeed clearfix']}], 
-                             'find_all': [{'tag': ['div'], 'class': ['post hentry']}]}
+        findS['episodes'] = dict([('find', [{'tag': ['div'], 'class': ['blog-posts hfeed clearfix']}]), 
+                                  ('find_all', [{'tag': ['div'], 'class': ['post hentry']}])])
     else:
         findS['episodes']['find'][0]['id'][0] = findS['episodes']['find'][0]['id'][0] % str(item.contentSeason)
 
@@ -296,8 +299,7 @@ def actualizar_titulos(item):
 
 def search(item, texto, **AHkwargs):
     logger.info()
-    global kwargs
-    kwargs = AHkwargs
+    kwargs.update(AHkwargs)
 
     try:
         texto = texto.replace(" ", "+")

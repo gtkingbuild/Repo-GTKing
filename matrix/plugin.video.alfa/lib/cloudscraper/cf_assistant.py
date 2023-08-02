@@ -24,6 +24,7 @@ from platformcode import logger, config, help_window
 
 PATH_BL = filetools.join(config.get_runtime_path(), 'resources', 'cf_assistant_bl.json')
 patron_domain = '(?:http.*\:)?\/\/(?:.*ww[^\.]*)?\.?([\w|\-\d]+\.(?:[\w|\-\d]+\.?)?(?:[\w|\-\d]+\.?)?(?:[\w|\-\d]+))(?:\/|\?|$)'
+httptools = None
 
 if config.is_xbmc() and config.get_platform(True)['num_version'] >= 14:
     monitor = xbmc.Monitor()                                                    # For Kodi >= 14
@@ -34,8 +35,9 @@ else:
 def get_cl(self, resp, timeout=20, debug=False, CF_testing = False, extraPostDelay=15, retry=False, blacklist=True, headers=None, 
            retryIfTimeout=True, cache=True, clearWebCache=False, mute=True, alfa_s=True, elapsed=0, **kwargs):
     from lib import alfa_assistant
-    from core import httptools
-    
+    global httptools
+    if not httptools: from core import httptools
+
     try:
         url = self.cloudscraper.user_url
         opt = self.cloudscraper.user_opt
@@ -49,6 +51,15 @@ def get_cl(self, resp, timeout=20, debug=False, CF_testing = False, extraPostDel
                                 and opt.get('canonical', {}).get('global_search_active', False)):
         logger.info('## Búsqueda global cancelada: %s: %s' % (opt.get('canonical', {}).get('channel', ''), url), force=True)
         return resp
+    
+    if opt.get('cf_assistant_get_source', False):
+        kwargs['opt'] = opt
+        timeout = 0.001
+        extraPostDelay = timeout if timeout >= 5 else 0
+        return get_source(url, resp, timeout=timeout, debug=debug, 
+                          extraPostDelay=extraPostDelay, retry=retry, blacklist=blacklist, 
+                          retryIfTimeout=retryIfTimeout, headers=opt.get('headers', headers), 
+                          cache=cache, mute=mute, alfa_s=alfa_s, httptools_obj=httptools, from_get_cl=True, **kwargs)
     
     if timeout < 15: timeout = 20
     if timeout + extraPostDelay > 35: timeout = 20
@@ -230,11 +241,13 @@ def get_cl(self, resp, timeout=20, debug=False, CF_testing = False, extraPostDel
     return resp
 
 
-def get_source(url, resp, timeout=5, debug=False, extraPostDelay=5, retry=False, blacklist=True, headers=None, 
-               retryIfTimeout=True, cache=False, clearWebCache=False, mute=True, alfa_s=True, elapsed=0, **kwargs):
+def get_source(url, resp, timeout=5, debug=False, extraPostDelay=5, retry=False, blacklist=True, headers=None, from_get_cl=False, 
+               retryIfTimeout=True, cache=False, clearWebCache=False, mute=True, alfa_s=True, elapsed=0, httptools_obj=None, **kwargs):
     from lib import alfa_assistant
-    from core import httptools
-    
+    global httptools
+    httptools = httptools_obj or httptools
+    if not httptools: from core import httptools
+
     blacklist_clear = True
     data = ''
     source = False
@@ -244,12 +257,12 @@ def get_source(url, resp, timeout=5, debug=False, extraPostDelay=5, retry=False,
     expiration_final = 0
     security_error_blackout = (5 * 60) - expiration
     ua_headers = False
+    host_name = httptools.obtain_domain(url, scheme=True)
 
     if timeout < 0: timeout = 0.001
     if debug: alfa_s = False
-    #debug = False
-    
-    if not resp:
+
+    if not resp and not from_get_cl:
         resp = {
                 'status_code': 429, 
                 'headers': {}
@@ -257,11 +270,11 @@ def get_source(url, resp, timeout=5, debug=False, extraPostDelay=5, retry=False,
         resp = type('HTTPResponse', (), resp)
     
     if not alfa_s: logger.debug("ERROR de descarga: %s" % resp.status_code)
-    resp.status_code = 429
+    resp.status_code = 429 if not from_get_cl else 400
     
     opt = kwargs.get('opt', {})
     if not opt.get('CF_assistant', True):
-        return resp
+        return (data, resp) if not from_get_cl else resp
     
     domain_full = urlparse.urlparse(url).netloc
     domain = domain_full
@@ -350,7 +363,7 @@ def get_source(url, resp, timeout=5, debug=False, extraPostDelay=5, retry=False,
                                                                             headers=headers, mute=mute, alfa_s=alfa_s)
             except:
                 logger.error("Cancelado por el usuario")
-                return data, resp
+                return (data, resp) if not from_get_cl else resp
             
             if not alfa_s: logger.debug("data assistant: %s" % data_assistant)
             
@@ -379,7 +392,7 @@ def get_source(url, resp, timeout=5, debug=False, extraPostDelay=5, retry=False,
                         logger.error('Error SEGURIDAD: %s - %s' % (expiration_final, data[:100]))
                     
                     elif source:
-                        resp.status_code = 200
+                        resp.status_code = 200 if not from_get_cl else 207
                         freequent_data[1] = 'Cha,%s,%s,%s%s,' % (check_assistant.get('assistantVersion', '0.0.0'), wvbVersion, host, vers)
                         if not retry:
                             freequent_data[1] += 'OK'
@@ -389,7 +402,7 @@ def get_source(url, resp, timeout=5, debug=False, extraPostDelay=5, retry=False,
                     
             if monitor and monitor.abortRequested():
                 logger.error("Cancelado por el usuario")
-                return data, resp
+                return (data, resp) if not from_get_cl else resp
             if not source and not retry:
                 config.set_setting('cf_assistant_ua', '')
                 logger.debug("No se obtuvieron resultados, reintentando...")
@@ -397,8 +410,8 @@ def get_source(url, resp, timeout=5, debug=False, extraPostDelay=5, retry=False,
                 extraPostDelay = -1 if extraPostDelay < 0 else extraPostDelay * 2
                 return get_source(url, resp, timeout=timeout, debug=debug, extraPostDelay=extraPostDelay, 
                                   retry=True, blacklist=blacklist, retryIfTimeout=retryIfTimeout, 
-                                  cache=cache, clearWebCache=clearWebCache, alfa_s=False, 
-                                  headers=headers, mute=mute, elapsed=elapsed, **kwargs)
+                                  cache=cache, clearWebCache=clearWebCache, alfa_s=False, from_get_cl=from_get_cl, 
+                                  headers=headers, mute=mute, elapsed=elapsed, httptools_obj=httptools, **kwargs)
 
             domain_ = domain
             split_lst = domain.split(".")
@@ -425,15 +438,37 @@ def get_source(url, resp, timeout=5, debug=False, extraPostDelay=5, retry=False,
                         
                         dict_cookie = {'domain': domain,
                                        'name': 'cf_clearance',
-                                       'value': val}
+                                       'value': val,
+                                       'expires': 0}
                         if domain_ in dom[0]:
                             httptools.set_cookies(dict_cookie)
                             rin = {'Server': 'Alfa'}
 
                             resp.headers.update(dict(rin))
                             freequent_data[1] += 'C'
-                            resp.status_code = 201
+                            resp.status_code = 201 if not from_get_cl else 208
                             if not alfa_s: logger.debug("cf_clearence=%s" % val)
+                    
+                    if from_get_cl:
+                        if host_name not in dom[0]: continue
+                        for cookie_part in cookieslist.split(';'):
+                            
+                            try:
+                                name, val = scrapertools.find_single_match(cookie_part, '^([^=]+)=([^$]+)$')
+                            except:
+                                continue
+
+                            dict_cookie = {'domain': domain,
+                                           'name': name.strip(),
+                                           'value': val.strip(),
+                                           'expires': 0}
+                            if 'Secure' in cookie_part: dict_cookie['secure'] = True
+                        
+                            httptools.set_cookies(dict_cookie, clear=False)
+                            resp.status_code = 201 if not from_get_cl else 208
+                            if not alfa_s: logger.debug("%s=%s" % (name, val))
+
+                        freequent_data[1] += 'C'
 
         elif host == 'a':
             help_window.show_info('cf_2_01')
@@ -451,16 +486,24 @@ def get_source(url, resp, timeout=5, debug=False, extraPostDelay=5, retry=False,
             bl_data[domain_full] = time.time() + expiration_final
         if not debug and not httptools.TEST_ON_AIR: filetools.write(PATH_BL, jsontools.dump(bl_data))
     
+    if from_get_cl:
+        try:
+            resp.reason = data
+        except:
+            logger.error(traceback.format_exc())
+        return resp
     return data, resp
 
 
 def get_ua(data_assistant):
-    from core import httptools
-    
+
     if not data_assistant or not isinstance(data_assistant, dict):
         return 'Default'
     
     UA = data_assistant.get("userAgent", 'Default')
+    
+    global httptools
+    if not httptools: from core import httptools
     
     if UA == httptools.get_user_agent():
         UA = 'Default'

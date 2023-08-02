@@ -303,7 +303,7 @@ def save_movie(item, silent=False):
                 if not item_nfo.emergency_urls:
                     item_nfo.emergency_urls = dict()
                 item_nfo.emergency_urls.update({item.channel: True})
-        except:
+        except Exception:
             logger.error("No se ha podido guardar las urls de emergencia de %s en la videoteca" % item.contentTitle)
             logger.error(traceback.format_exc())
         
@@ -324,7 +324,7 @@ def save_movie(item, silent=False):
                     try:
                         import threading
                         threading.Thread(target=videolibrary_backup_exec, args=(item_nfo, videolibrary_backup)).start()
-                    except:
+                    except Exception:
                         logger.error('Error en el backup de la película %s' % item_nfo.strm_path)
                         logger.error(traceback.format_exc(1))
 
@@ -562,7 +562,7 @@ def save_episodes(path, episodelist, serie, silent=False, overwrite=True, monito
             if episodelist_alt:
                 episodelist = episodelist_alt.copy()
                 episodelist = sorted(episodelist, key=lambda it: (int(it.contentSeason), int(it.contentEpisodeNumber)))     #clasificamos
-        except:
+        except Exception:
             logger.error("Error al seleccionar la última temporada %s" % e.contentTitle)
             logger.error(traceback.format_exc())
 
@@ -654,7 +654,7 @@ def save_episodes(path, episodelist, serie, silent=False, overwrite=True, monito
             try:
                 e.contentSeason = int(e.contentSeason)
                 e.contentEpisodeNumber = int(e.contentEpisodeNumber)
-            except:
+            except Exception:
                 logger.error('### No se ha podido guardar el episodio "%sx%s" de %s:%s' % 
                              (str(e.contentSeason), str(e.contentEpisodeNumber), e.channel, str(e.contentSerieName)))
                 continue
@@ -669,7 +669,7 @@ def save_episodes(path, episodelist, serie, silent=False, overwrite=True, monito
             if e.channel_redir:
                 del e.channel_redir                                         #... y se borran las marcas de redirecciones
             new_episodelist.append(e)
-        except:
+        except Exception:
             if e.contentType == 'episode':
                 logger.error("No se ha podido guardar las urls de emergencia de %s en la videoteca" % e.contentTitle)
                 logger.error(traceback.format_exc())
@@ -686,7 +686,7 @@ def save_episodes(path, episodelist, serie, silent=False, overwrite=True, monito
     # fix float porque la division se hace mal en python 2.x
     try:
         t = float(100) / len(new_episodelist)
-    except:
+    except Exception:
         t = 0
 
     last_season_episode = ''
@@ -847,7 +847,7 @@ def save_episodes(path, episodelist, serie, silent=False, overwrite=True, monito
             tvshow_item.update_next = update_next.strftime('%Y-%m-%d')
 
             res = write_nfo(tvshow_path, head_nfo, tvshow_item)
-        except:
+        except Exception:
             logger.error("Error al actualizar tvshow.nfo")
             logger.error("No se ha podido guardar las urls de emergencia de %s en la videoteca" % tvshow_item.contentSerieName)
             logger.error(traceback.format_exc())
@@ -863,7 +863,7 @@ def save_episodes(path, episodelist, serie, silent=False, overwrite=True, monito
                 try:
                     import threading
                     threading.Thread(target=videolibrary_backup_exec, args=(tvshow_item, videolibrary_backup)).start()
-                except:
+                except Exception:
                     logger.error('Error en el backup de la serie %s' % tvshow_item.path)
                     logger.error(traceback.format_exc(1))
 
@@ -872,6 +872,7 @@ def save_episodes(path, episodelist, serie, silent=False, overwrite=True, monito
 
     logger.debug("%s [%s]: insertados= %s, sobreescritos= %s, fallidos= %s" %
                  (serie.contentSerieName, serie.channel, insertados, sobreescritos, fallidos))
+    if DEBUG: logger.debug('Listado serie: %s' % filetools.listdir(path))
     return insertados, sobreescritos, fallidos
 
 
@@ -895,7 +896,6 @@ def reset_movie(movie_file, p_dialog=None, i=100, t=1):
         path = filetools.dirname(movie_file)
         if movie_file.endswith('.json'):
             movie = Item().fromjson(filetools.read(movie_file))
-            movie, it, overwrite = generictools.redirect_clone_newpct1(movie, overwrite=3)
             movie = redirect_url(movie)
             library_urls = {movie.channel: movie.url}
             movie_clone = movie.clone()
@@ -903,7 +903,6 @@ def reset_movie(movie_file, p_dialog=None, i=100, t=1):
             movie_json_list.append(movie_clone)
         else:
             head_nfo, movie = read_nfo(movie_file)
-            movie, it, overwrite = generictools.redirect_clone_newpct1(movie, overwrite=3)
             movie = redirect_url(movie)
             library_urls = movie.library_urls.copy()
             del movie.library_urls
@@ -920,7 +919,7 @@ def reset_movie(movie_file, p_dialog=None, i=100, t=1):
                         movie_clone = Item().fromjson(filetools.read(json_path))
                         movie_clone.clave = '%s|%s' % (channel, url)
                         movie_json_list.append(movie_clone)
-                    except:
+                    except Exception:
                         pass
         
         # Verificamos que las webs de los canales estén activas
@@ -949,7 +948,6 @@ def reset_movie(movie_file, p_dialog=None, i=100, t=1):
             movie_clone.channel = channel
             movie_clone.category = channel.capitalize()
             movie_clone.url = url
-            movie_clone, it, overwrite = generictools.redirect_clone_newpct1(movie_clone, overwrite=3)
             p_dialog.update(int(math.ceil((i + 1) * t)), heading, "%s: %s" % (movie_clone.contentTitle,
                                                                               movie_clone.channel.capitalize()))
             for movie_clone_json in movie_json_list:
@@ -1051,7 +1049,6 @@ def reset_serie(tvshow_file, p_dialog=None, i=100, t=1, inactive=False):
         
         # Verificamos que las webs de los canales estén activas
         from core import httptools
-        serie, it, overwrite = generictools.redirect_clone_newpct1(serie, overwrite=3)
         serie = redirect_url(serie)
         for channel, url in list(serie.library_urls.items()):
             if not url.startswith('magnet'):
@@ -1092,6 +1089,7 @@ def reset_serie(tvshow_file, p_dialog=None, i=100, t=1, inactive=False):
 
 
 def redirect_url(video, channel=''):
+    if DEBUG: logger.debug('item.url: %s; channel: %s' % ((video.url if isinstance(video, (dict, Item)) else video), channel))
 
     try:
         if isinstance(video, (dict, Item)):
@@ -1109,7 +1107,7 @@ def redirect_url(video, channel=''):
             if video.referer:
                 video.referer = redirect_url(video.referer, video.channel)
         
-        elif channel and generictools.verify_channel(channel) != 'newpct1' and not video.startswith('magnet'):
+        elif channel and not video.startswith('magnet'):
             try:
                 channel_host = ''
                 obj = __import__('channels.%s' % channel, fromlist=["channels.%s" % channel])
@@ -1118,17 +1116,17 @@ def redirect_url(video, channel=''):
                     if obj.canonical and isinstance(obj.canonical, dict):
                         if channel_host in canonical.get('host_black_list', []) and canonical.get('host_alt', []):
                             channel_host = canonical['host_alt'][0]
-            except:
+            except Exception:
                 pass
             
-            if channel_host and not video.startswith(channel_host):
+            if channel_host and not video.startswith(channel_host) and config.BTDIGG_URL not in video:
                 logger.debug("vl channel: %s" % channel)
                 logger.debug("vl url: %s" % video)
                 logger.debug("cambiando dominio....")
 
                 video = re.sub("(https?:\/\/.+?\/)", channel_host, video)
                 logger.debug("Nueva URL: %s" % video)
-    except:
+    except Exception:
         logger.error(traceback.format_exc())
     
     return video
@@ -1316,51 +1314,51 @@ def emergency_urls(item, channel=None, path=None, headers={}):
     """
     # Lanzamos un "lookup" en el "findvideos" del canal para obtener los enlaces de emergencia
     try:
-        if channel == None:                             #Si el llamador no ha aportado la estructura de channel, se crea
-            channel = generictools.verify_channel(item.channel)             #Se verifica si es un clon, que devuelva "newpct1"
+        if channel == None:                             # Si el llamador no ha aportado la estructura de channel, se crea
+            channel = generictools.verify_channel(item.channel)                 # Se verifica si es un clon
             channel = __import__('channels.%s' % channel, fromlist=["channels.%s" % channel])
-        if hasattr(channel, 'findvideos'):                                  #Si el canal tiene "findvideos"...
-            item.videolibray_emergency_urls = True                          #... se marca como "lookup"
-            channel_save = item.channel                 #... guarda el canal original por si hay fail-over en Newpct1
-            category_save = item.category               #... guarda la categoría original por si hay fail-over o redirección en Newpct1
-            post_save = item.post                       #... guarda el post original
-            referer_save = item.referer                 #... guarda el referer original
-            headers_save = item.headers                 #... guarda el headers original
-            if item.channel_redir:                      #... si hay un redir, se restaura temporamente el canal alternativo
+        if hasattr(channel, 'findvideos'):                                      # Si el canal tiene "findvideos"...
+            item.videolibray_emergency_urls = True                              #... se marca como "lookup"
+            channel_save = item.channel                                         #... guarda el canal original
+            category_save = item.category                                       #... guarda la categoría original
+            post_save = item.post                                               #... guarda el post original
+            referer_save = item.referer                                         #... guarda el referer original
+            headers_save = item.headers                                         #... guarda el headers original
+            if item.channel_redir:                                              #... si hay un redir, se restaura temporamente el canal alternativo
                 item.channel = scrapertools.find_single_match(item.url, 'http.?\:\/\/(?:www.)?(\w+)\.\w+\/').lower()
                 item.category = scrapertools.find_single_match(item.url, 'http.?\:\/\/(?:www.)?(\w+)\.\w+\/').capitalize()
             item_res = item.clone()
-            item_res = getattr(channel, 'findvideos')(item_res)             #... se procesa Findvideos
-            item_res.channel = channel_save             #... restaura el canal original por si hay fail-over en Newpct1
-            item.channel = channel_save                 #... restaura el canal original por si hay fail-over en Newpct1
-            item_res.category = category_save           #... restaura la categoría original por si hay fail-over o redirección en Newpct1
-            item.category = category_save               #... restaura la categoría original por si hay fail-over o redirección en Newpct1
-            del item_res.videolibray_emergency_urls                         #... y se borra la marca de lookup
+            item_res = getattr(channel, 'findvideos')(item_res)                 #... se procesa Findvideos
+            item_res.channel = channel_save                                     #... restaura el canal
+            item.channel = channel_save                                         #... restaura el canal
+            item_res.category = category_save                                   #... restaura la categoría original
+            item.category = category_save                                       #... restaura la categoría original
+            del item_res.videolibray_emergency_urls                             #... y se borra la marca de lookup
             if item.videolibray_emergency_urls:
-                del item.videolibray_emergency_urls                         #... y se borra la marca de lookup original
-    except:
+                del item.videolibray_emergency_urls                             #... y se borra la marca de lookup original
+    except Exception:
         logger.error('ERROR al procesar el título en Findvideos del Canal: ' + item.channel + ' / ' + item.title)
         logger.error(traceback.format_exc())
-        item.channel = channel_save                     #... restaura el canal original por si hay fail-over o redirección en Newpct1
-        item.category = category_save                   #... restaura la categoría original por si hay fail-over o redirección en Newpct1
-        item_res = item.clone()                         #Si ha habido un error, se devuelve el Item original
+        item.channel = channel_save                                             #... restaura el canal original
+        item.category = category_save                                           #... restaura la categoría original
+        item_res = item.clone()                                                 # Si ha habido un error, se devuelve el Item original
         if item_res.videolibray_emergency_urls:
-            del item_res.videolibray_emergency_urls                         #... y se borra la marca de lookup
+            del item_res.videolibray_emergency_urls                             #... y se borra la marca de lookup
         if item.videolibray_emergency_urls:
-            del item.videolibray_emergency_urls                             #... y se borra la marca de lookup original
+            del item.videolibray_emergency_urls                                 #... y se borra la marca de lookup original
         item_res.referer = referer_save
         item_res.headers = headers_save
         item_res.post = post_save
     
     # Si el usuario ha activado la opción "emergency_urls_torrents", se descargarán los archivos .torrent de cada título
-    else:                                                                   #Si se han cacheado con éxito los enlaces...
+    else:                                                                       # Si se han cacheado con éxito los enlaces...
         try:
             referer = None
             post = None
             subtitles_list = []
             channel_bis = generictools.verify_channel(item.channel)
             if config.get_setting("emergency_urls_torrents", channel_bis) and item_res.emergency_urls and path != None:
-                videolibrary_path = config.get_videolibrary_path()              #detectamos el path absoluto del título
+                videolibrary_path = config.get_videolibrary_path()              # detectamos el path absoluto del título
                 movies = FOLDER_MOVIES
                 series = FOLDER_TVSHOWS
                 if movies in path: 
@@ -1372,7 +1370,7 @@ def emergency_urls(item, channel=None, path=None, headers={}):
                 if item_res.referer: referer = item_res.referer
                 if item_res.post: post = item_res.post
                 emergency_urls = item_res.emergency_urls[0]
-                for x, url in enumerate(emergency_urls):                        #Recorremos las urls de emergencia...
+                for x, url in enumerate(emergency_urls):                        # Recorremos las urls de emergencia...
                     torrents_path = re.sub(r'(?:\.\w+$)', '_%s.torrent' % str(i).zfill(2), path)
                     path_real = ''
                     if not url.startswith('http') and (filetools.isfile(url) or filetools.isdir(url)) and filetools.exists(url):
@@ -1400,13 +1398,13 @@ def emergency_urls(item, channel=None, path=None, headers={}):
                     elif url.startswith('magnet'):
                         path_real = url
 
-                    if path_real:                                               #Si ha tenido éxito...
+                    if path_real:                                               # Si ha tenido éxito...
                         item_res.emergency_urls[0][i-1] = path_real.replace(videolibrary_path, '')  #se guarda el "path" relativo
                         if not url.startswith('http') and (filetools.isfile(url) or filetools.isdir(url)) and filetools.exists(url):
                             item_res.url = item_res.emergency_urls[0][i-1]
                         if 'ERROR' in item.torrent_info: item.torrent_info = ''
                     if subtitles_list and not item_res.subtitle:
-                        item_res.subtitle = subtitles_list[0].replace(videolibrary_path, '')  #se guarda el "path" relativo
+                        item_res.subtitle = subtitles_list[0].replace(videolibrary_path, '')  # se guarda el "path" relativo
                     i += 1
                     
             # Restauramos variables originales
@@ -1428,12 +1426,12 @@ def emergency_urls(item, channel=None, path=None, headers={}):
             if item.kwargs:
                 del item.kwargs
 
-        except:
+        except Exception:
             logger.error('ERROR al cachear el .torrent de: ' + item.channel + ' / ' + item.title)
             logger.error(traceback.format_exc())
-            item_res = item.clone()                                             #Si ha habido un error, se devuelve el Item original
-            item_res.channel = channel_save                     #... restaura el canal original por si hay fail-over o redirección en Newpct1
-            item_res.category = category_save                   #... restaura la categoría original por si hay fail-over o redirección en Newpct1
+            item_res = item.clone()                                             # Si ha habido un error, se devuelve el Item original
+            item_res.channel = channel_save                     #... restaura el canal original
+            item_res.category = category_save                   #... restaura la categoría original
             if item_res.videolibray_emergency_urls:
                 del item_res.videolibray_emergency_urls                         #... y se borra la marca de lookup
             if item.videolibray_emergency_urls:
@@ -1443,7 +1441,7 @@ def emergency_urls(item, channel=None, path=None, headers={}):
             item_res.post = post_save
 
     #logger.debug(item_res.emergency_urls)
-    return item_res                                                             #Devolvemos el Item actualizado con los enlaces de emergencia
+    return item_res                                                             # Devolvemos el Item actualizado con los enlaces de emergencia
 
 
 def videolibrary_backup_exec(item, videolibrary_backup):
@@ -1551,7 +1549,7 @@ def videolibrary_backup_exec(item, videolibrary_backup):
             else:
                 logger.error('Dirección no accesible para escritura: %s' % backup_path)
                 
-    except:
+    except Exception:
         logger.error(traceback.format_exc())
         return False
     

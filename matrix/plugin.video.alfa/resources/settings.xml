@@ -4,14 +4,14 @@
         <setting label="70753" type="lsep"/>
         <setting id="player_mode" type="enum" values="Direct|SetResolvedUrl|Built-In|Download and Play" label="30044"
                  default="0"/>
-        <setting id="default_action" type="enum" lvalues="30006|30007|30008" label="30005" default="0"/>
+        <setting id="default_action" type="enum" lvalues="30006|30007|30008|30009" label="30005" default="0"/>
 
         <setting label="60391" type="lsep"/>
         <setting id="autoplay" type="bool" label="70562" default="false" visible="true"/>
         <setting id="second_language" type="labelenum" values="No|CAST|LAT|VOSE|VOS|VO"
                  label="80001" default="No" subsetting="true"/>
         <setting id="autoplay_qlty" type="labelenum" label="80002"
-                 values="Alta|Baja" default="Alta" subsetting="true"/>
+                 values="Alta|Baja|Media" default="Alta" subsetting="true"/>
 
         <setting label="60544" type="lsep"/>
         <setting id="channel_language" type="labelenum" values="all|cast|lat" label="30019" default="all"/>

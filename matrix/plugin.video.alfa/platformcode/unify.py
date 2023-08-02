@@ -486,6 +486,8 @@ def title_format(item, c_file=colors_file, srv_lst={}):
             title = "%s [%s]" % (title, item.torrent_info)
         if videolibrary:
             title += ' [%s]' % item.contentChannel
+        if item.play_type == 'Descargar':
+            title += ' [COLOR grey](%s)[/COLOR]' % item.play_type
         if info["mediatype"] == 'episode':
             info = episode_title(info["episodio_titulo"], info)
             contentTitle = "%sx%s - %s, %s" % (info["season"], info["episode"], info["episodio_titulo"], info["tvshowtitle"])
@@ -547,7 +549,7 @@ def title_format(item, c_file=colors_file, srv_lst={}):
             new_title.append(format_rating(info["rating"]))
         title = " ".join(new_title)
         item.title = title
-    
+
     plot_extend = item.plot_extend
     if item.plot_extend and (item.contentType in ["movie", "tvshow"] and item.action not in ['play']): plot_extend = ''
     item.plot = add_info_plot(item.plot, simple_language, item.quality, vextend, plot_extend, contentTitle, item)
@@ -778,10 +780,12 @@ def add_extra_info(item, checks):
             color_check = "limegreen"
 
         item.title = "[COLOR %s][B][%s][/B][/COLOR] %s" % (color_check, check, item.title)
-    
-    if item.plot_extend and item.contentType in ["movie", "tvshow"] and item.action not in ['play']:
+
+    if item.plot_extend and item.contentType in ["movie", "tvshow", "episode"] \
+                        and item.action not in ['play'] and item.plot_extend_show is not False:
         item.title += ' %s' % item.plot_extend
     if 'plot_extend' in item: del item.plot_extend
+    if 'plot_extend_show' in item: del item.plot_extend_show
 
     return item
 

@@ -11,7 +11,7 @@ else:
 
 import re
 
-from channels import renumbertools
+from modules import renumbertools
 from core import httptools
 from core import jsontools
 from core import servertools
@@ -27,6 +27,7 @@ IDIOMAS = {'LAT': 'LAT','SUB': 'VOSE'}
 list_language = list(IDIOMAS.values())
 list_servers = ['directo', 'rapidvideo', 'streamango', 'yourupload', 'mailru', 'netutv', 'okru']
 list_quality = ['default']
+forced_proxy_opt = 'ProxyCF'
 
 canonical = {
              'channel': 'animeflv', 
@@ -34,7 +35,8 @@ canonical = {
              'host_alt': ["https://www3.animeflv.net/"], 
              'host_clone': ["https://www1.animeflv.bz/"], 
              'host_black_list': [], 
-             'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 3, 'cf_assistant': False,
+             'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'forced_proxy_ifnot_assistant': forced_proxy_opt, 
+             'cf_assistant_if_proxy': True, 'cf_assistant_get_source': True, 'CF_stat': True, 
              'CF': True, 'CF_test': True, 'alfa_s': True
             }
 
@@ -251,7 +253,7 @@ def novedades_episodios(item):
     
     itemlist = []
 
-    patr = '<h2>Últimos episodios</h2>.+?<ul class="ListEpisodios[^>]+>(.*?)</ul>'
+    patr = '(?i)<h2>.*?ltimos\s*episodios<\/h2>[^%]*<ul\s*class="ListEpisodios[^>]*>([^%]*)<\/ul>'
     data = get_source(item.url, patron=patr)
     
     patron = '<a href="([^"]+)"[^>]+>.+?<img src="([^"]+)".+?"Capi">(.*?)</span>'
@@ -431,7 +433,8 @@ def episodios(item):
         infoLabels = item.infoLabels
 
         for episode in episodes:
-            url = '{}ver/{}/{}-{}'.format(host, episode[1], info[2], episode[0])
+            #url = '{}ver/{}/{}-{}'.format(host, episode[1], info[2], episode[0])
+            url = '{}ver/{}-{}'.format(host, info[2], episode[0])
             season = 1
             season, episodeRenumber = renumbertools.numbered_for_tratk(item.channel, item.contentSerieName, season, int(episode[0]))
 

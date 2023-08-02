@@ -12,7 +12,7 @@
         "url": "http://docs.google.com/get_video_info?docid=\\1"
       },
       {
-        "pattern": "http(?:s:|:)//drive.google.com/(?:uc|open)\\?id=([A-z0-9-_=]+)",
+        "pattern": "http(?:s:|:)//drive.google.com/(?:u/[0-9]+/|)(?:uc|open)\\?id=([A-z0-9-_=]+)",
         "url": "http://docs.google.com/get_video_info?docid=\\1"
       },
       {

@@ -5,10 +5,11 @@
 
 import sys
 PY3 = False
-if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int
+if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
 import re
 import traceback
+if not PY3: _dict = dict; from collections import OrderedDict as dict
 
 from core.item import Item
 from core import servertools
@@ -51,9 +52,11 @@ tv_path = '/series'
 language = ['CAST']
 url_replace = []
 
-finds = {'find': {'find': [{'tag': ['ul'], 'class': ['miniboxs-ficha']}], 'find_all': [{'tag': ['li']}]}, 
-         'sub_menu': {'find': [{'tag': ['div'], 'class': ['cab_menu']}], 'find_all': [{'tag': ['li']}]}, 
-         'categories': {},  
+finds = {'find': dict([('find', [{'tag': ['ul'], 'class': ['miniboxs-ficha']}]), 
+                       ('find_all', [{'tag': ['li']}])]), 
+         'sub_menu': dict([('find', [{'tag': ['div'], 'class': ['cab_menu']}]), 
+                           ('find_all', [{'tag': ['li']}])]), 
+         'categories': {}, 
          'search': {}, 
          'get_language': {}, 
          'get_language_rgx': '(?:flags\/|\/images\/)(\w+)(?:-[^\.]+)?\.(?:png|jpg|jpeg|webp)', 
@@ -61,8 +64,8 @@ finds = {'find': {'find': [{'tag': ['ul'], 'class': ['miniboxs-ficha']}], 'find_
          'get_quality_rgx': [], 
          'next_page': {}, 
          'next_page_rgx': [['\/page\/\d+', '/page/%s/']], 
-         'last_page': {'find': [{'tag': ['div'], 'class': ['paginacion']}], 
-                       'find_all': [{'tag': ['a'], '@POS': [-1], '@ARG': 'href', '@TEXT': '\/(\d+)\/'}]}, 
+         'last_page': dict([('find', [{'tag': ['div'], 'class': ['paginacion']}]), 
+                            ('find_all', [{'tag': ['a'], '@POS': [-1], '@ARG': 'href', '@TEXT': '\/(\d+)\/'}])]), 
          'year': {}, 
          'season_episode': {}, 
          'seasons': {},
@@ -74,8 +77,8 @@ finds = {'find': {'find': [{'tag': ['ul'], 'class': ['miniboxs-ficha']}], 'find_
          'episode_num': [], 
          'episode_clean': [], 
          'plot': {}, 
-         'findvideos': {'find': [{'tag': ['div'], 'class': ['ficha_descarga_opciones']}], 
-                        'find_all': [{'tag': ['a'], 'string': re.compile('Descargar')}]}, 
+         'findvideos': dict([('find', [{'tag': ['div'], 'class': ['ficha_descarga_opciones']}]), 
+                             ('find_all', [{'tag': ['a'], 'string': re.compile('Descargar')}])]), 
          'title_clean': [['(?i)TV|Online|(4k-hdr)|(fullbluray)|4k| - 4k|(3d)|miniserie|\s*imax', ''],
                          ['(?i)[\[|\(]?\d{3,4}p[\]|\)]?|[\[|\(]?(?:4k|3d|uhd|hdr)[\]|\)]?', ''], 
                          ['(?i)[-|\(]?\s*HDRip\)?|microHD|\(?BR-LINE\)?|\(?HDTS-SCREENER\)?', ''], 
@@ -151,11 +154,13 @@ def submenu(item):
     if item.c_type == "peliculas":
 
         # Subtituladas
-        findS['sub_menu'] = {'find': [{'tag': ['div'], 'id': ['menu_langen']}], 'find_all': [{'tag': ['a']}]}
+        findS['sub_menu'] = dict([('find', [{'tag': ['div'], 'id': ['menu_langen']}]), 
+                                  ('find_all', [{'tag': ['a']}])])
         matches_int.extend(AlfaChannel.parse_finds_dict(soup, findS['sub_menu']))
 
         # Géneros
-        findS['sub_menu'] = {'find': [{'tag': ['div'], 'id': ['cuerpo']}], 'find_all': [{'tag': ['li'], 'id': False}]}
+        findS['sub_menu'] = dict([('find', [{'tag': ['div'], 'id': ['cuerpo']}]), 
+                                  ('find_all', [{'tag': ['li'], 'id': False}])])
         matches_int.extend(sorted(AlfaChannel.parse_finds_dict(soup, findS['sub_menu']), key=lambda el: el.a.get_text(strip=True)))
 
     genres = False
@@ -320,8 +325,7 @@ def actualizar_titulos(item):
 
 def search(item, texto, **AHkwargs):
     logger.info()
-    global kwargs
-    kwargs = AHkwargs
+    kwargs.update(AHkwargs)
 
     texto = texto.replace(" ", "+")
 
@@ -344,8 +348,7 @@ def search(item, texto, **AHkwargs):
  
 def newest(categoria, **AHkwargs):
     logger.info()
-    global kwargs
-    kwargs = AHkwargs
+    kwargs.update(AHkwargs)
     
     itemlist = []
     item = Item()

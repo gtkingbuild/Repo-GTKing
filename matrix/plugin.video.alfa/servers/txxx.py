@@ -16,7 +16,8 @@ def test_video_exists(page_url):
         data = httptools.downloadpage(page_url).data
         page_url = scrapertools.find_single_match(data, '="(https://[A-z-]+.[A-z]+/embed/[0-9]+/)')
         logger.debug(page_url)
-    server = scrapertools.find_single_match(page_url, '([A-z0-9-]+).(?:com|tube|xxx)')
+    server = scrapertools.get_domain_from_url(page_url).split(".")[-2]
+    # server = scrapertools.find_single_match(page_url, '([A-z0-9-]+).(?:com|tube|xxx)')
     dom = scrapertools.find_single_match(page_url, '.((?:com|tube|xxx))/')
     vid = scrapertools.find_single_match(page_url, '(?:embed/|videos/|video-|video/)([0-9]+)')
     if "vid-xm" in server: server = "xmilf"

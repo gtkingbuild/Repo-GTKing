@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import sys
+PY3 = False
+if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int
+
 try:
     from urllib.parse import urlsplit, urlparse, parse_qs, urljoin, quote_plus
 except:
@@ -16,6 +20,7 @@ import traceback
 from base64 import b64decode
 
 from core import httptools, scrapertools
+from core.item import Item
 from platformcode import config, logger
 
 
@@ -488,130 +493,11 @@ def unshorten(uri, type=None, timeout=10):
     return uri, status
 
 
-def sortened_urls(url, url_base64, host, retry=False, referer=None, alfa_s=True):
-    # https://unicode-table.com/es/#basic-latin
-    # https://www.ionos.es/digitalguide/servidores/know-how/ascii-american-standard-code-for-information-interchange/
-
-    sortened_domains = {'acortalink.me': ['linkser=uggcf%3A%2F%2Flrfgbeerag.arg', "TTTOzBmk\s*=\s*'(.*?)'", 14, 8, False], 
-                        'acortaenlace.com': ['linkser=uggcf%3A%2F%2Fzntargcryvf.pbz', "TTTOzBmk\s*=\s*'(.*?)'", 14, 8, False], 
-                        'acorta-enlace.com': ['linkser=ngbzgg.pbz', "TTTOzBmk\s*=\s*'(.*?)'", 14, 8, False], 
-                        'short-link.one': ['linkser=uggcf%3A%2F%2Fpvargbeerag.pb', "TTTOzBmk\s*=\s*'(.*?)'", 14, 8, False], 
-                        'acorta-link.com': ['linkser=uggcf%3A%2F%2Fgbqbgbeeragf.arg', "TTTOzBmk\s*=\s*'(.*?)'", 14, 8, False], 
-                        'mediafire.com': [None, '(?i)=\s*"Download file"\s*href="([^"]+)"\s*id\s*=\s*"downloadButton"', 0, 0, False], 
-                        'sub-short.link': [None, [64, 123 ,77, 91, 96, 109, 13, 13], 0, 0, False], 
-                        'divxto.site': [None, [64, 123 ,77, 91, 96, 109, 13, 13], 0, 0, False] , 
-                        'ddtorrent.live': [None, [64, 123 ,77, 91, 96, 109, 13, 13], 0, 0, False], 
-                        'short-info.link': [None, [64, 123 ,77, 91, 96, 109, 13, 13], 0, 0, False], 
-                        }
-
-    patron_domain = '(?:http.*\:)?\/\/(?:.*ww[^\.]*)?\.?(?:[^\.]+\.)?([\w|\-]+\.\w+)(?:\/|\?|$)'
-    patron_host = '((?:http.*\:)?\/\/(?:.*ww[^\.]*)?\.?(?:[^\.]+\.)?[\w|\-]+\.\w+)(?:\/|\?|$)'
-    patron_linkser = 'name="linkser"\s*value="([^"]*)"'
-    key_safe = 'fee631d2cffda38a78b96ee6d2dfb43a'
+def sortened_urls(url, url_base64, host, retry=False, referer=None, alfa_s=True, item=Item()):
     
-    if not url_base64 or url_base64.startswith('magnet') or url_base64.endswith('.torrent'):
-        return url_base64
-    
-    domain = scrapertools.find_single_match(url, patron_domain)
-    domain_save = domain
-    key = config.get_setting(domain, server='torrent', default='')
-    if not key and not sortened_domains.get(domain, False):
-        if ('/' in url_base64 or ':?' in url_base64) and not (url_base64.startswith('magnet') or url_base64.startswith('http')):
-            domain = 'sub-short.link'
-        else:
-            domain = 'acorta-link.com'
-        key = config.get_setting(domain, server='torrent', default='')
-
-    from lib.pyberishaes import GibberishAES
-    key_saved = key
-    if not key and ('//' in url_base64 or url_base64.startswith('/') or ':?' in url_base64) \
-                                       and not (url_base64.startswith('magnet') or url_base64.startswith('http')):
-        try:
-            chars = GibberishAES.s2a(GibberishAES(), url_base64)
-            chers = []
-            chors = sortened_domains[domain][1]
-
-            for c in chars:
-                if chors[0] < c < chors[1]:
-                    if chors[2] < c < chors[3]:
-                        chers.append(c - chors[6])
-                    elif c > chors[5]:
-                        chers.append(c - chors[6])
-                    elif chors[3] <= c <= chors[4]:
-                        chers.append(c)
-                    else:
-                        chers.append(c + chors[7])
-                else:
-                    chers.append(c)
-
-            url_base64 = "".join([chr(x) for x in chers])
-        except:
-            logger.error('ERROR en GibberishAES: translación: %s' % url_base64)
-            logger.error(traceback.format_exc(1))
-        return url_base64
-    
-    if not key:
-        key = key_safe
-        host_name = scrapertools.find_single_match(url, patron_host)
-        if host_name and not host_name.endswith('/'): host_name += '/'
-
-        response =  httptools.downloadpage(url_base64, proxy_retries=0, timeout=10, 
-                                           only_headers=True, ignore_response_code=True, alfa_s=alfa_s)
-        if response.sucess:
-            return url_base64
-        
-        data_new = re.sub(r"\n|\r|\t", "", httptools.downloadpage(url, proxy_retries=0, timeout=10, 
-                                                                  referer=referer or host, ignore_response_code=True, 
-                                                                  alfa_s=alfa_s).data)
-
-        if sortened_domains[domain][1] and scrapertools.find_single_match(data_new, sortened_domains[domain][1]):       # mediafire???
-            url_base64 = scrapertools.find_single_match(data_new, sortened_domains[domain][1])
-            if url_base64.startswith('magnet') or url_base64.startswith('http'):
-                return url_base64
-
-        if scrapertools.find_single_match(data_new, patron_linkser):
-            sortened_domains[domain][0] = 'linkser=%s' % quote_plus(scrapertools.find_single_match(data_new, patron_linkser))
-        else:
-            if not alfa_s: logger.debug('DATA post: %s' % data_new)
-        post = sortened_domains[domain][0]
-        if not alfa_s: logger.debug('post: %s' % post)
-        headers = {'Content-type': 'application/x-www-form-urlencoded'}
-        data_new = re.sub(r"\n|\r|\t", "", httptools.downloadpage(host_name, proxy_retries=0, timeout=10, 
-                                                                  referer=url, post=post, headers=headers, 
-                                                                  ignore_response_code=True, alfa_s=alfa_s).data)
-        if data_new:
-            key = scrapertools.find_single_match(data_new, sortened_domains[domain][1])
-            if not alfa_s: logger.debug('key: %s' % key)
-            if not key or not sortened_domains[domain][1]:
-                logger.error('ERROR: NO Key: default: %s' % key_safe)
-                if not alfa_s: logger.debug('DATA key: %s' % data_new)
-                key = key_safe
-    
-    if not key:
-        logger.error('ERROR: NO Key')
+    if not PY3:
+        from lib.alfaresolver import unlock_urls
     else:
-        try:
-            url_base64_bis = None
-            url_base64_bis = GibberishAES(string=url_base64, pass_=key, 
-                             Nr=sortened_domains[domain][2], Nk=sortened_domains[domain][3], 
-                             Decrypt=sortened_domains[domain][4])
-            if url_base64_bis.result and (url_base64_bis.result.startswith('magnet') or url_base64_bis.result.startswith('http') \
-                                          or url_base64_bis.result.startswith('//')):
-                if url_base64_bis.result.startswith('//'):
-                    url_base64 = 'https:%s' % url_base64_bis.result
-                else:
-                    url_base64 = url_base64_bis.result
-            else:
-                logger.error('ERROR en GibberishAES: Result: %s' % url_base64_bis.result)
-        except:
-            logger.error('ERROR en GibberishAES: Key: %s' % key)
-            logger.error(traceback.format_exc(1))
+        from lib.alfaresolver_py3 import unlock_urls
 
-    if not (url_base64.startswith('magnet') or url_base64.startswith('http')):
-        key = ''
-    if key != key_saved:
-        config.set_setting(str(domain_save), str(key), server='torrent')
-    if key_saved and not key and not retry:
-        return sortened_urls(url, url_base64, host, retry=True)
-
-    return url_base64
+    return unlock_urls(url, url_base64, host, retry=retry, referer=referer, alfa_s=alfa_s, item=item)

@@ -5,10 +5,11 @@
 
 import sys
 PY3 = False
-if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int
+if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
 import re
 import traceback
+if not PY3: _dict = dict; from collections import OrderedDict as dict
 
 from core.item import Item
 from core import servertools
@@ -53,7 +54,8 @@ tv_path = '/series'
 language = ['LAT']
 url_replace = []
 
-finds = {'find': {'find': [{'tag': ['section']}], 'find_all': [{'tag': ['div'], 'class': ['browse-movie-wrap']}]}, 
+finds = {'find': dict([('find', [{'tag': ['section']}]), 
+                       ('find_all', [{'tag': ['div'], 'class': ['browse-movie-wrap']}])]), 
          'sub_menu': {}, 
          'categories': {},  
          'search': {}, 
@@ -63,23 +65,26 @@ finds = {'find': {'find': [{'tag': ['section']}], 'find_all': [{'tag': ['div'], 
          'get_quality_rgx': [], 
          'next_page': {}, 
          'next_page_rgx': [['\/page\/\d+', '/page/%s/']], 
-         'last_page': {'find': [{'tag': ['div'], 'class': ['tsc_pagination']}], 
-                       'find_all': [{'tag': ['a'], '@POS': [-2]}], 'get_text': [{'tag': '', '@STRIP': True}]}, 
+         'last_page': dict([('find', [{'tag': ['div'], 'class': ['tsc_pagination']}]), 
+                            ('find_all', [{'tag': ['a'], '@POS': [-2]}]), 
+                            ('get_text', [{'tag': '', '@STRIP': True}])]), 
          'year': {}, 
          'season_episode': {}, 
-         'seasons': {'find': [{'tag': ['div'], 'id': ['downloads']}], 'find_all': [{'tag': ['div'], 'class': ['accordion active']}]},
+         'seasons': dict([('find', [{'tag': ['div'], 'id': ['downloads']}]), 
+                          ('find_all', [{'tag': ['div'], 'class': ['accordion active']}])]),
          'season_num': {'get_text': [{'tag': '', '@STRIP': True, '@TEXT': '(?i)temp\w*\s*(\d+)'}]}, 
          'seasons_search_num_rgx': [], 
          'seasons_search_qty_rgx': [], 
          'episode_url': '', 
-         'episodes': {'find': [{'tag': ['div'], 'id': ['downloads']}], 'find_all': [{'tag': ['li']}]}, 
+         'episodes': dict([('find', [{'tag': ['div'], 'id': ['downloads']}]), 
+                           ('find_all', [{'tag': ['li']}])]), 
          'episode_num': [], 
          'episode_clean': [], 
          'plot': {}, 
-         'findvideos': {'find': [{'tag': ['div'], 'class': ['movie-info-fl-div movie-info-date']}], 
-                        'find_next': [{'tag': ['div'], 'class': ['movie-info-fl-div movie-info-date']}], 
-                        'find_next': [{'tag': ['div'], 'class': ['movie-info-fl-div movie-info-date']}], 
-                        'find_all': [{'tag': ['a'], 'class': ["quality-download"]}]}, 
+         'findvideos': dict([('find', [{'tag': ['div'], 'class': ['movie-info-fl-div movie-info-date']}]), 
+                             ('find_next', [{'tag': ['div'], 'class': ['movie-info-fl-div movie-info-date']}]), 
+                             ('find_next', [{'tag': ['div'], 'class': ['movie-info-fl-div movie-info-date']}]), 
+                             ('find_all', [{'tag': ['a'], 'class': ["quality-download"]}])]), 
          'title_clean': [['(?i)TV|Online|(4k-hdr)|(fullbluray)|4k| - 4k|(3d)|miniserie|\s*imax', ''],
                          ['(?i)[\[|\(]?\d{3,4}p[\]|\)]?|[\[|\(]?(?:4k|3d|uhd|hdr)[\]|\)]?', ''], 
                          ['(?i)[-|\(]?\s*HDRip\)?|microHD|\(?BR-LINE\)?|\(?HDTS-SCREENER\)?', ''], 
@@ -111,16 +116,16 @@ def mainlist(item):
 
     itemlist.append(Item(channel=item.channel, title="Películas", action="list_all", 
                          c_type='peliculas', url=host + "peliculas/", thumbnail=get_thumb("channels_movie.png")))
-    itemlist.append(Item(channel=item.channel, title="    - por Calidad", action="section", 
+    itemlist.append(Item(channel=item.channel, title=" - [COLOR paleturquoise]por Calidad[/COLOR]", action="section", 
                          c_type='peliculas', url=host + "peliculas/", thumbnail=get_thumb("channels_movie_hd.png")))
-    itemlist.append(Item(channel=item.channel, title="    - por Año", action="section", 
+    itemlist.append(Item(channel=item.channel, title=" - [COLOR paleturquoise]por Año[/COLOR]", action="section", 
                          c_type='peliculas', url=host + "peliculas/", thumbnail=get_thumb("years.png")))
-    itemlist.append(Item(channel=item.channel, title="    - por Idioma", action="section", 
+    itemlist.append(Item(channel=item.channel, title=" - [COLOR paleturquoise]por Idioma[/COLOR]", action="section", 
                          c_type='peliculas', url=host + "peliculas/", thumbnail=get_thumb("channels_vos.png")))
 
     itemlist.append(Item(channel=item.channel, title="Series", action="list_all", 
                          c_type='series', url=host + "series/", thumbnail=get_thumb("channels_tvshow.png")))
-    itemlist.append(Item(channel=item.channel, title="    - por Año", action="section", 
+    itemlist.append(Item(channel=item.channel, title=" - [COLOR paleturquoise]por Año[/COLOR]", action="section", 
                          c_type='series', url=host + "series/", thumbnail=get_thumb("years.png")))
 
     itemlist.append(Item(channel=item.channel, title="Buscar", action="search", 
@@ -152,17 +157,17 @@ def section(item):
     findS = finds.copy()
 
     if 'Calidad' in item.title:
-        findS['categories'] = {'find': [{'tag': ['select'], 'id': ['tax_calidad']}], 
-                               'find_all': [{'tag': ['option'], 'value': True}]}
+        findS['categories'] = dict([('find', [{'tag': ['select'], 'id': ['tax_calidad']}]), 
+                                    ('find_all', [{'tag': ['option'], 'value': True}])])
 
     elif 'Año' in item.title:
-        findS['categories'] = {'find': [{'tag': ['select'], 'id': ['tax_ano']}], 
-                               'find_all': [{'tag': ['option'], 'value': True}]}
+        findS['categories'] = dict([('find', [{'tag': ['select'], 'id': ['tax_ano']}]), 
+                                    ('find_all', [{'tag': ['option'], 'value': True}])])
         findS['controls'].update({'reverse': True})
 
     elif 'Idioma' in item.title:
-        findS['categories'] = {'find': [{'tag': ['select'], 'id': ['tax_masopciones']}], 
-                               'find_all': [{'tag': ['option'], 'value': True}]}
+        findS['categories'] = dict([('find', [{'tag': ['select'], 'id': ['tax_masopciones']}]), 
+                                    ('find_all', [{'tag': ['option'], 'value': True}])])
 
     return AlfaChannel.section(item, matches_post=section_matches, finds=findS, **kwargs)
 
@@ -275,15 +280,21 @@ def episodesxseason_matches(item, matches_int, **AHkwargs):
         elem_json = {}
         #logger.error(elem)
         
-        elem_json['url'] = elem.a.get('href', '')
-        elem_json['season']  = item.contentSeason
-        elem_json['episode'] = int(scrapertools.find_single_match(elem.get_text(strip=True), '(?i)cap\w*\s+(\d+)') or 1)
-        if scrapertools.find_single_match(elem.get_text(strip=True), '(?i)\d+x\d+-(\d+)'):
-            elem_json['title'] = 'al %s' % scrapertools.find_single_match(sxe, '(?i)\d+x\d+-(\d+)')
-        elem_json['language'] = '*'
-        elem_json['quality'] = '*'
-        elem_json['torrent_info'] = ''
-        elem_json['server'] = 'torrent'
+        try:
+            elem_json['url'] = elem.a.get('href', '')
+            elem_json['season']  = item.contentSeason
+            elem_json['episode'] = int(scrapertools.find_single_match(elem.get_text(strip=True), '(?i)cap\w*\s+(\d+)') or 1)
+            if scrapertools.find_single_match(elem.get_text(strip=True), '(?i)\d+x\d+-(\d+)'):
+                elem_json['title'] = 'al %s' % scrapertools.find_single_match(sxe, '(?i)\d+x\d+-(\d+)')
+            elem_json['language'] = '*'
+            elem_json['quality'] = '*'
+            elem_json['torrent_info'] = ''
+            elem_json['server'] = 'torrent'
+
+        except:
+            logger.error(elem)
+            logger.error(traceback.format_exc())
+            continue
 
         if not elem_json.get('url', ''): 
             continue
@@ -367,8 +378,7 @@ def actualizar_titulos(item):
     
 def search(item, texto, **AHkwargs):
     logger.info()
-    global kwargs
-    kwargs = AHkwargs
+    kwargs.update(AHkwargs)
 
     texto = texto.replace(" ", "+")
     
@@ -389,8 +399,7 @@ def search(item, texto, **AHkwargs):
  
 def newest(categoria, **AHkwargs):
     logger.info()
-    global kwargs
-    kwargs = AHkwargs
+    kwargs.update(AHkwargs)
 
     itemlist = []
     item = Item()

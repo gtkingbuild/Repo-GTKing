@@ -29,13 +29,13 @@ def mainlist(item):
     logger.info()
     itemlist = []
     itemlist.append(Item(channel=item.channel, title="Estrenos", action="peliculas",
-                         url= host +"peliculas-online/lista-de-peliculas-online-parte-1/", viewmode="movie",
+                         url= host +"peliculas-de-estreno/lista-de-peliculas-online-parte-1/", viewmode="movie",
                          thumbnail=get_thumb('premieres', auto=True), first=0))
     itemlist.append(
         Item(channel=item.channel, title="Generos", action="generos", url= host + "generos/lista-de-generos/",
              thumbnail=get_thumb('genres', auto=True),))
     itemlist.append(Item(channel=item.channel, title="Recomendadas", action="peliculas",
-                         url= host + "peliculas-online/lista-de-peliculas-recomendadas/", viewmode="movie",
+                         url= host + "peliculas/lista-de-peliculas-recomendadas/", viewmode="movie",
                          thumbnail=get_thumb('recomended', auto=True), first=0))
     itemlist.append(Item(channel = item.channel, action = ""))
     itemlist.append(

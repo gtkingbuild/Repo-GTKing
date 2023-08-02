@@ -5,10 +5,11 @@
 
 import sys
 PY3 = False
-if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int
+if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
 import re
 import traceback
+if not PY3: _dict = dict; from collections import OrderedDict as dict
 
 from channelselector import get_thumb
 from core import scrapertools
@@ -18,7 +19,7 @@ from channels import autoplay
 from channels import filtertools
 from lib.AlfaChannelHelper import DictionaryAllChannel
 
-# Canal común con Cinetorrent(muerto), Magnetpelis, Pelispanda, Yestorrent
+# Canal común con Cinetorrent(muerto), Magnetpelis (muerto), Pelispanda, Yestorrent
 
 IDIOMAS = {'Latino': 'LAT', 'Castellano': 'CAST', 'Version Original': 'VO', 
            'Original subtitulado': 'VOS', 'subtitulado en español': 'VOSE'}
@@ -58,16 +59,20 @@ finds = {'find': {'find_all': [{'tag': ['div'], 'class': ['col-6 col-sm-4 col-lg
          'search': {}, 
          'get_language': {}, 
          'get_language_rgx': '', 
-         'get_quality': {'find': [{'tag': ['ul'], 'class': True}], 'get_text': [{'tag': '', '@STRIP': True}]}, 
+         'get_quality': dict([('find', [{'tag': ['ul'], 'class': True}]), 
+                              ('get_text', [{'tag': '', '@STRIP': True}])]), 
          'get_quality_rgx': '', 
          'next_page': {}, 
          'next_page_rgx': [['\/page\/\d+', '/page/%s/']], 
-         'last_page': {'find': [{'tag': ['ul'], 'class': ['pagination']}, {'tag': ['a'], 'class': ['next page-numbers']}], 
-                       'find_previous': [{'tag': ['a'], 'class': ['page-numbers']}], 'get_text': [{'@TEXT': '(\d+)'}]}, 
+         'last_page': dict([('find', [{'tag': ['ul'], 'class': ['pagination']}, 
+                                      {'tag': ['a'], 'class': ['next page-numbers']}]), 
+                            ('find_previous', [{'tag': ['a'], 'class': ['page-numbers']}]), 
+                            ('get_text', [{'@TEXT': '(\d+)'}])]), 
          'year': {}, 
          'season_episode': {}, 
          'seasons': {'find_all': [{'tag': ['div'], 'class': ['card-header']}]}, 
-         'season_num': {'find': [{'tag': ['span']}], 'get_text': [{'@TEXT': '(\d+)'}]}, 
+         'season_num': dict([('find', [{'tag': ['span']}]), 
+                             ('get_text', [{'@TEXT': '(\d+)'}])]), 
          'seasons_search_num_rgx': '', 
          'seasons_search_qty_rgx': '', 
          'episode_url': '', 
@@ -108,22 +113,22 @@ def mainlist(item):
     
     itemlist.append(Item(channel=item.channel, title="Películas", action="submenu", 
                 url=host, thumbnail=thumb_pelis, c_type="peliculas"))
-    itemlist.append(Item(channel=item.channel, title="    - por Género", action="section", 
+    itemlist.append(Item(channel=item.channel, title=" - [COLOR paleturquoise]Por Género[/COLOR]", action="section", 
                 url=host, thumbnail=thumb_genero, extra='Genero', c_type="peliculas"))
-    itemlist.append(Item(channel=item.channel, title="    - por Año", action="section", 
-                url=host, thumbnail=thumb_anno, extra='AÑO', c_type="peliculas"))
+    itemlist.append(Item(channel=item.channel, title=" - [COLOR paleturquoise]Por Año[/COLOR]", action="section", 
+                url=host, thumbnail=thumb_anno, extra='A.O', c_type="peliculas"))
     if channel not in ['magnetpelis']:
-        itemlist.append(Item(channel=item.channel, title="    - por Calidad", action="section", 
+        itemlist.append(Item(channel=item.channel, title=" - [COLOR paleturquoise]Por Calidad[/COLOR]", action="section", 
                 url=host, thumbnail=thumb_calidad, extra='CALIDAD', c_type="peliculas"))
     if channel in weirdo_channels:
-        itemlist.append(Item(channel=item.channel, title="    - por Idiomas", action="section", 
+        itemlist.append(Item(channel=item.channel, title=" - [COLOR paleturquoise]Por Idiomas[/COLOR]", action="section", 
                 url=host, thumbnail=thumb_calidad, extra='Idioma', c_type="peliculas"))
     
     itemlist.append(Item(channel=item.channel, title="Series", action="submenu", 
                 url=host, thumbnail=thumb_series, c_type="series"))
-    itemlist.append(Item(channel=item.channel, title="    - por Año", action="section", 
-                url=host, thumbnail=thumb_anno, extra='AÑO', c_type="series"))
-    
+    #itemlist.append(Item(channel=item.channel, title=" - [COLOR paleturquoise]Por Año[/COLOR]", action="section", 
+    #            url=host, thumbnail=thumb_anno, extra='A.O', c_type="series"))
+
     itemlist.append(Item(channel=item.channel, title="Buscar...", action="search",
                 url=host, thumbnail=thumb_buscar, c_type="search"))
 
@@ -172,13 +177,13 @@ def section(item):
     findS = finds.copy()
     
     findS['controls'] = {
-                         'year': True if item.extra in ['AÑO'] else False,
-                         'reverse': True if channel in weirdo_channels and item.extra in ['AÑO'] else False
+                         'year': True if item.extra in ['A.O'] else False,
+                         'reverse': True if channel in weirdo_channels and item.extra in ['A.O'] else False
                         }
-    findS['categories'] = {'find': [{'tag': ['a'], 'class': ['dropdown-toggle header__nav-link'], 
-                                     'string': re.compile('(?i)%s' % item.extra)}], 
-                           'find_next': [{'tag': ['ul']}], 
-                           'find_all': [{'tag': ['li']}]}
+    findS['categories'] = dict([('find', [{'tag': ['a'], 'class': ['dropdown-toggle header__nav-link'], 
+                                                         'string': re.compile('(?i)%s' % item.extra)}]), 
+                                ('find_next', [{'tag': ['ul']}]), 
+                                ('find_all', [{'tag': ['li']}])])
 
     return AlfaChannel.section(item, finds=findS, **kwargs)
 
@@ -216,6 +221,9 @@ def list_all_matches(item, matches_int, **AHkwargs):
             elem_json['quality'] = '*'
         elem_json['language'] = elem_json['quality']
         if item.extra == 'Idioma': elem_json['language'] = item.title.lower()
+
+        if item.c_type == 'search' and tv_path not in elem_json['url']:
+            elem_json['mediatype'] = 'movie'
         
         matches.append(elem_json.copy())
     
@@ -324,6 +332,7 @@ def findvideos_matches(item, matches_int, langs, response, **AHkwargs):
     else:
         for elem in matches_int:
             elem_json = {}
+            #logger.error(elem)
             x = 0
             
             for td in elem.find_all('td'):
@@ -333,7 +342,7 @@ def findvideos_matches(item, matches_int, langs, response, **AHkwargs):
                             elem_json['server'] = 'torrent'
                             x += 1
                         else:
-                            elem_json['server'] = 'torrent' if td.get_text().lower() in ['torrent', 'array'] else 'directo'
+                            elem_json['server'] = 'torrent' if td.get_text().lower() in ['t', 'torrent', 'array'] else 'directo'
                     if x == 1: elem_json['quality'] = '*%s' % td.get_text()
                     if x == 2: elem_json['language'] = '*%s' % td.get_text()
                     if x == 4: elem_json['torrent_info'] =  td.get_text().replace('-', '')
@@ -381,8 +390,7 @@ def actualizar_titulos(item):
 
 def search(item, texto, **AHkwargs):
     logger.info()
-    global kwargs
-    kwargs = AHkwargs
+    kwargs.update(AHkwargs)
 
     texto = texto.replace(" ", "+")
     
@@ -405,8 +413,7 @@ def search(item, texto, **AHkwargs):
  
 def newest(categoria, **AHkwargs):
     logger.info()
-    global kwargs
-    kwargs = AHkwargs
+    kwargs.update(AHkwargs)
 
     itemlist = []
     item = Item()

@@ -113,10 +113,12 @@ def is_adult(channel_name):
 
 
 def is_enabled(channel_name):
-    logger.info("channel_name=" + channel_name)
-    return get_channel_parameters(channel_name)["active"] and (get_channel_setting("enabled", channel=channel_name, default=True) \
+    
+    retn = get_channel_parameters(channel_name)["active"] and (get_channel_setting("enabled", channel=channel_name, default=True) \
                                                           or ("enabled" in IGNORE_NULL_LABELS and get_channel_setting("enabled", 
                                                           channel=channel_name) == None))
+    logger.info("channel_name=%s: %s" % (channel_name, retn))
+    return retn
 
 
 def get_channel_parameters(channel_name, settings=False):

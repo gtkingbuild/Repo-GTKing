@@ -13,7 +13,7 @@ def test_video_exists(page_url):
     logger.info("(page_url='%s')" % page_url)
     global data
     data = httptools.downloadpage(page_url).data
-    if "<h2>WE ARE SORRY</h2>" in data or '<title>404 Not Found</title>' in data:
+    if ">WE ARE SORRY</h2>" in data or '<title>404 Not Found</title>' in data:
         return False, config.get_localized_string(70449) % "MixDrop"
     return True, ""
 

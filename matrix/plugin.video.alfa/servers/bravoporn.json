@@ -36,7 +36,7 @@
         "url": "\\1"
       },
       {
-        "pattern": "(https://www.(?:xfreehd|tubewolf|sextvx).com/(?:es/|)(?:video|embed)/[0-9]+)",
+        "pattern": "(https://(?:www.|)(?:xfreehd|tubewolf|sextvx|pornxp).(?:com|net)/(?:es/|)(?:video|videos|embed)/[0-9]+(?:/|))",
         "url": "\\1"
       },
       {

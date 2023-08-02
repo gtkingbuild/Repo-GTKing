@@ -23,6 +23,7 @@ from core import filetools
 from core import httptools
 from core import jsontools
 from core import scrapertools
+from core.item import Item
 
 import xbmc
 import xbmcgui
@@ -31,6 +32,9 @@ from platformcode import config, logger
 if PY3: allchars = str.maketrans('', '')
 if not PY3: allchars = string.maketrans('', '')
 deletechars = ',\\/:*"<>|?'
+
+kwargs = {'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 0, 'ignore_response_code': True, 'timeout': 5, 
+          'canonical': {}, 'hide_infobox': True, 'follow_redirects': False}
 
 
 # Extraemos el nombre de la serie, temporada y numero de capitulo ejemplo: 'fringe 1x01'
@@ -287,7 +291,7 @@ def saveSubtitleName(item):
     return
 
 
-def get_from_subdivx(sub_url):
+def get_from_subdivx(sub_url, sub_data=None, sub_dir='', item=Item()):
 
     """
     :param sub_url: Url de descarga del subtitulo alojado en suvdivx.com
@@ -299,17 +303,12 @@ def get_from_subdivx(sub_url):
     logger.info()
 
     sub = ''
-    sub_dir = os.path.join(config.get_data_path(), 'temp_subs')
-
-    if os.path.exists(sub_dir):
-        for sub_file in os.listdir(sub_dir):
-            old_sub = os.path.join(sub_dir, sub_file)
-            os.remove(old_sub)
-    else:
-        os.mkdir(sub_dir)
+    if not sub_dir:
+        sub_dir = filetools.join(config.get_videolibrary_path(), "subtitles")
+        filetools.mkdir(sub_dir)
 
     sub_url = sub_url.replace("&amp;", "&")
-    sub_data = httptools.downloadpage(sub_url, follow_redirects=False)
+    if not sub_data: sub_data = httptools.downloadpage(sub_url, follow_redirects=False)
     if 'x-frame-options' not in sub_data.headers:
         sub_url = '%s' % sub_data.headers['location']
         ext = sub_url[-4::]
@@ -323,8 +322,106 @@ def get_from_subdivx(sub_url):
            logger.info('sub no valido')
     else:
        logger.info('sub no valido')
-    return sub
+    return sub if not sub_data else ''
 
+
+def get_from_subscene(sub_url, sub_data=None, sub_dir='', item=Item()):
+    import time
+
+    """
+    :param sub_url: Url de descarga del subtitulo alojado en suvdivx.com
+           Por Ejemplo: https://subscene.com/subtitles/kisi-ka-bhai-kisi-ki-jaan
+
+    :return: La ruta al subtitulo descomprimido
+    """
+
+    try:
+        sub = False
+        host = httptools.obtain_domain(sub_url, scheme=True)
+        if not sub_dir: sub_dir = filetools.join(config.get_videolibrary_path(), "subtitles")
+        sub_dir_init = sub_dir
+        sub_dir = filetools.join(sub_dir, sub_url.split('/')[-1])
+        res = filetools.mkdir(sub_dir)
+
+        if not sub_data: sub_data = httptools.downloadpage(sub_url, soup=True, **kwargs)
+        if sub_data.sucess:
+            languages = sub_data.soup.find_all('td', class_="language-start", id=re.compile('(?i)english|spanish'))
+
+            spanish = False
+            for language in languages:
+                lang = language.get('id', '')
+                if 'spanish' in lang: spanish = True
+                elem = language.find_all_next('td', class_="a1")
+                
+                try:
+                    for subtitle in elem:
+                        if lang.lower() in subtitle.a.get('href', ''):
+                            sub_sub_url = urllib.urljoin(host, subtitle.a.get('href', ''))
+                            sub_name = '%s-%s' % (sub_url.split('/')[-1], lang)
+                        else:
+                            break
+                        if item.contentType != 'episode': break
+
+                        sub_title = subtitle.a.find('span', class_=False).get_text(strip=True)
+                        if item.contentEpisodeNumber:
+                            pattern = '(?i)se?(\d{2})x?ep?(\d{2})'
+                        else:
+                            pattern = '(?i)se?(\d{2})'
+                        if scrapertools.find_single_match(sub_title, pattern):
+                            if item.contentEpisodeNumber:
+                                season, episode = scrapertools.find_single_match(sub_title, pattern)
+                                if int(season) != item.contentSeason or int(episode) != item.contentEpisodeNumber: continue
+                            else:
+                                season = scrapertools.find_single_match(sub_title, pattern)
+                                if int(season) != item.contentSeason: continue
+                            break
+
+                    if not sub_sub_url: continue
+                    data_dl = httptools.downloadpage(sub_sub_url, soup=True, **kwargs)
+
+                    if data_dl.sucess:
+                        zip_url = urllib.urljoin(host, data_dl.soup.find('li', class_="clearfix")\
+                                                                   .find('div', class_="download")\
+                                                                   .find('a').get('href', ''))
+                    
+                        if zip_url:
+                            file_id = "%s.zip" % sub_name
+                            filename = os.path.join(sub_dir, file_id)
+                            if filetools.exists(filename): filetools.remove(filename, silent=True)
+
+                            data_dl = httptools.downloadpage(zip_url, **kwargs)
+                            if data_dl.sucess:
+                                filetools.write(filename, data_dl.data)
+
+                                try:
+                                    from core import ziptools
+                                    unzipper = ziptools.ziptools()
+                                    unzipper.extract(filename, sub_dir)
+                                except Exception:
+                                    xbmc.executebuiltin('Extract("%s", "%s")' % (filename, sub_dir))
+                                time.sleep(1)
+                                res = filetools.remove(filename, silent=True)
+                                sub = True
+
+                except:
+                   logger.error('sub no valido')
+                   logger.error(traceback.format_exc())
+
+        if sub:
+            sub = ''
+            subtitles = filetools.listdir(sub_dir)
+            if subtitles: item.subtitle = []
+            for subtitle in subtitles:
+                if spanish and ('spa' not in subtitle or 'esp' not in subtitle or 'cas' not in subtitle): continue
+                item.subtitle += [filetools.join(sub_dir, subtitle)]
+                break
+            for subtitle in subtitles:
+                if subtitle not in item.subtitle: item.subtitle += [filetools.join(sub_dir, subtitle)]
+
+    except Exception:
+        logger.error(traceback.format_exc())
+
+    return sub
 
 def extract_file_online(path, filename):
 
@@ -358,8 +455,7 @@ def download_subtitles(item):
     #Permite preparar la descarga de los subtítulos externos
     logger.info()
 
-    kwargs = {'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 0, 'ignore_response_code': True, 'timeout': 5, 
-              'canonical': {}, 'headers': item.headers or {}, 'hide_infobox': True}
+    subtitle_services = [['subscene.com', get_from_subscene], ['subdivx.com', get_from_subdivx]]
 
     if not item.subtitle:
         return item
@@ -383,9 +479,13 @@ def download_subtitles(item):
 
             subtitle_path_name = filetools.join(subtitles_path, subtitle.split('/')[-1])
 
-            data_dl = httptools.downloadpage(subtitle, **kwargs).data
-            if data_dl: res = filetools.write(subtitle_path_name, data_dl)
-            if res and not item.subtitle: item.subtitle = subtitle_path_name
+            data_dl = httptools.downloadpage(subtitle.replace("&amp;", "&"), soup=True, headers=item.headers or {}, **kwargs)
+            for service, funtion in subtitle_services:
+                if httptools.obtain_domain(subtitle) in service:
+                    data_dl = funtion(subtitle, data_dl, subtitles_path, item)
+            if data_dl: 
+                res = filetools.write(subtitle_path_name, data_dl.data)
+                if res and not item.subtitle: item.subtitle = subtitle_path_name
     except:
         logger.error(traceback.format_exc())
 

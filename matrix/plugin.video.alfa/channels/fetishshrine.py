@@ -1,115 +1,129 @@
 # -*- coding: utf-8 -*-
-#------------------------------------------------------------
+# -*- Channel FetishShrine -*-
+# -*- Created for Alfa-addon -*-
+# -*- By the Alfa Develop Group -*-
+
 import sys
 PY3 = False
-if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int
-
-if PY3:
-    import urllib.parse as urlparse                             # Es muy lento en PY2.  En PY3 es nativo
-else:
-    import urlparse                                             # Usamos el nativo de PY2 que es más rápido
+if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
 import re
+import traceback
+if not PY3: _dict = dict; from collections import OrderedDict as dict
 
-from platformcode import config, logger
-from core import scrapertools
 from core.item import Item
 from core import servertools
-from core import httptools
+from core import scrapertools
+from core import jsontools
+from channelselector import get_thumb
+from platformcode import config, logger
+from channels import filtertools, autoplay
+from lib.AlfaChannelHelper import DictionaryAdultChannel
+
+IDIOMAS = {}
+list_language = list(set(IDIOMAS.values()))
+list_quality = []
+list_quality_movies = []
+list_quality_tvshow = []
+list_servers = []
+forced_proxy_opt = 'ProxySSL'
 
 canonical = {
              'channel': 'fetishshrine', 
              'host': config.get_setting("current_host", 'fetishshrine', default=''), 
              'host_alt': ["https://www.fetishshrine.com/"], 
              'host_black_list': [], 
-             'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'cf_assistant': False, 
+             'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'forced_proxy_ifnot_assistant': forced_proxy_opt, 'cf_assistant': False, 
              'CF': False, 'CF_test': False, 'alfa_s': True
             }
 host = canonical['host'] or canonical['host_alt'][0]
+
+timeout = 10
+kwargs = {}
+debug = config.get_setting('debug_report', default=False)
+movie_path = ''
+tv_path = ''
+language = []
+url_replace = []
+
+
+finds = {'find': dict([('find', [{'tag': ['div'], 'class': ['thumbs-list']}]),
+                       ('find_all', [{'tag': ['div'], 'class': ['thumb']}])]),
+
+         'categories': dict([('find', [{'tag': ['div'], 'class': ['thumbs-list']}]),
+                       ('find_all', [{'tag': ['div'], 'class': ['thumb']}])]),
+         'search': {}, 
+         'get_quality': {}, 
+         'get_quality_rgx': '', 
+         'next_page': dict([('find', [{'tag': ['ul'], 'class': ['paging']}]),
+                            ('find_all', [{'tag': ['a'], '@POS': [-1], '@ARG': 'href'}])]), 
+         'next_page_rgx': [['\/\d+\/', '/%s/']], 
+         'last_page': {},
+         'plot': {}, 
+         'findvideos': {}, 
+         'title_clean': [['[\(|\[]\s*[\)|\]]', ''],['(?i)\s*videos*\s*', '']],
+         'quality_clean': [['(?i)proper|unrated|directors|cut|repack|internal|real|extended|masted|docu|super|duper|amzn|uncensored|hulu', '']],
+         'url_replace': [], 
+         'profile_labels': {'list_all_stime': dict([('find', [{'tag': ['span'], 'itemprop': ['duration']}]),
+                                                    ('get_text', [{'strip': True}])]),
+                            'list_all_quality': dict([('find', [{'tag': ['span'], 'class': ['hd']}]),
+                                                      ('get_text', [{'strip': True}])]),
+                            'section_cantidad': dict([('find', [{'tag': ['span'], 'class': ['vids']}]),
+                                                      ('get_text', [{'strip': True}])])},
+         'controls': {'url_base64': False, 'cnt_tot': 32, 'reverse': False, 'profile': 'default'}, 
+         'timeout': timeout}
+AlfaChannel = DictionaryAdultChannel(host, movie_path=movie_path, tv_path=tv_path, movie_action='play', canonical=canonical, finds=finds, 
+                                     idiomas=IDIOMAS, language=language, list_language=list_language, list_servers=list_servers, 
+                                     list_quality_movies=list_quality_movies, list_quality_tvshow=list_quality_tvshow, 
+                                     channel=canonical['channel'], actualizar_titulos=True, url_replace=url_replace, debug=debug)
 
 
 def mainlist(item):
     logger.info()
     itemlist = []
-    itemlist.append(Item(channel=item.channel, title="Nuevas" , action="lista", url=host + "latest-updates/"))
-    itemlist.append(Item(channel=item.channel, title="Popular" , action="lista", url=host + "most-popular/"))
-    itemlist.append(Item(channel=item.channel, title="Mejor Valorado" , action="lista", url=host + "top-rated/"))
-    itemlist.append(Item(channel=item.channel, title="Categorias" , action="categorias", url=host + "categories/"))
-    itemlist.append(Item(channel=item.channel, title="Buscar", action="search"))
+    itemlist.append(Item(channel=item.channel, title="Nuevos" , action="list_all", url=host + "latest-updates/"))
+    itemlist.append(Item(channel=item.channel, title="Mas Visto" , action="list_all", url=host + "most-popular/"))
+    itemlist.append(Item(channel=item.channel, title="Mas Valorada" , action="list_all", url=host + "top_rated/"))
+    itemlist.append(Item(channel=item.channel, title="Categorias" , action="section", url=host + "categories/?sort_by=title", extra="Categorias"))
+    itemlist.append(Item(channel=item.channel, title="Buscar", action="search", url= host))
     return itemlist
 
 
-def search(item, texto):
+def section(item):
     logger.info()
-    texto = texto.replace(" ", "+")
-    item.url = "%ssearch/?q=%s" % (host, texto)
-    try:
-        return lista(item)
-    except:
-        import sys
-        for line in sys.exc_info():
-            logger.error("%s" % line)
-        return []
+    
+    return AlfaChannel.section(item, **kwargs)
 
 
-def categorias(item):
+def list_all(item):
     logger.info()
-    itemlist = []
-    data = httptools.downloadpage(item.url, canonical=canonical).data
-    data = re.sub(r"\n|\r|\t|&nbsp;|<br>", "", data)
-    patron = '<a href="([^"]+)" title="([^"]+)">.*?'
-    patron += '<img src="([^"]+)".*?'
-    patron += '<span class="vids">(\d+)</span>'
-    matches = re.compile(patron,re.DOTALL).findall(data)
-    for scrapedurl,scrapedtitle,scrapedthumbnail,cantidad in matches:
-        scrapedplot = ""
-        scrapedtitle = "%s (%s)" % (scrapedtitle,cantidad)
-        itemlist.append(Item(channel=item.channel, action="lista", title=scrapedtitle, url=scrapedurl,
-                              fanart=scrapedthumbnail, thumbnail=scrapedthumbnail, plot=scrapedplot) )
-    itemlist.sort(key=lambda x: x.title)
-    return itemlist
-
-
-def lista(item):
-    logger.info()
-    itemlist = []
-    data = httptools.downloadpage(item.url, canonical=canonical).data
-    data = re.sub(r"\n|\r|\t|&nbsp;|<br>", "", data)
-    patron = '<a href="([^"]+)" itemprop="url">.*?'
-    patron += 'contentUrl="([^"]+)" alt="([^"]+)">.*?'
-    patron += '<span itemprop="duration" class="length">(.*?)</span>(.*?)<span class="thumb-info">'
-    matches = re.compile(patron,re.DOTALL).findall(data)
-    for scrapedurl,scrapedthumbnail,scrapedtitle,duracion,calidad  in matches:
-        url = scrapedurl
-        if ">HD<" in calidad:
-            title = "[COLOR yellow]%s[/COLOR] [COLOR red]HD[/COLOR] %s" %(duracion,scrapedtitle)
-        else:
-            title = "[COLOR yellow]%s[/COLOR] %s" %(duracion,scrapedtitle)
-        thumbnail = scrapedthumbnail
-        plot = ""
-        action = "play"
-        if logger.info() == False:
-            action = "findvideos"
-        itemlist.append(Item(channel=item.channel, action=action, title=title, url=url, thumbnail=thumbnail,
-                               plot=plot, fanart=scrapedthumbnail, contentTitle = title ))
-    next_page = scrapertools.find_single_match(data,'href="([^"]+)" title="Next">')
-    if next_page!="":
-        next_page = urlparse.urljoin(item.url,next_page)
-        itemlist.append(Item(channel=item.channel, action="lista", title="[COLOR blue]Página Siguiente >>[/COLOR]", url=next_page) )
-    return itemlist
+    
+    return AlfaChannel.list_all(item, **kwargs)
 
 
 def findvideos(item):
     logger.info()
-    itemlist = []
-    itemlist.append(Item(channel=item.channel, action="play", title= "%s", contentTitle = item.title, url=item.url))
-    itemlist = servertools.get_servers_itemlist(itemlist, lambda i: i.title % i.server.capitalize())
-    return itemlist
+    
+    return AlfaChannel.get_video_options(item, item.url, data='', matches_post=None, 
+                                         verify_links=False, findvideos_proc=True, **kwargs)
 
 
-def play(item):
+def search(item, texto, **AHkwargs):
     logger.info()
-    itemlist = []
-    itemlist.append(Item(channel=item.channel, action="play", title= "%s", contentTitle = item.title, url=item.url))
-    itemlist = servertools.get_servers_itemlist(itemlist, lambda i: i.title % i.server.capitalize())
-    return itemlist
+    kwargs.update(AHkwargs)
+    
+    item.url = "%ssearch/?q=%s" % (item.url, texto.replace(" ", "+"))
+    
+    try:
+        if texto:
+            item.c_type = "search"
+            item.texto = texto
+            return list_all(item)
+        else:
+            return []
+    
+    # Se captura la excepción, para no interrumpir al buscador global si un canal falla
+    except:
+        for line in sys.exc_info():
+            logger.error("%s" % line)
+        return []

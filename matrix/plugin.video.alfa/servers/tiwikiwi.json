@@ -10,6 +10,10 @@
       {
         "pattern": "(https://filemoon.(?:sx|to|in)/(?:e|d)/[a-z0-9]+)",
         "url": "\\1"
+      },
+      {
+        "pattern": "(https://doodporn.xyz/(?:e|d)/[a-z0-9]+)",
+        "url": "\\1"
       }
     ]
   },

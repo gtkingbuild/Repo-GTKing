@@ -16,11 +16,11 @@
         "url": "\\1"
       },
       {
-        "pattern": "(https://(?:www.|)(?:ballzdeep|pornxpert|hoes|bigtitslust|mondetube|watchporn|faapy|pornvase|sortporn|4wank).(?:com|xxx|tube|to)/video(?:s|)/[0-9]+/[A-z0-9-]+(?:/|))",
+        "pattern": "(https://(?:www.|)(?:ballzdeep|pornxpert|hoes|bigtitslust|mondetube|watchporn|faapy|pornvase|sortporn|4wank|porncaper).(?:com|xxx|tube|to)/video(?:s|)/[0-9]+/[A-z0-9-]+(?:/|))",
         "url": "\\1"
       },
       {
-        "pattern": "(https://(?:www.|)(?:vipporns|porngem|frprn|shameless).com/(?:video|videos|clips)/[A-z0-9-]+(?:/|))",
+        "pattern": "(https://(?:www.|)(?:vipporns|porngem|frprn|shameless).com/(?:video|videos|clips|free-porns)/[A-z0-9-]+(?:/|))",
         "url": "\\1"
       },
       {
@@ -104,7 +104,7 @@
         "url": "https://www.sunporno.com/videos/\\1/a"
       },
       {
-        "pattern": "(https://www.tabooporn.tv/videos/[0-9]+/[A-z0-9-]+(?:/|))",
+        "pattern": "(https://www.(?:tabooporn|teenpornvideo).(?:tv|sex)/videos/[0-9]+/[A-z0-9-]+(?:/|))",
         "url": "\\1"
       },
       {
@@ -128,7 +128,7 @@
         "url": "https://www.sexvid.xxx/\\1"
       },
       {
-        "pattern": "(https://www.teenpornvideo.sex/videos/[0-9]+/[A-z0-9-]+(?:/|))",
+        "pattern": "(https://freshporno.net/videos/[A-z0-9-]+(?:/|))",
         "url": "\\1"
       },
       {

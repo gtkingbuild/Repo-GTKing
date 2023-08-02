@@ -21,7 +21,7 @@ canonical = {
              'host_alt': ["https://jkanime.net/"], 
              'host_black_list': [], 
              'pattern': '<meta\s*property="og:url"\s*content="([^"]+)"', 
-             'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'CF_stat': True, 'cf_assistant': False, 
+             'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 
              'CF': False, 'CF_test': False, 'alfa_s': True
             }
 host = canonical['host'] or canonical['host_alt'][0]

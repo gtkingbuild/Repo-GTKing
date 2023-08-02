@@ -5,10 +5,11 @@
 
 import sys
 PY3 = False
-if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int
+if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
 import re
 import traceback
+if not PY3: _dict = dict; from collections import OrderedDict as dict
 import datetime
 
 from core.item import Item
@@ -49,8 +50,8 @@ url_replace = []
 date = datetime.datetime.now()
 
 finds = {'find': {'find_all': [{'tag': ['div'], 'class': ['spotlight_container']}]},
-         'categories': {'find': [{'tag': ['ul'], 'class': ['mobile-nav']}], 
-                        'find_all': [{'tag': ['li']}]}, 
+         'categories': dict([('find', [{'tag': ['ul'], 'class': ['mobile-nav']}]), 
+                             ('find_all', [{'tag': ['li']}])]), 
          'search': {}, 
          'get_language': {}, 
          'get_language_rgx': '(?:flags\/||d{4}\/\d{2}\/)(\w+)\.(?:png|jpg|jpeg|webp)', 
@@ -58,8 +59,9 @@ finds = {'find': {'find_all': [{'tag': ['div'], 'class': ['spotlight_container']
          'get_quality_rgx': '', 
          'next_page': {}, 
          'next_page_rgx': [['\/page\:\d+', '/page:%s']], 
-         'last_page': {'find': [{'tag': ['a'], 'aria-label': 'Next'}], 
-                       'find_previous': [{'tag': ['a'], 'class': ['page-link']}], 'get_text': [{'tag': '', '@STRIP': True}]}, 
+         'last_page': dict([('find', [{'tag': ['a'], 'aria-label': 'Next'}]), 
+                            ('find_previous', [{'tag': ['a'], 'class': ['page-link']}]), 
+                            ('get_text', [{'tag': '', '@STRIP': True}])]), 
          'year': {}, 
          'season_episode': {}, 
          'seasons': {'find_all': [{'tag': ['a'], 'aria-label': ['Reproducir']}]}, 
@@ -381,8 +383,9 @@ def play(item):
     return [item]
 
 
-def search(item, texto):
+def search(item, texto, **AHkwargs):
     logger.info()
+    kwargs.update(AHkwargs)
 
     try:
         texto = texto.replace(" ", "+")
@@ -402,8 +405,9 @@ def search(item, texto):
         return []
 
 
-def newest(categoria):
+def newest(categoria, **AHkwargs):
     logger.info()
+    kwargs.update(AHkwargs)
     
     item = Item()
     item.c_type = 'peliculas'

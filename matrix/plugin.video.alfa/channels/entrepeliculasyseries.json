@@ -1,7 +1,7 @@
 {
   "id": "entrepeliculasyseries",
   "name": "EntrePeliculasySeries",
-  "active": true,
+  "active": false,
   "adult": false,
   "language": ["lat", "cast"],
   "thumbnail": "https://i.postimg.cc/BjkjNy2D/Entrepeliculasyseries-logo.png",

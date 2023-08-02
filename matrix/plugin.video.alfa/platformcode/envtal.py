@@ -752,7 +752,7 @@ def paint_env(item, environment={}):
                     folder=False))
                     
     itemlist.append(Item(title="[COLOR hotpink][B]==> Reportar un fallo[/B][/COLOR]", 
-                    channel="report", action="mainlist", category='Configuración', 
+                    module="report", action="mainlist", category='Configuración', 
                     unify=False, plot=reporte, thumbnail=get_thumb("error.png")))
     
     return (itemlist, environment)

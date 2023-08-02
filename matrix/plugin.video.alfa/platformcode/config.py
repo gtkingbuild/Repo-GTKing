@@ -104,7 +104,6 @@ class CacheInit(xbmc.Monitor, threading.Thread):
             window.setProperty("alfa_CF_list", '')
             window.setProperty("alfa_videolab_movies_list", '')
             window.setProperty("alfa_videolab_series_list", '')
-            window.setProperty("alfa_domain_web_list", '')
             styles_path = os.path.join(get_runtime_path(), 'resources', 'color_styles.json')
             with open(styles_path, "r") as cf:
                 window.setProperty("alfa_colors_file", cf.read())

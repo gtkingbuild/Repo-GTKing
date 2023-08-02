@@ -253,7 +253,7 @@ class Main(xbmcgui.WindowXMLDialog):
             xbmc_videolibrary.ask_set_content(1, silent=True)
             config.set_setting('show_once', True)
         elif control == "cliente torrent":
-            from channels import setting
+            from modules import setting
             setting.setting_torrent(Item())
         elif control == "titulos inteligentes":
             from platformcode import colors
@@ -261,7 +261,7 @@ class Main(xbmcgui.WindowXMLDialog):
             unify.init_colors()
             colors.show_window()
         elif control == "set de iconos":
-            from channels import setting
+            from modules import setting
             setting.icon_set_selector()
         elif control == "ajustes avanzados":
             self.close()

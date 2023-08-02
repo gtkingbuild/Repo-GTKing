@@ -161,7 +161,7 @@ def context(item, list_language=None, list_quality=None, exist=False):
         if isinstance(_context, list):
             for x in _context:
                 if x and isinstance(x, dict):
-                    if x["channel"] == "filtertools":
+                    if x.get("channel", "") == "filtertools":
                         added = True
                         break
 
@@ -897,27 +897,29 @@ def get_season_search(item, dict_series={}):
     channel = item.contentChannel if item.contentChannel and item.contentChannel not in ['list', 'videolibrary'] else None \
                                   or item.from_channel if item.from_channel and item.from_channel not in ['list', 'videolibrary'] else None \
                                   or item.channel
-    if not dict_series: dict_series = jsontools.get_node_from_file(channel, TAG_TVSHOW_FILTER)
-
-    tvshow = tvshow_key = normalize(item.show or item.contentTitle)
-    media_type = item.media_type or item.contentType.replace('episode', TAG_MEDIA_DEF)\
-                                                    .replace('season', TAG_MEDIA_DEF) or TAG_MEDIA_DEF
-    if tvshow_key not in list(dict_series.keys()) and '*' in str(dict_series.keys()):
-        if media_type and '*_%s' % media_type in dict_series.keys():
-            tvshow_key = '*_%s' % media_type
-        else:
-            tvshow_key = '*'
-            media_type = item.media_type or item.contentType or TAG_MEDIA_DEF
-
-    item.season_search = item.season_search.title() or tvshow.title()
-
     if channel:
+        if not dict_series: dict_series = jsontools.get_node_from_file(channel, TAG_TVSHOW_FILTER)
+
+        tvshow = tvshow_key = normalize(item.show or item.contentTitle)
+        media_type = item.media_type or item.contentType.replace('episode', TAG_MEDIA_DEF)\
+                                                        .replace('season', TAG_MEDIA_DEF) or TAG_MEDIA_DEF
+        if tvshow_key not in list(dict_series.keys()) and '*' in str(dict_series.keys()):
+            if media_type and '*_%s' % media_type in dict_series.keys():
+                tvshow_key = '*_%s' % media_type
+            else:
+                tvshow_key = '*'
+                media_type = item.media_type or item.contentType or TAG_MEDIA_DEF
+
+        item.season_search = item.season_search.title() or tvshow.title()
+
         if dict_series and dict_series.get(tvshow_key, {}).get(TAG_TITLE, ""):
             if not dict_series[tvshow_key][TAG_TITLE].startswith('*'):
                 item.season_search = dict_series[tvshow_key][TAG_TITLE]
 
 
 def check_filter(item, itemlist):
+    if not item.channel:
+        return itemlist
     
     dict_series = jsontools.get_node_from_file(item.channel, TAG_TVSHOW_FILTER)
     

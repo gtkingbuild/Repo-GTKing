@@ -276,7 +276,7 @@ def render_items(itemlist, parent_item):
         if item.action in ["search"]:
             item.title = unify.set_color(item.title, 'tvshow')
 
-        if use_unify and parent_item.channel not in ['alfavorites']:
+        if use_unify and parent_item.module not in ['alfavorites']:
             # Formatear titulo con unify
             item = unify.title_format(item, colors_file, srv_lst)
 
@@ -363,10 +363,10 @@ def render_items(itemlist, parent_item):
     if config.get_setting("forceview"):  # ...forzamos segun el viewcontent
         xbmcplugin.setContent(PLUGIN_HANDLE, parent_item.viewcontent)
 
-    elif parent_item.channel == "alfavorites" and parent_item.action == 'mostrar_perfil':
+    elif parent_item.module == "alfavorites" and parent_item.action == 'mostrar_perfil':
         xbmcplugin.setContent(PLUGIN_HANDLE, "movies")
 
-    elif parent_item.channel == "videolibrary":
+    elif parent_item.module == "videolibrary":
         if parent_item.action == 'list_tvshows':
             xbmcplugin.setContent(PLUGIN_HANDLE, "tvshows")
         elif parent_item.action == 'list_movies':
@@ -387,11 +387,11 @@ def render_items(itemlist, parent_item):
     elif parent_item.viewType:
         xbmcplugin.setContent(PLUGIN_HANDLE, parent_item.viewType)
 
-    elif parent_item.channel in ["alfavorites", "favorites", "news", "search"]:
-        if parent_item.action != "mainlist" or parent_item.channel == "favorites":
+    elif parent_item.module in ["alfavorites", "favorites", "news", "search"]:
+        if parent_item.action != "mainlist" or parent_item.module == "favorites":
             xbmcplugin.setContent(PLUGIN_HANDLE, "movies")
 
-    elif parent_item.channel not in special_channels and parent_item.action != "mainlist":  # ... o segun el canal
+    elif not parent_item.module and parent_item.action != "mainlist":  # ... o segun el canal
         xbmcplugin.setContent(PLUGIN_HANDLE, "movies")
 
     # Fijamos el "breadcrumb"
@@ -638,7 +638,7 @@ def set_infolabels(listitem, item, player=False):
                        'episodio_sinopsis': 'episodeguide', 'episodio_air_date': 'None', 'episodio_imagen': 'None',
                        'episodio_titulo': 'title', 'episodio_vote_average': 'rating', 'episodio_vote_count': 'votes',
                        'fanart': 'None', 'genre': 'genre', 'homepage': 'None', 'imdb_id': 'imdbnumber',
-                       'imdbnumber': 'imdbnumber', 'in_production': 'None', 'last_air_date': 'lastplayed',
+                       'imdbnumber': 'imdbnumber', 'in_production': 'None', 'last_air_date': 'lastplayed', 'last_episode_to_air': 'None',
                        'mediatype': 'mediatype', 'mpaa': 'mpaa', 'number_of_episodes': 'None',
                        'number_of_seasons': 'None', 'original_language': 'None', 'originaltitle': 'originaltitle',
                        'overlay': 'overlay', 'poster_path': 'path', 'popularity': 'None', 'playcount': 'playcount',
@@ -671,16 +671,16 @@ def set_infolabels(listitem, item, player=False):
         try:
             if config.get_platform(True)['num_version'] < 18.0:
                 listitem.setUniqueIDs({"tmdb": item.infoLabels.get("tmdb_id", 0),
-                                  "imdb": item.infoLabels.get("imdb_id", 0),
-                                  "tvdb": item.infoLabels.get("tvdb_id", 0)})
+                                       "imdb": item.infoLabels.get("imdb_id", 0),
+                                       "tvdb": item.infoLabels.get("tvdb_id", 0)})
             elif config.get_platform(True)['num_version'] < 20.0:
                 listitem.setUniqueIDs({"tmdb": item.infoLabels.get("tmdb_id", 0),
-                                  "imdb": item.infoLabels.get("imdb_id", 0),
-                                  "tvdb": item.infoLabels.get("tvdb_id", 0)}, "imdb")
+                                       "imdb": item.infoLabels.get("imdb_id", 0),
+                                       "tvdb": item.infoLabels.get("tvdb_id", 0)}, "imdb")
             else:                                                                               ### VERIFY
                 infotagvideo.setUniqueIDs(str({"tmdb": item.infoLabels.get("tmdb_id", 0),
-                                  "imdb": item.infoLabels.get("imdb_id", 0),
-                                  "tvdb": item.infoLabels.get("tvdb_id", 0)}), "imdb")
+                                               "imdb": item.infoLabels.get("imdb_id", 0),
+                                               "tvdb": item.infoLabels.get("tvdb_id", 0)}), "imdb")
         except:
             import traceback
             logger.error(traceback.format_exc())
@@ -785,7 +785,7 @@ def set_context_commands(item, item_url, parent_item, categories_channel=[], **k
 
             # Si no se está dentro de Alfavoritos y hay los contextos de alfavoritos, descartarlos.
             # (pasa al ir a un enlace de alfavoritos, si este se clona en el canal)
-            if parent_item.channel != 'alfavorites' and 'i_perfil' in command and 'i_enlace' in command:
+            if parent_item.module != 'alfavorites' and 'i_perfil' in command and 'i_enlace' in command:
                 continue
 
             if "goto" in command:
@@ -799,7 +799,7 @@ def set_context_commands(item, item_url, parent_item, categories_channel=[], **k
                     (command["title"], "RunPlugin(%s?%s)" % (sys.argv[0], item.clone(**command).tourl())))
 
     # No añadir más opciones predefinidas si se está dentro de Alfavoritos
-    if parent_item.channel in ['alfavorites', 'info_popup']:
+    if parent_item.module in ['alfavorites', 'info_popup']:
         return context_commands
         # Opciones segun criterios, solo si el item no es un tag (etiqueta), ni es "Añadir a la videoteca", etc...
 
@@ -860,19 +860,19 @@ def set_context_commands(item, item_url, parent_item, categories_channel=[], **k
         """
 
         # Añadir a Favoritos
-        if kwargs.get('num_version_xbmc') < 17.0 and (item.channel not in ["favorites", "videolibrary", "help", ""]
+        if kwargs.get('num_version_xbmc') < 17.0 and (item.module not in ["favorites", "videolibrary", "help", ""]
                                                       or item.action in [
-                                                          "update_videolibrary"]) and parent_item.channel != "favorites":
+                                                          "update_videolibrary"]) and parent_item.module != "favorites":
             context_commands.append(
                 (config.get_localized_string(30155), "RunPlugin(%s?%s&%s)" %
                  (sys.argv[0], item_url,
-                  'channel=favorites&action=addFavourite&from_channel=' + item.channel + '&from_action=' + item.action)))
+                  'module=favorites&action=addFavourite&from_channel=' + item.channel + '&from_action=' + item.action)))
 
         # Añadir a Alfavoritos (Mis enlaces)
-        if item.channel not in ["favorites", "videolibrary", "help", "search", ""] and parent_item.channel != "favorites":
+        if item.module not in ["favorites", "videolibrary", "help", "search"] and parent_item.module != "favorites":
             context_commands.append(
                 ('[COLOR blue]%s[/COLOR]' % config.get_localized_string(70557), "RunPlugin(%s?%s&%s)" %
-                 (sys.argv[0], item_url, urllib.urlencode({'channel': "alfavorites", 'action': "addFavourite",
+                 (sys.argv[0], item_url, urllib.urlencode({'module': "alfavorites", 'action': "addFavourite",
                                                            'from_channel': item.channel,
                                                            'from_action': item.action}))))
 
@@ -909,7 +909,7 @@ def set_context_commands(item, item_url, parent_item, categories_channel=[], **k
             if item.action not in ['episodios', 'seasons', 'findvideos', 'play']:
                 context_commands.insert(0, (config.get_localized_string(60351),
                                             "RunPlugin(%s?%s)" % (
-                                                sys.argv[0], Item(channel='side_menu',
+                                                sys.argv[0], Item(module='side_menu',
                                                                   action="set_custom_start",
                                                                   parent=item.tourl()).tourl())))
 
@@ -940,7 +940,7 @@ def set_context_commands(item, item_url, parent_item, categories_channel=[], **k
                                               % (item.action, item.contentSerieName or item.contentTitle, True))))
 
         # Descargar
-        if item.channel not in ["downloads", "search"]:
+        if item.module not in ["downloads", "search"]:
             # Seleccionar qué canales aceptan Descargar en ...
             if 'torrent' in str(categories_channel) and item.server and item.server != 'torrent':
                 tc = '_en'
@@ -965,11 +965,11 @@ def set_context_commands(item, item_url, parent_item, categories_channel=[], **k
             if item.contentType == "movie" and item.contentTitle:
                 context_commands.append((config.get_localized_string(60354), "RunPlugin(%s?%s&%s)" %
                                          (sys.argv[0], item_url,
-                                          'channel=downloads&action=save_download&from_channel=' + item.channel + '&from_action=' + item.action)))
+                                          'module=downloads&action=save_download&from_channel=' + item.channel + '&from_action=' + item.action)))
                 if tc:
                     context_commands.append((config.get_localized_string(60354) + en, "RunPlugin(%s?%s&%s)" %
                                              (sys.argv[0], item_url,
-                                              'channel=downloads&action=save_download%s&from_channel=' % tc + item.channel + '&from_action=' + item.action)))
+                                              'module=downloads&action=save_download%s&from_channel=' % tc + item.channel + '&from_action=' + item.action)))
 
             elif item.contentSerieName or (
                     item.contentType in ["tvshow", "episode"] and item.infoLabels['tmdb_id'] == 'None'):
@@ -980,12 +980,12 @@ def set_context_commands(item, item_url, parent_item, categories_channel=[], **k
                                                     and not item.channel_recovery):
                     context_commands.append((config.get_localized_string(60355), "RunPlugin(%s?%s&%s)" %
                                              (sys.argv[0], item_url,
-                                              'channel=downloads&action=save_download&from_channel=' + channel_p + '&sub_action=tvshow' +
+                                              'module=downloads&action=save_download&from_channel=' + channel_p + '&sub_action=tvshow' +
                                               '&from_action=' + item.action)))
                     if tc:
                         context_commands.append((config.get_localized_string(60355) + en, "RunPlugin(%s?%s&%s)" %
                                                  (sys.argv[0], item_url,
-                                                  'channel=downloads&action=save_download%s&from_channel=' % tc + channel_p + 
+                                                  'module=downloads&action=save_download%s&from_channel=' % tc + channel_p + 
                                                   '&sub_action=tvshow' + '&from_action=' + item.action)))
                 # Descargar serie NO vistos
                 if (
@@ -994,18 +994,18 @@ def set_context_commands(item, item_url, parent_item, categories_channel=[], **k
                     context_commands.append(
                         ('Descargar Epis NO Vistos', "RunPlugin(%s?%s&%s)" %
                          (sys.argv[0], item_url,
-                          'channel=downloads&action=save_download&from_channel=' + channel_p + '&sub_action=unseen' +
+                          'module=downloads&action=save_download&from_channel=' + channel_p + '&sub_action=unseen' +
                           '&from_action=' + item.action)))
                 # Descargar episodio
                 if item.contentType == "episode":
                     context_commands.append((config.get_localized_string(60356), "RunPlugin(%s?%s&%s)" %
                                              (sys.argv[0], item_url,
-                                              'channel=downloads&action=save_download&from_channel=' + channel_p +
+                                              'module=downloads&action=save_download&from_channel=' + channel_p +
                                               '&from_action=' + item.action)))
                     if tc:
                         context_commands.append((config.get_localized_string(60356) + en, "RunPlugin(%s?%s&%s)" %
                                                  (sys.argv[0], item_url,
-                                                  'channel=downloads&action=save_download%s&from_channel=' % tc + channel_p +
+                                                  'module=downloads&action=save_download%s&from_channel=' % tc + channel_p +
                                                   '&from_action=' + item.action)))
                 # Descargar temporada
                 if item.contentType == "season" or parent_item.action in ["episodios", "episodesxseason"] or \
@@ -1014,25 +1014,25 @@ def set_context_commands(item, item_url, parent_item, categories_channel=[], **k
                                                         'tmdb_id'] != 'None' and not item.channel_recovery):
                     context_commands.append((config.get_localized_string(60357), "RunPlugin(%s?%s&%s)" %
                                              (sys.argv[0], item_url,
-                                              'channel=downloads&action=save_download&from_channel=' + channel_p + '&sub_action=season' +
+                                              'module=downloads&action=save_download&from_channel=' + channel_p + '&sub_action=season' +
                                               '&from_action=' + item.action)))
                     if tc:
                         context_commands.append((config.get_localized_string(60357) + en, "RunPlugin(%s?%s&%s)" %
                                                  (sys.argv[0], item_url,
-                                                  'channel=downloads&action=save_download%s&from_channel=' % tc + channel_p + '&sub_action=season' +
+                                                  'module=downloads&action=save_download%s&from_channel=' % tc + channel_p + '&sub_action=season' +
                                                   '&from_action=' + item.action)))
 
         # Abrir configuración
-        if parent_item.channel not in ["setting", "news", "search"]:
-            # pre-serialized: Item(channel="setting", action="mainlist").tourl()
+        if parent_item.module not in ["setting", "news", "search"]:
+            # pre-serialized: Item(module="setting", action="mainlist").tourl()
             context_commands.append((config.get_localized_string(60358), "Container.Update(%s?%s)" %
-                                     (sys.argv[0], Item(channel="setting", action="mainlist").tourl())))
+                                     (sys.argv[0], Item(module="setting", action="mainlist").tourl())))
 
         # Buscar Trailer
         if item.action == "findvideos" or "buscar_trailer" in context:
             context_commands.append(
                 (config.get_localized_string(60359), "RunPlugin(%s?%s)" % (sys.argv[0], item.clone(
-                    channel="trailertools", action="buscartrailer", contextual=True).tourl())))
+                    module="trailertools", action="buscartrailer", contextual=True).tourl())))
 
         if kwargs.get('superfavourites'):
             context_commands.append((config.get_localized_string(60361),
@@ -1042,7 +1042,7 @@ def set_context_commands(item, item_url, parent_item, categories_channel=[], **k
 
     # Menu Rapido
     # pre-serialized
-    # Item(channel='side_menu', action="open_menu").tourl()
+    # Item(module='side_menu', action="open_menu").tourl()
     context_commands.insert(0, (config.get_localized_string(60360),
                                 "Container.Update (%s?%s)" % (sys.argv[0],
                                                               'ewogICAgImFjdGlvbiI6ICJvcGVuX21lbnUiLAogICAgImNoYW5uZWwiOiAic2lkZV9tZW51Igp9Cg==')))
@@ -1060,7 +1060,7 @@ def play_video(item, strm=False, force_direct=False, autoplay=False):
     
     xbmc_player = XBMCPlayer()
     
-    if item.channel == 'downloads':
+    if item.module == 'downloads':
         logger.info("Reproducir video local: %s [%s]" % (item.title, item.url))
         xlistitem = xbmcgui.ListItem(path=item.url)
         if config.get_platform(True)['num_version'] >= 16.0:
@@ -1208,6 +1208,28 @@ def get_seleccion(default_action, opciones, seleccion, video_urls):
                 seleccion = 0
             else:
                 seleccion = len(video_urls) - 1
+    # Ver en calidad media
+    elif default_action == 3:
+        resolutions = []
+        for url in video_urls:
+            if "debrid]" in url[0] or "Premium)" in url[0]:
+                check.append(True)
+            res = calcResolution(url[0])
+            if res:
+                resolutions.append(res)
+
+        if resolutions:
+            if (fixpri == True and
+                    check and
+                    priority == 2):
+                seleccion = 0
+            else:
+                seleccion = resolutions.index(int(len(resolutions)/2))
+        else:
+            if fixpri == True and check:
+                seleccion = 0
+            else:
+                seleccion = int(len(video_urls)/2)
     else:
         seleccion = 0
     return seleccion
@@ -1312,8 +1334,12 @@ def get_dialogo_opciones(item, default_action, strm, autoplay):
     except AttributeError:
         item.server = ""
 
-    if item.server == "":
-        item.server = "directo"
+    if not item.server:
+        itemlist = servertools.get_servers_itemlist([item])
+        if itemlist: 
+            item = itemlist[0]
+        else:
+            item.server = "directo"
 
     # Si no es el modo normal, no muestra el diálogo porque cuelga XBMC
     muestra_dialogo = (config.get_setting("player_mode", default=0) == 0 and not strm)
@@ -1370,7 +1396,7 @@ def get_dialogo_opciones(item, default_action, strm, autoplay):
                 dialog_ok(config.get_localized_string(60362), config.get_localized_string(60363),
                           config.get_localized_string(60364), item.url)
 
-            if item.channel == "favorites":
+            if item.module == "favorites":
                 # "Quitar de favoritos"
                 opciones.append(config.get_localized_string(30154))
 
@@ -1412,13 +1438,13 @@ def set_opcion(item, seleccion, opciones, video_urls):
 
     # "Quitar de favoritos"
     elif opciones[seleccion] == config.get_localized_string(30154):
-        from channels import favorites
+        from modules import favorites
         favorites.delFavourite(item)
         salir = True
 
     # "Añadir a favoritos":
     elif opciones[seleccion] == config.get_localized_string(30155):
-        from channels import favorites
+        from modules import favorites
         item.from_channel = "favorites"
         favorites.addFavourite(item)
         salir = True
@@ -1427,7 +1453,7 @@ def set_opcion(item, seleccion, opciones, video_urls):
     elif opciones[seleccion] == config.get_localized_string(30162):
         config.set_setting("subtitulo", False)
         xbmc.executebuiltin("RunPlugin(%s?%s)" %
-                            (sys.argv[0], item.clone(channel="trailertools", action="buscartrailer",
+                            (sys.argv[0], item.clone(module="trailertools", action="buscartrailer",
                                                      contextual=True).tourl()))
         salir = True
 
@@ -1816,7 +1842,7 @@ def play_torrent(item, xlistitem, mediaurl):
             if item.post: post = item.post
             # Descargamos el .torrent
             torrent_params['url'] = item.url
-            if item.channel != 'downloads' and item.sub_action not in ['auto'] and item.torrents_path == 'CF_BLOCKED':
+            if item.module != 'downloads' and item.sub_action not in ['auto'] and item.torrents_path == 'CF_BLOCKED':
                 torrent_params['torrents_path'] = item.torrents_path
             torrent_params = get_torrent_size(item.url, torrent_params=torrent_params, 
                                               referer=referer, post=post, timeout=timeout, 
@@ -1911,7 +1937,10 @@ def play_torrent(item, xlistitem, mediaurl):
             from platformcode import subtitletools
             item = subtitletools.download_subtitles(item)
             if item.subtitle:
-                if not filetools.exists(item.subtitle):
+                if isinstance(item.subtitle, list):
+                    subtitles_list = item.subtitle[:]
+                    item.subtitle = item.subtitle[0]
+                if not filetools.exists(filetools.dirname(item.subtitle)):
                     item.subtitle = filetools.join(videolibrary_path, folder, item.subtitle)
                 log("##### 'Subtítulos externos: %s" % item.subtitle)
                 time.sleep(1)
@@ -1987,7 +2016,7 @@ def play_torrent(item, xlistitem, mediaurl):
                         if torr_client in ['quasar', 'elementum', 'torrest']:
                             torr_data, deamon_url, index = get_tclient_data(video_path, \
                                                                             torr_client, port=torrent_port,
-                                                                            web=torrent_web, action='delete')
+                                                                            web=torrent_web, action='delete', item=item)
                         elif torr_client in ['BT', 'MCT'] and 'url' in str(item.downloadServer):
                             file_t = scrapertools.find_single_match(item.downloadServer['url'],
                                                                       '\w+\.torrent$').upper()
@@ -2088,7 +2117,8 @@ def play_torrent(item, xlistitem, mediaurl):
                                                                   filetools.basename(item.url)), silent=True)
 
                 if (torr_client in ['quasar', 'elementum', 'torrest'] and item.downloadFilename \
-                    and (item.downloadStatus not in [5] or item.downloadProgress == -1 or item.url.startswith('magnet:'))) \
+                    and (item.downloadStatus not in [5] or item.downloadProgress == -1 \
+                        or (item.url.startswith('magnet:') and torr_client not in ['elementum']))) \
                         or (torr_client in ['quasar', 'elementum', 'torrest'] \
                             and ('RAR-' in size or 'RAR-' in item.torrent_info) and BACKGROUND_DOWNLOAD):
 
@@ -2103,7 +2133,7 @@ def play_torrent(item, xlistitem, mediaurl):
                         downloadProgress = -1
                         result, deamon_url, index = get_tclient_data(torr_folder, \
                                                                      torr_client, port=torrent_port,
-                                                                     web=torrent_web, action='resume')
+                                                                     web=torrent_web, action='resume', item=item)
                     if not result:  # Si es nuevo, o hay error en resume, se añade
                         result = call_torrent_via_web(urllib.quote_plus(item.url), torr_client,
                                                       oper=item.downloadStatus)
@@ -2145,16 +2175,19 @@ def play_torrent(item, xlistitem, mediaurl):
                         else:
                             rar_path = ''
                         break
-            if subtitles_list and rar_path:
+            
+            rar_path_folder = rar_path if filetools.isdir(rar_path) else filetools.dirname(rar_path)
+            if subtitles_list and rar_path_folder:
+                filetools.mkdir(rar_path_folder)
                 for subtitle in subtitles_list:
                     if filetools.exists(subtitle):
-                        filetools.copy(subtitle, filetools.join(rar_path, filetools.basename(subtitle)))
+                        filetools.copy(subtitle, filetools.join(rar_path_folder, filetools.basename(subtitle)), silent=True)
                 log("##### Subtítulos copiados junto a vídeo: %s" % str(subtitles_list))
-            if item.subtitle and filetools.isfile(item.subtitle) and rar_path:
-                rar_path_folder = rar_path if filetools.isdir(rar_path) else filetools.dirname(rar_path)
+            elif item.subtitle and filetools.isfile(item.subtitle) and rar_path_folder:
+                filetools.mkdir(rar_path_folder)
                 dest_file = filetools.join(rar_path_folder, filetools.basename(item.subtitle))
-                filetools.copy(item.subtitle, dest_file, silent=True)
-                log("##### Subtítulo copiado junto a vídeo: %s" % str(dest_file))
+                res = filetools.copy(item.subtitle, dest_file, silent=True)
+                if res: log("##### Subtítulo copiado junto a vídeo: %s" % str(dest_file))
 
         except Exception as e:
             config.set_setting("LIBTORRENT_in_use", False, server="torrent")  # Marcamos Libtorrent como disponible
@@ -2258,13 +2291,14 @@ def rar_control_mng(item, xlistitem, mediaurl, rar_files, torr_client, password,
                 if dialog_yesno('Alfa %s' % torr_client, '¿Borrar las descargas del RAR y Vídeo?'):
                     log("##### erase_file_path: %s" % erase_file_path)
                     try:
-                        torr_data, deamon_url, index = get_tclient_data(torr_folder, \
+                        torr_data, deamon_url, index = get_tclient_data(torr_folder, 
                                                                         torr_client, port=torrent_paths.get(
-                                                                        torr_client.upper() + '_port', 0), \
+                                                                        torr_client.upper() + '_port', 0), 
                                                                         web=torrent_paths.get(
                                                                         torr_client.upper() + '_web', ''),
-                                                                        action='delete', \
-                                                                        folder_new=erase_file_path)
+                                                                        action='delete', 
+                                                                        folder_new=erase_file_path,
+                                                                        item=item)
                     except:
                         logger.error(traceback.format_exc(1))
 

@@ -53,22 +53,18 @@ try:
     if not alfa_caching:
         window.setProperty("alfa_videolab_movies_list", '')
         window.setProperty("alfa_videolab_series_list", '')
-except:
+except Exception:
     alfa_caching = False
     window = None
     video_list_str = ''
     logger.error(traceback.format_exc())
 
-channel_py = "newpct1"
-intervenido_judicial = 'Dominio intervenido por la Autoridad Judicial'
-intervenido_policia = 'Judicial_Policia_Nacional'
-intervenido_guardia = 'Judicial_Guardia_Civil'
-intervenido_sucuri = 'Access Denied - Sucuri Website Firewall'
+channel_py = "wolfmax4k"
+channel_py_episode_list = {}
 idioma_busqueda = 'es'
 idioma_busqueda_VO = 'es,en'
 movies_videolibrary_path = filetools.join(config.get_videolibrary_path(), config.get_setting("folder_movies"))
 series_videolibrary_path = filetools.join(config.get_videolibrary_path(), config.get_setting("folder_tvshows"))
-list_nfos = []
 patron_domain = '(?:http.*\:)?\/\/(?:.*ww[^\.]*)?\.?(?:[^\.]+\.)?([\w|\-]+\.\w+)(?:\/|\?|$)'
 patron_host = '((?:http.*\:)?\/\/(?:.*ww[^\.]*)?\.?(?:[^\.]+\.)?[\w|\-]+\.\w+)(?:\/|\?|$)'
 patron_canal = '(?:http.*\:)?\/\/(?:ww[^\.]*)?\.?(\w+)\.\w+(?:\/|\?|$)'
@@ -76,198 +72,11 @@ patron_local_torrent = '(?i)(?:(?:\\\|\/)[^\[]+\[\w+\](?:\\\|\/)[^\[]+\[\w+\]_\d
 find_alt_domains = 'atomohd'   # Solo poner uno.  Alternativas: pctmix, pctmix1, pctreload, pctreload1, maxitorrent, descargas2020, pctnew
 btdigg_url = config.BTDIGG_URL
 btdigg_label = config.BTDIGG_LABEL
+btdigg_label_B = config.BTDIGG_LABEL_B
 DEBUG = config.get_setting('debug_report', default=False)
 
 
-def downloadpage(url, **kwargs):
-    # Función "wraper" que puede ser llamada desde los canales para descargar páginas de forma unificada y evitar
-    # tener que hacer todas las comprobaciones dentro del canal, lo que dificulta su mantenimiento y mejora.
-    # La llamada tiene todos los parámetros típicos que puede usar un canal al descargar.
-    from core import httptools
-    
-    if not PY3:
-        funcion = inspect.stack()[1][3]                                         # Identifica el nombre de la función que llama
-    else:
-        funcion = inspect.stack()[1].function
-    ERROR_01 = '%s: La Web no responde o ha cambiado de URL: ' % funcion.upper()    # Prepara los literales de los errores posibles
-    ERROR_02 = '%s: Ha cambiado la estructura de la Web. Reportar el error con el log: ' % funcion.upper()
-    
-    # Kwags locales que no pasan a Httptools
-    domain_name = kwargs.pop('domain_name', '')
-    if kwargs.get('decode_code', ''): kwargs['encoding'] = kwargs.get('decode_code', '')
-    decode_code = kwargs.pop('decode_code', '')
-    s2 = kwargs.pop('s2', None)
-    patron = kwargs.pop('patron', '')
-    quote_rep = kwargs.pop('quote_rep', True)
-    no_comments = kwargs.pop('no_comments', True)
-    item = kwargs.pop('item', {})
-    if not item:
-        item = Item()
-    else:
-        format_tmdb_id(item)
-    itemlist = kwargs.pop('itemlist', [])
-    if itemlist: format_tmdb_id(itemlist)
-    json = kwargs.pop('json', False)
-    
-    soup = kwargs.get('soup', None)
-    retry_alt_status = kwargs.get('retry_alt', True)
-    if 'retry_alt' not in str(kwargs): kwargs['retry_alt'] = True
-    check_blocked_IP_status = kwargs.get('check_blocked_IP', False)
-    
-    # Valores que usamos por defecto que pasan a Kwargs
-    if not 'ignore_response_code' in str(kwargs):
-        kwargs['ignore_response_code'] = True
-    if kwargs.get('timeout', None) and kwargs['timeout'] < 20 and httptools.channel_proxy_list(url):    # Si usa proxy, triplicamos el timeout
-        kwargs['timeout'] *= 3
-    forced_proxy_retry_channels = ['rarbg']
-    if item.channel in forced_proxy_retry_channels or (kwargs.get('canonical', {}).get('channel', '') \
-                    and kwargs.get('canonical', {}).get('channel', '') in forced_proxy_retry_channels):
-        kwargs['forced_proxy_retry'] = 'ProxyCF'
-    
-    # Gestión de la vwesión de SSL TLS y error 403
-    kwargs_str = str(kwargs)
-    canonical_str = str(kwargs.get('canonical', {}))
-    if 'set_tls' not in kwargs_str and 'set_tls' not in canonical_str:
-        kwargs['set_tls'] = True
-        if 'set_tls_min' not in kwargs_str and 'set_tls_min' not in canonical_str:
-            kwargs['set_tls_min'] = True
-    if 'retries_cloudflare' not in kwargs_str and 'retries_cloudflare' not in canonical_str:
-        kwargs['retries_cloudflare'] = 1
-
-    # Variables locales
-    if s2 is None and funcion == 'findvideos':                                  # Si es "findvideos" no sustituye los \s{2,}
-        s2 = False                                                              # para no corromper las contraseñas de los .RAR
-    elif s2 is None:
-        s2 = True
-    data = ''
-    status = False
-    host_old = kwargs.get('canonical', {}).get('host', '')
-    response = {
-                'data': data, 
-                'sucess': False, 
-                'code': 999
-               }
-    response = type('HTTPResponse', (), response)
-    
-    # Si la url tiene un formato desconocido, devolvemos el error
-    if not isinstance(url, (str, unicode, bytes)):
-        logger.error('Formato de url incompatible: %s (%s)' % (str(url), str(type(url))))
-        return (data, response, item, itemlist)
-
-    # Descargamos la página y procesamos el resultado
-    try:
-        response = httptools.downloadpage(url, **kwargs)
-        
-        if response:
-            if check_blocked_IP_status and not status and response.data:
-                status, itemlist = check_blocked_IP(response.data, itemlist, url, kwargs.get('canonical', {}))
-            if status:
-                response.sucess = False
-                response.code = 99
-                return (data, response, item, itemlist)
-            
-            if json and response.json:
-                data = response.json
-            elif soup and response.soup:
-                data = response.soup
-            else:
-                data = response.data
-            if decode_code is not None and response.encoding is not None:
-                decode_code = response.encoding
-            if response.sucess and kwargs.get('only_headers', False):
-                data = response.headers
-                return (data, response, item, itemlist)
-
-            if response.sucess and 'Content-Type' in response.headers and not 'text/html' \
-                                in response.headers['Content-Type'] and not 'json' \
-                                in response.headers['Content-Type'] and not 'xml' \
-                                in response.headers['Content-Type']:
-                return (data, response, item, itemlist)
-
-        if data:
-            data = js2py_conversion(data, url, domain_name=domain_name, channel=item.channel, json=json, **kwargs)  # Conversión js2py
-            
-            if not json and not soup:
-                data = re.sub(r"\n|\r|\t", "", data)                            # Reemplaza caracteres innecesarios
-                if quote_rep:
-                    data = data.replace("'", '"')                               # Reemplaza ' por "
-                if s2:
-                    data = re.sub(r"\s{2,}", "", data)                          # Reemplaza blancos innecesarios, salvo en "findvideos"
-                if no_comments:
-                    data = re.sub(r"(<!--.*?-->)", "", data)                    # Reemplaza comentarios
-                if decode_code is None:                                         # Si se especifica, se decodifica con el código dado
-                    decode_code = 'utf8'
-                if not PY3 and isinstance(data, str) and decode_code:
-                    data = unicode(data, decode_code, errors="replace").encode("utf8")
-                elif PY3 and isinstance(data, bytes):
-                    if not decode_code: decode_code = 'utf8'
-                    data = data.decode(decode_code)
-            if patron and response.sucess and not scrapertools.find_single_match(data, patron):     # Se comprueba que el patrón funciona
-                response.code = 999                                             # Si no funciona, se pasa error
-                if kwargs.get('canonical', {}).get('host', '') == url or 'btdig' in url:
-                    data_print = ''
-                else:
-                    data_print = data
-                try:
-                    logger.error('ERROR 02: ' + ERROR_02 + str(item.url) + " CODE: " + str(response.code) 
-                            + " PATRON: " + str(patron) + " DATA: " + str(data_print))
-                except:
-                    logger.error('ERROR 02: ' + ERROR_02 + str(item.url) + " CODE: " + str(response.code)
-                            + " PATRON: " + str(patron) + " DATA: ")
-                if funcion != 'episodios':
-                    itemlist.append(item.clone(action='', title=item.category + ': CODE: ' +
-                             '[COLOR %s]' % get_color_from_settings('library_color', default='yellow') + 
-                             str(response.code) + '[/COLOR]: ERROR 02: ' + ERROR_02))
-
-        if not response.sucess and str(response.code) != '301':
-            logger.error('ERROR 01: ' + ERROR_01 + str(item.url) + " CODE: " + str(response.code) 
-                             + " PATRON: " + str(patron) + " DATA: ")
-            if funcion != 'episodios':
-                itemlist.append(item.clone(action='', title=item.category + ': CODE: ' +
-                         '[COLOR %s]' % get_color_from_settings('library_color', default='yellow') + 
-                         str(response.code) + '[/COLOR]: ERROR 01: ' + ERROR_01))
-
-        if response.host and kwargs.get('canonical', {}).get('channel', '') == channel_py:
-            change_host_newpct1(response.host, host_old)
-        if response.host and host_old:
-            if item.channel_host: item.channel_host = item.channel_host.replace(host_old, response.host)
-            if item.url: item.url = item.url.replace(host_old, response.host)
-            if item.url_tvshow: item.url_tvshow = item.url_tvshow.replace(host_old, response.host)
-    except:
-        logger.error(traceback.format_exc())
-    
-    return (data, response, item, itemlist)
-
-
-def change_host_newpct1(host, host_old):
-
-    if not host or not host_old: return
-    channel_json = channeltools.get_channel_json(channel_py)
-    if not channel_json or not channel_json.get('settings', []): return
-
-    domain_old = scrapertools.find_single_match(host_old, patron_domain)
-    domain_host = scrapertools.find_single_match(host, patron_domain)
-    label = ", ('1', '%s', '%s', '%s', '%s', '\u0028http\\S+\u0029\\/\\w+-\u0028?:org|com\u0029', '', '', '', '', '*', '', 'no')" \
-                % (domain_old.split('.')[0], domain_host.split('.')[0], domain_old, host)
-    update = False
-    
-    for settings in channel_json['settings']:                                   # Se recorren todos los settings
-        if settings['id'] == "clonenewpct1_channels_list":                      # Encontramos el setting
-            settings['default'] = settings.get('default', '').replace(host_old, host)   # Cambiar lista de clones
-            update = True
-        
-        if settings['id'] == "intervenidos_channels_list":                      # Encontramos el setting
-            settings['default'] = settings.get('default', '').replace(host_old, host)   # Cambiar lista de clones intervenidos
-            if label not in settings['default']:
-                settings['default'] += label                                    # Añadimos redirección de host_old o host_canonical
-            update = True
-            
-    if update:
-        channel_path = filetools.join(config.get_runtime_path(), "channels", channel_py + ".json")
-        filetools.write(channel_path, json.dumps(channel_json, sort_keys=True, indent=2, ensure_ascii=True))
-
-
-def convert_url_base64(url, host='', referer=None, rep_blanks=True, force_host=False):
+def convert_url_base64(url, host='', referer=None, rep_blanks=True, force_host=False, item=Item()):
     logger.info('URL: ' + url + ', HOST: ' + host)
     
     host_whitelist = ['mediafire.com']
@@ -304,21 +113,26 @@ def convert_url_base64(url, host='', referer=None, rep_blanks=True, force_host=F
                     url_base64 = base64.b64decode(url_base64).decode('utf-8')
                 logger.info('Url base64 después de 20 pasadas (incompleta): %s' % url_base64)
                 url_base64 = url
-            except:
+            except Exception:
                 if url_base64 and url_base64 != url:
                     logger.info('Url base64 convertida: %s' % url_base64)
                     if rep_blanks: url_base64 = url_base64.replace(' ', '%20')
                 #logger.error(traceback.format_exc())
                 if not url_base64:
                     url_base64 = url
-                if url_base64.startswith('magnet') or url_base64.endswith('.torrent') or domain and domain in host_whitelist_skip:
+                if url_base64.startswith('magnet') or url_base64.endswith('.torrent') or (domain and domain in host_whitelist_skip):
                     return url_base64 + url_sufix
                 
                 from lib.unshortenit import sortened_urls
                 if domain and domain in host_whitelist:
-                    url_base64_bis = sortened_urls(url_base64, url_base64, host, referer=referer, alfa_s=True)
+                    url_base64_bis = sortened_urls(url_base64, url_base64, host, referer=referer, alfa_s=True, item=item)
                 else:
-                    url_base64_bis = sortened_urls(url, url_base64, host, referer=referer, alfa_s=True)
+                    url_base64_bis = sortened_urls(url, url_base64, host, referer=referer, alfa_s=True, item=item)
+                host_name = scrapertools.find_single_match(url_base64_bis, patron_host)
+                if host_name:
+                    url_base64_bis = host_name + url_base64_bis.replace(host_name, '').replace('//', '/')
+                else:
+                    url_base64_bis = url_base64_bis.replace('//', '/')
                 domain_bis = scrapertools.find_single_match(url_base64_bis, patron_domain)
                 if domain_bis: domain = domain_bis
                 if url_base64_bis != url_base64:
@@ -344,7 +158,7 @@ def js2py_conversion(data, url, domain_name='', channel='', size=10000, resp={},
 
     if PY3 and isinstance(data, bytes):
         if not b'Javascript is required' in data[:size]:
-            return data
+            return data if not resp else resp
     elif not 'Javascript is required' in data[:size]:
         return data if not resp else resp
     
@@ -365,7 +179,7 @@ def js2py_conversion(data, url, domain_name='', channel='', size=10000, resp={},
         channel = inspect.getmodule(inspect.currentframe().f_back.f_back)
         try:
             channel = channel.__name__.split('.')[1]
-        except:
+        except Exception:
             channel = ""
     
     # Obtiene el código JS
@@ -378,7 +192,7 @@ def js2py_conversion(data, url, domain_name='', channel='', size=10000, resp={},
         data_new = scrapertools.find_single_match(data, patron)
     if not data_new:
         logger.error('js2py_conversion: NO data_new')
-        return data
+        return data if not resp else resp
         
     # Descompone el código Base64
     try:
@@ -386,14 +200,14 @@ def js2py_conversion(data, url, domain_name='', channel='', size=10000, resp={},
         for x in range(10):
             data_end = base64.b64decode(data_new).decode('utf-8')
             data_new = data_end
-    except:
+    except Exception:
         js2py_code = data_new
     else:
         logger.error('js2py_conversion: base64 data_new NO Funciona: ' + str(data_new))
-        return data
+        return data if not resp else resp
     if not js2py_code:
         logger.error('js2py_conversion: NO js2py_code BASE64')
-        return data
+        return data if not resp else resp
 
     def atob(s):
         import base64
@@ -421,7 +235,7 @@ def js2py_conversion(data, url, domain_name='', channel='', size=10000, resp={},
     if channel:
         try:
             config.set_setting("cookie_ren", True, channel=channel)
-        except:
+        except Exception:
             pass
 
     # Se ejecuta de nuevo la descarga de la página, ya con la nueva cookie
@@ -471,6 +285,17 @@ def check_blocked_IP(data, itemlist, url, canonical={}, verbose=True):
     return (False, itemlist)                                                    # No hay bloqueo
 
 
+def get_color_from_settings(label, default='white'):
+    
+    color = config.get_setting(label)
+    if not color:
+        return default
+    
+    color = scrapertools.find_single_match(color, '\](\w+)\[')
+    
+    return color or default
+
+
 def update_title(item):
     logger.info()
     from core import scraper
@@ -511,19 +336,19 @@ def update_title(item):
         item.action = item.from_action
         del item.from_action
     if item.from_update:
-        if item.from_title_tmdb:            #Si se salvó el título del contenido devuelto por TMDB, se restaura.
+        if item.from_title_tmdb:                                    # Si se salvó el título del contenido devuelto por TMDB, se restaura.
             item.title = item.from_title_tmdb
     else:
-        item.add_videolibrary = True        #Estamos Añadiendo a la Videoteca.  Indicador para control de uso de los Canales
+        item.add_videolibrary = True                                # Estamos Añadiendo a la Videoteca.  Indicador para control de uso de los Canales
     if item.add_videolibrary:
         if item.season_colapse: del item.season_colapse
         if item.from_num_season_colapse: del item.from_num_season_colapse
         if item.from_title_season_colapse: del item.from_title_season_colapse
         if item.contentType == "movie":
-            if item.from_title_tmdb:        #Si se salvó el título del contenido devuelto por TMDB, se restaura.
+            if item.from_title_tmdb:                                # Si se salvó el título del contenido devuelto por TMDB, se restaura.
                 item.title = item.from_title_tmdb
             del item.add_videolibrary
-        if item.channel_host:               #Borramos ya el indicador para que no se guarde en la Videoteca
+        if item.channel_host:                                       # Borramos ya el indicador para que no se guarde en la Videoteca
             del item.channel_host
         if item.contentTitle:
             item.contentTitle = re.sub(r' -%s-' % item.category, '', item.contentTitle)
@@ -541,14 +366,8 @@ def update_title(item):
         if item.from_title: del item.from_title
         item.from_update = True
         del item.from_update
-        if item.contentType == "movie":
-            if item.channel == channel_py:                                      # Si es una peli de NewPct1, ponemos el nombre del clone
-                item.channel = scrapertools.find_single_match(item.url, patron_canal)
     else:
         new_item = item.clone()                                                 # Salvamos el Item inicial para restaurarlo si el usuario cancela
-        if item.contentType == "movie":
-            if item.channel == channel_py:                                      # Si es una peli de NewPct1, ponemos el nombre del clone
-                item.channel = scrapertools.find_single_match(item.url, patron_canal)
         #Borramos los IDs y el año para forzar a TMDB que nos pregunte
         if 'tmdb_id' in item.infoLabels: item.infoLabels['tmdb_id'] = ''
         if 'tvdb_id' in item.infoLabels: item.infoLabels['tvdb_id'] = ''
@@ -567,7 +386,7 @@ def update_title(item):
             if item.from_title_tmdb: del item.from_title_tmdb
         if not item.from_update and item.from_title: del item.from_title
 
-        if item.contentSerieName:                   # Copiamos el título para que sirva de referencia en menú "Completar Información"
+        if item.contentSerieName:                           # Copiamos el título para que sirva de referencia en menú "Completar Información"
             item.infoLabels['originaltitle'] = item.contentSerieName
             item.contentTitle = item.contentSerieName
         else:
@@ -581,38 +400,38 @@ def update_title(item):
             #Si el usuario ha cambiado los datos en "Completar Información" hay que ver el título definitivo en TMDB
             if not item.infoLabels['tmdb_id']:
                 if item.contentSerieName:
-                    item.contentSerieName = item.contentTitle                       #Se pone título nuevo
-                item.infoLabels['noscrap_id'] = ''                                  #Se resetea, por si acaso
-                item.infoLabels['year'] = '-'                                       #Se resetea, por si acaso
-                scraper_return = scraper.find_and_set_infoLabels(item)              #Se intenta de nuevo
+                    item.contentSerieName = item.contentTitle                   # Se pone título nuevo
+                item.infoLabels['noscrap_id'] = ''                              # Se resetea, por si acaso
+                item.infoLabels['year'] = '-'                                   # Se resetea, por si acaso
+                scraper_return = scraper.find_and_set_infoLabels(item)          # Se intenta de nuevo
 
                 #Parece que el usuario ha cancelado de nuevo.  Restituimos los datos a la situación inicial
                 if not scraper_return or not item.infoLabels['tmdb_id']:
                     item = new_item.clone()
                 else:
-                    item.tmdb_stat = True           #Marcamos Item como procesado correctamente por TMDB (pasada 2)
+                    item.tmdb_stat = True                                       # Marcamos Item como procesado correctamente por TMDB (pasada 2)
             else:
-                item.tmdb_stat = True               #Marcamos Item como procesado correctamente por TMDB (pasada 1)
+                item.tmdb_stat = True                                           # Marcamos Item como procesado correctamente por TMDB (pasada 1)
 
             #Si el usuario ha seleccionado una opción distinta o cambiado algo, ajustamos los títulos
             if item.contentType != 'movie' or item.from_update:
-                item.channel = new_item.channel     #Restuaramos el nombre del canal, por si lo habíamos cambiado
+                item.channel = new_item.channel                                 # Restuaramos el nombre del canal, por si lo habíamos cambiado
             if item.tmdb_stat == True:
-                if new_item.contentSerieName:       #Si es serie...
+                if new_item.contentSerieName:                                   # Si es serie...
                     filter_languages = config.get_setting("filter_languages", item.channel, default=-1)
                     if isinstance(filter_languages, int) and filter_languages >= 0:
-                        item.title_from_channel = new_item.contentSerieName         #Guardo el título incial para Filtertools
-                        item.contentSerieName = new_item.contentSerieName           #Guardo el título incial para Filtertools
+                        item.title_from_channel = new_item.contentSerieName     # Guardo el título incial para Filtertools
+                        item.contentSerieName = new_item.contentSerieName       # Guardo el título incial para Filtertools
                     else:
                         item.title = item.title.replace(new_item.contentSerieName, item.contentTitle).replace(from_title_tmdb, item.contentTitle)
                         item.contentSerieName = item.contentTitle
                     if new_item.contentSeason: item.contentSeason = new_item.contentSeason      #Restauramos Temporada
-                    if item.infoLabels['title']: del item.infoLabels['title']       #Borramos título de peli (es serie)
-                else:                                                               #Si es película...
+                    if item.infoLabels['title']: del item.infoLabels['title']   # Borramos título de peli (es serie)
+                else:                                                           # Si es película...
                     item.title = item.title.replace(new_item.contentTitle, item.contentTitle).replace(from_title_tmdb, item.contentTitle)
-                if new_item.infoLabels['year']:                                     #Actualizamos el Año en el título
+                if new_item.infoLabels['year']:                                 # Actualizamos el Año en el título
                     item.title = item.title.replace(str(new_item.infoLabels['year']), str(item.infoLabels['year']))
-                if new_item.infoLabels['rating']:                                   #Actualizamos en Rating en el título
+                if new_item.infoLabels['rating']:                               # Actualizamos en Rating en el título
                     try:
                         rating_old = ''
                         if new_item.infoLabels['rating'] and new_item.infoLabels['rating'] != 0.0:
@@ -623,32 +442,32 @@ def update_title(item):
                             rating_new = float(item.infoLabels['rating'])
                             rating_new = round(rating_new, 1)
                         item.title = item.title.replace("[" + str(rating_old) + "]", "[" + str(rating_new) + "]")
-                    except:
+                    except Exception:
                         logger.error(traceback.format_exc())
-                if item.wanted:                                         #Actualizamos Wanted, si existe
+                if item.wanted:                                                 # Actualizamos Wanted, si existe
                     item.wanted = item.contentTitle
-                if new_item.contentSeason:                              #Restauramos el núm. de Temporada después de TMDB
+                if new_item.contentSeason:                                      # Restauramos el núm. de Temporada después de TMDB
                     item.contentSeason = new_item.contentSeason
                     
-                if item.from_update:                                    #Si la llamda es desde el menú del canal...
+                if item.from_update:                                            # Si la llamda es desde el menú del canal...
                     item.from_update = True 
                     del item.from_update
                     if item.AHkwargs:
                         try:
                             item = AH_find_videolab_status(item, [item], **item.AHkwargs)[0]
                             del item.AHkwargs
-                        except:
+                        except Exception:
                             logger.error(traceback.format_exc())
-                    xlistitem = refresh_screen(item)                    #Refrescamos la pantallas con el nuevo Item
+                    xlistitem = refresh_screen(item)                            # Refrescamos la pantallas con el nuevo Item
                     
         #Para evitar el "efecto memoria" de TMDB, se le llama con un título ficticio para que resetee los buffers
         if item.contentSerieName:
-            new_item.infoLabels['tmdb_id'] = '289'                      #una serie no ambigua
+            new_item.infoLabels['tmdb_id'] = '289'                              # Una serie no ambigua
         else:
-            new_item.infoLabels['tmdb_id'] = '111'                      #una peli no ambigua
+            new_item.infoLabels['tmdb_id'] = '111'                              # Una peli no ambigua
         new_item.infoLabels['year'] = '-'
         if new_item.contentSeason:
-            del new_item.infoLabels['season']                           #Funciona mal con num. de Temporada
+            del new_item.infoLabels['season']                                   # Funciona mal con num. de Temporada
         scraper_return = scraper.find_and_set_infoLabels(new_item)
         
     #logger.debug(item)
@@ -674,19 +493,19 @@ def refresh_screen(item):
         import xbmcgui
         from platformcode.platformtools import itemlist_update
         
-        xlistitem = xbmcgui.ListItem(path=item.url)                     #Creamos xlistitem por compatibilidad con Kodi 18
+        xlistitem = xbmcgui.ListItem(path=item.url)                             # Creamos xlistitem por compatibilidad con Kodi 18
         if config.get_platform(True)['num_version'] >= 16.0:
-            xlistitem.setArt({"thumb": item.contentThumbnail})          #Cargamos el thumb
+            xlistitem.setArt({"thumb": item.contentThumbnail})                  # Cargamos el thumb
         else:
             xlistitem.setThumbnailImage(item.contentThumbnail)
-        xlistitem.setInfo("video", item.infoLabels)                     #Copiamos infoLabel
+        xlistitem.setInfo("video", item.infoLabels)                             # Copiamos infoLabel
 
-        xbmcplugin.setResolvedUrl(int(sys.argv[1]), False, xlistitem)   #Preparamos el entorno para evitar error Kod1 18
-        time.sleep(1)                                                   #Dejamos tiempo para que se ejecute
-    except:
+        xbmcplugin.setResolvedUrl(int(sys.argv[1]), False, xlistitem)           # Preparamos el entorno para evitar error Kod1 18
+        time.sleep(1)                                                           # Dejamos tiempo para que se ejecute
+    except Exception:
         logger.error(traceback.format_exc())
     
-    itemlist_update(item)                                               #refrescamos la pantalla con el nuevo Item
+    itemlist_update(item)                                                       # Refrescamos la pantalla con el nuevo Item
     
     return xlistitem
 
@@ -697,149 +516,31 @@ def format_tmdb_id(entity):
     def format_entity(item):
         try:
             if item.infoLabels:
-                id_tmdb = '' if not item.infoLabels['imdb_id'] or item.infoLabels['imdb_id'] == 'None' else item.infoLabels['imdb_id']
+                id_tmdb = '' if (not item.infoLabels['imdb_id'] or item.infoLabels['imdb_id'] == 'None') else item.infoLabels['imdb_id']
                 if 'tmdb_id' in item.infoLabels:
-                    item.infoLabels['tmdb_id'] = '' if not item.infoLabels['tmdb_id'] \
-                                                          or item.infoLabels['tmdb_id'] == 'None' \
-                                                          else item.infoLabels['tmdb_id']
+                    item.infoLabels['tmdb_id'] = '' if (not item.infoLabels['tmdb_id'] \
+                                                        or item.infoLabels['tmdb_id'] == 'None') \
+                                                        else item.infoLabels['tmdb_id']
                 if 'tvdb_id' in item.infoLabels:
-                    item.infoLabels['tvdb_id'] = '' if not item.infoLabels['tvdb_id'] \
-                                                          or item.infoLabels['tvdb_id'] == 'None' \
-                                                          else item.infoLabels['tvdb_id']
+                    item.infoLabels['tvdb_id'] = '' if (not item.infoLabels['tvdb_id'] \
+                                                        or item.infoLabels['tvdb_id'] == 'None') \
+                                                        else item.infoLabels['tvdb_id']
                 if 'imdb_id' in item.infoLabels:
-                    item.infoLabels['imdb_id'] = '' if not item.infoLabels['imdb_id'] \
-                                                          or item.infoLabels['imdb_id'] == 'None' \
-                                                          else item.infoLabels['imdb_id']
+                    item.infoLabels['imdb_id'] = '' if (not item.infoLabels['imdb_id'] \
+                                                        or item.infoLabels['imdb_id'] == 'None') \
+                                                        else item.infoLabels['imdb_id']
                 if 'IMDBNumber' in item.infoLabels:
-                    item.infoLabels['IMDBNumber'] = '' if not item.infoLabels['IMDBNumber'] \
-                                                          or item.infoLabels['IMDBNumber'] == 'None' \
-                                                          else item.infoLabels['IMDBNumber']
-        except:
+                    item.infoLabels['IMDBNumber'] = '' if (not item.infoLabels['IMDBNumber'] \
+                                                           or item.infoLabels['IMDBNumber'] == 'None') \
+                                                           else item.infoLabels['IMDBNumber']
+        except Exception:
             logger.error(traceback.format_exc())
 
-    if not isinstance(entity, list):                                # Es Item
+    if not isinstance(entity, list):                                            # Es Item
         format_entity(entity)
-    else:                                                           # Es Itemlist
+    else:                                                                       # Es Itemlist
         for item_local in entity:
             format_entity(item_local)
-
-
-def AH_find_videolab_status(item, itemlist, **AHkwargs):
-    logger.info()
-    if DEBUG: logger.debug('video_list_str: %s; function: %s' % (video_list_str, AHkwargs.get('function', '')))
-
-    res = False
-    season_episode = ''
-
-    try:
-        format_tmdb_id(item)
-        format_tmdb_id(itemlist)
-        
-        if AHkwargs.get('function', '') == 'list_all':
-            #tmdb.set_infoLabels_itemlist(itemlist, True)
-            for item_local in itemlist:
-                item_local.video_path = AH_check_title_in_videolibray(item_local)
-                if item_local.video_path:
-                    item_local.title  = '(V)-%s' % item_local.title
-                    item_local.contentTitle = '(V)-%s' % (item_local.contentSerieName or item_local.contentTitle)
-                    item_local = context_for_videolibray(item_local)
-                    item_local.unify_extended = True
-
-                    if item_local.contentType in ['season', 'episode']:
-                        season_episode = '%sx%s.strm' % (str(item_local.contentSeason), str(item_local.contentEpisodeNumber).zfill(2))
-                        if check_marks_in_videolibray(item_local, strm=season_episode):
-                            item_local.infoLabels["playcount"] = 1
-                    elif item_local.contentType in ['movie']:
-                        season_episode = '%s.strm' % item_local.contentTitle.replace('(V)-' , '').lower()
-                        if check_marks_in_videolibray(item_local, strm=season_episode):
-                            item_local.infoLabels["playcount"] = 1
-                    elif item_local.contentType in ['tvshow']:
-                        res, season_list = check_marks_in_videolibray(item_local, video_list_init=True)
-                        if res:
-                            for season, values in list(season_list.items()):
-                                if values[0] < values[1]:
-                                    break
-                            else:
-                                item_local.infoLabels["playcount"] = 1
-
-        elif AHkwargs.get('function', '') in ['seasons']:
-            if item.video_path:
-                res, season_list = check_marks_in_videolibray(item, video_list_init=True)
-                if res:
-                    for item_local in itemlist:
-                        if season_list.get(item_local.contentSeason):
-                            if season_list.get(item_local.contentSeason, 0)[0] >= season_list.get(item_local.contentSeason, 0)[1]:
-                                item_local.infoLabels["playcount"] = 1
-
-        elif AHkwargs.get('function', '') in ['episodes']:
-            if item.video_path:
-                res, episode_list = check_marks_in_videolibray(item, video_list_init=True)
-                if res:
-                    for item_local in itemlist:
-                        season_episode = '%sx%s.strm' % (str(item_local.contentSeason), str(item_local.contentEpisodeNumber).zfill(2))
-                        if episode_list.get(season_episode, 0) >= 1:
-                            item_local.infoLabels["playcount"] = 1
-
-        elif AHkwargs.get('function', '') in ['get_video_options']:
-            if item.video_path:
-                if item.contentType in ['movie']:
-                    season_episode = '%s.strm' % item.contentTitle.replace('(V)-' , '').lower()
-                else:
-                    season_episode = '%sx%s.strm' % (str(item.contentSeason), str(item.contentEpisodeNumber).zfill(2))
-                playcount = 1 if check_marks_in_videolibray(item, strm=season_episode) else 0
-                item.infoLabels["playcount"] = playcount
-                for item_local in itemlist:
-                    if playcount == 0:
-                        item_local.infoLabels["playcount"] = playcount
-                    elif item_local.action == 'play':
-                        item_local.infoLabels["playcount"] = playcount
-    except:
-        logger.error(traceback.format_exc())
-
-    return itemlist
-
-
-def AH_check_title_in_videolibray(item):
-    """
-    Comprueba si el item listado está en la videoteca Alfa.  Si lo está devuelve True
-    """
-    global video_list_str
-    res = False
-    
-    if not item.infoLabels['imdb_id'] and not item.infoLabels['tmdb_id'] and not item.infoLabels['tvdb_id']:
-        return res
-    
-    if not video_list_str:
-        if alfa_caching and window.getProperty("alfa_videolab_movies_list") \
-                        and window.getProperty("alfa_videolab_series_list"):
-            video_list_str = window.getProperty("alfa_videolab_movies_list")
-            video_list_str += window.getProperty("alfa_videolab_series_list")
-            logger.info(True)
-        else:
-            video_list_movies, video_list_series = create_videolab_list()
-            video_list_str = video_list_movies + video_list_series
-            logger.info(False)
-            
-            if alfa_caching:
-                window.setProperty("alfa_videolab_movies_list", video_list_movies)
-                window.setProperty("alfa_videolab_series_list", video_list_series)
-
-    if (item.infoLabels['imdb_id'] and '[%s]' % item.infoLabels['imdb_id'] in video_list_str) \
-        or (item.infoLabels['tmdb_id'] and '|%s|' % item.infoLabels['tmdb_id'] in video_list_str) \
-        or (item.infoLabels['tvdb_id'] and '|%s|' % item.infoLabels['tvdb_id'] in video_list_str):
-
-        for video in video_list_str.split(','):
-            if (item.infoLabels['imdb_id'] and '[%s]' % item.infoLabels['imdb_id'] in video) \
-                or (item.infoLabels['tmdb_id'] and '|%s|' % item.infoLabels['tmdb_id'] in video) \
-                or (item.infoLabels['tvdb_id'] and '|%s|' % item.infoLabels['tvdb_id'] in video):
-                res = video.split('|')[0].strip().strip("'").strip()
-                if res: break
-
-    if DEBUG: logger.debug('video "%s" %s en videolab: "%s"' % (item.infoLabels['imdb_id'] \
-                            or item.infoLabels['tmdb_id'] or item.infoLabels['tvdb_id'], 
-                            'ENCONTRADO' if res else 'NO Encontrado', video_list_str))
-
-    return res
 
 
 def create_videolab_list(update=None):
@@ -874,7 +575,7 @@ def create_videolab_list(update=None):
                         hit = True
 
             res = filetools.write(json_path, jsontools.dump(videolab_list))
-        except:
+        except Exception:
             logger.error(traceback.format_exc())
             
         if not res:
@@ -934,11 +635,11 @@ def create_videolab_list(update=None):
             if DEBUG: logger.debug('videolab_list.json UPDATE %s: %s' % (res, update))
             return
 
-    except:
+    except Exception:
         logger.error(traceback.format_exc())
 
-    if DEBUG: logger.debug('video_list_movies: %s' % video_list_movies)
-    if DEBUG: logger.debug('video_list_series: %s' % video_list_series)
+    if DEBUG: logger.debug('video_list_movies (%s): %s' % (len(video_list_movies), video_list_movies))
+    if DEBUG: logger.debug('video_list_series (%s): %s' % (len(video_list_series), video_list_series))
 
     return video_list_movies, video_list_series
 
@@ -1012,6 +713,124 @@ def context_for_videolibray(item):
             item.context += [cont]
 
     return item
+
+
+def AH_find_videolab_status(item, itemlist, **AHkwargs):
+    logger.info()
+    if DEBUG: logger.debug('video_list_str: %s; function: %s' % (video_list_str, AHkwargs.get('function', '')))
+
+    res = False
+    season_episode = ''
+
+    try:
+        format_tmdb_id(item)
+        format_tmdb_id(itemlist)
+        
+        if AHkwargs.get('function', '') == 'list_all':
+            #tmdb.set_infoLabels_itemlist(itemlist, True)
+            for item_local in itemlist:
+                item_local.video_path = AH_check_title_in_videolibray(item_local)
+                if item_local.video_path:
+                    item_local.title  = '(V)-%s' % item_local.title
+                    item_local.contentTitle = '(V)-%s' % (item_local.contentSerieName or item_local.contentTitle)
+                    item_local = context_for_videolibray(item_local)
+                    item_local.unify_extended = True
+
+                    if item_local.contentType in ['season', 'episode']:
+                        season_episode = '%sx%s.strm' % (str(item_local.contentSeason), str(item_local.contentEpisodeNumber).zfill(2))
+                        if check_marks_in_videolibray(item_local, strm=season_episode):
+                            item_local.infoLabels["playcount"] = 1
+                    elif item_local.contentType in ['movie']:
+                        season_episode = '%s.strm' % item_local.contentTitle.replace('(V)-' , '').lower()
+                        if check_marks_in_videolibray(item_local, strm=season_episode):
+                            item_local.infoLabels["playcount"] = 1
+                    elif item_local.contentType in ['tvshow']:
+                        res, season_list = check_marks_in_videolibray(item_local, video_list_init=True)
+                        if res:
+                            for season, values in list(season_list.items()):
+                                if values[0] < values[1]:
+                                    break
+                            else:
+                                item_local.infoLabels["playcount"] = 1
+
+        elif AHkwargs.get('function', '') in ['seasons']:
+            if item.video_path:
+                res, season_list = check_marks_in_videolibray(item, video_list_init=True)
+                if res:
+                    for item_local in itemlist:
+                        if season_list.get(item_local.contentSeason):
+                            if season_list.get(item_local.contentSeason, 0)[0] >= season_list.get(item_local.contentSeason, 0)[1]:
+                                item_local.infoLabels["playcount"] = 1
+
+        elif AHkwargs.get('function', '') in ['episodes']:
+            if item.video_path:
+                res, episode_list = check_marks_in_videolibray(item, video_list_init=True)
+                if res:
+                    for item_local in itemlist:
+                        season_episode = '%sx%s.strm' % (str(item_local.contentSeason), str(item_local.contentEpisodeNumber).zfill(2))
+                        if episode_list.get(season_episode, 0) >= 1:
+                            item_local.infoLabels["playcount"] = 1
+
+        elif AHkwargs.get('function', '') in ['get_video_options']:
+            if item.video_path:
+                if item.contentType in ['movie']:
+                    season_episode = '%s.strm' % item.contentTitle.replace('(V)-' , '').lower()
+                else:
+                    season_episode = '%sx%s.strm' % (str(item.contentSeason), str(item.contentEpisodeNumber).zfill(2))
+                playcount = 1 if check_marks_in_videolibray(item, strm=season_episode) else 0
+                item.infoLabels["playcount"] = playcount
+                for item_local in itemlist:
+                    if playcount == 0:
+                        item_local.infoLabels["playcount"] = playcount
+                    elif item_local.action == 'play':
+                        item_local.infoLabels["playcount"] = playcount
+    except Exception:
+        logger.error(traceback.format_exc())
+
+    return itemlist
+
+
+def AH_check_title_in_videolibray(item):
+    """
+    Comprueba si el item listado está en la videoteca Alfa.  Si lo está devuelve True
+    """
+    global video_list_str
+    res = False
+    
+    if not item.infoLabels['imdb_id'] and not item.infoLabels['tmdb_id'] and not item.infoLabels['tvdb_id']:
+        return res
+    
+    if not video_list_str:
+        if alfa_caching and window.getProperty("alfa_videolab_movies_list") \
+                        and window.getProperty("alfa_videolab_series_list"):
+            video_list_str = window.getProperty("alfa_videolab_movies_list")
+            video_list_str += window.getProperty("alfa_videolab_series_list")
+            logger.info(True)
+        else:
+            video_list_movies, video_list_series = create_videolab_list()
+            video_list_str = video_list_movies + video_list_series
+            logger.info(False)
+            
+            if alfa_caching:
+                window.setProperty("alfa_videolab_movies_list", video_list_movies)
+                window.setProperty("alfa_videolab_series_list", video_list_series)
+
+    if (item.infoLabels['imdb_id'] and '[%s]' % item.infoLabels['imdb_id'] in video_list_str) \
+        or (item.infoLabels['tmdb_id'] and '|%s|' % item.infoLabels['tmdb_id'] in video_list_str) \
+        or (item.infoLabels['tvdb_id'] and '|%s|' % item.infoLabels['tvdb_id'] in video_list_str):
+
+        for video in video_list_str.split(','):
+            if (item.infoLabels['imdb_id'] and '[%s]' % item.infoLabels['imdb_id'] in video) \
+                or (item.infoLabels['tmdb_id'] and '|%s|' % item.infoLabels['tmdb_id'] in video) \
+                or (item.infoLabels['tvdb_id'] and '|%s|' % item.infoLabels['tvdb_id'] in video):
+                res = video.split('|')[0].strip().strip("'").strip()
+                if res: break
+
+    if DEBUG: logger.debug('video "%s %s" %s en videolab: "%s"' % (item.infoLabels['title'], 
+                            item.infoLabels['imdb_id'] or item.infoLabels['tmdb_id'] or item.infoLabels['tvdb_id'], 
+                            'ENCONTRADO' if res else 'NO Encontrado', video_list_str))
+
+    return res
 
 
 def AH_post_tmdb_listado(item, itemlist, **AHkwargs):
@@ -1103,7 +922,7 @@ def AH_post_tmdb_listado(item, itemlist, **AHkwargs):
                 try:
                     item_local.infoLabels['season'] = int(season)
                     item_local.infoLabels['episode'] = int(episode)
-                except:
+                except Exception:
                     season = 0
                     episode = 0
 
@@ -1215,7 +1034,7 @@ def AH_post_tmdb_listado(item, itemlist, **AHkwargs):
                     try:
                         item_local.contentSeason, item_local.contentEpisodeNumber = \
                                 scrapertools.find_single_match(title_add, 'Episodio (\d+)x(\d+)')
-                    except:
+                    except Exception:
                         item_local.contentSeason = item_local.contentEpisodeNumber = 1
             item_local.unify_extended = True
 
@@ -1235,7 +1054,7 @@ def AH_post_tmdb_listado(item, itemlist, **AHkwargs):
     return item, itemlist
 
 
-def AH_find_seasons(item, matches, **AHkwargs):
+def AH_find_seasons(self, item, matches, **AHkwargs):
     logger.info()
 
     # Si hay varias temporadas, buscamos todas las ocurrencias y las filtrados por TMDB, calidad e idioma
@@ -1244,7 +1063,7 @@ def AH_find_seasons(item, matches, **AHkwargs):
     modo_ultima_temp = AHkwargs.get('modo_ultima_temp', config.get_setting('seleccionar_ult_temporadda_activa', item.channel, default=True))
     language_def = AHkwargs.get('language', [])
     function = AHkwargs.get('function', 'find_seasons')
-    kwargs = {'function': function}
+    kwargs = {'function': function, 'kwargs': AHkwargs.get('kwargs', {})}
     if not item.language: item.language = language_def
     if not item.library_playcounts: modo_ultima_temp = False
     item.quality = item.quality.replace(config.BTDIGG_LABEL, '')
@@ -1302,7 +1121,7 @@ def AH_find_seasons(item, matches, **AHkwargs):
             channel = __import__('channels.%s' % item_search.channel, None, None, ["channels.%s" % item_search.channel])
             item_search.url = channel.host
 
-            if DEBUG: logger.debug('list_temps INICAL: %s' % list_temps)
+            if DEBUG: logger.debug('list_temps INICAL: %s; title_list: %s' % (list_temps, title_list))
             for title_search in title_list:
                 item_search.title = title_search
                 item_search.infoLabels = {}
@@ -1368,7 +1187,7 @@ def AH_find_seasons(item, matches, **AHkwargs):
                             elem_json['priority'] = y
                         else:
                             break
-                    except:
+                    except Exception:
                         logger.error('ERROR Temporada sin num: %s' % url)
                         elem_json['url'] = url                                  # ERROR, la añadimos
                         elem_json['season'] = x + 1
@@ -1413,7 +1232,7 @@ def AH_find_seasons(item, matches, **AHkwargs):
                 it.library_urls[item.channel] = item.url
                 res = videolibrarytools.write_nfo(path, head_nfo=head_nfo, item=it)     # Refresca el .nfo para recoger actualizaciones
 
-    except:
+    except Exception:
         logger.error('ERROR al procesar las temporadas: %s' % list_temps)
         elem_json = {}
         elem_json['url'] = item.url                                             # No está procesada, la añadimos
@@ -1540,7 +1359,7 @@ def AH_post_tmdb_findvideos(item, itemlist, **AHkwargs):
         if xbmc.getCondVisibility('Window.IsMedia') == 1:
             Window_IsMedia = True
             item.unify = config.get_setting("unify")
-    except:
+    except Exception:
         item.unify = config.get_setting("unify")
         logger.error(traceback.format_exc())
     
@@ -1571,7 +1390,7 @@ def AH_post_tmdb_findvideos(item, itemlist, **AHkwargs):
     
     if item.armagedon:                                                          # Es una situación catastrófica?
         itemlist.append(item.clone(action='', title=item.category + ': [COLOR hotpink]Usando enlaces de emergencia[/COLOR]', 
-                                   folder=False))
+                                   quality='', server='', folder=False))
     
     # Quitamos el la categoría o nombre del título, si lo tiene
     if item.contentTitle:
@@ -1597,7 +1416,7 @@ def AH_post_tmdb_findvideos(item, itemlist, **AHkwargs):
         item = find_rar_password(item)
     if item.password:
         itemlist.append(item.clone(action="", title="[COLOR magenta][B] Contraseña: [/B][/COLOR]'" 
-                    + item.password + "'", folder=False))
+                                                     + item.password + "'", quality='', server='', folder=False))
     
     #Si es ventana damos la opción de descarga, ya que no hay menú contextual
     if not Window_IsMedia:
@@ -1636,7 +1455,7 @@ def post_btdigg(itemlist, channel, channel_obj=None, **AHkwargs):
         for it in itemlist:
             if it.action and it.action not in ['configuracion', 'autoplay_config']:
                 it.contentPlot = config.BTDIGG_POST + it.contentPlot
-    except:
+    except Exception:
         logger.error(traceback.format_exc())
     
     return itemlist
@@ -1658,7 +1477,7 @@ def AH_find_btdigg_matches(item, matches, **AHkwargs):
                 match_key = '%sx%s [%s].json' % (match.get('season', 0), str(match.get('episode', 0)).zfill(2), item.channel)
             matches_index[match_key] = match.copy()
             if item.action == 'findvideos':
-                match_key = match.get('url', '')
+                match_key = match.get('url', '').replace(' ', '%20')
             matches_index[match_key] = match.copy()
 
         if not item.matches or item.nfo:
@@ -1699,140 +1518,143 @@ def AH_find_btdigg_matches(item, matches, **AHkwargs):
             if not matches_index.get(match_key): continue
 
             for match_it in matches_it:
-                if item.action == 'findvideos': match_key = match_it.get('url', '')
+                if item.action == 'findvideos':
+                    match_key = match_it.get('url', '').replace(' ', '%20')
+                    match_it['url'] = match_it['url'].replace(' ', '%20')
+                    if match_key.startswith('//'): 
+                        match_key = 'https:%s' % match_key
+                        match_it['url'] = 'https:%s' % match_it['url']
                 if match_it.get('url', '') and match_it['url'] not in matches_index.get(match_key, {}).get('url', ''):
-                    if match_it.get('quality', '') and matches_index.get(match_key, {}).get('quality', '') \
-                                                   and matches_index[match_key]['quality'] in match_it['quality']: continue
-                    if 'Digg' in match_it.get('torrent_info', '') and not btdigg_label in match_it.get('quality', ''):
+                    if match_it.get('quality', '').replace('*', '') and matches_index.get(match_key, {}).get('quality', '') \
+                                                   and matches_index[match_key]['quality'] in match_it['quality'].replace('*', ''): continue
+                    if 'Digg' in match_it.get('torrent_info', '') and not btdigg_label in match_it.get('quality', '').replace('*', ''):
                         match_it['quality'] += btdigg_label
                     matches_out.append(match_it)
-    except:
+    except Exception:
         logger.error(traceback.format_exc())
 
     if DEBUG: logger.debug('Matches AÑADIDAS: %s / %s' % (len(matches_out), matches_out))
     return matches + matches_out
 
 
-def AH_find_btdigg_list_all(self, item, matches=[], channel_alt='', **AHkwargs):
-    logger.info()
+def AH_find_btdigg_list_all_from_channel_py(self, item, matches=[], matches_index={}, channel_alt=channel_py, 
+                                            channel_entries=20, btdigg_entries=80, **AHkwargs):
+    logger.info('"%s"' % len(matches))
 
-    canonical = self.canonical
+    matches_inter = []
+    matches_btdigg = matches[:]
     controls = self.finds.get('controls', {})
-    quality_control = AHkwargs.pop('btdigg_quality_control', controls.get('btdigg_quality_control', False))
-    if not controls:
-        return matches
-    if not channel_alt: channel_alt = channel_py
+    quality_control = AHkwargs.get('btdigg_quality_control', controls.get('btdigg_quality_control', False))
 
     try:
-        if canonical.get('global_search_cancelled', False) or (config.GLOBAL_SEARCH_CANCELLED \
-                                                           and canonical.get('global_search_active', False)):
-            logger.info('## Búsqueda global cancelada: %s: %s' % (item.channel, item.title), force=True)
-            return matches
-
-        format_tmdb_id(item)
-
-        news_allowed = {
-                        'dontorrent': ['peliculas', 'series', 'search'],
-                        'ANY': ['peliculas', 'series', 'search']
-                       }
-
         channel = __import__('channels.%s' % channel_alt, None,
                              None, ["channels.%s" % channel_alt])
         host_alt = channel.host
         finds_alt = channel.finds
+        finds_alt_controls = channel.finds.get('controls', {})
         btdigg_cfg = channel.finds.get('btdigg_cfg', {})
-        if not finds_alt or not btdigg_cfg:
-            return matches
+        headers = {'Referer': channel.host}
+        if not finds_alt or not btdigg_cfg or not finds_alt_controls.get('btdigg_service', True):
+            if DEBUG: logger.debug('matches_PY: %s / %s' % (len(matches_btdigg), matches_btdigg))
+            return matches_btdigg, matches_index
 
         try:
             if canonical.get('global_search_active', False):
                 channel.canonical['global_search_active'] = True
             canonical_alt = channel.canonical
-        except:
+        except Exception:
             canonical_alt = {}
-
-        if not item or (item.c_type not in news_allowed.get(item.channel, []) and item.c_type not in news_allowed.get('ANY', [])):
-            return matches
-
-        channel_entries = controls.get('cnt_tot', 20)
-        btdigg_entries = channel_entries * 4 if item.c_type == 'peliculas' or quality_control else channel_entries * 3
-        headers = {'Referer': channel.host}
-        matches_inter = []
-        matches_btdigg = []
-        urls = []
-        convert = ['.=', '-= ', ':=', '&= ', '  = ']
-
-        for x, elem_json in enumerate(matches):
-            if 'pelicula' in item.c_type or self.movie_path in elem_json.get('url', ''):
-                title = scrapertools.slugify(re.sub('\s*\[.*?\]', '', elem_json.get('title', '')).strip(), strict=False, convert=convert)
-                if title in urls: continue
-                urls += [title]
-
-            else:
-                title = scrapertools.slugify(re.sub('\s+-\s+\d+.+?$', '', elem_json.get('title', '')).strip(), strict=False, convert=convert)
-                if title in urls: continue
-                quality = scrapertools.find_single_match(elem_json.get('quality', ''), '\[(.*?)\]') or 'HDTV'
-                if quality_control:
-                    urls += ['%s [%s]' % (title, quality.strip())]
-                else:
-                    urls += [title]
-
-            matches_inter.append(elem_json.copy())
-            if len(matches_inter) >= channel_entries: break
-
-        if matches_inter: matches = matches_inter[:]
-
+            
         y = btdigg_entries
+        token = ''
         for elem_cfg in btdigg_cfg:
-            if elem_cfg['c_type'] not in item.c_type: continue
+            if item.c_type not in elem_cfg['c_type']: continue
+            finds_find_alt = elem_cfg.get('find', {}) or finds_alt.get('find', {})
+            if not finds_find_alt:
+                if DEBUG: logger.debug('matches_PY: %s / %s' % (len(matches_btdigg), matches_btdigg))
+                return matches_btdigg, matches_index
+
+            if elem_cfg['c_type'] == 'search_token':
+                soup = self.create_soup(elem_cfg['url'], post=elem_cfg.get('post', None), timeout=channel.timeout, 
+                                        headers=headers, canonical=canonical_alt, alfa_s=True)
+                token = self.parse_finds_dict(soup, finds_find_alt, c_type='search')
+                continue
+            
             if elem_cfg['c_type'] == 'search':
                 if elem_cfg.get('post', None): 
-                    elem_cfg['post'] = elem_cfg['post'] % item.texto
+                    elem_cfg['post'] = elem_cfg['post'] % (token, item.texto)
                 else:
                     elem_cfg['url'] = elem_cfg['url'] % item.texto
 
-            soup = self.create_soup(elem_cfg['url'], post=elem_cfg.get('post', None), timeout=channel.timeout, 
+            soup = self.create_soup(elem_cfg['url'] + str(item.page), post=elem_cfg.get('post', None), timeout=channel.timeout*2, 
                                     headers=headers, canonical=canonical_alt, alfa_s=True)
 
             if not self.response.sucess:
-                return matches
+                if DEBUG: logger.debug('ERROR matches_PY: %s / %s / %s' % (self.response.code, len(matches_btdigg), matches_btdigg))
+                return matches_btdigg, matches_index
             if self.response.host:
                 elem_cfg['url'] = elem_cfg['url'].replace(host_alt, self.response.host)
                 host_alt = self.response.host
 
             item.btdig_in_use= True
-            finds_find_alt = elem_cfg.get('find', {}) or finds_alt.get('find', {})
-            if not finds_find_alt:
-                return matches
-            matches_btdigg = self.parse_finds_dict(soup, finds_find_alt, c_type=elem_cfg['c_type'])
-            if isinstance(matches_btdigg, dict):
-                matches_btdigg = matches_btdigg['data']['torrents']['0']
-            if not matches_btdigg or isinstance(matches_btdigg, str):
-                return matches
+            matches_inter = self.parse_finds_dict(soup, finds_find_alt, c_type=elem_cfg['c_type'])
+            if isinstance(matches_inter, dict):
+                matches_inter = matches_inter['data']['torrents']['0']
+            if not matches_inter or isinstance(matches_inter, str):
+                if DEBUG: logger.debug('matches_PY: %s / %s' % (len(matches_btdigg), matches_btdigg))
+                return matches_btdigg, matches_index
 
             x = 0
-            for elem in matches_btdigg if isinstance(matches_btdigg, list) else matches_btdigg.items():
+            for elem in matches_inter if isinstance(matches_inter, list) else list(matches_inter.items()):
                 elem_json = {}
                 #logger.error(elem)
 
-                if isinstance(matches_btdigg, list):
-                    elem_json['url'] = elem.a.get('href', '')
-                    elem_json['title'] = elem.a.h2.get_text(strip=True)
+                if isinstance(matches_inter, list):
+                    if not elem.find('div', class_='card-body'): continue
+                    elem_json['url'] = elem.a.get("href", "")
+                    elem_json['title'] = elem.find('div', class_='card-body').find('h3', class_='title').get_text(strip=True)
                     elem_json['year'] = scrapertools.find_single_match(elem_json['title'], '\((\d{4})\)') or '-'
-                    elem_json['thumbnail'] = elem.a.img.get('src', '')
+                    elem_json['thumbnail'] = elem.find('img').get("src", "")
                     if elem_json['thumbnail'].startswith('//'): elem_json['thumbnail'] = 'https:%s' % elem_json['thumbnail']
-                    elem_json['quality'] = elem.a.span.get_text(strip=True).replace('creeener', 'creener').replace('AC3 5.1', '').strip()
+                    elem_json['quality'] = elem.find('div', class_='quality').get_text(strip=True)
+                    elem_json['quality'] = elem_json['quality'].replace('creeener', 'creener')\
+                                                               .replace('AC3 5.1', '').replace('HDTV 720p', 'HDTV-720p').strip()
+                    elem_json['torrent_info'] = ''
+                    elem_json['size'] = ''
+                    elem_json['language'] = ['CAST']
+                    
+                    elem_json['mediatype'] = 'movie' if (elem_cfg.get('movie_path') and elem_cfg['movie_path'] in elem_json['url']) else 'tvshow'
+                    if elem_cfg['c_type'] == 'peliculas' and elem_json['mediatype'] != 'movie': continue
+                    if elem_cfg['c_type'] == 'episodios' and elem_json['mediatype'] != 'episode': continue
+
+                    if elem_json['mediatype'] == 'episode':
+                        try:
+                            elem_json['season'] = int(scrapertools.find_single_match(elem.find('div', class_='card-body')\
+                                                                  .find('span', class_='fdi-item').get_text(strip=True), '(\d+)'))
+                            if len(str(elem_json['season'])) > 2:
+                                elem_json['season'] = int(scrapertools.find_single_match(elem_json['url'], '/temporada-(\d+)'))
+
+                            elem_json['episode'] = int(scrapertools.find_single_match(elem.find('div', class_='card-body')\
+                                                                   .find('span', class_='fdi-type').get_text(strip=True), '(\d+)'))
+                            if len(str(elem_json['episode'])) > 3:
+                                elem_json['episode'] = int(scrapertools.find_single_match(elem_json['url'], '/capitulo-(\d+)'))
+                        except:
+                            logger.error(elem)
+                            elem_json['season'] =  1
+                            elem_json['episode'] =  1
+
                 else:
                     elem = elem[1]
                     elem_json['url'] = self.urljoin(host_alt, elem.get('guid', ''))
                     elem_json['title'] = scrapertools.find_single_match(elem.get('torrentName', ''), '(.*?)\[').strip()
                     elem_json['year'] = scrapertools.find_single_match(elem_json['title'], '\((\d{4})\)') or '-'
                     elem_json['thumbnail'] = self.urljoin(host_alt, elem.get('imagen', ''))
-                    elem_json['quality'] = elem.get('calidad', '').replace('creeener', 'creener').replace('AC3 5.1', '').strip()
-                
-                media_path = self.movie_path.strip('/') if 'peliculas' in elem_cfg['c_type'] \
-                             or ('search' in elem_cfg['c_type'] and elem_cfg['movie_path'] in elem_json['url'] \
-                             or 'cine' in  elem_json['url']) else self.tv_path.strip('/')
+                    elem_json['quality'] = elem.get('calidad', '')
+                    elem_json['quality'] = elem_json['quality'].replace('creeener', 'creener')\
+                                                               .replace('AC3 5.1', '').replace('HDTV 720p', 'HDTV-720p').strip()
+                    elem_json['language'] = ['CAST']
+
+                elem_json['media_path'] = self.movie_path.strip('/') if elem_json['mediatype'] == 'movie' else self.tv_path.strip('/')
 
                 for clean_org, clean_des in finds_alt.get('title_clean', []):
                     if clean_des is None:
@@ -1841,6 +1663,256 @@ def AH_find_btdigg_list_all(self, item, matches=[], channel_alt='', **AHkwargs):
                             break
                     else:
                         elem_json['title'] = re.sub(clean_org, clean_des, elem_json['title']).strip()
+                title = elem_json['title'].lower().replace(' ', '_')
+                if elem_json['mediatype'] != 'movie' and quality_control: title = '%s_%s' % (title, elem_json['quality'].replace('*', ''))
+                if elem_json['mediatype'] == 'movie': elem_json['quality'] = elem_json['quality'].capitalize()
+
+                language = elem_json.get('language', '')
+                if not language or '*' in str(language): language = ['CAST']
+                if matches_index.get('%s_%s_%s' % (title, language, elem_json['mediatype'])):
+                    if elem_json['quality'] not in matches_index['%s_%s_%s' % (title, language, elem_json['mediatype'])]:
+                        matches_index['%s_%s_%s' % (title, language, elem_json['mediatype'])] += [elem_json['quality']]
+                    if DEBUG: logger.debug('DROP title dup: %s / %s' % ('%s_%s_%s' % (title, language, 
+                                                                                      elem_json['mediatype']), elem_json['quality']))
+                    continue
+
+                matches_btdigg.append(elem_json.copy())
+                matches_index['%s_%s_%s' % (title, language, elem_json['mediatype'])] = [elem_json['quality']]
+                x += 1
+
+                if x >= elem_cfg['cnt_tot'] * channel_entries: 
+                    break
+
+            y -= x
+            if y <= 0: 
+                break
+        
+    except Exception:
+        logger.error(traceback.format_exc())
+
+    if DEBUG: logger.debug('matches_PY: %s / %s \n%s' % (len(matches_btdigg), matches_btdigg, matches_index))
+    return matches_btdigg, matches_index
+
+
+def AH_find_btdigg_list_all_from_BTDIGG(self, item, matches=[], matches_index={}, channel_alt=channel_py, 
+                                        channel_entries=15, btdigg_entries=45, **AHkwargs):
+    logger.info('"%s"' % len(matches))
+
+    matches_inter = []
+    matches_btdigg = matches[:]
+    matches_len = len(matches_btdigg)
+    titles_search = [{'urls': ['%sHDTV 720p'], 'checks': ['Cap.']} if item.c_type == 'series' else \
+                     {'urls': ['%sBluray Castellano'], 'checks': ['Cast', 'Esp', 'Spanish', '%s' % channel_alt.replace('4k', '')]} \
+                                                                   if item.c_type == 'peliculas' else {}]
+    if item.c_type == 'search':
+        titles_search = [{'urls': ['%s ' + channel_alt], 'checks': ['Cast', 'Esp', 'Spanish', '%s' % channel_alt.replace('4k', '')]}, 
+                         {'urls': ['%s Bluray Castellano'], 'checks': ['Cast', 'Esp', 'Spanish', '%s' % channel_alt.replace('4k', '')]},
+                         {'urls': ['%s HDTV 720p'], 'checks': ['Cap.']}]
+    controls = self.finds.get('controls', {})
+    disable_cache = True
+    quality_control = AHkwargs.get('btdigg_quality_control', controls.get('btdigg_quality_control', False))
+    canonical = AHkwargs.get('canonical', self.canonical)
+
+    title_clean = AHkwargs.get('finds', {}).get('title_clean', [])
+    title_clean.append(['(?i)\s*UNCUT', ''])
+    patron_title = '(?i)(.*?)\s*(?:-*\s*temp|\(|\[)'
+    patron_title_b = '(?i)(.*?)\s*(?:-*\s*temp|\(|\[|\s+-)'
+    patron_year = '\(?(\d{4})\)?'
+
+    language_alt = []
+
+    try:
+        if canonical.get('global_search_cancelled', False) or (config.GLOBAL_SEARCH_CANCELLED \
+                                                           and canonical.get('global_search_active', False)):
+            logger.info('## Búsqueda global cancelada: %s: %s' % (item.channel, item.title), force=True)
+            return matches_btdigg, matches_index
+
+        format_tmdb_id(item)
+
+        if not PY3: from lib.alfaresolver import find_alternative_link, get_cached_files
+        else: from lib.alfaresolver_py3 import find_alternative_link, get_cached_files
+
+        for title_search in titles_search:
+
+            quality_alt = '720p 1080p 2160p 4kwebrip 4k'
+            if item.c_type in ['peliculas', 'search'] and 'HDTV' not in str(title_search['urls']):
+                quality_alt += ' bluray rip screener'
+                language_alt = ['DUAL', 'CAST', 'LAT']
+                if item.c_type in ['search'] and channel_alt in str(title_search['urls']):
+                    quality_alt += ' HDTV'
+            else:
+                if not quality_control:
+                    quality_alt += ' HDTV'
+                elif item.quality and '720' not in item.quality and '1080' not in item.quality and '4k' not in item.quality:
+                    quality_alt = 'HDTV'
+
+            torrent_params = {
+                              'find_alt_news': [title_search] if item.c_type != 'search' else [], 
+                              'title_prefix': [title_search] if item.c_type == 'search' else [], 
+                              'quality_alt': quality_alt, 
+                              'language_alt': language_alt, 
+                              'find_alt_link_next': 0, 
+                              'domain_alt': None, #find_alt_domains,
+                              'extensive_search': False if item.c_type != 'search' else True,
+                              'search_order': 2 if item.c_type != 'search' else 0,
+                              'link_found_limit': 20000 if item.c_type != 'search' else 100000, 
+                              'find_catched': True if item.c_type != 'search' else False
+                              }
+
+            limit_pages = int((btdigg_entries * (0.5 if item.c_type in ['peliculas', 'search'] else 1.4)) / 10)
+            limit_pages_min = 2 if (channel_alt in str(title_search['urls']) or 'HDTV' in str(title_search['urls'])) else 1
+            interface = str(config.get_setting('btdigg_status', server='torrent'))
+            limit_items_found = 5 * 10 if interface != '200' else 10 * 10
+
+            x = 0
+            while x < limit_pages:
+                torrent_params = find_alternative_link(item, torrent_params=torrent_params, cache=disable_cache)
+
+                if not torrent_params.get('find_alt_link_result') and not torrent_params.get('find_alt_link_next'): x = 999999
+                if not torrent_params.get('find_alt_link_result') and torrent_params.get('find_alt_link_next', 0) >= limit_pages_min: x = 999999
+                if not torrent_params.get('find_alt_link_next'): x = 999999
+                if torrent_params.get('find_alt_link_found') and int(torrent_params['find_alt_link_found']) < limit_items_found: 
+                    limit_pages = int(int(torrent_params['find_alt_link_found']) / 10) + 1
+                x += 1
+
+                for y, elem in enumerate(torrent_params['find_alt_link_result']):
+                    elem_json = {}
+                    #logger.error(torrent_params['find_alt_link_result'][y])
+
+                    try:
+                        elem_json['url'] = elem.get('url', '')
+                        elem_json['language'] = elem.get('language', [])
+                        elem_json['quality'] = elem.get('quality', '').replace('HDTV 720p', 'HDTV-720p').replace(btdigg_label, '').strip()
+                        elem_json['mediatype'] = 'tvshow' if 'Cap.' in elem_json['url'] else 'movie'
+                        if elem_json['mediatype'] == 'movie': elem_json['quality'] = elem_json['quality'].capitalize()
+
+                        elem_json['title'] = elem.get('title', '').replace(btdigg_label_B, '')
+                        if scrapertools.find_single_match(elem_json['title'], patron_title).strip():
+                            elem_json['title'] = scrapertools.find_single_match(elem_json['title'], patron_title).strip()
+                        elif scrapertools.find_single_match(elem_json['title'], patron_title_b).strip():
+                            elem_json['title'] = scrapertools.find_single_match(elem_json['title'], patron_title_b).strip()
+                        else:
+                            if DEBUG: logger.debug('Error en PATRON: %s / %s' % (elem_json['title'], patron_title))
+                            continue
+                        for clean_org, clean_des in title_clean:
+                            if clean_des is None:
+                                if scrapertools.find_single_match(elem_json['title'], clean_org):
+                                    elem_json['title'] = scrapertools.find_single_match(elem_json['title'], clean_org).strip()
+                                    break
+                            else:
+                                elem_json['title'] = re.sub(clean_org, clean_des, elem_json['title']).strip()
+                        elem_json['title'] = elem_json['title'].replace('- ', '')
+                        if scrapertools.find_single_match(elem_json['title'], patron_year):
+                            elem_json['year'] = scrapertools.find_single_match(elem_json['title'], patron_year) or '-'
+                            elem_json['title'] = re.sub(patron_year, '', elem_json['title']).strip()
+                        title = elem_json['title'].lower().replace(' ', '_')
+                        if elem_json['mediatype'] != 'movie' and quality_control: title = '%s_%s' % (title, elem_json['quality'])
+
+                        if matches_index.get('%s_%s_%s' % (title, elem_json['language'], elem_json['mediatype'])):
+                            if elem_json['quality'] not in matches_index['%s_%s_%s' % (title, elem_json['language'], elem_json['mediatype'])]:
+                                matches_index['%s_%s_%s' % (title, elem_json['language'], elem_json['mediatype'])] += [elem_json['quality']]
+                            if DEBUG: logger.debug('DROP title dup: %s / %s' % ('%s_%s_%s' % (title, elem_json['language'], 
+                                                                                elem_json['mediatype']), elem_json['quality']))
+                            continue
+
+                        elem_json['media_path'] = self.movie_path.strip('/') if elem_json['mediatype'] == 'movie' else self.tv_path.strip('/')
+                        elem_json['torrent_info'] = elem.get('size', '').replace(btdigg_label_B, '').replace('GB', 'G·B').replace('Gb', 'G·b')\
+                                                                        .replace('MB', 'M·B').replace('Mb', 'M·b').replace('.', ',')
+                        elem_json['size'] = elem.get('size', '').replace(btdigg_label_B, '')\
+                                                                .replace('[COLOR magenta][B]RAR-[/B][/COLOR]', '')
+                        if elem_json['mediatype'] == 'movie': elem_json['size'] = self.convert_size(elem_json['size'])
+
+                        item.btdig_in_use =  True
+                        matches_btdigg.append(elem_json.copy())
+                        matches_index['%s_%s_%s' % (title, elem_json['language'], elem_json['mediatype'])] = [elem_json['quality']]
+
+                    except Exception:
+                        logger.error(traceback.format_exc())
+                        continue
+                    
+        #if item.c_type == 'peliculas' and matches_btdigg: matches_btdigg = sorted(matches_btdigg, key=lambda it: int(-it['size']))
+
+    except Exception:
+        logger.error(traceback.format_exc())
+
+    if DEBUG: logger.debug('matches_BTDIGG: %s / %s \r\n%s' % (len(matches_btdigg), matches_btdigg, matches_index))
+    return matches_btdigg, matches_index
+
+
+def AH_find_btdigg_list_all(self, item, matches=[], channel_alt=channel_py, **AHkwargs):
+    logger.info('"%s"' % len(matches))
+
+    canonical = self.canonical
+    controls = self.finds.get('controls', {})
+    quality_control = AHkwargs.get('btdigg_quality_control', controls.get('btdigg_quality_control', False))
+    if not controls:
+        return matches
+
+    news_allowed = {
+                    'dontorrent': ['peliculas', 'series', 'search'],
+                    'ANY': ['peliculas', 'series', 'search']
+                   }
+    if not item or (item.c_type not in news_allowed.get(item.channel, []) and item.c_type not in news_allowed.get('ANY', [])):
+        return matches
+
+    format_tmdb_id(item)
+    
+    try:
+        if canonical.get('global_search_cancelled', False) or (config.GLOBAL_SEARCH_CANCELLED \
+                                                           and canonical.get('global_search_active', False)):
+            logger.info('## Búsqueda global cancelada: %s: %s' % (item.channel, item.title), force=True)
+            return matches
+
+        channel_entries = controls.get('cnt_tot', 20)
+        btdigg_entries = channel_entries * 4 if (item.c_type == 'peliculas' or quality_control) else channel_entries * 3
+        matches_inter = []
+        matches_btdigg = []
+        matches_index = {}
+        convert = ['.=', '-= ', ':=', '&= ', '  = ']
+        matches_len = len(matches)
+
+        for elem_json in matches[:channel_entries]:
+            language = elem_json.get('language', '')
+            if not language or '*' in str(language): language = elem_json['language'] = ['CAST']
+            mediatype = elem_json['mediatype'] = elem_json.get('mediatype', '') or ('movie' if self.movie_path in elem_json['url'] else 'tvshow')
+
+            if 'pelicula' in item.c_type or self.movie_path in elem_json.get('url', '') or mediatype == 'movie':
+                title = scrapertools.slugify(re.sub('\s*\[.*?\]', '', elem_json.get('title', '')), 
+                                             strict=False, convert=convert).strip().lower().replace(' ', '_')
+                elem_json['quality'] = quality = elem_json.get('quality', '').replace('*', '').replace('-', ' ').capitalize()
+
+            else:
+                title = scrapertools.slugify(re.sub('\s+-\s+\d+.+?$', '', elem_json.get('title', '')), 
+                                             strict=False, convert=convert).strip().lower().replace(' ', '_')
+                quality = elem_json.get('quality', '').replace('*', '') or 'HDTV'
+                if '[' in quality: quality = scrapertools.find_single_match(quality, '\[(.*?)\]').strip() or 'HDTV'
+                if quality_control: title = '%s_%s' % (title, quality)
+            
+            if matches_index.get('%s_%s_%s' % (title, language, mediatype)):
+                if quality not in matches_index['%s_%s_%s' % (title, language, mediatype)]:
+                    matches_index['%s_%s_%s' % (title, language, mediatype)] += [quality]
+                continue
+            matches_index['%s_%s_%s' % (title, language, mediatype)] = [quality]
+
+            matches_inter.append(elem_json.copy())
+
+        matches_btdigg = matches_inter[:]
+        matches = []
+
+        if channeltools.is_enabled(channel_alt):
+            matches_btdigg, matches_index = AH_find_btdigg_list_all_from_channel_py(self, item, matches=matches_btdigg, 
+                                                                                    matches_index=matches_index, channel_alt=channel_alt, 
+                                                                                    channel_entries=channel_entries, btdigg_entries=btdigg_entries, 
+                                                                                    **AHkwargs)
+        matches_btdigg, matches_index = AH_find_btdigg_list_all_from_BTDIGG(self, item, matches=matches_btdigg, matches_index=matches_index, 
+                                                                            channel_alt=channel_alt, channel_entries=channel_entries, 
+                                                                            btdigg_entries=btdigg_entries, **AHkwargs)
+
+        x = 0
+        for elem_json in matches_btdigg:
+            #logger.error(elem_json)
+            if 'magnet' in elem_json['url'] or channel_alt in elem_json.get('thumbnail', ''):
+
                 # Slugify, pero más light
                 elem_json['title'] = scrapertools.htmlclean(elem_json['title']).strip()
                 elem_json['title'] = elem_json['title'].replace("á", "a").replace("é", "e").replace("í", "i")\
@@ -1849,28 +1921,27 @@ def AH_find_btdigg_list_all(self, item, matches=[], channel_alt='', **AHkwargs):
                 elem_json['title'] = scrapertools.decode_utf8_error(elem_json['title']).strip()
                 if "en espa" in elem_json['title']: elem_json['title'] = elem_json['title'][:-11]
 
-                elem_json['language'] = 'latino/' if 'latino/' in elem_cfg['url'] or 'latino/' in elem_json['url'] else ''
-                url_final = '%s%s_btdig/%s%s' % (btdigg_url, media_path, elem_json['language'],
-                                                 elem_json['title'].replace(' ', '-').lower().strip())
-                elem_json['quality'] = '%s%s' % (elem_json['quality'], btdigg_label)
+                language = 'latino' if 'latino/' in elem_json['url'] else ''
+                elem_json['language'] = '*latino' if 'latino/' in elem_json['url'] else elem_json.get('language', '*')
+                media_path = elem_json.pop('media_path', '')
+                url_final = '%s%s_btdig/%s%s' % (btdigg_url, media_path, language, elem_json['title'].replace(' ', '-').lower().strip())
+                quality = elem_json['quality'].capitalize().replace(btdigg_label, '').split(', ')
+                elem_json['quality'] = '%s%s' % (elem_json['quality'].capitalize(), btdigg_label)
                 elem_json['btdig_in_use'] = True
                 url_save = scrapertools.slugify(re.sub('(?:\s+\(+\d{4}\)+$|\s*-\s*Temp.*?$|\s+-\s+\d+.*?$)', '', elem_json['title']), 
                                                 strict=False, convert=convert)
 
-                if elem_cfg.get('movie_path') and elem_cfg['movie_path'] in elem_json['url'] or 'cine' in elem_json['url']:
-                    if url_save in urls: continue
-                    urls += [url_save]
+                if elem_json['mediatype'] == 'movie':
                     elem_json['url'] = url_final
                     x += 1
                     matches.append(elem_json.copy())
 
-                elif elem_cfg.get('tv_path') and elem_cfg['tv_path'] in elem_json['url'] or 'documental' in elem_json['url']:
+                elif elem_json['mediatype'] in ['tvshow', 'episode'] or 'documental' in elem_json['url']:
+                    elem_json['title'] = re.sub('(?i)\s*-*\s*temp\w*\s*\d*\s*', '', elem_json['title'])
                     if not quality_control:
-                        if url_save in urls: continue
-                        urls += [url_save]
-                        
-                        elem_json['url'] = url_final
+                        quality = "HDTV, HDTV-720p"
                         elem_json['quality'] = "HDTV, HDTV-720p%s" % btdigg_label
+                        elem_json['url'] = url_final
                         if item.extra in ['novedades']: elem_json['title_subs'] = ['BTDIGG_INFO']
                         x += 1
                         matches.append(elem_json.copy())
@@ -1878,38 +1949,191 @@ def AH_find_btdigg_list_all(self, item, matches=[], channel_alt='', **AHkwargs):
                     else:
                         for q in ['HDTV', 'HDTV-720p']:
                             title_temp = '%s [%s]' % (url_save, q)
-                            if title_temp in urls: continue
-                            urls += [title_temp]
-
-                            elem_json['url'] = '%s%s' % (url_final, '-%s' % q if '720p' in q else '')
+                            quality = q
                             elem_json['quality'] = '%s%s' % (q, btdigg_label)
+                            elem_json['url'] = '%s%s' % (url_final, '-%s' % q if '720p' in q else '')
                             if item.extra in ['novedades']: 
                                 elem_json['title_subs'] = ['BTDIGG_INFO', unify.set_color('720p', 'quality') if '720p' in q else '']
                             x += 1
                             matches.append(elem_json.copy())
 
-                if x >= elem_cfg['entries'] * channel_entries: break
+            else:
+                matches.append(elem_json.copy())
 
-            y -= x
-            if y <= 0: break
+            if x >= btdigg_entries + matches_len: 
+                break
 
-    except:
+    except Exception:
         logger.error(traceback.format_exc())
+
+    for elem_json in matches:
+        language = elem_json.get('language', '')
+        if not language or '*' in str(language): language = ['CAST']
+        mediatype = elem_json['mediatype'] = elem_json.get('mediatype', '') or ('movie' if self.movie_path in elem_json['url'] else 'tvshow')
+        title = elem_json['title'].lower().replace(' ', '_')
+        if mediatype != 'movie' and quality_control: title = '%s_%s' % (title, elem_json['quality'].replace('*', '').replace(btdigg_label, ''))
+        if mediatype == 'movie': elem_json['quality'].capitalize()
+        
+        if matches_index.get('%s_%s_%s' % (title, language, mediatype)):
+            quality = elem_json['quality'].replace('*', '').replace(btdigg_label, '').split(', ')
+            for q in quality:
+                if not q in matches_index['%s_%s_%s' % (title, language, mediatype)]:
+                    matches_index['%s_%s_%s' % (title, language, mediatype)] += [q]
+
+            elem_json['quality'] = ', '.join(q for q in matches_index['%s_%s_%s' % (title, language, mediatype)]).rstrip(', ')
+
+        if btdigg_url in elem_json['url'] or ',' in elem_json['quality']:
+            elem_json['quality'] = elem_json['quality'].replace(btdigg_label, '') + btdigg_label
 
     return matches
 
 
-def AH_find_btdigg_seasons(self, item, matches=[], domain_alt='', **AHkwargs):
+def CACHING_find_btdigg_list_all_NEWS_from_BTDIGG_(options=None):
     logger.info()
+
+    import xbmc
+    monitor = xbmc.Monitor()
+    if not PY3: from lib.alfaresolver import find_alternative_link
+    else: from lib.alfaresolver_py3 import find_alternative_link
+    from lib.AlfaChannelHelper import DictionaryAllChannel
+
+    item = Item()
+
+    titles_search = [[{'urls': ['%sBluray ' + channel_py], 'checks': ['Cast', 'Esp', 'Spanish', '%s' % channel_py.replace('4k', '')]}, 'movie'], 
+                     [{'urls': ['%sBluray Castellano'], 'checks': ['Cast', 'Esp', 'Spanish', '%s' % channel_py.replace('4k', '')]}, 'movie'], 
+                     [{'urls': ['%sHDTV 720p ' + channel_py], 'checks': ['Cap.']}, 'tvshow'], 
+                     [{'urls': ['%sHDTV 720p'], 'checks': ['Cap.']}, 'tvshow']]
+
+    btdigg_entries = 50
+    disable_cache = True
+    torrent_params = {}
+    cached = {'movie': [], 'tvshow': [], 'episode': {}}
+    language_alt = []
+    matches = []
+    matches_index = {}
+    patron_sea = 'Cap.(\d+)\d{2}'
+    patron_cap = 'Cap.\d+(\d{2})'
+    patron_title = '(?i)(.*?)\s*(?:-*\s*temp|\(|\[)'
+
+    try:
+        channel = __import__('channels.%s' % channel_py, None,
+                             None, ["channels.%s" % channel_py])
+        self = DictionaryAllChannel(channel.host, channel=channel_py, finds=channel.finds, debug=DEBUG)
+        item.contentType = contentType = 'episode'
+        item.c_type = 'series'
+
+        for item.page in range(1, 6):
+            matches, matches_index = (AH_find_btdigg_list_all_from_channel_py(self, item, matches=matches, matches_index=matches_index))
+            if not matches: break
+            if monitor.waitForAbort(10):
+                return
+
+        for elem in matches:
+            try:
+                elem['season'], elem['episode'] = scrapertools.find_single_match(elem['url'], '(?i)\/temp\w*-?(\d+)\/cap\w*-?(\d+)')
+                elem['season'] = int(elem['season'])
+                elem['episode'] = int(elem['episode'])
+                elem['mediatype'] = 'episode'
+            except Exception:
+                logger.error('Error en EPISODIO: %s' % elem['url'])
+
+            cached[contentType][elem['title'].lower()] = elem
+
+        if not cached[contentType]:
+            titles_search.extend([[{'urls': ['%sHDTV 720p ' + channel_py], 'checks': ['Cap.']}, 'episode']])
+        
+        for title_search, contentType in titles_search:
+
+            quality_alt = '720p 1080p 2160p 4kwebrip 4k'
+            if 'bluray' in str(title_search).lower():
+                quality_alt += ' bluray rip screener'
+                language_alt = ['DUAL', 'CAST', 'LAT']
+            elif contentType == 'episode':
+                quality_alt = '720p'
+            else:
+                quality_alt += ' HDTV'
+
+            limit_pages = int((btdigg_entries * (1 if contentType == 'movie' else 1.4 if contentType == 'tvshow' else 3)) / 10)
+            limit_items_found = int(btdigg_entries * (1 if contentType == 'movie' else 1.4 if contentType == 'tvshow' else 2))
+            item.contentType = contentType
+            item.c_type = 'peliculas' if contentType == 'movie' else 'series'
+            cached_str = str(cached[contentType])
+
+            torrent_params = {
+                              'find_alt_news': [title_search], 
+                              'quality_alt': quality_alt, 
+                              'language_alt': language_alt, 
+                              'find_alt_link_next': 0, 
+                              'link_found_limit': limit_items_found, 
+                              'domain_alt': None,
+                              'extensive_search': False,
+                              'search_order': 2,
+                              'link_found_limit': 20000
+                              }
+
+            x = 0
+            while x < limit_pages:
+                torrent_params = find_alternative_link(item, torrent_params=torrent_params, cache=disable_cache)
+
+                if torrent_params.get('find_alt_link_code', '') in ['200']:
+                    if not torrent_params.get('find_alt_link_result') and not torrent_params.get('find_alt_link_next'): x = 999999
+                    if not torrent_params.get('find_alt_link_next'): x = 999999
+                    if torrent_params.get('find_alt_link_found') and int(torrent_params['find_alt_link_found']) < limit_items_found: 
+                        limit_pages = int(int(torrent_params['find_alt_link_found']) / 10) + 1
+                x += 1
+
+                for elem in torrent_params.get('find_alt_link_result', []):
+                    #logger.error(elem)
+                    if elem.get('url', '') in cached_str: continue
+
+                    if contentType == 'episode':
+                        try:
+                            elem['title'] = elem.get('title', '').replace(btdigg_label_B, '')
+                            elem['season'] = int(scrapertools.find_single_match(elem['title'], patron_sea))
+                            elem['episode'] = int(scrapertools.find_single_match(elem['title'], patron_cap))
+                            elem['title'] = scrapertools.find_single_match(elem['title'], patron_title)
+                            if not elem['title']: continue
+                            if elem['title'] in cached[contentType].get(elem['title'].lower(), ''): continue
+                        except Exception:
+                            logger.error('Error en EPISODIO: %s' % elem['url'])
+                            continue
+                        cached[contentType][elem['title'].lower()] = elem
+
+                    else:
+                        cached[contentType].append(elem.copy())
+
+                    if len(cached[contentType])> limit_items_found: 
+                        x = 999999
+                        break
+
+                if monitor.waitForAbort(5):
+                    return
+
+            window.setProperty("alfa_cached_btdigg_%s" % contentType, str(cached[contentType]))
+            if monitor.waitForAbort(1 * 60):
+                return
+
+        if not window.getProperty("alfa_cached_btdigg_episode"):
+            window.setProperty("alfa_cached_btdigg_episode", str(cached['episode']))
+
+    except Exception:
+        logger.error(traceback.format_exc())
+
+
+def AH_find_btdigg_seasons(self, item, matches=[], domain_alt=channel_py, **AHkwargs):
+    logger.info()
+    global channel_py_episode_list
 
     controls = self.finds.get('controls', {})
     url = AHkwargs.pop('url', item.url)
     contentSeason = AHkwargs.pop('btdigg_contentSeason', controls.get('btdigg_contentSeason', 0))
-    cache = AHkwargs.pop('btdigg_cache', controls.get('btdigg_cache', True))
+    disable_cache = not AHkwargs.pop('btdigg_cache', controls.get('btdigg_cache', True))
     quality_control = AHkwargs.pop('btdigg_quality_control', controls.get('btdigg_quality_control', False))
     canonical = AHkwargs.pop('canonical', self.canonical)
     matches = sorted(matches, key=lambda it: int(it.get('season', 0))) if matches else []
     season_high = [elem_json['season'] for elem_json in matches] if matches else [0]
+    channel_py_strict = False
+
     if (item.infoLabels['number_of_seasons'] in season_high and contentSeason == 0) \
                          or (contentSeason > 0 and contentSeason in season_high \
                          and season_high[-1] >= item.infoLabels['number_of_seasons']):
@@ -1923,8 +2147,13 @@ def AH_find_btdigg_seasons(self, item, matches=[], domain_alt='', **AHkwargs):
 
         format_tmdb_id(item)
 
-        if not PY3: from lib.alfaresolver import find_alternative_link
-        else: from lib.alfaresolver_py3 import find_alternative_link
+        if not PY3: from lib.alfaresolver import find_alternative_link, get_cached_files
+        else: from lib.alfaresolver_py3 import find_alternative_link, get_cached_files
+
+        if item.library_urls and item.from_action not in ['update_tvshow'] and not item.sub_action:
+            if not channel_py_episode_list: channel_py_episode_list = get_cached_files('episode')
+            if item.contentSerieName.lower() in channel_py_episode_list:
+                channel_py_strict = True
 
         season = item.infoLabels['number_of_seasons'] or 1
         seasons = season
@@ -1934,136 +2163,182 @@ def AH_find_btdigg_seasons(self, item, matches=[], domain_alt='', **AHkwargs):
         elif btdigg_url in item.url:
             seasons = '1-%s' % season
             season_low = 1
-
-        quality_alt = '720p 1080p 4kwebrip 4k'
-        if item.contentType == 'movie':
-            quality_alt +=  ' [HDTV] rip'
-            if 'screener' in item.quality.lower(): quality_alt += ' screener'
-        else:
-            if not quality_control:
-                quality_alt +=  ' [HDTV]'
-            elif '720' not in item.quality:
-                quality_alt =  '[HDTV]'
-
-        torrent_params = {
-                          'quality_alt': quality_alt, 
-                          'find_alt_link_season': seasons, 
-                          'find_alt_link_next': 0, 
-                          'domain_alt': domain_alt or find_alt_domains,
-                          'extensive_search': True if contentSeason > 0 else False
-                          }
-
-        limit_pages = 3
-        interface = str(config.get_setting('btdigg_status', server='torrent'))
-        limit_items_found = 5 * 10 if interface != '200' else 10 * 10
         patron_sea = 'Cap.(\d+)\d{2}'
 
+        quality_alt = '720p 1080p 2160p 4kwebrip 4k'
+        if not quality_control:
+            quality_alt +=  ' HDTV'
+        elif '720' not in item.quality:
+            quality_alt =  'HDTV'
+
+        language_alt = ['DUAL', 'CAST'] if 'CAST' in item.language else ['DUAL', 'LAT'] if 'LAT' in item.language else ['DUAL', 'CAST', 'LAT']
+
+        titles_search = []
+        if season and season == season_low:
+            titles_search.extend([{'urls': ['%s HDTV ' + domain_alt], 'checks': ['Cap.']}])
+            if not channel_py_strict:
+                titles_search.extend([{'urls': ['%s HDTV'], 'checks': ['Cap.']},
+                                      {'urls': ['%s Temporada ' + str(season)], 'checks': ['Cap.']}])
+        if season and season != season_low:
+            titles_search.extend([{'urls': ['%s HDTV'], 'checks': ['Cap.']}])
+
         x = 0
-        while x < limit_pages:
-            torrent_params = find_alternative_link(item, torrent_params=torrent_params, cache=cache)
+        for title_search in titles_search:
 
-            if not torrent_params.get('find_alt_link_result') and not torrent_params.get('find_alt_link_next'): x = 999999
-            if not torrent_params['find_alt_link_next']: x = 999999
-            if torrent_params.get('find_alt_link_found') and int(torrent_params['find_alt_link_found']) < limit_items_found: 
-                limit_pages = int(int(torrent_params['find_alt_link_found']) / 10) + 1
-            x += 1
+            limit_pages = 7 if domain_alt in str(title_search['urls']) else 4
+            limit_pages_min = 4 if domain_alt in str(title_search['urls']) else 1
+            limit_items_found = 10 * 10
 
-            for y, (scrapedurl, scrapedtitle, scrapedsize, scrapedquality, scrapedmagnet) \
-                                in enumerate(torrent_params.get('find_alt_link_result', [])):
-                elem_json = {}
-                #logger.error(torrent_params['find_alt_link_result'][y])
+            torrent_params = {
+                              'title_prefix': [title_search], 
+                              'quality_alt': quality_alt, 
+                              'language_alt': language_alt, 
+                              'find_alt_link_season': seasons, 
+                              'find_alt_link_next': 0, 
+                              'link_found_limit': limit_items_found, 
+                              'domain_alt': None,
+                              'extensive_search': False if contentSeason > 0 else False
+                              }
 
-                try:
-                    if not scrapertools.find_single_match(scrapedtitle, patron_sea): continue
-                    elem_json['season'] = int(scrapertools.find_single_match(scrapedtitle, patron_sea))
-                    if elem_json['season'] in season_high: continue
-                    if item.infoLabels['number_of_seasons'] \
-                                        and elem_json['season'] > int(item.infoLabels['number_of_seasons']): continue
-                    season_high += [elem_json['season']]
+            x = 0
+            while x < limit_pages:
+                torrent_params = find_alternative_link(item, torrent_params=torrent_params, cache=disable_cache)
 
-                    elem_json['url'] = '%sseries_btdig/%s%s' % (config.BTDIGG_URL, item.language \
-                                        if item.language else '', item.contentSerieName.lower().replace(' ', '-'))
-                    elem_json['season'] = int(scrapertools.find_single_match(scrapedtitle, patron_sea))
-                    elem_json['quality'] = '%s%s' % (scrapedquality.replace('HDTV 720p', 'HDTV-720p'), btdigg_label)
-                    if item.quality:
-                        if elem_json['quality'].replace(btdigg_label, '') not in item.quality:
-                            elem_json['quality'] = '%s, %s' % (item.quality.replace(btdigg_label, ''), elem_json['quality'])
-                        else:
-                            elem_json['quality'] = '%s%s' % (item.quality.replace(btdigg_label, ''), btdigg_label)
+                if not torrent_params.get('find_alt_link_result') and not torrent_params.get('find_alt_link_next'): x = 999999
+                if not torrent_params.get('find_alt_link_result') and torrent_params.get('find_alt_link_next', 0) >= limit_pages_min: x = 999999
+                if not torrent_params.get('find_alt_link_next'): x = 999999
+                if torrent_params.get('find_alt_link_found') and int(torrent_params['find_alt_link_found']) < limit_items_found: 
+                    limit_pages = int(int(torrent_params['find_alt_link_found']) / 10) + 1
+                x += 1
 
-                    matches.append(elem_json.copy())
-                except:
-                    logger.error(traceback.format_exc())
-                    continue
+                for y, elem in enumerate(torrent_params['find_alt_link_result']):
+                    elem_json = {}
+                    #logger.error(torrent_params['find_alt_link_result'][y])
 
-            if isinstance(seasons, int) and seasons in season_high: break
+                    try:
+                        if not scrapertools.find_single_match(elem.get('title', ''), patron_sea): continue
+                        elem_json['season'] = int(scrapertools.find_single_match(elem.get('title', ''), patron_sea))
+                        if elem_json['season'] in season_high: continue
+                        if item.infoLabels['number_of_seasons'] \
+                                            and elem_json['season'] > int(item.infoLabels['number_of_seasons']): continue
+                        season_high += [elem_json['season']]
+
+                        elem_json['url'] = '%sseries_btdig/%s%s' % (config.BTDIGG_URL, elem.get('language', []) or item.language \
+                                            if item.language else '', item.contentSerieName.lower().replace(' ', '-'))
+                        elem_json['magnet'] = elem.get('url', '')
+                        elem_json['quality'] = '%s%s' % (elem.get('quality', '').upper().replace('P', 'p')\
+                                                        .replace('HDTV 720p', 'HDTV-720p'), btdigg_label)
+                        if item.quality:
+                            if elem_json['quality'].replace(btdigg_label, '') not in item.quality:
+                                elem_json['quality'] = '%s, %s' % (item.quality.replace(btdigg_label, ''), elem_json['quality'])
+                            else:
+                                elem_json['quality'] = '%s%s' % (item.quality.replace(btdigg_label, ''), btdigg_label)
+                        elem_json['language'] = elem.get('language', []) or item.language
+                        elem_json['size'] = elem.get('size', '')
+                        
+                        elem_json['title'] = ''
+
+                        matches.append(elem_json.copy())
+                        if elem_json['season'] == season_low and elem_json['season'] == season:
+                            x = 888888
+                            break
+
+                    except Exception:
+                        logger.error(traceback.format_exc())
+                        continue
+
+                if isinstance(seasons, int) and seasons in season_high:
+                    x = 888888
+                    break
+            
+            if x == 888888: break
 
         matches = sorted(matches, key=lambda it: int(it.get('season', 0)))
 
-    except:
+    except Exception:
         logger.error(traceback.format_exc())
 
     return matches
 
 
-def AH_find_btdigg_episodes(self, item, matches=[], domain_alt='', **AHkwargs):
-    logger.info()
+def AH_find_btdigg_episodes(self, item, matches=[], domain_alt=channel_py, **AHkwargs):
+    global channel_py_episode_list
 
     controls = self.finds.get('controls', {})
     contentSeason = AHkwargs.pop('btdigg_contentSeason', controls.get('btdigg_contentSeason', 0))
-    cache = AHkwargs.pop('btdigg_cache', controls.get('btdigg_cache', True))
+    disable_cache = not AHkwargs.pop('btdigg_cache', controls.get('btdigg_cache', True))
     quality_control = AHkwargs.pop('btdigg_quality_control', controls.get('btdigg_quality_control', False))
     canonical = AHkwargs.pop('canonical', self.canonical)
+    channel_py_strict = False
+
+    season = seasons = item.infoLabels['season'] or 1
+    episode_max = item.infoLabels['temporada_num_episodios'] or item.infoLabels['number_of_episodes'] or 1
+    last_episode_to_air = item.infoLabels['last_episode_to_air'] or episode_max
 
     matches = sorted(matches, key=lambda it: int(it.get('episode', 0))) if matches else []
     matches_len = len(matches)
     epis_index = {}
+    l_p_missing = []
+
     for x, epi in enumerate(matches):
         json_inter = {}
         if not epi.get('episode'): continue
+        if epi['episode'] > last_episode_to_air: last_episode_to_air = epi['episode']
         epi['quality'] = epi.get('quality', 'HDTV').replace('*', '') or 'HDTV'
         if not epis_index.get(epi['episode']):
             epis_index[epi['episode']] = [[epi['episode'], x, epi['quality'].lower()]]
         else:
             epis_index[epi['episode']] += [[epi['episode'], x, epi['quality'].lower()]]
 
-    if item.infoLabels['last_air_date'] and matches and (item.library_playcounts or item.video_path):
-        try:
-            res, episode_list = check_marks_in_videolibray(item, video_list_init=True)
-            if res:
-                for x, epi in enumerate(matches):
-                    season_episode = '%sx%s.strm' % (str(epi.get('season', 0)), str(epi.get('episode', 0)).zfill(2))
-                    if not season_episode in str(episode_list):
-                        if DEBUG: logger.debug('NUEVO EPI: %s' % season_episode)
-                        break
-                else:
-                    if DEBUG: logger.debug('NO NUEVOS EPIs')
+    for epi_avl in range(1, last_episode_to_air + 1):
+        sxe = '%sx%s' % (item.infoLabels['number_of_seasons'], str(epi_avl).zfill(2))
+        if sxe not in item.library_playcounts and epi_avl not in epis_index:
+            l_p_missing += [sxe]
 
-                    try:
-                        last_air_date = datetime.datetime.strptime(item.infoLabels['last_air_date'], "%Y-%m-%d")
-                    except TypeError:
-                        last_air_date = datetime.datetime(*(time.strptime(item.infoLabels['last_air_date'], "%Y-%m-%d")[0:6]))
+    logger.info('[LE: %s / EPI: %s / MAX: %s / MISSING: %s / MATCHES: %s]' % (item.infoLabels['last_episode_to_air'], 
+                                                                              last_episode_to_air, episode_max, 
+                                                                              l_p_missing, epis_index))
 
-                    now = datetime.datetime.now()
-                    period = datetime.datetime.now() - last_air_date
-                    days = period.days
-                    seconds = period.seconds
-                    if days < 0: days = 0; seconds = 0
-                    if seconds < 0: seconds = 0
-                    elapsed = (days*60*60*24) + seconds
-                    expiration = 10*60*60*24
-                    if elapsed > expiration:
-                        if DEBUG: logger.debug('EPIs ANTIGUOs: %s' % item.infoLabels['last_air_date'])
-                        
-                        matches = AH_find_btdigg_matches(item, matches, **AHkwargs)
-                        matches = sorted(matches, key=lambda it: (it.get('episode', 0), self.convert_size(it.get('size', 0)))) if matches else []
-                        return matches
-            
-                    if DEBUG: logger.debug('EPIs MODERNOS: %s' % item.infoLabels['last_air_date'])
+    if item.infoLabels['last_air_date'] and matches and (item.library_playcounts or item.video_path) \
+                                        and item.from_action not in ['update_tvshow'] and not l_p_missing:
+        if not item.sub_action or (item.sub_action and item.sub_action in ['auto']):
+            try:
+                res, episode_list = check_marks_in_videolibray(item, video_list_init=True)
+                if res:
+                    for x, epi in enumerate(matches):
+                        season_episode = '%sx%s.strm' % (str(epi.get('season', 0)), str(epi.get('episode', 0)).zfill(2))
+                        if not season_episode in str(episode_list):
+                            if DEBUG: logger.debug('NUEVO EPI: %s' % season_episode)
+                            break
+                    else:
+                        if DEBUG: logger.debug('NO NUEVOS EPIs')
 
-        except:
-            logger.error(traceback.format_exc())
-    
+                        try:
+                            last_air_date = datetime.datetime.strptime(item.infoLabels['last_air_date'], "%Y-%m-%d")
+                        except TypeError:
+                            last_air_date = datetime.datetime(*(time.strptime(item.infoLabels['last_air_date'], "%Y-%m-%d")[0:6]))
+
+                        now = datetime.datetime.now()
+                        period = datetime.datetime.now() - last_air_date
+                        days = period.days
+                        seconds = period.seconds
+                        if days < 0: days = 0; seconds = 0
+                        if seconds < 0: seconds = 0
+                        elapsed = (days*60*60*24) + seconds
+                        expiration = 10*60*60*24
+                        if elapsed > expiration:
+                            if DEBUG: logger.debug('EPIs ANTIGUOs: %s' % item.infoLabels['last_air_date'])
+                            
+                            matches = AH_find_btdigg_matches(item, matches, **AHkwargs)
+                            matches = sorted(matches, key=lambda it: (it.get('episode', 0), self.convert_size(it.get('size', 0)))) \
+                                                                      if matches else []
+                            return matches
+                
+                        if DEBUG: logger.debug('EPIs MODERNOS: %s' % item.infoLabels['last_air_date'])
+
+            except Exception:
+                logger.error(traceback.format_exc())
+
     try:
         if canonical.get('global_search_cancelled', False) or (config.GLOBAL_SEARCH_CANCELLED \
                                                            and canonical.get('global_search_active', False)):
@@ -2072,108 +2347,143 @@ def AH_find_btdigg_episodes(self, item, matches=[], domain_alt='', **AHkwargs):
 
         format_tmdb_id(item)
 
-        if not PY3: from lib.alfaresolver import find_alternative_link
-        else: from lib.alfaresolver_py3 import find_alternative_link
+        if not PY3: from lib.alfaresolver import find_alternative_link, get_cached_files
+        else: from lib.alfaresolver_py3 import find_alternative_link, get_cached_files
 
-        season = seasons = item.infoLabels['season'] or 1
-        episode_max = item.infoLabels['temporada_num_episodios'] or item.infoLabels['number_of_episodes']
+        if item.library_urls and item.from_action not in ['update_tvshow'] and not item.sub_action:
+            if not channel_py_episode_list: channel_py_episode_list = get_cached_files('episode')
+            if item.contentSerieName.lower() in channel_py_episode_list:
+                channel_py_strict = True
 
-        quality_alt = '720p 1080p 4kwebrip 4k'
-        if item.contentType == 'movie':
-            quality_alt +=  ' [HDTV] rip'
-            if 'screener' in item.quality.lower(): quality_alt += ' screener'
+        if not channel_py_strict and not l_p_missing:
+            sxe_max = '%sx%s' % (item.infoLabels['number_of_seasons'], str(episode_max).zfill(2))
+            if sxe_max in item.library_playcounts:
+                return matches
+
+        quality_alt = '720p 1080p 2160p 4kwebrip 4k'
+        if not quality_control:
+            quality_alt +=  ' HDTV'
+        elif '720' not in item.quality:
+            quality_alt =  'HDTV'
+
+        language_alt = ['DUAL', 'CAST'] if 'CAST' in item.language else ['DUAL', 'LAT'] if 'LAT' in item.language else ['DUAL', 'CAST', 'LAT']
+
+        titles_search = []
+        if quality_alt ==  'HDTV':
+            titles_search.extend([{'urls': ['%s HDTV ' + domain_alt], 'checks': ['Cap.']}])
         else:
-            if not quality_control:
-                quality_alt +=  ' [HDTV]'
-            elif '720' not in item.quality:
-                quality_alt =  '[HDTV]'
+            titles_search.extend([{'urls': ['%s HDTV ' + domain_alt, '%s 4K ' + domain_alt], 'checks': ['Cap.']}])
+        if not channel_py_strict:
+            titles_search.extend([{'urls': ['%s HDTV'], 'checks': ['Cap.']},
+                                  {'urls': ['%s Temporada ' + str(season)], 'checks': ['Cap.']}])
 
-        torrent_params = {
-                          'quality_alt': quality_alt, 
-                          'find_alt_link_season': seasons, 
-                          'find_alt_link_next': 0, 
-                          'domain_alt': domain_alt or find_alt_domains
-                          }
+        for title_search in titles_search:
 
-        limit_pages = 3
-        interface = str(config.get_setting('btdigg_status', server='torrent'))
-        limit_items_found = 5 * 10 if interface != '200' else 10 * 10
-        patron_sea = 'Cap.(\d+)\d{2}'
-        patron_cap = 'Cap.\d+(\d{2})'
+            limit_pages = 7 if domain_alt in str(title_search['urls']) else 4
+            limit_pages_min = 4 if domain_alt in str(title_search['urls']) else 1
+            limit_items_found = 10 * 10
+            patron_sea = 'Cap.(\d+)\d{2}'
+            patron_cap = 'Cap.\d+(\d{2})'
+            patron_title = '(?i)(.*?(?:\(\d{4}\))?)\s*(?:-*\s*temp|\[)'
 
-        x = 0
-        while x < limit_pages:
-            torrent_params = find_alternative_link(item, torrent_params=torrent_params, cache=cache)
+            torrent_params = {
+                              'title_prefix': [title_search], 
+                              'quality_alt': quality_alt, 
+                              'language_alt': language_alt, 
+                              'find_alt_link_season': seasons, 
+                              'find_alt_link_next': 0, 
+                              'link_found_limit': limit_items_found, 
+                              'domain_alt': None,
+                              'extensive_search': False if contentSeason > 0 else False
+                              }
 
-            if not torrent_params.get('find_alt_link_result') and not torrent_params.get('find_alt_link_next'): x = 999999
-            if not torrent_params['find_alt_link_next']: x = 999999
-            if torrent_params.get('find_alt_link_found') and int(torrent_params['find_alt_link_found']) < limit_items_found: 
-                limit_pages = int(int(torrent_params['find_alt_link_found']) / 10) + 1
-            x += 1
+            x = 0
+            while x < limit_pages:
+                torrent_params = find_alternative_link(item, torrent_params=torrent_params, cache=disable_cache)
 
-            for y, (scrapedurl, scrapedtitle, scrapedsize, scrapedquality, scrapedmagnet) \
-                                in enumerate(torrent_params.get('find_alt_link_result', [])):
-                elem_json = {}
-                #logger.error(torrent_params['find_alt_link_result'][y])
+                if not torrent_params.get('find_alt_link_result') and not torrent_params.get('find_alt_link_next'): x = 999999
+                if not torrent_params.get('find_alt_link_result') and torrent_params.get('find_alt_link_next', 0) >= limit_pages_min: x = 999999
+                if not torrent_params.get('find_alt_link_next'): x = 999999
+                if torrent_params.get('find_alt_link_found') and int(torrent_params['find_alt_link_found']) < limit_items_found: 
+                    limit_pages = int(int(torrent_params['find_alt_link_found']) / 10) + 1
+                x += 1
 
-                try:
-                    if not scrapertools.find_single_match(scrapedtitle, patron_sea): continue
-                    elem_json['season'] = int(scrapertools.find_single_match(scrapedtitle, patron_sea))
-                    if elem_json['season'] != item.infoLabels['season']: continue
-                    if not scrapertools.find_single_match(scrapedtitle, patron_cap): continue
-                    elem_json['episode'] = int(scrapertools.find_single_match(scrapedtitle, patron_cap))
-                    if elem_json['episode'] > episode_max: continue
+                for y, elem in enumerate(torrent_params['find_alt_link_result']):
+                    elem_json = {}
+                    #logger.error(torrent_params['find_alt_link_result'][y])
 
-                    elem_json['url'] = scrapedmagnet
-                    elem_json['quality'] = scrapedquality.replace('HDTV 720p', 'HDTV-720p')
-                    ignore = False
-                    for episode, index, quality in epis_index.get(elem_json['episode'], []):
-                        if elem_json['quality'].lower() == quality:
-                            ignore = True
-                            break
-                    if ignore:
-                        continue
-                    elem_json['quality'] = '%s%s' % (elem_json['quality'], btdigg_label)
-                    elem_json['torrent_info'] = scrapedsize
-                    elem_json['language'] = '*%s' % scrapedmagnet
-                    elem_json['size'] = elem_json['torrent_info'].replace(config.BTDIGG_LABEL_B, '')\
-                                                                 .replace('[COLOR magenta][B]RAR-[/B][/COLOR]', '')
-                    elem_json['server'] = 'torrent'
-                    elem_json['btdig_in_use'] = True
+                    try:
+                        if not scrapertools.find_single_match(elem.get('title', ''), patron_sea): continue
+                        elem_json['season'] = int(scrapertools.find_single_match(elem.get('title', ''), patron_sea))
+                        if elem_json['season'] != item.infoLabels['season']: continue
+                        if not scrapertools.find_single_match(elem.get('title', ''), patron_cap): continue
+                        elem_json['episode'] = int(scrapertools.find_single_match(elem.get('title', ''), patron_cap))
+                        if elem_json['episode'] > episode_max: continue
+                        if elem_json['episode'] > last_episode_to_air: last_episode_to_air = episode_max
 
-                    if elem_json['episode'] in epis_index:
-                        matches.append(elem_json.copy())
-                        epis_index[elem_json['episode']] += [[elem_json['episode'], len(matches) - 1, 
-                                                              elem_json['quality'].replace(btdigg_label, '').lower()]]
-                    else:
-                        matches.append(elem_json.copy())
-                        epis_index[elem_json['episode']] = [[elem_json['episode'], len(matches) - 1, 
-                                                             elem_json['quality'].replace(btdigg_label, '').lower()]]
-                except:
-                    logger.error(traceback.format_exc())
-                    continue
+                        elem_json['url'] = elem.get('url', '')
+                        elem_json['quality'] = elem.get('quality', '').upper().replace('P', 'p').replace('HDTV 720p', 'HDTV-720p')
+                        ignore = False
+                        for episode, index, quality in epis_index.get(elem_json['episode'], []):
+                            if elem_json['quality'].lower() == quality:
+                                ignore = True
+                                break
+                        if ignore:
+                            if DEBUG: logger.debug('DROP Cap. dup: %s / %sx%s / %s' \
+                                                    % (item.contentSerieName, elem_json['season'], elem_json['episode'], elem_json['quality']))
+                            continue
+                        elem_json['quality'] = '%s%s' % (elem_json['quality'], btdigg_label)
+                        elem_json['torrent_info'] = elem.get('size', '')
+                        elem_json['torrent_info'] += ' (%s)' % scrapertools.find_single_match(elem.get('title', '')\
+                                                               .replace(btdigg_label_B, ''), patron_title)
+                        elem_json['language'] = elem.get('language', []) or item.language
+                        elem_json['size'] = elem_json['torrent_info'].replace(btdigg_label_B, '')\
+                                                                     .replace('[COLOR magenta][B]RAR-[/B][/COLOR]', '')
+                        elem_json['title'] = ''
+                        elem_json['server'] = 'torrent'
+                        elem_json['btdig_in_use'] = True
+
+                        if elem_json['episode'] in epis_index:
+                            matches.append(elem_json.copy())
+                            epis_index[elem_json['episode']] += [[elem_json['episode'], len(matches) - 1, 
+                                                                  elem_json['quality'].replace(btdigg_label, '').lower()]]
+                        else:
+                            matches.append(elem_json.copy())
+                            epis_index[elem_json['episode']] = [[elem_json['episode'], len(matches) - 1, 
+                                                                 elem_json['quality'].replace(btdigg_label, '').lower()]]
+                    except Exception:
+                        logger.error(traceback.format_exc())
+
+            if len(epis_index) >= last_episode_to_air: break
 
         if matches_len == len(matches): matches = AH_find_btdigg_matches(item, matches, **AHkwargs)
         matches = sorted(matches, key=lambda it: (it.get('episode', 0), self.convert_size(it.get('size', 0)))) if matches else []
     
-    except:
+    except Exception:
         logger.error(traceback.format_exc())
 
     return matches
 
 
-def AH_find_btdigg_findvideos(self, item, matches=[], domain_alt='', **AHkwargs):
+def AH_find_btdigg_findvideos(self, item, matches=[], domain_alt=channel_py, **AHkwargs):
     logger.info()
 
     if item.matches and item.channel != 'videolibrary' and item.contentChannel != 'videolibrary' and item.from_channel != 'videolibrary':
         return matches
 
+    if matches and isinstance(matches[0], list):
+        matches_in = matches[:]
+        matches = []
+        for scrapedtitle, scrapedmagnet, scrapedsize, scrapedquality in matches_in:
+            matches.append({'bt_url': '', 'title': scrapedtitle, 'url': scrapedmagnet, 'size': scrapedsize, 'quality': scrapedquality})
+    
     controls = self.finds.get('controls', {})
     contentSeason = AHkwargs.pop('btdigg_contentSeason', controls.get('btdigg_contentSeason', 0))
-    cache = True if item.contentChannel == 'videolibrary' or item.from_channel == 'videolibrary' or not item.matches else False
+    disable_cache = False if (item.contentChannel == 'videolibrary' or item.from_channel == 'videolibrary' or not item.matches) else True
     quality_control = AHkwargs.pop('btdigg_quality_control', controls.get('btdigg_quality_control', False))
     canonical = AHkwargs.pop('canonical', self.canonical)
     matches_len = len(matches)
+    language_alt = []
 
     try:
         if canonical.get('global_search_cancelled', False) or (config.GLOBAL_SEARCH_CANCELLED \
@@ -2186,1558 +2496,101 @@ def AH_find_btdigg_findvideos(self, item, matches=[], domain_alt='', **AHkwargs)
         if not PY3: from lib.alfaresolver import find_alternative_link
         else: from lib.alfaresolver_py3 import find_alternative_link
 
-        quality_alt = '720p 1080p 4kwebrip 4k'
+        quality_alt = '720p 1080p 2160p 4kwebrip 4k'
         if item.contentType == 'movie':
-            quality_alt +=  ' [HDTV] rip'
-            if 'screener' in item.quality.lower(): quality_alt += ' screener'
+            titles_search = [{'urls': ['%s ' + domain_alt], 'checks': ['Cast', 'Esp', 'Spanish', '%s' % domain_alt.replace('4k', '')]}, 
+                             {'urls': ['%s Bluray Castellano'], 'checks': ['Cast', 'Esp', 'Spanish', '%s' % domain_alt.replace('4k', '')]}]
+            quality_alt +=  ' bluray rip screener'
+            language_alt = ['DUAL', 'CAST'] if 'CAST' in item.language else ['DUAL', 'LAT'] if 'LAT' in item.language else ['DUAL', 'CAST', 'LAT']
         else:
+            titles_search = [{'urls': ['%s Cap.' + '%s%s' % (item.contentSeason, str(item.contentEpisodeNumber).zfill(2))], 'checks': ['Cap.']}]
             if not quality_control:
-                quality_alt +=  ' [HDTV]'
+                quality_alt +=  ' HDTV'
             elif '720' not in item.quality and '1080' not in item.quality and '4k' not in item.quality:
-                quality_alt =  '[HDTV]'
+                quality_alt =  'HDTV'
+            language_alt = ['DUAL', 'CAST'] if 'CAST' in item.language else ['DUAL', 'LAT'] if 'LAT' in item.language else ['DUAL', 'CAST', 'LAT']
 
-        torrent_params = {
-                          'quality_alt': quality_alt, 
-                          'find_alt_link_next': 0, 
-                          'domain_alt': domain_alt or find_alt_domains
-                          }
+        for title_search in titles_search:
 
-        limit_pages = 3
-        interface = str(config.get_setting('btdigg_status', server='torrent'))
-        limit_items_found = 5 * 10 if interface != '200' else 10 * 10
-        patron_sea = 'Cap.(\d+)\d{2}'
-        patron_cap = 'Cap.\d+(\d{2})'
+            limit_pages = 3 if domain_alt in str(title_search['urls']) else 2
+            limit_pages_min = 2 if domain_alt in str(title_search['urls']) else 1
+            limit_items_found = 10 * 10
+            patron_sea = 'Cap.(\d+)\d{2}'
+            patron_cap = 'Cap.\d+(\d{2})'
+            patron_title = '(?i)(.*?(?:\(\d{4}\))?)\s*(?:-*\s*temp|\[)'
 
-        x = 0
-        while x < limit_pages:
-            torrent_params = find_alternative_link(item, torrent_params=torrent_params, cache=cache)
+            torrent_params = {
+                              'title_prefix': [title_search], 
+                              'quality_alt': quality_alt, 
+                              'language_alt': language_alt, 
+                              'find_alt_link_next': 0, 
+                              'link_found_limit': limit_items_found, 
+                              'domain_alt': None
+                              }
 
-            if not torrent_params['find_alt_link_result'] and not torrent_params['find_alt_link_next']: x = 999999
-            if not torrent_params['find_alt_link_next']: x = 999999
-            if torrent_params.get('find_alt_link_found') and int(torrent_params['find_alt_link_found']) < limit_items_found: 
-                limit_pages = int(int(torrent_params['find_alt_link_found']) / 10) + 1
-            x += 1
+            x = 0
+            while x < limit_pages:
+                torrent_params = find_alternative_link(item, torrent_params=torrent_params, cache=disable_cache)
 
-            for y, (scrapedurl, scrapedtitle, scrapedsize, scrapedquality, scrapedmagnet) in enumerate(torrent_params['find_alt_link_result']):
-                elem_json = {}
-                #logger.error(torrent_params['find_alt_link_result'][y])
+                if not torrent_params.get('find_alt_link_result') and not torrent_params.get('find_alt_link_next'): x = 999999
+                if not torrent_params.get('find_alt_link_result') and torrent_params.get('find_alt_link_next', 0) >= limit_pages_min: x = 999999
+                if not torrent_params.get('find_alt_link_next'): x = 999999
+                if torrent_params.get('find_alt_link_found') and int(torrent_params['find_alt_link_found']) < limit_items_found: 
+                    limit_pages = int(int(torrent_params['find_alt_link_found']) / 10) + 1
+                x += 1
 
-                try:
-                    if item.contentType == 'episode':
-                        if not scrapertools.find_single_match(scrapedtitle, patron_sea): continue
-                        elem_json['season'] = int(scrapertools.find_single_match(scrapedtitle, patron_sea))
-                        if elem_json['season'] != item.infoLabels['season']: continue
-                        if not scrapertools.find_single_match(scrapedtitle, patron_cap): continue
-                        elem_json['episode'] = int(scrapertools.find_single_match(scrapedtitle, patron_cap))
-                        if elem_json['episode'] != item.contentEpisodeNumber: continue
+                for y, elem in enumerate(torrent_params['find_alt_link_result']):
+                    elem_json = {}
+                    #logger.error(torrent_params['find_alt_link_result'][y])
 
-                    elem_json['url'] = scrapedmagnet
-                    if elem_json['url'] in str(matches): 
-                        if DEBUG: logger.debug('DROP: %s' % elem_json['url'])
+                    try:
+                        if item.contentType == 'episode':
+                            if not scrapertools.find_single_match(elem.get('title', ''), patron_sea): continue
+                            elem_json['season'] = int(scrapertools.find_single_match(elem.get('title', ''), patron_sea))
+                            if elem_json['season'] != item.infoLabels['season']: continue
+                            if not scrapertools.find_single_match(elem.get('title', ''), patron_cap): continue
+                            elem_json['episode'] = int(scrapertools.find_single_match(elem.get('title', ''), patron_cap))
+                            if elem_json['episode'] != item.contentEpisodeNumber: continue
+
+                        elem_json['url'] = elem.get('url', '')
+                        if elem_json['url'] in str(matches): 
+                            if DEBUG: logger.debug('DROP: %s' % elem_json['url'])
+                            continue
+
+                        elem_json['language'] = elem.get('language', []) or item.language
+                        elem_json['quality'] = elem.get('quality', '').replace('HDTV 720p', 'HDTV-720p').replace(btdigg_label, '')
+                        q_match = False
+                        for mate in matches:
+                            if elem_json['quality'] in mate.get('quality', '').replace(btdigg_label, '').replace('*', ''):
+                                for lang in elem_json['language']:
+                                    if lang in mate.get('language', []) or mate.get('language', []) == '*':
+                                        if DEBUG: logger.debug('DROP quality: %s' % elem_json['quality'])
+                                        q_match = True
+                        if q_match: continue
+                        elem_json['quality'] = '%s%s' % (elem_json['quality'], btdigg_label)
+                        elem_json['torrent_info'] = elem.get('size', '').replace('GB', 'G·B').replace('Gb', 'G·b')\
+                                                                        .replace('MB', 'M·B').replace('Mb', 'M·b').replace('.', ',')
+                        title = elem.get('title', '').replace(btdigg_label_B, '').replace('- ', '').replace(elem.get('quality', ''), '')
+                        title = re.sub('(?i)BTDigg\s*|-\s+|\[.*?\]|Esp\w*\s*|Cast\w*\s*|Lat\w*\s*|span\w*' , '', title)
+                        elem_json['torrent_info'] += ' (%s)' % title
+                        elem_json['size'] = elem.get('size', '').replace(btdigg_label_B, '')\
+                                                                .replace('[COLOR magenta][B]RAR-[/B][/COLOR]', '')
+                        elem_json['server'] = 'torrent'
+                        elem_json['btdig_in_use'] = True
+
+                        matches.append(elem_json.copy())
+
+                    except Exception:
+                        logger.error(traceback.format_exc())
                         continue
-
-                    elem_json['quality'] = scrapedquality.replace('HDTV 720p', 'HDTV-720p')
-                    if elem_json['quality'] in str(matches): 
-                        if DEBUG: logger.debug('DROP: %s' % elem_json['quality'])
-                        continue
-                    elem_json['quality'] = '%s%s' % (elem_json['quality'], btdigg_label)
-                    elem_json['torrent_info'] = scrapedsize.replace('GB', 'G·B').replace('Gb', 'G·b')\
-                                                           .replace('MB', 'M·B').replace('Mb', 'M·b').replace('.', ',')
-                    elem_json['size'] = scrapedsize.replace(config.BTDIGG_LABEL_B, '')\
-                                                   .replace('[COLOR magenta][B]RAR-[/B][/COLOR]', '')
-                    elem_json['language'] = '*%s' % scrapedmagnet
-                    elem_json['server'] = 'torrent'
-                    elem_json['btdig_in_use'] = True
-
-                    matches.append(elem_json.copy())
-
-                except:
-                    logger.error(traceback.format_exc())
-                    continue
 
         if matches_len == len(matches): matches = AH_find_btdigg_matches(item, matches, **AHkwargs)
         matches = sorted(matches, key=lambda it: (self.convert_size(it.get('size', 0)))) if matches else []
     
-    except:
+    except Exception:
         logger.error(traceback.format_exc())
 
     return matches
-
-
-def post_tmdb_listado(item, itemlist):
-    logger.info()
-    global video_list
-    
-    itemlist_fo = []
-    
-    """
-        
-    Pasada para maquillaje de los títulos obtenidos desde TMDB en Listado y Listado_Búsqueda.
-    
-    Toma de infoLabel todos los datos de interés y los va situando en diferentes variables, principalmente título
-    para que sea compatible con Unify, y si no se tienen Títulos Inteligentes, para que el formato sea lo más
-    parecido al de Unify.
-    
-    También restaura varios datos salvados desde el título antes de pasarlo por TMDB, ya que mantenerlos no habría encontrado el título (title_subs)
-    
-    La llamada al método desde Listado o Listado_Buscar, despues de pasar Itemlist pot TMDB, es:
-    
-        from lib import generictools
-        item, itemlist = generictools.post_tmdb_listado(item, itemlist)
-    
-    """
-    #logger.debug(item)
-    
-    #Borramos valores si ha habido fail-over
-    channel_alt = ''
-    if item.channel_alt:
-        channel_alt = item.channel_alt
-        del item.channel_alt
-    if item.url_alt:
-        del item.url_alt
-
-    #Ajustamos el nombre de la categoría
-    if item.category_new == "newest":                           #Viene de Novedades.  Lo marcamos para Unify
-        item.from_channel = 'news'
-        del item.category_new
-
-    #Cargo la lista de peliculas, series y documentales de la videoteca.  Se usa luego para Descargas
-    res, video_list = check_title_in_videolibray(item, video_list_init=True)
-    convert = ['.=', '-= ', ':=', '&= ', '  = ', "'='"]
-    video_list_str = scrapertools.slugify(str(video_list), strict=False, convert=convert)
-    #logger.debug(video_list)
-    #logger.debug(video_list_str)
-    
-    # Pasada por TMDB a Serie, para datos adicionales, y mejorar la experiencia en Novedades
-    if len(itemlist) > 0 and (not itemlist[-1].infoLabels['temporada_nombre'] and not itemlist[-1].infoLabels['number_of_seasons']) \
-                         and (itemlist[-1].contentType != 'movie' or item.action == 'search' or item.extra == 'novedades'):
-        idioma = idioma_busqueda
-        if 'VO' in str(itemlist[-1].language):
-            idioma = idioma_busqueda_VO
-        tmdb.set_infoLabels(itemlist, seekTmdb=True, idioma_busqueda=idioma)
-    
-    format_tmdb_id(item)
-    format_tmdb_id(itemlist)
-    
-    for item_local in itemlist:                                 #Recorremos el Itemlist generado por el canal
-        item_local.title = re.sub(r'(?i)online|descarga|downloads|trailer|videoteca|gb|autoplay', '', item_local.title).strip()
-        #item_local.title = re.sub(r'online|descarga|downloads|trailer|videoteca|gb|autoplay', '', item_local.title, flags=re.IGNORECASE).strip()
-        title = item_local.title
-        season = 0
-        episode = 0
-        idioma = idioma_busqueda
-        if 'VO' in str(item_local.language):
-            idioma = idioma_busqueda_VO
-        #logger.debug(item_local)
-        
-        item_local.last_page = 0
-        del item_local.last_page                                #Borramos restos de paginación
-        en_videoteca = ''
-
-        if item_local.contentSeason_save:                       #Restauramos el num. de Temporada
-            item_local.contentSeason = item_local.contentSeason_save
-
-        #Borramos valores para cada Contenido si ha habido fail-over
-        if item_local.channel_alt:
-            del item_local.channel_alt
-        if item_local.url_alt:
-            del item_local.url_alt
-        if item_local.extra2:
-            del item_local.extra2
-        if item_local.library_filter_show:
-            del item_local.library_filter_show
-        if item_local.channel_host:
-            del item_local.channel_host
-        if item_local.category_new == "newest":                 #Viene de Novedades.  Lo marcamos para Unify
-            item_local.from_channel = 'news'
-            del item_local.category_new
-
-        #Ajustamos el nombre de la categoría
-        if item_local.channel == channel_py:
-            item_local.category = scrapertools.find_single_match(item_local.url, patron_canal).capitalize()
-        
-        #Restauramos la info adicional guarda en la lista title_subs, y la borramos de Item
-        title_add = ' '
-        if item_local.title_subs:
-            for title_subs in item_local.title_subs:
-                if "audio" in title_subs.lower():                               #se restaura info de Audio
-                    title_add += scrapertools.find_single_match(title_subs, r'[a|A]udio (.*?)')
-                    continue
-                if scrapertools.find_single_match(title_subs, r'^(\d{4})$'):    #Se restaura el año, s no lo ha dado TMDB
-                    if not item_local.infoLabels['year'] or item_local.infoLabels['year'] == "-":
-                        item_local.infoLabels['year'] = scrapertools.find_single_match(title_subs, r'(\d{4})')
-                    continue
-
-                title_add = title_add.rstrip()
-                if scrapertools.find_single_match(title_subs, r'Episodio\s*(\d+)x(\d+)'):
-                    title_subs += ' (MAX_EPISODIOS)'
-                title_add = '%s -%s-' % (title_add, title_subs)                 #se agregan el resto de etiquetas salvadas
-        if len(title_add) > 1: item_local.unify_extended = True
-        item_local.title_subs = []
-        del item_local.title_subs
-
-        #Preparamos el Rating del vídeo
-        rating = ''
-        try:
-            if item_local.infoLabels['rating'] and item_local.infoLabels['rating'] != 0.0:
-                rating = float(item_local.infoLabels['rating'])
-                rating = round(rating, 1)
-                if rating == 0.0:
-                    rating = ''
-        except:
-            logger.error(traceback.format_exc())
-
-        __modo_grafico__ = config.get_setting('modo_grafico', item.channel)    
-        
-        # Si TMDB no ha encontrado el vídeo limpiamos el año
-        if item_local.infoLabels['year'] == "-" and item_local.from_channel != 'news':
-            item_local.infoLabels['year'] = ''
-            item_local.infoLabels['aired'] = ''
-            
-        #Si traía el TMDB-ID, pero no ha funcionado, lo reseteamos e intentamos de nuevo
-        if item_local.infoLabels['tmdb_id'] and not item_local.infoLabels['originaltitle']:
-            logger.info("*** TMDB-ID erroneo, reseteamos y reintentamos: %s" % item_local.infoLabels['tmdb_id'])
-            del item_local.infoLabels['tmdb_id']                        #puede traer un TMDB-ID erroneo
-            try:
-                tmdb.set_infoLabels_item(item_local, __modo_grafico__, idioma_busqueda=idioma) #pasamos otra vez por TMDB
-                format_tmdb_id(item_local)
-            except:
-                logger.error(traceback.format_exc())
-            logger.info("*** TMDB-ID erroneo reseteado: %s" % item_local.infoLabels['tmdb_id'])
-        
-        # Si TMDB no ha encontrado nada y hemos usado el año de la web, lo intentamos sin año
-        if not item_local.infoLabels['tmdb_id']:
-            if item_local.infoLabels['year']:                   #lo intentamos de nuevo solo si había año, puede que erroneo
-                year = item_local.infoLabels['year']            #salvamos el año por si no tiene éxito la nueva búsqueda
-                item_local.infoLabels['year'] = "-"             #reseteo el año
-                try:
-                    tmdb.set_infoLabels_item(item_local, __modo_grafico__, idioma_busqueda=idioma) #pasamos otra vez por TMDB
-                    format_tmdb_id(item_local)
-                except:
-                    logger.error(traceback.format_exc())
-                if not item_local.infoLabels['tmdb_id']:        #ha tenido éxito?
-                    item_local.infoLabels['year'] = year        #no, restauramos el año y lo dejamos ya
-
-        # Para Episodios, tomo el año de exposición y no el de inicio de la serie
-        if item_local.infoLabels['aired']:
-            item_local.infoLabels['year'] = scrapertools.find_single_match(str(item_local.infoLabels['aired']), r'\/(\d{4})')
-
-        if item_local.from_title:
-            if item_local.contentType == 'movie':
-                item_local.contentTitle = item_local.from_title
-                item_local.title = item_local.from_title
-            else:
-                item_local.contentSerieName = item_local.from_title
-            if item_local.contentType == 'season':
-                item_local.title = item_local.from_title
-            item_local.title = re.sub(r'(?i)online|descarga|downloads|trailer|videoteca|gb|autoplay', '', item_local.title).strip()
-            title = item_local.title
-        
-        #Limpiamos calidad de títulos originales que se hayan podido colar
-        if item_local.infoLabels['originaltitle'].lower() in item_local.quality.lower():
-            item_local.quality = re.sub(item_local.infoLabels['originaltitle'], '', item_local.quality)
-            #item_local.quality = re.sub(item_local.infoLabels['originaltitle'], '', item_local.quality, flags=re.IGNORECASE)
-        
-        # Preparamos el título para series, con los núm. de temporadas, si las hay
-        if item_local.contentType in ['season', 'tvshow', 'episode']:
-            item_local.contentSerieName = filetools.validate_path(item_local.contentSerieName.replace('/', '-').replace('  ', ' '))
-            item_local.contentTitle = filetools.validate_path(item_local.contentTitle.replace('/', '-').replace('  ', ' '))
-            item_local.title = filetools.validate_path(item_local.title.replace('/', '-').replace('  ', ' '))
-            if item_local.from_title: item_local.from_title = filetools.validate_path(item_local.from_title.replace('/', '-').replace('  ', ' '))
-            
-            # Pasada por TMDB a Serie, para datos adicionales, y mejorar la experiencia en Novedades
-            if scrapertools.find_single_match(title_add, r'Episodio\s*(\d+)x(\d+)') or ' (MAX_EPISODIOS)' in title_add:
-                # Salva los datos de la Serie y lo transforma temporalmente en Season o Episode
-                contentPlot = item_local.contentPlot
-                contentType = item_local.contentType
-                if scrapertools.find_single_match(title_add, r'Episodio\s*(\d+)x(\d+)'):
-                    season, episode = scrapertools.find_single_match(title_add, r'Episodio\s*(\d+)x(\d+)')
-                else:
-                    season = item_local.infoLabels['season']
-                    episode = item_local.infoLabels['episode']
-                episode_max = int(episode)
-                if int(season):
-                    item_local.infoLabels['season'] = int(season)
-                if not int(season):
-                    title_add = re.sub(r'Episodio\s*(\d+)x(\d+)', '', title_add)
-                elif '-al-' not in title_add:
-                    item_local.infoLabels['episode'] = int(episode)
-                    item_local.contentType = "episode"
-                else:
-                    item_local.contentType = "season"
-                    episode_max = int(scrapertools.find_single_match(title_add, r'Episodio\s*\d+x\d+-al-(\d+)'))
-
-                try:
-                    if (not item_local.infoLabels['temporada_nombre'] or not item_local.infoLabels['number_of_seasons']) \
-                                                                        and item_local.infoLabels['tmdb_id'] \
-                                                                        and item_local.infoLabels['season']:
-                        tmdb.set_infoLabels_item(item_local, seekTmdb=True, idioma_busqueda=idioma)  #TMDB de la serie
-                        format_tmdb_id(item_local)
-                except:
-                    logger.error(traceback.format_exc())
-                
-                # Restaura los datos de infoLabels a su estado original, menos plot y año
-                item_local.infoLabels['year'] = scrapertools.find_single_match(item_local.infoLabels['aired'], r'\d{4}')
-                if item_local.infoLabels.get('temporada_num_episodios', 0) >= episode_max:
-                    tot_epis = ''
-                    if item_local.infoLabels.get('temporada_num_episodios', 0):
-                        tot_epis = ' (de %s' % str(item_local.infoLabels['temporada_num_episodios'])
-                    if (item_local.infoLabels.get('number_of_seasons', 0) > 1 \
-                            and item_local.infoLabels.get('number_of_episodes', 0) > 0) \
-                            or (item_local.infoLabels.get('number_of_seasons', 0) \
-                            and not item_local.infoLabels.get('temporada_num_episodios', 0)):
-                        tot_epis += ' (' if not tot_epis else ', '
-                        tot_epis += 'de %sx%s' % (str(item_local.infoLabels['number_of_seasons']), \
-                                                  str(item_local.infoLabels['number_of_episodes']))
-                    tot_epis += ')'
-                    title_add = title_add.replace(' (MAX_EPISODIOS)', tot_epis)
-                else:
-                    title_add = title_add.replace(' (MAX_EPISODIOS)', '')
-                if contentPlot[10:] != item_local.contentPlot[10:]:
-                    item_local.contentPlot += '\n\n%s' % contentPlot
-                item_local.contentType = contentType
-                if item_local.contentType in ['tvshow'] and item_local.infoLabels['season']: del item_local.infoLabels['season']
-                if item_local.contentType in ['season', 'tvshow'] and item_local.contentEpisodeNumber: del item_local.infoLabels['episode']
-
-            # Exploramos los diferentes formatos
-            if item_local.contentType == "episode":
-                #Si no está el título del episodio, pero sí está en "title", lo rescatamos
-                if not item_local.infoLabels['episodio_titulo'] and item_local.infoLabels['title'].lower() \
-                                                                != item_local.infoLabels['tvshowtitle'].lower():
-                    item_local.infoLabels['episodio_titulo'] = item_local.infoLabels['title']
-
-                if "Temporada" in title:                    #Compatibilizamos "Temporada" con Unify
-                    title = '%sx%s al 99 -' % (str(item_local.contentSeason), str(item_local.contentEpisodeNumber))
-                if " al " in title:                         #Si son episodios múltiples, ponemos nombre de serie
-                    if " al 99" in title.lower():           #Temporada completa.  Buscamos num total de episodios
-                        title = title.replace("99", str(item_local.infoLabels['temporada_num_episodios']))
-                    title = '%s %s' % (title, item_local.contentSerieName)
-                    item_local.infoLabels['episodio_titulo'] = '%s - %s [%s] [%s]' % (scrapertools.find_single_match(title, r'(al \d+)'), 
-                                                               item_local.contentSerieName, item_local.infoLabels['year'], rating)
-        
-                elif item_local.infoLabels['episodio_titulo']:
-                    title = '%s %s, %s' % (title, item_local.infoLabels['episodio_titulo'], item_local.contentSerieName)
-                    item_local.infoLabels['episodio_titulo'] = '%s, %s [%s] [%s]' % (item_local.infoLabels['episodio_titulo'], item_local.contentSerieName, item_local.infoLabels['year'], rating)
-                    
-                else:                                       #Si no hay título de episodio, ponermos el nombre de la serie
-                    if item_local.contentSerieName not in title:
-                        title = '%s %s' % (title, item_local.contentSerieName)
-                    item_local.infoLabels['episodio_titulo'] = '%s [%s] [%s]' % (item_local.contentSerieName, item_local.infoLabels['year'], rating)
-                    
-                if not item_local.contentSeason or not item_local.contentEpisodeNumber:
-                    if "Episodio" in title_add:
-                        item_local.contentSeason, item_local.contentEpisodeNumber = scrapertools.find_single_match(title_add, 'Episodio (\d+)x(\d+)')
-                        title = '%s [%s] [%s]' % (title, item_local.infoLabels['year'], rating)
-
-            elif item_local.contentType == "season":
-                if not item_local.contentSeason:
-                    item_local.contentSeason = scrapertools.find_single_match(item_local.url, '-(\d+)x')
-                if not item_local.contentSeason:
-                    item_local.contentSeason = scrapertools.find_single_match(item_local.url, '-temporadas?-(\d+)')
-                if item_local.contentSeason:
-                    title = '%s -Temporada %s' % (title, str(item_local.contentSeason))
-                    if not item_local.contentSeason_save:                           #Restauramos el num. de Temporada
-                        item_local.contentSeason_save = item_local.contentSeason    #Y lo volvemos a salvar
-                    del item_local.infoLabels['season']         #Funciona mal con num. de Temporada.  Luego lo restauramos
-                else:
-                    title = '%s -Temporada !!!' % (title)
-
-            elif (item.action == "search" or item.extra == "search" or item_local.from_channel == "news") and not \
-                        (item_local.extra == "varios" or item_local.extra == "documentales"):
-                item_local.unify_extended = True
-                title += " -Serie-"
-                if item_local.from_channel == "news":
-                    title_add += " -Serie-"
-
-        if (item_local.extra == "varios" or item_local.extra == "documentales") \
-                        and (item.action == "search" or item.extra == "search" or \
-                        item.action == "listado_busqueda" or item_local.from_channel == "news"):
-            item_local.unify_extended = True
-            title += " -Varios-"
-            item_local.contentTitle += " -Varios-"
-            if item_local.from_channel == "news":
-                title_add += " -Varios-"
-        
-        base_name = ''
-        season_episode = ''
-        if item_local.contentType != 'movie' and item_local.infoLabels['tmdb_id'] \
-                        and ((item_local.infoLabels['imdb_id'] \
-                        and item_local.infoLabels['imdb_id'] in video_list_str) \
-                        or 'tmdb_'+item_local.infoLabels['tmdb_id'] in video_list_str \
-                        or "' %s [" % scrapertools.slugify(item_local.contentSerieName, strict=False, convert=convert) in video_list_str):
-            id_tmdb = item_local.infoLabels['imdb_id']
-            if not id_tmdb:
-                id_tmdb = "tmdb_%s" % item_local.infoLabels['tmdb_id']
-            if config.get_setting("original_title_folder", "videolibrary") == 1 and item_local.infoLabels['originaltitle']:
-                base_name = item_local.infoLabels['originaltitle']
-            elif item_local.infoLabels['tvshowtitle']:
-                base_name = item_local.infoLabels['tvshowtitle']
-            elif item_local.infoLabels['title']:
-                base_name = item_local.infoLabels['title']
-            else:
-                base_name = item_local.contentSerieName
-            base_name = filetools.validate_path(base_name.replace('/', '-').replace('  ', ' '))
-            base_name_slugify = scrapertools.slugify(base_name, strict=False, convert=convert)
-            if config.get_setting("lowerize_title", "videolibrary") == 0:
-                base_name = base_name.lower()
-
-            item_local.video_path = "%s [%s]" % (base_name, id_tmdb) if "'%s [%s]" % (base_name, id_tmdb) in video_list_str \
-                                    or "'%s [%s]" % (base_name_slugify, id_tmdb) in video_list_str \
-                                    else "%s [tmdb_%s]" % (base_name, item_local.infoLabels['tmdb_id'])
-            item_local.url_tvshow = item_local.url
-            item_local.unify_extended = True
-            if season and episode:
-                season_episode = '%sx%s.strm' % (str(season), str(episode).zfill(2))
-            if check_marks_in_videolibray(item_local, strm=season_episode):
-                item_local.infoLabels["playcount"] = 1
-            
-            if item_local.video_path:
-                item_local = context_for_videolibray(item_local)
-                en_videoteca = '(V)-'
-        
-        if item_local.contentType == 'movie' and item_local.infoLabels['tmdb_id'] \
-                        and ((item_local.infoLabels['imdb_id'] \
-                        and item_local.infoLabels['imdb_id'] in video_list_str) \
-                        or 'tmdb_'+item_local.infoLabels['tmdb_id'] in video_list_str \
-                        or "' %s [" % scrapertools.slugify(item_local.contentTitle, strict=False, convert=convert) in video_list_str):
-            item_local.unify_extended = True
-            en_videoteca = '(V)-'
-
-        title += title_add.replace(' (MAX_EPISODIOS)', '')                      #Se añaden etiquetas adicionales, si las hay
-        if title_add and item_local.contentType == 'movie':
-            item_local.contentTitle += title_add.replace(' (MAX_EPISODIOS)', '')
-
-        #Ahora maquillamos un poco los titulos dependiendo de si se han seleccionado títulos inteligentes o no
-        if not config.get_setting("unify"):                                     #Si Titulos Inteligentes NO seleccionados:
-            title = '%s %s %s %s %s' % (unify.set_color(title, 'movie' if item_local.contentType == 'movie' else 'tvshow'), 
-                                        unify.set_color(item_local.infoLabels['year'], 'year') , 
-                                        unify.format_rating(rating), unify.set_color(item_local.quality, "quality"), 
-                                        unify.set_color(str(item_local.language), item_local.language[0] \
-                                        if isinstance(item_local.language, list) else item_local.language))
-
-        elif item_local.action:                                                 #Si Titulos Inteligentes SÍ seleccionados:
-            title = title.replace("[", "-").replace("]", "-").replace(".", ",").replace("GB", "G B")\
-                        .replace("Gb", "G b").replace("gb", "g b").replace("MB", "M B")\
-                        .replace("Mb", "M b").replace("mb", "m b")
-        
-        #Limpiamos las etiquetas vacías
-        if item_local.infoLabels['episodio_titulo']:
-            item_local.infoLabels['episodio_titulo'] = item_local.infoLabels['episodio_titulo'].replace(" []", "").strip()
-        title = title.replace("--", "").replace(" []", "").replace("()", "").replace("(/)", "").replace("[/]", "").strip()
-        title = re.sub(r'\s?\[COLOR \w+\]\[\[?\s?\]?\]\[\/COLOR\]', '', title).strip()
-        title = re.sub(r'\s?\[COLOR \w+\]\s?\[\/COLOR\]', '', title).strip()
-    
-        #Viene de Novedades.  Lo preparamos para Unify
-        if item_local.from_channel == "news":
-            """
-            if scrapertools.find_single_match(item_local.url, patron_canal):
-                title += ' -%s-' % scrapertools.find_single_match(item_local.url, patron_canal).capitalize()
-            else:
-                title += ' -%s-' % item_local.channel.capitalize()
-            if item_local.contentType == "movie":
-                if scrapertools.find_single_match(item_local.url, patron_canal):
-                    item_local.contentTitle += ' -%s-' % scrapertools.find_single_match(item_local.url, patron_canal).capitalize()
-                else:
-                    item_local.contentTitle += ' -%s-' % item_local.channel.capitalize()
-            """
-            if item_local.contentType in ['season', 'tvshow']:
-                title = '%s %s' % (item_local.contentSerieName, title_add)
-            elif "Episodio " in title:
-                if not item_local.contentSeason or not item_local.contentEpisodeNumber:
-                    try:
-                        item_local.contentSeason, item_local.contentEpisodeNumber = \
-                                scrapertools.find_single_match(title_add, 'Episodio (\d+)x(\d+)')
-                    except:
-                        item_local.contentSeason = item_local.contentEpisodeNumber = 1
-            item_local.unify_extended = True
-
-        if item_local.infoLabels['status'] and (item_local.infoLabels['status'].lower() == "ended" \
-                        or item_local.infoLabels['status'].lower() == "canceled"):
-            title += ' [TERM]'
-            item_local.unify_extended = True
-        
-        item_local.title = en_videoteca + title
-        item_local.contentTitle = en_videoteca + item_local.contentTitle
-        
-        #logger.debug("url: " + item_local.url + " / title: " + item_local.title + " / content title: " + item_local.contentTitle + "/" + item_local.contentSerieName + " / calidad: " + item_local.quality + "[" + str(item_local.language) + "]" + " / year: " + str(item_local.infoLabels['year']))
-        
-        #logger.debug(item_local)
-    
-    #Si intervención judicial, alerto!!!
-    if item.intervencion:
-        for clone_inter, autoridad in item.intervencion:
-            thumb_intervenido = get_thumb(autoridad)
-            itemlist_fo.append(item.clone(action='', title="[COLOR %s]" % get_color_from_settings('library_color', default='yellow')
-                                          + clone_inter.capitalize() + ': [/COLOR]' + intervenido_judicial 
-                                          + '. Reportar el problema en el foro', thumbnail=thumb_intervenido))
-        del item.intervencion
-    
-    #Si ha habido fail-over, lo comento
-    if channel_alt and item.from_channel != "news":
-        itemlist_fo.append(item.clone(action='', title="[COLOR %s]" % get_color_from_settings('library_color', default='yellow')
-                                      + item.category + '[/COLOR] [ALT ] en uso'))
-        itemlist_fo.append(item.clone(action='', title="[COLOR %s]" % get_color_from_settings('library_color', default='yellow') 
-                                      + channel_alt.capitalize() + '[/COLOR] inaccesible'))
-    
-    if len(itemlist_fo) > 0:
-        itemlist = itemlist_fo + itemlist
-        
-    if item.from_channel:
-        del item.from_channel
-        
-    return (item, itemlist)
-
-
-def post_tmdb_seasons(item, itemlist, url='serie'):
-    logger.info()
-    
-    """
-        
-    Pasada para gestión del menú de Temporadas de una Serie
-    
-    La clave de activación de este método es la variable item.season_colapse que pone el canal en el Item de Listado.
-    Esta variable tendrá que desaparecer cuando se añada a la Videoteca para que se analicen los episodios de la forma tradicional
-    
-    Repasa todos los episodios producidos en itemlist por "episodios" del canal para extraer las temporadas.  Pone un título para Todas la Temps.
-    Crea un menú con las diferentes temporadas, así como con los títulos de Actualización de Título y de Añadir a Videoteca
-    Si ha habido un Fail-over o una Intervención Judicial, también lo anuncia
-    
-    La llamada al método desde Episodios, antes de pasar Itemlist pot TMDB, es:
-    
-        from lib import generictools
-        item, itemlist = generictools.post_tmdb_seasons(item, itemlist)
-        
-    Si solo hay una temporada, devuelte el itemlist original para que se pinten los episodios de la forma tradicional
-    
-    """
-    #logger.debug(item)
-    
-    season = 0
-    itemlist_temporadas = []
-    itemlist_fo = []
-    
-    if config.get_setting("no_pile_on_seasons", 'videolibrary') == 2:           #Si no se quiere mostrar por temporadas, nos vamos...
-        if item.season_colapse:                                                 #Quitamos el indicador de listado por Temporadas
-            del item.season_colapse
-        return (item, itemlist)
-    
-    #Restauramos valores si ha habido fail-over
-    channel_alt = ''
-    channel_alt_org = item.channel_alt
-    category = item.category
-    url_alt = ''
-    if item.channel == channel_py:
-        if item.channel_alt:
-            channel_alt = item.category
-            item.category = item.channel_alt.capitalize()
-            del item.channel_alt
-    else:
-        if item.channel_alt:
-            channel_alt = item.channel
-            item.channel = item.channel_alt
-            item.category = item.channel_alt.capitalize()
-            del item.channel_alt
-    if item.url_alt:
-        url_alt = item.url
-        item.url = item.url_alt
-        del item.url_alt
-    
-    # Si está en la videoteca, listamos los episodios vistos/no vistos
-    episode_list = {}
-    if item.video_path:
-        res, episode_list = check_marks_in_videolibray(item, video_list_init=True)
-    
-    # Primero creamos un título para TODAS las Temporadas
-    # Pasada por TMDB a Serie, para datos adicionales
-    idioma = idioma_busqueda
-    if 'VO' in str(item.language):
-        idioma = idioma_busqueda_VO
-    try:
-        tmdb.set_infoLabels_item(item, seekTmdb=True, idioma_busqueda=idioma)  #TMDB de la serie
-    except:
-        logger.error(traceback.format_exc())
-    
-    format_tmdb_id(item)
-    format_tmdb_id(itemlist)
-    
-    item_season = item.clone()
-    if item_season.season_colapse:                                              #Quitamos el indicador de listado por Temporadas
-        del item_season.season_colapse
-    title = '** Todas las Temporadas'                                           #Agregamos título de TODAS las Temporadas (modo tradicional)
-    if item_season.infoLabels['number_of_episodes']:                            #Ponemos el núm de episodios de la Serie
-        title += ' [%sx%s epi]' % (str(item_season.infoLabels['number_of_seasons']), \
-                str(item_season.infoLabels['number_of_episodes']))
-    
-    rating = ''                                                                 #Ponemos el rating, si es diferente del de la Serie
-    if item_season.infoLabels['rating'] and item_season.infoLabels['rating'] != 0.0:
-        try:
-            rating = float(item_season.infoLabels['rating'])
-            rating = round(rating, 1)
-        except:
-            logger.error(traceback.format_exc())
-    if rating and rating == 0.0:
-        rating = ''
-    
-    if not config.get_setting("unify"):                                         #Si Titulos Inteligentes NO seleccionados:
-        title = '%s %s %s %s %s' % (unify.set_color(title, 'movie' if item_season.contentType == 'movie' else 'tvshow'), 
-                                    unify.set_color(item_season.infoLabels['year'], 'year') , 
-                                    unify.format_rating(rating), unify.set_color(item_season.quality, "quality"), 
-                                    unify.set_color(str(item_season.language), item_season.language[0] \
-                                    if isinstance(item_season.language, list) else item_season.language))
-    else:                                                                       #Lo arreglamos un poco para Unify
-        title = title.replace('[', '-').replace(']', '-').replace('.', ',').strip()
-    title = title.replace("--", "").replace("[]", "").replace("()", "").replace("(/)", "").replace("[/]", "").strip()
-    
-    if config.get_setting("show_all_seasons", 'videolibrary'):
-        itemlist_temporadas.append(item_season.clone(title=title, from_title_season_colapse=item.title, unify=False))
-    
-    #Repasamos todos los episodios para detectar las diferentes temporadas
-    marca_visto = None
-    for item_local in itemlist:
-        if item_local.contentSeason != season:
-            season = item_local.contentSeason                                   #Si se detecta una temporada distinta se prepara un título
-            if marca_visto and len(itemlist_temporadas) > 0 and itemlist_temporadas[-1].contentSeason:
-                itemlist_temporadas[-1].infoLabels['playcount'] = 1
-            marca_visto = None
-            item_season = item.clone()
-            item_season.contentSeason = item_local.contentSeason                #Se pone el núm de Temporada para obtener mejores datos de TMDB
-            item_season.contentType = 'season'
-            item_season.quality = item_local.quality
-            item_season.title = 'Temporada %s' % item_season.contentSeason
-            if item_season.video_path:
-                item_season = context_for_videolibray(item_season)
-            if url != 'serie':
-                if item_local.url_tvshow:
-                    item_season.url = item_local.url_tvshow
-                else:
-                    item_season.url = item_local.url
-            itemlist_temporadas.append(item_season.clone(from_title_season_colapse=item.title))
-
-        if item_local.video_path: 
-            season_episode = '%sx%s.strm' % (str(item_local.contentSeason), str(item_local.contentEpisodeNumber).zfill(2))
-            if episode_list.get(season_episode, 0) >= 1:
-                if marca_visto or marca_visto is None:
-                    marca_visto = True
-            else:
-                marca_visto = False
-    else:
-        # Trata la última temporada
-        if marca_visto and len(itemlist_temporadas) > 0 and itemlist_temporadas[-1].contentSeason:
-            itemlist_temporadas[-1].infoLabels['playcount'] = 1
-            
-    #Si hay más de una temporada se sigue, o se ha forzado a listar por temporadas, si no se devuelve el Itemlist original
-    if len(itemlist_temporadas) > 2 or config.get_setting("no_pile_on_seasons", 'videolibrary') == 0:
-        for item_local in itemlist_temporadas:
-            if "** Todas las Temporadas" in item_local.title:                   #Si es el título de TODAS las Temporadas, lo ignoramos
-                continue
-            
-            # Pasada por TMDB a las Temporada
-            try:
-                tmdb.set_infoLabels_item(item_local, seekTmdb=True, idioma_busqueda=idioma)    #TMDB de cada Temp
-                format_tmdb_id(item_local)
-            except:
-                logger.error(traceback.format_exc())
-        
-            if item_local.infoLabels['temporada_air_date']:                     #Fecha de emisión de la Temp
-                if not config.get_setting("unify"):                             #Si Titulos Inteligentes NO seleccionados:
-                    item_local.title += ' %s %s' % (unify.set_color(scrapertools.find_single_match(str(item_local.infoLabels['temporada_air_date']),
-                                                    r'\/(\d{4})'), 'year'), unify.format_rating(item_local.infoLabels['rating']))
-                else:
-                    item_local.title += ' [%s] [%s]' % (scrapertools.find_single_match(str(item_local.infoLabels['temporada_air_date']),
-                                                    r'\/(\d{4})'), unify.check_rating(item_local.infoLabels['rating']))
-
-            if item_local.infoLabels['temporada_num_episodios']:                #Núm. de episodios de la Temp
-                item_local.title += ' [%s epi]' % str(item_local.infoLabels['temporada_num_episodios'])
-                
-            if not config.get_setting("unify"):                                 #Si Titulos Inteligentes NO seleccionados:
-                item_local.title = '%s %s %s' % (unify.set_color(item_local.title, 'tvshow'), 
-                                                 unify.set_color(item_local.quality, 'quality'), 
-                                                 unify.set_color(str(item_local.language), item_local.language[0] \
-                                                 if isinstance(item_local.language, list) else item_local.language))
-            elif item_local.action:                                 #Si Titulos Inteligentes SÍ seleccionados:
-                item_local.title = item_local.title.replace("[", "-").replace("]", "-").replace(".", ",").replace("GB", "G B").replace("Gb", "G b").replace("gb", "g b").replace("MB", "M B").replace("Mb", "M b").replace("mb", "m b")
-            item_local.title = item_local.title.replace("--", "").replace("[]", "").replace("()", "").replace("(/)", "").replace("[/]", "").strip()
-            
-            #logger.debug(item_local)
-        
-    else:                                   #Si hay más de una temporada se sigue, si no se devuelve el Itemlist original
-        if item.season_colapse:
-            del item.season_colapse
-        if channel_alt_org:                 # Si ha habido fail-over, restauramos los valores previos
-            item.channel_alt = channel_alt_org
-            item.category = channel_alt
-            item.url_alt = item.url
-            item.url = url_alt
-        return (item, itemlist)
-    
-    #Permitimos la actualización de los títulos, bien para uso inmediato, o para añadir a la videoteca
-    if len(itemlist) > 0:
-        itemlist_temporadas.append(item.clone(title="** [COLOR %s]Actualizar Títulos - vista previa videoteca[/COLOR] **" \
-                                              % get_color_from_settings('library_color', default='yellow'), action="actualizar_titulos", 
-                                              tmdb_stat=False, from_action=item.action, from_title_tmdb=item.title, from_update=True))
-    
-    #Es un canal estándar, sólo una linea de Añadir a Videoteca
-    title = ''
-    if item.infoLabels['status'] and (item.infoLabels['status'].lower() == "ended" \
-                        or item.infoLabels['status'].lower() == "canceled"):
-        title += ' [TERM]'
-    itemlist_temporadas.append(item_season.clone(title="[COLOR %s]Añadir esta serie a videoteca-[/COLOR]" \
-                                                 % get_color_from_settings('library_color', default='yellow') 
-                                                 + title, action="add_serie_to_library", extra="episodios", add_menu=True))
-
-    #Si intervención judicial, alerto!!!
-    if item.intervencion:
-        for clone_inter, autoridad in item.intervencion:
-            thumb_intervenido = get_thumb(autoridad)
-            itemlist_fo.append(item.clone(action='', title="[COLOR %s]" % get_color_from_settings('library_color', default='yellow') 
-                                          + clone_inter.capitalize() + ': [/COLOR]' + intervenido_judicial 
-                                          + '. Reportar el problema en el foro', thumbnail=thumb_intervenido))
-        del item.intervencion
-    
-    #Si ha habido fail-over, lo comento
-    if channel_alt:
-        itemlist_fo.append(item.clone(action='', title="[COLOR %s]" % get_color_from_settings('library_color', default='yellow') 
-                                      + channel_alt.capitalize() + '[/COLOR] [ALT ] en uso'))
-        itemlist_fo.append(item.clone(action='', title="[COLOR %s]" % get_color_from_settings('library_color', default='yellow') 
-                                      + item.category.capitalize() + '[/COLOR] inaccesible'))
-    
-    if len(itemlist_fo) > 0:
-        itemlist_temporadas = itemlist_fo + itemlist_temporadas
-    
-    return (item, itemlist_temporadas)
-
-
-def post_tmdb_episodios(item, itemlist):
-    logger.info()
-    itemlist_fo = []
-        
-    """
-        
-    Pasada para maquillaje de los títulos obtenidos desde TMDB en Episodios.
-    
-    Toma de infoLabel todos los datos de interés y los va situando en diferentes variables, principalmente título
-    para que sea compatible con Unify, y si no se tienen Títulos Inteligentes, para que el formato sea lo más
-    parecido al de Unify.
-
-    Lleva un control del num. de episodios por temporada, tratando de arreglar los errores de la Web y de TMDB
-    
-    La llamada al método desde Episodios, despues de pasar Itemlist pot TMDB, es:
-    
-        from lib import generictools
-        item, itemlist = generictools.post_tmdb_episodios(item, itemlist)
-    
-    """
-    #logger.debug(item)
-    
-    format_tmdb_id(item)
-    format_tmdb_id(itemlist)
-    
-    modo_serie_temp = config.get_setting('seleccionar_serie_temporada', item.channel, default=0)
-    modo_ultima_temp = ''
-    if config.get_setting('seleccionar_ult_temporadda_activa', item.channel) is True or config.get_setting('seleccionar_ult_temporadda_activa', item.channel) is False:
-        modo_ultima_temp = config.get_setting('seleccionar_ult_temporadda_activa', item.channel)
-
-    #Inicia variables para el control del núm de episodios por temporada
-    num_episodios = 1
-    num_episodios_lista = []
-    for i in range(0, 50):  num_episodios_lista += [0]
-    num_temporada = 1
-    num_temporada_max = 99
-    num_episodios_flag = True
-    episode_list = {}
-    if item.library_urls or item.add_videolibrary:
-        if item.video_path:
-            del item.video_path
-    elif item.video_path:
-        res, episode_list = check_marks_in_videolibray(item, video_list_init=True)
-    
-    #Restauramos el num de Temporada para hacer más flexible la elección de Videoteca
-    contentSeason = item.contentSeason
-    if item.contentSeason_save:
-        contentSeason = item.contentSeason_save
-        item.contentSeason = item.contentSeason_save
-        del item.contentSeason_save
-
-    #Ajustamos el nombre de la categoría
-    if item.channel == channel_py:
-        item.category = scrapertools.find_single_match(item.url, patron_canal).capitalize()
-    
-    #Restauramos valores si ha habido fail-over
-    channel_alt = ''
-    if item.channel == channel_py:
-        if item.channel_alt or item.channel_redir:
-            channel_alt = item.category
-            item.category = item.channel_redir.capitalize() or item.channel_alt.capitalize()
-            if item.channel_alt: del item.channel_alt
-    else:
-        if item.channel_alt or item.channel_redir:
-            channel_alt = item.channel
-            item.channel = item.channel_redir.lower() or item.channel_alt.lower()
-            item.category = item.channel_redir.capitalize() or item.channel_alt.capitalize()
-            if item.channel_alt: del item.channel_alt
-    if item.url_alt:
-        item.url = item.url_alt
-        del item.url_alt
-    if item.title_from_channel:
-        del item.title_from_channel
-    if item.ow_force:
-        del item.ow_force
-    if item.season_colapse:
-        del item.season_colapse
-    if item.from_action:
-        del item.from_action
-    if item.from_channel:
-        del item.from_channel
-    if item.library_filter_show:
-        del item.library_filter_show
-    if item.channel_host:
-        del item.channel_host
-    if item.unify_extended:
-        del item.unify_extended
-        
-    for item_local in itemlist:                                                 #Recorremos el Itemlist generado por el canal
-        if item_local.add_videolibrary:
-            del item_local.add_videolibrary
-        if item_local.add_menu:
-            del item_local.add_menu
-        if item_local.contentSeason_save:
-            del item_local.contentSeason_save
-        if item_local.title_from_channel:
-            del item_local.title_from_channel
-        if item_local.library_playcounts:
-            del item_local.library_playcounts
-        if item_local.library_urls:
-            del item_local.library_urls
-        if item_local.path:
-            del item_local.path
-        if item_local.nfo:
-            del item_local.nfo
-        if item_local.update_last:
-            del item_local.update_last
-        if item_local.update_next:
-            del item_local.update_next
-        if item_local.channel_host:
-            del item_local.channel_host
-        if item_local.intervencion:
-            del item_local.intervencion
-        if item_local.ow_force:
-            del item_local.ow_force
-        if item_local.season_colapse:
-            del item_local.season_colapse
-        if item_local.from_action:
-            del item_local.from_action
-        if item_local.from_channel:
-            del item_local.from_channel
-        if item_local.emergency_urls and isinstance(item_local.emergency_urls, dict):
-            del item_local.emergency_urls
-        if item_local.library_filter_show:
-            del item_local.library_filter_show
-        if item_local.extra2:
-            del item_local.extra2
-        if (item.library_urls or item.add_videolibrary) and item_local.video_path:
-            del item_local.video_path
-        if item_local.unify_extended:
-            del item_local.unify_extended
-        item_local.wanted = 'xyz'
-        del item_local.wanted
-        item_local.text_color = 'xyz'
-        del item_local.text_color
-        item_local.tmdb_stat = 'xyz'
-        del item_local.tmdb_stat
-        item_local.totalItems = 'xyz'
-        del item_local.totalItems
-        item_local.unify = 'xyz'
-        del item_local.unify
-        item_local.title = re.sub(r'(?i)online|descarga|downloads|trailer|videoteca|gb|autoplay', '', item_local.title).strip()
-        if not item_local.url_tvshow:
-            item_local.url_tvshow = item.url                                    # Salvamos la url de la serie/temporada para descargas
-        
-        #logger.debug(item_local)
-        if not isinstance(item_local.contentSeason, int):
-            continue
-        if not isinstance(item_local.contentEpisodeNumber, int):
-            continue
-
-        #Ajustamos el nombre del canal si es un clone de NewPct1 y viene de Videoteca. Tomamos el canal original, no el actual
-        if item_local.channel == channel_py and (item.library_urls or item.add_videolibrary):
-            item_local.channel = item_local.category.lower()
-            #if item.library_urls or item.add_videolibrary:                     # Si videne de videoteca cambiamos el nombre de canal al clone
-            #    item_local.channel = scrapertools.find_single_match(item_local.url, patron_canal).lower()
-            #item_local.category = scrapertools.find_single_match(item_local.url, patron_canal).capitalize()
-        #Restauramos valores para cada Episodio si ha habido fail-over de un clone de NewPct1
-        if (item_local.channel_alt or item_local.channel_redir) and not item.downloadFilename:
-            #item_local.channel = item_local.channel_redir.lower() or item_local.channel_alt.lower()
-            if item_local.channel_redir: item_local.channel = item_local.channel_redir.lower()
-            item_local.category = item_local.channel_redir.capitalize() or item_local.channel_alt.capitalize()
-            if item_local.channel_alt: del item_local.channel_alt
-            #if item_local.channel_redir: del item_local.channel_redir
-        if (item_local.channel_alt or item_local.channel_redir) and item.downloadFilename:
-            item_local.channel_alt = channel_alt
-        if item_local.url_alt:
-            host_act = scrapertools.find_single_match(item_local.url, patron_host)
-            host_org = scrapertools.find_single_match(item_local.url_alt, patron_host)
-            dom_sufix_act = scrapertools.find_single_match(host_act, ':\/\/(.*?)\/*$').replace('.', '-')
-            dom_sufix_org = scrapertools.find_single_match(host_org, ':\/\/(.*?)\/*$').replace('.', '-')
-            if dom_sufix_act:
-                item_local.url = item_local.url.replace(dom_sufix_act, dom_sufix_org)
-            else:
-                item_local.url += dom_sufix_org
-            item_local.url = item_local.url.replace(host_act, host_org)
-            del item_local.url_alt
-            
-        #Si el título de la serie está verificado en TMDB, se intenta descubrir los eisodios fuera de rango,
-        #que son probables errores de la Web
-        if item.tmdb_stat:
-            if item_local.infoLabels['number_of_seasons']:
-                #Si el num de temporada está fuera de control, se pone 0, y se reclasifica itemlist
-                if item_local.contentSeason > item_local.infoLabels['number_of_seasons'] + 1:
-                    logger.error("ERROR 07: EPISODIOS: Num. de Temporada fuera de rango " + " / TEMPORADA: " + str(item_local.contentSeason) + " / " + str(item_local.contentEpisodeNumber) + " / MAX_TEMPORADAS: " + str(item_local.infoLabels['number_of_seasons']) + " / LISTA_TEMPORADAS: " + str(num_episodios_lista))
-                    item_local.contentSeason = 0
-                    itemlist = sorted(itemlist, key=lambda it: (int(it.contentSeason), int(it.contentEpisodeNumber)))
-                else:
-                    num_temporada_max = item_local.infoLabels['number_of_seasons']
-            else:
-                if item_local.contentSeason > num_temporada_max + 1:
-                    logger.error("ERROR 07: EPISODIOS: Num. de Temporada fuera de rango " + " / TEMPORADA: " + str(item_local.contentSeason) + " / " + str(item_local.contentEpisodeNumber) + " / MAX_TEMPORADAS: " + str(num_temporada_max) + " / LISTA_TEMPORADAS: " + str(num_episodios_lista))
-                    item_local.contentSeason = 0
-                    itemlist = sorted(itemlist, key=lambda it: (int(it.contentSeason), int(it.contentEpisodeNumber)))
-        
-        #Salvamos en número de episodios de la temporada
-        try:
-            if not item_local.infoLabels['temporada_num_episodios']:
-                item_local.infoLabels['temporada_num_episodios'] = 0
-            if num_temporada != item_local.contentSeason:
-                num_temporada = item_local.contentSeason
-                num_episodios = 0
-            if item_local.infoLabels['number_of_seasons'] == 1 and item_local.infoLabels['number_of_episodes'] > item_local.infoLabels['temporada_num_episodios']:
-                item_local.infoLabels['temporada_num_episodios'] = item_local.infoLabels['number_of_episodes']
-            if item_local.infoLabels['temporada_num_episodios'] and item_local.infoLabels['temporada_num_episodios'] > int(num_episodios):
-                num_episodios = item_local.infoLabels['temporada_num_episodios']
-        except:
-            num_episodios = 0
-            logger.error(traceback.format_exc())
-        
-        #Preparamos el Rating del vídeo
-        rating = ''
-        try:
-            if item_local.infoLabels['rating'] and item_local.infoLabels['rating'] != 0.0:
-                rating = float(item_local.infoLabels['rating'])
-                rating = round(rating, 1)
-                if rating == 0.0:
-                    rating = ''
-        except:
-            logger.error(traceback.format_exc())
-        
-        # Si TMDB no ha encontrado el vídeo limpiamos el año
-        if item_local.infoLabels['year'] == "-":
-            item_local.infoLabels['year'] = ''
-            item_local.infoLabels['aired'] = ''
-        # Para Episodios, tomo el año de exposición y no el de inicio de la serie
-        elif item_local.infoLabels['aired']:
-            item_local.infoLabels['year'] = scrapertools.find_single_match(str(item_local.infoLabels['aired']), r'\/(\d{4})')
-
-        #Limpiamos calidad de títulos originales que se hayan podido colar
-        if item_local.infoLabels['originaltitle'].lower() in item_local.quality.lower():
-            item_local.quality = re.sub(item_local.infoLabels['originaltitle'], '', item_local.quality)
-            #item_local.quality = re.sub(item_local.infoLabels['originaltitle'], '', item_local.quality, flags=re.IGNORECASE)
-        
-        #Si no está el título del episodio, pero sí está en "title", lo rescatamos
-        if not item_local.infoLabels['episodio_titulo'] and item_local.infoLabels['title'].lower() != item_local.infoLabels['tvshowtitle'].lower():
-            item_local.infoLabels['episodio_titulo'] = item_local.infoLabels['title']
-        item_local.infoLabels['episodio_titulo'] = item_local.infoLabels['episodio_titulo'].replace('GB', 'G B').replace('MB', 'M B')
-        
-        #Preparamos el título para que sea compatible con Añadir Serie a Videoteca
-        if "Temporada" in item_local.title:             #Compatibilizamos "Temporada" con Unify
-            item_local.title = '%sx%s al 99 -' % (str(item_local.contentSeason), str(item_local.contentEpisodeNumber))
-        if " al " in item_local.title:                  #Si son episodios múltiples, ponemos nombre de serie
-            if " al 99" in item_local.title.lower():    #Temporada completa.  Buscamos num total de episodios de la temporada
-                item_local.title = item_local.title.replace("99", str(num_episodios))
-            item_local.title = '%s %s' % (item_local.title, item_local.contentSerieName)
-            item_local.infoLabels['episodio_titulo'] = '%s - %s [%s] [%s]' % (scrapertools.find_single_match(item_local.title, r'(al \d+)'), item_local.contentSerieName, item_local.infoLabels['year'], rating)
-        
-        elif item_local.infoLabels['episodio_titulo']:
-            item_local.title = '%s %s' % (item_local.title, item_local.infoLabels['episodio_titulo']) 
-            item_local.infoLabels['episodio_titulo'] = '%s [%s] [%s]' % (item_local.infoLabels['episodio_titulo'], item_local.infoLabels['year'], rating)
-            
-        else:                                                                   # Si no hay título de episodio, ponermos el nombre de la serie
-            item_local.title = '%s %s' % (item_local.title, item_local.contentSerieName)
-            item_local.infoLabels['episodio_titulo'] = '%s [%s] [%s]' % (item_local.contentSerieName, item_local.infoLabels['year'], rating)
-        
-        # Si está en la Videoteca, se verifica y está visto/no visto
-        season_episode = '%sx%s.strm' % (str(item_local.contentSeason), str(item_local.contentEpisodeNumber).zfill(2))
-        if item_local.video_path and episode_list.get(season_episode, 0) >= 1:
-            item_local.infoLabels["playcount"] = 1
-        if item_local.video_path:
-            item_local = context_for_videolibray(item_local)
-        
-        #Componemos el título final, aunque con Unify usará infoLabels['episodio_titulo']
-        item_local.infoLabels['title'] = item_local.infoLabels['episodio_titulo']
-        if item_local.action:
-            item_local.title = item_local.title.replace("[", "-").replace("]", "-")
-        item_local.title = '%s %s %s %s %s' % (unify.set_color(item_local.title, 'tvshow'), 
-                                               unify.set_color(item_local.infoLabels['year'], 'year'), unify.format_rating(rating), 
-                                               unify.set_color(item_local.quality, 'quality'), 
-                                               unify.set_color(str(item_local.language), item_local.language[0] \
-                                               if isinstance(item_local.language, list) else item_local.language))
-
-        # Quitamos campos vacíos
-        item_local.infoLabels['episodio_titulo'] = item_local.infoLabels['episodio_titulo'].replace("[]", "").strip()
-        item_local.infoLabels['title'] = item_local.infoLabels['title'].replace("[]", "").strip()
-        item_local.title = item_local.title.replace("[]", "").strip()
-        item_local.title = re.sub(r'\s?\[COLOR \w+\]\[\[?-?\s?\]?\]\[\/COLOR\]', '', item_local.title).strip()
-        item_local.title = re.sub(r'\s?\[COLOR \w+\]-?\s?\[\/COLOR\]', '', item_local.title).strip()
-        item_local.title = item_local.title.replace(".", ",").replace("GB", "G B").replace("Gb", "G b")\
-                        .replace("gb", "g b").replace("MB", "M B").replace("Mb", "M b").replace("mb", "m b")
-        
-        #Si la información de num. total de episodios de TMDB no es correcta, tratamos de calcularla
-        if num_episodios < item_local.contentEpisodeNumber:
-            num_episodios = item_local.contentEpisodeNumber
-        if num_episodios > item_local.contentEpisodeNumber:
-            item_local.infoLabels['temporada_num_episodios'] = num_episodios
-            num_episodios_flag = False
-        if num_episodios and not item_local.infoLabels['temporada_num_episodios']:
-            item_local.infoLabels['temporada_num_episodios'] = num_episodios
-            num_episodios_flag = False
-        try:
-            num_episodios_lista[item_local.contentSeason] = num_episodios
-        except:
-            logger.error(traceback.format_exc())
-
-        #logger.debug("title: " + item_local.title + " / url: " + item_local.url + " / calidad: " + item_local.quality + " / Season: " + str(item_local.contentSeason) + " / EpisodeNumber: " + str(item_local.contentEpisodeNumber) + " / num_episodios_lista: " + str(num_episodios_lista) + str(num_episodios_flag))
-        #logger.debug(item_local)
-
-    #Si está actualizando videoteca de una serie NewPct1, restauramos el channel con el nombre del clone
-    if item.channel == channel_py and (item.library_playcounts or item.add_videolibrary):
-        if item.channel_redir:
-            item.channel = item.channel_redir.lower()
-        else:
-            item.channel = scrapertools.find_single_match(item.url, patron_canal)
-    if item.channel_redir:
-        del item.channel_redir
-    
-    #Terminado el repaso de cada episodio, cerramos con el pié de página
-    #En primer lugar actualizamos todos los episodios con su núm máximo de episodios por temporada
-    try:
-        if not num_episodios_flag:                          # Si el num de episodios no está informado, acualizamos episodios de toda la serie
-            for item_local in itemlist:
-                item_local.infoLabels['temporada_num_episodios'] = int(num_episodios_lista[item_local.contentSeason])
-    except:
-        logger.error("ERROR 07: EPISODIOS: Num de Temporada fuera de rango " + " / TEMPORADA: " + str(item_local.contentSeason) + " / " + str(item_local.contentEpisodeNumber) + " / MAX_TEMPORADAS: " + str(num_temporada_max) + " / LISTA_TEMPORADAS: " + str(num_episodios_lista))
-        logger.error(traceback.format_exc())
-    
-    #Permitimos la actualización de los títulos, bien para uso inmediato, o para añadir a la videoteca
-    poster = item.infoLabels['temporada_poster']
-    if not poster: poster = item.infoLabels['thumbnail']
-    if not item.downloadFilename and len(itemlist) > 0:                         #... si no viene de Descargas
-        itemlist.append(item.clone(title="** [COLOR %s]Actualizar Títulos - vista previa videoteca[/COLOR] **" \
-                                   % get_color_from_settings('library_color', default='yellow'), 
-                                   action="actualizar_titulos", tmdb_stat=False, from_action=item.action, contentType='episode', 
-                                   from_title_tmdb=item.title, from_update=True, thumbnail=poster))
-    
-    #Borro num. Temporada si no viene de menú de Añadir a Videoteca y no está actualizando la Videoteca
-    if not item.library_playcounts:                                             # si no está actualizando la Videoteca
-        if modo_serie_temp > 0:                                                 # y puede cambiara a serie-temporada
-            if item.contentSeason and not item.add_menu:
-                del item.infoLabels['season']                                   # La decisión de ponerlo o no se toma en la zona de menús
-
-    #Ponemos el título de Añadir a la Videoteca, con el núm. de episodios de la última temporada y el estado de la Serie
-    if config.get_videolibrary_support() and len(itemlist) > 1 and not item.downloadFilename:
-        item_local = itemlist[-2]
-        title = ''
-        
-        if item_local.infoLabels['temporada_num_episodios']:
-            title += ' [%sx%s' % (item_local.infoLabels['season'], item_local.infoLabels['temporada_num_episodios'])
-        
-        if item_local.infoLabels['number_of_episodes'] and item_local.infoLabels['number_of_seasons'] > 1:
-            title += ' de %sx%s' % (str(item_local.infoLabels['number_of_seasons']), \
-                    str(item_local.infoLabels['number_of_episodes']))   
-        title += ']'
-        
-        if item_local.infoLabels['status'] and item_local.infoLabels['status'].lower() == "ended":
-            title += ' [TERM]'
-            
-        if item_local.quality and not item.quality:         # La Videoteca no toma la calidad del episodio, sino de la serie.  Pongo del episodio
-            item.quality = item_local.quality.replace(btdigg_label, '')
-        
-        if modo_serie_temp > 0:
-            #Estamos en un canal que puede seleccionar entre gestionar Series completas o por Temporadas
-            #Tendrá una línea para Añadir la Serie completa y otra para Añadir sólo la Temporada actual
-
-            if item.action == 'get_seasons':                                    # si es actualización desde videoteca, título estándar
-                #Si hay una nueva Temporada, se activa como la actual
-                try:
-                    if item.library_urls[scrapertools.find_single_match(item.url, patron_canal)] != item.url and (item.contentType == "season" or modo_ultima_temp):
-                        item.library_urls[scrapertools.find_single_match(item.url, patron_canal)] = item.url     #Se actualiza la url apuntando a la última Temporada
-                        from core import videolibrarytools                      # Se fuerza la actualización de la url en el .nfo
-                        itemlist_fake = []                                      # Se crea un Itemlist vacio para actualizar solo el .nfo
-                        videolibrarytools.save_tvshow(item, itemlist_fake)      #Se actualiza el .nfo
-                except:
-                    logger.error("ERROR 08: EPISODIOS: No se ha podido actualizar la URL a la nueva Temporada")
-                    logger.error(traceback.format_exc())
-                itemlist.append(item.clone(title="[COLOR %s]Añadir esta Serie a Videoteca-[/COLOR]" \
-                                           % get_color_from_settings('library_color', default='yellow') + \
-                                           title, action="add_serie_to_library", extra="episodios", contentType='episode'))
-                
-            elif modo_serie_temp == 1:      #si es Serie damos la opción de guardar la última temporada o la serie completa
-                itemlist.append(item.clone(title="[COLOR %s]Añadir última Temp. a Videoteca-[/COLOR]" \
-                                           % get_color_from_settings('library_color', default='yellow') + \
-                                           title, action="add_serie_to_library", contentType="season", contentSeason=contentSeason, \
-                                           url=item_local.url, extra="episodios", add_menu=True))
-                itemlist.append(item.clone(title="[COLOR %s]Añadir esta Serie a Videoteca-[/COLOR]" \
-                                           % get_color_from_settings('library_color', default='yellow') + \
-                                           title, action="add_serie_to_library", contentType="tvshow", extra="episodios", add_menu=True))
-
-            else:                           #si no, damos la opción de guardar la temporada actual o la serie completa
-                itemlist.append(item.clone(title="[COLOR %s]Añadir esta Serie a Videoteca-[/COLOR]" \
-                                           % get_color_from_settings('library_color', default='yellow') + \
-                                           title, action="add_serie_to_library", contentType="tvshow", extra="episodios", add_menu=True))
-                if item.add_videolibrary and not item.add_menu:
-                    item.contentSeason = contentSeason
-                itemlist.append(item.clone(title="[COLOR %s]Añadir esta Temp. a Videoteca-[/COLOR]" \
-                                           % get_color_from_settings('library_color', default='yellow') + \
-                                           title, action="add_serie_to_library", contentType="season", contentSeason=contentSeason, \
-                                           extra="episodios", add_menu=True))
-
-        else:                               #Es un canal estándar, sólo una linea de Añadir a Videoteca
-            itemlist.append(item.clone(title="[COLOR %s]Añadir esta serie a videoteca-[/COLOR]" \
-                                       % get_color_from_settings('library_color', default='yellow') + \
-                                       title, action="add_serie_to_library", extra="episodios", add_menu=True, 
-                                       contentType='episode'))
-        
-    #Si intervención judicial, alerto!!!
-    if item.intervencion and not item.downloadFilename:
-        for clone_inter, autoridad in item.intervencion:
-            thumb_intervenido = get_thumb(autoridad)
-            itemlist_fo.append(item.clone(action='', title="[COLOR %s]" % get_color_from_settings('library_color', default='yellow') 
-                                          + clone_inter.capitalize() \
-                                          + ': [/COLOR]' + intervenido_judicial + '. Reportar el problema en el foro', \
-                                          thumbnail=thumb_intervenido, contentType='episode'))
-        del item.intervencion
-    
-    #Si ha habido fail-over, lo comento
-    if channel_alt and not item.downloadFilename and not (item.library_playcounts or item.add_videolibrary):
-        itemlist_fo.append(item.clone(action='', title="[COLOR %s]" % get_color_from_settings('library_color', default='yellow') 
-                                      + channel_alt.capitalize() 
-                                      + '[/COLOR] [ALT ] en uso', contentType='episode'))
-        itemlist_fo.append(item.clone(action='', title="[COLOR %s]" % get_color_from_settings('library_color', default='yellow') 
-                                      + item.category.capitalize() 
-                                      + '[/COLOR] inaccesible', contentType='episode'))
-    
-    if len(itemlist_fo) > 0:
-        itemlist = itemlist_fo + itemlist
-
-    if item.add_videolibrary:                                                   # Estamos Añadiendo a la Videoteca.
-        del item.add_videolibrary                                               # Borramos ya el indicador
-        if item.add_menu:                                                       # Opción que avisa si se ha añadido a la Videoteca 
-            del item.add_menu                                                   # desde la página de Episodios o desde Menú Contextual   
-
-    #logger.debug(item)
-    
-    return (item, itemlist)
-
-
-def post_tmdb_findvideos(item, itemlist, headers={}):
-    logger.info()
-    
-    """
-        
-    Llamada para crear un pseudo título con todos los datos relevantes del vídeo.
-    
-    Toma de infoLabel todos los datos de interés y los va situando en diferentes variables, principalmente título. Lleva un control del num. de episodios por temporada
-    
-    La llamada al método desde Findvideos, al principio, es:
-    
-        from lib import generictools
-        item, itemlist = generictools.post_tmdb_findvideos(item, itemlist)
-        
-    En Itemlist devuelve un Item con el pseudotítulo.  Ahí el canal irá agregando el resto.
-    
-    """
-    #logger.debug(item)
- 
-    # Saber si estamos en una ventana emergente lanzada desde una viñeta del menú principal,
-    # con la función "play_from_library"
-    item.unify = False
-    Window_IsMedia = False
-    try:
-        import xbmc
-        if xbmc.getCondVisibility('Window.IsMedia') == 1:
-            Window_IsMedia = True
-            item.unify = config.get_setting("unify")
-    except:
-        item.unify = config.get_setting("unify")
-        logger.error(traceback.format_exc())
-    
-    if item.contentSeason_save:                                                 #Restauramos el num. de Temporada
-        item.contentSeason = item.contentSeason_save
-        del item.contentSeason_save
-    
-    if item.library_filter_show:
-        del item.library_filter_show
-    
-    if item.unify_extended:
-        del item.unify_extended
-
-    #Salvamos la información de max num. de episodios por temporada para despues de TMDB
-    num_episodios = item.contentEpisodeNumber
-    if item.infoLabels['temporada_num_episodios'] and item.contentEpisodeNumber <= item.infoLabels['temporada_num_episodios']:
-        num_episodios = item.infoLabels['temporada_num_episodios']
-
-    # Obtener la información actualizada del vídeo.  En una segunda lectura de TMDB da más información que en la primera
-    #if not item.infoLabels['tmdb_id'] or (not item.infoLabels['episodio_titulo'] and item.contentType == 'episode'):
-    #    tmdb.set_infoLabels_item(item, True)
-    #elif (not item.infoLabels['tvdb_id'] and item.contentType == 'episode') or item.contentChannel == "videolibrary":
-    #    tmdb.set_infoLabels_item(item, True)
-    idioma = idioma_busqueda
-    if 'VO' in str(item.language):
-        idioma = idioma_busqueda_VO
-    try:
-        tmdb.set_infoLabels_item(item, seekTmdb=True, idioma_busqueda=idioma)   #TMDB de cada Temp
-    except:
-        logger.error(traceback.format_exc())
-    
-    format_tmdb_id(item)
-    format_tmdb_id(itemlist)
-    if item.contentType != 'movie' and item.nfo: 
-        item = context_for_videolibray(item)
-        if item.nfo and not item.video_path:
-            item.video_path = filetools.basename(filetools.dirname(item.nfo))
-
-    #Restauramos la información de max num. de episodios por temporada despues de TMDB
-    try:
-        if item.infoLabels['temporada_num_episodios']:
-            if int(num_episodios) > int(item.infoLabels['temporada_num_episodios']):
-                item.infoLabels['temporada_num_episodios'] = num_episodios
-        else:
-            item.infoLabels['temporada_num_episodios'] = num_episodios
-        if item.infoLabels['number_of_seasons'] == 1 and item.infoLabels['number_of_episodes'] > item.infoLabels['temporada_num_episodios']:
-            item.infoLabels['temporada_num_episodios'] = item.infoLabels['number_of_episodes']
-    except:
-        logger.error(traceback.format_exc())
-
-    #Si no existe "clean_plot" se crea a partir de "plot"
-    if not item.clean_plot and item.infoLabels['plot']:
-        item.clean_plot = item.infoLabels['plot']
-    
-    #Ajustamos el nombre de la categoría
-    if item.channel == channel_py:
-        category = scrapertools.find_single_match(item.url, patron_canal).capitalize()
-        if category:
-            item.category = category
-            
-    # Comprobamos las marcas de visto/no visto
-    playcount = 0
-    season_episode = ''
-    if item.contentType == 'movie':
-        season_episode = '%s.strm' % item.contentTitle.replace('(V)-' , '').lower()
-    if item.video_path and check_marks_in_videolibray(item, strm=season_episode):
-        playcount = 1
-    
-    # Guardamos la url del episodio/película para favorecer la recuperación en caso de errores
-    item.url_save_rec = ([item.url, headers])
-    
-    if (not config.get_setting("pseudo_titulos", item.channel, default=False) and item.channel != 'url') or item.downloadFilename:
-        if playcount:
-            item.infoLabels["playcount"] = 1
-        return (item, itemlist)
-    
-    if item.armagedon:                                                          #Es una situación catastrófica?
-        itemlist.append(item.clone(action='', title=item.category + ': [COLOR hotpink]Usando enlaces de emergencia[/COLOR]', 
-                        folder=False))
-    
-    #Quitamos el la categoría o nombre del título, si lo tiene
-    if item.contentTitle:
-        item.contentTitle = re.sub(r' -%s-' % item.category, '', item.contentTitle)
-        item.title = re.sub(r' -%s-' % item.category, '', item.title)
-    
-    #Limpiamos de año y rating de episodios
-    if item.infoLabels['episodio_titulo']:
-        item.infoLabels['episodio_titulo'] = re.sub(r'\s?\[.*?\]', '', item.infoLabels['episodio_titulo'])
-        item.infoLabels['episodio_titulo'] = re.sub(r'\s?\(.*?\)', '', item.infoLabels['episodio_titulo'])
-        item.infoLabels['episodio_titulo'] = item.infoLabels['episodio_titulo'].replace(item.contentSerieName, '')
-    if item.infoLabels['aired'] and item.contentType == "episode":
-        item.infoLabels['year'] = scrapertools.find_single_match(str(item.infoLabels['aired']), r'\/(\d{4})')
-
-    rating = ''                                                                 #Ponemos el rating
-    try:
-        if item.infoLabels['rating'] and item.infoLabels['rating'] != 0.0:
-            rating = float(item.infoLabels['rating'])
-            rating = round(rating, 1)
-            if rating == 0.0:
-                    rating = ''
-    except:
-        logger.error(traceback.format_exc())
-
-    if item.quality.lower() in ['gb', 'mb']:
-        item.quality = item.quality.replace('GB', 'G B').replace('Gb', 'G b').replace('MB', 'M B').replace('Mb', 'M b')
-
-    #busco "duration" en infoLabels
-    tiempo = 0
-    if item.infoLabels['duration']:
-        try:
-            if config.get_platform(True)['num_version'] < 18 or not Window_IsMedia:
-                tiempo = item.infoLabels['duration']
-            elif xbmc.getCondVisibility('Window.IsMedia') == 1:
-                item.quality = re.sub(r'\s?\[\d+:\d+\ h]', '', item.quality)
-            else:
-                tiempo = item.infoLabels['duration']
-        except:
-            tiempo = item.infoLabels['duration']
-            logger.error(traceback.format_exc())
-    
-    elif item.contentChannel == 'videolibrary':                                     #No hay, viene de la Videoteca? buscamos en la DB
-    #Leo de la BD de Kodi la duración de la película o episodio.  En "from_fields" se pueden poner las columnas que se quiera
-        nun_records = 0
-        try:
-            if item.contentType == 'movie':
-                nun_records, records = get_field_from_kodi_DB(item, from_fields='c11')  #Leo de la BD de Kodi la duración de la película
-            else:
-                nun_records, records = get_field_from_kodi_DB(item, from_fields='c09')  #Leo de la BD de Kodi la duración del episodio
-        except:
-            logger.error(traceback.format_exc())
-        if nun_records > 0:                                                         #Hay registros?
-            #Es un array, busco el campo del registro: añadir en el FOR un fieldX por nueva columna
-            for strFileName, field1 in records: 
-                tiempo = field1
-
-    try:                                                                            #calculamos el timepo en hh:mm
-        tiempo_final = int(tiempo)                                                  #lo convierto a int, pero puede se null
-        if tiempo_final > 0:                                                        #Si el tiempo está a 0, pasamos
-            if tiempo_final > 700:                                                  #Si está en segundos
-                tiempo_final = old_div(tiempo_final, 60)                            #Lo transformo a minutos
-            #horas = tiempo_final / 60
-            horas = old_div(tiempo_final, 60)                                       #Lo transformo a horas
-            resto = tiempo_final - (horas * 60)                                     #guardo el resto de minutos de la hora
-            if not scrapertools.find_single_match(item.quality, '(\[\d+:\d+)'):     #si ya tiene la duración, pasamos
-                item.quality += ' [/COLOR][COLOR white][%s:%s h]' % (str(horas).zfill(2), str(resto).zfill(2))     #Lo agrego a Calidad del Servidor
-    except:
-        logger.error(traceback.format_exc())
-        
-    # Ajustamos el nombre de la categoría
-    if item.channel != channel_py and item.channel != 'url':
-        item.category = item.channel.capitalize()
-
-    # Formateamos de forma especial el título para un episodio
-    title = ''
-    title_gen = ''
-    if item.contentType == "episode":                                                           #Series
-        title = '%sx%s' % (str(item.contentSeason), str(item.contentEpisodeNumber).zfill(2))    #Temporada y Episodio
-        if item.infoLabels['temporada_num_episodios']:
-            title = '%s (de %s' % (title, str(item.infoLabels['temporada_num_episodios']))     #Total Episodios
-            
-        if item.infoLabels['number_of_episodes'] and item.infoLabels['number_of_seasons'] > 1:
-            title += ', de %sx%s' % (str(item.infoLabels['number_of_seasons']), \
-                    str(item.infoLabels['number_of_episodes']))   
-        title += ')'
-        
-        #Si son episodios múltiples, y viene de Videoteca, ponemos nombre de serie        
-        if (" al " in item.title or " Al " in item.title) and not "al " in item.infoLabels['episodio_titulo']: 
-            title = '%s al %s - ' % (title, scrapertools.find_single_match(item.title, '[al|Al] (\d+)'))
-        else:
-            title = '%s %s' % (title, unify.set_color(item.infoLabels['episodio_titulo'], "tvshow"))    #Título Episodio
-        title_gen = '%s, ' % title
-        
-    if item.contentType in ["episode", "season"]:                               # Series o Temporadas
-        title_gen += '%s %s %s %s %s [%s]' % (unify.set_color(item.contentSerieName, "tvshow"), 
-                                              unify.set_color(item.infoLabels['year'], "year"), 
-                                              unify.format_rating(rating), unify.set_color(item.quality, "quality"), 
-                                              unify.set_color(str(item.language), item.language[0] \
-                                              if isinstance(item.language, list) else item.language), 
-                                              scrapertools.find_single_match(item.title, '\s\[(\d+,?\d*?\s\w[b|B])\]')) \
-                                                                                                #Año, Rating, Calidad, Idioma, Tamaño
-        if item.infoLabels['status'] and (item.infoLabels['status'].lower() == "ended" \
-                                     or item.infoLabels['status'].lower() == "canceled"):
-            title_gen = '[TERM.] %s' % title_gen            #Marca cuando la Serie está terminada y no va a haber más producción
-        item.title = title_gen
-
-    else:                                                   #Películas
-        title = item.title
-        title_gen += '%s %s %s' % (unify.set_color(item.contentTitle, "movie"), unify.set_color(item.infoLabels['year'], "year"), 
-                                   unify.format_rating(rating))                                 #Año, Rating
-
-    #Limpiamos etiquetas vacías
-    title_gen = re.sub(r'\s?\[COLOR \w+\]\[\[?\s?\]?\]\[\/COLOR\]', '', title_gen).strip()  #Quitamos etiquetas vacías
-    title_gen = re.sub(r'\s?\[COLOR \w+\]\s?\[\/COLOR\]', '', title_gen).strip()            #Quitamos colores vacíos
-    title_gen = title_gen.replace(" []", "").strip()                                    #Quitamos etiquetas vacías
-    title_videoteca = title_gen                                                         #Salvamos el título para Videoteca
-
-    if not item.unify:                                                      #Si Titulos Inteligentes NO seleccionados:
-        title_gen = '**- [COLOR gold]Enlaces Ver: [/COLOR]%s[COLOR gold] -**[/COLOR]' % (title_gen)
-    else:                                                                   #Si Titulos Inteligentes SÍ seleccionados:
-        title_gen = '[COLOR gold]Enlaces Ver: [/COLOR]%s' % (title_gen)    
-
-    if item.channel_alt:
-        title_gen = '[COLOR yellow]%s [/COLOR][ALT]: %s' % (item.category.capitalize(), title_gen)
-    #elif (config.get_setting("quit_channel_name", "videolibrary") == 1 or item.channel == channel_py) and item.contentChannel == "videolibrary":
-    elif item.channel == 'url':
-        title_gen = '[COLOR yellow]%s (Url) [/COLOR][ALT]: %s' % (item.category.capitalize(), title_gen)
-    else:
-        title_gen = '[COLOR white]%s: %s' % (item.category.capitalize(), title_gen)
-
-    #Si intervención judicial, alerto!!!
-    if item.intervencion:
-        for clone_inter, autoridad in item.intervencion:
-            thumb_intervenido = get_thumb(autoridad)
-            itemlist.append(item.clone(action='', title="[COLOR %s]"  % get_color_from_settings('library_color', default='yellow') 
-                                       + clone_inter.capitalize() + ': [/COLOR]' + intervenido_judicial + '. Reportar el problema en el foro', thumbnail=thumb_intervenido, folder=False))
-        del item.intervencion
-    
-    #Pintamos el pseudo-título con toda la información disponible del vídeo
-    itemlist.append(item.clone(action="", title=title_gen, folder=False))       #Título con todos los datos del vídeo
-    
-    if item.action == 'show_result':                                            #Viene de una búsqueda global
-        channel = item.channel.capitalize()
-        if item.from_channel == channel_py or item.channel == channel_py:
-            channel = item.category
-        elif item.from_channel:
-            channel = item.from_channel.capitalize()
-        item.quality = '[COLOR yellow][%s][/COLOR] %s' % (channel, item.quality)
-    
-    # Agregamos la opción de Añadir a Videoteca para péliculas (no series)
-    if (item.contentType == 'movie' or item.contentType == 'season') and item.contentChannel != "videolibrary" and len(itemlist) > 0:
-        #Permitimos la actualización de los títulos, bien para uso inmediato, o para añadir a la videoteca
-        itemlist.append(item.clone(title="** [COLOR %s]Actualizar Títulos - vista previa videoteca[/COLOR] **" \
-                                   % get_color_from_settings('library_color', default='yellow'), action="actualizar_titulos", 
-                                   extra="peliculas", tmdb_stat=False, from_action=item.action, from_title_tmdb=item.title, from_update=True))
-        
-    if item.contentType == 'movie' and item.contentChannel != "videolibrary":
-        itemlist.append(item.clone(title="**-[COLOR %s] Añadir a la videoteca [/COLOR]-**" \
-                                   % get_color_from_settings('library_color', default='yellow') , 
-                                   action="add_pelicula_to_library", extra="peliculas", from_action=item.action, 
-                                   from_title_tmdb=item.title))
-    
-    #Añadimos la opción de ver trailers
-    if item.contentChannel != "videolibrary":
-        itemlist.append(item.clone(channel="trailertools", title="**-[COLOR magenta] Buscar Trailer [/COLOR]-**", 
-                    action="buscartrailer", context=""))
-        
-    #Si tiene contraseña, la pintamos
-    if 'RAR-' in item.torrent_info and not item.password:
-        item = find_rar_password(item)
-    if item.password:
-        itemlist.append(item.clone(action="", title="[COLOR magenta][B] Contraseña: [/B][/COLOR]'" 
-                    + item.password + "'", folder=False))
-    
-    #Si es ventana damos la opción de descarga, ya que no hay menú contextual
-    if not Window_IsMedia:
-        if item.contentType == 'movie': contentType = 'Película'
-        if item.contentType == 'episode': contentType = 'Episodio'
-        itemlist.append(item.clone(title="-Descargar %s-" % contentType, channel="downloads", server='torrent', 
-                        quality='', action="save_download", from_channel=item.channel, from_action='play', folder=False))
-        if item.contentType == 'episode' and not item.channel_recovery:
-            itemlist.append(item.clone(title="-Descargar Epis NO Vistos-", channel="downloads", contentType="tvshow", 
-                        action="save_download", from_channel=item.channel, from_action='episodios', folder=False,  
-                        quality='', sub_action="unseen"))
-            item.quality = scrapertools.find_single_match(item.quality, '(.*?)\s\[')
-            itemlist.append(item.clone(title="-Descargar Temporada-", channel="downloads", contentType="season", 
-                        action="save_download", from_channel=item.channel, from_action='episodios', folder=False,  
-                        quality='', sub_action="season"))
-            itemlist.append(item.clone(title="-Descargar Serie-", channel="downloads", contentType="tvshow", 
-                        action="save_download", from_channel=item.channel, from_action='episodios', folder=False,  
-                        quality='', sub_action="tvshow"))
-
-    if playcount:
-        item.infoLabels["playcount"] = 1
-    #logger.debug(item)
-    
-    return (item, itemlist)
-
-
-def identifying_links(data, timeout=15, headers=None, referer=None, post=None, follow_redirects=True):
-    from core import httptools
-    
-    if not PY3:
-        from lib import alfaresolver
-    else:
-        from lib import alfaresolver_py3 as alfaresolver
-    
-    patron = '<script\s*src="([^"]+\/lazy\/js\/\S*.js)"\s*type="text\/\w+script">\s*<\/script>'
-    url = scrapertools.find_single_match(data, patron)
-    data_new = httptools.downloadpage(url, timeout=timeout, headers=headers, referer=referer, 
-                                      post=post, follow_redirects=follow_redirects, alfa_s=True).data
-    if PY3 and isinstance(data_new, bytes):
-        data_new = "".join(chr(x) for x in bytes(data_new))
-    data_new = re.sub(r"\n|\r|\t", "", data_new)
-    
-    try:
-        for x in range(10):
-            data_new = alfaresolver.identifying_links(data_new)
-            
-    except:
-        pass
-
-    return data_new.replace("'", '"')
-
-
-def check_title_in_videolibray(item, video_list_init=False):
-    logger.info()
-    
-    """
-    Comprueba si el item listado está en la videoteca Alfa.  Si lo está devuelve True
-    Si se ha marcado "video_list_init", se devuleve la lista de peliculas y series en la videoteca Alfa
-    """
-    
-    global video_list
-    res = False
-
-    if not item.infoLabels['tmdb_id'] and not video_list_init:
-        return res, ''
-        
-    if item.video_path and not video_list_init:
-        return True, ''
-    
-    if item.contentType == 'movie' or video_list_init:
-        videolibrary_path = movies_videolibrary_path
-        if video_list_init:
-            video_list = filetools.listdir(videolibrary_path)
-    if item.contentType != 'movie' or video_list_init:
-        videolibrary_path = series_videolibrary_path
-        if video_list_init:
-            video_list += filetools.listdir(videolibrary_path)
-            return True, video_list
-
-    if not filetools.exists(videolibrary_path):
-        return res, ''
-    
-    for title in filetools.listdir(videolibrary_path):
-        if item.infoLabels['imdb_id'] in title or item.infoLabels['tmdb_id'] in title:
-            res = True
-            break
-
-    return res, video_list
-
-
-def check_nfo_quality(item):
-    logger.info("%s [%s], %s" % (item.contentSerieName.lower(), item.infoLabels['imdb_id'] \
-                    or 'tmdb_'+item.infoLabels['tmdb_id'], item.infoLabels['quality']))
-    global list_nfos
-    
-    """
-    Comprueba si la calidad del item listado coincide con la del .nfo de la serie en la videoteca.  Devuelve True si coincide
-    """
-    
-    if not item.infoLabels['imdb_id'] and not item.infoLabels['tmdb_id']:
-        return False
-    
-    id_tmdb = item.infoLabels['imdb_id']
-    if not id_tmdb:
-        id_tmdb = "tmdb_%s" % item.infoLabels['tmdb_id']
-    serie_name = "%s [%s]" % (item.contentSerieName.lower(), id_tmdb)
-    serie_name_tmdb = "%s [tmdb_%s]" % (item.contentSerieName.lower(), item.infoLabels['tmdb_id'])
-        
-    if serie_name not in str(list_nfos):
-        from core import videolibrarytools
-        head_nfo, nfo = videolibrarytools.read_nfo(filetools.join(series_videolibrary_path, serie_name, 'tvshow.nfo'))
-
-        if nfo and nfo.infoLabels['quality'] and serie_name not in str(list_nfos):
-            list_nfos.append((serie_name, nfo.infoLabels['quality']))
-            list_nfos.append((serie_name_tmdb, nfo.infoLabels['quality']))
-
-    for serie, quality in list_nfos:
-        if (serie == serie_name or serie == serie_name_tmdb) and quality == item.infoLabels['quality']:
-            return True
-
-    return False
 
 
 def find_rar_password(item):
@@ -3745,13 +2598,13 @@ def find_rar_password(item):
     from core import httptools
     
     try:
-        channel_names = ['newpct1', 'grantorrent', 'mejortorrent']
+        channel_names = ['dontorrent', 'grantorrent', 'divxtotal']
         host_alt = []
         for channel_name in channel_names:
             channel = __import__('channels.%s' % channel_name, None,
                                      None, ["channels.%s" % channel_name])
             host_alt += [channel.host]
-    except:
+    except Exception:
         return item
     
     # Si no hay, buscamos en páginas alternativas
@@ -3812,7 +2665,7 @@ def find_rar_password(item):
                 data_password = ''
                 data_password = re.sub(r"\n|\r|\t|(<!--.*?-->)", "", httptools.downloadpage(url_password).data)
                 data_password = data_password.replace("$!", "#!").replace("'", "\"").replace("Ã±", "ñ").replace("//pictures", "/pictures")
-            except:
+            except Exception:
                 logger.error(traceback.format_exc(1))
             
             for regex_alt in regex_list:
@@ -3883,7 +2736,7 @@ def get_torrent_size(url, **kwargs):
         except (AttributeError, ValueError, StopIteration):
             try:
                 data = data
-            except:
+            except Exception:
                 data = src
 
         return data
@@ -4078,7 +2931,7 @@ def get_torrent_size(url, **kwargs):
                 torrent_params['files'].append({"__name": torrent_params['torrent_f']["info"]["name"], 'length': 0})
                 torrent_params['size_lista'] += [(torrent_params['size'], torrent_params['torrents_path'], 
                             torrent_params['torrent_f'], torrent_params['files'])]
-            except:
+            except Exception:
                 pass
                 
             #si tiene múltiples archivos sumamos la longitud de todos
@@ -4091,7 +2944,7 @@ def get_torrent_size(url, **kwargs):
                     torrent_params['files'] = torrent_params['torrent_f']["info"]["files"][:]
                     torrent_params['files'].append({"__name": torrent_params['torrent_f']["info"]["name"], 'length': 0})
                     
-                except:
+                except Exception:
                     torrent_params['size'] = 'ERROR'
                     logger.error(traceback.format_exc())
             
@@ -4108,7 +2961,7 @@ def get_torrent_size(url, **kwargs):
                                 entry[file][x] = scrapertools.decode_utf8_error(file_r)
                         elif file == '__name':
                             entry[file] = scrapertools.decode_utf8_error(path)
-            except:
+            except Exception:
                 logger.error(traceback.format_exc())
             
             torrent_params['files'] = sorted(torrent_params['files'], reverse=True, key=lambda k: k['length'])
@@ -4119,7 +2972,7 @@ def get_torrent_size(url, **kwargs):
         if len(torrent_params['size_amount']) > 1:
             torrent_params['size'] = str(torrent_params['size_amount'])
 
-    except:
+    except Exception:
         torrent_params['size'] = 'ERROR'
         torrent_params['torrent_f'] = {}
         torrent_params['files'] = {}
@@ -4134,1101 +2987,32 @@ def get_torrent_size(url, **kwargs):
 
     return torrent_params
 
-    
-def get_field_from_kodi_DB(item, from_fields='*', files='file'):
-    logger.info()
-    from builtins import next
-    """
-        
-    Llamada para leer de la DB de Kodi los campos que se reciben de entrada (from_fields, por defecto "*") del vídeo señalado en Item
-    Obviamente esto solo funciona con Kodi y si la película o serie está catalogada en las Videotecas de Alfa y Kodi
-    Se puede pedir que la búdqueda se haga por archivos (defecto), o por carpeta (series)
-    
-    La llamada es:
-        nun_records, records = generictools.get_field_from_kodi_DB(item, from_fields='cXX[, cYY,...]'[, files = 'file|folder'])
-    
-    Devuelve el num de registros encontrados y los registros.  Es importante que el llamador verifique que "nun_records > 0" antes de tratar "records"
-    
-    """
 
-    FOLDER_MOVIES = config.get_setting("folder_movies")
-    FOLDER_TVSHOWS = config.get_setting("folder_tvshows")
-    VIDEOLIBRARY_PATH = config.get_videolibrary_config_path()
-    VIDEOLIBRARY_REAL_PATH = config.get_videolibrary_path()
-    
-    if item.contentType == 'movie':                             #Agrego la carpeta correspondiente al path de la Videoteca
-        path = filetools.join(VIDEOLIBRARY_REAL_PATH, FOLDER_MOVIES)
-        path2 = filetools.join(VIDEOLIBRARY_PATH, FOLDER_MOVIES)
-        folder = FOLDER_MOVIES
-    else:
-        path = filetools.join(VIDEOLIBRARY_REAL_PATH, FOLDER_TVSHOWS)
-        path2 = filetools.join(VIDEOLIBRARY_PATH, FOLDER_TVSHOWS)
-        folder = FOLDER_TVSHOWS
-
-    #raiz, carpetas, ficheros = filetools.walk(path).next()
-    raiz, carpetas, ficheros = next(filetools.walk(path))      #listo las series o películas en la Videoteca
-    carpetas = [filetools.join(path, f) for f in carpetas]      #agrego la carpeta del contenido al path
-    for carpeta in carpetas:                                    #busco el contenido seleccionado en la lista de carpetas
-        if item.contentType == 'movie' and (item.contentTitle.lower() in carpeta or item.contentTitle in carpeta):                                                        #Películas?
-            path = carpeta                                      #Almacenamos la carpeta en el path
-            break
-        elif item.contentType in ['tvshow', 'season', 'episode'] and (item.contentSerieName.lower() in carpeta or item.contentSerieName in carpeta):                           #Series?
-            path = carpeta                                      #Almacenamos la carpeta en el path
-            break
-    
-    path2 += '/%s/' % scrapertools.find_single_match(path, '%s.(.*?\s\[.*?\])' % folder) #Agregamos la carpeta de la Serie o Películas, formato Android
-    file_search = '%'                                           #Por defecto busca todos los archivos de la carpeta
-    if files == 'file':                                         #Si se ha pedido son un archivo (defecto), se busca
-        if item.contentType == 'episode':                       #Si es episodio, se pone el nombre, si no de deja %
-            file_search = '%sx%s.strm' % (item.contentSeason, str(item.contentEpisodeNumber).zfill(2))  #Nombre para episodios
-
-    if "\\" in path:                                            #Ajustamos los / en función de la plataforma
-        path = path.replace("/", "\\")
-        path += "\\"                                            #Terminamos el path con un /
-    else:
-        path += "/"
-
-    if FOLDER_TVSHOWS in path:                                  #Compruebo si es CINE o SERIE
-        contentType = "episode_view"                            #Marco la tabla de BBDD de Kodi Video
-    else:
-        contentType = "movie_view"                              #Marco la tabla de BBDD de Kodi Video
-    path1 = path.replace("\\\\", "\\")                          #para la SQL solo necesito la carpeta
-    path2 = path2.replace("\\", "/")                            #Formato no Windows
-
-    #Ejecutmos la sentencia SQL
-    if not from_fields:
-        from_fields = '*'
-    else:
-        from_fields = 'strFileName, %s' % from_fields           #al menos dos campos, porque uno solo genera cosas raras
-    sql = 'select %s from %s where (strPath like "%s" or strPath like "%s") and strFileName like "%s"' % (from_fields, contentType, path1, path2, file_search)
-    nun_records = 0
-    records = None
-    try:
-        if config.is_xbmc():
-            from platformcode import xbmc_videolibrary
-            nun_records, records = xbmc_videolibrary.execute_sql_kodi(sql)      #ejecución de la SQL
-            records = filetools.decode(records, trans_none=0)                   # Decode de records, cambiando None por 0
-            if nun_records == 0:                                                #hay error?
-                logger.error("Error en la SQL: " + sql + ": 0 registros")       #No estará catalogada o hay un error en el SQL
-    except:
-        logger.error(traceback.format_exc())
-             
-    return (nun_records, records)
-    
-    
-def fail_over_newpct1(item, patron, patron2=None, timeout=None):
-    logger.info()
-    import ast
-    from core import httptools
-    
-    """
-        
-    Llamada para encontrar una web alternativa a un canal caído, clone de NewPct1
-    
-    Creamos una array con los datos de los canales alternativos.  Los datos de la tupla son:
-    
-        - active = 0,1      Indica si el canal no está activo o sí lo está
-        - channel           nombre del canal alternativo
-        - channel_host      host del canal alternativo, utilizado para el reemplazo de parte de la url
-        - contentType       indica que tipo de contenido que soporta el nuevo canal en fail-overs
-        - action_excluded   lista las acciones que está excluidas para ese canal
-    
-    La llamada al método desde el principio de Submenu, Listado_Búsqueda, Episodios y Findvideos, es:
-    
-        from lib import generictools
-        item, data = generictools.fail_over_newpct1(item, patron[, patron2=][, timeout=])
-        
-        - Entrada:  patron: con este patron permite verificar si los datos de la nueva web son buenos
-        - Entrada (opcional): patron2: segundo patron opcional
-        - Entrada (opcional): timeout: valor de espera máximo en download de página.  Por defecto 3
-        - Entrada (opcional): patron=True: pide que sólo verifique si el canal en uso está activo, si no, ofrece otro
-        - Salida:   data:   devuelve los datos del la nueva web.  Si vuelve vacía es que no se ha encontrado alternativa
-    
-    """
-    #logger.debug(item)
-    
-    if timeout == None:
-        timeout = config.get_setting('clonenewpct1_timeout_downloadpage', channel_py)           #Timeout downloadpage
-    if timeout == 0: timeout = None
-    if item.action == "search" or item.action == "listado_busqueda": timeout = timeout * 2      #Mas tiempo para búsquedas
-    
-    data = ''
-    channel_failed = ''
-    url_alt = []
-    decode_code = 'iso-8859-1'
-    item.category = scrapertools.find_single_match(item.url, patron_canal).capitalize()
-    if not item.extra2:
-        item.extra2 = 'z9z8z7z6z5'
-
-    patron_alt = ''
-    verify_torrent = ''
-    if patron is not True and '|' in patron:                                    #Comprobamos si hay dos patrones alternativos
-        try:
-            verify_torrent, patron1, patron_alt = patron.split('|')             #Si es así, los separamos y los tratamos
-            patron = patron1
-        except:
-            logger.error(traceback.format_exc())
-    patron = patron.replace('¡', '|')
-        
-    #Array con los datos de los canales alternativos
-    #Cargamos en .json del canal para ver las listas de valores en settings
-    fail_over = channeltools.get_channel_json(channel_py)
-    for settings in fail_over['settings']:                                      #Se recorren todos los settings
-        if settings['id'] == "clonenewpct1_channels_list":                      #Encontramos en setting
-            fail_over = settings['default']                                     #Carga lista de clones
-            break
-    fail_over_list = ast.literal_eval(fail_over)
-    #logger.debug(str(fail_over_list))
-
-    if item.from_channel and item.from_channel != 'videolibrary':               #Desde search puede venir con el nombre de canal equivocado
-        item.channel = item.from_channel
-    #Recorremos el Array identificando el canal que falla
-    for active, channel, channel_host, contentType, action_excluded in fail_over_list:
-        if item.channel == channel_py:
-            if channel != item.category.lower():                                #es el canal/categoría que falla?
-                continue
-        else:
-            if channel != item.channel:                                         #es el canal que falla?
-                continue
-        channel_failed = channel                                                #salvamos el nombre del canal o categoría
-        channel_host_failed = channel_host                                      #salvamos el nombre del host
-        channel_url_failed = item.url                                           #salvamos la url
-        #logger.debug(channel_failed + ' / ' + channel_host_failed)
-        
-        if patron == True and active == '1':                                    #solo nos han pedido verificar el clone
-            return (item, data)                                                 #nos vamos, con el mismo clone, si está activo
-        if (item.action == 'episodios' or item.action == "update_tvshow" or item.action == "get_seasons" or item.action == 'findvideos') and item.contentType not in contentType:          #soporta el fail_over de este contenido?
-            logger.error("ERROR 99: " + item.action.upper() + ": Acción no soportada para Fail-Over en canal: " + item.url)
-            return (item, data)                         #no soporta el fail_over de este contenido, no podemos hacer nada
-        break
-        
-    if not channel_failed:
-        logger.error('NO CHANNEL FAILED: Patrón: ' + str(patron) + \
-                    ' / fail_over_list: ' + str(fail_over_list))
-        logger.error(item)
-        return (item, data)                                                     #Algo no ha funcionado, no podemos hacer nada
-
-    #Recorremos el Array identificando canales activos que funcionen, distintos del caído, que soporten el contenido
-    for active, channel, channel_host, contentType, action_excluded in fail_over_list:
-        data_alt = ''
-        if channel == channel_failed or active == '0' or item.action in action_excluded or item.extra2 in action_excluded:  #es válido el nuevo canal?
-            continue
-        if (item.action == 'episodios' or item.action == "update_tvshow" or \
-                    item.action == "get_seasons" or item.action == 'findvideos') and \
-                    item.contentType not in contentType:                        #soporta el contenido?
-            continue
-
-        #Hacemos el cambio de nombre de canal y url, conservando las anteriores como ALT
-        item.channel_alt = channel_failed
-        if item.channel != channel_py:
-            item.channel = channel
-        item.category = channel.capitalize()
-        item.url_alt = channel_url_failed
-        item.url = channel_url_failed
-        #channel_host_bis = re.sub(r'(?i)http.*://', '', channel_host)[:-1]
-        channel_host_bis = channel_host[:-1]
-        #channel_host_failed_bis = re.sub(r'(?i)http.*://', '', channel_host_failed)
-        channel_host_failed_bis = scrapertools.find_single_match(item.url, patron_host)
-        item.url = item.url.replace(channel_host_failed_bis, channel_host_bis)
-
-        if item.url.endswith('-org'):
-            item.url = item.url.replace(channel_failed, channel)
-            item.url = re.sub('\/\w+(-\w+)$', r'/%s\1' % channel, item.url)
-        if channel == 'pctreload1' or channel == 'pctmix1':
-            item.url = re.sub('\/\w+-\w+$', '/pctreload1-com', item.url)
-            #item.url = re.sub('\/\w+-\w+$', '/pctnew-org', item.url)
-        
-        item = verify_channel_regex(item, fail_over_list)                       # Procesamos los regex de url que tenga el clone
-        url_alt += [item.url]                                                   # salvamos la url para el bucle
-        item.channel_host = channel_host
-        #logger.debug(str(url_alt))
-        
-        #quitamos el código de series, porque puede variar entre webs
-        if item.action == "episodios" or item.action == "get_seasons" or item.action == "update_tvshow":
-            url_alt += [re.sub(r'\/\d+\/?$', '', item.url)]   #parece que con el título solo ecuentra la serie, normalmente...
-        
-        
-        #si es un episodio, generalizamos la url para que se pueda encontrar en otro clone.  Quitamos la calidad del final de la url
-        elif item.action == "findvideos" and item.contentType == "episode":
-            try:
-                #quitamos el 0 a la izquierda del episodio.  Algunos clones no lo aceptan
-                inter1, inter2, inter3 = scrapertools.find_single_match(item.url, '(http.*?\/temporada-\d+.*?\/capitulo.?-)(\d+)(.*?\/)')
-                if inter2.startswith('0'):
-                    inter2 = re.sub(r'^0', '', inter2)
-                else:
-                    if len(inter2) == 1:
-                        inter2 = '0%s' % inter2
-                if inter1 + inter2 + inter3 not in url_alt:
-                    url_alt += [inter1 + inter2 + inter3]
-                
-                #en este formato solo quitamos la calidad del final de la url
-                if scrapertools.find_single_match(item.url, 'http.*?\/temporada-\d+.*?\/capitulo.?-\d+.*?\/') not in url_alt:
-                    url_alt += [scrapertools.find_single_match(item.url, 'http.*?\/temporada-\d+.*?\/capitulo.?-\d+.*?\/')]
-            except:
-                logger.error("ERROR 88: " + item.action + ": Error al convertir la url: " + item.url)
-                logger.error(traceback.format_exc())
-        logger.debug('URLs convertidas: ' + str(url_alt))
-
-        if patron == True:                                                      #solo nos han pedido verificar el clone
-            return (item, data)                                                 #nos vamos, con un nuevo clone
-        
-        #Leemos la nueva url.. Puede haber varias alternativas a la url original
-        for url in url_alt:
-            try:
-                if item.post:
-                    data = re.sub(r"\n|\r|\t|(<!--.*?-->)", "", httptools.downloadpage(url, post=item.post, timeout=timeout).data)
-                else:
-                    data = re.sub(r"\n|\r|\t|(<!--.*?-->)", "", httptools.downloadpage(url, timeout=timeout).data)
-                if not PY3:
-                    data = unicode(data, decode_code, errors="replace").encode("utf-8")
-                data_comillas = data.replace("'", '"')
-            except:
-                data = ''
-                logger.error(traceback.format_exc())
-            if not data:                                                        #no ha habido suerte, probamos con la siguiente url
-                logger.error("ERROR 01: " + item.action + ": La Web no responde o la URL es erronea: " + url)
-                continue
-        
-            #Hemos logrado leer la web, validamos si encontramos un línk válido en esta estructura
-            #Evitar páginas engañosas que puede meter al canal en un loop infinito
-            if (not ".com/images/no_imagen.jpg" in data and not ".com/images/imagen-no-disponible.jpg" in data) or item.action != "episodios":
-                if patron:
-                    data_alt = scrapertools.find_single_match(data, patron)
-                    if not data_alt:
-                        data_alt = scrapertools.find_single_match(data_comillas, patron)
-                        if not data_alt and patron_alt:
-                            data_alt = scrapertools.find_single_match(data, patron_alt)
-                            if not data_alt and patron_alt:
-                                data_alt = scrapertools.find_single_match(data_comillas, patron_alt)
-                    if patron2 is not None:
-                        data_alt = scrapertools.find_single_match(data_alt, patron2)
-                    if not data_alt:                                            #no ha habido suerte, probamos con el siguiente canal
-                        logger.error("ERROR 02: " + item.action + ": Ha cambiado la estructura de la Web: " \
-                                        + url + " / Patron: " + patron + " / " + patron_alt)
-                        web_intervenida(item, data)
-                        data = ''
-                        continue
-                    else:
-                        if not "'" in data_alt:
-                            data = data.replace("'", '"')
-                        item.url = url                                          #guardamos la url que funciona
-                        break                                                   #por fin !!!  Este canal parece que funciona
-                else:
-                    #Función especial para encontrar en otro clone un .torrent válido
-                    if verify_torrent == 'torrent:check:status':
-                        from servers import torrent
-                        if not data_alt.startswith("http"):                     #Si le falta el http.: lo ponemos
-                            data_alt = scrapertools.find_single_match(item.channel_host, '(\w+:)//') + data_alt
-                        if torrent.verify_url_torrent(data_alt):                #verificamos si el .torrent existe
-                            item.url = url                                      #guardamos la url que funciona
-                            break                                               #nos vamos, con la nueva url del .torrent verificada
-                        data = ''
-                        continue                                                #no vale el .torrent, continuamos
-                    item.url = url                                              #guardamos la url que funciona, sin verificar
-                    break                                                       #por fin !!!  Este canal parece que funciona
-            else:
-                logger.error("ERROR 02: " + item.action + ": Ha cambiado la estructura de la Web: " 
-                            + url + " / Patron: " + patron + " / " +patron_alt)
-                web_intervenida(item, data)
-                data = ''
-                continue
-                
-        if not data:                                                            #no ha habido suerte, probamos con el siguiente clone
-            url_alt = []
-            continue
-        else:
-            break
-    
-    del item.extra2                                                             #Borramos acción temporal excluyente
-    if not data:                                                                #Si no ha logrado encontrar nada, salimos limpiando variables
-        if item.channel == channel_py:
-            if item.channel_alt:
-                item.category = item.channel_alt.capitalize()
-                del item.channel_alt
-        else:
-            if item.channel_alt:
-                item.channel = item.channel_alt
-                del item.channel_alt
-        if item.url_alt: 
-            item.url = item.url_alt
-            del item.url_alt
-        item.channel_host = channel_host_failed
-    
-    #logger.debug(item)
-    
-    return (item, data)
-
-    
 def verify_channel(channel, clones_list=False):
     
-    #Lista con los datos de los canales alternativos
-    #Cargamos en .json del canal para ver las listas de valores en settings
-    clones = channeltools.get_channel_json(channel_py)
-    for settings in clones['settings']:                                         #Se recorren todos los settings
-        if settings['id'] == "clonenewpct1_channels_list":                      #Encontramos en setting
-            clones = settings['default']                                        #Carga lista de clones
-            channel_alt = "'%s'" % channel
-            if channel_alt in str(clones):                                      #Si es un clon se pone como canal newpct1, si no se deja
-                channel = channel_py
-            break
+    # Lista con los datos de los canales alternativos
+    # Cargamos en .json del canal para ver las listas de valores en settings
+    
+    clones = []
+
+    """
+    if channel_py:
+        clones = channeltools.get_channel_json(channel_py)
+        for settings in clones['settings']:                                     # Se recorren todos los settings
+            if settings['id'] == "clonenewpct1_channels_list":                  # Encontramos en setting
+                clones = settings['default']                                    # Carga lista de clones
+                channel_alt = "'%s'" % channel
+                break
+    """
 
     if clones_list:
-        import ast
-        clones = ast.literal_eval(clones)
-        return channel, clones
+        if clones:
+            import ast
+            clones = ast.literal_eval(clones)
+        return channel, (clones or [channel])
         
     return channel
-    
-
-def verify_channel_regex(item, clone_list):
-    
-    try:
-        for active_clone, channel_clone, host_clone, contentType_clone, info_clone in clone_list:
-            if channel_clone != item.category.lower():
-                continue
-            if not info_clone:
-                break
-
-            info_clone = info_clone.split(';')
-            for pareja in info_clone:
-                par = pareja.split(',')
-                if par[1] == 'null':
-                    par[1] = ''
-                item.url = re.sub(par[0], par[1], item.url)
-            break
-        
-        if item.action == 'findvideos' and 'pctreload' not in item.category.lower():
-            if '/descargar/' not in item.url:
-                item.url = re.sub(r'\.com\/', '.com/descargar/', item.url)
-                item.url = re.sub(r'\.net\/', '.net/descargar/', item.url)
-    except:
-        logger.error(traceback.format_exc(1))
-            
-    return item
-
-    
-def web_intervenida(item, data, desactivar=True):
-    logger.info()
-    
-    """
-        
-    Llamada para verificar si la caída de un clone de Newpct1 es debido a una intervención judicial
-    
-    La llamada al método desde  es:
-    
-        from lib import generictools
-        item = generictools.web_intervenida(item, data[, desactivar=True])
-        
-        - Entrada:  data: resultado de la descarga.  Nos permite analizar si se trata de una intervención
-        - Entrada:  desactivar=True:  indica que desactiva el canal o clone en caso de intervención judicial
-        - Salida:   item.intervencion: devuele un array con el nombre del clone intervenido y el thumb de la autoridad que interviene.  El canal puede anunciarlo.
-        - Salida:   Si es un clone de Newpct1, se desactiva el clone en el .json del Canal.  Si es otro canal, se desactiva el canal en su .json.
-    
-    """
-    
-    intervencion = ()
-    judicial = ''
-
-    #Verificamos que sea una intervención judicial
-    if intervenido_policia in data or intervenido_guardia in data or intervenido_sucuri in data:
-        if intervenido_guardia in data:
-            judicial = 'intervenido_gc.png'                             #thumb de la Benemérita
-        if intervenido_policia in data:
-            judicial = 'intervenido_pn.jpeg'                            #thumb de la Policia Nacional
-        if intervenido_sucuri in data:
-            judicial = 'intervenido_sucuri.png'                         #thumb de Sucuri
-        category = item.category
-        if not item.category:
-            category = item.channel
-        intervencion = (category, judicial)                     #Guardamos el nombre canal/categoría y el thumb judicial
-        if not item.intervencion:
-            item.intervencion = []                                      #Si no existe el array, lo creamos
-        item.intervencion += [intervencion]                             #Añadimos esta intervención al array
-        
-        logger.error("ERROR 99: " + category + ": " + judicial + ": " + item.url + ": DESACTIVADO=" + str(desactivar) + " / DATA: " + data)
-        
-        if desactivar == False:                                         #Si no queremos desactivar el canal, nos vamos
-            return item
-        
-        #Cargamos en .json del canal para ver las listas de valores en settings.  Carga las claves desordenadas !!!
-        json_data = channeltools.get_channel_json(item.channel)
-        
-        if item.channel == channel_py:                                  #Si es un clone de Newpct1, lo desactivamos
-            for settings in json_data['settings']:                      #Se recorren todos los settings
-                if settings['id'] == "clonenewpct1_channels_list":      #Encontramos en setting
-                    action_excluded = scrapertools.find_single_match(settings['default'], "\('\d', '%s', '[^']+', '[^']*', '([^']*)'\)" % item.category.lower())               #extraemos el valor de action_excluded
-                    if action_excluded:
-                        if "intervenido" not in action_excluded:
-                            action_excluded += ', %s' % judicial        #Agregamos el thumb de la autoridad judicial
-                    else:
-                        action_excluded = '%s' % judicial
-                        
-                    #Reemplazamos el estado a desactivado y agregamos el thumb de la autoridad judicial
-                    settings['default'] = re.sub(r"\('\d', '%s', ('[^']+', '[^']*'), '[^']*'\)" % item.category.lower(),  r"('0', '%s', \1, '%s')" % (item.category.lower(), action_excluded), settings['default'])
-
-                    break
-        else:
-            #json_data['active'] = False                                 #Se desactiva el canal
-            json_data['thumbnail'] = ', thumb_%s' % judicial            #Guardamos el thumb de la autoridad judicial
-
-        #Guardamos los cambios hechos en el .json
-        try:
-            if item.channel != channel_py:
-                disabled = config.set_setting('enabled', False, item.channel)           #Desactivamos el canal
-                disabled = config.set_setting('include_in_global_search', False, item.channel)      #Lo sacamos de las búquedas globales
-            channel_path = filetools.join(config.get_runtime_path(), "channels", item.channel + ".json")
-            with open(channel_path, 'w') as outfile:                                    #Grabamos el .json actualizado
-                json.dump(json_data, outfile, sort_keys = True, indent = 2, ensure_ascii = False)
-        except:
-            logger.error("ERROR 98 al salvar el archivo: %s" % channel_path)
-            logger.error(traceback.format_exc())
-
-    #logger.debug(item)
-    
-    return item
-
-    
-def redirect_clone_newpct1(item, head_nfo=None, it=None, path=False, overwrite=False, lookup=False):
-    logger.info()
-    import ast
-    from builtins import next
-    from core.videolibrarytools import read_nfo, write_nfo, reset_movie, reset_serie
-    
-    """
-        
-    Llamada para redirigir cualquier llamada a un clone de NewPct1 a NewPct1.py, o de una url de un canal caido a una alternativa
-    Incluye las llamadas estándar del canal y la llamadas externas:
-        - Play fron Library
-        - Videolibrary Update
-        
-    La lógica es reemplazar item.channel por "newpct1" y dejar el nombre del clone en item.category.
-    De esta forma utiliza siempre el código de NewPct1.py, aunque con las urls y apariencia del clone seleccionado por el usuario.
-    
-    En el caso de un canal/clone caído o intervenido judicialmente, puede reemplazar el canal en item.channel, o el clone en item.category, y la parte de item.url que se introduzca en una tabla.  Esta conversión sólo se realiza si el canal original está inactivo, pero lo realiza siempre para los clones, o si el canal de origen y destino son los mismos.
-    
-    Este método interroga el .json de NewPct1 para extraer la lista de canales clones.  Si item.channel es un clone de NewPct1 y está en esa lista, actualiza item.channel='newpct1'
-    
-    También en este .json está la tabla para la conversión de canales y urls:
-        - activo:       está o no activa esta entrada
-        - canal_org:    canal o clone de origen
-        - canal_des:    canal o clone de destino (puede ser el mismo)
-        - url_org:      parte de la url a sustituir de canal o clone de origen
-        - url_des:      parte de la url a sustituir de canal o clone de destino
-        - patron1:      expresión Regex aplicable a la url (opcional)
-        - patron2:      expresión Regex aplicable a la url (opcional)
-        - patron3:      expresión Regex aplicable a la url (opcional)
-        - patron4:      expresión Regex aplicable a la url (opcional)
-        - patron5:      expresión Regex aplicable a la url (opcional)
-        - content_inc:  contenido al que aplica esta entrada, o * (item.contentType o item.extra)
-        - content_exc:  contenido que se excluye de esta entrada (item.contentType) (opcional).  opción para 'emerg'
-        - ow_force:     indicador para la acción de "videolibrary_service.py".  Puede crear la variable item.ow_force:
-                            - force:    indica al canal que analize toda la serie y que videolibrary_service la reescriba
-                            - auto:     indica a videolibrary_service que la reescriba
-                            - no:       no acción para videolibrary_service, solo redirige en visionado de videolibrary
-                            - del:      borra las estrucuturas de un determinado canal en videolibrary_service, quizás creadas por errores de un canal
-                            - emerg:    funcionalidad muy similar a la de "del".  se general dinámicamente cada vez que entra un canal con el estado activado en el .json de "emergency_urls".  Permite cargar las urls de emergencia en todos los elementos existentes de la Videoteca para canal afectado
-        ejemplos: 
-        ('1', 'mejortorrent', 'mejortorrent1', 'http://www.mejortorrent.com/', 'https://mejortorrent1.com/', '(http.?:\/\/.*?\/)', 'http.?:\/\/.*?\/.*?-torrent.?-[^-]+-(?:[^-]+-)([^0-9]+-)', 'http.?:\/\/.*?\/.*?-torrent.?-[^-]+-(?:[^-]+-)[^0-9]+-\\d+-(Temporada-).html', 'http.?:\/\/.*?\/.*?-torrent.?-[^-]+-(?:[^-]+-)[^0-9]+-(\\d+)-', '', 'tvshow, season', '', 'force'), 
-        ('1', 'mejortorrent', 'mejortorrent1', 'http://www.mejortorrent.com/', 'https://mejortorrent1.com/', '(http.?:\/\/.*?\/)', 'http.?:\/\/.*?\/.*?-torrent.?-[^-]+-([^.]+).html', '', '', '', 'movie', '', 'force')",
-        ('1', 'torrentrapid', 'torrentlocura', 'http://torrentrapid.com/', 'http://torrentlocura.com/', '', '', '', '', '', '*', '', 'no'),
-        ('1', 'newpct1', '', '', '', '', '', '', '', '', '*', '', 'del'),
-        ('1', 'torrentrapid', 'torrentrapid', '', '', '', '', '', '', '', '*', '1 ó 2', 'emerg'),
-    
-    La llamada recibe el parámetro Item, el .nfo y los devuleve actualizados, así como opcionalmente el parámetro "overwrite· que puede forzar la reescritura de todos los archivos de la serie, y el parámetro "path" si viene de videolibrary_service.  Por último, recibe opcionalmente el parámetro "lookup" si se quiere solo averigurar si habrá migración para ese título, pero sin realizarla.
-    
-    """
-    #logger.debug(item)
-    #if it != None: logger.debug(it)
-    if not item and not it:
-        return (item, it, False)
-    if not it:
-        it = Item()
-    if item: item_back = item.clone()
-    it_back = it.clone()
-    ow_force_param = True
-    overwrite_param = overwrite
-    update_stat = 0
-    delete_stat = 0
-    canal_org_des_list = []
-    json_path_list = []
-    emergency_urls_force = False
-    status_migration =  False
-    
-    # Ha podido quedar activado ow_force de una pasada anterior
-    if it.ow_force == '1':
-        del it.ow_force
-        if path and it.infoLabels['mediatype'] in ['tvshow', 'season']:
-            nfo = filetools.join(path, '/tvshow.nfo')
-            res = write_nfo(nfo, head_nfo, it)                                  # escribo el .nfo de la peli por si aborta update
-            if res:
-                logger.info('** .nfo ACTUALIZADO: it.ow_force: %s' % nfo, force=True)   # aviso que ha habido una incidencia
-            else:
-                logger.error('** .nfo ERROR actualizar: it.ow_force: %s' % nfo) #aviso que ha habido una incidencia
-    
-    # Si no existe el path al .nfo, se regenera
-    if it.library_urls and head_nfo and path and not it.path:
-        it.path = filetools.join(' ', filetools.basename(path)).strip()
-        nfo = filetools.join(path, '/tvshow.nfo')
-        res = write_nfo(nfo, head_nfo, it)                                      # escribo el .nfo de la peli por si aborta update   
-        if res:
-            logger.info('** .nfo ACTUALIZADO: it.path: %s' % it.path, force=True)   # aviso que ha habido una incidencia
-        else:
-            logger.error('** .nfo ERROR actualizar: it.path: %s' % it.path)     # aviso que ha habido una incidencia
-
-    # Array con los datos de los canales alternativos.  Cargamos en .json de Newpct1 para ver las listas de valores en settings
-    fail_over_list = channeltools.get_channel_json(channel_py)
-    for settings in fail_over_list['settings']:                                 # Se recorren todos los settings
-        if settings['id'] == "clonenewpct1_channels_list":                      # Encontramos en setting
-            fail_over_list = settings['default']                                # Carga lista de clones
-        if settings['id'] == "intervenidos_channels_list":                      # Encontramos en setting
-            intervencion = settings['default']                                  # Carga lista de clones y canales intervenidos
-
-    # Salvamos el canal y categoría
-    channel_alt = item.channel
-    channel = "'%s'" % channel_alt
-    category = ''
-    if channel_alt != 'videolibrary':
-        item.category = channel_alt.capitalize()
-        category = "'%s'" % channel_alt
-    channel_py_alt = 'xyz123'
-    
-    # Si es un clone de Newpct1, se actualiza el canal y la categoría y se se borran restos de pasadas anteriores 
-    if channel in fail_over_list :                                          
-        item.channel = channel_py
-        item.category = scrapertools.find_single_match(item.url, patron_canal).capitalize()
-        channel_py_alt = "'%s'" % channel_py
-        if item.channel_host:
-            del item.channel_host
-
-    # Refrescamos emergency_urls desde el nfo
-    if it.emergency_urls:
-        item.emergency_urls = it.emergency_urls
-        
-    """ Reparaciones TEMPORALES """
-    #item, emergency_urls_force = verify_cached_torrents(path, item, emergency_urls_force)   # Verificamos si los .torrents son correctos
-
-
-    # Analizamos si hay series o películas que migrar, debido a que se ha activado en el .json del canal la opción "guardar" 
-    # "emergency_urls = 1", y hay que calcularla para todos los episodios y película existentes en la Videoteca.
-    # Si "emergency_urls" está activada para uno o más canales, se verifica en el .nfo del vídeo si ya se ha realizado
-    # la carga de las urls de emergencia.  Sí se ha hecho, se ignora el proceso de conversión.  Si no, se convierte por el
-    # canal en curso cuando hay item.url, o para todos los canales en item.library_urls si no hay un canal específico en curso.
-    # El mecanismo consiste en generar una regla temporal de migración para cada canal activado.  Esta regla actua borrando
-    # todos los .json de la serie/película.  En el caso de la serie, el proceso de actualización de la videoteca los regenerará
-    # automáticamente.  En el caso de peliculas, se genera aquí el json actualizado y se marca el .nfo como actualizado.
-    # Cuando en el .json se activa "Borrar", "emergency_urls = 2", se borran todos los enlaces existentes
-    # Cuando en el .json se activa "Actualizar", "emergency_urls = 3", se actualizan todos los enlaces existentes
-
-
-    # Convertir a Array el string
-    intervencion_list = ast.literal_eval(intervencion)
-    #logger.debug(intervencion_list)
-        
-    # Si el canal no está intervenido hay que verificar que las urls de emergencia estén en el estado correcto: guardar o borrar
-    try:
-        for activo, canal_org, canal_des, url_org, url_des, patron1, patron2, patron3, \
-                    patron4, patron5, content_inc, content_exc, ow_force in intervencion_list:
-            if activo == '1' and channel_alt == canal_org: break
-        else:
-            # Viene de actualización de videoteca de series
-            if item.url and not channel_py in item.url and it.emergency_urls:
-                
-                # Analizamos si el canal ya tiene las urls de emergencia: guardar o borrar
-                if (config.get_setting("emergency_urls", item.channel) == 1 and (not item.emergency_urls \
-                            or (item.emergency_urls and not item.emergency_urls.get(channel_alt, False)))) or \
-                            (config.get_setting("emergency_urls", item.channel) == 2 \
-                            and item.emergency_urls.get(channel_alt, False)) or \
-                            config.get_setting("emergency_urls", item.channel) == 3 or emergency_urls_force:
-                    intervencion += ", ('1', '%s', '%s', '', '', '', '', '', '', '', '*', '%s', 'emerg')" % \
-                            (channel_alt, channel_alt, config.get_setting("emergency_urls", item.channel))
-
-            # Viene de "listar peliculas|series´"
-            elif it.library_urls:
-                for canal_vid, url_vid in list(it.library_urls.items()):        # Se recorre "item.library_urls" para buscar canales candidatos
-                    if canal_vid == channel_py:                                 # Si tiene Newcpt1 en canal, es un error
-                        continue
-                    canal_vid_alt = "'%s'" % canal_vid
-                    if canal_vid_alt in fail_over_list:                         # Se busca si es un clone de newpct1
-                        channel_bis = channel_py
-                    else:
-                        channel_bis = canal_vid
-                    
-                    # Analizamos si el canal ya tiene las urls de emergencia: guardar o borrar
-                    if (config.get_setting("emergency_urls", channel_bis) == 1 and (not it.emergency_urls \
-                            or (it.emergency_urls and not it.emergency_urls.get(canal_vid, False)))) \
-                            or (config.get_setting("emergency_urls", channel_bis) == 2 \
-                            and it.emergency_urls.get(canal_vid, False)) or \
-                            config.get_setting("emergency_urls", channel_bis) == 3 or emergency_urls_force:
-                        intervencion += ", ('1', '%s', '%s', '', '', '', '', '', '', '', '*', '%s', 'emerg')" % \
-                            (canal_vid, canal_vid, config.get_setting("emergency_urls", channel_bis))
-    except:
-        logger.error('Error en el proceso de ALMACENAMIENTO de URLs de Emergencia')
-        logger.error(traceback.format_exc())
-
-    #Ahora tratamos las webs intervenidas, tranformamos la url, el nfo y borramos los archivos obsoletos de la serie
-    if (channel not in intervencion and channel_py_alt not in intervencion and \
-                        category not in intervencion and channel_alt != 'videolibrary') or not \
-                        item.title or status_migration:                         # Lookup o migración
-        if int(overwrite_param) == 3 and item.channel == channel_py and not path:
-            item.channel = item.category.lower()
-        return (item, it, overwrite)                                            # ... el canal/clone NO está listado
-
-
-    # Convertir a Array el string (refresco)
-    intervencion_list = ast.literal_eval(intervencion)
-    #logger.debug(intervencion_list)
-
-    """ Analizamos los cambios necesarios para este canal en la lista de intervención """
-    if lookup:
-        overwrite = False                                                       # Solo avisamos si hay cambios
-    i = 0
-    for activo, canal_org, canal_des, url_org, url_des, patron1, patron2, patron3, patron4, \
-                            patron5, content_inc, content_exc, ow_force in intervencion_list:
-        i += 1
-        opt = ''
-
-        # Es esta nuestra entrada?
-        if activo == '1' and (canal_org == channel_alt or canal_org == item.category.lower() \
-                            or channel_alt == 'videolibrary' or ow_force == 'del' or ow_force == 'emerg'):     
-
-            if item.url:
-                logger.debug('INTERV. LIST: %s / CHANNEL: %s / URL: %s' % \
-                            (intervencion_list[i-1], channel_alt, item.url))
-
-            """ Si es un BORRADO de estructuras erroneas, hacemos un proceso aparte """
-            if ow_force == 'del' or ow_force == 'emerg':
-                # Si hay canal de sustitución para item.library_urls, lo usamos
-                canal_des_def = canal_des
-
-                # Si no, lo extraemos de la url
-                if not canal_des_def and canal_org in item.library_urls and len(item.library_urls) == 1:
-                    # Salvamos la url actual de la estructura a borrar
-                    canal_des_def = scrapertools.find_single_match(item.library_urls[canal_org], patron_canal).lower()
-
-                # Si existe item.url, lo salvamos para futuro uso
-                url_total = ''
-                if item.url:
-                    url_total = item.url
-
-                # Si existe una entrada en library_urls con el canal a borrar, lo procesamos
-                if item.library_urls and canal_org in item.library_urls:
-                    if lookup:                                                  # Queremos que el canal solo visualice sin migración?
-                        overwrite = True                                        # Avisamos que hay cambios
-                        continue
-
-                    logger.info('** REGLA: %s, %s, %s' % (canal_org, canal_des, ow_force), force=True)
-                    logger.info('** item.library_urls PREVIA: %s' % item.library_urls, force=True)
-
-                    url_total = item.library_urls[canal_org]                    # Salvamos la url actual de la estructura a borrar
-                    url_total_status = False
-                    
-                    # Si el nuevo canal no existe ya...
-                    if len(item.library_urls) == 1 or canal_des:
-                        item.library_urls.update({canal_des_def: url_total})    # Restauramos la url con el nuevo canal
-                        url_total_status = True                                 # Marcamos esta url como válida
-                        overwrite = True                                        # Le decimos que sobreescriba todos los .jsons
-                        item.ow_force = '1'                                     # Le decimos que revise todas las temporadas
-                    
-                    # Si no, borramos la url del canal a borrar
-                    if len(item.library_urls) > 1 and ow_force == 'del':
-                        item.library_urls.pop(canal_org, None)                  
-                        overwrite = True                                        # Le decimos que sobreescriba todos los .jsons
-                        item.ow_force = '1'                                     # Le decimos que revise todas las temporadas
-                    
-                    # Lo salvamos en el .nfo, si lo hay
-                    if it.library_urls:
-                        it.library_urls = item.library_urls
-                        
-                    # Si la url es la del canal borrado...
-                    if item.url and item.url == url_total and url_total_status == False:
-                        canal_vid = canal_org
-                        canal_vid_alt = "'%s'" % canal_vid
-                        for canal_vid, url_vid in list(item.library_urls.items()):
-                            canal_vid_alt = "'%s'" % canal_vid
-                            if canal_vid_alt not in intervencion:               # ... la sustituimos por la primera válida
-                                item.url = url_vid                          
-                                break
-                        if canal_vid_alt in fail_over_list:                     # Si es un clone de Newpct1, salvamos la nueva categoría
-                            item.category = scrapertools.find_single_match(item.url, patron_canal).capitalize()      # Salvamos categoría
-                        else:
-                            item.category = canal_vid.capitalize()              # Si no, salvamos nueva categoría
-                    logger.info('** item.library_urls ACTUALIZADA: %s' % item.library_urls, force=True)
-                
-                # Si es migración completa...
-                if not lookup:                                         
-                    delete_stat += 1                                            # Ya hemos actualizado algo, o habrá que hacerlo...
-                    if ow_force == 'emerg': opt = content_exc                   # Salvamos la opción de Guardar o Borrar enlaces
-                    canal_org_des_list += [(canal_org, canal_des, url_total, opt, ow_force)]     # Salvamos el resultado para su proceso
-
-
-            else:
-                """ Proceso estándar """
-
-                """ Verificación de canales """
-                # Viene de videolibrary.list_movies: IMPRESCINDIBLE
-                if channel_alt == 'videolibrary':
-                    for canal_vid, url_vid in list(item.library_urls.items()):
-                        if canal_org != canal_vid:                              # Miramos si canal_org de la regla está en item.library_urls
-                            continue
-                        else:
-                            channel_alt = canal_org                             # Sí, ponermos el nombre del canal de origen
-                            channel_b = "'%s'" % canal_org
-                            if channel_b in fail_over_list:                     # Si es un clone de Newpct1, se actualiza a newpct1
-                                channel_alt = channel_py
-                    if channel_alt == 'videolibrary':
-                        continue
-
-                # Si viene de Videolibrary, le cambiamos ya el canal
-                if item.contentType == "list":
-                    if item.channel != channel_py:
-                        item.channel = canal_des                                # Cambiamos el canal.  Si es clone, lo hace el canal
-                        continue                                                # Salimos sin hacer nada más. item está casi vacío
-                
-                # Está el contenido en listas de incluidos/excluidos ?
-                if item.contentType and item.contentType not in content_inc and "*" not in content_inc:  # NO está el contenido en lista incluidos
-                    continue
-                
-                if item.contentType and item.contentType in content_exc:        # Está el contenido excluido?
-                    continue
-                
-                # verificamos si el canal de origen está activo
-                channel_enabled = 0
-                channel_enabled_alt = 1
-                if item.channel != channel_py:
-                    try:
-                        if channeltools.is_enabled(channel_alt): channel_enabled = 1    #Verificamos que el canal esté inactivo
-                        if not config.get_setting('enabled', channel_alt): channel_enabled_alt = 0
-                        channel_enabled = channel_enabled * channel_enabled_alt         #Si está inactivo en algún sitio, tomamos eso
-                    except:
-                        pass
-                if channel_enabled == 1 and canal_org != canal_des:             # Si el canal está activo, puede ser solo...
-                    continue                                                    # ... una intervención que afecte solo a una región
-
-                # Queremos que el canal solo visualice sin migración?
-                if lookup :                                              
-                    if ow_force != 'no':
-                        overwrite = True                                        # Avisamos que hay cambios
-                    continue                                                    # Salimos sin tocar archivos
-
-                """ Convertimos las URLs """
-                # Salvamos la url
-                url_total = ''
-                if item.url:
-                    url_total = item.url
-                elif item.library_urls:
-                    url_total = item.library_urls.get(canal_org, '')
-                elif it.library_urls:
-                    url_total = it.library_urls.get(canal_org, '')
-                
-                # Si es un clone de Newpct1, salvamos la nueva categoría desde la url
-                if item.channel == channel_py:
-                    item.category = scrapertools.find_single_match(item.url, patron_canal).capitalize()
-                    if canal_org != item.category.lower():
-                        item.category_alt = canal_org.capitalize()
-                else:
-                    # Si no, salvamos nueva categoría desde el canal de destino
-                    item.category = canal_des.capitalize()                      
-                
-                # Reemplazamos las urls del canal origen por el de destino
-                for x, _url in enumerate([[[url_total, '']], [[item.url_tvshow, '']], item.url_quality_alt]):
-                    if not _url: continue
-                    for y, (__url, q) in enumerate(_url):
-                        _url_ = __url
-                        if not _url_: continue
-                        
-                        url_host = scrapertools.find_single_match(_url_, patron_host)
-                        if url_org == '*':                                          # Si se quiere cambiar desde CUALQUIER url ...
-                            if url_host: 
-                                _url_ = _url_.replace(url_host, url_des)    # Reemplazamos el dominio de actual por el de destino
-                        elif url_des.startswith('http'):                            # Si se quiere cambiar desde una URL específica ...
-                            if item.channel != channel_py or (item.channel == channel_py \
-                                    and item.category.lower() == canal_org):
-                                _url_ = scrapertools.find_single_match(_url_, \
-                                    'http.*\:\/\/(?:.*ww[^\.]*\.)?[^\?|\/]+(.*?$)') # Quitamos el http*://DOMINIO inicial
-                                _url_ = urlparse.urljoin(url_des, _url_)    # Añadimos el dominio de destino
-                        else:                                                       # Si se quiere cambiar desde un DOMINIO ...
-                            if url_host: _url_ = _url_.replace(url_org, url_des)    #reemplazamos una parte del dominio
-                        
-                        #if not _url_.endswith('/'):
-                        #    _url_ += '/'
-                        if x == 0:
-                            url_total = _url_
-                            if item.url:
-                                item.url = url_total
-                            if item.library_urls:
-                                item.library_urls[canal_org] = url_total
-                            if it.library_urls: 
-                                it.library_urls[canal_org] = url_total
-                        elif x == 1 and _url_:
-                            item.url_tvshow = _url_
-                        elif x > 1 and _url_:
-                            item.url_quality_alt[y][0] = _url_
-                        
-                        # Si hay expresiones regex, las aplicamos sobre la url convertida
-                        url = ''
-                        if patron1:
-                            url += scrapertools.find_single_match(_url_, patron1)
-                        if patron2:
-                            url += scrapertools.find_single_match(_url_, patron2)
-                        if patron3:
-                            url += scrapertools.find_single_match(_url_, patron3)
-                        if patron4:
-                            url += scrapertools.find_single_match(_url_, patron4)
-                        if patron5:
-                            url += scrapertools.find_single_match(_url_, patron5)
-                        
-                        # Guardamos la suma de los resultados intermedios
-                        if url:
-                            if x == 0:
-                                url_total = url
-                                if item.url:
-                                    item.url = url_total
-                                if item.library_urls:
-                                    item.library_urls[canal_org] = url_total
-                                if it.library_urls: 
-                                    it.library_urls[canal_org] = url_total
-                        elif x == 1 and url:
-                            item.url_tvshow = url
-                        elif x > 1 and url:
-                            item.url_quality_alt[y][0] = url
-                        #logger.error('Pasada: %s - %s' %(x, url or _url_))
-                
-                # Si es el canal Newpct1, se analiza la url de la serie para quitarle códigos específicos de los clones
-                if item.channel == channel_py or channel in fail_over_list:
-                    if canal_org not in canal_des:
-                        item.channel_redir = item.category_alt or item.category
-                        #if item.category_alt: del item.category_alt
-                        #if item.contentType == "tvshow" and ow_force != 'no':      # Parece que con el título encuentra.., ### VIGILAR
-                        if item.contentType in ["tvshow", "season"]:                # Parece que con el título sólo, encuentra..,
-                            url_total = re.sub(r'\/\d{4,20}\/*$', '', url_total)    # mejor la serie, a menos que sea una redir del mismo canal
-
-                """ SALVAMOS el resultado para su proceso """
-                update_stat += 1                                                #Ya hemos actualizado algo
-                canal_org_des_list += [(canal_org, canal_des, url_total, opt, ow_force)]
-            
-    
-    """ PROCESAMOS las actualizaciones y borrados """
-    #Ha habido alguna actualización o borrado?  Entonces salvamos los cambios
-    if update_stat > 0 or delete_stat > 0:
-        if (update_stat > 0 and path != False) or item.ow_force == '1':
-            logger.info('** Lista de Actualizaciones a realizar: %s' % canal_org_des_list, force=True)
-        
-        # REPASAMOS por todas las "parejas" cambiadas
-        for canal_org_def, canal_des_def, url_total, opt_def, ow_force_def in canal_org_des_list:
-            url_total_def = url_total
-            # Actualizaciones normales, diferentes de borrados o urls de emergencia
-            if ow_force_def != 'del' and ow_force_def != 'emerg':
-                
-                # Salvamos la url convertida
-                if item.url:
-                    item.url = url_total
-                # Salvamos la url convertida en el canal de destino de library_urls, y borramos la del canal de origen
-                if item.library_urls:
-                    item.library_urls.pop(canal_org_def, None)
-                    item.library_urls.update({canal_des_def: url_total})
-                    if it.library_urls: it.library_urls = item.library_urls     # Lo salvamos al .nfo
-                
-                # Cambiamos el canal si no es Newpct1
-                if item.channel != channel_py and item.channel != 'videolibrary':
-                    item.channel = canal_des_def                                #Cambiamos el canal
-                    if channel_alt == item.category.lower():                    #Actualizamos la Categoría y si la tenía
-                        item.category = item.channel.capitalize()
-
-                # Queremos que el canal revise/regenere la serie entera?
-                if ow_force_def == 'force' and item.contentType != 'movie':
-                    item.ow_force = '1'                                         # Se lo decimos
-                if ow_force_def in ['force', 'auto']:                           # Sobreescribir la series?
-                    overwrite = True                                            # Sí, lo marcamos
-                
-                #Si se resetea la videoteca, se regeneran a webs/clones actuales
-                if it.library_urls and int(overwrite_param) == 3:
-                    if not path: item.channel = canal_des_def
-                    item.category = canal_des_def.capitalize()
-                    if item.channel_redir: del item.channel_redir
-                    if it.channel_redir: del it.channel_redir
-                    if item.category_alt: del item.category_alt
-                    ow_force_def = 'no'
-                    if it.library_urls and head_nfo and path:
-                        file = 'tvshow.nfo'
-                        if item.contentType == 'movie':
-                            file = filetools.basename(path) + '.nfo'
-                        res = write_nfo(filetools.join(path, file), head_nfo, it)       # Actualizo el .nfo
-
-        """ Continuamos si hay .NFO, path, y queremos ACTUALIZARLO """
-        if it.library_urls and head_nfo and path and ow_force_def != 'no':
-            # Borramos estos campos para forzar la actualización ya
-            item.update_next = '1'
-            del item.update_next
-            it.update_next = '1'
-            del it.update_next
-            
-            # Si hay .nfo lo salvamos actualizado
-            file = 'tvshow.nfo'
-            if item.contentType == 'movie':
-                file = filetools.basename(path) + '.nfo'
-            res = write_nfo(filetools.join(path, file), head_nfo, it)           # Actualizo el .nfo
-        
-            # Verificamos que las webs de los canales estén activas antes de borrar los .json, para asegurar que se pueden regenerar
-            i = 0
-            for channel, url in list(it.library_urls.items()):
-                if not url.startswith('magnet'):
-                    from core import httptools
-                    url_domain = scrapertools.find_single_match(url, patron_host) 
-                    response = httptools.downloadpage(url_domain, timeout=10, ignore_response_code=True, hide_infobox=True)
-                    if not response.sucess:
-                        logger.error('Web %s en ERROR %s.  URL no procesada: %s' % (channel.upper(), response.code, url))
-                        i = 0
-                        break
-                i =+ 1
-            
-            # Si hay urls verificadas, llamamos a la función de RESET series o películas de videolibrarytools
-            if i > 0:
-                if item.contentType == 'movie':
-                    reset_movie(filetools.join(path, file))
-                else:
-                    reset_serie(filetools.join(path, file))
-            else:
-                # Si no hay url válidas, marcamos el proceso como fallido
-                item = item_back.clone()                                        #Restauro las imágenes inciales
-                it = it_back.clone()
-                item.torrent_caching_fail = True                                #Marcamos el proceso como fallido
-                return (item, it, False)
-
-
-    """ FIN del proceso.  Avisamos de algunos cambios """
-    if (update_stat > 0 and path and ow_force_def in ['force', 'auto']) or item.ow_force == '1' or len(json_path_list) > 0:
-        logger.info('** ITEM cambiado: Canal: %s; Categoría: %s; Url: %s' % \
-                        (item.channel, item.category, item.url), force=True)
-        if it.library_urls:
-            logger.info('** NFO Library_urls: %s' % it.library_urls, force=True)
-        if it.emergency_urls:
-            logger.info('** NFO Emergency_urls: %s' % it.emergency_urls, force=True)
-    if update_stat > 0 and not path:
-        if it.library_urls:
-            logger.info('** URLs cambiadas: %s' % it.library_urls, force=True)
-        else:
-            logger.info('** URL cambiada: %s' % item.url, force=True)
-    if update_stat == 0 and not path and int(overwrite_param) == 3 and item.channel == channel_py:
-        item.channel = item.category.lower()
-
-    return (item, it, overwrite)
-
-
-def verify_cached_torrents(path, item, emergency_urls_force):
-    logger.info()
-    import json
-    
-    """
-    Verifica que todos los archivos .torrent estén descomprimidos.  Si no lo están, los descomprime y regraba
-    
-    Método para uso temporal y controlado
-    
-    Deja el archivo verify_cached_torrents.json como marca de que se ha ejecutado para esa versión de Alfa
-    """
-    
-    try:
-        #Localiza los paths donde dejar el archivo .json de control, y de la Videoteca
-        json_path = filetools.exists(filetools.join(config.get_runtime_path(), 'verify_cached_torrents.json'))
-        if json_path:
-            logger.info('Torrents verificados anteriormente: NOS VAMOS')
-            return item, emergency_urls_force
-        json_path = filetools.join(config.get_runtime_path(), 'verify_cached_torrents.json')
-        json_error_path = filetools.join(config.get_runtime_path(), 'error_cached_torrents.json')
-        json_error_path_BK = filetools.join(config.get_runtime_path(), 'error_cached_torrents_BK.json')
-            
-        #Calculamos el path absoluto a partir de la Videoteca
-        torrents_movies = movies_videolibrary_path                              #path de CINE
-        torrents_series = series_videolibrary_path                              #path de SERIES
-        
-        #Inicializa variables
-        torren_list = []
-        torren_list.append(torrents_movies)
-        torren_list.append(torrents_series)
-        i = 0
-        j = 0
-        k = 0
-        descomprimidos = []
-        errores = []
-        json_data = dict()
-        
-        #Recorre las carpetas de CINE y SERIES de la Videoteca, leyendo, descomprimiendo y regrabando los archivos .torrent
-        for contentType in torren_list:
-            for root, folders, files in filetools.walk(contentType):
-                for file in files:
-                    if not '.torrent' in file:
-                        continue
-                    i += 1
-                    torrent_file = ''
-                    torrent_path = filetools.join(root, file)
-                    torrent_file = filetools.read(torrent_path)
-                    if not scrapertools.find_single_match(torrent_file, '^d\d+:\w+\d+:'):
-                        logger.debug('Torrent comprimido: DESCOMPRIMIENDO: ' + str(torrent_path))
-                        try:
-                            torrent_file_deco = ''
-                            import zlib
-                            torrent_file_deco = zlib.decompressobj(16 + zlib.MAX_WBITS).decompress(torrent_file)
-                        except:
-                            k += 1
-                            errores += [torrent_path]
-                            logger.error(traceback.format_exc())
-                            logger.error('No es un archivo TORRENT. Archivo borrado: ' + str(torrent_path))
-                            if not json_data.get(root, False):
-                                json_data[root] = 'ERROR'
-                            if scrapertools.find_single_match(file, '^\d+x\d+'):
-                                torrent_json = re.sub(r'\]_\d+.torrent$', '].json', torrent_path)
-                                filetools.remove(torrent_json)
-                            filetools.remove(torrent_path)
-                            continue
-                                                
-                        if not scrapertools.find_single_match(torrent_file_deco, '^d\d+:\w+\d+:'):
-                            logger.error('Error de DESCOMPRESIÓN: ' + str(torrent_path))
-                            k += 1
-                            errores += [torrent_path]
-                        else:
-                            filetools.write(torrent_path, torrent_file_deco)
-                            j += 1
-                            descomprimidos += [torrent_path]
-                    else:
-                        #logger.info('Torrent OK.  No hace falta descompresión: ' + str(torrent_path))
-                        h = 0
-
-        if json_data:
-            filetools.write(json_error_path, json.dumps(json_data))
-        filetools.write(json_error_path_BK, json.dumps(json_data))
-        filetools.write(json_path, json.dumps({"torrent_verify": True}))
-    except:
-        logger.error('Error en el proceso de VERIFICACIÓN de los .torrents')
-        logger.error(traceback.format_exc())
-        
-    logger.error(str(i) + ' archivos .torrent revisados. / ' + str(j) + ' descomporimidos / ' + str(k) + ' errores')
-    if descomprimidos:
-        logger.error('Lista de .torrents DESCOMPRIMIDOS: ' + str(descomprimidos))
-    if errores:
-        logger.error('Lista de .torrents en ERROR: ' + str(errores))
-    
-    try:                                                                        # Si ha habido errores, vemos la lista y los reparamos
-        #json_error_path = filetools.join(config.get_runtime_path(), 'error_cached_torrents.json')
-        if filetools.exists(json_error_path):                                   # hay erroer que hay que reparar?
-            from core import jsontools
-            json_error_file = jsontools.load(filetools.read(json_error_path))   # Leemos la lista de errores
-            if not json_error_file:
-                filetools.remove(json_error_path)                               # si ya no quedan errores, borramos el .json
-            elif path in json_error_file:                                       # está este títu,o en la lista de errores?
-                json_error_file.pop(path)                                       # sí.  Lo quitamos
-                if not json_error_file:
-                    filetools.remove(json_error_path)                           # si ya no quedan errores, borramos el .json
-                else:
-                    filetools.write(json_error_path, jsontools.dump(json_error_file))   #si quedan, actualizamos el .json
-                if item.contentType == 'movie':                                 # si es una pelicula, forzamos su actualización
-                    emergency_urls_force = True
-                else:                                                           # si es una serie, que regenere los episodios que faltan (en error)
-                    item.ow_force = '1'                                         # ... de todas las temporadas
-    except:
-        logger.error('Error en el proceso de REPARACION de vídeos con .torrents dañados')
-        logger.error(traceback.format_exc())
-    
-    return item, emergency_urls_force
-
+ 
                             
 def call_browser(url, download_path='', lookup=False, strict=False, wait=False, intent='', dataType=''):
     logger.info()
@@ -5269,7 +3053,7 @@ def call_browser(url, download_path='', lookup=False, strict=False, wait=False, 
         if PLATAFORMA in ['android', 'atv2']:
             try:
                 ANDROID_STORAGE = os.getenv('ANDROID_STORAGE')
-            except:
+            except Exception:
                 ANDROID_STORAGE = ''
             if not ANDROID_STORAGE:
                 if "'HOME'" in os.environ:
@@ -5311,14 +3095,14 @@ def call_browser(url, download_path='', lookup=False, strict=False, wait=False, 
                         PM_LIST, error_cmd = p.communicate()
                         if not error_cmd:
                             break
-                    except:
+                    except Exception:
                         continue
                 if not PM_LIST: raise
                 
                 if PY3 and isinstance(PM_LIST, bytes):
                     PM_LIST = PM_LIST.decode()
                 PM_LIST = PM_LIST.replace('\n', ', ')
-            except:
+            except Exception:
                 logger.error(command)
                 if config.is_rooted(silent=True) == 'rooted':
                     commands = [['su', '-c', 'pm list packages'], ['su', '-c', 'pm',  'list', 'packages'], \
@@ -5490,7 +3274,7 @@ def call_browser(url, download_path='', lookup=False, strict=False, wait=False, 
                         prefs_file = os.getenv(paths[2])
                         if not prefs_file and PLATAFORMA in ['android', 'atv2']:
                             prefs_file = '/data'
-                    except:
+                    except Exception:
                         if PLATAFORMA in ['android', 'atv2']:
                             prefs_file = '/data'
                     break
@@ -5635,50 +3419,15 @@ def call_browser(url, download_path='', lookup=False, strict=False, wait=False, 
                     output_cmd, error_cmd = s.communicate()
                     if error_cmd: res = False
                     logger.error('Error "%s" en Browser %s, Comando %s' % (str(error_cmd), browser, str(params)))
-            except:
+            except Exception:
                 res = False
                 logger.error('Error "%s" en Browser %s, Comando %s' % (str(error_cmd), browser, str(params)))
 
-    except:
+    except Exception:
         logger.error(traceback.format_exc())
         return (False, False)
     
     return (browser.capitalize(), res)
-
-
-def dejuice(data):
-    logger.info()
-    from lib import jsunpack
-    
-    # Metodo para desobfuscar datos de JuicyCodes
-
-    juiced = scrapertools.find_single_match(data, 'JuicyCodes.Run\((.*?)\);')
-    b64_data = juiced.replace('+', '').replace('"', '')
-    b64_decode = base64.b64decode(b64_data)
-    dejuiced = jsunpack.unpack(b64_decode)
-
-    return dejuiced
-
-
-def privatedecrypt(url, headers=None):
-    from core import httptools
-    from lib import jsunpack
-
-    data = httptools.downloadpage(url, headers=headers, follow_redirects=False).data
-    data = re.sub(r'\n|\r|\t|&nbsp;|<br>|\s{2,}', "", data)
-    packed = scrapertools.find_single_match(data, '(eval\(.*?);var')
-    unpacked = jsunpack.unpack(packed)
-    server = scrapertools.find_single_match(unpacked, "src:.'(http://\D+)/")
-    id = scrapertools.find_single_match(unpacked, "src:.'http://\D+/.*?description:.'(.*?).'")
-    if server == '':
-        if 'powvideo' in unpacked:
-            id = scrapertools.find_single_match(unpacked, ",description:.'(.*?).'")
-            server = 'https://powvideo.net'
-    if server != '' and id != '':
-        url = '%s/%s' % (server, id)
-    else:
-        url = ''
-    return url
 
 
 def rec(site_key, co, sa, loc):
@@ -5717,14 +3466,3 @@ def rec(site_key, co, sa, loc):
     r_data = httptools.downloadpage(t_url, headers=head, follow_redirects=False, post=post, alfa_s=True).data
     response = scrapertools.find_single_match(r_data, '"rresp","([^"]+)"')
     return response
-
-
-def get_color_from_settings(label, default='white'):
-    
-    color = config.get_setting(label)
-    if not color:
-        return default
-    
-    color = scrapertools.find_single_match(color, '\](\w+)\[')
-    
-    return color or default

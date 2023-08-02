@@ -5,10 +5,11 @@
 
 import sys
 PY3 = False
-if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int
+if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
 import re
 import traceback
+if not PY3: _dict = dict; from collections import OrderedDict as dict
 import datetime
 
 from core.item import Item
@@ -49,8 +50,8 @@ tv_path = '/catalogue'
 language = []
 url_replace = []
 
-finds = {'find': {'find': [{'tag': ['div'], 'class': ['row fix-row', 'row vZDWbeaaab']}], 
-                  'find_all': [{'tag': ['div'], 'class': ['col-lg-2', 'col-lg-3']}]},
+finds = {'find': dict([('find', [{'tag': ['div'], 'class': ['row fix-row', 'row vZDWbeaaab']}]), 
+                       ('find_all', [{'tag': ['div'], 'class': ['col-lg-2', 'col-lg-3']}])]),
          'categories': {}, 
          'search': {}, 
          'get_language': {}, 
@@ -59,10 +60,12 @@ finds = {'find': {'find': [{'tag': ['div'], 'class': ['row fix-row', 'row vZDWbe
          'get_quality_rgx': '', 
          'next_page': {}, 
          'next_page_rgx': [['\?\&page=\d+', '?&page=%s']], 
-         'last_page': {'find': [{'tag': ['a'], 'aria-label': re.compile('(?i)Netx')}], 
-                       'find_previous': [{'tag': ['a']}], 'get_text': [{'tag': '', '@STRIP': True, '@TEXT': '(\d+)'}]}, 
+         'last_page': dict([('find', [{'tag': ['a'], 'aria-label': re.compile('(?i)Netx')}]), 
+                            ('find_previous', [{'tag': ['a']}]), 
+                            ('get_text', [{'tag': '', '@STRIP': True, '@TEXT': '(\d+)'}])]), 
          'year': {}, 
-         'season_episode': {'find': [{'tag': ['div'], 'class': False}], 'get_text': [{'tag': '', '@STRIP': True, '@TEXT': '(?i)(\d+x\d+)'}]}, 
+         'season_episode': dict([('find', [{'tag': ['div'], 'class': False}]), 
+                                 ('get_text', [{'tag': '', '@STRIP': True, '@TEXT': '(?i)(\d+x\d+)'}])]), 
          'seasons': {}, 
          'season_num': {'find': [{'tag': ['a'], '@ARG': 'data-season'}]}, 
          'seasons_search_num_rgx': '', 
@@ -72,8 +75,8 @@ finds = {'find': {'find': [{'tag': ['div'], 'class': ['row fix-row', 'row vZDWbe
          'episode_num': [], 
          'episode_clean': [], 
          'plot': {}, 
-         'findvideos': {'find': [{'tag': ['div'], 'id': ['watch']}], 
-                        'find_all': [{'tag': ['a'], 'class': ['border-bottom']}]}, 
+         'findvideos': dict([('find', [{'tag': ['div'], 'id': ['watch']}]), 
+                             ('find_all', [{'tag': ['a'], 'class': ['border-bottom']}])]), 
          'title_clean': [['(?i)TV|Online|(4k-hdr)|(fullbluray)|4k| - 4k|(3d)|miniserie|\s*\(\d{4}\)', ''],
                          ['[\(|\[]\s*[\)|\]]', '']],
          'quality_clean': [['(?i)proper|unrated|directors|cut|repack|internal|real-*|extended|masted|docu|super|duper|amzn|uncensored|hulu', '']],
@@ -132,19 +135,19 @@ def section(item):
     findS = finds.copy()
 
     if 'Años' in item.title:
-        findS['categories'] = {'find': [{'tag': ['button'], 'string': re.compile('(?i)Todos\s*los\s*a.os')}], 
-                               'find_previous':  [{'tag': ['div'], 'class': ['dropdown YaGWbeaaab']}], 
-                               'find_all': [{'tag': ['div'], 'class': ['custom-control']}]}
+        findS['categories'] = dict([('find', [{'tag': ['button'], 'string': re.compile('(?i)Todos\s*los\s*a.os')}]), 
+                                    ('find_previous', [{'tag': ['div'], 'class': ['dropdown YaGWbeaaab']}]), 
+                                    ('find_all', [{'tag': ['div'], 'class': ['custom-control']}])])
 
     elif 'País' in item.title:
-        findS['categories'] = {'find': [{'tag': ['button'], 'string': re.compile('(?i)Todos\s*los\s*pa.ses')}], 
-                               'find_previous':  [{'tag': ['div'], 'class': ['dropdown YaGWbeaaab']}], 
-                               'find_all': [{'tag': ['div'], 'class': ['custom-control']}]}
+        findS['categories'] = dict([('find', [{'tag': ['button'], 'string': re.compile('(?i)Todos\s*los\s*pa.ses')}]), 
+                                    ('find_previous', [{'tag': ['div'], 'class': ['dropdown YaGWbeaaab']}]), 
+                                    ('find_all', [{'tag': ['div'], 'class': ['custom-control']}])])
 
     elif 'Géneros' in item.title:
-        findS['categories'] = {'find': [{'tag': ['button'], 'string': re.compile('(?i)Todos\s*los\s*g.neros')}], 
-                               'find_previous':  [{'tag': ['div'], 'class': ['dropdown YaGWbeaaab']}], 
-                               'find_all': [{'tag': ['div'], 'class': ['custom-control']}]}
+        findS['categories'] = dict([('find', [{'tag': ['button'], 'string': re.compile('(?i)Todos\s*los\s*g.neros')}]), 
+                                    ('find_previous', [{'tag': ['div'], 'class': ['dropdown YaGWbeaaab']}]), 
+                                    ('find_all', [{'tag': ['div'], 'class': ['custom-control']}])])
 
     return AlfaChannel.section(item, matches_post=section_matches, finds=findS, **kwargs)
 
@@ -310,7 +313,7 @@ def episodesxseason_matches(item, matches_int, **AHkwargs):
     for elem in matches_int:
         elem_json = {}
         #logger.error(elem)
-        if not isinstance(elem, dict): continue
+        if not isinstance(elem, (dict, _dict)): continue
 
         try:
             if elem.get('audio', '') == 'N/A' and not elem.get('picture', '') and not elem.get('description', ''): continue
@@ -362,7 +365,6 @@ def findvideos_matches(item, matches_int, langs, response, **AHkwargs):
             elem_json['server'] = elem.find('div', class_='font-weight-500').get_text(strip=True)
 
             elem_json['language'] = re.compile('src="([^"]+)"', re.DOTALL).findall(str(elem.find('span', class_='juM9Fbab')))
-            logger.error(elem_json['language'])
             AlfaChannel.get_language_and_set_filter(elem_json['language'], elem_json)
 
             elem_json['title'] = '%s'
@@ -421,8 +423,7 @@ def play(item):
 
 def search(item, texto, **AHkwargs):
     logger.info()
-    global kwargs
-    kwargs = AHkwargs
+    kwargs.update(AHkwargs)
 
     texto = texto.replace(" ", "+")
     item.url = host + 'search?s=' + texto

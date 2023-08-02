@@ -614,6 +614,10 @@ def decode_utf8_error(path):
     return path
 
 
+def unhex_text(text):
+    return re.sub('\\\\x([a-fA-F0-9][a-fA-F0-9])', lambda text_: str(chr(int(text_.group(1), 16))), text)
+
+
 def htmlparser(data):
     """
     Convierte los carateres HTML (&#038;, ...) a su equivalente utf-8

@@ -20,7 +20,7 @@ def get_video_url(page_url, premium=False, user="", password="", video_password=
     logger.info("url=" + page_url)
     video_urls = []
     data = httptools.downloadpage(page_url).data
-    enc_data = scrapertools.find_single_match(data, "type='text/javascript'>(eval.*?)?\s+</script>")
+    enc_data = scrapertools.find_single_match(data, "<script type=[\"']text/javascript[\"']>\s*;?(eval.*?)</script>")
     dec_data = jsunpack.unpack(enc_data)
     sources = 'src:"([^"]+)"'
     matches = re.compile(sources, re.DOTALL).findall(dec_data)

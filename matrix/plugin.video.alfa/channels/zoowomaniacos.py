@@ -5,7 +5,11 @@
 
 import sys
 PY3 = False
-if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int
+if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
+
+import re
+import traceback
+if not PY3: _dict = dict; from collections import OrderedDict as dict
 
 from core import tmdb
 from core.item import Item
@@ -50,9 +54,9 @@ tv_path = '/serie'
 language = []
 url_replace = []
 
-finds = {'findvideos': {'find': [{'tagOR': ['div'], 'id': ['playeroptions']}, 
-                                 {'tag': ['ul'], 'class': ['options']}], 
-                        'find_all': [{'tag': 'li'}]}, 
+finds = {'findvideos': dict([('find', [{'tagOR': ['div'], 'id': ['playeroptions']}, 
+                                       {'tag': ['ul'], 'class': ['options']}]), 
+                             ('find_all', [{'tag': 'li'}])]), 
          'get_language_rgx': '(?:flags\/|-)(\w+)\.(?:png|jpg|jpeg|webp)', 
          'controls': {'duplicates': [], 'min_temp': False, 'url_base64': False, 'add_video_to_videolibrary': True, 
                       'get_lang': False, 'reverse': False, 'videolab_status': True, 
@@ -74,14 +78,14 @@ def mainlist(item):
     itemlist.append(Item(channel=item.channel, title='Ultimas', start=0, action='list_all', 
                          thumbnail=get_thumb('last', auto=True)))
 
-    itemlist.append(Item(channel=item.channel, title='Generos', action='section',
+    itemlist.append(Item(channel=item.channel, title=' - [COLOR paleturquoise]Por Género[/COLOR]', action='section',
                          thumbnail=get_thumb('genres', auto=True)))
 
-    itemlist.append(Item(channel=item.channel, title='Por Año', action='section',
+    itemlist.append(Item(channel=item.channel, title=' - [COLOR paleturquoise]Por Año[/COLOR]', action='section',
                          thumbnail=get_thumb('year', auto=True)))
 
-    itemlist.append(Item(channel=item.channel, title='Por País', action='section',
-                    thumbnail=get_thumb('country', auto=True)))
+    itemlist.append(Item(channel=item.channel, title=' - [COLOR paleturquoise]Por País[/COLOR]', action='section',
+                         thumbnail=get_thumb('country', auto=True)))
 
     itemlist.append(Item(channel=item.channel, title="Buscar...", action="search",
                          thumbnail=get_thumb("search", auto=True)))
@@ -98,9 +102,9 @@ def section(item):
 
     itemlist = list()
 
-    if item.title == "Generos":
+    if "Género" in item.title:
         _filter = "genres"
-    elif item.title == "Por País":
+    elif "País" in item.title:
         _filter = "countries"
     else:
         _filter = "years"
@@ -111,9 +115,9 @@ def section(item):
         title = elem.get("label", '')
         new_item = item.clone(title=title, action="list_all", start=0)
 
-        if item.title == "Generos":
+        if "Género" in item.title:
             new_item.genre = title
-        elif item.title == "Por País":
+        elif "País" in item.title:
             new_item.country = title
         else:
             new_item.year = title
@@ -219,8 +223,7 @@ def actualizar_titulos(item):
 
 def search(item, texto, **AHkwargs):
     logger.info()
-    global kwargs
-    kwargs = AHkwargs
+    kwargs.update(AHkwargs)
     
     try:
         texto = texto.replace(" ", "+")

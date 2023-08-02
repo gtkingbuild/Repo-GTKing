@@ -5,9 +5,11 @@
 
 import sys
 PY3 = False
-if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int
+if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
+import re
 import traceback
+if not PY3: _dict = dict; from collections import OrderedDict as dict
 
 from core.item import Item
 from core import servertools
@@ -65,13 +67,13 @@ def mainlist(item):
     itemlist.append(Item(channel=item.channel, title="Todas", url=host+'peliculas', action="list_all",
                          thumbnail=get_thumb('all', auto=True), c_type='peliculas'))
 
-    itemlist.append(Item(channel=item.channel, title="Generos", action="section", url=host,
+    itemlist.append(Item(channel=item.channel, title=" - [COLOR paleturquoise]Por Género[/COLOR]", action="section", url=host,
                          thumbnail=get_thumb('genres', auto=True), c_type='peliculas'))
 
-    itemlist.append(Item(channel=item.channel, title="Años", action="section", url=host,
+    itemlist.append(Item(channel=item.channel, title=" - [COLOR paleturquoise]Por Año[/COLOR]", action="section", url=host,
                         thumbnail=get_thumb('year', auto=True), c_type='peliculas'))
                         
-    itemlist.append(Item(channel=item.channel, title="Alfabético", action="alfabetico", url=host,
+    itemlist.append(Item(channel=item.channel, title=" - [COLOR paleturquoise]Por [A-Z][/COLOR]", action="alfabetico", url=host,
                         thumbnail=get_thumb('alphabet', auto=True), c_type='peliculas'))
 
     itemlist.append(Item(channel=item.channel, title="Buscar...",  url=host,  action="search",
@@ -89,10 +91,11 @@ def section(item):
 
     findS = finds.copy()
 
-    if item.title == "Generos":
+    if "Género" in item.title:
         findS['categories']['find'][0]['id'][0] = 'menu-item-97'
-    elif item.title == "Años":
-        findS['categories'] = {'find': [{'tag': ['ul'], 'class': ['releases']}]}
+    elif "Año" in item.title:
+        findS['categories'] = dict([('find', [{'tag': ['ul'], 'class': ['releases']}]), 
+                                    ('find_all', [{'tag': ['li']}])])
 
     return AlfaChannel.section(item, finds=findS, **kwargs)
 
@@ -116,7 +119,8 @@ def list_all(item):
 
     findS = finds.copy()
 
-    findS['year'] = {'find': [{'tag': ['span']}], 'get_text': [{'@TEXT': '(\d{4})'}]}
+    findS['year'] = dict([('find', [{'tag': ['span']}]), 
+                          ('get_text', [{'@TEXT': '(\d{4})'}])])
 
     if item.c_type == 'search':
         findS['find'] = findS.get('search', findS['find'])
@@ -124,7 +128,8 @@ def list_all(item):
         return AlfaChannel.list_all(item, matches_post=AlfaChannel_class.list_all_matches, finds=findS, **kwargs)
 
     if item.json:
-        findS['find'] = {'find': [{'tag': ['body']}], 'get_text': [{'@TEXT': '(.*?)$'}]}
+        findS['find'] = dict([('find', [{'tag': ['body']}]), 
+                              ('get_text', [{'@TEXT': '(.*?)$'}])])
 
     return AlfaChannel.list_all(item, matches_post=AlfaChannel_class.list_all_matches, finds=findS, **kwargs)
 
@@ -150,8 +155,7 @@ def actualizar_titulos(item):
 
 def search(item, texto, **AHkwargs):
     logger.info()
-    global kwargs
-    kwargs = AHkwargs
+    kwargs.update(AHkwargs)
     
     try:
         texto = texto.replace(" ", "+")

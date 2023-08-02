@@ -18,12 +18,15 @@ kwargs = {'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 0, 'CF': T
 
 def test_video_exists(page_url):
     global data, retries
-
-    page_url = page_url.replace('/d/', '/e/')
+    
+    # page_url = page_url.replace('/d/', '/e/')
     logger.info("(page_url='%s'; retry=%s)" % (page_url, retries))
 
     response = httptools.downloadpage(page_url, **kwargs)
-
+    if '/d/' in page_url and scrapertools.find_single_match(response.data, ' <iframe src="([^"]+)"'):
+        url = scrapertools.find_single_match(response.data, ' <iframe src="([^"]+)"')
+        page_url = "%s%s" %(host,url)
+        response = httptools.downloadpage(page_url, **kwargs)
     if response.code == 404 or "Video not found" in response.data:
         return False, "[Doodstream] El archivo no existe o ha sido borrado"
     elif not scrapertools.find_single_match(response.data, ("(function\s?makePlay.*?;})")) and retries >= 0:

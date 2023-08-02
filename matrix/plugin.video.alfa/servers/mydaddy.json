@@ -6,6 +6,10 @@
       {
         "pattern": "mydaddy.cc/video/([A-z0-9]+)",
         "url": "https://mydaddy.cc/video/\\1"
+      },
+      {
+        "pattern": "/mydaddy/([A-z0-9]+)",
+        "url": "https://mydaddy.cc/video/\\1"
       }
     ]
   },

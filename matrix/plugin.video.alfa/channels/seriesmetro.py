@@ -233,6 +233,11 @@ def seasons(item):
                              action='episodesxseason', infoLabels=infoLabels, 
                              contentType='season', obj=obj))
     
+    itemlist = sorted(itemlist, key=lambda x: [
+        int(x) if x.isdigit() else x
+            for x in x.title.split(" ")
+    ])
+    
     tmdb.set_infoLabels_itemlist(itemlist, True)
 
     if config.get_videolibrary_support() and len(itemlist) and item.extra != 'episodios':

@@ -23,14 +23,13 @@ from core.item import Item
 from platformcode import config, logger
 from bs4 import BeautifulSoup
 
-# http://www.eroti.ga/  https://www.sleazemovies.com/
+# http://www.eroti.ga/  https://www.sleazemovies.com/  https://erotiga.net/
 
 canonical = {
              'channel': 'sleazemovies', 
              'host': config.get_setting("current_host", 'sleazemovies', default=''), 
-             'host_alt': ["https://www.eroti.ga/"], 
-             'host_black_list': [], 
-             'pattern': ['<h1 class="site-title"><a href="?([^"|\s*]+)["|\s*]\s*rel="?home"?'], 
+             'host_alt': ["https://erotiga.net/"], 
+             'host_black_list': ["https://www.eroti.ga/"], 
              'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'cf_assistant': False, 
              'CF': False, 'CF_test': False, 'alfa_s': True
             }
