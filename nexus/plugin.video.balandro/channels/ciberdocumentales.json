@@ -1,0 +1,17 @@
+{
+  "id": "ciberdocumentales",
+  "name": "CiberDocumentales",
+  "thumbnail": "ciberdocumentales.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["documentary"],
+
+  "categories": ["documentary"],
+  "language": ["cast"],
+
+  "clusters": ["problematic", "categories", "docs"],
+
+  "notes": "Documentales en castellano."
+}

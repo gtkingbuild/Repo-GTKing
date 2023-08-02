@@ -1,0 +1,17 @@
+{
+  "id": "megadedela",
+  "name": "MegadedeLa",
+  "thumbnail": "megadedela.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["rankings", "years", "countries", "kids", "docs", "vos"],
+
+  "notes": "Web CERRADA. Películas y Series, por géneros, año, país."
+}

@@ -1,0 +1,25 @@
+{
+  "id": "cloudvideo",
+  "name": "Cloudvideo",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "https://cloudvideo.tv/embed-([a-z0-9]+).html",
+        "url": "https://cloudvideo.tv/embed-\\1.html"
+      },
+      {
+        "pattern": "https://cloudvideo.tv/emb\\.html\\?([a-z0-9]+)",
+        "url": "https://cloudvideo.tv/embed-\\1.html"
+      },
+      {
+        "pattern": "https://cloudvideo.tv/([a-z0-9]+)",
+        "url": "https://cloudvideo.tv/embed-\\1.html"
+      }
+    ]
+  }
+
+}

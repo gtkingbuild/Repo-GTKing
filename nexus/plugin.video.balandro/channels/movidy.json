@@ -1,0 +1,17 @@
+{
+  "id": "movidy",
+  "name": "Movidy",
+  "thumbnail": "movidy.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose", "vo"],
+
+  "clusters": ["news", "rankings", "years", "lasts", "stars", "directors", "vos"],
+
+  "notes": "Web CERRADA. Películas y Series, por géneros, año"
+}

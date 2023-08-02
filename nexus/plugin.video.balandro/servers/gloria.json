@@ -1,0 +1,17 @@
+{
+  "id": "gloria",
+  "name": "Gloria",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "http(?:s|)://gloria.tv/(?:video/|post/|\\?embed=&amp;post=|)([A-z0-9]+)",
+        "url": "https://gloria.tv/video/\\1"
+      }
+    ]
+  }
+
+}

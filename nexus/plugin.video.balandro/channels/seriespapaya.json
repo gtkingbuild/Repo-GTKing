@@ -1,0 +1,17 @@
+{
+  "id": "seriespapaya",
+  "name": "SeriesPapaya",
+  "thumbnail": "seriespapaya.png",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["lasts", "rankings", "vos"],
+
+  "notes": "Web CERRADA. Series, con capítulos de estreno en castellano, latino y subtituladas. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

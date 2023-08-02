@@ -1,0 +1,17 @@
+{
+  "id": "letsupload",
+  "name": "Letsupload",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "http(?:s|)://letsupload.(?:io|co|to|org)/([A-z0-9]+)",
+        "url": "https://letsupload.io\\1"
+      }
+    ]
+  }
+
+}

@@ -1,0 +1,18 @@
+{
+  "id": "pelis24",
+  "name": "Pelis24",
+  "thumbnail": "pelis24.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["rankings", "years", "kids", "docs", "vos"],
+
+  "notes": "Web CERRADA. Películas por géneros y año."
+
+}

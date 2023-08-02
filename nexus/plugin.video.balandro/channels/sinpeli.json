@@ -1,0 +1,17 @@
+{
+  "id": "sinpeli",
+  "name": "SinPeli",
+  "thumbnail": "sinpeli.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["languages", "qualityes", "docs", "kids", "vos"],
+
+  "notes": "Películas por géneros."
+}

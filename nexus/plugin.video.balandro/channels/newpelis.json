@@ -1,0 +1,17 @@
+{
+  "id": "newpelis",
+  "name": "NewPelis",
+  "thumbnail": "newpelis.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie", "torrent"],
+  "language": ["lat", "vose", "vo"],
+
+  "clusters": ["torrents", "years", "vos"],
+
+  "notes": "Canal con enlaces Streaming y Torrent. Películas por géneros."
+}

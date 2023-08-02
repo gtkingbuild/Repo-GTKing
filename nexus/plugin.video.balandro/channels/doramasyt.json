@@ -1,0 +1,17 @@
+{
+  "id": "doramasyt",
+  "name": "DoramasYt",
+  "thumbnail": "doramasyt.jpg",
+
+  "active": true,
+
+  "searchable": false,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["dorama"],
+
+  "notes": "Web dedicada exclusivamente al dorama"
+}

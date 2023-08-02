@@ -1,0 +1,17 @@
+{
+  "id": "watchvideo",
+  "name": "Watchvideo",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "watchvideo[0-9]*.us/(?:embed-|)([A-z0-9]+)",
+        "url": "https://watchvideo.us/\\1"
+      }
+    ]
+  }
+
+}

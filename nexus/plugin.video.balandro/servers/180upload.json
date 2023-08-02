@@ -1,0 +1,18 @@
+{
+  "id": "180upload",
+  "name": "180upload",
+
+  "active": false,
+  "notes": "Ya no existe",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "(180upload.com/[a-z0-9]+)",
+        "url": "http://\\1"
+      }
+    ]
+  }
+
+}

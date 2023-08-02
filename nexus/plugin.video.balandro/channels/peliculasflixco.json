@@ -1,0 +1,17 @@
+{
+  "id": "peliculasflixco",
+  "name": "PeliculasFlixCo",
+  "thumbnail": "peliculasflixco.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["adults", "producers", "kids", "docs", "vos"],
+
+  "notes": "Web CERRADA. Películas por idiomas, géneros y productoras."
+}

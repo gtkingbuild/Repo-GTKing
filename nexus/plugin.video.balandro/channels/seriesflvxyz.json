@@ -1,0 +1,17 @@
+{
+  "id": "seriesflvxyz",
+  "name": "SeriesFlvXyz",
+  "thumbnail": "seriesflvxyz.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["lasts", "years", "producers", "kids", "docs", "vos", "anime"],
+
+  "notes": "Web CERRADA. Series, por género, año."
+}

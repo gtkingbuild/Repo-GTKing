@@ -1,0 +1,17 @@
+{
+  "id": "ievenn",
+  "name": "Ievenn",
+  "thumbnail": "ievenn.png",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie"],
+  "language": ["cast", "vose", "vo"],
+
+  "clusters": ["suggested", "classic", "categories", "languages", "docs", "vos"],
+
+  "notes": "Películas por idiomas, géneros."
+}

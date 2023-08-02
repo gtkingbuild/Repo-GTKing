@@ -1,0 +1,18 @@
+{
+  "id": "allmyvideos",
+  "name": "Allmyvideos",
+
+  "active": false,
+  "notes": "Ya no existe",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "(allmyvideos.net/[a-z0-9]+)",
+        "url": "http://\\1"
+      }
+    ]
+  }
+
+}

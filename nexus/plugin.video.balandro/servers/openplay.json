@@ -1,0 +1,17 @@
+{
+  "id": "openplay",
+  "name": "Openplay",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "https://player.openplay.vip/player.php\\?id=([A-z0-9]+)",
+        "url": "https://player.openplay.vip/player.php?id=\\1"
+      }
+    ]
+  }
+
+}

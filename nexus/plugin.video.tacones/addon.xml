@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.tacones" name="[COLOR red]TACONES[/COLOR]" version="3.0.0" provider-name="La Mala de la Novela">
+	<requires>
+		<import addon="script.module.six" />
+		<import addon="script.module.kodi-six" />
+		<import addon="script.module.requests" optional="true"/>
+		<import addon="script.module.websocket" version="0.50.0"  optional="true"/>
+		<import addon="script.module.youtube.dl" optional="true"/>
+		<import addon="plugin.video.youtube" optional="true" />
+		<import addon="script.module.dateutil" optional="true" />
+		<import addon="script.module.resolveurl" optional="true"/>
+		<import addon="script.module.urlresolver" optional="true"/>
+		<import addon="script.module.cloudscraper" optional="true"/>
+		<import addon="script.module.inputstreamhelper" optional="true"/>
+		<import addon="script.module.slproxy" optional="true"/>
+	</requires>
+	<extension point="xbmc.python.pluginsource" library="default.py">
+		<provides>video</provides>
+	</extension>
+	
+	<extension point="xbmc.addon.repository" name="KodiSpain repository">
+		<dir>
+			<info compressed="false">https://raw.githubusercontent.com/lamalanovela/Repo/master/Repositorio/addons.xml</info>
+			<checksum>https://raw.githubusercontent.com/lamalanovela/Repo/master/Repositorio/addons.xml.md5</checksum>
+			<datadir zip="true">https://raw.githubusercontent.com/lamalanovela/Repo/master/Repositorio/</datadir>
+		</dir>
+    </extension>
+
+	<extension point="xbmc.addon.metadata">
+		<summary>TACONES</summary>
+		<description>Addon sin ánimo de lucro y con fines exclusivamente educativos</description>
+		<platform>all</platform>
+		<assets>
+			<icon>icon.png</icon>
+			<fanart>fanart.jpg</fanart>
+			<screenshot>resources/media/screenshoot-1.jpg</screenshot>
+			<screenshot>resources/media/screenshoot-2.jpg</screenshot>
+			<screenshot>resources/media/screenshoot-3.jpg</screenshot>
+			<screenshot>resources/media/screenshoot-4.jpg</screenshot>
+		</assets>
+		<news>Primera versión también compatible con Kodi 19 Matrix</news>
+	</extension>
+</addon>

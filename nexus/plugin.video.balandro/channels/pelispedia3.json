@@ -1,0 +1,17 @@
+{
+  "id": "pelispedia3",
+  "name": "PelisPedia3",
+  "thumbnail": "pelispedia3.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["lasts", "rankings", "producers", "docs", "kids", "vos", "anime", "tales"],
+
+  "notes": "Series por Géneros."
+}

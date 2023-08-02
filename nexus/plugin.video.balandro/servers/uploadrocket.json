@@ -1,0 +1,18 @@
+{
+  "id": "uploadrocket",
+  "name": "Uploadrocket",
+ 
+  "active": false,
+  "notes": "Requiere Debrider",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "http://uploadrocket.(?:com|net)/([a-zA-Z0-9]+)",
+        "url": "http://uploadrocket.com/\\1"
+      }
+    ]
+  }
+
+}
