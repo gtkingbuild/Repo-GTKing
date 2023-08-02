@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.program.GTKing-Phoenix" name="[B][COLOR azure]GTKing[/COLOR] [COLOR gold]PHOENIX[/COLOR] [COLOR lime]TEAM[/COLOR][/B]" version="3.2" provider-name="GTKing PHOENIX TEAM">
+<addon id="plugin.program.GTKing-Phoenix" name="[B][COLOR azure]GTKing[/COLOR] [COLOR gold]PHOENIX[/COLOR] [COLOR lime]TEAM[/COLOR][/B]" version="20.0" provider-name="GTKing PHOENIX TEAM">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0"/>
 		<import addon="script.module.requests"/>
@@ -126,7 +126,7 @@
     </extension>
 </addon>
 
-<addon id="repository.GTKing-Phoenix" name="[B][COLOR steelblue]Repo [COLOR azure]GTKing [COLOR gold]PHOENIX [COLOR limegreen]TEAM[/COLOR][/B]" version="1.9" provider-name="GTKing PHOENIX TEAM">
+<addon id="repository.GTKing-Phoenix" name="[B][COLOR steelblue]Repo [COLOR azure]GTKing [COLOR gold]PHOENIX [COLOR limegreen]TEAM[/COLOR][/B]" version="20.0" provider-name="GTKing PHOENIX TEAM">
     <extension point="xbmc.addon.repository" name="[B][COLOR dodgerblue]Repo [COLOR azure]GTKing [COLOR gold]PHOENIX [COLOR limegreen]TEAM[/COLOR][/B]">
         <dir minversion="18.0" maxversion="18.9.0">
             <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/leia/zips/addons.xml</info>
@@ -182,6 +182,62 @@
 	</extension>
 </addon>
 
+<addon id="script.kelebek"
+       name="KELEBEK"
+       version="3.6"
+       provider-name="Iron Butterfly">
+  <requires>
+    <import addon="script.module.pyxbmct" version="1.1.4" />
+    <import addon="script.module.beautifulsoup4" />
+    <import addon="script.module.requests" />
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="main.py">
+	<provides>executable</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <summary>KELEBEK V3.6</summary>
+    <description>Scan Sources searching changes and addons</description>
+    <language></language>
+    <license></license>
+    <source></source>
+    <forum></forum>
+    <website></website>
+	<assets>
+		<icon>resources/icon.png</icon>
+		<fanart>resources/fanart.jpg</fanart>
+	</assets>
+  </extension>
+</addon>
+
+<addon id="script.luar"
+  version="0.9.5"
+  name="Luar"
+  provider-name="The Dreamers">
+  <requires>
+    <import addon="script.module.six" version="1.11.0"/>
+    <import addon="script.module.requests"/>
+    <import addon="resource.language.es_es"/>
+    <import addon="script.module.pycryptodome" optional="true"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+    <provides>executable</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <summary lang="es">Script instalador de complementos para Kodi.</summary>
+    <description lang="es">Selecciona, instala y disfruta.</description>
+    <disclaimer>Este es un software [COLOR red][B]gratuito[/B][/COLOR][CR]No obstante, [COLOR red][B]no se permite[/B][/COLOR] su distribuición preinstalada en ningún tipo de dispositivo ni tampoco su inclusión total o parcial en cualquier paquete de software y/o hardware por el que el usuario final deba [COLOR red][B]pagar o hacer una donación[/B][/COLOR], por su adquisición, uso o asistencia.[CR]Si cree que alguna de estas normas no se está cumpliendo póngase en contacto con nosotros.</disclaimer>
+    <assets>
+      <icon>icon.gif</icon>
+      <fanart>fanart.jpg</fanart>
+      <screenshot>resources/screenshot000.jpg</screenshot>
+      <screenshot>resources/screenshot001.jpg</screenshot>
+      <screenshot>resources/screenshot002.jpg</screenshot>
+    </assets>
+  </extension>
+</addon>
+
 	<addon id="script.skin.helper.colorpicker" name="Skin Helper Service ColorPicker" version="2.0.2" provider-name="sualfred,marcelveldt">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0"/>
@@ -202,7 +258,7 @@
 	</extension>
 </addon>
 
-<addon id="skin.auramod.GTKing-Phoenix" version="1.1.9.2" name="AuraMod [COLOR FF1e90ff]GTKING[/COLOR]" provider-name="Auramod,[COLOR FF1e90ff]GTKING[/COLOR]">
+<addon id="skin.auramod.GTKing-Phoenix" version="20.0" name="AuraMod [COLOR FF1e90ff]GTKING[/COLOR]" provider-name="Auramod,[COLOR FF1e90ff]GTKING[/COLOR]">
     <requires>
         <import addon="xbmc.gui" version="5.15.0"/>
         <import addon="script.skin.helper.service" version="1.1.24"/>
