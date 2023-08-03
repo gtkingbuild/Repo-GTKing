@@ -22,7 +22,7 @@
         <summary>[COLOR steelblue]Repo [COLOR azure]GTKing [COLOR gold]PHOENIX [COLOR limegreen]TEAM[/COLOR]</summary>
         <description>Repositorio de addons [COLOR dodgerblue]GTKING [COLOR gold]PHOENIX[/COLOR].
 [COLOR gold]Developers:[/COLOR] DavidZgZ y GTKing PHOENIX TEAM</description> 		             
-        <disclaimer>Éste repositorio sólo recoge addons válidos para Kodi 20.x Nexus.</disclaimer>
+        <disclaimer>Este repositorio sólo recoge addons creados por terceras personas.</disclaimer>
         <platform>all</platform>
         <assets>
             <icon>icon.png</icon>
