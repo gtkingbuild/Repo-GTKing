@@ -94,6 +94,6 @@ class Downloader:
         	os.unlink(dest)
         	dialog = xbmcgui.Dialog()
                     currently_downloaded = '[COLOR azure][B]Descargando: [COLOR green]GTking PHOENIX TEAM...[/COLOR] [COLOR azure] -  Espere por Favor.[/B][/COLOR]'.format(CONFIG.ADDONTITLE)  + '\n' + '[COLOR %s][B]Tamaño:[/B] [COLOR %s]%.02f[/COLOR] MB de [COLOR %s]%.02f[/COLOR] MB' % (CONFIG.COLOR2, CONFIG.COLOR1, downloaded / mb, CONFIG.COLOR1, total / mb)
-        	dialog.ok('[B][COLOR azure]GTKing[/COLOR] [COLOR gold][B]PHOENIX[/COLOR] [COLOR lime][B]TEAM[/COLOR][/B]', '\n' + '[COLOR azure][B]Descarga Cancelada!![/B][/COLOR]')
+        	dialog.ok('[B][COLOR azure]GTKing[/COLOR] [COLOR gold]PHOENIX[/COLOR] [COLOR darkmagenta]NEXUS[/COLOR][/B]', '\n' + '[COLOR azure][B]Descarga Cancelada!![/B][/COLOR]')
         	quit()
         

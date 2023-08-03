@@ -13,7 +13,7 @@ ART = os.path.join(PATH, 'resources', 'media')
 #########################################################
 #        User Edit Variables                            #
 #########################################################
-ADDONTITLE = '[B][COLOR azure]GTKing[/COLOR] [COLOR gold]PHOENIX[/COLOR] [COLOR lime]TEAM[/COLOR][/B]'
+ADDONTITLE = '[B][COLOR azure]GTKing[/COLOR] [COLOR gold]PHOENIX[/COLOR] [COLOR darkmagenta]NEXUS[/COLOR][/B]'
 BUILDERNAME = 'DavidZgZ'
 EXCLUDES = [ADDON_ID, 'repository.GTKing-Phoenix']
 # Text File with build info in it.
@@ -25,7 +25,7 @@ UPDATECHECK = 0
 # Text File with apk info in it.  Leave as 'http://' to ignore
 APKFILE = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardfiles/apks.txt'
 # Text File with Youtube Videos urls.  Leave as 'http://' to ignore
-YOUTUBETITLE = 'DETALLE de GTKing Team'
+YOUTUBETITLE = 'VIDEOS CORTESIA de GTKing PHOENIX TEAM'
 YOUTUBEFILE = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardfiles/youtube.txt'
 # Text File for addon installer.  Leave as 'http://' to ignore
 ADDONFILE = 'http://'
@@ -108,7 +108,7 @@ REPOID = 'repository.GTKing-Phoenix'
 # Url to Addons.xml file in your repo folder(this is so we can get the latest version)
 REPOADDONXML = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/nexus/zips/addons.xml'
 # Url to folder zip is located in
-REPOZIPURL = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/nexus/zips/repository.GTKing-Phoenix/'
+REPOZIPURL = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/nexus/zips/repository.GTKing-Phoenix-Nexus/'
 #########################################################
 
 #########################################################
@@ -117,12 +117,12 @@ REPOZIPURL = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/n
 # Enable Notification screen Yes or No
 ENABLE = 'Yes'
 # Url to notification file
-NOTIFICATION = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardfiles/GTKing/Notify.txt'
+NOTIFICATION = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardfiles/GTKing/Notify-Nexus.txt'
 # Use either 'Text' or 'Image'
 HEADERTYPE = 'Image'
 # Font size of header
 FONTHEADER = ''
-HEADERMESSAGE = '[B][COLOR azure]GTKing[/COLOR] [COLOR gold]PHOENIX[/COLOR] [COLOR lime]TEAM[/COLOR][/B]'
+HEADERMESSAGE = '[B][COLOR azure]GTKing[/COLOR] [COLOR gold]PHOENIX[/COLOR] [COLOR darkmagenta]NEXUS[/COLOR][/B]'
 # url to image if using Image 424x180
 HEADERIMAGE = 'https://i.imgur.com/0zL0hR8.png'
 # Font for Notification Window
