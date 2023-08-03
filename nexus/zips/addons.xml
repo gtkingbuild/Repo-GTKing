@@ -365,7 +365,7 @@
     </extension>
 </addon>
 
-<addon id="plugin.program.GTKing-Phoenix" name="[B][COLOR azure]GTKing[/COLOR] [COLOR gold]PHOENIX[/COLOR] [COLOR lime]TEAM[/COLOR][/B]" version="20.0" provider-name="GTKing PHOENIX TEAM">
+<addon id="plugin.program.GTKing-Phoenix-Nexus" name="[B][COLOR azure]GTKing[/COLOR] [COLOR gold]PHOENIX[/COLOR] [COLOR darkmagenta]NEXUS[/COLOR][/B]" version="20.0" provider-name="GTKing PHOENIX NEXUS">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0"/>
 		<import addon="script.module.requests"/>
@@ -380,7 +380,7 @@
 	<extension point="xbmc.service" library="startup.py" start="startup"/>
 
 	<extension point="xbmc.addon.metadata">
-		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR lime]MATRIX[/COLOR] tu Wizard para [COLOR teal]KODI 19.x[/COLOR]!!</summary>
+		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR gold]PHOENIX[/COLOR] [COLOR darkmagenta]NEXUS[/COLOR] tu Wizard para [COLOR teal]KODI 20.x[/COLOR]!!</summary>
 		<description>
 [B]• Developer:[/B] [COLOR gold]DavidZgZ[/COLOR]
 [B]• Testers:[/B]   [COLOR dodgerblue]GTKing PHOENIX TEAM[/COLOR]
@@ -1244,7 +1244,7 @@ provider-name="jurialmunkey">
         <summary>[COLOR steelblue]Repo [COLOR azure]GTKing [COLOR gold]PHOENIX [COLOR limegreen]TEAM[/COLOR]</summary>
         <description>Repositorio de addons [COLOR dodgerblue]GTKING [COLOR gold]PHOENIX[/COLOR].
 [COLOR gold]Developers:[/COLOR] DavidZgZ y GTKing PHOENIX TEAM</description>
-        <disclaimer>Éste repositorio sólo recoge addons válidos para Kodi 20.x Nexus.</disclaimer>
+        <disclaimer>Este repositorio sólo recoge addons creados por terceras personas.</disclaimer>
         <platform>all</platform>
         <assets>
             <icon>icon.png</icon>
