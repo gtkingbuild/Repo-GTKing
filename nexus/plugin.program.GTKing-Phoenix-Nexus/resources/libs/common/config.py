@@ -217,6 +217,7 @@ class Config:
         self.SHOW17 = self.get_setting('show17')
         self.SHOW18 = self.get_setting('show18')
         self.SHOW19 = self.get_setting('show19')
+        self.SHOW20 = self.get_setting('show20')
         self.SHOWADULT = self.get_setting('adult')
         self.SEPARATE = self.get_setting('separate')
         self.DEVELOPER = self.get_setting('developer')
@@ -306,7 +307,7 @@ class Config:
             xbmcaddon.Addon(id).openSettings()
         except:
             import logging
-            logging.log('Cannot open settings for {}'.format(id), level=xbmc.LOGERROR)
+            logging.log('No se puede abrir la configuración de  {}'.format(id), level=xbmc.LOGERROR)
         
         if int(self.KODIV) < 18:
             use = 0

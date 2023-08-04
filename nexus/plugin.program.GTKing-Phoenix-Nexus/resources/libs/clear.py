@@ -165,14 +165,14 @@ def clear_packages(over=None):
                                   '[COLOR {0}]Eliminar Paquetes:[/COLOR] [COLOR gold]Correcto![/COLOR]'.format(CONFIG.COLOR2))
                 else:
                     logging.log_notify(CONFIG.ADDONTITLE,
-                              '[COLOR {0}]Eliminar Paquetes:  [COLOR gold]Ninguno Encontrado![/COLOR]'.format(CONFIG.COLOR2))
+                              '[COLOR {0}]Eliminar Paquetes: [COLOR gold]Ninguno Encontrado![/COLOR]'.format(CONFIG.COLOR2))
         except Exception as e:
             logging.log_notify(CONFIG.ADDONTITLE,
-                      '[COLOR {0}]Eliminar Paquetes:[/COLOR] [COLOR gold]Error![/COLOR][/COLOR]'.format(CONFIG.COLOR2))
+                      '[COLOR {0}]Eliminar Paquetes: [COLOR gold]Error![/COLOR]'.format(CONFIG.COLOR2))
             logging.log("Error Eliminar Paquetes: {0}".format(str(e)), level=xbmc.LOGERROR)
     else:
         logging.log_notify(CONFIG.ADDONTITLE,
-                  '[COLOR {0}]Eliminar Paquetes:[/COLOR]  [COLOR gold]Ninguno Encontrado![/COLOR]'.format(CONFIG.COLOR2))
+                  '[COLOR {0}]Eliminar Paquetes: [COLOR gold]Ninguno Encontrado![/COLOR]'.format(CONFIG.COLOR2))
 
 
 def clear_packages_startup():
@@ -203,7 +203,7 @@ def clear_packages_startup():
                             logging.log("No se pudo eliminar {0}: {1}".format(file, str(e), xbmc.LOGERROR))
             if file_count > 0:
                 logging.log_notify(CONFIG.ADDONTITLE,
-                          '[COLOR {0}]Eliminar Paquetes:  [COLOR gold]Correcto: {1}[/COLOR]'.format(CONFIG.COLOR2, tools.convert_size(cleanupsize)))
+                          '[COLOR {0}]Eliminar Paquetes: [COLOR gold]Correcto: {1}[/COLOR]'.format(CONFIG.COLOR2, tools.convert_size(cleanupsize)))
             else:
                 logging.log_notify(CONFIG.ADDONTITLE,
                           '[COLOR {0}]Eliminar Paquetes: [COLOR gold]Ninguno Encontrado![/COLOR]'.format(CONFIG.COLOR2))
@@ -213,7 +213,7 @@ def clear_packages_startup():
             logging.log("Error Eliminar Paquetes: {0}".format(str(e)), level=xbmc.LOGERROR)
     else:
         logging.log_notify(CONFIG.ADDONTITLE,
-                  '[COLOR {0}]Eliminar Paquetes:[COLOR gold] Ninguno Encontrado![/COLOR]'.format(CONFIG.COLOR2))
+                  '[COLOR {0}]Eliminar Paquetes: [COLOR gold]Ninguno Encontrado![/COLOR]'.format(CONFIG.COLOR2))
 
 
 def clear_archive():
@@ -430,7 +430,7 @@ def old_thumbs():
         found2 = textexe.fetchall()
         for rows2 in found2:
             images.append(rows2[0])
-    logging.log("{0} total de pulgares limpios.".format(str(len(images))))
+    logging.log("{0} total de miniaturas limpios.".format(str(len(images))))
     for id in ids:
         textexe.execute("DELETE FROM sizes WHERE idtexture = ?", (id, ))
         textexe.execute("DELETE FROM texture WHERE id = ?", (id, ))
@@ -448,10 +448,10 @@ def old_thumbs():
     removed = tools.convert_size(size)
     if len(images) > 0:
         logging.log_notify(CONFIG.ADDONTITLE,
-                           '[COLOR {0}]Pulgares Borrados: {1} [COLOR gold]Archivos[/COLOR] / {2} MB[/COLOR]!'.format(CONFIG.COLOR2, str(len(images)), removed))
+                           '[COLOR {0}]Miniaturas Borrados: {1} [COLOR gold]Archivos[/COLOR] / {2} MB[/COLOR]!'.format(CONFIG.COLOR2, str(len(images)), removed))
     else:
         logging.log_notify(CONFIG.ADDONTITLE,
-                           '[COLOR {0}]Pulgares Borrados: [COLOR gold]Ninguno Encontrado![/COLOR]'.format(CONFIG.COLOR2))
+                           '[COLOR {0}]Miniaturas Borrados: [COLOR gold]Ninguno Encontrado![/COLOR]'.format(CONFIG.COLOR2))
 
 
 def clear_crash():
@@ -462,7 +462,7 @@ def clear_crash():
         dialog = xbmcgui.Dialog()
 
         if dialog.yesno(CONFIG.ADDONTITLE,
-                            '[COLOR {0}]Le gustaria eliminar el Crash logs?'.format(CONFIG.COLOR2)
+                            '[COLOR {0}]Le gustaria eliminar el archivo de registroW?'.format(CONFIG.COLOR2)
                             +'\n'+'[COLOR {0}][B]{1}[/B][/COLOR] Archivos Encontrados[/COLOR]'.format(CONFIG.COLOR1, len(files)),
                             yeslabel="[B][COLOR cyan]Eliminar Logs[/COLOR][/B]",
                             nolabel="[B][COLOR red]Mantener Logs[/COLOR][/B]"):

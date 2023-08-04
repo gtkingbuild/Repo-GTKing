@@ -73,7 +73,7 @@ class Wizard:
             warning = False
 
         if warning:
-            yes_pressed = self.dialog.yesno("[B]{0} - [COLOR red]ADVERTENCIA!![/COLOR][/B]".format(CONFIG.ADDONTITLE), '[COLOR {0}]Exíste la posibilidad de que el Skin no se vea correctamente'.format(CONFIG.COLOR2) + '\n' + 'Al instalar una {0} Build en un Kodi {1} instalado'.format(check.check_build(name, 'kodi'), CONFIG.KODIV) + '\n' + 'Todavía te gustaría instalar: [COLOR {0}]{1} v{2}[/COLOR]?[/COLOR]'.format(CONFIG.COLOR1, name, check.check_build(name, 'version')), nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]', yeslabel='[B][COLOR cyan]Si, Instalar[/COLOR][/B]')
+            yes_pressed = self.dialog.yesno("{0} - [COLOR red]ADVERTENCIA!![/COLOR]".format(CONFIG.ADDONTITLE), '[COLOR {0}]Exíste la posibilidad de que el Skin no se vea correctamente'.format(CONFIG.COLOR2) + '\n' + 'Al instalar una {0} Build en un Kodi {1} instalado'.format(check.check_build(name, 'kodi'), CONFIG.KODIV) + '\n' + 'Todavía te gustaría instalar: [COLOR {0}]{1} v{2}[/COLOR]?[/COLOR]'.format(CONFIG.COLOR1, name, check.check_build(name, 'version')), nolabel='[B][COLOR red]No, Cancelar[/COLOR][/B]', yeslabel='[B][COLOR cyan]Si, Instalar[/COLOR][/B]')
         else:
             if over:
                 yes_pressed = 1

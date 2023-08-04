@@ -72,7 +72,7 @@ def apk_menu(url=None):
 
     if check_for_fm():
         directory.add_dir('[B]APK\'s OFICIAL DE KODI[/B]', {'mode': 'kodiapk'}, icon=CONFIG.ICONAPK, themeit=CONFIG.THEME1)
-        directory.add_separator()
+        directory.add_separator('[B]DESCARGAR APLICACIONES[/B]')
 
     response = tools.open_url(CONFIG.APKFILE)
     url_response = tools.open_url(url)
@@ -84,15 +84,15 @@ def apk_menu(url=None):
             match = re.compile('name="(.+?)".+?ection="(.+?)".+?rl="(.+?)".+?con="(.+?)".+?anart="(.+?)".+?dult="(.+?)".+?escription="(.+?)"').findall(TEMPAPKFILE)
             if len(match) > 0:
                 x = 0
-                for aname, section, url, icon, fanart, adult, description in match:
+                for name, section, url, icon, fanart, adult, description in match:
                     if not CONFIG.SHOWADULT == 'true' and adult.lower() == 'yes':
                         continue
                     if section.lower() == 'yes':
                         x += 1
-                        directory.add_dir("[B]{0}[/B]".format(aname), {'mode': 'apk', 'name': aname, 'url': url}, description=description, icon=icon, fanart=fanart, themeit=CONFIG.THEME3)
+                        directory.add_dir("[B]{0}[/B]".format(name), {'mode': 'apk', 'name': name, 'url': url}, description=description, icon=icon, fanart=fanart, themeit=CONFIG.THEME3)
                     else:
                         x += 1
-                        directory.add_file(aname, {'mode': 'apkinstall', 'name': aname, 'url': url}, description=description, icon=icon, fanart=fanart, themeit=CONFIG.THEME2)
+                        directory.add_file(name, {'mode': 'apkinstall', 'name': name, 'url': url}, description=description, icon=icon, fanart=fanart, themeit=CONFIG.THEME2)
                     if x == 0:
                         directory.add_file("¡Todavía no se agregaron addons a este menú!", themeit=CONFIG.THEME2)
             else:

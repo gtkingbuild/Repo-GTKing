@@ -99,7 +99,7 @@ def auto_install_repo():
                     logging.log("[Auto Install Repo] No se pudo crear una URL funcional para el repositorio. {0}".format(
                         url), level=xbmc.LOGERROR)
             else:
-                logging.log("URL No válida para el zip del Repositorio", level=xbmc.LOGERROR)
+                logging.log("URL invalida para el zip del Repositorio", level=xbmc.LOGERROR)
         else:
             logging.log_notify("[COLOR {0}]Error de Instalación del repositorio[/COLOR]".format(CONFIG.COLOR1),
                                "[COLOR {0}]Invalido addon.xml file![/COLOR]".format(CONFIG.COLOR2))
@@ -363,7 +363,7 @@ if CONFIG.get_setting('enable_all') == 'true':
     xbmc.executebuiltin("ReloadSkin()")
     tools.reload_profile(xbmc.getInfoLabel('System.ProfileName'))
 
-    # BUILD UPDATE CHECK
+# BUILD UPDATE CHECK
 buildcheck = CONFIG.get_setting('nextbuildcheck')
 if CONFIG.get_setting('buildname'):
     current_time = time.time()
@@ -405,7 +405,7 @@ else:
     logging.log('[Notifications] Not Enabled', level=xbmc.LOGINFO)
 
 # INSTALLED BUILD CHECK
-if CONFIG.get_setting('instalADO') == 'true':
+if CONFIG.get_setting('instalado') == 'true':
     logging.log("[Build Instalado Check] Started", level=xbmc.LOGINFO)
     installed_build_check()
 else:

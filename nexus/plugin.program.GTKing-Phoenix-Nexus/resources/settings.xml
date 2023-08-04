@@ -9,9 +9,12 @@
         <setting id="nextbuildcheck" type="text" label="A continuación, compruebe la actualización de la build: " enable="false" default="2021-03-17 00:00:00" />
         <setting id="disableupdate" type="bool" label="Deshabilitar la Notificación de Actualización" default="false"/>
         <setting type="lsep" label="Mostrar Builds:"/>
-        <setting id="show17" type="bool" label="Mostrar Krypton (v17.0) Builds" default="true"/>
-        <setting id="show18" type="bool" label="Mostrar Leia (v18.0) Builds" default="true"/>
+        <!--<setting id="show17" type="bool" label="Mostrar Krypton (v17.0) Builds" default="true"/>
+        <setting id="show18" type="bool" label="Mostrar Leia (v18.0) Builds" default="true"/>-->
         <setting id="show19" type="bool" label="Mostrar Matrix (v19.0) Builds" default="true"/>
+		<setting id="show19" type="bool" label="Mostrar Matrix (v19.0) Builds" default="true"/>
+	    <setting id="show20" type="bool" label="Mostrar Nexus (v20.0) Builds" default="true"/>
+	    <!--<setting id="show21" type="bool" label="Mostrar Omega (v21.0) Builds" default="true"/>-->																				   																								  
         <setting id="separate" type="bool" label="No separe en función de la versión" default="false"/>
         
         <!-- Hidden Settings -->
@@ -44,12 +47,12 @@
         <setting type="lsep" label="Menu de Mantenimiento: "/>
         <setting id="path" type="folder" label="Elija la Ubicación del Almacenamiento del Backup" default="special://home/"/>
         <setting type="lsep" label="Auto Limpieza al Iniciar:"/>
-        <setting id="autoclean" type="bool" label="Habilitar Limpieza Auto" default="false"/>
-        <setting id="clearcache" type="bool" label="Borrar Cache al Iniciar" default="false" enable="!eq(-1,false)"/>
-        <setting id="clearpackages" type="bool" label="Borrar paquetes al Iniciar" default="false" enable="!eq(-2,false)"/>
-        <setting id="clearthumbs" type="bool" label="Borrar Miniaturas de una Semana al Inicio" default="false" enable="!eq(-3,false)"/>
-        <setting id="autocleanfreq" type="enum" label="Con qué frecuencia le gustaría Limpiar Auto al Iniciar?" values="Siempre|Diario|3 Dias|Semanal|Mensual" default="3" enable="!eq(-4,false)"/>
-        <setting id="nextautocleanup" type="text" label="Next Auto Clean Up: " enable="false" visible="false" default="2021-03-17 00:00:00" />
+        <setting id="autoclean" type="bool" label="Habilitar Limpieza Auto" default="true"/>
+        <setting id="clearcache" type="bool" label="Borrar Cache al Iniciar" default="true" enable="!eq(-1,false)"/>
+        <setting id="clearpackages" type="bool" label="Borrar paquetes al Iniciar" default="true" enable="!eq(-2,false)"/>
+        <setting id="clearthumbs" type="bool" label="Borrar Miniaturas de una Semana al Inicio" default="true" enable="!eq(-3,false)"/>
+        <setting id="autocleanfreq" type="enum" label="Con qué frecuencia le gustaría Limpiar Auto al Iniciar?" values="Siempre|Diario|3 Dias|Semanal|Mensual" default="3" enable="!eq(-2,false)"/>
+        <setting id="nextautocleanup" type="text" label="Siguiente Limpieza Automática: " enable="false" visible="false" default="2023-03-17 00:00:00" />
         <setting type="lsep" label="Borrar Cache de Video:"/>
         <setting id="includevideo" type="bool" label="Incluir Video Addons en Claro Cache: " default="true"/>
         <setting id="includeall" type="bool" label="Incluir  Todos los Addons: " default="true" enable="!eq(-1,false)"/>
@@ -158,7 +161,7 @@
 
     <category label="Instalar Configuración">
         <setting type="lsep" label="APKs" />
-        <setting type="action" label="Abra la Configuración del Actualizador de Android Kodi" action="RunPlugin(plugin://plugin.program.gtkinbuild/?mode=fmchoose)" option="close" />
+        <setting type="action" label="Abra la Configuración del Actualizador de Android Kodi" action="RunPlugin(plugin://plugin.program.GTKing-Phoenix-Nexus/?mode=fmchoose)" option="close" />
         <setting id="apk_path" type="folder" label="Elija la Ubicación de Descarga" default="/storage/emulated/0/Download/"/>
         <setting type="lsep" label="Guardar Datos al Instalar Build:"/>
         <setting id="keeptrakt" type="bool" label="Conservar Mis Datos de Trakt" default="true"/>

@@ -384,12 +384,12 @@ def build_count():
     response = tools.open_url(CONFIG.BUILDFILE)
 
     total = 0
-    count19 = 0
+    count20 = 0
     hidden = 0
     adultcount = 0
 
     if not response:
-        return total, count19, adultcount, hidden
+        return total, count20, adultcount, hidden
 
     link = response.text.replace('\n', '').replace('\r', '').replace('\t', '')
     match = re.compile('name="(.+?)".+?odi="(.+?)".+?dult="(.+?)"').findall(link)
@@ -405,8 +405,8 @@ def build_count():
                 continue
             kodi = int(float(kodi))
             total += 1
-            if kodi == 19:
-                count19 += 1
-    return total, count19, adultcount, hidden
+            if kodi == 20:
+                count20 += 1
+    return total, count20, adultcount, hidden
 
 

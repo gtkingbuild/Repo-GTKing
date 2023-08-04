@@ -210,7 +210,7 @@ class Backup:
         if self.dialog.yesno(CONFIG.ADDONTITLE,
                              "[COLOR {0}]Estás seguro de que deseas hacer una Copia de Seguridad de la versión actual?[/COLOR]".format(CONFIG.COLOR2), nolabel="[B][COLOR red]Cancelar Copia de Seguridad[/COLOR][/B]", yeslabel="[B][COLOR cyan]Copia de Seguridad Build[/COLOR][/B]"):
             if name == "":
-                name = tools.get_keyboard("", "Introduzca un nombre para la build zip")
+                name = tools.get_keyboard("", "Introduzca un nombre para el zip de la build")
                 if not name:
                     return False
                 name = name.replace('\\', '').replace('/', '').replace(':', '').replace('*', '').replace('?',
@@ -534,13 +534,13 @@ class Backup:
             self.dialog.ok(CONFIG.ADDONTITLE, "[COLOR {0}]GUI Fix Copia de Seguridad exitosa:[/COLOR]".format(CONFIG.COLOR2) + '\n' + "[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, guizipname))
 
     def backup_theme(self, name=""):
-        if not self.dialog.yesno(CONFIG.ADDONTITLE + '[COLOR {0}]: Copia de Seguridad del Tema[/COLOR]'.format(CONFIG.COLOR2), "[COLOR {0}]Le gustaría crear una Copia de Seguridad del Tema?[/COLOR]".format(CONFIG.COLOR2),
+        if not self.dialog.yesno(CONFIG.ADDONTITLE + '[COLOR {0}]: Copia de Seguridad del Parche[/COLOR]'.format(CONFIG.COLOR2), "[COLOR {0}]Le gustaría crear una Copia de Seguridad del Tema?[/COLOR]".format(CONFIG.COLOR2),
                                  yeslabel="[B][COLOR cyan]Continuar[/COLOR][/B]",
                                  nolabel="[B][COLOR red]No, Cancelar[/COLOR][/B]"):
-            logging.log_notify("Backup Tema", "Cancelado!")
+            logging.log_notify("Parche Backup", "Cancelado!")
             return False
         if name == "":
-            themename = tools.get_keyboard("", "Introduzca un nombre para el tema zip")
+            themename = tools.get_keyboard("", "Introduzca un nombre para el zip del parche")
             if not themename:
                 return False
         else:
@@ -570,11 +570,11 @@ class Backup:
                 skinfold = os.path.join(CONFIG.SKIN, 'media')
                 match2 = glob.glob(os.path.join(skinfold, '*.xbt'))
                 if len(match2) > 1:
-                    if self.dialog.yesno(CONFIG.ADDONTITLE + '[COLOR {0}]: Copia de Seguridad del Tema[/COLOR]'.format(CONFIG.COLOR2) + '\n' + "[COLOR {0}]Le gustaría revisar la Textura para los Archivos?[/COLOR]".format(CONFIG.COLOR2) + '\n' + "[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, CONFIG.SKIN),
+                    if self.dialog.yesno(CONFIG.ADDONTITLE + '[COLOR {0}]: Copia de Seguridad del Parche[/COLOR]'.format(CONFIG.COLOR2) + '\n' + "[COLOR {0}]Le gustaría revisar la Textura para los Archivos?[/COLOR]".format(CONFIG.COLOR2) + '\n' + "[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, CONFIG.SKIN),
                                          yeslabel="[B][COLOR cyan]Agregar Texturas[/COLOR][/B]",
                                          nolabel="[B][COLOR red]Saltar Texturas[/COLOR][/B]"):
                         for xbt in match2:
-                            if self.dialog.yesno(CONFIG.ADDONTITLE + '[COLOR {0}]: Copia de Seguridad del Tema[/COLOR]'.format(CONFIG.COLOR2), "[COLOR {0}]Le gustaría agregar el Archivo de Textura [COLOR {1}]{2}[/COLOR]?".format(CONFIG.COLOR1, CONFIG.COLOR2, xbt.replace(skinfold, "")[1:]) + '\n' + "from [COLOR {0}]{1}[/COLOR][/COLOR]".format(CONFIG.COLOR1, CONFIG.SKIN),
+                            if self.dialog.yesno(CONFIG.ADDONTITLE + '[COLOR {0}]: Copia de Seguridad del Parche[/COLOR]'.format(CONFIG.COLOR2), "[COLOR {0}]Le gustaría agregar el Archivo de Textura [COLOR {1}]{2}[/COLOR]?".format(CONFIG.COLOR1, CONFIG.COLOR2, xbt.replace(skinfold, "")[1:]) + '\n' + "from [COLOR {0}]{1}[/COLOR][/COLOR]".format(CONFIG.COLOR1, CONFIG.SKIN),
                                     yeslabel="[B][COLOR cyan]Agregar Texturas[/COLOR][/B]",
                                     nolabel="[B][COLOR red]Saltar Texturas[/COLOR][/B]"):
                                 fn = xbt
@@ -582,7 +582,7 @@ class Backup:
                                 zipf.write(fn, fn2, zipfile.ZIP_DEFLATED)
                 else:
                     for xbt in match2:
-                        if self.dialog.yesno(CONFIG.ADDONTITLE + '[COLOR {0}]: Copia de Seguridad del Tema[/COLOR]'.format(CONFIG.COLOR2), "[COLOR {0}]Le gustaría agregar el Archivo de Textura [COLOR {1}]{2}[/COLOR]?".format(CONFIG.COLOR2, CONFIG.COLOR1, xbt.replace(skinfold, "")[1:]) + '\n' + "from [COLOR {0}]{1}[/COLOR][/COLOR]".format(CONFIG.COLOR1, CONFIG.SKIN),
+                        if self.dialog.yesno(CONFIG.ADDONTITLE + '[COLOR {0}]: Copia de Seguridad del Parche[/COLOR]'.format(CONFIG.COLOR2), "[COLOR {0}]Le gustaría agregar el Archivo de Textura [COLOR {1}]{2}[/COLOR]?".format(CONFIG.COLOR2, CONFIG.COLOR1, xbt.replace(skinfold, "")[1:]) + '\n' + "from [COLOR {0}]{1}[/COLOR][/COLOR]".format(CONFIG.COLOR1, CONFIG.SKIN),
                                 yeslabel="[B][COLOR cyan]Agregar Texturas[/COLOR][/B]",
                                 nolabel="[B][COLOR red]Saltar Texturas[/COLOR][/B]"):
                             fn = xbt
@@ -590,7 +590,7 @@ class Backup:
                             zipf.write(fn, fn2, zipfile.ZIP_DEFLATED)
                 ad_skin = os.path.join(CONFIG.ADDON_DATA, CONFIG.SKIN, 'settings.xml')
                 if os.path.exists(ad_skin):
-                    if self.dialog.yesno(CONFIG.ADDONTITLE + '[COLOR {0}]: Copia de Seguridad del Tema[/COLOR]'.format(CONFIG.COLOR2), "[COLOR {0}]Le gustaría ir a agregar el [COLOR {1}]settings.xml[/COLOR] en [COLOR {2}]/addon_data/[/COLOR] para?".format(
+                    if self.dialog.yesno(CONFIG.ADDONTITLE + '[COLOR {0}]: Copia de Seguridad del Parche[/COLOR]'.format(CONFIG.COLOR2), "[COLOR {0}]Le gustaría ir a agregar el [COLOR {1}]settings.xml[/COLOR] en [COLOR {2}]/addon_data/[/COLOR] para?".format(
                                              CONFIG.COLOR2, CONFIG.COLOR1, CONFIG.COLOR1) + '\n'+ "[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, CONFIG.SKIN),
                                          yeslabel="[B][COLOR cyan]Agregar Settings[/COLOR][/B]",
                                          nolabel="[B][COLOR red]Saltar Settings[/COLOR][/B]"):
@@ -599,7 +599,7 @@ class Backup:
                 match = tools.parse_dom(tools.read_from_file(os.path.join(CONFIG.SKIN, 'addon.xml')), 'import',
                                         ret='addon')
                 if 'script.skinshortcuts' in match:
-                    if self.dialog.yesno(CONFIG.ADDONTITLE + '[COLOR {0}]: Copia de Seguridad del Tema[/COLOR]'.format(CONFIG.COLOR2), "[COLOR {0}]Le gustaría ir a agregar el [COLOR {1}]settings.xml[/COLOR] para [COLOR {2}]script.skinshortcuts[/COLOR]?".format(CONFIG.COLOR2, CONFIG.COLOR1, CONFIG.COLOR1),
+                    if self.dialog.yesno(CONFIG.ADDONTITLE + '[COLOR {0}]: Copia de Seguridad del Parche[/COLOR]'.format(CONFIG.COLOR2), "[COLOR {0}]Le gustaría ir a agregar el [COLOR {1}]settings.xml[/COLOR] para [COLOR {2}]script.skinshortcuts[/COLOR]?".format(CONFIG.COLOR2, CONFIG.COLOR1, CONFIG.COLOR1),
                                          yeslabel="[B][COLOR cyan]Agregar Ajustes[/COLOR][/B]",
                                          nolabel="[B][COLOR red]Omitir Ajustes[/COLOR][/B]"):
                         for base, dirs, files in os.walk(os.path.join(CONFIG.ADDON_DATA, 'script.skinshortcuts')):
@@ -607,7 +607,7 @@ class Backup:
                             for file in files:
                                 fn = os.path.join(base, file)
                                 zipf.write(fn, fn[len(CONFIG.HOME):], zipfile.ZIP_DEFLATED)
-            if self.dialog.yesno(CONFIG.ADDONTITLE + '[COLOR {0}]: Copia de Seguridad del Tema[/COLOR]'.format(CONFIG.COLOR2),
+            if self.dialog.yesno(CONFIG.ADDONTITLE + '[COLOR {0}]: Copia de Seguridad del Parche[/COLOR]'.format(CONFIG.COLOR2),
                                  "[COLOR {0}]Le gustaría incluir una carpeta [COLOR {1}]Fondos[/COLOR]?[/COLOR]".format(
                                      CONFIG.COLOR2, CONFIG.COLOR1),
                                  yeslabel="[B][COLOR cyan]Si, Incluir[/COLOR][/B]",
@@ -623,7 +623,7 @@ class Backup:
                                 fn2 = os.path.join(base, file)
                                 zipf.write(fn2, fn2[len(CONFIG.HOME):], zipfile.ZIP_DEFLATED)
                             except Exception as e:
-                                logging.log("[Back Up] Tipo = tema: No se puede hacer una Copia de Seguridad {0}".format(file))
+                                logging.log("[Back Up] Tipo = parche: No se puede hacer una Copia de Seguridad {0}".format(file))
                                 logging.log("Error de Copia de Seguridad: {0}".format(str(e)))
                 text = db.latest_db('Textures')
                 if self.dialog.yesno(CONFIG.ADDONTITLE + '[COLOR {0}]: Copia de Seguridad del Tema[/COLOR]'.format(CONFIG.COLOR2),
@@ -698,7 +698,7 @@ class Backup:
             zipf.close()
             logging.log("[Back Up] Type = theme: {0}".format(str(e)))
             self.dialog.ok(CONFIG.ADDONTITLE,
-                           "[COLOR {0}]{1}[/COLOR][COLOR {2}] zip del Tema falló:[/COLOR]".format(CONFIG.COLOR1, themename, CONFIG.COLOR2) + '\n' + "[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, str(e)))
+                           "[COLOR {0}]{1}[/COLOR][COLOR {2}] zip del Parche falló:[/COLOR]".format(CONFIG.COLOR1, themename, CONFIG.COLOR2) + '\n' + "[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, str(e)))
             if not tempzipname == '':
                 try:
                     os.remove(tempzipname)

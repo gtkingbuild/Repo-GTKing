@@ -403,6 +403,10 @@ def kodi_version():
         vername = 'Leia'
     elif 19.0 <= CONFIG.KODIV <= 19.9:
         vername = 'Matrix'
+    elif 20.0 <= CONFIG.KODIV <= 20.9:                             
+        vername = 'Nexus'                
+    elif 21.0 <= CONFIG.KODIV <= 21.9:                             
+        vername = 'Omega'                                            
     else:
         vername = "Unknown"
     return vername

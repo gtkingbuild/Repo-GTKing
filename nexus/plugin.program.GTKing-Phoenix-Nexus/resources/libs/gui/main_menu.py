@@ -62,10 +62,10 @@ class MainMenu:
             from resources.libs.gui.build_menu import BuildMenu
             themefile = BuildMenu().theme_count(CONFIG.BUILDNAME)
             if themefile:
-                directory.add_file('Nada' if CONFIG.BUILDTHEME == "" else CONFIG.BUILDTHEME, {'mode': 'theme', 'name': CONFIG.BUILDNAME},
+                directory.add_file('Ninguno' if CONFIG.BUILDTHEME == "" else CONFIG.BUILDTHEME, {'mode': 'theme', 'name': CONFIG.BUILDNAME},
                                    themeit=CONFIG.THEME5)
         else:
-            directory.add_dir('Nada', {'mode': 'builds'}, themeit=CONFIG.THEME4)
+            directory.add_dir('Ninguno', {'mode': 'builds'}, themeit=CONFIG.THEME4)
         directory.add_separator()
         directory.add_dir('[B][COLOR dodgerblue]BUILDS[/COLOR] - [COLOR dodgerblue]PARCHES[/COLOR][/B]', {'mode': 'builds'}, icon=CONFIG.ICONBUILDS, themeit=CONFIG.THEME1)
         directory.add_dir('[B]Mantenimiento[/B]', {'mode': 'maint'}, icon=CONFIG.ICONMAINT, themeit=CONFIG.THEME1)

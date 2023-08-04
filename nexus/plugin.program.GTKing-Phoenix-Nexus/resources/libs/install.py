@@ -124,7 +124,7 @@ def wipe():
             elif name == 'advancedsettings.xml' and fold[-1] == 'userdata' and CONFIG.KEEPADVANCED == 'true':
                 logging.log("Mantener advancedsettings.xml: {0}".format(os.path.join(root, name)))
             elif name in CONFIG.LOGFILES:
-                logging.log("Mantener archivo del Log: {0}".format(name))
+                logging.log("Mantener archivo Log: {0}".format(name))
             elif name.endswith('.db'):
                 try:
                     if name == latestAddonDB:
