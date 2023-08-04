@@ -11,7 +11,7 @@
             <checksum>https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/matrix/zips/addons.xml.md5</checksum>
             <datadir zip="true">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/matrix/zips/</datadir>
         </dir>
-		<dir minversion="19.9.1">
+		<dir minversion="20.0">
             <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/nexus/zips/addons.xml</info>
             <checksum>https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/nexus/zips/addons.xml.md5</checksum>
             <datadir zip="true">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/nexus/zips/</datadir>
