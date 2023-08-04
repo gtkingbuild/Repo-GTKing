@@ -245,7 +245,7 @@ class Config:
         
         # Notification variables
         self.NOTIFY = self.get_setting('notify')
-        self.NOTEID = int(self.get_setting('noteid'))
+        self.NOTEID = self.get_setting('noteid')
         self.NOTEDISMISS = self.get_setting('notedismiss')
         
         # Save Data variables
@@ -315,10 +315,10 @@ class Config:
             use = 1
 
         if cat is not None:
-            category_id = cat + str(offset[use][0])
+            category_id = cat + (offset[use][0]
             xbmc.executebuiltin('SetFocus({})'.format(category_id))
             if set is not None:
-                setting_id = set + str(offset[use][1])
+                setting_id = set + (offset[use][1]
                 xbmc.executebuiltin('SetFocus({})'.format(setting_id))
                 
                 if activate:

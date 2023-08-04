@@ -65,7 +65,7 @@ from resources.libs.common.config import CONFIG
 
 
 def read_from_file(file, mode='r'):
-    f = open(file, mode, encoding='utf-8', errors='ignore')
+    f = open(file, mode, encoding='utf-8')
     a = f.read()
     f.close()
     return a
@@ -399,13 +399,13 @@ def platform():
 def kodi_version():
     if 17.0 <= CONFIG.KODIV <= 17.9:
         vername = 'Krypton'
-    elif 18.0 <= CONFIG.KODIV <= 18.9:
+    if 18.0 <= CONFIG.KODIV <= 18.9:
         vername = 'Leia'
-    elif 19.0 <= CONFIG.KODIV <= 19.9:
+    if 19.0 <= CONFIG.KODIV <= 19.9:
         vername = 'Matrix'
-    elif 20.0 <= CONFIG.KODIV <= 20.9:                             
+    if 20.0 <= CONFIG.KODIV <= 20.9:                             
         vername = 'Nexus'                
-    elif 21.0 <= CONFIG.KODIV <= 21.9:                             
+    if 21.0 <= CONFIG.KODIV <= 21.9:                             
         vername = 'Omega'                                            
     else:
         vername = "Unknown"

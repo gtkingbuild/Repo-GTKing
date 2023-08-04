@@ -32,7 +32,7 @@ from resources.libs.common.config import CONFIG
 
 
 def set_view():
-    auto_view = CONFIG.get_setting('auto-view')
+    auto_view = CONFIG.get_setting('wide-list')
 
     if auto_view == 'true':
         view_type = CONFIG.get_setting('viewType')

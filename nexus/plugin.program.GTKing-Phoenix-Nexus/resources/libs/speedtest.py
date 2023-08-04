@@ -248,7 +248,7 @@ def get_config():
     request = build_request('http://www.speedtest.net/speedtest-config.php')
     uh = catch_request(request)
     if uh is False:
-        logging.log('Could not retrieve speedtest.net configuration: {0}'.format(uh), level=xbmc.LOGDEBUG)
+        logging.log('No se pudo recuperar la configuración de: {0}'.format(uh), level=xbmc.LOGDEBUG)
         sys.exit(1)
 
     configxml = []

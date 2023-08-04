@@ -252,7 +252,7 @@ class Wizard:
                 logging.log_notify(CONFIG.ADDONTITLE,
                                    '[COLOR {0}]Instalación Parche:[/COLOR] [COLOR gold]Nada Encontrado![/COLOR]'.format(CONFIG.COLOR2))
         else:
-            installtheme = self.dialog.yesno(CONFIG.ADDONTITLE, '[COLOR {0}][B]Te gustaría instalar uno de los Parches que hay en:[/B]'.format(CONFIG.COLOR2) +' \n' + '[COLOR dodgerblue][B]PARCHES MATRIX[/B][/COLOR]'.format(CONFIG.COLOR1, theme) + '\n' + '[B]para [COLOR {0}]{1} v{2}[/COLOR]?[/B][/COLOR]'.format(CONFIG.COLOR1, name, check.check_build(name,'version')),yeslabel="[B][COLOR cyan]Instalar Parche[/COLOR][/B]", nolabel="[B][COLOR red]Cancelar Parche[/COLOR][/B]")
+            installtheme = self.dialog.yesno(CONFIG.ADDONTITLE, '[COLOR {0}][B]Te gustaría instalar uno de los Parches que hay en:[/B]'.format(CONFIG.COLOR2) +' \n' + '[COLOR dodgerblue][B]PARCHES GTKing PHOENIX[/B][/COLOR]'.format(CONFIG.COLOR1, theme) + '\n' + '[B]para [COLOR {0}]{1} v{2}[/COLOR]?[/B][/COLOR]'.format(CONFIG.COLOR1, name, check.check_build(name,'version')),yeslabel="[B][COLOR cyan]Instalar Parche[/COLOR][/B]", nolabel="[B][COLOR red]Cancelar Parche[/COLOR][/B]")
                                         
         if installtheme:
             themezip = check.check_theme(name, theme, 'url')

@@ -44,7 +44,8 @@ class BuildMenu:
             if not kodiv or kodiv == int(float(kodi)):
                 menu = self.create_install_menu(name)
                 directory.add_dir('[COLOR aliceblue][/COLOR] [B][COLOR azure]•[/COLOR][COLOR yellowgreen] {1} - v{2}[/COLOR][/B]'.format(float(kodi), name, version), {'mode': 'viewbuild', 'name': name}, description=description, fanart=fanart, icon=icon, menu=menu, themeit=CONFIG.THEME2)
-
+               #directory.add_dir('[B][COLOR azure]•[/COLOR][COLOR yellowgreen] {1} - [COLOR khaki]v{2}[/COLOR][/B]'.format(float(kodi), name, version), {'mode': 'viewbuild', 'name': name}, description=description, fanart=fanart, icon=icon, menu=menu, themeit=CONFIG.THEME2)
+               #directory.add_dir('[B][COLOR azure]•[/COLOR][COLOR yellowgreen] {0} - {v{1}}[/COLOR][/B]'.format(float(kodi), name, version), {'mode': 'viewbuild', 'name': name}, description=description, fanart=fanart, icon=icon, menu=menu, themeit=CONFIG.THEME2)
     def theme_count(self, name, count=True):
         from resources.libs import check
         from resources.libs.common import tools
@@ -91,7 +92,7 @@ class BuildMenu:
             directory.add_file('{0}'.format(CONFIG.BUILDFILE), icon=CONFIG.ICONBUILDS, themeit=CONFIG.THEME3)
             return
             
-        total, count19, adultcount, hidden = check.build_count()
+        total, count20, adultcount, hidden = check.build_count()
 
         match = re.compile('name="(.+?)".+?ersion="(.+?)".+?rl="(.+?)".+?ui="(.+?)".+?odi="(.+?)".+?heme="(.+?)".+?con="(.+?)".+?anart="(.+?)".+?dult="(.+?)".+?escription="(.+?)"').findall(link)
         
@@ -113,13 +114,13 @@ class BuildMenu:
             if CONFIG.SEPARATE == 'true':
                 self._list_all(match)
             else:
-                if count19 > 0:
-                    state = '[COLOR azure]+[/COLOR]' if CONFIG.SHOW19 == 'false' else '[COLOR azure]-[/COLOR]'
-                    directory.add_file('[B][COLOR dodgerblue]{0} BUILDS: [B][COLOR azure]GTKING [B][COLOR gold]PHOENIX [B][COLOR lime]TEAM[/B][/COLOR]'.format(state, count19), {'mode': 'togglesetting',
-
-                                       'name': 'show19'}, themeit=CONFIG.THEME3)
-                    if CONFIG.SHOW19 == 'true':
-                        self._list_all(match, kodiv=19)
+                if count20 > 0:
+                    state = '[COLOR azure]+[/COLOR]' if CONFIG.SHOW20 == 'false' else '[COLOR azure]-[/COLOR]'
+                    directory.add_file('[B][COLOR dodgerblue]{0} BUILDS [COLOR azure]- [COLOR dodgerblue]PARCHES:[/COLOR][/B] [B][COLOR azure]GTKING [COLOR gold]PHOENIX [COLOR lime]TEAM[/B][/COLOR]'.format(state, count20), {'mode': 'togglesetting',
+                                       'name': 'show20'}, themeit=CONFIG.THEME3)
+                    if CONFIG.SHOW20 == 'true':
+                        self._list_all(match, kodiv=20)
+                        
         elif hidden > 0:
             if adultcount > 0:
                 directory.add_file('[COLOR azure]Actualmente Solo hay Builds para Adultos[COLOR]', icon=CONFIG.ICONBUILDS,
@@ -242,7 +243,7 @@ class BuildMenu:
                 if themes:
                     msg += "[COLOR {0}]Build Parche(s):[/COLOR] [COLOR {1}]{2}[/COLOR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, ', '.join(themes))
                 msg += "[COLOR {0}]Version Kodi:[/COLOR] [COLOR {1}]{2}[/COLOR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, kodi)
-                msg += "[COLOR {0}]Contenido Adulto:[/COLOR] [COLOR {1}]{2}[/COLOR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, adult)
+                msg += "[COLOR {0}]Contenido para Adultos:[/COLOR] [COLOR {1}]{2}[/COLOR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, adult)
                 msg += "[COLOR {0}]Descripción:[/COLOR] [COLOR {1}]{2}[/COLOR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, description)
 
                 if extend:
@@ -258,7 +259,7 @@ class BuildMenu:
                     msg += "[COLOR {0}]Scripts:[/COLOR] [COLOR {1}]{2}[/COLOR][CR][CR]".format(CONFIG.COLOR2, CONFIG.COLOR1, scripts)
                     msg += "[COLOR {0}]Binarios:[/COLOR] [COLOR {1}]{2}[/COLOR]".format(CONFIG.COLOR2, CONFIG.COLOR1, binaries)
 
-                window.show_text_box("[B][COLOR azure]Visualización de Información de la Build:[/COLOR][/B] [COLOR blue]{0}[/COLOR]".format(name), msg)
+                window.show_text_box("[B][COLOR azure]Ver Información de la Build:[/COLOR][/B] [COLOR blue]{0}[/COLOR]".format(name), msg)
             else:
                 logging.log("Nombre Inválido de la Build!")
         else:

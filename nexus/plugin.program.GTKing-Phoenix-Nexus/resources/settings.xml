@@ -12,7 +12,6 @@
         <!--<setting id="show17" type="bool" label="Mostrar Krypton (v17.0) Builds" default="true"/>
         <setting id="show18" type="bool" label="Mostrar Leia (v18.0) Builds" default="true"/>-->
         <setting id="show19" type="bool" label="Mostrar Matrix (v19.0) Builds" default="true"/>
-		<setting id="show19" type="bool" label="Mostrar Matrix (v19.0) Builds" default="true"/>
 	    <setting id="show20" type="bool" label="Mostrar Nexus (v20.0) Builds" default="true"/>
 	    <!--<setting id="show21" type="bool" label="Mostrar Omega (v21.0) Builds" default="true"/>-->																				   																								  
         <setting id="separate" type="bool" label="No separe en función de la versión" default="false"/>

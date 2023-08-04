@@ -54,7 +54,7 @@ class Router:
 
         # SETTINGS
         elif mode == 'settings':  # OpenWizard settings
-            CONFIG.open_settings(cat = name)
+            CONFIG.open_settings(name)
             xbmc.executebuiltin('Container.Refresh()')
         elif mode == 'opensettings':  # Open other addons' settings
             settings_id = eval(url.upper() + 'ID')[name]['plugin']
@@ -152,8 +152,6 @@ class Router:
         elif mode == 'apk':  # APK Installer
             menu.apk_menu(url)
             self._finish(handle)
-        elif mode == 'kodiapk':  # APK Installer -> Official Kodi APK's
-            xbmc.executebuiltin('RunScript(script.kodi.android.update)')
         elif mode == 'fmchoose':
             from resources.libs import install
             install.choose_file_manager()
@@ -282,7 +280,7 @@ class Router:
 
             tools.clean_house(CONFIG.ADDON_DATA, ignore=True)
             logging.log_notify("[COLOR {0}]{1}[/COLOR]".format(CONFIG.COLOR1, CONFIG.ADDONTITLE),
-                               "[COLOR {0}]Addon_Data reset[/COLOR]".format(CONFIG.COLOR2))
+                               "[COLOR {0}]Reiniciar Addon_Data[/COLOR]".format(CONFIG.COLOR2))
         # BACKUP / RESTORE
         elif mode == 'backup' and action:
             from resources.libs import backup

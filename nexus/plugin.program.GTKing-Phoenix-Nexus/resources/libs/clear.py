@@ -228,7 +228,7 @@ def clear_archive():
             tools.clean_house(CONFIG.ARCHIVE_CACHE)
 
 
-def clear_function_cache(over=True):
+def clear_function_cache(over=False):
     dialog = xbmcgui.Dialog()
 
     if not over:
@@ -240,11 +240,11 @@ def clear_function_cache(over=True):
     else:
         clear = True
         
-    if 'clear':
+    if clear:
         if xbmc.getCondVisibility('System.HasAddon(script.module.resolveurl)'):
                 xbmc.executebuiltin('RunPlugin(plugin://script.module.resolveurl/?mode=reset_cache)')
         if xbmc.getCondVisibility('System.HasAddon(script.module.urlresolver)'):
-                xbmc.executebuiltin('RunPlugin(plugin://script.module.urlresolver/?mode=reset_cache)')
+            xbmc.executebuiltin('RunPlugin(plugin://script.module.urlresolver/?mode=reset_cache)')
 
 
 def clear_cache(over=None):
@@ -533,7 +533,7 @@ def clear_thumbs(type=None):
     if type is not None:
         choice = 1
     else:
-        choice = dialog.yesno(CONFIG.ADDONTITLE, '[COLOR {0}]Le gustaria eliminar [B]{1}[/B] y las carpetas de miniaturas relacionadas?'.format(CONFIG.COLOR2, latest) + '\n' + '\n' + "Ellas se repoblarán en la próxima puesta en marcha.[/COLOR]", nolabel='[B][COLOR red]No Eliminar[/COLOR][/B]', yeslabel='[B][COLOR cyan]Eliminar Pulgares[/COLOR][/B]')
+        choice = dialog.yesno(CONFIG.ADDONTITLE, '[COLOR {0}]Le gustaria eliminar [B]{1}[/B] y las carpetas de miniaturas relacionadas?'.format(CONFIG.COLOR2, latest) + '\n' + "Ellas se repoblarán en la próxima puesta en marcha.[/COLOR]", nolabel='[B][COLOR red]No Eliminar[/COLOR][/B]', yeslabel='[B][COLOR cyan]Eliminar Pulgares[/COLOR][/B]')
     if choice == 1:
         try:
             tools.remove_file(os.path.join(CONFIG.DATABASE, latest))
@@ -542,6 +542,8 @@ def clear_thumbs(type=None):
             db.purge_db_file(latest)
         for i in thumb_locations:
             tools.remove_folder(i)
+        logging.log_notify(CONFIG.ADDONTITLE,
+            '[COLOR {0}][COLOR azure]Miniaturas Borradas![/COLOR]'.format(CONFIG.COLOR2))                                             
     else:
         logging.log('Eliminar nombres en miniatura cancelados')
 
@@ -699,7 +701,7 @@ def remove_addon_menu():
         logging.log_notify(CONFIG.ADDONTITLE,
                            "[COLOR {0}]No hay Addons Para Eliminar[/COLOR]".format(CONFIG.COLOR2))
         return
-    selected = dialog.multiselect("{0}   Seleccione los Addons                       ".format(CONFIG.ADDONTITLE), addonnames)
+    selected = dialog.multiselect("{0}: [COLOR red]Seleccione los Addons[/COLOR]".format(CONFIG.ADDONTITLE), addonnames)
     if not selected:
         return
     if len(selected) > 0:
