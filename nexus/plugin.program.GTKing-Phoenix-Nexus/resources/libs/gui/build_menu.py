@@ -115,7 +115,7 @@ class BuildMenu:
             else:
                 if count19 > 0:
                     state = '[COLOR azure]+[/COLOR]' if CONFIG.SHOW19 == 'false' else '[COLOR azure]-[/COLOR]'
-                directory.add_separator('[B]PARCHES GTKING PHOENIX TEAM[/B]', fanart=fanart, icon=icon, themeit=CONFIG.THEME2 )
+                    directory.add_separator('[B]PARCHES GTKING PHOENIX TEAM[/B]', fanart=fanart, icon=icon, themeit=CONFIG.THEME2 )
 
                                        'name': 'show19'}, themeit=CONFIG.THEME3)
                     if CONFIG.SHOW19 == 'true':
