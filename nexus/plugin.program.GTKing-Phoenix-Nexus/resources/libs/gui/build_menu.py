@@ -192,7 +192,7 @@ class BuildMenu:
                                    icon=icon, themeit=CONFIG.THEME1)
                                    
             if themecheck:
-                directory.add_separator('[B]PARCHES GTKING PHOENIX TEAM[/B]', fanart=fanart, icon=icon, themeit=CONFIG.THEME2 )
+                directory.add_separator('[B]PARCHES GTKING PHOENIX[/B]', fanart=fanart, icon=icon, themeit=CONFIG.THEME2 )
 
                 response = tools.open_url(themefile)
                 theme = response.text
