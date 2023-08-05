@@ -1390,6 +1390,28 @@ provider-name="jurialmunkey">
   </extension>
 </addon>
 
+<addon id="repository.slyguy" name="SlyGuy Repository (slyguy.uk)" provider-name="SlyGuy" version="0.0.8">
+  <extension point="xbmc.addon.repository" name="SlyGuy Repository (slyguy.uk)">
+    <dir>
+      <info compressed="false">https://slyguy.uk/.repo/addons.xml</info>
+      <checksum>https://slyguy.uk/.repo/addons.xml.md5</checksum>
+      <datadir zip="true">https://slyguy.uk/.repo/</datadir>
+    </dir>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <description lang="en">Addons by SlyGuy (slyguy.uk)</description>
+    <license></license>
+    <language></language>
+    <website></website>
+    <news></news>
+    <assets>
+      <icon>icon.png</icon>
+      <fanart>fanart.jpg</fanart>
+    </assets>
+  </extension>
+</addon>
+
 <addon id="script.colorbox" name="colorbox Script" version="2.0.8" provider-name="BADMS, drinfernoo">
 	<requires>
 		<import addon="script.module.pil"/>
