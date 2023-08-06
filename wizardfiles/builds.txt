@@ -58,6 +58,22 @@ fanart="https://gtkingbuild.github.io/wizard/wizardmatrix/fanart.jpg"
 preview="http://"
 adult="No"
 info="http://"
-description="[COLOR azure][B]GTKing [COLOR white]Prime [COLOR limegreen]MATRIX[/B][/COLOR] para [COLOR teal][B]KODI 20.X Nexus.[/B][/COLOR]
+description="[COLOR azure][B]GTKing [COLOR gold]Phoenix [COLOR limegreen]TEAM [COLOR darkmagenta]NEXUS[/B][/COLOR] para [COLOR teal][B]KODI 20.X Nexus.[/B][/COLOR]
+[B][COLOR dodgerblue]Developer:[/COLOR] DavidZgZ[/B]
+[B][COLOR orange]Colaboradores-Test:[/COLOR] [COLOR cyan]GTKing PHOENIX TEAM.[/B][/COLOR]"
+
+name="GTKing Phoenix Prime NEXUS-FULL"
+version="1.0"
+url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/20.0/Phoenix.NEXUS.Prime.zip"
+minor="http://"
+gui="http://"
+kodi="20"
+theme="https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardfiles/GTKing/Themes%20Nexus-Prime.txt"
+icon="https://gtkingbuild.github.io/wizard/wizardmatrix/icon.jpg"
+fanart="https://gtkingbuild.github.io/wizard/wizardmatrix/fanart.jpg"
+preview="http://"
+adult="No"
+info="http://"
+description="[COLOR azure][B]GTKing [COLOR gold]Phoenix [COLOR limegreen]TEAM [COLOR darkmagenta]NEXUS[/B][/COLOR] para [COLOR teal][B]KODI 20.X Nexus.[/B][/COLOR]
 [B][COLOR dodgerblue]Developer:[/COLOR] DavidZgZ[/B]
 [B][COLOR orange]Colaboradores-Test:[/COLOR] [COLOR cyan]GTKing PHOENIX TEAM.[/B][/COLOR]"
