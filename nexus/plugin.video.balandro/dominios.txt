@@ -1,22 +1,29 @@
-[COLOR coral][B]Balandro[/COLOR][COLOR cyan]  19 de Enero 2023 [/COLOR][COLOR limegreen] 12:30[/B][/COLOR]
-   [COLOR yellow][B]Version 2.5.6[/B][/COLOR]
+[COLOR coral][B]Balandro[/COLOR][COLOR cyan]  5 de Agosto de 2023 [/COLOR][COLOR limegreen]  Hora  7:00[/B][/COLOR]
+   [COLOR yellow][B]Version 3.0.9 Fix-1[/B][/COLOR]
 
-   [COLOR yellow]CONTACTO:[/COLOR]
-     Foro  mimediacenter.info/foro/  Instalaciones, Novedades, Sugerencias, etc.
-     Telegram  t.me/@balandro_asesor  Asesoramiento, Dudas, Consultas, etc.
+   [COLOR yellow][B][I]CONTACTO:[/I][/B][/COLOR]
+     Foro  [COLOR dodgerblue][B][I]www.mimediacenter.info/foro/[/I][/B][/COLOR]  Instalaciones, Novedades, Sugerencias, etc.
+     Telegram  [COLOR aquamarine][B][I]t.me/balandro_asesor[/I][/B][/COLOR]  Asesoramiento, Dudas, Consultas, etc.
 
-   [COLOR gold][B]CAMBIOS FRECUENTES DE DOMINIOS:[/B][/COLOR]
-     [B][COLOR moccasin]DonTorrents [COLOR goldenrod] Habitualmente, cambia su Dominio 1 vez por semana[/B][/COLOR]
+   [COLOR fuchsia][B][I]CUESTIONES PRELIMINARES:[/I][/B][/COLOR]
+     Si algun canal no obtiene [COLOR coral][B]Resultados[/B][/COLOR] y tiene la opcion [COLOR red][B]Configurar proxies a usar[/B][/COLOR]:
+          [COLOR gold][B]Esos Canales sufren bloqueos por parte de algunos paises/operadoras[/B][/COLOR],
+          que no permiten acceder a su contenido.  Mediante el [COLOR red][B]Uso de proxies[/B][/COLOR] trate de evitar esa restriccion.
+          [COLOR violet][B]Tenga presente que unos proxies son mas rapidos que otros, o mas estables
+          o menos saturados, o mas duraderos, gratuitos o de pago, etc.[/B][/COLOR]
 
-   [COLOR cyan][B]CANALES SITUACION Y ULTIMOS CAMBIOS DE DOMINIOS:[/B][/COLOR]
-     [B][COLOR moccasin] AnimeFenix [/COLOR][COLOR springgreen] www.animefenix.tv [COLOR red] CloudFlare[COLOR orangered] Protection[/B][/COLOR]
-     [B][COLOR moccasin] AnimeOnline [/COLOR][COLOR springgreen] www1.animeonline.ninja [COLOR red] CloudFlare[COLOR orangered] Protection[/B][/COLOR]
-     [B][COLOR moccasin] Dilo [/COLOR][COLOR springgreen] www.dilo.nu [COLOR red] CloudFlare[COLOR orangered] Protection[/B][/COLOR]
-     [B][COLOR moccasin] HdFull [/COLOR][COLOR springgreen] hdfull.life [COLOR red] CloudFlare[COLOR orangered] Protection[/B][/COLOR]
-     [B][COLOR moccasin] HenaOjara [/COLOR][COLOR springgreen] henaojara2.com [COLOR red] CloudFlare[COLOR orangered] Protection[/B][/COLOR]
-     [B][COLOR moccasin] InkaPelis [/COLOR][COLOR springgreen] www1.inkapelis.li [COLOR red] CloudFlare[COLOR orangered] Protection[/B][/COLOR]
-     [B][COLOR moccasin] PelisySeries [/COLOR][COLOR springgreen] pelisyseries.net [COLOR red] CloudFlare[COLOR orangered] Protection[/B][/COLOR]
-     [B][COLOR moccasin] PlayDede [/COLOR][COLOR springgreen] playdede.nu [COLOR red] CloudFlare[COLOR orangered] Protection[/B][/COLOR]
-     [B][COLOR moccasin] RePelis24 [/COLOR][COLOR springgreen] repelis24.se [COLOR red] CloudFlare[COLOR orangered] Protection[/B][/COLOR]
-     [B][COLOR moccasin] RePelisHd [/COLOR][COLOR springgreen] wwu.repelishd.de [COLOR red] CloudFlare[COLOR orangered] Protection[/B][/COLOR]
-     [B][COLOR moccasin] YesPornPlease [/COLOR][COLOR springgreen] yespornpleasexxx.com [COLOR red] CloudFlare[COLOR orangered] Protection[/B][/COLOR]
+   [COLOR goldenrod][B][I]CAMBIOS FRECUENTES DE DOMINIOS:[/I][/B][/COLOR]
+     [B][COLOR moccasin]DonTorrents [COLOR springgreen] dontorrent.??? [COLOR goldenrod] Habitualmente, cambia [COLOR coral] cada Semana[/B][/COLOR]
+
+   [COLOR cyan][B]ULTIMOS CAMBIOS DE DOMINIOS:[/B][/COLOR] [B][COLOR darkorange] Sin Novedades[/B][/COLOR]
+
+   [COLOR yellowgreen][B]SITUACION CANALES:[/B][/COLOR]
+     [B][COLOR moccasin] DoramasJc [COLOR springgreen] www.doramasjc.com [COLOR red] Host Error [COLOR gray][I] Dominio Inexistente[/I][/B][/COLOR]
+     [B][COLOR moccasin] Series24Nu [COLOR springgreen] ww2.series24.nu [COLOR red] Host Error [COLOR gray][I] Servidor No Encontrado[/I][/B][/COLOR]
+
+   [COLOR slateblue][B]CANALES TEMPORALMENTE DES-ACTIVADOS:[/B][/COLOR]
+     [B][COLOR moccasin] Cuevana3 [COLOR springgreen] w4.cuevana3.ai [COLOR red] Host Error [COLOR gray][I] Dominio No Localizado[/I][/B][/COLOR]
+     [B][COLOR moccasin] Ievenn [COLOR springgreen] ievenn.com [COLOR red] Host Error [COLOR gray][I] Cuenta Suspendida[/I][/B][/COLOR]
+
+   [COLOR darkcyan][B]CANALES PROBABLEMENTE NO ACCESIBLES:[/B][/COLOR]
+     [B][COLOR moccasin] PelisySeries [COLOR springgreen] pelisyseries.net [COLOR red] CloudFlare [COLOR orangered] Protection [COLOR plum][I] Hide reCAPTCHA[/I][/B][/COLOR]

@@ -37,7 +37,7 @@ context_favoritos = []
 tit = '[COLOR %s][B]Quitar de Favoritos[/B][/COLOR]' % color_alert
 context_favoritos.append({'title': tit, 'channel': 'favoritos', 'action': '_delFavourite'})
 
-tit = '[COLOR %s]Renombrar Favorito[/COLOR]' % color_avis
+tit = '[COLOR %s][B]Renombrar Favorito[/B][/COLOR]' % color_adver
 context_favoritos.append({'title': tit, 'channel': 'favoritos', 'action': '_renameFavourite'})
 
 tit = '[COLOR %s]Ajustes categoría menú[/COLOR]' % color_exec
@@ -52,7 +52,7 @@ def mainlist(item):
 
     if not matches:
         platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Aún no tiene Favoritos[/COLOR][/B]' % color_exec)
-        return
+        return itemlist
 
     ses = 0
 
@@ -66,8 +66,11 @@ def mainlist(item):
 
             item.title = title
             item.titulo = title
+            item.from_title = title
 
             item.thumbnail = thumb
+
+            item.languages = ''
 
             if type(item.context) == str: item.context = item.context.split('|')
             elif type(item.context) != list: item.context = []
@@ -79,7 +82,6 @@ def mainlist(item):
     if not itemlist:
         if not ses == 0:
             platformtools.dialog_notification(config.__addon_name, '[COLOR %s][B]Sin Favoritos de Balandro[/B][/COLOR]' % color_adver)
-            return
 
     return itemlist
 
@@ -122,12 +124,12 @@ def saveFavourites(favourites_list):
 def addFavourite(item):
     logger.info()
 
-    # ~  Si menu contextual deben recuperarse action y channel
     if item.from_action: item.__dict__["action"] = item.__dict__.pop("from_action")
 
     if item.from_channel: item.__dict__["channel"] = item.__dict__.pop("from_channel")
 
     favourites_list = readFavourites()
+
     data = 'ActivateWindow(10025,&quot;' + plugin_addon + '?' + item.tourl() + "&quot;,return)"
 
     titulo = item.title.replace('"', "'")
@@ -135,7 +137,7 @@ def addFavourite(item):
     favourites_list.append((titulo, item.thumbnail, data))
 
     if saveFavourites(favourites_list):
-        platformtools.dialog_ok(config.__addon_name, titulo, 'Guardado en Favoritos')
+        platformtools.dialog_ok(config.__addon_name, '[COLOR yellow][B]' + titulo + '[/B][/COLOR]', 'Guardado en Favoritos')
         return True
 
     return False
@@ -144,16 +146,19 @@ def addFavourite(item):
 def delFavourite(item):
     logger.info()
 
+    if item.from_title: item.title = item.from_title
+
     favourites_list = readFavourites()
 
     for fav in favourites_list:
         if plugin_addon in str(fav):
-            if fav[0] == item.titulo:
-                favourites_list.remove(fav)
+            if fav[0] == item.title or fav[0] == item.titulo:
+                if platformtools.dialog_yesno(config.__addon_name, '[COLOR cyan][B]¿ Confirma eliminar de Favoritos ?[/B][/COLOR]', '[COLOR yellow][B]' + item.titulo + '[/B][/COLOR]'):
+                    favourites_list.remove(fav)
 
-                if saveFavourites(favourites_list):
-                    platformtools.dialog_ok(config.__addon_name, '"' + item.titulo + '"', 'Eliminado de Favoritos')
-                    return True
+                    if saveFavourites(favourites_list):
+                        platformtools.dialog_notification(config.__addon_name, '[COLOR %s][B]Eliminado de Favoritos[/B][/COLOR]' % color_exec)
+                        return True
 
     return False
 
@@ -165,16 +170,15 @@ def renameFavourite(item):
 
     for i, fav in enumerate(favourites_list):
         if plugin_addon in str(fav):
-            if fav[0] == item.titulo:
-                new_title = platformtools.dialog_input(item.titulo, item.title)
+            if fav[0] == item.from_title or fav[0] == item.titulo:
+                new_title = platformtools.dialog_input(item.from_title, item.title)
 
                 if new_title:
-                    if not new_title == item.titulo:
-                        favourites_list[i] = (new_title, fav[1], fav[2])
+                    favourites_list[i] = (new_title, fav[1], fav[2])
 
-                        if saveFavourites(favourites_list):
-                            platformtools.dialog_ok(config.__addon_name, '"' + item.titulo + '"', 'Favorito Renombrado como "' + new_title + '"')
-                            return True
+                    if saveFavourites(favourites_list):
+                        platformtools.dialog_ok(config.__addon_name + ' - Favorito', '[COLOR yellow][B]' + item.titulo + '[/B][/COLOR]', 'Renombrado como: ', '[COLOR cyan][B]' + new_title + '[/B][/COLOR]')
+                        return True
 
     return False
 
@@ -189,6 +193,7 @@ def _delFavourite(item):
 
 def _renameFavourite(item):
     proceso = renameFavourite(item)
+
 
     if proceso:
         from modules import submnuctext

@@ -9,6 +9,7 @@ from core import httptools, scrapertools, servertools
 
 host = 'https://watchpornfree.info/'
 
+
 perpage = 30
 
 
@@ -33,14 +34,15 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'scenes/' ))
 
-    itemlist.append(item.clone( title = 'Últimos', action = 'list_all', url = host + 'scenes/category/featured-scenes/' ))
+    itemlist.append(item.clone( title = 'Últimos', action = 'list_all', url = host + 'category/featured/' ))
 
-    itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host ))
+    itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host, text_color = 'deepskyblue' ))
 
     itemlist.append(item.clone( title = 'Parodias', action = 'list_all', url = host + 'category/parodies/' ))
 
     itemlist.append(item.clone( title = 'Por estudio', action = 'categorias', url = host, group = 'estudios' ))
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url = host, group = 'categorias'))
+
     itemlist.append(item.clone( title = 'Por año', action = 'categorias', url = host, group = 'years'))
 
     return itemlist
@@ -67,7 +69,7 @@ def categorias(item):
             if title == 'Parodies': continue
             elif title == 'Porn Movies': continue
 
-        itemlist.append(item.clone (action='list_all', title=title, url=url) )
+        itemlist.append(item.clone (action='list_all', title=title, url=url, text_color = 'orange' ))
 
     if item.group == 'estudios':
         return sorted(itemlist, key=lambda x: x.title)
@@ -95,8 +97,7 @@ def list_all(item):
     for url, thumb, title in matches[item.page * perpage:]:
         if len(itemlist) >= perpage: break
 
-        itemlist.append(item.clone (action='findvideos', title=title, url=url, thumbnail=thumb, contentType = 'movie',
-                                    contentTitle = title, contentExtra='adults') )
+        itemlist.append(item.clone (action='findvideos', title=title, url=url, thumbnail=thumb, contentType = 'movie', contentTitle = title, contentExtra='adults') )
 
     if itemlist:
         buscar_next = True
@@ -146,6 +147,8 @@ def findvideos(item):
         if servidor == 'various':
             if '/tubeload.' in url: other = 'Tubeload'
             elif '/mvidoo.' in url: other = 'Mvidoo'
+            elif '/streamhub.' in url: other = 'Streamhub'
+            elif '/filemoon.' in url: other = 'Filemoon'
 
         itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = 'VO', other = other ))
 

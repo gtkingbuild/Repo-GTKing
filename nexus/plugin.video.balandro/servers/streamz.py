@@ -24,9 +24,10 @@ def get_video_url(page_url, url_referer=''):
        if url:
            url = httptools.downloadpage(url, follow_redirects=False, only_headers=True).headers.get('location', '')
 
-           if not '/issue.mp4' in url:
-               url += "|User-Agent=%s" % httptools.get_user_agent()
-               video_urls.append(['mp4', url])
+           if url:
+               if not '/issue.mp4' in url:
+                   url += "|User-Agent=%s" % httptools.get_user_agent()
+                   video_urls.append(['mp4', url])
     except:
        pass
 

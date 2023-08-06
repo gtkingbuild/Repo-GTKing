@@ -1,9 +1,24 @@
 # -*- coding: utf-8 -*-
 
-from platformcode import config, logger, platformtools
-from core import httptools, scrapertools
+import random
 
-from lib.megaserver import Client
+from platformcode import config, logger, platformtools
+from core import httptools, scrapertools, jsontools
+
+
+try:
+   from lib.megaserver import Client
+
+   MS2 = False
+except:
+   from lib.megaserver2 import Client
+
+   MS2 = True
+
+
+# ~ 31/1/2023  Pendiente porque Aborta si K20.0 Android instalación Limpia
+# ~ if MS2:
+# ~     platformtools.dialog_notification(config.__addon_name, "M2 Resolve Posible Crash")
 
 
 def get_video_url(page_url, url_referer=''):
@@ -25,33 +40,23 @@ def get_video_url(page_url, url_referer=''):
                 get = '&n=' + file_id
                 post = {'a': 'f', 'c': 1, 'r': 0}
 
-            import random
             nro = random.randint(0, 0xFFFFFFFF)
 
-            from core import jsontools
             api = 'https://g.api.mega.co.nz/cs?id=%d%s' % (nro, get)
-            resp = httptools.downloadpage(api, post=jsontools.dump([post]), headers={'Referer': 'https://mega.nz/'})
+            resp = httptools.downloadpage(api, post=jsontools.dump([post]))#, headers={'Referer': 'https://mega.nz/'})
 
-            if resp.data == '[-18]':
-                 return 'Temporalmente No disponible'
-            elif resp.data == '[-17]':
-                 return 'Excedida su cuota de transferiencia permitida'
-            elif resp.data == '[-16]':
-                 return 'Cuenta baneada'
-            elif resp.data == '[-15]':
-                 return 'Sesión expirada o inválida'
-            elif resp.data == '[-14]':
-                 return 'Error al desencriptar'
-            elif resp.data == '[-13]':
-                 return 'Archivo incompleto'
-            elif resp.data == '[-13]':
-                 return 'Acceso restringido'
-            elif resp.data == '[-9]':
-                 return 'Archivo NO encontrado'
-            elif resp.data == '[-6]':
-                 return 'Cuenta eliminada'
-            elif resp.data == '[-4]':
-                 return 'Excedida cuota transferiencia. Intentelo más tarde'
+            if resp.data == '[-18]': return 'Temporalmente No disponible'
+            elif resp.data == '[-17]': return 'Excedida su cuota de transferiencia permitida'
+            elif resp.data == '[-16]': return 'Cuenta baneada'
+            elif resp.data == '[-15]': return 'Sesión expirada o inválida'
+            elif resp.data == '[-14]': return 'Error al desencriptar'
+            elif resp.data == '[-13]': return 'Archivo incompleto'
+            elif resp.data == '[-13]': return 'Acceso restringido'
+            elif resp.data == '[-9]': return 'Archivo NO encontrado'
+            elif resp.data == '[-6]': return 'Cuenta eliminada'
+            elif resp.data == '[-4]': return 'Excedida cuota transferiencia. Intentelo más tarde'
+            else:
+               if '[-' in resp.data: return 'Vídeo con algún problema desconocido'
 
     page_url = page_url.replace('/embed#!', '/embed#')
     page_url = page_url.replace('/embed/', '/embed#')

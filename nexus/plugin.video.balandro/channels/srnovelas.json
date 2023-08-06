@@ -11,7 +11,7 @@
   "categories": ["tvshow"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["suggested", "countries", "lasts", "vos", "tales"],
+  "clusters": ["notice", "current", "suggested", "countries", "lasts", "vos", "tales"],
 
-  "notes": "Web dedicada exclusivamente en Novelas."
+  "notes": "Web dedicada exclusivamente en Novelas. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

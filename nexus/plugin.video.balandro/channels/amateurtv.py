@@ -63,18 +63,20 @@ def list_all(item):
         age = elem['user']['age']
         country  = elem['country']
 
-        titulo = name
+        titulo = name.replace('_', '').capitalize()
 
-        if country: titulo = titulo + ' ' + str(country)
+        if country: titulo = titulo + ' [COLOR orange]' + str(country).lower() + '[/COLOR]'
 
-        if age: titulo = titulo + ' (Edad ' + str(age) + ')'
+        if age:
+           age = str(age).replace('[', '').replace(']', '')
+           titulo = titulo + ' (edad ' + str(age) + ')'
 
-        if not online: titulo = '[COLOR plum]Off[/COLOR] ' + titulo
+        if not online: titulo += '[COLOR moccasin]Off[/COLOR] ' + titulo
 
         url = '%s/v3/readmodel/show/%s/es/' % (host, name)
 
-        itemlist.append(item.clone (action='findvideos', title=titulo, url=url, thumbnail=thumb, contentType = 'movie', other = str(country), online = online,
-                                    contentTitle = name, contentExtra='adults' ))
+        itemlist.append(item.clone (action='findvideos', title=titulo, url=url, thumbnail=thumb, other=titulo, online=online,
+                                    contentType = 'movie', contentTitle = name, contentExtra='adults' ))
 
     if itemlist:
         try:

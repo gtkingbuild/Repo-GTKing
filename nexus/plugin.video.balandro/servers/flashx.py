@@ -22,11 +22,14 @@ def get_video_url(page_url, url_referer=''):
         return 'El archivo no existe o ha sido borrado'
 
     if 'normal.mp4' not in data:
-        file_id = base64.b64encode(scrapertools.find_single_match(data, "'file_id', '([^']+)'"))
+        file_id = scrapertools.find_single_match(data, "'file_id', '([^']+)'")
 
-        httptools.downloadpage('https://www.flashx.to/counter.cgi?c2=%s&fx=%s' % (video_id, file_id))
-        httptools.downloadpage('https://www.flashx.tv/flashx.php?ss=yes&f=fail&fxfx=6')
-        data = httptools.downloadpage(url).data
+        if file_id:
+            file_id = base64.b64encode(file_id)
+
+            httptools.downloadpage('https://www.flashx.to/counter.cgi?c2=%s&fx=%s' % (video_id, file_id))
+            httptools.downloadpage('https://www.flashx.tv/flashx.php?ss=yes&f=fail&fxfx=6')
+            data = httptools.downloadpage(url).data
 
     # ~ packeds = scrapertools.find_multiple_matches(data, "<script type=[\"']text/javascript[\"']>(eval.*?)</script>")
     # ~ for packed in packeds:

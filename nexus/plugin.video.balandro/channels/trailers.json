@@ -9,9 +9,9 @@
   "search_types": ["movie"],
 
   "categories": ["movie"],
-  "language": ["lat", "cast", "vose", "vo"],
+  "language": ["vo"],
 
-  "clusters": ["suggested", "trailers"],
+  "clusters": ["trailers"],
 
   "notes": "Web dedicada exclusivamente a los tráilers"
 }

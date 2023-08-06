@@ -31,6 +31,18 @@ def mainlist_pelis(item):
     return itemlist
 
 
+def idiomas(item):
+    logger.info()
+    itemlist = []
+
+    itemlist.append(item.clone( title = 'Castellano', action = 'list_all', url = host + 'filter?language=1', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'Latino', action = 'list_all', url = host + 'filter?language=2', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'Inglés (VO)', action = 'list_all', url = host + 'filter?language=3', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'Subtitulado', action = 'list_all', url = host + 'filter?language=4', text_color='moccasin' ))
+
+    return itemlist
+
+
 def generos(item):
     logger.info()
     itemlist = []
@@ -52,19 +64,7 @@ def generos(item):
             if title == 'Adultos': continue
             elif title == 'Erotico': continue
 
-        itemlist.append(item.clone( action = 'list_all', title = title, url = url ))
-
-    return itemlist
-
-
-def idiomas(item):
-    logger.info()
-    itemlist = []
-
-    itemlist.append(item.clone( title = 'Castellano', action = 'list_all', url = host + 'filter?language=1' ))
-    itemlist.append(item.clone( title = 'Latino', action = 'list_all', url = host + 'filter?language=2' ))
-    itemlist.append(item.clone( title = 'Inglés (VO)', action = 'list_all', url = host + 'filter?language=3' ))
-    itemlist.append(item.clone( title = 'Subtitulado', action = 'list_all', url = host + 'filter?language=4' ))
+        itemlist.append(item.clone( action = 'list_all', title = title, url = url, text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -77,7 +77,7 @@ def anios(item):
     current_year = int(datetime.today().year)
 
     for x in range(current_year, 1935, -1):
-        itemlist.append(item.clone( title = str(x), url = host + 'filter?year=' + str(x), action = 'list_all' ))
+        itemlist.append(item.clone( title = str(x), url = host + 'filter?year=' + str(x), action = 'list_all', text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -94,7 +94,7 @@ def calidades(item):
 
     for title in matches:
         if title:
-            itemlist.append(item.clone( title = 'En ' + title, url = host + 'filter?quality=' + title, action = 'list_all' ))
+            itemlist.append(item.clone( title = 'En ' + title, url = host + 'filter?quality=' + title, action = 'list_all', text_color='moccasin' ))
 
     return sorted(itemlist, key = lambda it: it.title)
 
@@ -128,8 +128,7 @@ def list_all(item):
 
         if not year: year = '-'
 
-        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, languages = ','.join(langs),
-                                    contentType = 'movie', contentTitle = title, infoLabels = {'year': year} ))
+        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, languages = ','.join(langs), contentType = 'movie', contentTitle = title, infoLabels = {'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -191,8 +190,7 @@ def findvideos(item):
 
         langs = get_languages(list_idiomas)
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = server, title = '', id = id, referer = go_url,
-                              language = ','.join(langs), quality = qlty.strip(), other = link_other ))
+        itemlist.append(Item( channel = item.channel, action = 'play', server = server, title = '', id = id, referer = go_url, language = ','.join(langs), quality = qlty.strip(), other = link_other ))
 
     if not itemlist:
         if not ses == 0:
@@ -249,6 +247,7 @@ def play(item):
 		   
            if '/hqq.' in url or '/waaw.' in url or '/netu.' in url:
                return 'Requiere verificación [COLOR red]reCAPTCHA[/COLOR]'
+
            elif 'openload' in url or 'powvideo' in url or 'streamplay' in url or 'rapidvideo' in url or 'streamango' in url or 'verystream' in url or 'vidtodo' in url:
                return 'Servidor [COLOR yellow]NO soportado[/COLOR]'
 

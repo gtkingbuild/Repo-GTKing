@@ -31,7 +31,7 @@ def mainlist_animes(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'anime/?status=&type=&order=', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimos animes', action = 'list_all', url = host + 'anime/?status=&type=&order=update', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Últimos animes', action = 'list_all', url = host + 'anime/?status=&type=&order=update', search_type = 'tvshow', text_color = 'olive' ))
 
     itemlist.append(item.clone( title = 'Actualizados', action = 'list_all', url = host + 'anime/?status=&type=&order=latest', search_type = 'tvshow' ))
 
@@ -56,7 +56,7 @@ def generos(item):
     for valor, title in matches:
         url = host + 'anime/' + '?genre%5B%5D=' + valor + '&status=&type=&sub=&order='
 
-        itemlist.append(item.clone( title = title, action = 'list_all', url = url ))
+        itemlist.append(item.clone( title = title, action = 'list_all', url = url, text_color='springgreen' ))
 
     return itemlist
 
@@ -82,8 +82,7 @@ def list_all(item):
         titulo = title.replace('(Pelicula)', '').replace('(Sub Español)', '').replace('(Audio Latino)', '').replace('Audio castellano', '').strip()
 
         if '/pelicula/' in url:
-            itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb,
-                                        contentType='movie', contentTitle=titulo, infoLabels={'year': '-'} ))
+            itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, contentType='movie', contentTitle=titulo, infoLabels={'year': '-'} ))
         else:
             SerieName = titulo
 
@@ -92,8 +91,7 @@ def list_all(item):
 
             SerieName = SerieName.strip()
 
-            itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb, 
-                                        contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': '-'} ))
+            itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb, contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': '-'} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -128,10 +126,12 @@ def episodios(item):
 
     matches = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)".*?<div class="epl-num">(.*?)</div>.*?<div class="epl-title">(.*?)</div>')
 
-    if item.page == 0:
+    if item.page == 0 and item.perpage == 50:
         sum_parts = len(matches)
 
-        try: tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+        try:
+            tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+            if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
         if tvdb_id:
@@ -139,6 +139,7 @@ def episodios(item):
                 platformtools.dialog_notification('AnimeYt', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
         else:
+            item.perpage = sum_parts
 
             if sum_parts >= 1000:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]500[/B][/COLOR] elementos ?'):
@@ -151,17 +152,25 @@ def episodios(item):
                     item.perpage = 250
 
             elif sum_parts >= 250:
-                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]100[/B][/COLOR] elementos ?'):
-                    platformtools.dialog_notification('AnimeYt', '[COLOR cyan]Cargando 100 elementos[/COLOR]')
-                    item.perpage = 100
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]125[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('AnimeYt', '[COLOR cyan]Cargando 125 elementos[/COLOR]')
+                    item.perpage = 125
+
+            elif sum_parts >= 125:
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]75[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('AnimeYt', '[COLOR cyan]Cargando 75 elementos[/COLOR]')
+                    item.perpage = 75
 
             elif sum_parts > 50:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos [COLOR cyan][B]Todos[/B][/COLOR] de una sola vez ?'):
                     platformtools.dialog_notification('AnimeYt', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
                     item.perpage = sum_parts
+                else: item.perpage = 50
 
     for url, epis, title in matches[item.page * item.perpage:]:
-        itemlist.append(item.clone( action='findvideos', url = url, title = title, contentType = 'episode', contentSeason = 1, contentEpisodeNumber=epis ))
+        titulo = title + ' ' + item.contentSerieName
+
+        itemlist.append(item.clone( action='findvideos', url = url, title = titulo, contentType = 'episode', contentSeason = 1, contentEpisodeNumber=epis ))
 
         if len(itemlist) >= item.perpage:
             break
@@ -222,7 +231,7 @@ def findvideos(item):
             other = ''
             if servidor == 'directo': other = url
 
-            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, other = other ))
+            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language='Vose', other = other ))
 
     if not itemlist:
         if not ses == 0:

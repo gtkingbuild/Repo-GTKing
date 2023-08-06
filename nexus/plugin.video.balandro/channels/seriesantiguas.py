@@ -2,24 +2,60 @@
 
 import re
 
-from platformcode import logger, platformtools
+from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-host = 'https://seriesantiguas.com/'
+host = 'https://www.seriesantiguas.com/'
+
+
+# ~ por si viene de enlaces guardados
+ant_hosts = ['https://www.seriesantiguas.net/', 'https://seriesantiguas.com/']
+
+
+domain = config.get_setting('dominio', 'seriesantiguas', default='')
+
+if domain:
+    if domain == host: config.set_setting('dominio', '', 'seriesantiguas')
+    elif domain in str(ant_hosts): config.set_setting('dominio', '', 'seriesantiguas')
+    else: host = domain
 
 
 def do_downloadpage(url, post=None, headers=None):
     # ~ por si viene de enlaces guardados
-    ant_hosts = ['https://www.seriesantiguas.net/', 'https://www.seriesantiguas.com/']
-
     for ant in ant_hosts:
         url = url.replace(ant, host)
 
     data = httptools.downloadpage(url, post=post, headers=headers).data
 
     return data
+
+
+def acciones(item):
+    logger.info()
+    itemlist = []
+
+    domain_memo = config.get_setting('dominio', 'seriesantiguas', default='')
+
+    if domain_memo: url = domain_memo
+    else: url = host
+
+    itemlist.append(Item( channel='actions', action='show_latest_domains', title='[COLOR moccasin][B]Últimos Cambios de Dominios[/B][/COLOR]', thumbnail=config.get_thumb('pencil') ))
+
+    itemlist.append(Item( channel='helper', action='show_help_domains', title='[B]Información Dominios[/B]', thumbnail=config.get_thumb('help'), text_color='green' ))
+
+    itemlist.append(item.clone( channel='domains', action='test_domain_seriesantiguas', title='Test Web del canal [COLOR yellow][B] ' + url + '[/B][/COLOR]',
+                                from_channel='seriesantiguas', folder=False, text_color='chartreuse' ))
+
+    if domain_memo: title = '[B]Modificar/Eliminar el dominio memorizado[/B]'
+    else: title = '[B]Informar Nuevo Dominio manualmente[/B]'
+
+    itemlist.append(item.clone( channel='domains', action='manto_domain_seriesantiguas', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
+
+    platformtools.itemlist_refresh()
+
+    return itemlist
 
 
 def mainlist(item):
@@ -29,6 +65,8 @@ def mainlist(item):
 def mainlist_series(item):
     logger.info()
     itemlist = []
+
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
@@ -49,10 +87,15 @@ def list_all(item):
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
     if '<div class="progression-studios-elementor-video-post-container">' in data:
-         bloque = scrapertools.find_single_match(data, '<div class="progression-studios-elementor-video-post-container">(.*?)</div><!-- close .progression-studios-elementor-video-post-container -->')
+         bloque = scrapertools.find_single_match(data, '<div class="progression-studios-elementor-video-post-container">(.*?)</div></div></div></div></div></div></div>')
+
+         if not bloque: bloque = scrapertools.find_single_match(data, '<div class="progression-studios-elementor-video-post-container">(.*?)<div class="aztec-progression-pagination-elementor">')
+         if not bloque: bloque = data
+
     else: bloque = data
 
-    matches = scrapertools.find_multiple_matches(bloque, '<div id="post-(.*?)</a><!-- Link -->')
+    matches = scrapertools.find_multiple_matches(bloque, '<div id="post-(.*?)<div class="progression-studios-isotope-animation">')
+    if not matches: matches = scrapertools.find_multiple_matches(bloque, '<div id="post-(.*?)<div class="clearfix-pro"></div>')
 
     for match in matches:
         url = scrapertools.find_single_match(match, '<a href="(.*?)"')
@@ -63,8 +106,9 @@ def list_all(item):
 
         thumb = scrapertools.find_single_match(match, 'src="(.*?)"')
 
-        itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb, 
-                                    contentType = 'tvshow', contentSerieName = title, infoLabels = {'year': '-'} ))
+        if thumb.startswith('/'): thumb = host[:-1] + thumb
+
+        itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb, contentType = 'tvshow', contentSerieName = title, infoLabels = {'year': '-'} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -119,8 +163,7 @@ def temporadas(item):
                 itemlist = episodios(item)
                 return itemlist
 
-            itemlist.append(item.clone( action = 'episodios', title = title, url = url, old = 'old', page = 0,
-                                        contentType = 'season', contentSeason = numtempo ))
+            itemlist.append(item.clone( action = 'episodios', title = title, url = url, old = 'old', page = 0, contentType = 'season', contentSeason = numtempo, text_color = 'tan' ))
 
     else:
 
@@ -138,7 +181,7 @@ def temporadas(item):
                 itemlist = episodios(item)
                 return itemlist
 
-            itemlist.append(item.clone( action = 'episodios', title = title, url = url, page = 0, contentType = 'season', contentSeason = numtempo ))
+            itemlist.append(item.clone( action = 'episodios', title = title, url = url, old = '', page = 0, contentType = 'season', contentSeason = numtempo, text_color = 'tan' ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -155,14 +198,19 @@ def episodios(item):
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
-    matches = scrapertools.find_multiple_matches(data, '<div class="progression-studios-season-item">(.*?)<!-- close embedded video -->')
+    bloque = scrapertools.find_single_match(data, '<div id="progression-studios-season-video-list-' + str(item.contentSeason) + '(.*?)</div></div></div></div></div>')
+    if not bloque: bloque = scrapertools.find_single_match(data, '<div id="progression-studios-season-video-list-' + str(item.contentSeason) + '(.*?)<div class="clearfix-pro">')
+
+    matches = scrapertools.find_multiple_matches(bloque, '<div class="progression-studios-season-item">(.*?)><div class="clearfix-pro">')
 
     if not matches: matches = scrapertools.find_multiple_matches(data, "<div class='post hentry'>(.*?)</div></div>")
 
-    if item.page == 0:
+    if item.page == 0 and item.perpage == 50:
         sum_parts = len(matches)
 
-        try: tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+        try:
+            tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+            if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
         if tvdb_id:
@@ -170,6 +218,7 @@ def episodios(item):
                 platformtools.dialog_notification('SeriesAntiguas', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
         else:
+            item.perpage = sum_parts
 
             if sum_parts >= 1000:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]500[/B][/COLOR] elementos ?'):
@@ -182,14 +231,20 @@ def episodios(item):
                     item.perpage = 250
 
             elif sum_parts >= 250:
-                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]100[/B][/COLOR] elementos ?'):
-                    platformtools.dialog_notification('SeriesAntiguas', '[COLOR cyan]Cargando 100 elementos[/COLOR]')
-                    item.perpage = 100
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]125[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('SeriesAntiguas', '[COLOR cyan]Cargando 125 elementos[/COLOR]')
+                    item.perpage = 125
+
+            elif sum_parts >= 125:
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]75[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('SeriesAntiguas', '[COLOR cyan]Cargando 75 elementos[/COLOR]')
+                    item.perpage = 75
 
             elif sum_parts > 50:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos [COLOR cyan][B]Todos[/B][/COLOR] de una sola vez ?'):
                     platformtools.dialog_notification('SeriesAntiguas', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
                     item.perpage = sum_parts
+                else: item.perpage = 50
 
         if item.old: item.perpage = sum_parts
 
@@ -202,12 +257,14 @@ def episodios(item):
         if not item.old:
             episode = scrapertools.find_single_match(epis, '<h2 class="progression-video-title">(.*?). ')
 
-            title = scrapertools.find_single_match(epis, '<h2 class="progression-video-title">.*?. (.*?)</h2>').strip()
+            title = scrapertools.find_single_match(epis, '<h2 class="progression-video-title">.*?. (.*?)</h2').strip()
         else:
             episode = scrapertools.find_single_match(epis, "Temporada.*?x(.*?)'").strip()
             episode = episode.replace(')', '')
 
             title = scrapertools.find_single_match(epis, "<img alt='(.*?)'")
+
+            if not title: title = scrapertools.find_single_match(epis, '<h2 class="progression-video-title">.*?. (.*?)</h2').strip()
 
         if not url or not episode: continue
 
@@ -217,8 +274,7 @@ def episodios(item):
         thumb = scrapertools.find_single_match(epis, 'src="(.*?)"')
         if not thumb: thumb = scrapertools.find_single_match(epis, "src='(.*?)'")
 
-        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb,
-                                    contentType = 'episode', contentEpisodeNumber = episode ))
+        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, contentType = 'episode', contentEpisodeNumber = episode ))
 
         if len(itemlist) >= item.perpage:
             break
@@ -246,14 +302,20 @@ def findvideos(item):
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
-    if "<div class='post-body entry-content'>" in data:
-        bloque = scrapertools.find_single_match(data, "<div class='post-body entry-content'>(.*?)<div class='post-footer'>")
+    if "<div class='post-body entry-content'>" in data: bloque = scrapertools.find_single_match(data, "<div class='post-body entry-content'>(.*?)<div class='post-footer'>")
     else: bloque = data
 
-    matches = scrapertools.find_multiple_matches(bloque, '<iframe.*?src="(.*?)"')
+    matches0 = scrapertools.find_multiple_matches(bloque, '<iframe.*?src="(.*?)".*?</iframe>')
+
+    matches1 = scrapertools.find_multiple_matches(bloque, '<iframe.*?allow="autoplay".*?data-src="(.*?)".*?</iframe>')
+
+    matches2 = scrapertools.find_multiple_matches(bloque, '<noscript><iframe.*? src="(.*?)".*?</iframe>')
+
+    matches = matches0 + matches1 + matches2
 
     for url in matches:
         if url.startswith('//'): url = 'https:' + url
+
         url = url.replace('&amp;', '&')
 
         servidor = servertools.get_server_from_url(url)

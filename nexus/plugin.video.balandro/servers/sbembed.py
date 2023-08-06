@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import xbmc
+import xbmc, time
 
-from core import httptools, scrapertools, servertools
 from platformcode import config, logger, platformtools
+from core import httptools, scrapertools, servertools
+
 from lib import jsunpack
 
+
+espera = config.get_setting('servers_waiting', default=6)
 
 color_exec = config.get_setting('notification_exec_color', default='cyan')
 el_srv = ('Sin respuesta en [B][COLOR %s]') % color_exec
@@ -51,14 +54,10 @@ def get_video_url(page_url, url_referer=''):
         return 'El fichero no existe o ha sido borrado'
 
     if not "text/javascript'>(eval" in data:
-        import time
-        from platformcode import platformtools
-        espera = 5
-
-        platformtools.dialog_notification('Cargando Sbembed', 'Espera requerida de %s segundos' % espera)
+        platformtools.dialog_notification('Cargando [COLOR cyan][B]Sbembed[/B][/COLOR]', 'Espera requerida de %s segundos' % espera)
         time.sleep(int(espera))
 
-        data = httptools.downloadpage(page_url).data
+        data = httptools.downloadpage(page_url, headers={'Referer': page_url}).data
 
     if not "text/javascript'>(eval" in data:
         media_url = scrapertools.find_single_match(str(data), 'sources:.*?file.*?"(.*?)"')
@@ -88,9 +87,10 @@ def get_video_url(page_url, url_referer=''):
                 extension = scrapertools.get_filename_from_url(video_url)[-4:]
                 if extension in ('.png`', '.jpg'): continue
 
-                if extension == '.mpd':
-                    video_urls.append(['mpd', url])
+                if extension == '.mpd': video_urls.append(['mpd', url])
                 else:
+                    if not sub: sub = 'mp4'
+
                     video_urls.append([sub, url])
 
     if not video_urls:
@@ -103,7 +103,7 @@ def get_video_url(page_url, url_referer=''):
                 resuelto = resolveurl.resolve(page_url)
 
                 if resuelto:
-                    video_urls.append(['mp4', resuelto + '|Referer=%s' % page_url])
+                    video_urls.append(['mp4', resuelto])
                     return video_urls
 
                 platformtools.dialog_notification(config.__addon_name, el_srv, time=3000)

@@ -8,10 +8,12 @@ def get_video_url(page_url, url_referer=''):
     logger.info("(page_url='%s')" % page_url)
     video_urls = []
 
-    data = httptools.downloadpage(page_url).data
+    resp = httptools.downloadpage(page_url)
 
-    if data.code == 404:
+    if resp.code == 404:
         return 'El archivo no existe o ha sido borrado'
+
+    data = resp.data
 
     if 'ShareId does not exists' in data:
         return 'El archivo no existe o ha sido borrado'

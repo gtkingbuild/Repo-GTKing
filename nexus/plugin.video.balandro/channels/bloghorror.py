@@ -30,7 +30,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'category/terror-2/', search_type = 'movie' ))
 
-    itemlist.append(item.clone( title = 'Asiaticas', action = 'list_all', url = host + 'category/asiatico1/', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Asiáticas', action = 'list_all', url = host + 'category/asiatico1/', search_type = 'movie', text_color = 'moccasin' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'movie' ))
@@ -59,7 +59,7 @@ def generos(item):
         }
 
     for opc in sorted(opciones):
-        itemlist.append(item.clone( title = opciones[opc], url = host + 'category/' + opc + '/', action ='list_all' ))
+        itemlist.append(item.clone( title = opciones[opc], url = host + 'category/' + opc + '/', action ='list_all', text_color = 'deepskyblue' ))
 
     return sorted(itemlist,key=lambda x: x.title)
 
@@ -74,7 +74,7 @@ def anios(item):
     for x in range(current_year, 1959, -1):
         url = host + '?s=' + str(x)
 
-        itemlist.append(item.clone( title = str(x), url = url, action='list_all' ))
+        itemlist.append(item.clone( title = str(x), url = url, action='list_all', text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -105,6 +105,8 @@ def list_all(item):
 
         thumb = scrapertools.find_single_match(match, 'data-background="(.*?)"')
 
+        title = title.replace('&#038;', '&').replace('&#8211;', '')
+
         year = '-'
 
         if ' (' in title:
@@ -118,8 +120,7 @@ def list_all(item):
             if ' (' in title: title = title.replace(' (' + year + ')', '').strip()
             elif ' [' in title: title = title.replace(' [' + year + ']', '').strip()
 	
-        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb,
-                                    contentType = 'movie', contentTitle = title, infoLabels = {'year': year} ))
+        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, contentType = 'movie', contentTitle = title, infoLabels = {'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -205,8 +206,7 @@ def findvideos(item):
             servidor = servertools.corregir_servidor(servidor)
 
         if not servidor == 'directo':
-            itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = servidor,
-                                  language = lang, quality = qlty, other = other ))
+            itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = servidor, language = lang, quality = qlty, other = other ))
 
     if not itemlist:
         if not ses == 0:

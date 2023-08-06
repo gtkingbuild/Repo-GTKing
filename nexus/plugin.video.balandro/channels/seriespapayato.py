@@ -2,12 +2,44 @@
 
 import re
 
-from platformcode import logger, platformtools
+from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
 host = 'https://papayaseries.net/'
+
+
+def item_configurar_proxies(item):
+    color_list_proxies = config.get_setting('channels_list_proxies_color', default='red')
+
+    color_avis = config.get_setting('notification_avis_color', default='yellow')
+    color_exec = config.get_setting('notification_exec_color', default='cyan')
+
+    context = []
+
+    tit = '[COLOR %s]Información proxies[/COLOR]' % color_avis
+    context.append({'title': tit, 'channel': 'helper', 'action': 'show_help_proxies'})
+
+    if config.get_setting('channel_seriespapayato_proxies', default=''):
+        tit = '[COLOR %s][B]Quitar los proxies del canal[/B][/COLOR]' % color_list_proxies
+        context.append({'title': tit, 'channel': item.channel, 'action': 'quitar_proxies'})
+
+    tit = '[COLOR %s]Ajustes categoría proxies[/COLOR]' % color_exec
+    context.append({'title': tit, 'channel': 'actions', 'action': 'open_settings'})
+
+    plot = 'Es posible que para poder utilizar este canal necesites configurar algún proxy, ya que no es accesible desde algunos países/operadoras.'
+    plot += '[CR]Si desde un navegador web no te funciona el sitio ' + host + ' necesitarás un proxy.'
+    return item.clone( title = '[B]Configurar proxies a usar ...[/B]', action = 'configurar_proxies', folder=False, context=context, plot=plot, text_color='red' )
+
+def quitar_proxies(item):
+    from modules import submnuctext
+    submnuctext._quitar_proxies(item)
+    return True
+
+def configurar_proxies(item):
+    from core import proxytools
+    return proxytools.configurar_proxies_canal(item.channel, host)
 
 
 def do_downloadpage(url, post=None, referer=None, raise_weberror=True):
@@ -19,8 +51,61 @@ def do_downloadpage(url, post=None, referer=None, raise_weberror=True):
 
     headers = {'Referer': host}
 
-    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
+    timeout = None
+    if host in url:
+        if config.get_setting('channel_seriespapayato_proxies', default=''): timeout = config.get_setting('channels_repeat', default=30)
+
+    if not url.startswith(host):
+        data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+    else:
+        data = httptools.downloadpage_proxy('seriespapayato', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+
+        if not data:
+            if not '?s=' in url:
+                platformtools.dialog_notification('SeriesPapayaTo', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+                data = httptools.downloadpage_proxy('seriespapayato', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+
+    if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
+        try:
+            from lib import balandroresolver
+            ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
+            if ck_name and ck_value:
+                httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
+
+                if not url.startswith(host):
+                    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+                else:
+                    data = httptools.downloadpage_proxy('seriespapayato', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+        except:
+            pass
+
+    if '<title>Just a moment...</title>' in data:
+        if not '?s=' in url:
+            platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]CloudFlare[COLOR orangered] Protection[/B][/COLOR]')
+        return ''
+
+    elif '<title>One moment, please...</title>' in data:
+        if not '?s=' in url:
+            platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]CloudFlare[COLOR orangered] Protection [COLOR plum]Level 2[/B][/COLOR]')
+        return ''
+
     return data
+
+
+def acciones(item):
+    logger.info()
+    itemlist = []
+
+    itemlist.append(item.clone( channel='submnuctext', action='_test_webs', title='Test Web del canal [COLOR yellow][B] ' + host + '[/B][/COLOR]',
+                                from_channel='seriespapayato', folder=False, text_color='chartreuse' ))
+
+    itemlist.append(item_configurar_proxies(item))
+
+    itemlist.append(Item( channel='helper', action='show_help_seriespapayato', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('help') ))
+
+    platformtools.itemlist_refresh()
+
+    return itemlist
 
 
 def mainlist(item):
@@ -29,6 +114,8 @@ def mainlist(item):
 def mainlist_series(item):
     logger.info()
     itemlist = []
+
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
@@ -55,7 +142,7 @@ def generos(item):
 
         title = title.replace('&amp;', '&').strip()
 
-        itemlist.append(item.clone( action = 'list_all', title = title, url = url ))
+        itemlist.append(item.clone( action = 'list_all', title = title, url = url, text_color = 'hotpink' ))
 
     return sorted(itemlist, key=lambda it: it.title)
 
@@ -69,9 +156,9 @@ def alfabetico(item):
 
         url = host + 'letra/' + letras + '/'
 
-        itemlist.append(item.clone( action = 'list_letra', title = letra, url = url ))
+        itemlist.append(item.clone( action = 'list_letra', title = letra, url = url, text_color = 'hotpink' ))
 
-    itemlist.append(item.clone(action = "list_letra", url = host + 'letra/0-9/', title = '0-9'))
+    itemlist.append(item.clone(action = "list_letra", url = host + 'letra/0-9/', title = '0-9', text_color = 'hotpink' ))
 
     return itemlist
 
@@ -97,8 +184,7 @@ def list_all(item):
         year = scrapertools.find_single_match(match, ' <span class="Date">(.*?)</span>')
         if not year: year = '-'
 
-        itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb, 
-                                    contentType = 'tvshow', contentSerieName = title, infoLabels={'year': year} ))
+        itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb, contentType = 'tvshow', contentSerieName = title, infoLabels={'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -132,8 +218,7 @@ def list_letra(item):
         year = scrapertools.find_single_match(match, ' <td>Serie.*?<td>(.*?)</td>')
         if not year: year = '-'
 
-        itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb, 
-                                    contentType = 'tvshow', contentSerieName = title, infoLabels={'year': year} ))
+        itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb, contentType = 'tvshow', contentSerieName = title, infoLabels={'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -167,7 +252,7 @@ def temporadas(item):
             itemlist = episodios(item)
             return itemlist
 
-        itemlist.append(item.clone( action = 'episodios', title = title, url = url, page = 0, contentType = 'season', contentSeason = tempo ))
+        itemlist.append(item.clone( action = 'episodios', title = title, url = url, page = 0, contentType = 'season', contentSeason = tempo, text_color = 'tan' ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -187,10 +272,12 @@ def episodios(item):
 
     episodes = scrapertools.find_multiple_matches(data, patron)
 
-    if item.page == 0:
+    if item.page == 0 and item.perpage == 50:
         sum_parts = len(episodes)
 
-        try: tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+        try:
+            tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+            if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
         if tvdb_id:
@@ -198,6 +285,7 @@ def episodios(item):
                 platformtools.dialog_notification('SeriesPapayaTo', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
         else:
+            item.perpage = sum_parts
 
             if sum_parts >= 1000:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]500[/B][/COLOR] elementos ?'):
@@ -210,14 +298,20 @@ def episodios(item):
                     item.perpage = 250
 
             elif sum_parts >= 250:
-                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]100[/B][/COLOR] elementos ?'):
-                    platformtools.dialog_notification('SeriesPapayaTo', '[COLOR cyan]Cargando 100 elementos[/COLOR]')
-                    item.perpage = 100
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]125[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('SeriesPapayaTo', '[COLOR cyan]Cargando 125 elementos[/COLOR]')
+                    item.perpage = 125
+
+            elif sum_parts >= 125:
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]75[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('SeriesPapayaTo', '[COLOR cyan]Cargando 75 elementos[/COLOR]')
+                    item.perpage = 75
 
             elif sum_parts > 50:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos [COLOR cyan][B]Todos[/B][/COLOR] de una sola vez ?'):
                     platformtools.dialog_notification('SeriesPapayaTo', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
                     item.perpage = sum_parts
+                else: item.perpage = 50
 
     for epis, url, thumb, title in episodes[item.page * item.perpage:]:
         titulo = str(item.contentSeason) + 'x' + epis + ' ' + title
@@ -266,8 +360,7 @@ def findvideos(item):
 
         url = host + '?trembed=' + data_key + '&trid=' + data_id + '&trtype=2'
 
-        itemlist.append(Item(channel = item.channel, action = 'play', server='directo', title = '', url = url,
-                                                     language = IDIOMAS.get(lang,lang), quality = qlty, quality_num = puntuar_calidad(qlty), other = other ))
+        itemlist.append(Item(channel = item.channel, action = 'play', server='directo', title = '', url = url, language = IDIOMAS.get(lang,lang), quality = qlty, quality_num = puntuar_calidad(qlty), other = other ))
 
     return itemlist
 

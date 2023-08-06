@@ -10,15 +10,104 @@ from core import httptools, scrapertools, tmdb, servertools
 host = 'https://pepecine.top/'
 
 
+def item_configurar_proxies(item):
+    color_list_proxies = config.get_setting('channels_list_proxies_color', default='red')
+
+    color_avis = config.get_setting('notification_avis_color', default='yellow')
+    color_exec = config.get_setting('notification_exec_color', default='cyan')
+
+    context = []
+
+    tit = '[COLOR %s]Información proxies[/COLOR]' % color_avis
+    context.append({'title': tit, 'channel': 'helper', 'action': 'show_help_proxies'})
+
+    if config.get_setting('channel_pepecinetop_proxies', default=''):
+        tit = '[COLOR %s][B]Quitar los proxies del canal[/B][/COLOR]' % color_list_proxies
+        context.append({'title': tit, 'channel': item.channel, 'action': 'quitar_proxies'})
+
+    tit = '[COLOR %s]Ajustes categoría proxies[/COLOR]' % color_exec
+    context.append({'title': tit, 'channel': 'actions', 'action': 'open_settings'})
+
+    plot = 'Es posible que para poder utilizar este canal necesites configurar algún proxy, ya que no es accesible desde algunos países/operadoras.'
+    plot += '[CR]Si desde un navegador web no te funciona el sitio ' + host + ' necesitarás un proxy.'
+    return item.clone( title = '[B]Configurar proxies a usar ...[/B]', action = 'configurar_proxies', folder=False, context=context, plot=plot, text_color='red' )
+
+def quitar_proxies(item):
+    from modules import submnuctext
+    submnuctext._quitar_proxies(item)
+    return True
+
+def configurar_proxies(item):
+    from core import proxytools
+    return proxytools.configurar_proxies_canal(item.channel, host)
+
+
 def do_downloadpage(url, post=None, headers=None):
-    data = httptools.downloadpage(url, post=post, headers=headers).data
+    if url.startswith(host):
+        if not headers: headers = {'Referer': host}
+
+    timeout = None
+    if host in url:
+        if config.get_setting('channel_pepecinetop_proxies', default=''): timeout = config.get_setting('channels_repeat', default=30)
+
+    if not url.startswith(host):
+        data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+    else:
+        data = httptools.downloadpage_proxy('pepecinetop', url, post=post, headers=headers, timeout=timeout).data
+
+        if not data:
+            if not '?s=' in url:
+                platformtools.dialog_notification('PepeCineTop', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+                data = httptools.downloadpage_proxy('pepecinetop', url, post=post, headers=headers, timeout=timeout).data
+
+    if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
+        try:
+            from lib import balandroresolver
+            ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
+            if ck_name and ck_value:
+                httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
+
+                if not url.startswith(host):
+                    data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+                else:
+                    data = httptools.downloadpage_proxy('pepecinetop', url, post=post, headers=headers, timeout=timeout).data
+        except:
+            pass
+
+    if '<title>Just a moment...</title>' in data:
+        if not '?s=' in url:
+            platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]CloudFlare[COLOR orangered] Protection[/B][/COLOR]')
+        return ''
+
+    elif '<title>One moment, please...</title>' in data:
+        if not '?s=' in url:
+            platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]CloudFlare[COLOR orangered] Protection [COLOR plum]Level 2[/B][/COLOR]')
+        return ''
 
     return data
+
+
+def acciones(item):
+    logger.info()
+    itemlist = []
+
+    itemlist.append(item.clone( channel='submnuctext', action='_test_webs', title='Test Web del canal [COLOR yellow][B] ' + host + '[/B][/COLOR]',
+                                from_channel='pepecinetop', folder=False, text_color='chartreuse' ))
+
+    itemlist.append(item_configurar_proxies(item))
+
+    itemlist.append(Item( channel='helper', action='show_help_pepecinetop', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('help') ))
+
+    platformtools.itemlist_refresh()
+
+    return itemlist
 
 
 def mainlist(item):
     logger.info()
     itemlist = []
+
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone( title = 'Buscar ...', action = 'search', search_type = 'all', text_color = 'yellow' ))
 
@@ -31,6 +120,8 @@ def mainlist(item):
 def mainlist_pelis(item):
     logger.info()
     itemlist = []
+
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone ( title = 'Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
 
@@ -47,13 +138,15 @@ def mainlist_series(item):
     logger.info()
     itemlist = []
 
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
+
     itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'series-pepecine/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone ( title = 'Estrenos', action = 'list_all', url = host + 'ver/genero/estrenos/', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'ver/genero/estrenos/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone ( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
 
     return itemlist
 
@@ -61,6 +154,9 @@ def mainlist_series(item):
 def generos(item):
     logger.info()
     itemlist = []
+
+    if item.search_type == 'movie': text_color = 'deepskyblue'
+    else: text_color = 'hotpink'
 
     opciones = [
        ('accion', 'Acción'),
@@ -88,7 +184,7 @@ def generos(item):
     ]
 
     for opc, tit in opciones:
-        itemlist.append(item.clone( title=tit, url= host + 'ver/genero/' + opc + '/', action = 'list_all' ))
+        itemlist.append(item.clone( title=tit, url= host + 'ver/genero/' + opc + '/', action = 'list_all', text_color = text_color ))
 
     return itemlist
 
@@ -117,6 +213,8 @@ def list_all(item):
         if not year: year = '-'
 
         qlty = scrapertools.find_single_match(article, '</span><span class="Qlty">(.*?)</span>')
+
+        title = title.replace('&#8217;s', "'").replace('&#8211;', '').replace('&#8217;', '').replace('&#038;', '&')
 
         tipo = 'tvshow' if '<span class="TpTv BgA">TV</span>' in article else 'movie'
         sufijo = '' if item.search_type != 'all' else tipo
@@ -167,7 +265,7 @@ def temporadas(item):
             itemlist = episodios(item)
             return itemlist
 
-        itemlist.append(item.clone( action = 'episodios', title = title, page = 0, contentType = 'season', contentSeason = season ))
+        itemlist.append(item.clone( action = 'episodios', title = title, page = 0, contentType = 'season', contentSeason = season, text_color = 'tan' ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -189,10 +287,12 @@ def episodios(item):
 
     matches = scrapertools.find_multiple_matches(bloque, '<span class="Num">(.*?)</span>.*?<img src="(.*?)".*?<a href="(.*?)".*?>(.*?)</a>')
 
-    if item.page == 0:
+    if item.page == 0 and item.perpage == 50:
         sum_parts = len(matches)
 
-        try: tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+        try:
+            tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+            if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
         if tvdb_id:
@@ -200,6 +300,7 @@ def episodios(item):
                 platformtools.dialog_notification('PepeCineTop', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
         else:
+            item.perpage = sum_parts
 
             if sum_parts >= 1000:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]500[/B][/COLOR] elementos ?'):
@@ -212,22 +313,27 @@ def episodios(item):
                     item.perpage = 250
 
             elif sum_parts >= 250:
-                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]100[/B][/COLOR] elementos ?'):
-                    platformtools.dialog_notification('PepeCineTop', '[COLOR cyan]Cargando 100 elementos[/COLOR]')
-                    item.perpage = 100
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]125[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('PepeCineTop', '[COLOR cyan]Cargando 125 elementos[/COLOR]')
+                    item.perpage = 125
+
+            elif sum_parts >= 125:
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]75[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('PepeCineTop', '[COLOR cyan]Cargando 75 elementos[/COLOR]')
+                    item.perpage = 75
 
             elif sum_parts > 50:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos [COLOR cyan][B]Todos[/B][/COLOR] de una sola vez ?'):
                     platformtools.dialog_notification('PepeCineTop', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
                     item.perpage = sum_parts
+                else: item.perpage = 50
 
     for epis, thumb, url, title in matches[item.page * item.perpage:]:
         if thumb.startswith('//'): thumb = 'https:' + thumb
 
         titulo = '%sx%s %s' % (str(item.contentSeason), epis, title)
 
-        itemlist.append(item.clone( action = 'findvideos', title = titulo, thumbnail = thumb, url = url,
-                                    contentType = 'episode', contentEpisodeNumber = epis ))
+        itemlist.append(item.clone( action = 'findvideos', title = titulo, thumbnail = thumb, url = url, contentType = 'episode', contentEpisodeNumber = epis ))
 
         if len(itemlist) >= item.perpage:
             break
@@ -281,8 +387,7 @@ def findvideos(item):
 
             if servidor == 'zplayer': new_url = new_url + '|' + host
 
-            itemlist.append(Item( channel = item.channel, action = 'play', title = '', server = servidor, url = new_url,
-                                  language = idioma, quality = qlty ))
+            itemlist.append(Item( channel = item.channel, action = 'play', title = '', server = servidor, url = new_url, language = idioma, quality = qlty ))
 
             continue
 
@@ -304,8 +409,7 @@ def findvideos(item):
 
             if servidor == 'zplayer': link = link + '|' + host
 
-            itemlist.append(Item( channel = item.channel, action = 'play', title = '', server = servidor, url = link,
-                                  language = idioma, quality = qlty ))
+            itemlist.append(Item( channel = item.channel, action = 'play', title = '', server = servidor, url = link, language = idioma, quality = qlty ))
 
     if not itemlist:
         if not ses == 0:

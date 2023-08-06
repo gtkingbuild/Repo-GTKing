@@ -222,7 +222,29 @@ def extract_videos(video_id, ini_page_url):
     video_urls = []
 
     if not data or "<h1>We're sorry" in data:
-        if xbmc.getCondVisibility('System.HasAddon("plugin.video.youtube")'):
+        if xbmc.getCondVisibility('System.HasAddon("script.module.resolveurl")') and xbmc.getCondVisibility('System.HasAddon("plugin.video.youtube")'):
+            color_exec = config.get_setting('notification_exec_color', default='cyan')
+            el_srv = ('Sin respuesta en [B][COLOR %s]') % color_exec
+            el_srv += ('ResolveUrl / YouTube[/B][/COLOR]')
+
+            try:
+                import_libs('script.module.resolveurl')
+
+                import resolveurl
+                page_url = ini_page_url
+                resuelto = resolveurl.resolve(page_url)
+
+                if resuelto:
+                    video_urls.append(['mp4', resuelto])
+                    return video_urls
+
+                platformtools.dialog_notification(config.__addon_name, el_srv, time=3000)
+            except:
+                import traceback
+                logger.error(traceback.format_exc())
+                platformtools.dialog_notification(config.__addon_name, el_srv, time=3000)
+
+        elif xbmc.getCondVisibility('System.HasAddon("plugin.video.youtube")'):
             try:
                 import_libs('plugin.video.youtube')
 
@@ -235,7 +257,7 @@ def extract_videos(video_id, ini_page_url):
                     if '/manifest.googlevideo.com/' in item['url']: continue
                     elif "'dash/audio': True" in str(item): continue
 
-                    video_urls.append([item['title'],  item['url']])
+                    video_urls.append([item['title'], item['url']])
 
             except:
                 # YouTubeExceptions: Sign in to confirm your age or private video
@@ -245,7 +267,7 @@ def extract_videos(video_id, ini_page_url):
         else:
             color_exec = config.get_setting('notification_exec_color', default='cyan')
             el_srv = ('Sin respuesta en [B][COLOR %s]') % color_exec
-            el_srv += ('YouTube[/B][/COLOR]')
+            el_srv += ('ResolveUrl / YouTube[/B][/COLOR]')
             platformtools.dialog_notification(config.__addon_name, el_srv, time=3000)
 
         return video_urls
@@ -314,7 +336,29 @@ def extract_videos(video_id, ini_page_url):
         video_urls.reverse()
 
     if not video_urls:
-        if xbmc.getCondVisibility('System.HasAddon("plugin.video.youtube")'):
+        if xbmc.getCondVisibility('System.HasAddon("script.module.resolveurl")') and xbmc.getCondVisibility('System.HasAddon("plugin.video.youtube")'):
+            color_exec = config.get_setting('notification_exec_color', default='cyan')
+            el_srv = ('Sin respuesta en [B][COLOR %s]') % color_exec
+            el_srv += ('ResolveUrl / YouTube[/B][/COLOR]')
+
+            try:
+                import_libs('script.module.resolveurl')
+
+                import resolveurl
+                page_url = ini_page_url
+                resuelto = resolveurl.resolve(page_url)
+
+                if resuelto:
+                    video_urls.append(['mp4', resuelto])
+                    return video_urls
+
+                platformtools.dialog_notification(config.__addon_name, el_srv, time=3000)
+            except:
+                import traceback
+                logger.error(traceback.format_exc())
+                platformtools.dialog_notification(config.__addon_name, el_srv, time=3000)
+
+        elif xbmc.getCondVisibility('System.HasAddon("plugin.video.youtube")'):
             try:
                 import_libs('plugin.video.youtube')
 
@@ -327,7 +371,7 @@ def extract_videos(video_id, ini_page_url):
                     if '/manifest.googlevideo.com/' in item['url']: continue
                     elif "'dash/audio': True" in str(item): continue
 
-                    video_urls.append([item['title'],  item['url']])
+                    video_urls.append([item['title'], item['url']])
 
             except:
                 # YouTubeExceptions: Sign in to confirm your age or private video
@@ -337,8 +381,7 @@ def extract_videos(video_id, ini_page_url):
         else:
             color_exec = config.get_setting('notification_exec_color', default='cyan')
             el_srv = ('Sin respuesta en [B][COLOR %s]') % color_exec
-            el_srv += ('YouTube[/B][/COLOR]')
+            el_srv += ('ResolveUrl / YouTube[/B][/COLOR]')
             platformtools.dialog_notification(config.__addon_name, el_srv, time=3000)
-
 
     return video_urls

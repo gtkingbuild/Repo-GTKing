@@ -86,7 +86,7 @@ def generos(item):
 
         url = host + 'category/' + url
 
-        itemlist.append(item.clone( action = 'list_all', title = title, url = url ))
+        itemlist.append(item.clone( action = 'list_all', title = title, url = url, text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -107,7 +107,7 @@ def categorias(item):
         despreciar = url.replace(host, '').replace('tag/', '').replace('/', '')
         if despreciar in web_otros: continue
 
-        itemlist.append(item.clone( title = title.capitalize(), url = url, action = 'list_all' ))
+        itemlist.append(item.clone( title = title.capitalize(), url = url, action = 'list_all', text_color='moccasin' ))
 
     return sorted(itemlist, key = lambda it: it.title)
 
@@ -123,7 +123,7 @@ def otros(item):
 
         url = host + 'tag/' + str(x) + '/'
 
-        itemlist.append(item.clone( title = title, url = url, action = 'list_all' ))
+        itemlist.append(item.clone( title = title, url = url, action = 'list_all', text_color='tan' ))
 
     return itemlist
 

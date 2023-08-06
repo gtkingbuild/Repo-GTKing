@@ -3,7 +3,7 @@
   "name": "RePelis2",
   "thumbnail": "repelis2.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["movie"],
@@ -13,6 +13,6 @@
 
   "clusters": ["kids", "docs", "vos", "anime"],
 
-  "notes": "Películas por géneros."
+  "notes": "Web CERRADA. Películas por géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 
 }

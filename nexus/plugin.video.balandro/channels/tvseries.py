@@ -23,21 +23,21 @@ def mainlist_series(item):
 
     # ~ itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
-    itemlist.append(item.clone( title = 'Series de Ciencia Ficción', action = 'menu_series', url = host + '-02.weebly.com' ))
+    itemlist.append(item.clone( title = 'Series de Ciencia Ficción', action = 'menu_series', url = host + '-02.weebly.com', text_color = 'hotpink' ))
 
-    itemlist.append(item.clone( title = 'Series de Comedias', action = 'menu_series', url = host + '-05.weebly.com' ))
+    itemlist.append(item.clone( title = 'Series de Comedias', action = 'menu_series', url = host + '-05.weebly.com', text_color = 'hotpink' ))
 
-    itemlist.append(item.clone( title = 'Series de Dibujos Animados', action = 'menu_series', url = host + '-06.weebly.com' ))
+    itemlist.append(item.clone( title = 'Series de Dibujos Animados', action = 'menu_series', url = host + '-06.weebly.com', text_color = 'hotpink' ))
 
-    itemlist.append(item.clone( title = 'Series de Detectives-Espionaje', action = 'menu_series', url = host + '-04.weebly.com' ))
+    itemlist.append(item.clone( title = 'Series de Detectives-Espionaje', action = 'menu_series', url = host + '-04.weebly.com', text_color = 'hotpink' ))
 
-    itemlist.append(item.clone( title = 'Series Policiacas', action = 'menu_series', url = host + '-03.weebly.com' ))
+    itemlist.append(item.clone( title = 'Series Policiacas', action = 'menu_series', url = host + '-03.weebly.com', text_color = 'hotpink'))
 
-    itemlist.append(item.clone( title = 'Series de TVE, Mini Series y en Vose', action = 'menu_series', url = host + '-07.weebly.com' ))
+    itemlist.append(item.clone( title = 'Series de TVE, Mini Series y en Vose', action = 'menu_series', url = host + '-07.weebly.com', text_color = 'hotpink' ))
 
-    itemlist.append(item.clone( title = 'Series Variadas', action = 'menu_series', url = host + '-08.weebly.com' ))
+    itemlist.append(item.clone( title = 'Series Variadas', action = 'menu_series', url = host + '-08.weebly.com', text_color = 'hotpink' ))
 
-    itemlist.append(item.clone( title = 'Series de Westerns', action = 'menu_series', url = host + '-01.weebly.com' ))
+    itemlist.append(item.clone( title = 'Series de Westerns', action = 'menu_series', url = host + '-01.weebly.com' , text_color = 'hotpink'))
 
     return itemlist
 
@@ -70,8 +70,7 @@ def series(item):
     bloque = scrapertools.find_single_match(data, '<li id="active" class="wsite-menu-item-wrap">(.*?)<a class="hamburger"')
 
     if not bloque: bloque = scrapertools.find_single_match(data, '<div class="dummy-nav">(.*?)<div class="hamburger')
-    if not bloque:
-        bloque = scrapertools.find_single_match(data, '<li id="active" class="wsite-menu-item-wrap">(.*?)<li id="active" class="wsite-menu-item-wrap">')
+    if not bloque: bloque = scrapertools.find_single_match(data, '<li id="active" class="wsite-menu-item-wrap">(.*?)<li id="active" class="wsite-menu-item-wrap">')
 
     if not item.grupo == 'seasons': matches = scrapertools.find_multiple_matches(bloque, '<li id="(.*?)</li>')
     else: matches = scrapertools.find_multiple_matches(bloque, '<li id="(.*?)</a>')
@@ -160,8 +159,7 @@ def series(item):
         sort_series = sorted(sort_series, key=lambda x: x[1])
 
         for url, title, name, year in sort_series[desde:hasta]:
-            itemlist.append(item.clone( action = 'list_all', title = title, url = url, contentType = 'tvshow',
-                                        contentSerieName = name, infoLabels = {'year': year} ))
+            itemlist.append(item.clone( action = 'list_all', title = title, url = url, contentType = 'tvshow', contentSerieName = name, infoLabels = {'year': year} ))
 
         tmdb.set_infoLabels(itemlist)
 
@@ -258,8 +256,7 @@ def list_all(item):
                 temporada = scrapertools.find_single_match(titulo, '.*?".*?x(.*?)"')
                 capitulo = scrapertools.find_single_match(titulo, '.*?"(.*?)x')
 
-        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, language = lang, thumbnail = thumb,
-                                    contentType='episode', contentSeason = temporada, contentEpisodeNumber = capitulo ))
+        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, language = lang, thumbnail = thumb, contentType='episode', contentSeason = temporada, contentEpisodeNumber = capitulo ))
 
     return itemlist
 
@@ -268,8 +265,8 @@ def alfabetico(item):
     logger.info()
     itemlist = []
 
-    for letra in 'abcdefghijklmnopqrstuvwxyz#':
-        itemlist.append(item.clone ( title = letra.upper(), url = item.url, action = 'series', filtro_search = letra ))
+    for letra in '#abcdefghijklmnopqrstuvwxyz':
+        itemlist.append(item.clone ( title = letra.upper(), url = item.url, action = 'series', filtro_search = letra, text_color = 'hotpink' ))
 
     return itemlist
 

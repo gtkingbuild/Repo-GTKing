@@ -24,6 +24,7 @@ def mainlist(item):
     itemlist.append(item.clone( title = 'Series', action = 'list_all', url = host + 'series.php' ))
 
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias' ))
+
     itemlist.append(item.clone( title = 'Por fecha', action = 'list_all', url = host + 'resultados-anio.php?buscar=&genero=' ))
     itemlist.append(item.clone( title = 'Por alfabético', action = 'list_all', url = host +'resultados-titulo.php?buscar=&genero=' ))
 
@@ -53,7 +54,7 @@ def categorias(item):
 
         url = host[:-1] + url
 
-        itemlist.append(item.clone( action='subcategorias', title = title, url = host + url, subcats = subcats, plot=', '.join(subcats) ))
+        itemlist.append(item.clone( action='subcategorias', title = title, url = host + url, subcats = subcats, plot=', '.join(subcats), text_color='cyan' ))
 
     return sorted(itemlist,key=lambda x: x.title)
 
@@ -94,8 +95,8 @@ def list_all(item):
             titulo = '%s [COLOR gray](%s)[/COLOR]' % (title, year)
             itemlist.append(item.clone( action='list_all', url = url, title = titulo, thumbnail=thumb, infoLabels={"year": year, "plot": plot} ))
         else:
-            itemlist.append(item.clone( action='findvideos', url=host+url, title=title, thumbnail=thumb, infoLabels={"year": year,
-                                        "plot": plot}, contentType='movie', contentTitle=title, contentExtra='documentary' ))
+            itemlist.append(item.clone( action='findvideos', url= host + url, title = title, thumbnail = thumb,
+                                        infoLabels={"year": year, "plot": plot}, contentType='movie', contentTitle=title, contentExtra='documentary' ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -147,8 +148,7 @@ def findvideos(item):
 
         sub_url = host + sub_url + '|Referer=' + item.url
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server='directo', title = '', url = url, 
-                              language = lang, quality = lbl, subtitle = sub_url ))
+        itemlist.append(Item( channel = item.channel, action = 'play', server='directo', title = '', url = url, language = lang, quality = lbl, subtitle = sub_url ))
 
     if not itemlist:
         if not ses == 0:

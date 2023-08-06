@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import sys
+
+PY3 = False
+if sys.version_info[0] >= 3: PY3 = True
+
 
 import re
 
@@ -66,7 +71,7 @@ def generos(item):
         }
 
     for opc in sorted(opciones):
-        itemlist.append(item.clone( title = opciones[opc], url = host + 'genre/' + opc + '/', action ='list_all' ))
+        itemlist.append(item.clone( title = opciones[opc], url = host + 'genre/' + opc + '/', action ='list_all', text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -81,7 +86,7 @@ def anios(item):
     for x in range(current_year, 1999, -1):
         url = host + 'release-year/' + str(x) + '/'
 
-        itemlist.append(item.clone( title = str(x), url = url, action='list_all' ))
+        itemlist.append(item.clone( title = str(x), url = url, action='list_all', text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -108,8 +113,9 @@ def list_all(item):
         if year: title = title.replace('(' + year + ')', '').strip()
         else: year = '-'
 
-        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb,
-                                    contentType='movie', contentTitle=title, infoLabels={'year': year} ))
+        title = title.replace("&#8217;", "'").replace("&#8211;", "").replace("&#038;", "")
+
+        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, contentType='movie', contentTitle=title, infoLabels={'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -145,8 +151,7 @@ def findvideos(item):
         other = ''
         if 'magnet' in url: other = 'magnet'
 
-        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = 'torrent',
-                              quality = qlty, language = lang, other = other ))
+        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = 'torrent', quality = qlty, language = lang, other = other ))
 
     return itemlist
 
@@ -163,9 +168,24 @@ def play(item):
         itemlist.append(item.clone( url = item.url, server = 'torrent' ))
         return itemlist
 
-    url = do_downloadpage(item.url)
+    url = item.url
 
-    itemlist.append(item.clone( url = item.url, server = 'torrent' ))
+    if PY3:
+        from core import requeststools
+        data = requeststools.read(url, '')
+    else:
+        data = do_downloadpage(url)
+
+    if data:
+        if '<h1>Not Found</h1>' in str(data) or '<!DOCTYPE html>' in str(data) or '<!DOCTYPE>' in str(data):
+            return 'Archivo [COLOR red]Inexistente[/COLOR]'
+
+        import os
+
+        file_local = os.path.join(config.get_data_path(), "temp.torrent")
+        with open(file_local, 'wb') as f: f.write(data); f.close()
+
+        itemlist.append(item.clone( url = file_local, server = 'torrent' ))
 
     return itemlist
 

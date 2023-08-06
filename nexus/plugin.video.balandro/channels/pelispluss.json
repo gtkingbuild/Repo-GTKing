@@ -3,7 +3,7 @@
   "name": "PelisPlusS",
   "thumbnail": "pelispluss.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["movie"],
@@ -13,5 +13,5 @@
 
   "clusters": ["news", "years", "rankings", "docs", "kids", "vos", "anime"],
 
-  "notes": "Películas por géneros y año."
+  "notes": "Web CERRADA. Películas por géneros y año."
 }

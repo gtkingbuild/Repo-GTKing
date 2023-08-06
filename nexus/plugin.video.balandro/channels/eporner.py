@@ -44,7 +44,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url = host + 'cats/', group = 'cats' ))
 
-    itemlist.append(item.clone( title = 'Por estrella', action = 'pornstars', url = host + 'pornstar-list/' ))
+    itemlist.append(item.clone( title = 'Por estrella (A - Z)', action = 'pornstars', url = host + 'pornstar-list/' ))
 
     return itemlist
 
@@ -76,7 +76,7 @@ def categorias(item):
             thumb = scrapertools.find_single_match(match, 'src="(.*?)"')
 
         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, contentType = 'movie',
-                                    contentTitle = title, contentExtra='adults') )
+                                    contentTitle = title, contentExtra='adults', text_color = 'orange' ) )
 
     if item.group == 'cats' or item.group == 'stars':
         return sorted(itemlist,key=lambda x: x.title)
@@ -88,7 +88,7 @@ def categorias(item):
         if next_page:
             next_page = host[:-1] + next_page
 
-            itemlist.append(item.clone (action='categorias', title='Siguientes ...', url=next_page, text_color = 'coral') )
+            itemlist.append(item.clone (action='categorias', title='Siguientes ...', url=next_page, text_color = 'coral' ) )
 
     return itemlist
 
@@ -97,12 +97,12 @@ def pornstars(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone (action = 'categorias', title = 'Más Populares', url = item.url, group = 'stars' ))
+    itemlist.append(item.clone (action = 'categorias', title = 'Más Populares', url = item.url, group = 'stars', text_color = 'orange' ))
 
     for letra in string.ascii_uppercase:
         url = item.url + letra + '/'
 
-        itemlist.append(item.clone (title = letra, action = 'categorias', url = url))
+        itemlist.append(item.clone (title = letra, action = 'categorias', url = url, text_color = 'orange' ))
 
     return itemlist
 

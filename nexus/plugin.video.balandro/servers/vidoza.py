@@ -8,6 +8,8 @@ def get_video_url(page_url, url_referer=''):
     logger.info("(page_url='%s')" % page_url)
     video_urls = []
 
+    page_url = page_url.replace('%7B', '').replace('%7D', '')
+
     data = httptools.downloadpage(page_url).data
 
     if "Page not found" in data or "File was deleted" in data:

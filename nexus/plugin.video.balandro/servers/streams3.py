@@ -15,15 +15,16 @@ def get_video_url(page_url, url_referer=''):
     post = scrapertools.find_single_match(page_url, '(data=\w+)')
     url = httptools.downloadpage("https://streams3.com/redirect_post.php", post=post, follow_redirects=False).headers.get("location", "")
 
-    data = httptools.downloadpage("https://streams3.com" + url, headers={"referer": page_url}).data
-
-    post = "v=" + scrapertools.find_single_match(url, '#(\w+)')
-    data = httptools.downloadpage("https://streams3.com/api.php", post=post, headers={"referer": page_url}).data
-
-    url = scrapertools.find_single_match(data, 'file":"([^"]+)')
-    url = url.replace("\\r","").replace("\\","").replace("\r","")
-
     if url:
-        video_urls.append(['mp4', url])
+        data = httptools.downloadpage("https://streams3.com" + url, headers={"referer": page_url}).data
+
+        post = "v=" + scrapertools.find_single_match(url, '#(\w+)')
+        data = httptools.downloadpage("https://streams3.com/api.php", post=post, headers={"referer": page_url}).data
+
+        url = scrapertools.find_single_match(data, 'file":"([^"]+)')
+        url = url.replace("\\r","").replace("\\","").replace("\r","")
+
+        if url:
+            video_urls.append(['mp4', url])
 
     return video_urls

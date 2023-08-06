@@ -4,7 +4,7 @@
   "name": "Netutv",
  
   "active": false,
-  "notes": "Requiere recaptcha (Hqq, Megavideo, Megaplay, Netu, Vidxhot, Waaw)",
+  "notes": "Requiere recaptcha (Hqq, Netu, Waaw y otros)",
 
   "find_videos": {
     "ignore_urls": [],

@@ -15,7 +15,7 @@ def get_video_url(page_url, url_referer=''):
     url = httptools.downloadpage(url, headers={"referer": url}, follow_redirects=False).headers["location"]
 
     if url:
-        video_urls.append(['mp4',  url])
+        video_urls.append(['mp4', url])
 
     return video_urls
 

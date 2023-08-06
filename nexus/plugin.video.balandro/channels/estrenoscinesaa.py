@@ -28,7 +28,7 @@ def item_configurar_proxies(item):
 
     plot = 'Es posible que para poder utilizar este canal necesites configurar algún proxy, ya que no es accesible desde algunos países/operadoras.'
     plot += '[CR]Si desde un navegador web no te funciona el sitio ' + host + ' necesitarás un proxy.'
-    return item.clone( title = 'Configurar proxies a usar ... [COLOR plum](si no hay resultados)[/COLOR]', action = 'configurar_proxies', folder=False, context=context, plot=plot, text_color='red' )
+    return item.clone( title = '[B]Configurar proxies a usar ...[/B]', action = 'configurar_proxies', folder=False, context=context, plot=plot, text_color='red' )
 
 def quitar_proxies(item):
     from modules import submnuctext
@@ -41,9 +41,26 @@ def configurar_proxies(item):
 
 
 def do_downloadpage(url):
-    # ~ data = httptools.downloadpage(url).data
-    data = httptools.downloadpage_proxy('estrenoscinesaa', url).data
+    if not url.startswith(host):
+        data = httptools.downloadpage(url).data
+    else:
+        data = httptools.downloadpage_proxy('estrenoscinesaa', url).data
+
     return data
+
+
+def acciones(item):
+    logger.info()
+    itemlist = []
+
+    itemlist.append(item.clone( channel='submnuctext', action='_test_webs', title='Test Web del canal [COLOR yellow][B] ' + host + '[/B][/COLOR]',
+                                from_channel='estrenoscinesaa', folder=False, text_color='chartreuse' ))
+
+    itemlist.append(item_configurar_proxies(item))
+
+    platformtools.itemlist_refresh()
+
+    return itemlist
 
 
 def mainlist(item):
@@ -54,16 +71,16 @@ def mainlist_pelis(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item_configurar_proxies(item))
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone( title = 'Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'movies/', search_type = 'movie' ))
 
-    itemlist.append(item.clone( title = 'Netflix', action = 'list_all', url = host + 'genre/netflix/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'Marvel', action = 'list_all', url = host + 'genre/marvel/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'D.C.', action = 'list_all', url = host + 'genre/d-c/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'Star wars', action = 'list_all', url = host + 'genre/starwars/', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Netflix', action = 'list_all', url = host + 'genre/netflix/', search_type = 'movie', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'Marvel', action = 'list_all', url = host + 'genre/marvel/', search_type = 'movie', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'D.C.', action = 'list_all', url = host + 'genre/d-c/', search_type = 'movie', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'Star wars', action = 'list_all', url = host + 'genre/starwars/', search_type = 'movie', text_color='moccasin' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
 
@@ -89,7 +106,8 @@ def generos(item):
         elif '/genre/starwars/' in url: continue
         elif '/sci-fi-fantasy/' in url: continue # son series
 
-        if count: title = title + ' (' + count + ')'
+        if count: title = '[COLOR deepskyblue]' + title + '[/COLOR] (' + count + ')'
+        else: title = '[COLOR deepskyblue]' + title + '[/COLOR]'
 
         itemlist.append(item.clone( action = 'list_all', title = title, url = url ))
 
@@ -112,6 +130,11 @@ def list_all(item):
     for match in matches:
         url = scrapertools.find_single_match(match, '<a href="([^"]+)')
         title = scrapertools.find_single_match(match, ' alt="([^"]+)').strip()
+
+        if not url or not title: continue
+
+        title = title.replace('&#8211;', '').replace('&#8217;', '').replace('&#038;', '&')
+
         thumb = scrapertools.find_single_match(match, ' src="([^"]+)')
 
         year = scrapertools.find_single_match(match, '<span>(\d{4})</span>')
@@ -154,8 +177,10 @@ def findvideos(item):
         if 'youtube.com' in url: continue
 
         servidor = servertools.get_server_from_url(url)
+
         if servidor and servidor != 'directo':
             url = servertools.normalize_url(servidor, url)
+
             itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = 'Esp' ))
 
     # Descarga
@@ -176,8 +201,7 @@ def findvideos(item):
         quality = 'HD'
         lang = 'Esp'
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url,
-                              language = lang, quality = quality , other = 'd' ))
+        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = lang, quality = quality , other = 'd' ))
 
     if not itemlist:
         if not ses == 0:
@@ -185,6 +209,7 @@ def findvideos(item):
             return
 
     return itemlist
+
 
 def play(item):
     logger.info()
@@ -224,6 +249,11 @@ def list_search(item):
     for match in matches:
         url = scrapertools.find_single_match(match, '<a href="([^"]+)')
         title = scrapertools.find_single_match(match, ' alt="([^"]+)').strip()
+
+        if not url or not title: continue
+
+        title = title.replace('&#8211;', '').replace('&#8217;', '').replace('&#038;', '&')
+
         thumb = scrapertools.find_single_match(match, ' src="([^"]+)')
 
         year = scrapertools.find_single_match(match, '<span class="year">(\d{4})</span>')

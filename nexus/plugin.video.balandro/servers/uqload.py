@@ -8,7 +8,12 @@ def get_video_url(page_url, url_referer=''):
     logger.info("url=" + page_url)
     video_urls = []
 
-    if 'embed-' not in page_url: page_url = page_url.replace('uqload.com/', 'uqload.com/embed-')
+    if 'embed-' not in page_url:
+        page_url = page_url.replace('/uqload.com/', '/uqload.com/embed-')
+        page_url = page_url.replace('/uqload.org/', '/uqload.com/embed-')
+        page_url = page_url.replace('/uqload.co/', '/uqload.com/embed-')
+        page_url = page_url.replace('/uqload.io/', '/uqload.com/embed-')
+
     if not page_url.endswith('.html'): page_url += '.html'
 
     data = httptools.downloadpage(page_url).data

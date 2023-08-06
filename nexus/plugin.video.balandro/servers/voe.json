@@ -16,15 +16,19 @@
         "url": "https://voe.sx/e/\\1"
       },
       {
-        "pattern": "reputationsheriffkennethsand.com/(?:e/|)([A-z0-9]+)",
+        "pattern": "https://reputationsheriffkennethsand.com/(?:e/|)([A-z0-9]+)",
         "url": "https://voe.sx/e/\\1"
       },
       {
-        "pattern": "fittingcentermondaysunday.com/(?:e/|)([A-z0-9]+)",
+        "pattern": "https://fittingcentermondaysunday.com/(?:e/|)([A-z0-9]+)",
         "url": "https://voe.sx/e/\\1"
       },
       {
-        "pattern": "tinycat-voe-fashion.com/(?:e/|)([A-z0-9]+)",
+        "pattern": "https://tinycat-voe-fashion.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://scatch176duplicities.com/(?:e/|)([A-z0-9]+)",
         "url": "https://voe.sx/e/\\1"
       }
     ]

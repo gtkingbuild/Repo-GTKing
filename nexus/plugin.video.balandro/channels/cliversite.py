@@ -7,7 +7,19 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-host = 'https://www1.cliver.me'
+host = 'https://www2.cliver.me'
+
+
+# ~ por si viene de enlaces guardados
+ant_hosts = ['https://cliver.site', 'https://www1.cliver.me']
+
+
+domain = config.get_setting('dominio', 'cliversite', default='')
+
+if domain:
+    if domain == host: config.set_setting('dominio', '', 'cliversite')
+    elif domain in str(ant_hosts): config.set_setting('dominio', '', 'cliversite')
+    else: host = domain
 
 
 perpage = 30
@@ -33,7 +45,7 @@ def item_configurar_proxies(item):
 
     plot = 'Es posible que para poder utilizar este canal necesites configurar algún proxy, ya que no es accesible desde algunos países/operadoras.'
     plot += '[CR]Si desde un navegador web no te funciona el sitio ' + host + ' necesitarás un proxy.'
-    return item.clone( title = 'Configurar proxies a usar ... [COLOR plum](si no hay resultados)[/COLOR]', action = 'configurar_proxies', folder=False, context=context, plot=plot, text_color='red' )
+    return item.clone( title = '[B]Configurar proxies a usar ...[/B]', action = 'configurar_proxies', folder=False, context=context, plot=plot, text_color='red' )
 
 def quitar_proxies(item):
     from modules import submnuctext
@@ -47,33 +59,64 @@ def configurar_proxies(item):
 
 def do_downloadpage(url, post=None, headers=None):
     # ~ por si viene de enlaces guardados
-    ant_hosts = ['https://cliver.site']
-
     for ant in ant_hosts:
         url = url.replace(ant, host)
 
-    # ~ data = httptools.downloadpage(url, post=post, headers=headers).data
-    data = httptools.downloadpage_proxy('cliversite', url, post=post, headers=headers).data
+    if not url.startswith(host):
+        data = httptools.downloadpage(url, post=post, headers=headers).data
+    else:
+        data = httptools.downloadpage_proxy('cliversite', url, post=post, headers=headers).data
 
-    if '<title>You are being redirected...</title>' in data:
+    if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
         try:
             from lib import balandroresolver
             ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
             if ck_name and ck_value:
                 httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
-                # ~ data = httptools.downloadpage(url, post=post, headers=headers).data
-                data = httptools.downloadpage_proxy('cliversite', url, post=post, headers=headers).data
+
+                if not url.startswith(host):
+                    data = httptools.downloadpage(url, post=post, headers=headers).data
+                else:
+                    data = httptools.downloadpage_proxy('cliversite', url, post=post, headers=headers).data
         except:
             pass
 
     return data
 
 
+def acciones(item):
+    logger.info()
+    itemlist = []
+
+    domain_memo = config.get_setting('dominio', 'cliversite', default='')
+
+    if domain_memo: url = domain_memo
+    else: url = host
+
+    itemlist.append(Item( channel='actions', action='show_latest_domains', title='[COLOR moccasin][B]Últimos Cambios de Dominios[/B][/COLOR]', thumbnail=config.get_thumb('pencil') ))
+
+    itemlist.append(Item( channel='helper', action='show_help_domains', title='[B]Información Dominios[/B]', thumbnail=config.get_thumb('help'), text_color='green' ))
+
+    itemlist.append(item.clone( channel='domains', action='test_domain_cliversite', title='Test Web del canal [COLOR yellow][B] ' + url + '[/B][/COLOR]',
+                                from_channel='cliversite', folder=False, text_color='chartreuse' ))
+
+    if domain_memo: title = '[B]Modificar/Eliminar el dominio memorizado[/B]'
+    else: title = '[B]Informar Nuevo Dominio manualmente[/B]'
+
+    itemlist.append(item.clone( channel='domains', action='manto_domain_cliversite', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
+
+    itemlist.append(item_configurar_proxies(item))
+
+    platformtools.itemlist_refresh()
+
+    return itemlist
+
+
 def mainlist(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item_configurar_proxies(item))
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone( title = 'Buscar ...', action = 'search', search_type = 'all', text_color = 'yellow' ))
 
@@ -87,7 +130,7 @@ def mainlist_pelis(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item_configurar_proxies(item))
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone( title = 'Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
 
@@ -104,17 +147,18 @@ def mainlist_pelis(item):
 
     return itemlist
 
+
 def mainlist_series(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item_configurar_proxies(item))
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + '/series', search_type = 'tvshow', tipo = 'index', pagina = 1 ))
 
-    itemlist.append(item.clone( title = 'Series con nuevos capítulos', action = 'list_all', url = host + '/series/tendencias', search_type = 'tvshow', pagina = 1 ))
+    itemlist.append(item.clone( title = 'Series con nuevos capítulos', action = 'list_all', url = host + '/series/tendencias', search_type = 'tvshow', pagina = 1, text_color = 'olive' ))
 
     itemlist.append(item.clone( title = 'Más Vistas', action = 'list_all', url = host + '/series/mas-vistas', search_type = 'tvshow', page = 0, pagina = 1 ))
 
@@ -127,6 +171,9 @@ def mainlist_series(item):
 def generos(item):
     logger.info()
     itemlist = []
+
+    if item.search_type == 'movie': text_color = 'deepskyblue'
+    else: text_color = 'hotpink'
 
     url = host if item.search_type == 'movie' else host + '/series'
 
@@ -141,11 +188,11 @@ def generos(item):
 
         url = host + url
 
-        itemlist.append(item.clone( action="list_all", title=title, url=url, pagina = 1 ))
+        itemlist.append(item.clone( action="list_all", title=title, url=url, pagina = 1, text_color = text_color ))
 
     if itemlist:
         if item.search_type == 'movie':
-            itemlist.append(item.clone( action="list_all", title='Guerra', url=host + '/peliculas/genero/guerra', pagina = 1 ))
+            itemlist.append(item.clone( action="list_all", title='Guerra', url=host + '/peliculas/genero/guerra', pagina = 1, text_color = text_color ))
 
     return sorted(itemlist, key=lambda it: it.title)
 
@@ -153,6 +200,9 @@ def generos(item):
 def anios(item):
     logger.info()
     itemlist = []
+
+    if item.search_type == 'movie': text_color = 'deepskyblue'
+    else: text_color = 'hotpink'
 
     from datetime import datetime
     current_year = int(datetime.today().year)
@@ -164,7 +214,7 @@ def anios(item):
         if item.search_type == 'movie': url = host + '/peliculas/anio/' + str(ano)
         else: url = host + '/series/anio/' + str(ano)
 
-        itemlist.append(item.clone( action="list_all", title=str(ano), url=url, pagina = 1 ))
+        itemlist.append(item.clone( action="list_all", title=str(ano), url=url, pagina = 1, text_color = text_color ))
 
     return itemlist
 
@@ -279,7 +329,7 @@ def temporadas(item):
 
            title = 'Temporada ' + nro_temp
 
-        itemlist.append(item.clone( action = 'episodios', title = title, page = 0, contentType = 'season', contentSeason = numtempo ))
+        itemlist.append(item.clone( action = 'episodios', title = title, page = 0, contentType = 'season', contentSeason = numtempo, text_color='tan' ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -301,10 +351,12 @@ def episodios(item):
 
     num_matches = len(matches)
 
-    if item.page == 0:
+    if item.page == 0 and item.perpage == 50:
         sum_parts = num_matches
 
-        try: tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+        try:
+            tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+            if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
         if tvdb_id:
@@ -312,6 +364,7 @@ def episodios(item):
                 platformtools.dialog_notification('CliverSite', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
         else:
+            item.perpage = sum_parts
 
             if sum_parts >= 1000:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]500[/B][/COLOR] elementos ?'):
@@ -324,14 +377,20 @@ def episodios(item):
                     item.perpage = 250
 
             elif sum_parts >= 250:
-                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]100[/B][/COLOR] elementos ?'):
-                    platformtools.dialog_notification('CliverSite', '[COLOR cyan]Cargando 100 elementos[/COLOR]')
-                    item.perpage = 100
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]125[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('CliverSite', '[COLOR cyan]Cargando 125 elementos[/COLOR]')
+                    item.perpage = 125
+
+            elif sum_parts >= 125:
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]75[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('CliverSite', '[COLOR cyan]Cargando 75 elementos[/COLOR]')
+                    item.perpage = 75
 
             elif sum_parts > 50:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos [COLOR cyan][B]Todos[/B][/COLOR] de una sola vez ?'):
                     platformtools.dialog_notification('CliverSite', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
                     item.perpage = sum_parts
+                else: item.perpage = 50
 
     for match in matches:
         season = scrapertools.find_single_match(match, 'data-season="([^"]+)')
@@ -372,10 +431,12 @@ def episodios(item):
 
         for orden, url, tit, epi in tab_epis[item.page * item.perpage:]:
             itemlist.append(item.clone( action = 'findvideos', url = url, title = tit,
-                                    orden = orden, contentType = 'episode', contentSeason = item.contentSeason, contentEpisodeNumber = epi ))
+                                        orden = orden, contentType = 'episode', contentSeason = item.contentSeason, contentEpisodeNumber = epi ))
 
             if len(itemlist) >= item.perpage:
                 break
+
+        tmdb.set_infoLabels(itemlist)
 
         if itemlist:
             if num_matches > ((item.page + 1) * item.perpage):
@@ -385,6 +446,8 @@ def episodios(item):
         return itemlist
 
     else:
+        tmdb.set_infoLabels(itemlist)
+
         return sorted(itemlist, key=lambda i: i.orden)
 
 
@@ -426,8 +489,7 @@ def findvideos(item):
                 if not link_other: continue
             else: link_other = ''
 
-            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url,
-                                  language = IDIOMAS.get(lang, lang), other = link_other ))
+            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = IDIOMAS.get(lang, lang), other = link_other ))
 
     if not itemlist:
         if not ses == 0:
@@ -471,6 +533,7 @@ def play(item):
     itemlist = []
 
     servidor = item.server
+
     url = item.url
 
     if item.other:
@@ -500,30 +563,102 @@ def play(item):
 
         elif item.other == 'apialfa':
             fid = scrapertools.find_single_match(item.url, "h=([^&]+)")
+
             if fid:
+                if '/sc/' in item.url:
+                    post = {'h': fid}
+
+                    vid = item.url.replace('https://apialfa.tomatomatela.club/sc/index.php', 'https://apialfa.tomatomatela.club/sc/r.php')
+
+                    if not vid.startswith(host):
+                        data = httptools.downloadpage(vid, post=post).data
+                    else:
+                        data = httptools.downloadpage_proxy('cliversite', vid, post=post).data
+
+                    url = scrapertools.find_single_match(data, '<meta name="og:url" content="(.*?)"')
+
+                    if url:
+                        servidor = servertools.get_server_from_url(url)
+                        servidor = servertools.corregir_servidor(servidor)
+
+                        url = servertools.normalize_url(servidor, url)
+
+                        itemlist.append(item.clone(url=url, server=servidor))
+
+                    return itemlist
+
                 vid = item.url.replace('https://apialfa.tomatomatela.club/ir/player.php', 'https://apialfa.tomatomatela.club/ir/rd.php')
+
                 post = {'url': fid}
 
                 try:
-                    # ~ url = httptools.downloadpage(vid, post=post, follow_redirects=False).headers['location']
-                    url = httptools.downloadpage_proxy('cliversite', vid, post=post, follow_redirects=False).headers['location']
+                    if not vid.startswith(host):
+                        new_url = httptools.downloadpage(vid, post=post, follow_redirects=False).headers['location']
+                    else:
+                        new_url = httptools.downloadpage_proxy('cliversite', vid, post=post, follow_redirects=False).headers['location']
                 except:
-                    url = ''
+                    new_url = ''
 
-                if url:
-                    servidor = servertools.get_server_from_url(url)
-                    servidor = servertools.corregir_servidor(servidor)
+                if new_url:
+                    if new_url.startswith('//'): new_url = 'https:' + new_url
 
-                    url = servertools.normalize_url(servidor, url)
+                    data = do_downloadpage(new_url)
+                    vid = scrapertools.find_single_match(data, 'value="(.*?)"')
 
-                    itemlist.append(item.clone(url=url, server=servidor))
-                    return itemlist
+                    if vid:
+                        try:
+                            if not vid.startswith(host):
+                                new_url = httptools.downloadpage(vid, post=post, follow_redirects=False).headers['location']
+                            else:
+                                new_url = httptools.downloadpage_proxy('cliversite', vid, post=post, follow_redirects=False).headers['location']
+                        except:
+                            new_url = ''
+
+                    if new_url:
+                        servidor = servertools.get_server_from_url(new_url)
+                        servidor = servertools.corregir_servidor(servidor)
+
+                        if servidor and servidor != 'directo':
+                            url = servertools.normalize_url(servidor, new_url)
+
+                            itemlist.append(item.clone(url=url, server=servidor))
+
+                        return itemlist
+
+                else:
+                    vid = 'https://apialfa.tomatomatela.club/ir/redirect_ddh.php'
+
+                    try:
+                        if not vid.startswith(host):
+                            url = httptools.downloadpage(vid, post=post, follow_redirects=False).headers['location']
+                        else:
+                            url = httptools.downloadpage_proxy('cliversite', vid, post=post, follow_redirects=False).headers['location']
+                    except:
+                        url = ''
+
+                    if url:
+                        if '//damedamehoy.' in url or '//tomatomatela.' in url :
+                            url = resuelve_dame_toma(url)
+
+                            if url: itemlist.append(item.clone(url=url, server='directo'))
+                            return itemlist
+
+                        servidor = servertools.get_server_from_url(url)
+                        servidor = servertools.corregir_servidor(servidor)
+
+                        url = servertools.normalize_url(servidor, url)
+
+                        itemlist.append(item.clone(url=url, server=servidor))
+                        return itemlist
 
         elif item.other == 'super':
             if '/pelisplay.ccplay?' in item.url:
-                resp = httptools.downloadpage(item.url)
-                if not resp.data:
-                    return itemlist
+                if not item.url.startswith(host):
+                    resp = httptools.downloadpage(item.url)
+                else:
+                    resp = httptools.downloadpage_proxy('cliversite', item.url)
+
+                if not resp.data: return itemlist
             else:
                 data = do_downloadpage(item.url)
 
@@ -559,7 +694,7 @@ def play(item):
                     return itemlist
 
     if url:
-        if '/hqq.' in url or '/waaw.' in url or '/netu.' in url:
+        if '/hqq.' in url or '/waaw.' in url or '/netu.' in url or '/clonamesta' in url:
             return 'Requiere verificación [COLOR red]reCAPTCHA[/COLOR]'
 
         itemlist.append(item.clone(url = url, server = servidor))
@@ -569,10 +704,8 @@ def play(item):
 
 def search(item, texto):
     logger.info()
-
-    item.url = host + '/search.html?keyword=' + texto.replace(" ", "+")
-
     try:
+        item.url = host + '/search.html?keyword=' + texto.replace(" ", "+")
         return list_all(item)
     except:
         import sys

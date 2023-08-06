@@ -10,27 +10,83 @@
     "patterns": [
       {
         "pattern": "(?:sbembed.com)/(?:embed-|d/|e/|)([A-z0-9]+)",
-        "url": "https://sbvideo.net/play/\\1"
+        "url": "https://streamsb.net/play/\\1"
+      },
+      {
+        "pattern": "(?:sbembed.com)/(?:embed-|d/|e/)([A-z0-9]+).html",
+        "url": "https://streamsb.net/play/\\1"
+      },
+      {
+        "pattern": "(?:sbembed.com)/([A-z0-9]+).html",
+        "url": "https://streamsb.net/play/\\1"
+      },
+      {
+        "pattern": "(?:sbembed.com)/([A-z0-9]+)",
+        "url": "https://streamsb.net/play/\\1"
       },
       {
         "pattern": "(?:sbembed1.com)/(?:embed-|d/|e/|)([A-z0-9]+)",
-        "url": "https://sbvideo.net/play/\\1"
+        "url": "https://streamsb.net/play/\\1"
+      },
+      {
+        "pattern": "(?:sbembed1.com)/(?:embed-|d/|e/)([A-z0-9]+).html",
+        "url": "https://streamsb.net/play/\\1"
+      },
+      {
+        "pattern": "(?:sbembed1.com)/([A-z0-9]+).html",
+        "url": "https://streamsb.net/play/\\1"
+      },
+      {
+        "pattern": "(?:sbembed1.com)/([A-z0-9]+)",
+        "url": "https://streamsb.net/play/\\1"
       },
       {
         "pattern": "(?:sbembed2.com)/(?:embed-|d/|e/|)([A-z0-9]+)",
-        "url": "https://sbvideo.net/play/\\1"
+        "url": "https://streamsb.net/play/\\1"
+      },
+      {
+        "pattern": "(?:sbembed2.com)/(?:embed-|d/|e/)([A-z0-9]+).html",
+        "url": "https://streamsb.net/play/\\1"
+      },
+      {
+        "pattern": "(?:sbembed2.com)/([A-z0-9]+).html",
+        "url": "https://streamsb.net/play/\\1"
+      },
+      {
+        "pattern": "(?:sbembed2.com)/([A-z0-9]+)",
+        "url": "https://streamsb.net/play/\\1"
       },
       {
         "pattern": "(?:sbvideo.net)/(?:embed-|d/|e/|)([A-z0-9]+)",
-        "url": "https://sbvideo.net/play/\\1"
+        "url": "https://streamsb.net/play/\\1"
+      },
+      {
+        "pattern": "(?:sbvideo.net)/(?:embed-|d/|e/)([A-z0-9]+).html",
+        "url": "https://streamsb.net/play/\\1"
       },
       {
         "pattern": "(?:sbvideo.net)/([A-z0-9]+).html",
-        "url": "https://sbvideo.net/play/\\1"
+        "url": "https://streamsb.net/play/\\1"
+      },
+      {
+        "pattern": "(?:sbvideo.net)/([A-z0-9]+)",
+        "url": "https://streamsb.net/play/\\1"
       },
       {
         "pattern": "(?:japopav.tv)/(?:embed-|d/|e/|)([A-z0-9]+)",
-        "url": "https://sbvideo.net/play/\\1"
+        "url": "https://streamsb.net/play/\\1"
+      },
+      {
+        "pattern": "(?:japopav.tv)/(?:embed-|d/|e/)([A-z0-9]+).html",
+        "url": "https://streamsb.net/play/\\1"
+      },
+      {
+        "pattern": "(?:japopav.tv)/([A-z0-9]+).html",
+        "url": "https://streamsb.net/play/\\1"
+      },
+      {
+        "pattern": "(?:japopav.tv)/([A-z0-9]+)",
+        "url": "https://streamsb.net/play/\\1"
       }
     ]
   }

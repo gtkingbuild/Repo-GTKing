@@ -3,7 +3,7 @@
   "name": "Series24Nu",
   "thumbnail": "series24nu.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["tvshow"],
@@ -13,5 +13,5 @@
 
   "clusters": ["lasts", "rankings", "producers", "docs", "kids", "vos", "anime", "tales"],
 
-  "notes": "Series por Géneros."
+  "notes": "Web CERRADA. Series por Géneros."
 }

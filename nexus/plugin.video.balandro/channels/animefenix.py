@@ -7,11 +7,11 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-host = 'https://www.animefenix.tv/'
+host = 'https://animefenix.tv/'
 
 
 # ~ por si viene de enlaces guardados
-ant_hosts = ['https://www.animefenix.com/']
+ant_hosts = ['https://www.animefenix.com/', 'https://www.animefenix.tv/']
 
 
 domain = config.get_setting('dominio', 'animefenix', default='')
@@ -62,8 +62,19 @@ def do_downloadpage(url, post=None, headers=None):
     for ant in ant_hosts:
         url = url.replace(ant, host)
 
-    # ~ data = httptools.downloadpage(url, post=post, headers=headers).data
-    data = httptools.downloadpage_proxy('animefenix', url, post=post, headers=headers).data
+    timeout = None
+    if host in url:
+        if config.get_setting('channel_animefenix_proxies', default=''): timeout = config.get_setting('channels_repeat', default=30)
+
+    if not url.startswith(host):
+        data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+    else:
+        data = httptools.downloadpage_proxy('animefenix', url, post=post, headers=headers, timeout=timeout).data
+
+        if not data:
+            if not 'animes?q=' in url:
+                platformtools.dialog_notification('AnimeFenix', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+                data = httptools.downloadpage_proxy('animefenix', url, post=post, headers=headers, timeout=timeout).data
 
     if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
         try:
@@ -71,8 +82,11 @@ def do_downloadpage(url, post=None, headers=None):
             ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
             if ck_name and ck_value:
                 httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
-                # ~ data = httptools.downloadpage(url, post=post, headers=headers).data
-                data = httptools.downloadpage_proxy('animefenix', url, post=post, headers=headers).data
+
+                if not url.startswith(host):
+                    data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+                else:
+                   data = httptools.downloadpage_proxy('animefenix', url, post=post, headers=headers, timeout=timeout).data
         except:
             pass
 
@@ -137,15 +151,15 @@ def mainlist_animes(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'animes?page=1', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimos animes', action = 'list_last', url = host, search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host, search_type = 'tvshow', text_color = 'olive' ))
 
-    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host, search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Últimos animes', action = 'list_last', url = host, search_type = 'tvshow', text_color = 'olive' ))
 
     itemlist.append(item.clone( title = 'En emisión', action = 'list_all', url = host + 'animes?estado[]=1', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Ovas', action = 'list_all', url = host + 'animes?type%5B%5D=ova&order=default', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host + 'animes?type%5B%5D=movie&order=default', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host + 'animes?type%5B%5D=movie&order=default', search_type = 'movie', text_color = 'deepskyblue' ))
 
     itemlist.append(item.clone( title = 'Especiales', action = 'list_all', url = host + 'animes?type%5B%5D=special&order=default',  search_type = 'tvshow' ))
 
@@ -175,7 +189,7 @@ def categorias(item):
 
         url = "%s?order=%s&page=1" % (url_cat, categoria)
 
-        itemlist.append(item.clone( title = title, action = 'list_all', url = url ))
+        itemlist.append(item.clone( title = title, action = 'list_all', url = url, text_color='springgreen' ))
 
     return sorted(itemlist,key=lambda x: x.title)
 
@@ -194,9 +208,11 @@ def generos(item):
     matches = re.compile(r'<option value="([^"]+)"\s*>([^<]+)').findall(data)
 
     for genre_id, title in matches:
+        if title == "Ángeles": title = 'Angeles'
+
         url = "%s?genero[]=%s&order=default&page=1" % (url_genre, genre_id)
 
-        itemlist.append(item.clone( title = title, action = 'list_all', url = url ))
+        itemlist.append(item.clone( title = title, action = 'list_all', url = url, text_color='springgreen' ))
 
     return sorted(itemlist,key=lambda x: x.title)
 
@@ -217,7 +233,7 @@ def anios(item):
     for anio, title in matches:
         url = "%s?year[]=%s&order=default&page=1" % (url_anio, anio)
 
-        itemlist.append(item.clone( title = title, action = 'list_all', url = url ))
+        itemlist.append(item.clone( title = title, action = 'list_all', url = url, text_color='springgreen' ))
 
     return itemlist
 
@@ -242,9 +258,10 @@ def list_all(item):
 
         SerieName = title
 
-        if 'Peliculas' in title: SerieName = title.split("Peliculas")[0]
-        if 'Latino' in title: SerieName = title.split("Latino")[0]
-        if 'Movie' in title: SerieName = title.split("Movie")[0]
+        if 'Peliculas' in SerieName: SerieName = SerieName.split("Peliculas")[0]
+        if 'Latino' in SerieName: SerieName = SerieName.split("Latino")[0]
+        if 'Movie' in SerieName: SerieName = SerieName.split("Movie")[0]
+        if 'Season' in SerieName: SerieName = SerieName.split("Season")[0]
 
         SerieName = SerieName.strip()
 
@@ -282,14 +299,14 @@ def list_last(item):
     for url, thumb, title in matches:
         SerieName = title
 
-        if 'Peliculas' in title: SerieName = title.split("Peliculas")[0]
-        if 'Latino' in title: SerieName = title.split("Latino")[0]
-        if 'Movie' in title: SerieName = title.split("Movie")[0]
+        if 'Peliculas' in SerieName: SerieName = SerieName.split("Peliculas")[0]
+        if 'Latino' in SerieName: SerieName = SerieName.split("Latino")[0]
+        if 'Movie' in SerieName: SerieName = SerieName.split("Movie")[0]
+        if 'Season' in SerieName: SerieName = SerieName.split("Season")[0]
 
         SerieName = SerieName.strip()
 
-        itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb,
-                                    contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': '-'} ))
+        itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb, contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': '-'} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -310,9 +327,12 @@ def last_epis(item):
     for url, thumb, title, episode in matches:
         SerieName = title
 
-        if 'Peliculas' in title: SerieName = title.split("Peliculas")[0]
-        if 'Latino' in title: SerieName = title.split("Latino")[0]
-        if 'Movie' in title: SerieName = title.split("Movie")[0]
+        if 'Peliculas' in SerieName: SerieName = SerieName.split("Peliculas")[0]
+        if 'Latino' in SerieName: SerieName = SerieName.split("Latino")[0]
+        if 'Movie' in SerieName: SerieName = SerieName.split("Movie")[0]
+        if 'Season' in SerieName: SerieName = SerieName.split("Season")[0]
+
+        SerieName = SerieName.strip()
 
         try:
             epis = scrapertools.find_single_match(episode, "Episodio.*?(\d+)")
@@ -322,6 +342,8 @@ def last_epis(item):
         SerieName = SerieName.replace(str(epis), '').strip()
 
         title = episode + ' ' + title.replace(str(epis), '').strip()
+
+        title = title.replace('Episodio', '[COLOR goldenrod]Episodio[/COLOR]')
 
         if url:
             itemlist.append(item.clone( action='findvideos', url = url, title = title, thumbnail=thumb, infoLabels={'year': '-'},
@@ -343,10 +365,12 @@ def episodios(item):
 
     matches = re.compile('<a class="fa-play-circle d-inline-flex align-items-center is-rounded " href="([^"]+)".*?<span>([^<]+)', re.DOTALL).findall(data)
 
-    if item.page == 0:
+    if item.page == 0 and item.perpage == 50:
         sum_parts = len(matches)
 
-        try: tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+        try:
+            tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+            if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
         if tvdb_id:
@@ -354,6 +378,7 @@ def episodios(item):
                 platformtools.dialog_notification('AnimeFenix', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
         else:
+            item.perpage = sum_parts
 
             if sum_parts >= 1000:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]500[/B][/COLOR] elementos ?'):
@@ -366,14 +391,20 @@ def episodios(item):
                     item.perpage = 250
 
             elif sum_parts >= 250:
-                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]100[/B][/COLOR] elementos ?'):
-                    platformtools.dialog_notification('AnimeFenix', '[COLOR cyan]Cargando 100 elementos[/COLOR]')
-                    item.perpage = 100
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]125[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('AnimeFenix', '[COLOR cyan]Cargando 125 elementos[/COLOR]')
+                    item.perpage = 125
+
+            elif sum_parts >= 125:
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]75[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('AnimeFenix', '[COLOR cyan]Cargando 75 elementos[/COLOR]')
+                    item.perpage = 75
 
             elif sum_parts > 50:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos [COLOR cyan][B]Todos[/B][/COLOR] de una sola vez ?'):
                     platformtools.dialog_notification('AnimeFenix', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
                     item.perpage = sum_parts
+                else: item.perpage = 50
 
     for url, title in matches[item.page * item.perpage:]:
         try:
@@ -381,7 +412,9 @@ def episodios(item):
         except:
             episode = 0
 
-        itemlist.append(item.clone( action='findvideos', url = url, title = title, contentType = 'episode', contentSeason = 1, contentEpisodeNumber=episode ))
+        titulo = title + ' ' + item.contentSerieName
+
+        itemlist.append(item.clone( action='findvideos', url = url, title = titulo, contentType = 'episode', contentSeason = 1, contentEpisodeNumber=episode ))
 
         if len(itemlist) >= item.perpage:
             break
@@ -418,6 +451,7 @@ def findvideos(item):
         servidor = servertools.corregir_servidor(servidor)
 
         serv = ''
+
         for srv, vid in srvs:
             vid = vid.replace('#vid', '')
 
@@ -426,8 +460,12 @@ def findvideos(item):
             serv = srv.lower()
             break
 
+        if serv == 'stream2':
+            servidor = 'various'
+            serv = 'Streamwish'
+
         if not serv == 'fireload':
-            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, other = serv ))
+            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language='Vose', other = serv ))
 
     if not itemlist:
         if not ses == 0:
@@ -446,6 +484,7 @@ def play(item):
     item.url = item.url.replace('&amp;', '&')
 
     servidor = item.server
+
     url = item.url
 
     if '/videa.hu/' in url:

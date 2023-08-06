@@ -478,7 +478,7 @@ def dialog_find_and_set_infoLabels(item):
 
         if pedir_nuevo_texto:
             from platformcode import platformtools
-            nuevo_texto = platformtools.dialog_input(default=texto_busqueda, heading='Cambiar texto o cancelar para salir')
+            nuevo_texto = platformtools.dialog_input(default=texto_busqueda, heading='Cambiar texto ó cancelar para salir')
             if nuevo_texto is None or nuevo_texto == '' or nuevo_texto == texto_busqueda:
                 pedir_nuevo_texto = False
             else:
@@ -532,7 +532,7 @@ def _seleccionar_un_resultado(results, tipo_busqueda):
         it.setArt({ 'thumb': res['thumbnail'] })
         opciones.append(it)
 
-    return xbmcgui.Dialog().select('Seleccionar o cancelar para nueva búsqueda', opciones, useDetails=True)
+    return xbmcgui.Dialog().select('Seleccionar ó cancelar para nueva búsqueda en TMDB', opciones, useDetails=True)
 
 
 def find_and_set_infoLabels(item):

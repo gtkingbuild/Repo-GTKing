@@ -48,16 +48,16 @@ def categorias(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( action = 'listas', title = 'Colecciones', url= host + 'p/colecciones.html', exec_action = 'list_genre' ))
-    itemlist.append(item.clone( action = 'listas', title = 'Cortometrajes', url= host + 'p/cortometrajes.html' ))
+    itemlist.append(item.clone( action = 'listas', title = 'Colecciones', url= host + 'p/colecciones.html', exec_action = 'list_genre', text_color='moccasin' ))
+    itemlist.append(item.clone( action = 'listas', title = 'Cortometrajes', url= host + 'p/cortometrajes.html', text_color='moccasin' ))
 
-    itemlist.append(item.clone( action = 'list_list', title = 'Dibujos animados', url= host + '2015/10/dibujos-animados-en-dominio-publico.html' ))
+    itemlist.append(item.clone( action = 'list_list', title = 'Dibujos animados', url= host + '2015/10/dibujos-animados-en-dominio-publico.html', text_color='moccasin' ))
 
-    # ~ itemlist.append(item.clone( action = 'list_list', title = 'Disney', url = host + '2014/08/peliculas-de-disney-en-dominio-publico.html' ))
+    # ~ itemlist.append(item.clone( action = 'list_list', title = 'Disney', url = host + '2014/08/peliculas-de-disney-en-dominio-publico.html', text_color='moccasin' ))
 
-    itemlist.append(item.clone( action = 'listas', title = 'Documentales', url= host + 'p/documentales.html' ))
+    itemlist.append(item.clone( action = 'listas', title = 'Documentales', url= host + 'p/documentales.html', text_color='moccasin' ))
 
-    itemlist.append(item.clone( action='list_all', title = 'Segunda guerra mundial', url= host + 'search/label/Segunda%20Guerra%20Mundial' ))
+    itemlist.append(item.clone( action='list_all', title = 'Segunda guerra mundial', url= host + 'search/label/Segunda%20Guerra%20Mundial', text_color='moccasin' ))
 
     return itemlist
 
@@ -79,11 +79,11 @@ def generos(item):
         title = title.replace('peliculas de', '').replace('peliculas', '').replace('clasicos', '').strip()
         title = title.capitalize()
 
-        itemlist.append(item.clone( action='list_genre', title=title, url=url, thumbnail=thumb ))
+        itemlist.append(item.clone( action='list_genre', title=title, url=url, thumbnail=thumb, text_color = 'deepskyblue' ))
 
     if itemlist:
-        itemlist.append(item.clone( action='list_all', title='Historia', url= host + 'search/label/Historia' ))
-        itemlist.append(item.clone( action='list_all', title='Thriller', url= host + 'search/label/Thriller' ))
+        itemlist.append(item.clone( action='list_all', title='Historia', url= host + 'search/label/Historia', text_color = 'deepskyblue' ))
+        itemlist.append(item.clone( action='list_all', title='Thriller', url= host + 'search/label/Thriller', text_color = 'deepskyblue' ))
 
     return sorted(itemlist, key=lambda it: it.title)
 
@@ -92,12 +92,12 @@ def anios(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( action = 'listas', title = 'Años 70/80', url= host + 'p/peliculas-anos-70-y-80.html' ))
-    itemlist.append(item.clone( action = 'listas', title = 'Años 60', url= host + 'p/peliculas-anos-60.html' ))
-    itemlist.append(item.clone( action = 'listas', title = 'Años 50', url= host + 'p/peliculas-anos-50.html' ))
-    itemlist.append(item.clone( action = 'listas', title = 'Años 40', url= host + 'p/peliculas-anos-40.html' ))
-    itemlist.append(item.clone( action = 'listas', title = 'Años 30', url= host + 'p/peliculas-anos-30.html' ))
-    itemlist.append(item.clone( action = 'listas', title = 'Años 20', url= host + 'p/peliculas-anos-20.html' ))
+    itemlist.append(item.clone( action = 'listas', title = 'Años 70/80', url= host + 'p/peliculas-anos-70-y-80.html', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone( action = 'listas', title = 'Años 60', url= host + 'p/peliculas-anos-60.html', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone( action = 'listas', title = 'Años 50', url= host + 'p/peliculas-anos-50.html', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone( action = 'listas', title = 'Años 40', url= host + 'p/peliculas-anos-40.html', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone( action = 'listas', title = 'Años 30', url= host + 'p/peliculas-anos-30.html', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone( action = 'listas', title = 'Años 20', url= host + 'p/peliculas-anos-20.html', text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -121,8 +121,7 @@ def list_all(item):
                 title = title.replace('(' + year + ')', '').strip()
                 if year in title: title = title.replace(year, '').strip()
 
-        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb,
-                                    contentType='movie', contentTitle=Title, infoLabels={'year': year} ))
+        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, contentType='movie', contentTitle=Title, infoLabels={'year': year} ))
 
     if not '/search?q=' in item.url:
         tmdb.set_infoLabels(itemlist)
@@ -181,8 +180,7 @@ def list_list(item):
             ver = scrapertools.find_single_match(bloque, '</b></a>(.*?)<br />').strip()
             titulo = title + ' ' + ver
 
-            itemlist.append(item.clone( action='findvideos', url=url, title=titulo, thumbnail=thumb,
-                                        contentType='movie', contentTitle=title, infoLabels={'year': year} ))
+            itemlist.append(item.clone( action='findvideos', url=url, title=titulo, thumbnail=thumb, contentType='movie', contentTitle=title, infoLabels={'year': year} ))
 
         if 'Ver online' in bloque:
             url = scrapertools.find_single_match(bloque, 'Ver online.*?<a href="(.*?)"')
@@ -193,8 +191,7 @@ def list_list(item):
                 ver = scrapertools.find_single_match(bloque, 'Ver online.*?</b></a>(.*?)$').strip()
                 titulo = title + ' ' + ver
 
-                itemlist.append(item.clone( action='findvideos', url=url, title=titulo, thumbnail=thumb,
-                                            contentType='movie', contentTitle=title, infoLabels={'year': year} ))
+                itemlist.append(item.clone( action='findvideos', url=url, title=titulo, thumbnail=thumb, contentType='movie', contentTitle=title, infoLabels={'year': year} ))
 
             if len(itemlist) >= perpage: break
 
@@ -234,8 +231,7 @@ def list_genre(item):
 
         if thumb.startswith('//'): thumb = 'https:' + thumb
 
-        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb,
-                                    contentType='movie', contentTitle=title, infoLabels={'year': '-'} ))
+        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, contentType='movie', contentTitle=title, infoLabels={'year': '-'} ))
 
         if len(itemlist) >= perpage: break
 

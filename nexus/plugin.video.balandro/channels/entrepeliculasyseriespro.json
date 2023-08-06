@@ -3,7 +3,7 @@
   "name": "EntrePeliculasySeriesPro",
   "thumbnail": "entrepeliculasyseriespro.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["all", "movie", "tvshow"],
@@ -13,5 +13,5 @@
 
   "clusters": ["news", "rankings", "lasts", "kids", "docs", "vos"],
 
-  "notes": "Películas por géneros y año. Series por Géneros."
+  "notes": "Web ANULADA. Películas por géneros y año. Series por Géneros."
 }

@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 
+import time
+
+from platformcode import config, logger, platformtools
 from core import httptools, scrapertools, jsontools
-from platformcode import logger
+
+
+espera = config.get_setting('servers_waiting', default=6)
 
 
 def get_video_url(page_url, url_referer=''):
     logger.info("(page_url='%s')" % page_url)
     video_urls = []
-
-    dom = scrapertools.find_single_match(page_url, "(https://[^/]+)")
 
     page_url = page_url.replace('/api/source/', '/f/')
 
@@ -18,27 +21,31 @@ def get_video_url(page_url, url_referer=''):
 
     if 'fembed.com' in page_url:
         page_url = page_url.replace('/fembed.com/', '/www.fembed.com/')
+        page_url = page_url.replace('/www.fembed.com/', '/vanfem.com/')
+
     elif 'fembed.live' in page_url:
-        page_url = page_url.replace('/www.fembed.live/', '/diasfem.com/').replace('/fembed.live/', '/diasfem.com/')
+        page_url = page_url.replace('/www.fembed.live/', '/vanfem.com/').replace('/fembed.live/', '/vanfem.com/')
     elif 'fembed.net' in page_url:
-        page_url = page_url.replace('/www.fembed.net/', '/diasfem.com/').replace('/fembed.net/', '/diasfem.com/')
+        page_url = page_url.replace('/www.fembed.net/', '/vanfem.com/').replace('/fembed.net/', '/vanfem.com/')
     elif 'feurl.com' in page_url:
-        page_url = page_url.replace('/www.feurl.com/', '/diasfem.com/').replace('/feurl.com/', '/diasfem.com/')
+        page_url = page_url.replace('/www.feurl.com/', '/vanfem.com/').replace('/feurl.com/', '/vanfem.com/')
     elif 'femax20.com' in page_url:
-        page_url = page_url.replace('/www.femax20.com/', '/diasfem.com/').replace('/femax20.com/', '/diasfem.com/')
+        page_url = page_url.replace('/www.femax20.com/', '/vanfem.com/').replace('/femax20.com/', '/vanfem.com/')
     elif 'fcdn.stream' in page_url:
-        page_url = page_url.replace('/www.fcdn.stream/', '/diasfem.com/').replace('/fcdn.stream/', '/diasfem.com/')
+        page_url = page_url.replace('/www.fcdn.stream/', '/vanfem.com/').replace('/fcdn.stream/', '/vanfem.com/')
     elif 'fembad.org' in page_url:
-        page_url = page_url.replace('/www.fembad.org/', '/diasfem.com/').replace('/fembad.org/', '/diasfem.com/')
+        page_url = page_url.replace('/www.fembad.org/', '/vanfem.com/').replace('/fembad.org/', '/vanfem.com/')
 
     elif 'owodeuwu.xyz' in page_url:
-        page_url = page_url.replace('/www.owodeuwu.xyz/', '/diasfem.com/').replace('/owodeuwu.xyz/', '/diasfem.com/')
+        page_url = page_url.replace('/www.owodeuwu.xyz/', '/vanfem.com/').replace('/owodeuwu.xyz/', '/vanfem.com/')
 
     elif 'hlshd.xyz' in page_url:
-        page_url = page_url.replace('/www.hlshd.xyz/', '/diasfem.com/').replace('/hlshd.xyz/', '/diasfem.com/')
+        page_url = page_url.replace('/www.hlshd.xyz/', '/vanfem.com/').replace('/hlshd.xyz/', '/vanfem.com/')
 
     vid = scrapertools.find_single_match(page_url, "/(?:v|f)/([A-z0-9_-]+)")
     if not vid: return video_urls
+
+    dom = scrapertools.find_single_match(page_url, "(https://[^/]+)")
 
     post = 'r=&d=feurl.com'
 
@@ -51,6 +58,9 @@ def get_video_url(page_url, url_referer=''):
 
         if not data['success']:
             if not dom: return 'Vídeo no encontrado o eliminado'
+
+            platformtools.dialog_notification('Cargando Fembed', 'Espera requerida de %s segundos' % espera)
+            time.sleep(int(espera))
 
             post = {'r': '', 'd': dom.replace('https://', '')}
             data = httptools.downloadpage(dom +'/api/source/'+ vid, post=post).data
@@ -68,13 +78,25 @@ def get_video_url(page_url, url_referer=''):
             if 'file' in videos:
                 url = videos['file'] if videos['file'].startswith('http') else dom + videos['file']
 
+                url = url.replace('\\/', '/')
+
                 if '/redirector?' in url:
                     resp = httptools.downloadpage(url, follow_redirects=False)
-                    if 'location' in resp.headers:
-                        url = resp.headers['location']
 
-                lbl = videos['label'] if 'label' in videos and videos['label'] else 'mp4'
-                video_urls.append([lbl, url])
+                    if 'location' in resp.headers: url = resp.headers['location']
+
+                if url:
+                    # ~ 20/2/2023
+                    url = url.replace('https', 'http')
+
+                    ua = httptools.get_user_agent()
+                    headers = httptools.default_headers.copy()
+                    header_str = "&".join(["%s=%s" % (x, y) for x, y in list(headers.items()) if x!='User-Agent'])
+                    url += "|User-Agent=%s&verifypeer=false&%s" % (ua, header_str)
+
+                    lbl = videos['label'] if 'label' in videos and videos['label'] else 'mp4'
+
+                    video_urls.append([lbl, url])
     except:
         pass
 

@@ -21,13 +21,14 @@ def get_video_url(page_url, url_referer=''):
     data = resp.data
 
     sub_server = scrapertools.find_single_match(data, 'file.*?"(.*?)"')
-	
+
     if sub_server:
         vid_id = scrapertools.find_single_match(data, 'var sesz=.*?"(.*?)"')
-		
-        if vid_id:
-            media_url = sub_server + vid_id
 
-            video_urls.append(['mp4', media_url])
+        if vid_id:
+            if 'http' in vid_id:
+                media_url = sub_server + vid_id
+
+                video_urls.append(['mp4', media_url])
 
     return video_urls

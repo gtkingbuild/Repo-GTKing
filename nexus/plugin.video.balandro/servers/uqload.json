@@ -18,6 +18,26 @@
       {
         "pattern": "uqload.org/(?:embed-|)([A-z0-9]+)",
         "url": "https://uqload.com/embed-\\1.html"
+      },
+      {
+        "pattern": "uqload.org/(?:embed-|)([A-z0-9]+).html",
+        "url": "https://uqload.com/embed-\\1.html"
+      },
+      {
+        "pattern": "uqload.co/(?:embed-|)([A-z0-9]+)",
+        "url": "https://uqload.com/embed-\\1.html"
+      },
+      {
+        "pattern": "uqload.co/(?:embed-|)([A-z0-9]+).html",
+        "url": "https://uqload.com/embed-\\1.html"
+      },
+      {
+        "pattern": "uqload.io/(?:embed-|)([A-z0-9]+)",
+        "url": "https://uqload.com/embed-\\1.html"
+      },
+      {
+        "pattern": "uqload.io/(?:embed-|)([A-z0-9]+).html",
+        "url": "https://uqload.com/embed-\\1.html"
       }
     ]
   }

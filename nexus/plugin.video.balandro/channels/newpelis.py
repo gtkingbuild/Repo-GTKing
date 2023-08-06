@@ -2,7 +2,7 @@
 
 import re, base64
 
-from platformcode import logger
+from platformcode import logger, config
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
@@ -54,7 +54,7 @@ def generos(item):
     matches = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)">(.*?)</a>')
 
     for url, title in matches:
-        itemlist.append(item.clone( action='list_all', title=title, url=url ))
+        itemlist.append(item.clone( action='list_all', title=title, url=url, text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -67,7 +67,7 @@ def anios(item):
     current_year = int(datetime.today().year)
 
     for x in range(current_year, 1993, -1):
-        itemlist.append(item.clone( title=str(x), url= host + '/year/' + str(x) + '/', action='list_all', any = str(x) ))
+        itemlist.append(item.clone( title=str(x), url= host + '/year/' + str(x) + '/', action='list_all', any = str(x), text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -86,19 +86,21 @@ def list_all(item):
 
         if not url or not title: continue
 
+        title = title.replace("&#8217;", "'")
+
         thumb = scrapertools.find_single_match(match, 'data-src="(.*?)"')
 
         year = '-'
 
         if item.any: year = item.any
 
-        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb,
-                                    contentType='movie', contentTitle=title, infoLabels={'year': year} ))
+        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, contentType='movie', contentTitle=title, infoLabels={'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
         next_url = scrapertools.find_single_match(data, 'class="page-numbers current">.*?href="(.*?)"')
+
         if next_url:
             if '/page/' in next_url:
                itemlist.append(item.clone( title = 'Siguientes ...', url = next_url, action = 'list_all', text_color = 'coral' ))
@@ -138,8 +140,14 @@ def findvideos(item):
 
                 if servidor == 'youtube': continue
 
+                if servertools.is_server_available(servidor):
+                    if not servertools.is_server_enabled(servidor): continue
+                else:
+                   if not config.get_setting('developer_mode', default=False): continue
+
                 if not servidor == 'directo':
                     itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = url_link, title = '', language = 'Lat' ))
+
         else:
             bloque = scrapertools.find_single_match(data, '<tbody>(.*?)</tbody>')
 
@@ -149,16 +157,14 @@ def findvideos(item):
                 servidor = servertools.get_server_from_url(link)
                 servidor = servertools.corregir_servidor(servidor)
 
+                if servertools.is_server_available(servidor):
+                    if not servertools.is_server_enabled(servidor): continue
+                else:
+                   if not config.get_setting('developer_mode', default=False): continue
+
                 url_link = servertools.normalize_url(servidor, link)
 
-                if '1fichier' in url_link: continue
-                elif 'mediafire' in url_link: continue
-                elif 'google drive' in url_link: continue
-                elif 'turbobit' in url_link: continue
-                elif 'gounlimited' in url_link: continue
-
-                itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = url_link, title = '',
-                                      language = 'Lat', other = 'D' ))
+                itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = url_link, title = '', language = 'Lat', other = 'D' ))
 
     return itemlist
 

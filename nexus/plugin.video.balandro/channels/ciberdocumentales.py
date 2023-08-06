@@ -32,7 +32,7 @@ def categorias(item):
     matches = scrapertools.find_multiple_matches(bloque, patron)
 
     for url, title in matches:
-        itemlist.append(item.clone( action = 'list_all', title = title.capitalize(), url= host + url ))
+        itemlist.append(item.clone( action = 'list_all', title = title.capitalize(), url= host + url, text_color='cyan' ))
 
     return itemlist
 
@@ -62,6 +62,7 @@ def list_all(item):
 
     if itemlist:
         next_page_link = scrapertools.find_single_match(data, '<span class="current">\d*</span>&nbsp;<a href="([^"]+)')
+
         if next_page_link != '':
             itemlist.append(item.clone( title='Siguientes ...', action='list_all', url = host + next_page_link, text_color='coral' ))
 
@@ -77,6 +78,7 @@ def findvideos(item):
     url = scrapertools.find_single_match(data, '<param name="movie" value="([^"]+)')
     if url:
         servidor = servertools.get_server_from_url(url)
+
         if servidor and servidor != 'directo':
             itemlist.append(Item( channel = item.channel, action = 'play', server=servidor, title = '', url = url, language = 'Esp' ))
 

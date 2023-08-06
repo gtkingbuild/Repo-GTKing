@@ -2,9 +2,11 @@
 
 import xbmc, time
 
-from core import httptools, scrapertools
 from platformcode import config, logger, platformtools
+from core import httptools, scrapertools
 
+
+espera = config.get_setting('servers_waiting', default=6)
 
 color_exec = config.get_setting('notification_exec_color', default='cyan')
 el_srv = ('Sin respuesta en [B][COLOR %s]') % color_exec
@@ -53,8 +55,7 @@ def get_video_url(page_url, url_referer=''):
     url = scrapertools.find_single_match(data, "href='([^']+)'>download now</a>")
 
     if url:
-        espera = 6
-        platformtools.dialog_notification('Cargando MegaUp', 'Espera de %s segundos requerida' % espera)
+        platformtools.dialog_notification('Cargando [COLOR cyan][B]Megaup[/B][/COLOR]', 'Espera de %s segundos requerida' % espera)
         time.sleep(int(espera))
 
         headers = { 'Referer': page_url }
@@ -73,7 +74,7 @@ def get_video_url(page_url, url_referer=''):
                     resuelto = resolveurl.resolve(page_url)
 
                     if resuelto:
-                        video_urls.append(['mp4', resuelto + '|Referer=%s' % page_url])
+                        video_urls.append(['mp4', resuelto])
                         return video_urls
 
                     platformtools.dialog_notification(config.__addon_name, el_srv, time=3000)
@@ -95,7 +96,7 @@ def get_video_url(page_url, url_referer=''):
                 resuelto = resolveurl.resolve(page_url)
 
                 if resuelto:
-                    video_urls.append(['mp4', resuelto + '|Referer=%s' % page_url])
+                    video_urls.append(['mp4', resuelto])
                     return video_urls
 
                 platformtools.dialog_notification(config.__addon_name, el_srv, time=3000)

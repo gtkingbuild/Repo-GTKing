@@ -29,7 +29,7 @@ def valor_infolabel_informado(valores, infoLabels):
     return ''
 
 
-# Añadir desde menú contextual
+# Guardar desde menú contextual
 def addFavourite(item):
     logger.info()
 
@@ -92,7 +92,7 @@ def addFavourite(item):
     if item.contentType == 'movie': tit = 'Guardando película'; sub = '[B][COLOR %s]Obteniendo datos[/COLOR][/B]' % color_infor
     elif item.contentType == 'tvshow': tit = 'Guardando serie'; sub = '[B][COLOR %s]Obteniendo temporadas y episodios[/COLOR][/B]' % color_infor
     elif item.contentType == 'season': tit = 'Guardando temporada'; sub = '[B][COLOR %s]Obteniendo episodios[/COLOR][/B]' % color_infor
-    else: tit = 'Guardando episodio'; sub = '[B][COLOR %s]Obteniendo datos[/COLOR][/B]' % color_infor
+    else:tit = 'Guardando episodio'; sub = '[B][COLOR %s]Obteniendo datos[/COLOR][/B]' % color_infor
 
     platformtools.dialog_notification(tit, sub)
 
@@ -129,6 +129,13 @@ def mainlist(item):
 
     if (count_movies + count_shows + count_episodes) == 0:
         platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Aún no tiene Preferidos[/COLOR][/B]' % color_exec)
+
+        try:
+           preferidos_path = filetools.join(config.get_data_path(), 'tracking_dbs')
+           filetools.rmdirtree(preferidos_path)
+        except:
+           pass
+
     else:
         itemlist.append(item.clone( title = 'Películas (%d)' % count_movies, action = 'mainlist_pelis', thumbnail=config.get_thumb('movie') ))
 
@@ -140,14 +147,11 @@ def mainlist(item):
 
         itemlist.append(item.clone( title='Gestionar listas', action='mainlist_listas' )) 
 
-    itemlist.append(item.clone( channel='actions', title= '[COLOR chocolate][B]Ajustes[/B][/COLOR] configuración (categoría [COLOR wheat][B]Preferidos[/B][/COLOR])', action = 'open_settings',
-                                thumbnail=config.get_thumb('settings') ))
+    itemlist.append(item.clone( channel='actions', title= '[COLOR chocolate][B]Ajustes[/B][/COLOR] configuración (categoría [COLOR wheat][B]Preferidos[/B][/COLOR])', action = 'open_settings', thumbnail=config.get_thumb('settings') ))
 
-    itemlist.append(item.clone( channel='helper', title = '[COLOR green][B]Información[/B][/COLOR] ¿ Cómo funciona ?', action = 'show_help_tracking',
-                                thumbnail=config.get_thumb('help') ))
+    itemlist.append(item.clone( channel='helper', title = '[COLOR green][B]Información[/B][/COLOR] ¿ Cómo funciona ?', action = 'show_help_tracking', thumbnail=config.get_thumb('help') ))
 
-    itemlist.append(item.clone( channel='helper', title = '[COLOR green][B]Información[/B][/COLOR] Búsqueda automática de [COLOR cyan][B]Nuevos Episodios[/B][/COLOR]',
-                                action = 'show_help_tracking_update', thumbnail=config.get_thumb('help') ))
+    itemlist.append(item.clone( channel='helper', title = '[COLOR green][B]Información[/B][/COLOR] Búsqueda automática de [COLOR cyan][B]Nuevos Episodios[/B][/COLOR]', action = 'show_help_tracking_update', thumbnail=config.get_thumb('help') ))
 
     return itemlist
 
@@ -171,7 +175,8 @@ def mainlist_pelis(item):
 
     for tmdb_id, infolabels in rows:
         title = valor_infolabel('title', infolabels)
-        if tracking_order == 2: title += '  [COLOR gray](%s)[/COLOR]' % valor_infolabel_informado(['release_date','year'], infolabels)
+        if tracking_order == 1: title += '  [COLOR gray](%s)[/COLOR]' % valor_infolabel_informado(['release_date', 'year'], infolabels)
+        else: title += '  [COLOR gray](%s)[/COLOR]' % valor_infolabel_informado(['year'], infolabels)
 
         context = [ {'title': 'Gestionar película', 'channel': item.channel, 'action': 'acciones_peli'} ]
 
@@ -206,7 +211,10 @@ def mainlist_series(item):
 
     for tmdb_id, infolabels in rows:
         title = valor_infolabel('tvshowtitle', infolabels)
-        if tracking_order == 2: title += '  [COLOR gray](%s)[/COLOR]' % valor_infolabel_informado(['aired','year'], infolabels)
+        if tracking_order == 1: title += '  [COLOR gray](%s)[/COLOR]' % valor_infolabel_informado(['aired', 'year'], infolabels)
+        else:
+           anyo = valor_infolabel_informado(['year'], infolabels)
+           if not anyo == '-': title += '  [COLOR gray](%s)[/COLOR]' % anyo
 
         # ~ if db.tracking_show_exists(tmdb_id): title += ' [COLOR gold](*)[/COLOR]'
 
@@ -246,6 +254,7 @@ def mainlist_episodios(item):
         titulo = '%s %dx%02d' % (infolabels['tvshowtitle'], infolabels['season'], infolabels['episode'])
         subtitulo = valor_infolabel('episodio_titulo', infolabels)
         if subtitulo != '': titulo += ' ' + subtitulo
+
         if tracking_order == 1: titulo += '  [COLOR gray]%s[/COLOR]' % valor_infolabel('aired', infolabels)
 
         thumbnail = valor_infolabel_informado(['episodio_imagen','thumbnail'], infolabels)
@@ -367,8 +376,7 @@ def findvideos(item):
             elif ch_parms['status'] == -1: info = info + '[B][COLOR %s][I] Desactivado [/I][/B][/COLOR]' % color_list_inactive
 
             cfg_proxies_channel = 'channel_' + ch_parms['id'] + '_proxies'
-            if config.get_setting(cfg_proxies_channel, default=''):
-                info = info + '[B][COLOR %s] Proxies [/B][/COLOR]' % color_list_proxies
+            if config.get_setting(cfg_proxies_channel, default=''): info = info + '[B][COLOR %s] Proxies [/B][/COLOR]' % color_list_proxies
 
             tipos = ch_parms['search_types']
             tipos = str(tipos).replace('[', '').replace(']', '').replace("'", '')
@@ -517,7 +525,7 @@ def acciones_peli(item):
         db.cur.execute('UPDATE movies SET updated=? WHERE tmdb_id=?', (datetime.now(), tmdb_id))
 
     elif acciones[ret] == 'Eliminar película':
-        if not platformtools.dialog_yesno('Eliminar película', '¿Confirma Eliminar la película [COLOR gold[B]]%s[/B][/COLOR] con tmdb_id: %s ?' % (item.contentTitle, tmdb_id)): return False
+        if not platformtools.dialog_yesno('Eliminar película', '¿Confirma Eliminar la película [COLOR gold][B]%s[/B][/COLOR] con tmdb_id: %s ?' % (item.contentTitle, tmdb_id)): return False
         db.delete_movie(tmdb_id)
 
     elif acciones[ret].startswith('Eliminar enlaces del canal '):

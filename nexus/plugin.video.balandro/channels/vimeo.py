@@ -19,20 +19,15 @@ def mainlist(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'groups/documentales/videos/', search_type = 'documentary' ))
 
-    itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = host + 'groups/documentales/videos/sort:plays/format:thumbnail',
-                                search_type = 'documentary' ))
+    itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = host + 'groups/documentales/videos/sort:plays/format:thumbnail', search_type = 'documentary' ))
 
-    itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = host + 'groups/documentales/videos/sort:likes/format:thumbnail',
-                                search_type = 'documentary' ))
+    itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = host + 'groups/documentales/videos/sort:likes/format:thumbnail', search_type = 'documentary' ))
 
-    itemlist.append(item.clone( title = 'Por orden de fecha', action = 'list_all', url = host + 'groups/documentales/videos/sort:date/format:thumbnail',
-                                search_type = 'documentary' ))
+    itemlist.append(item.clone( title = 'Por orden de fecha', action = 'list_all', url = host + 'groups/documentales/videos/sort:date/format:thumbnail', search_type = 'documentary' ))
 
-    itemlist.append(item.clone( title = 'Por orden alfabético', action = 'list_all',
-                                url = host + 'groups/documentales/videos/sort:alphabetical/format:thumbnail', search_type = 'documentary' ))
+    itemlist.append(item.clone( title = 'Por orden alfabético', action = 'list_all', url = host + 'groups/documentales/videos/sort:alphabetical/format:thumbnail', search_type = 'documentary' ))
 
-    itemlist.append(item.clone( title = 'Por duración', action = 'list_all', url = host + 'groups/documentales/videos/sort:duration/format:thumbnail',
-                                search_type = 'documentary' ))
+    itemlist.append(item.clone( title = 'Por duración', action = 'list_all', url = host + 'groups/documentales/videos/sort:duration/format:thumbnail', search_type = 'documentary' ))
 
     return itemlist
 
@@ -48,11 +43,11 @@ def list_all(item):
     for url, title, thumb in matches:
         url = host[:-1] + url
 
-        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb,
-                                    contentType='movie', contentTitle=title, contentExtra='documentary' ))
+        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, contentType='movie', contentTitle=title, contentExtra='documentary' ))
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, 'class="selected">.*?<a href="(.*?)"')
+
         if next_page:
             next_page = host[:-1] + next_page
 
@@ -103,8 +98,7 @@ def list_search(item):
 
         thumb = thumb.replace('\\/', '/')
 
-        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb,
-                                    contentType='movie', contentTitle=title, contentExtra='documentary' ))
+        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, contentType='movie', contentTitle=title, contentExtra='documentary' ))
 
     return itemlist
 

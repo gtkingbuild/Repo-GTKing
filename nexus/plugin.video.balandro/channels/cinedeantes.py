@@ -7,6 +7,7 @@ from core import httptools, scrapertools, servertools, tmdb
 
 host = 'https://cinedeantes2.weebly.com'
 
+
 perpage = 20
 perpeli = 10
 
@@ -21,7 +22,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone ( title = 'Búsquedas:', action = '', folder=False, text_color='plum' ))
     itemlist.append(item.clone ( title = ' - Buscar película ...', action = 'search', grupo = 'alfab', search_type = 'movie', text_color = 'deepskyblue' ))
-    itemlist.append(item.clone ( title = ' - Buscar agrupación ...', action = 'search', grupo = 'agrupa', search_type = 'movie', text_color='salmon' ))
+    itemlist.append(item.clone ( title = ' - Buscar por agrupación ...', action = 'search', grupo = 'agrupa', search_type = 'all', text_color='salmon' ))
 
     itemlist.append(item.clone ( title = 'Novedades', action = 'news' ))
 
@@ -46,42 +47,42 @@ def generos(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone ( title = 'Artes marciales', action = 'list_all', url = host + '/artes-marciales.html' ))
-    itemlist.append(item.clone ( title = 'Aventuras', action = 'pelis', filtro_search = 'AVENTURAS' ))
+    itemlist.append(item.clone ( title = 'Artes marciales', action = 'list_all', url = host + '/artes-marciales.html', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Aventuras', action = 'pelis', filtro_search = 'AVENTURAS', text_color = 'deepskyblue' ))
 
-    itemlist.append(item.clone ( title = 'Bélicas (primera guerra)', action = 'list_all', url = host + '/primera-guerra.html' ))
-    itemlist.append(item.clone ( title = 'Bélicas (guerra de corea)', action = 'list_all', url = host + '/guerra-corea.html' ))
-    itemlist.append(item.clone ( title = 'Bélicas (guerra de vietnam)', action = 'list_all', url = host + '/vietnam.html' ))
-    itemlist.append(item.clone ( title = 'Bélicas (acciones bélicas)', action = 'list_all', url = host + '/acciones-beacutelicas.html' ))
+    itemlist.append(item.clone ( title = 'Bélicas (primera guerra)', action = 'list_all', url = host + '/primera-guerra.html', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Bélicas (guerra de corea)', action = 'list_all', url = host + '/guerra-corea.html', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Bélicas (guerra de vietnam)', action = 'list_all', url = host + '/vietnam.html', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Bélicas (acciones bélicas)', action = 'list_all', url = host + '/acciones-beacutelicas.html', text_color = 'deepskyblue' ))
 
-    itemlist.append(item.clone ( title = 'Cine alemán', action = 'list_all', url = host + '/cine-alemaacuten.html' ))
-    itemlist.append(item.clone ( title = 'Cine argentino', action = 'list_all', url = host + '/cine-argentino.html' ))
-    itemlist.append(item.clone ( title = 'Cine asiático', action = 'list_all', url = host + '/cine-asiaacutetico.html' ))
-    itemlist.append(item.clone ( title = 'Cine británico', action = 'pelis', filtro_search = 'CINE BRIT&Aacute;NICO' ))
-    itemlist.append(item.clone ( title = 'Cine clásico', action = 'pelis', filtro_search = 'CL&Aacute;SICO' ))
-    itemlist.append(item.clone ( title = 'Cine de acción', action = 'pelis', filtro_search = 'CINE DE ACCI&Oacute;N' ))
-    itemlist.append(item.clone ( title = 'Cine de romanos', action = 'list_all', url = host + '/cine-romanos.html' ))
-    itemlist.append(item.clone ( title = 'Cine de terror', action = 'pelis', filtro_search = 'CINE DE TERROR' ))
-    itemlist.append(item.clone ( title = 'Cine español', action = 'pelis', filtro_search = 'CINE ESPA&Ntilde;OL' ))
-    itemlist.append(item.clone ( title = 'Cine europeo oriental', action = 'list_all', url = host + '/cine-europa-oriental.html' ))
-    itemlist.append(item.clone ( title = 'Cine francés', action = 'pelis', filtro_search = 'CINE FRANC&Eacute;S' ))
-    itemlist.append(item.clone ( title = 'Cine infantil', action = 'pelis', filtro_search = 'CINE INFANTIL' ))
-    itemlist.append(item.clone ( title = 'Cine italiano', action = 'pelis', filtro_search = 'CINE ITALIANO' ))
-    itemlist.append(item.clone ( title = 'Cine latino', action = 'list_all', url = host + '/cine-latino.html' ))
-    itemlist.append(item.clone ( title = 'Cine mexicano', action = 'list_all', url = host + '/cine-mejicano.html' ))
-    itemlist.append(item.clone ( title = 'Cine mudo', action = 'pelis', filtro_search = 'CINE MUDO' ))
-    itemlist.append(item.clone ( title = 'Cine musical', action = 'pelis', filtro_search = 'MUSICAL' ))
-    itemlist.append(item.clone ( title = 'Cine negro', action = 'pelis', filtro_search = 'CINE NEGRO' ))
-    itemlist.append(item.clone ( title = 'Cine religioso', action = 'list_all', url = host + '/cine-religioso.html' ))
-    itemlist.append(item.clone ( title = 'Cien ruso', action = 'list_all', url = host + '/cine-ruso.html' ))
+    itemlist.append(item.clone ( title = 'Cine alemán', action = 'list_all', url = host + '/cine-alemaacuten.html', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Cine argentino', action = 'list_all', url = host + '/cine-argentino.html', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Cine asiático', action = 'list_all', url = host + '/cine-asiaacutetico.html', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Cine británico', action = 'pelis', filtro_search = 'CINE BRIT&Aacute;NICO', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Cine clásico', action = 'pelis', filtro_search = 'CL&Aacute;SICO', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Cine de acción', action = 'pelis', filtro_search = 'CINE DE ACCI&Oacute;N', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Cine de romanos', action = 'list_all', url = host + '/cine-romanos.html', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Cine de terror', action = 'pelis', filtro_search = 'CINE DE TERROR', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Cine español', action = 'pelis', filtro_search = 'CINE ESPA&Ntilde;OL', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Cine europeo oriental', action = 'list_all', url = host + '/cine-europa-oriental.html', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Cine francés', action = 'pelis', filtro_search = 'CINE FRANC&Eacute;S', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Cine infantil', action = 'pelis', filtro_search = 'CINE INFANTIL', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Cine italiano', action = 'pelis', filtro_search = 'CINE ITALIANO', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Cine latino', action = 'list_all', url = host + '/cine-latino.html', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Cine mexicano', action = 'list_all', url = host + '/cine-mejicano.html', text_color = 'deepskyblue'))
+    itemlist.append(item.clone ( title = 'Cine mudo', action = 'pelis', filtro_search = 'CINE MUDO', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Cine musical', action = 'pelis', filtro_search = 'MUSICAL', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Cine negro', action = 'pelis', filtro_search = 'CINE NEGRO', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Cine religioso', action = 'list_all', url = host + '/cine-religioso.html', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Cien ruso', action = 'list_all', url = host + '/cine-ruso.html', text_color = 'deepskyblue' ))
 
-    itemlist.append(item.clone ( title = 'Comedias', action = 'pelis', filtro_search = 'COMEDIAS' ))
-    itemlist.append(item.clone ( title = 'Ciencia ficción', action = 'pelis', filtro_search = 'CIENCIA-FICCI&Oacute;N' ))
-    itemlist.append(item.clone ( title = 'Espionaje', action = 'pelis', filtro_search = 'ESPIONAJE' ))
-    itemlist.append(item.clone ( title = 'Intriga', action = 'pelis', filtro_search = 'INTRIGA' ))
-    itemlist.append(item.clone ( title = 'Peliculas Vose', action = 'pelis', filtro_search = 'PEL&Iacute;CULAS V.O.S.E.' ))
-    itemlist.append(item.clone ( title = 'Peplum', action = 'pelis', filtro_search = 'PEPLUM' ))
-    itemlist.append(item.clone ( title = 'Westerns', action = 'pelis', filtro_search = 'WESTERN' ))
+    itemlist.append(item.clone ( title = 'Comedias', action = 'pelis', filtro_search = 'COMEDIAS', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Ciencia ficción', action = 'pelis', filtro_search = 'CIENCIA-FICCI&Oacute;N', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Espionaje', action = 'pelis', filtro_search = 'ESPIONAJE', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Intriga', action = 'pelis', filtro_search = 'INTRIGA', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Peliculas Vose', action = 'pelis', filtro_search = 'PEL&Iacute;CULAS V.O.S.E.', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Peplum', action = 'pelis', filtro_search = 'PEPLUM', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone ( title = 'Westerns', action = 'pelis', filtro_search = 'WESTERN', text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -94,7 +95,7 @@ def alfab(item):
         if letra in '#abcdefghijk': url = host + '/iacutendice-de-peliacuteculas-a---k.html'
         else: url = host + '/iacutendice-de-peliacuteculas-l---z.html'
 
-        itemlist.append(item.clone ( title = letra.upper(), url = url, action = 'list_letra', filtro_search = letra ))
+        itemlist.append(item.clone ( title = letra.upper(), url = url, action = 'list_letra', filtro_search = letra, text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -103,8 +104,8 @@ def agrupa(item):
     logger.info()
     itemlist = []
 
-    for letra in 'abcdefghijklmnopqrstuvwxyz#':
-        itemlist.append(item.clone ( title = letra.upper(), action = 'pelis', filtro_search = letra ))
+    for letra in '#abcdefghijklmnopqrstuvwxyz':
+        itemlist.append(item.clone ( title = letra.upper(), action = 'pelis', filtro_search = letra, text_color='salmon' ))
 
     return itemlist
 
@@ -205,6 +206,7 @@ def news(item):
 
               if name == 'AÑOS 80-90': name = name.replace('AÑOS 80-90', 'SAGAS A&Ntilde;OS 80 Y 90')
               elif name == 'años 80-90': name = name.replace('años 80-90', 'SAGAS A&Ntilde;OS 80 Y 90')
+
               elif name == 'Paco Martínez Soria': name = name.replace('Paco Martínez Soria', 'PACO MART&Iacute;NEZ SORIA')
               elif name == 'Sissi': name = name.replace('Sissi', 'SISSI')
               elif name == 'JOAN CROWFORD': name = name.replace('JOAN CROWFORD', 'JOAN CRAWFORD')
@@ -221,7 +223,7 @@ def news(item):
                     accion = 'list_all'
                     url = host + '/cine-europa-oriental.html'
 
-           itemlist.append(item.clone( action = accion, title = title, url = url, thumbnail = thumb, grupo = grupo, filtro_search = name, page = 0 ))
+           itemlist.append(item.clone( action = accion, title = title, url = url, thumbnail = thumb, grupo = grupo, filtro_search = name, page = 0, text_color='orchid' ))
 
        if itemlist:
            if i > perpage:
@@ -305,6 +307,7 @@ def list_all(item):
         if matches:
             if num_matches > hasta:
                 next_page = item.page + 1
+
                 itemlist.append(item.clone( title = 'Siguientes ...', page = next_page, action = 'list_all', text_color='coral' ))
 
     return itemlist
@@ -338,6 +341,8 @@ def list_letra(item):
             elif '<em>' in title: title = scrapertools.find_single_match(title, '<em>(.*?)<')
 
             title = title.replace('&Aacute;', 'A').replace('&Eacute;', 'E').replace('&Iacute;', 'I').replace('&Oacute;', 'O').replace('&Uacute;', 'U')
+            title = title.replace('&aacute;', 'a').replace('&eacute;', 'e').replace('&iacute;', 'i').replace('&oacute;', 'o').replace('&uacute;', 'u').replace('&ntilde;', 'ñ')
+
             title = title.replace('&iquest;', '').replace('&iexcl;', '').replace('&#8203;', '').replace('&nbsp;', '').strip()
 
             letra = item.filtro_search.lower().strip()
@@ -373,6 +378,8 @@ def list_letra(item):
         elif '<font size="4">' in title: title = scrapertools.find_single_match(title, '<font size="4">(.*?)<')
 
         title = title.replace('&Aacute;', 'A').replace('&Eacute;', 'E').replace('&Iacute;', 'I').replace('&Oacute;', 'O').replace('&Uacute;', 'U')
+        title = title.replace('&aacute;', 'a').replace('&eacute;', 'e').replace('&iacute;', 'i').replace('&oacute;', 'o').replace('&uacute;', 'u').replace('&ntilde;', 'ñ')
+
         title = title.replace('&iquest;', '').replace('&iexcl;', '').replace('&#8203;', '').replace('&nbsp;', '').strip()
 
         letra = item.filtro_search.lower().strip()
@@ -526,7 +533,8 @@ def pelis(item):
            else:
               if not '&ordm;' in title: continue
 
-        title = title.replace('&ordm;', 'ª').replace('Ó', 'ó').replace('Á', 'á')
+        title = title.replace('&ordm;', 'ª').replace('Á', 'á').replace('É', 'é').replace('Í', 'í').replace('Ó', 'ó').replace('Ú', 'ú')
+
         title = title.lower()
         title = title.capitalize()
 
@@ -578,6 +586,8 @@ def pelis(item):
 
         if 'ª' in title: title = title.replace('ª', 'ª - L')
 
+        title = title.replace('&aacute;', 'a').replace('&eacute;', 'e').replace('&iacute;', 'i').replace('&oacute;', 'o').replace('&uacute;', 'u').replace('&ntilde;', 'ñ')
+
         i +=1
 
         sort_pelis.append([url, title])
@@ -590,14 +600,17 @@ def pelis(item):
        sort_pelis = sorted(sort_pelis, key = lambda x: x[1])
 
        for url, title in sort_pelis[desde:hasta]:
-           itemlist.append(item.clone( action = 'list_all', title = title, url = url, page = 0 ))
+           if item.grupo == 'temas': text_color = 'deepskyblue'
+           else: text_color = 'moccasin'
+
+           itemlist.append(item.clone( action = 'list_all', title = title, url = url, page = 0, text_color = text_color ))
 
        if itemlist:
            if i > perpage:
                if num_matches > hasta:
                    next_page = item.page + 1
-                   itemlist.append(item.clone( title = 'Siguientes ...', page = next_page, filtro_search = item.filtro_search,
-                                               action = 'pelis', text_color='coral' ))
+                   itemlist.append(item.clone( title = 'Siguientes ...', page = next_page, filtro_search = item.filtro_search, action = 'pelis',
+                                               grupo = item.grupo, text_color='coral' ))
 
     return itemlist
 
@@ -654,6 +667,8 @@ def list_search(item):
         elif '<font size="4">' in title: title = scrapertools.find_single_match(title, '<font size="4">(.*?)<')
 
         title = title.replace('&Aacute;', 'A').replace('&Eacute;', 'E').replace('&Iacute;', 'I').replace('&Oacute;', 'O').replace('&Uacute;', 'U')
+        title = title.replace('&aacute;', 'a').replace('&eacute;', 'e').replace('&iacute;', 'i').replace('&oacute;', 'o').replace('&uacute;', 'u').replace('&ntilde;', 'ñ')
+
         title = title.replace('&iquest;', '').replace('&iexcl;', '').replace('&#8203;', '').replace('&nbsp;', '').strip()
 
         title = title.replace('Á', 'A').replace('É', 'E').replace('Í', 'i').replace('Ó', 'o').replace('Ú', 'u').replace('Ñ', 'ñ')
@@ -683,12 +698,14 @@ def search(item, texto):
     logger.info()
     try:
        item.url = host
-       if item.grupo == 'agrupa':
-            item.filtro_search = texto
-            return pelis(item)
-       else:
+
+       if item.grupo == 'alfab':
             item.title_search = texto
             return list_search(item)
+
+       else:
+            item.filtro_search = texto
+            return pelis(item)
     except:
        import sys
        for line in sys.exc_info():

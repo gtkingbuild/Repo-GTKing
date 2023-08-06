@@ -3,7 +3,7 @@
   "name": "Ievenn",
   "thumbnail": "ievenn.png",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["movie"],
@@ -13,5 +13,5 @@
 
   "clusters": ["suggested", "classic", "categories", "languages", "docs", "vos"],
 
-  "notes": "Películas por idiomas, géneros."
+  "notes": "Web CERRADA. Películas por idiomas, géneros."
 }

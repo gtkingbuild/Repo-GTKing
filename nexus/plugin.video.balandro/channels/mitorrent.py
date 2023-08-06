@@ -45,6 +45,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Por idioma', action = 'idiomas', search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Por calidad', action = 'calidades',  search_type = 'movie' ))
+
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'movie' ))
 
@@ -82,7 +83,7 @@ def idiomas(item):
 
         url = url_idio + value
 
-        itemlist.append(item.clone( action='list_all', title=title, url=url ))
+        itemlist.append(item.clone( action='list_all', title=title, url=url, text_color='moccasin' ))
 
     return sorted(itemlist,key=lambda x: x.title)
 
@@ -104,7 +105,7 @@ def calidades(item):
 
         url = url_qlty + value
 
-        itemlist.append(item.clone( action='list_all', title=title, url=url ))
+        itemlist.append(item.clone( action='list_all', title=title, url=url, text_color='tan' ))
 
     return sorted(itemlist,key=lambda x: x.title)
 
@@ -112,6 +113,9 @@ def calidades(item):
 def generos(item):
     logger.info()
     itemlist = []
+
+    if item.search_type == 'movie': text_color = 'deepskyblue'
+    else: text_color = 'hotpink'
 
     opciones = {
          'accion': 'Acción',
@@ -142,7 +146,7 @@ def generos(item):
          }
 
     for opc in sorted(opciones):
-        itemlist.append(item.clone( title = opciones[opc], url = host + 'genero/' + opc + '/', action ='list_all' ))
+        itemlist.append(item.clone( title = opciones[opc], url = host + 'genero/' + opc + '/', action ='list_all', text_color = text_color ))
 
     return itemlist
 
@@ -151,6 +155,9 @@ def generos(item):
 def anios(item):
     logger.info()
     itemlist = []
+
+    if item.search_type == 'movie': text_color = 'deepskyblue'
+    else: text_color = 'hotpink'
 
     data = do_downloadpage(host)
 
@@ -168,7 +175,7 @@ def anios(item):
 
         url = url_any + value
 
-        itemlist.append(item.clone( action='list_all', title=title, url=url ))
+        itemlist.append(item.clone( action='list_all', title=title, url=url, text_color = text_color ))
 
     return sorted(itemlist,key=lambda x: x.title, reverse=True)
 
@@ -191,6 +198,8 @@ def list_all(item):
 
         if not url or not title: continue
 
+        title = title.replace('&#8211;', '').replace('&#8217;', '').replace('&#038;', '&')
+
         thumb = scrapertools.find_single_match(match, 'data-src="(.*?)"')
 
         year = scrapertools.find_single_match(match, '<div class="browse-movie-year">(.*?)</div>')
@@ -206,7 +215,7 @@ def list_all(item):
         for lang in langs:
             lng = ''
 
-            if lang == 'espanol': lng = 'Esp'
+            if lang == 'espanol' or lang == 'castellano': lng = 'Esp'
             if lang == 'latino': lng = 'Lat'
 
             if lng:
@@ -268,7 +277,7 @@ def temporadas(item):
             itemlist = episodios(item)
             return itemlist
 
-        itemlist.append(item.clone( action = 'episodios', title = title, url = url, page = 0, contentType = 'season', contentSeason = season ))
+        itemlist.append(item.clone( action = 'episodios', title = title, url = url, page = 0, contentType = 'season', contentSeason = season, text_color='tan' ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -298,10 +307,12 @@ def episodios(item):
 
     matches = re.compile('<li>.*?Descargar Capitulo(.*?)<a.*?href="(.*?)"', re.DOTALL).findall(data)
 
-    if item.page == 0:
+    if item.page == 0 and item.perpage == 50:
         sum_parts = len(matches)
 
-        try: tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+        try:
+            tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+            if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
         if tvdb_id:
@@ -309,6 +320,7 @@ def episodios(item):
                 platformtools.dialog_notification('MiTorrent', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
         else:
+            item.perpage = sum_parts
 
             if sum_parts >= 1000:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]500[/B][/COLOR] elementos ?'):
@@ -321,22 +333,27 @@ def episodios(item):
                     item.perpage = 250
 
             elif sum_parts >= 250:
-                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]100[/B][/COLOR] elementos ?'):
-                    platformtools.dialog_notification('MiTorrent', '[COLOR cyan]Cargando 100 elementos[/COLOR]')
-                    item.perpage = 100
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]125[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('MiTorrent', '[COLOR cyan]Cargando 125 elementos[/COLOR]')
+                    item.perpage = 125
+
+            elif sum_parts >= 125:
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]75[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('MiTorrent', '[COLOR cyan]Cargando 75 elementos[/COLOR]')
+                    item.perpage = 75
 
             elif sum_parts > 50:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos [COLOR cyan][B]Todos[/B][/COLOR] de una sola vez ?'):
                     platformtools.dialog_notification('MiTorrent', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
                     item.perpage = sum_parts
+                else: item.perpage = 50
 
     for epis, url in matches[item.page * item.perpage:]:
         episode = epis.strip()
 
         titulo = str(item.contentSeason) + 'x' + str(episode)+ ' ' + item.contentSerieName
 
-        itemlist.append(item.clone( action = 'findvideos', url = url, title = titulo,
-                                    contentType = 'episode', contentSeason = item.contentSeason, contentEpisodeNumber = episode ))
+        itemlist.append(item.clone( action = 'findvideos', url = url, title = titulo, contentType = 'episode', contentSeason = item.contentSeason, contentEpisodeNumber = episode ))
 
         if len(itemlist) >= item.perpage:
             break
@@ -359,8 +376,7 @@ def findvideos(item):
     elif item.url.endswith(".torrent"): accion = 'play'
 
     if accion == 'play':
-        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = item.url, server = 'torrent',
-                                                      language = item.languages, quality = item.qualities))
+        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = item.url, server = 'torrent', language = item.languages, quality = item.qualities))
         return itemlist
 
     data = do_downloadpage(item.url)
@@ -368,8 +384,7 @@ def findvideos(item):
     links = scrapertools.find_multiple_matches(data, 'target="_blank".*?href="(.*?)"')
 
     for link in links:
-        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = link, server = 'torrent',
-                                                      language = item.languages, quality = item.qualities))
+        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = link, server = 'torrent', language = item.languages, quality = item.qualities))
 
     return itemlist
 

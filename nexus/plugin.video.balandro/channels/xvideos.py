@@ -14,8 +14,7 @@ perpage = 30
 
 
 def do_downloadpage(url, post=None, headers=None):
-    # ~ data = httptools.downloadpage(url, post=post, headers=headers).data
-    data = httptools.downloadpage_proxy('xvideos', url, post=post, headers=headers).data
+    data = httptools.downloadpage(url, post=post, headers=headers).data
 
     return data
 
@@ -41,10 +40,8 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Los mejores', action = 'list_best', url = host + 'best/', page = 0 ))
 
-    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', ))
-
     itemlist.append(item.clone( title = 'Por canal', action = 'canales', url = host + 'channels-index', page = 0 ))
-
+    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', ))
     itemlist.append(item.clone( title = 'Por estrella', action = 'list_stars', url = host + 'pornstars-index', page = 0 ))
 
     return itemlist
@@ -73,6 +70,12 @@ def list_all(item):
             title = title.replace('_', ' ').strip()
             title = title.capitalize()
 
+        title = title.replace('&aacute;', 'a').replace('&eacute;', 'e').replace('&iacute;', 'e').replace('&oacute;', 'o').replace('&uacute;', 'u')
+
+        title = title.replace('&aacuate;', 'a').replace('&eacuate;', 'e').replace('&iacuate;', 'e').replace('&oacuate;', 'o').replace('&uacuate;', 'u')
+
+        title = title.replace("&#039;", "'").replace('&quot;', '').replace('&iexcl;', '').replace('&ndash;', '').replace('&ntilde;', 'ñ').replace("&rsquo;", "'")
+
         itemlist.append(item.clone( action = 'findvideos', url = url if url.startswith('http') else host[:-1] + url,
                                     title = title, thumbnail = thumb, contentType = 'movie', contentTitle = title, contentExtra='adults' ))
 
@@ -81,8 +84,7 @@ def list_all(item):
 
         if next_url:
             if not next_url == '#1':
-                itemlist.append(item.clone( title = 'Siguientes ...', url = next_url if next_url.startswith('http') else host[:-1] + next_url,
-                                            action = 'list_all', page = item.page + 1, text_color = 'coral' ))
+                itemlist.append(item.clone( title = 'Siguientes ...', url = next_url if next_url.startswith('http') else host[:-1] + next_url, action = 'list_all', page = item.page + 1, text_color = 'coral' ))
 
     if not itemlist:
         if ses == 0:
@@ -134,7 +136,7 @@ def categorias(item):
     for url, title in matches[desde:hasta]:
         titulo = title.capitalize()
 
-        itemlist.append(item.clone( action = 'list_all', url = url if url.startswith('http') else host[:-1] + url, title = titulo ))
+        itemlist.append(item.clone( action = 'list_all', url = url if url.startswith('http') else host[:-1] + url, title = titulo, text_color = 'tan' ))
 
     if itemlist:
         if num_matches > hasta:
@@ -150,10 +152,12 @@ def list_stars(item):
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
-    matches = re.compile('<li><a href="([^"]+)" class="btn btn-default">\s*([^<]+)').findall(data)
+    matches = re.compile('<li><a href="([^"]+)">(.*?)</a>').findall(data)
 
     for url, title in matches:
-        itemlist.append(item.clone( action = 'pornstars', url = url if url.startswith('http') else host[:-1] + url, title = title))
+        title = title.replace('&ntilde;', 'ñ')
+
+        itemlist.append(item.clone( action = 'pornstars', url = url if url.startswith('http') else host[:-1] + url, title = title, text_color='moccasin' ))
 
     return itemlist
 
@@ -168,13 +172,13 @@ def pornstars(item):
     matches = re.compile(r'xv.thumbs.replaceThumbUrl\(\'<img src="([^"]+)".*?<a href="([^"]+)">([^<]+)').findall(data)
 
     for thumb, url, title in matches:
-        itemlist.append(item.clone( action = 'list_all', url = url if url.startswith('http') else host[:-1] + url, title = title, thumbnail = thumb ))
+        itemlist.append(item.clone( action = 'list_all', url = url if url.startswith('http') else host[:-1] + url, title = title, thumbnail = thumb , text_color = 'orange'))
 
     if itemlist:
         next_url = scrapertools.find_single_match(data, '<a href="([^"]+)" class="no-page next-page">')
+
         if next_url:
-            itemlist.append(item.clone( title = 'Siguientes ...', url = next_url if next_url.startswith('http') else host[:-1] + next_url,
-                                        action = 'pornstars', page = item.page + 1, text_color = 'coral' ))
+            itemlist.append(item.clone( title = 'Siguientes ...', url = next_url if next_url.startswith('http') else host[:-1] + next_url, action = 'pornstars', page = item.page + 1, text_color = 'coral' ))
 
     return itemlist
 
@@ -191,7 +195,9 @@ def canales(item):
     matches = re.compile('<li><a href="(\/channels[^"]+)">([^<|\d+]+)').findall(data)
 
     for url, title in matches:
-        itemlist.append(item.clone( action = 'list_canales', url = url if url.startswith('http') else host[:-1] + url, title = title))
+        title = title.replace('&ntilde;', 'ñ')
+
+        itemlist.append(item.clone( action = 'list_canales', url = url if url.startswith('http') else host[:-1] + url, title = title, text_color = 'orange' ))
 
     return sorted(itemlist, key=lambda x: x.title)
 
@@ -220,8 +226,7 @@ def list_canales(item):
         if next_url:
             next_url = next_url.replace('&amp;', '&')
 
-            itemlist.append(item.clone( title = 'Siguientes ...', url = next_url if next_url.startswith('http') else host[:-1] + next_url,
-                                        action = 'list_canales', page = item.page + 1, text_color = 'coral' ))
+            itemlist.append(item.clone( title = 'Siguientes ...', url = next_url if next_url.startswith('http') else host[:-1] + next_url, action = 'list_canales', page = item.page + 1, text_color = 'coral' ))
 
     return itemlist
 

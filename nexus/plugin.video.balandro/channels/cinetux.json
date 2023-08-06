@@ -3,7 +3,7 @@
   "name": "CineTux",
   "thumbnail": "cinetux.png",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["movie"],
@@ -13,5 +13,5 @@
 
   "clusters": ["current", "problematic", "news", "rankings", "languages", "years", "adults", "kids", "docs", "vos"],
 
-  "notes": "Películas por idioma, géneros y año. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Web CERRADA. Películas por idioma, géneros y año. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

@@ -19,6 +19,7 @@ from core import httptools, scrapertools, jsontools, filetools
 from core.item import Item
 from platformcode import config, logger, platformtools
 
+
 dict_servers_parameters = {}
 
 
@@ -171,6 +172,7 @@ def findvideosbyserver(data, serverid, disabled_servers=False):
                 data = data.encode('utf-8', 'strict')
             elif PY3 and isinstance(data, bytes):
                 data = data.decode('utf-8', 'strict')
+
             for match in re.compile(pattern["pattern"], re.DOTALL).finditer(data):
                 url = pattern["url"]
                 # Crea la url con los datos
@@ -294,8 +296,10 @@ def is_server_enabled(server):
     """
 
     server_parameters = get_server_parameters(server)
+
     if 'active' not in server_parameters or server_parameters['active'] == False:
         return False
+
     return config.get_setting('status', server=server, default=0) >= 0
 
 
@@ -324,6 +328,7 @@ def get_server_parameters(server):
     """
 
     global dict_servers_parameters
+
     if server not in dict_servers_parameters:
         try:
             if server == 'desconocido': 
@@ -395,19 +400,21 @@ def corregir_servidor(servidor):
     elif servidor in ['powvideo', 'povwideo', 'powvldeo', 'powv1deo', 'povw1deo']: return 'powvideo'
     elif servidor in ['streamplay', 'steamplay', 'streamp1ay']: return 'streamplay'
 
-    elif servidor in ['fembed', 'fembed-hd', 'fembeder', 'divload', 'ilovefembed', 'myurlshort', 'jplayer', 'feurl', 'fembedisthebest', 'femax20', 'fcdn', 'fembad', 'pelispng', 'hlshd', 'embedsito', 'mrdhan', 'dutrag', 'fplayer', 'diasfem', 'suzihaza', 'vanfem', 'youtvgratis', 'oceanplay', 'gotovideo.kiev.ua', 'owodeuwu', 'sypl', 'fembed9hd', 'watchse', 'vcdn', 'femoload']: return 'fembed'
+    elif servidor in ['fembed', 'fembed-hd', 'fembeder', 'divload', 'ilovefembed', 'myurlshort', 'jplayer', 'feurl', 'fembedisthebest', 'femax20', 'fcdn', 'fembad', 'pelispng', 'hlshd', 'embedsito', 'mrdhan', 'dutrag', 'fplayer', 'diasfem', 'suzihaza', 'vanfem', 'youtvgratis', 'oceanplay', 'gotovideo.kiev.ua', 'owodeuwu', 'sypl', 'fembed9hd', 'watchse', 'vcdn', 'femoload', 'cubeembed']: return 'fembed'
     elif servidor in ['evoplay']: return 'evoload'
-    elif servidor in ['streamta.pe', 'strtapeadblock', 'strtapeadblocker', 'streamtapeadblock', 'streamadblockplus', 'adblockstrtech', 'adblockstrtape', 'adblockstreamtape', 'adblockeronstape', 'playstp', 'strcloud', 'strtpe', 'stape', 'strtape', 'scloud', 'shavetape', 'stapewithadblock', 'streamtapeadblockuser', 'stapadblockuser']: return 'streamtape'
+    elif servidor in ['streamta.pe', 'strtapeadblock', 'strtapeadblocker', 'streamtapeadblock', 'streamadblockplus', 'adblockstrtech', 'adblockstrtape', 'adblockstreamtape', 'adblockeronstape', 'playstp', 'strcloud', 'strtpe', 'stape', 'strtape', 'scloud', 'shavetape', 'stapewithadblock', 'streamtapeadblockuser', 'stapadblockuser', 'adblocktape', 'streamta.site', 'streamadblocker']: return 'streamtape'
     elif servidor in ['sbembed', 'sbembed1', 'sbembed2', 'sbvideo', 'japopav']: return 'sbembed'
     elif servidor in ['streams1', 'streams2']: return 'streams3'
-    elif servidor in ['sbplay', 'sbplay1', 'sbplay2', 'pelistop', 'sbfast', 'sbfull', 'ssbstream', 'sbthe', 'sbspeed', 'cloudemb', 'tubesb', 'embedsb', 'playersb', 'sbcloud1', 'watchsb', 'viewsb', 'watchmo', 'streamsss', 'sblanh', 'sbanh', 'sblongvu', 'sbchill']: return 'streamsb'
+    elif servidor in ['sbplay', 'sbplay1', 'sbplay2', 'pelistop', 'sbfast', 'sbfull', 'ssbstream', 'sbthe', 'sbspeed', 'cloudemb', 'tubesb', 'embedsb', 'playersb', 'sbcloud1', 'watchsb', 'viewsb', 'watchmo', 'streamsss', 'sblanh', 'sbanh', 'sblongvu', 'sbchill', 'sbrity', 'sbhight', 'sbbrisk', 'sbface', 'view345', 'sbone', 'sbasian', 'streaamss', 'lvturbo', 'sbnet', 'sbani', 'sbrapid', 'cinestart', 'vidmoviesb', 'sbsonic', 'sblona', 'likessb']: return 'streamsb'
+
     elif servidor in ['slmaxed', 'sltube', 'slwatch']: return 'streamlare'
+    elif servidor in ['streamhide', 'playhide', 'guccihide', 'moviesm4u', 'louishide', 'ahvsh', 'movhide']: return 'streamhide'
 
     elif servidor in ['highload', 'streamon']: return 'highload'
     elif servidor in ['vupload']: return 'vup'
     elif servidor in ['hdvid', 'vidhdthe']: return 'vidhd'
     elif servidor in ['vtube', 'vidhdthe']: return 'playtube'
-    elif servidor in ['voesx', 'voe-', 'voeun', '-voe', 'reputationsheriffkennethsand', 'fittingcentermondaysunday.com', 'tinycat-voe-fashion.com']: return 'voe'
+    elif servidor in ['voesx', 'voe-', 'voeun', '-voe', 'reputationsheriffkennethsand', 'fittingcentermondaysunday.com', 'tinycat-voe-fashion.com', 'scatch176duplicities.com']: return 'voe'
 
     elif servidor in ['dai.ly']: return 'dailymotion'
     elif servidor in ['ploud', 'midov']: return 'peertube'
@@ -417,7 +424,7 @@ def corregir_servidor(servidor):
     elif servidor in ['mega.nz']: return 'mega'
     elif servidor in ['gloria.tv']: return 'gloria'
     elif servidor in ['vev.io']: return 'vevio'
-    elif servidor in ['gvideo', 'google', 'google drive', 'gdrive', 'drive']: return 'gvideo'
+    elif servidor in ['gvideo', 'google', 'google drive', 'gdrive', 'drive.google', 'drive']: return 'gvideo'
     elif servidor in ['mailru', 'my.mail', 'my.mail.ru', 'my', 'mail', 'mail.ru']: return 'mailru'
 
     elif servidor in ['vidtodo', 'vidto', 'vidtodoo', 'vixtodo']: return 'vidtodo'
@@ -425,7 +432,7 @@ def corregir_servidor(servidor):
     elif servidor in ['streamz', 'streamzz']: return 'streamz'
     elif servidor in ['vevio', 'vev']: return 'vevio'
     elif servidor in ['vsmobi', 'v-s']: return 'vsmobi'
-    elif servidor in ['doodstream', 'dood']: return 'doodstream'
+    elif servidor in ['doodstream', 'dood', 'dooood']: return 'doodstream'
     elif servidor in ['archiveorg', 'archive.org', 'archive']: return 'archiveorg'
     elif servidor in ['youtube', 'youtu']: return 'youtube'
     elif servidor in ['mp4upload', 'mp4up']: return 'mp4upload'
@@ -437,8 +444,9 @@ def corregir_servidor(servidor):
     elif servidor in ['1fichier', 'onefichier']: return '1fichier'
     elif servidor in ['uploadedto', 'uploaded', 'ul', 'ul.to']: return 'uploadedto'
     elif servidor == 'uptostream': return 'uptobox'
+    elif servidor == ['pixel']: return 'pixeldrain'
 
-    elif servidor in ['tubeload', 'mvidoo', 'ninjastream', 'rutube', 'videovard', 'filemoon', 'streamhide', 'streamhub', 'uploadever', 'yandex', 'yadi.']: return 'various'
+    elif servidor in ['tubeload', 'mvidoo', 'rutube', 'filemoon', 'moonplayer', 'streamhub', 'uploadever', 'videowood', 'yandex', 'yadi.', 'fastupload', 'dropload', 'streamwish', 'krakenfiles', 'hexupload', 'desiupload', 'filelions', 'youdbox', 'yodbox', 'youdboox', 'vudeo', 'embedgram', 'embedwish']: return 'various'
 
     else: return servidor
 
@@ -528,7 +536,7 @@ def get_parse_hls(video_urls):
         part = url.split('|')
         url = part[0]
 
-        if not url.endswith('master.m3u8'):
+        if not url.endswith in ['blenditall.m3u8', 'master.m3u8']:
             return video_urls
 
         khs = part[1]
@@ -539,12 +547,15 @@ def get_parse_hls(video_urls):
         for key, val in matches:
             headers[key] = val
 
-    if not url.endswith('master.m3u8'):
+    if not url.endswith in ['blenditall.m3u8', 'master.m3u8']:
         return video_urls
 
     data = httptools.downloadpage(url, headers=headers).data
+
     if not isinstance(data, str):
-        data = codecs.decode(data, "utf-8")
+        datos = data
+        try: data = codecs.decode(data, 'utf-8', 'strict')
+        except: data = datos
 
     matches = scrapertools.find_multiple_matches(data, r'#EXT-X-STREAM-INF.*?RESOLUTION=(\d+x\d+).*?\s(http.*?)\s')
 

@@ -11,7 +11,7 @@
   "categories": ["movie", "tvshow", "torrent"],
   "language": ["cast", "lat", "vose", "vo"],
 
-  "clusters": ["current", "torrents", "news", "qualityes", "vos", "3d"],
+  "clusters": ["notice", "current", "torrents", "news", "qualityes", "vos", "3d"],
 
-  "notes": "Canal con enlaces Torrent exclusivamente. Películas y Series. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Canal con enlaces Torrent exclusivamente. Películas y Series Subtituladas y en versión original. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

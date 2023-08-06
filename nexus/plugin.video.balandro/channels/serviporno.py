@@ -38,10 +38,36 @@ def mainlist_pelis(item):
     itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = host + 'mas-vistos/' ))
     itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = host + 'mas-votados/' ))
 
-    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url= host + 'categorias/' ))
     itemlist.append(item.clone( title = 'Por canal', action = 'canales', url= host + 'sitios/' ))
-
+    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url= host + 'categorias/' ))
     itemlist.append(item.clone( title = 'Por estrella', action = 'pornstars', url = host + 'pornstars/' ))
+
+    return itemlist
+
+
+def canales(item):
+    logger.info()
+    itemlist = []
+
+    data = do_downloadpage(item.url)
+    data = re.sub(r'\n|\r|\t|&nbsp;|<br>', '', data)
+
+    patron = '<div class="wrap-box-escena.*?data-src="([^"]+)".*?<h4.*?<a href="([^"]+)">([^<]+)<'
+
+    matches = re.compile(patron, re.DOTALL).findall(data)
+
+    for thumb, url, title in matches:
+         url = host[:-1] + url
+
+         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, contentType = 'movie', contentTitle = title, text_color = 'orange' ))
+
+    if itemlist:
+        next_page = scrapertools.find_single_match(data, '<a href="([^"]+)" class="btn-pagination">Siguiente')
+
+        if next_page:
+            next_page = host[:-1] + next_page
+
+            itemlist.append(item.clone (action='canales', title='Siguientes ...', url=next_page, text_color = 'coral') )
 
     return itemlist
 
@@ -60,37 +86,9 @@ def categorias(item):
     for thumb, url, title in matches:
          url = host[:-1] + url
 
-         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, contentType = 'movie',
-                                    contentTitle = title, contentExtra='adults') )
+         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, contentType = 'movie', contentTitle = title, text_color='tan' ))
 
     return sorted(itemlist,key=lambda x: x.title)
-
-
-def canales(item):
-    logger.info()
-    itemlist = []
-
-    data = do_downloadpage(item.url)
-    data = re.sub(r'\n|\r|\t|&nbsp;|<br>', '', data)
-
-    patron = '<div class="wrap-box-escena.*?data-src="([^"]+)".*?<h4.*?<a href="([^"]+)">([^<]+)<'
-
-    matches = re.compile(patron, re.DOTALL).findall(data)
-
-    for thumb, url, title in matches:
-         url = host[:-1] + url
-
-         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, contentType = 'movie',
-                                    contentTitle = title, contentExtra='adults') )
-
-    if itemlist:
-        next_page = scrapertools.find_single_match(data, '<a href="([^"]+)" class="btn-pagination">Siguiente')
-        if next_page:
-            next_page = host[:-1] + next_page
-
-            itemlist.append(item.clone (action='canales', title='Siguientes ...', url=next_page, text_color = 'coral') )
-
-    return itemlist
 
 
 def pornstars(item):
@@ -111,13 +109,13 @@ def pornstars(item):
     for url, thumb, title, videos in matches:
          url = host[:-1] + url
 
-         titulo = '%s (%s)' % (title, videos)
+         titulo = '[COLOR moccasin]%s[/COLOR] (%s)' % (title, videos)
 
-         itemlist.append(item.clone (action='list_all', title=titulo, url=url, thumbnail=thumb, contentType = 'movie',
-                                    contentTitle = title, contentExtra='adults') )
+         itemlist.append(item.clone (action='list_all', title=titulo, url=url, thumbnail=thumb, contentType = 'movie', contentTitle = title ))
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<a href="([^"]+)" class="btn-pagination">Siguiente')
+
         if next_page:
             next_page = host[:-1] + next_page
 
@@ -147,11 +145,11 @@ def list_all(item):
 
         title = "[COLOR tan]%s[/COLOR] %s" % (duration, title)
 
-        itemlist.append(item.clone (action='findvideos', title=title, url=url, thumbnail=thumb, contentType = 'movie',
-                                    contentTitle = title, contentExtra='adults') )
+        itemlist.append(item.clone (action='findvideos', title=title, url=url, thumbnail=thumb, contentType = 'movie', contentTitle = title, contentExtra='adults') )
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<a href="([^"]+)" class="btn-pagination">Siguiente')
+
         if next_page:
             next_page = host[:-1] + next_page
 

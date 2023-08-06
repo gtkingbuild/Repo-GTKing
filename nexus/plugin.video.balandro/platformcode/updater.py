@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import os, xbmc, time, traceback
+import os, xbmc, time, traceback, hashlib
 
 from platformcode import config, logger, platformtools
 from core import httptools, jsontools, filetools, downloadtools, scrapertools
@@ -128,6 +128,8 @@ def check_repo(force=False):
 def check_addon_updates(verbose=False, force=False):
     logger.info()
 
+    erase_cookies()
+
     check_repo()
 
     get_last_chrome_list()
@@ -184,35 +186,72 @@ def check_addon_updates(verbose=False, force=False):
             if verbose: platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]No se pudo descargar la actualización[/COLOR][/B]' % color_alert)
             return False
 
-        try:
-            import zipfile
-            dir = zipfile.ZipFile(localfilename, 'r')
-            dir.extractall(config.get_runtime_path())
-            dir.close()
-        except:
-            xbmc.executebuiltin('Extract("%s", "%s")' % (localfilename, config.get_runtime_path()))
+        itt = 0
 
-        time.sleep(2)
+        hash_localfilename = check_zip_hash(localfilename)
 
-        os.remove(localfilename)
+        while not data['hash'] == hash_localfilename:
+            if itt == 0:
+                if verbose: platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Acreditando fix... Espere...[/COLOR][/B]' % color_avis)
 
-        filetools.write(last_fix_json, jsontools.dump(data))
+            itt += 1
 
-        logger.info('Addon actualizado correctamente a %s.fix%d' % (data['addon_version'], data['fix_version']))
+            time.sleep(60)
 
-        if addon_update_verbose:
-            from modules import helper
-            helper.show_last_fix('')
+            data = httptools.downloadpage(ADDON_UPDATES_JSON, timeout=2).data
 
-        if addon_update_domains:
-            from modules import actions
-            actions.show_latest_domains('')
+            data = jsontools.load(data)
 
-        if verbose:
-            tex = '[B][COLOR %s]Actualizado a la versión %s.fix%d[/COLOR][/B]' % (color_avis, data['addon_version'], data['fix_version'])
-            platformtools.dialog_notification(config.__addon_name, tex)
+            localfilename = os.path.join(config.get_data_path(), 'temp_updates.zip')
+            if os.path.exists(localfilename): os.remove(localfilename)
 
-        return True
+            down_stats = downloadtools.do_download(ADDON_UPDATES_ZIP, config.get_data_path(), 'temp_updates.zip', silent=True, resume=False)
+
+            if down_stats['downloadStatus'] != 2:
+                logger.info('No se pudo descargar la actualización')
+                if verbose: platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]No se pudo descargar la actualización[/COLOR][/B]' % color_alert)
+                return False
+
+            if verbose: platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Acreditando fix (itt %s)[/COLOR][/B]' % (color_avis, itt))
+
+            hash_localfilename = check_zip_hash(localfilename)
+            time.sleep(5)
+
+            if itt == 5 and not data['hash'] == hash_localfilename: 
+                logger.info('No se pudo Acreditar la actualización')
+                if verbose: platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]No se pudo acreditar la actualización[/COLOR][/B]' % color_alert)
+                return False
+
+        if data['hash'] == hash_localfilename:
+            try:
+                import zipfile
+                dir = zipfile.ZipFile(localfilename, 'r')
+                dir.extractall(config.get_runtime_path())
+                dir.close()
+            except:
+                xbmc.executebuiltin('Extract("%s", "%s")' % (localfilename, config.get_runtime_path()))
+
+            time.sleep(2)
+
+            os.remove(localfilename)
+
+            filetools.write(last_fix_json, jsontools.dump(data))
+
+            logger.info('Addon actualizado correctamente a %s.fix%d' % (data['addon_version'], data['fix_version']))
+
+            if addon_update_verbose:
+                from modules import helper
+                helper.show_last_fix('')
+
+            if addon_update_domains:
+                from modules import actions
+                actions.show_latest_domains('')
+
+            if verbose:
+                tex = '[B][COLOR %s]Actualizado a la versión %s.fix%d[/COLOR][/B]' % (color_avis, data['addon_version'], data['fix_version'])
+                platformtools.dialog_notification(config.__addon_name, tex)
+
+            return True
 
     except:
         logger.error('Error comprobación actualizaciones!')
@@ -234,7 +273,7 @@ def get_last_chrome_list():
         except:
             web_last_ver_chrome = ''
 
-        if not web_last_ver_chrome == '':  config.set_setting('chrome_last_version', web_last_ver_chrome)
+        if not web_last_ver_chrome == '': config.set_setting('chrome_last_version', web_last_ver_chrome)
 
 
 def check_addon_version():
@@ -250,3 +289,32 @@ def check_addon_version():
     if addon.get('version') == config.get_addon_version(False): return True
 
     return False
+
+
+def check_zip_hash(localfilename):
+    logger.info()
+
+    with open(localfilename, 'rb') as filezip:
+        md5 = hashlib.md5()
+
+        for chunk in iter(lambda: filezip.read(4096), b""):
+            md5.update(chunk)
+
+        check_zip_hash = md5.hexdigest()
+
+    return check_zip_hash
+
+def erase_cookies():
+    logger.info()
+
+    if config.get_setting('erase_cookies', default=False):
+        path = os.path.join(config.get_data_path(), 'cookies.dat')
+
+        existe = filetools.exists(path)
+
+        if existe:
+            try:
+                filetools.remove(path)
+                httptools.load_cookies()
+            except:
+                pass

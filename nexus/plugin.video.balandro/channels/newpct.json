@@ -11,7 +11,7 @@
   "categories": ["torrent", "movie", "tvshow"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["temporary", "problematic", "torrents", "news", "qualityes", "languages", "kids", "docs"],
+  "clusters": ["problematic", "torrents", "news", "qualityes", "languages", "kids", "docs"],
 
-  "notes": "Canal con enlaces Torrent exclusivamente. Películas por géneros, calidades e idiomas. Series por Géneros."
+  "notes": "Web ANULADA. Canal con enlaces Torrent exclusivamente. Películas por géneros, calidades e idiomas. Series por Géneros."
 }

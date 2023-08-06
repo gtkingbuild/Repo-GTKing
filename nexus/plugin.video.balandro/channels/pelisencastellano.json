@@ -3,7 +3,7 @@
   "name": "PelisEnCastellano",
   "thumbnail": "pelisencastellano.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["movie"],
@@ -11,7 +11,7 @@
   "categories": ["movie"],
   "language": ["cast"],
 
-  "clusters": ["suggested", "kids", "docs"],
+  "clusters": ["notice", "suggested", "kids", "docs"],
 
-  "notes": "Películas en español, por géneros."
+  "notes": "Web CERRADA. Películas en español, por géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

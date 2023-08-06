@@ -5,8 +5,11 @@ import xbmc, random, time
 from platformcode import config, logger, platformtools
 from core import httptools, scrapertools
 
+
 host = 'https://doodstream.com'
 
+
+espera = config.get_setting('servers_waiting', default=6)
 
 color_exec = config.get_setting('notification_exec_color', default='cyan')
 el_srv = ('Sin respuesta en [B][COLOR %s]') % color_exec
@@ -50,6 +53,9 @@ def get_video_url(page_url, url_referer=''):
 
     data = httptools.downloadpage(page_url, headers={"Referer": host}).data
 
+    if '<title>Video not found' in data:
+        return "El archivo no existe o ha sido borrado"
+
     if '<title>Access denied' in data or '<title>Attention Required! | Cloudflare</title>' in data:
         if xbmc.getCondVisibility('System.HasAddon("script.module.resolveurl")'):
             try:
@@ -60,7 +66,7 @@ def get_video_url(page_url, url_referer=''):
                 resuelto = resolveurl.resolve(page_url)
 
                 if resuelto:
-                    video_urls.append(['mp4', resuelto + '|Referer=%s' % page_url])
+                    video_urls.append(['mp4', resuelto])
                     return video_urls
 
                 platformtools.dialog_notification(config.__addon_name, el_srv, time=3000)
@@ -75,7 +81,14 @@ def get_video_url(page_url, url_referer=''):
     url = scrapertools.find_single_match(data, "get\('(/pass_md5/[^']+)")
     if url:
         data2 = httptools.downloadpage(host + url, headers={'Referer': page_url}).data
-        if not data2: data2 = '<title>Access denied' # ~ return 'Vídeo sin resolver'
+        if not data2:
+            platformtools.dialog_notification('Cargando [COLOR cyan][B]Doodstream[/B][/COLOR]', 'Espera requerida de %s segundos' % espera)
+            time.sleep(int(espera))
+
+            data2 = httptools.downloadpage(host + url, headers={'Referer': page_url}).data
+
+            # ~ return 'Vídeo sin resolver'
+            if not data2: data2 = '<title>Access denied'
 
         if '<title>Access denied' in data2 or '<title>Attention Required! | Cloudflare</title>' in data2:
             if xbmc.getCondVisibility('System.HasAddon("script.module.resolveurl")'):
@@ -87,7 +100,7 @@ def get_video_url(page_url, url_referer=''):
                     resuelto = resolveurl.resolve(page_url)
 
                     if resuelto:
-                        video_urls.append(['mp4', resuelto + '|Referer=%s' % page_url])
+                        video_urls.append(['mp4', resuelto])
                         return video_urls
 
                     platformtools.dialog_notification(config.__addon_name, el_srv, time=3000)

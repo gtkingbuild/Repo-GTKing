@@ -25,6 +25,7 @@ def get_video_url(page_url, url_referer=''):
     if len(video_urls) == 0:
         enc_data = scrapertools.find_single_match(data, "text/javascript'[^>]*>(eval\(.*?)</script>")
         if not enc_data: enc_data = scrapertools.find_single_match(data, 'text/javascript"[^>]*>(eval\(.*?)</script>')
+
         if enc_data:
             try:
                 data = jsunpack.unpack(enc_data)
@@ -40,18 +41,22 @@ def extraer_videos(data):
 
     sources = scrapertools.find_single_match(data, "<source(.*?)</source")
     matches = scrapertools.find_multiple_matches(sources, 'src="([^"]+)')
+
     for url in matches:
         quality = 'm3u8'
         video_url = url
+
         if 'label' in url:
             url = url.split(',')
             video_url = url[0]
             quality = url[1].replace('label:','')
+
         video_urls.append([quality, video_url])
 
     if len(video_urls) == 0:
         sources = scrapertools.find_single_match(data, 'sources\s*:\s*\[(.*?)\]')
         matches = scrapertools.find_multiple_matches(sources, '(http.*?)"')
+
         for videourl in matches:
             extension = scrapertools.get_filename_from_url(videourl)[-4:]
             video_urls.append([extension, videourl])

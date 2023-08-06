@@ -50,7 +50,7 @@ def paises(item):
     matches = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)".*?title=.*?">(.*?)</a>')
 
     for url, tit in matches:
-        itemlist.append(item.clone( title = tit, url = url, action = 'list_all' ))
+        itemlist.append(item.clone( title = tit, url = url, action = 'list_all', text_color = 'deepskyblue' ))
 
     return sorted(itemlist, key=lambda it: it.title)
 
@@ -65,7 +65,7 @@ def generos(item):
     matches = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)".*?title=.*?">(.*?)</a>')
 
     for url, tit in matches:
-        itemlist.append(item.clone( title = tit, url = url, action = 'list_all' ))
+        itemlist.append(item.clone( title = tit, url = url, action = 'list_all', text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -82,7 +82,7 @@ def anios(item):
     for anio in matches:
         url = host + 'fecha-estreno/' + anio + '/'
 
-        itemlist.append(item.clone( title = anio, url = url, action = 'list_all' ))
+        itemlist.append(item.clone( title = anio, url = url, action = 'list_all', text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -100,15 +100,17 @@ def list_all(item):
     for url, title, thumb, year, qlty in matches:
         title = re.sub(r' \((\d{4})\)$', '', title)
 
+        title = title.replace("&#8217;", "'")
+
         if not year: year = '-'
 
-        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, qualities=qlty, 
-                                    contentType='movie', contentTitle=title, infoLabels={'year': year} ))
+        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, qualities=qlty, contentType='movie', contentTitle=title, infoLabels={'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<a class="nextpostslink" rel="next" href="([^"]+)"')
+
         if next_page:
             itemlist.append(item.clone (url = next_page, title = 'Siguientes ...', action = 'list_all', text_color='coral' ))
 
@@ -147,9 +149,12 @@ def findvideos(item):
 
         url = servertools.normalize_url(servidor, url)
 
+        if '/streamhub.' in url: other = 'Streamhub'
+        else: other = ''
+
         if servidor == 'zplayer': url += "|referer=%s" % host
 
-        itemlist.append(Item( channel = item.channel, action = 'play', title = '', server = servidor, url = url, language = idioma ))
+        itemlist.append(Item( channel = item.channel, action = 'play', title = '', server = servidor, url = url, language = idioma, other = other ))
 
     if not itemlist:
         if not ses == 0:

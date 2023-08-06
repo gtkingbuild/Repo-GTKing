@@ -11,7 +11,7 @@
   "categories": ["movie", "torrent"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["suggested", "notice", "torrents", "rankings", "years", "qualityes", "countries", "kids", "vos", "anime", "4k"],
+  "clusters": ["inestable", "notice", "torrents", "rankings", "years", "qualityes", "countries", "kids", "vos", "anime", "4k"],
 
   "notes": "Canal con enlaces Streaming y Torrent. Películas por géneros, año. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

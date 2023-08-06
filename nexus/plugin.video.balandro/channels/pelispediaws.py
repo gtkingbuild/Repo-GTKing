@@ -7,11 +7,11 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-host = 'https://www.gnula4.cc/'
+host = 'https://www.pelistv.top/'
 
 
 # ~ por si viene de enlaces guardados
-ant_hosts = ['https://www.pelispedia.ws/', 'https://ww7.pelispedia.ws/']
+ant_hosts = ['https://www.pelispedia.ws/', 'https://ww7.pelispedia.ws/', 'https://www.gnula4.cc/']
 
 
 domain = config.get_setting('dominio', 'pelispediaws', default='')
@@ -88,12 +88,12 @@ def generos(item):
 
     bloque = scrapertools.find_single_match(data, '>Géneros<(.*?)</ul>')
 
-    matches = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)">(.*?)</a>')
+    matches = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)".*?>(.*?)</a>')
 
     for url, title in matches:
         title = title.replace('&amp;', '&')
 
-        itemlist.append(item.clone( action='list_all', title=title, url=url ))
+        itemlist.append(item.clone( action='list_all', title=title, url=url, text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -108,7 +108,7 @@ def anios(item):
     for x in range(current_year, 1938, -1):
         url = host + 'release/' + str(x) + '/'
 
-        itemlist.append(item.clone( title = str(x), url = url, action='list_all', page = 1 ))
+        itemlist.append(item.clone( title = str(x), url = url, action='list_all', page = 1, text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -157,6 +157,8 @@ def list_all(item):
         else:
            if '(' + year + ')' in title: title = title.replace('(' + year + ')', '').strip()
 
+        title = title.replace('&#8211;', '').replace('&#8217;', '')
+
         titulo = title
 
         if "|" in titulo: titulo = titulo.split("|")[0]
@@ -172,6 +174,7 @@ def list_all(item):
     if itemlist:
         if '<div class="pagination">' in data:
             next_url = scrapertools.find_single_match(data, '<div class="pagination">.*?<span class="current">.*?' + "<a href='(.*?)'")
+
             if next_url:
                if '/page/' in next_url:
                    itemlist.append(item.clone( title = 'Siguientes ...', url = next_url, action = 'list_all', text_color='coral' ))
@@ -193,32 +196,27 @@ def findvideos(item):
         ses += 1
 
         if '/hqq.' in url or '/waaw.' in url or '/netu.' in url: continue
-        elif '/gounlimited.' in url: continue
-        elif '/jetload.' in url: continue
-        elif '/vidcloud.' in url: continue
-        elif '.mystream.' in url: continue
-        elif '/katfile.' in url: continue
-        elif '/uploaded.' in url: continue
-        elif '/ul.' in url: continue
-        elif '/rapidgator.' in url: continue
-        elif '/1fichier.' in url: continue
 
-        elif 'openload' in url: continue
-        elif 'powvideo' in url: continue
-        elif 'streamplay' in url: continue
-        elif 'rapidvideo' in url: continue
-        elif 'streamango' in url: continue
-        elif 'verystream' in url: continue
-        elif 'vidtodo' in url: continue
+        elif '.mystream.' in url: continue
+        elif '/ul.' in url: continue
 
         if lang == 'es': lang = 'Esp'
         elif lang == 'la': lang = 'Lat'
         elif lang == 'mx': lang = 'Lat'
         elif lang == 'en': lang = 'Vo'
         elif lang == 'jp': lang = 'Vose'
+        else: lang = '?'
 
-        servidor = servertools.get_server_from_url(url)
+        servidor = servertools.get_server_from_url(url, disabled_servers=True)
+
+        if servidor is None: continue
+
         servidor = servertools.corregir_servidor(servidor)
+
+        if servertools.is_server_available(servidor):
+            if not servertools.is_server_enabled(servidor): continue
+        else:
+            if not config.get_setting('developer_mode', default=False): continue
 
         url = servertools.normalize_url(servidor, url)
 

@@ -1,0 +1,17 @@
+{
+  "id": "asianhd",
+  "name": "AsianHd",
+  "thumbnail": "asianhd.jpg",
+
+  "active": true,
+
+  "searchable": false,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["vose", "vo"],
+
+  "clusters": ["dorama"],
+
+  "notes": "Web dedicada exclusivamente al dorama"
+}

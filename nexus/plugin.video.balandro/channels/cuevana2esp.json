@@ -13,5 +13,5 @@
 
   "clusters": ["news", "rankings", "lasts"],
 
-  "notes": "Películas en español por géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Películas por géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

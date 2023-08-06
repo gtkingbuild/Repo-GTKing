@@ -7,11 +7,14 @@ if sys.version_info[0] >= 3:
     PY3 = True
 
     unicode = str
+
     from urllib.parse import quote, urlencode, urlparse
     from urllib.response import addinfourl
     from http.cookiejar import MozillaCookieJar, Cookie
-    from urllib.error import HTTPError
     from urllib.request import HTTPHandler, HTTPCookieProcessor, ProxyHandler, build_opener, Request, HTTPRedirectHandler
+
+    from urllib.error import HTTPError
+
 else:
     PY2 = True
     PY3 = False
@@ -25,7 +28,7 @@ else:
 import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
 
-import os, inspect, gzip, time
+import os, re, inspect, gzip, time, random
 
 from io import BytesIO
 from threading import Lock
@@ -48,8 +51,8 @@ cj = MozillaCookieJar()
 ficherocookies = os.path.join(config.get_data_path(), "cookies.dat")
 
 
-# ~ useragent = "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.5304.122 Safari/537.36"
-useragent = "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.5359.99 Safari/537.36"
+# ~ useragent = "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.199 Safari/537.36"
+useragent = "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.5790.171 Safari/537.36"
 
 
 ver_stable_chrome = config.get_setting("ver_stable_chrome", default=True)
@@ -78,8 +81,12 @@ color_avis = config.get_setting('notification_avis_color', default='yellow')
 color_exec = config.get_setting('notification_exec_color', default='cyan')
 
 
+location_url_headers = ''
+
+
 def get_user_agent():
     return default_headers["User-Agent"]
+
 
 def get_url_headers(url):
     if "|" in url: return url
@@ -102,11 +109,11 @@ def load_cookies():
     cookies_lock.acquire()
 
     if os.path.isfile(ficherocookies):
-        logger.info("Leyendo fichero cookies")
+        logger.info("Leyendo cookies")
         try:
             cj.load(ficherocookies, ignore_discard=True)
         except:
-            logger.info("El fichero de cookies existe pero es ilegible, se borra")
+            logger.info("Fichero cookies ilegible, se borra")
             os.remove(ficherocookies)
 
     cookies_lock.release()
@@ -114,7 +121,7 @@ def load_cookies():
 
 def save_cookies():
     cookies_lock.acquire()
-    logger.info("Guardando cookies...")
+    logger.info("Guardando cookies")
     cj.save(ficherocookies, ignore_discard=True)
     cookies_lock.release()
 
@@ -132,7 +139,7 @@ def get_cookies(domain):
 
 load_cookies()
 
-# Mismos parámetros que downloadpage pero con el canal de dónde obtener los proxies como primer parámetro.
+# ~ Mismos parámetros que downloadpage pero con el canal de dónde obtener los proxies como primer parámetro
 def downloadpage_proxy(canal,
                        url, post=None, headers=None, timeout=None, follow_redirects=True, cookies=True, replace_headers=False,
                        add_referer=False, only_headers=False, bypass_cloudflare=True, count_retries=0, raise_weberror=True, 
@@ -140,9 +147,9 @@ def downloadpage_proxy(canal,
 
     proxies = config.get_setting('proxies', canal, default='').replace(' ', '')
 
-    if ';' in proxies: # Si los proxies estan separados por ; orden aleatorio
+    # ~ Si los proxies estan separados por ; orden aleatorio
+    if ';' in proxies:
         proxies = proxies.replace(',', ';').split(';')
-        import random
         random.shuffle(proxies)
     else:
         proxies = proxies.split(',')
@@ -156,19 +163,21 @@ def downloadpage_proxy(canal,
 
         resp = downloadpage(url, use_proxy=use_proxy, raise_weberror=False,
                             post=post, headers=headers, timeout=timeout, follow_redirects=follow_redirects, cookies=cookies,
-                            replace_headers=replace_headers, add_referer=add_referer, only_headers=only_headers,
-                            bypass_cloudflare=bypass_cloudflare, count_retries=count_retries, 
+                            replace_headers=replace_headers, add_referer=add_referer, only_headers=only_headers, bypass_cloudflare=bypass_cloudflare, count_retries=count_retries, 
                             use_cache=use_cache, cache_duration=cache_duration)
 
         if (type(resp.code) == int and (resp.code < 200 or resp.code > 399)) or not resp.sucess: 
             if proxy != '':
-                logger.info('El proxy %s NO responde adecuadamente. %s' % (proxy, resp.code))
+                logger.info('Proxy %s NO responde %s' % (proxy, resp.code))
+
                 if (type(resp.code) == int and (resp.code == 500)):
                     if len(resp.data) > 1000:
-                        logger.info('El proxy (error 500 y data > 1000) %s SI responde adecuadamente. %s' % (proxy, resp.code))
+                        logger.info('Proxy (error 500 y data > 1000) %s SI responde %s' % (proxy, resp.code))
                         proxy_ok = True
-                        if proxy != '': logger.info('El proxy %s parece válido.' % proxy)
-                        if n > 0: # guardar el proxy que ha funcionado como primero de la lista si no lo está
+                        if proxy != '': logger.info('Proxy %s parece válido.' % proxy)
+
+                        # ~ guardar el proxy que ha funcionado como primero de la lista si no lo está
+                        if n > 0:
                             del proxies[n]
                             new_proxies = proxy + ', ' + ', '.join(proxies)
                             config.set_setting('proxies', new_proxies, canal)
@@ -176,34 +185,36 @@ def downloadpage_proxy(canal,
 
                 if (type(resp.code) == int and (resp.code == 404)):
                     if len(resp.data) > 1000:
-                        logger.info('El proxy (error 404 y data > 1000) %s SI responde adecuadamente. %s' % (proxy, resp.code))
+                        logger.info('Proxy (error 404 y data > 1000) %s SI responde %s' % (proxy, resp.code))
                         proxy_ok = True
                         break
 
                     if 'file not found' in resp.data.lower():
-                        logger.info('El proxy (error 404 y data = File not found) %s SI responde adecuadamente. %s' % (proxy, resp.code))
+                        logger.info('Proxy (error 404 y data = File not found) %s SI responde %s' % (proxy, resp.code))
                         proxy_ok = True
                         break
 
             else:
                 if (type(resp.code) == int and (resp.code == 404)):
                     if len(resp.data) > 1000:
-                        logger.info('Sin proxy (error 404 y data > 1000) %s SI responde adecuadamente. %s' % (proxy, resp.code))
+                        logger.info('Sin proxies (error 404 y data > 1000) %s' % resp.code)
                         proxy_ok = True
                         break
 
                     if 'file not found' in resp.data.lower():
-                        logger.info('El proxy (error 404 y data = File not found) %s SI responde adecuadamente. %s' % (proxy, resp.code))
+                        logger.info('Sin proxies (error 404 y File not found) %s' % resp.code)
                         proxy_ok = True
                         break
 
         else:
             if 'ERROR 404 - File not found' in str(resp.data) or 'HTTP Error 404: Not Found' in str(resp.data) or '<title>Site Blocked</title>' in str(resp.data) or 'HTTP/1.1 400 Bad Request' in str(resp.data):
-                logger.info('Respuesta insuficiente con el proxy %s' % proxy)
+                logger.info('Proxy respuesta insuficiente %s' % proxy)
             else:
                 proxy_ok = True
-                if proxy != '': logger.info('El proxy %s parece válido.' % proxy)
-                if n > 0: # guardar el proxy que ha funcionado como primero de la lista si no lo está
+                if proxy != '': logger.info('Proxy %s parece válido.' % proxy)
+
+                # ~ guardar el proxy que ha funcionado como primero de la lista si no lo está
+                if n > 0:
                     del proxies[n]
                     new_proxies = proxy + ', ' + ', '.join(proxies)
                     config.set_setting('proxies', new_proxies, canal)
@@ -270,7 +281,7 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
 
     response = {}
 
-    # Si existe el fichero en la caché y no ha caducado, se devuelve su contenido sin hacer ninguna petición.
+    # ~ Si existe el fichero en la caché y no ha caducado, se devuelve su contenido sin hacer ninguna petición
     if use_cache:
         from hashlib import md5
 
@@ -282,6 +293,7 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
         if os.path.isfile(cache_file):
             time_file = os.stat(cache_file).st_mtime
             time_now = time.time()
+
             if time_file + cache_duration >= time_now:
                 response["sucess"] = True
                 response["code"] = 200
@@ -290,13 +302,13 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
                 response["url"] = url
                 with open(cache_file, 'r') as f: response["data"] = f.read()
                 response["time"] = time.time() - time_now
-                logger.info("Recuperado de caché %s la url %s" % (cache_md5url, url))
+                logger.info("Caché %s url %s" % (cache_md5url, url))
                 return type('HTTPResponse', (), response)
 
-    # Headers por defecto, si no se especifica nada
+    # ~ Headers por defecto, si no se especifica nada
     request_headers = default_headers.copy()
 
-    # Headers pasados como parametros
+    # ~ Headers pasados como parametros
     if headers is not None:
         if not replace_headers:
             request_headers.update(dict(headers))
@@ -313,24 +325,29 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
 
     if type(post) == dict: post = urlencode(post)
 
-    # Limitar tiempo de descarga si no se ha pasado timeout y hay un valor establecido en la variable global
+    # ~ Limitar tiempo de descarga si no se ha pasado timeout y hay un valor establecido en la variable global
     if timeout is None and HTTPTOOLS_DEFAULT_DOWNLOAD_TIMEOUT is not None: timeout = HTTPTOOLS_DEFAULT_DOWNLOAD_TIMEOUT
 
-    logger.info("----------------------------------------------")
-    logger.info(" Balandro: " + __version  + '  Page')
-    logger.info("----------------------------------------------")
+    logger.info("---------- Balandro: " + __version  + ' Page ----------')
+
     if use_proxy: logger.info("Proxy: %s" % use_proxy)
+
     logger.info("Timeout: %s" % timeout)
-    logger.info("URL: " + url)
-    logger.info("Dominio: " + urlparse(url)[1])
+    logger.info("Url: " + url)
+
+    dominio = urlparse(url)[1]
+    logger.info("Dominio: " + dominio)
+
     if post is not None:
-        logger.info("Peticion: POST")
+        logger.info("Peticion: Post")
         logger.info(post)
     else:
-        logger.info("Peticion: GET")
+        logger.info("Peticion: Get")
+
     logger.info("Usar Cookies: %s" % cookies)
-    logger.info("Descargar Pagina: %s" % (not only_headers))
-    logger.info("Fichero de Cookies: " + ficherocookies)
+    logger.info("Descarga Página: %s" % (not only_headers))
+    logger.info("Fichero Cookies: " + ficherocookies)
+
     logger.info("Headers:")
     for header in request_headers:
         logger.info("- %s: %s" % (header, request_headers[header]))
@@ -339,12 +356,12 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
         domain = urlparse(url)[1]
         domain_cookies = cj._cookies.get("." + domain, {}).get("/", {})
         cks = "; ".join(["%s=%s" % (c.name, c.value) for c in domain_cookies.values()])
-        if cks != '': logger.info('Cookies .' + domain + ' : ' + cks)
+        if cks != '': logger.info('Cookies ' + domain + ' : ' + cks)
         domain_cookies = cj._cookies.get(domain, {}).get("/", {})
         cks = "; ".join(["%s=%s" % (c.name, c.value) for c in domain_cookies.values()])
         if cks != '': logger.info('Cookies ' + domain + ' : ' + cks)
 
-    # Handlers
+    # ~ Handlers
     handlers = [HTTPHandler(debuglevel=False)]
 
     if not follow_redirects:
@@ -358,9 +375,7 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
 
     opener = build_opener(*handlers)
 
-    logger.info("Realizando Peticion")
-
-    # Contador
+    # ~ Contador
     inicio = time.time()
 
     if post:
@@ -377,10 +392,12 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
         response["code"] = handle.code
         response["error"] = handle.__dict__.get("reason", str(handle))
         response["headers"] = dict(handle.headers.items())
+
         if not only_headers:
             response["data"] = handle.read()
         else:
             response["data"] = ""
+
         response["time"] = time.time() - inicio
         response["url"] = handle.geturl()
 
@@ -398,31 +415,35 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
         response["code"] = handle.code
         response["error"] = None
         response["headers"] = dict(handle.headers.items())
+
         if not only_headers:
             response["data"] = handle.read()
         else:
             response["data"] = ""
+
         response["time"] = time.time() - inicio
         response["url"] = handle.geturl()
 
     response['headers'] = dict([(k.lower(), v) for k, v in response['headers'].items()])
-    logger.info("Terminado en %.2f segundos" % (response["time"]))
+
+    logger.info("Finalizado: %.2f segundos" % (response["time"]))
     logger.info("Response sucess: %s" % (response["sucess"]))
     logger.info("Response code: %s" % (response["code"]))
     logger.info("Response error: %s" % (response["error"]))
-    logger.info("Response data length: %s" % (len(response["data"])))
+    logger.info("Response length: %s" % (len(response["data"])))
+
     logger.info("Response headers:")
     for header in response["headers"]:
         logger.info("- %s: %s" % (header, response["headers"][header]))
 
-    # Lanzar WebErrorException si la opción raise_weberror es True a menos que sea 503 de cloudflare o provenga de un server
+    # ~ Lanzar WebErrorException si la opción raise_weberror es True a menos que sea 503 de cloudflare o provenga de un server
     if type(response['code']) == int and response['code'] > 399 and raise_weberror:
         lanzar_error = True
 
-        if response['code'] == 410 and len(response["data"]) > 0: # excepción
-            lanzar_error = False
+        if response['code'] == 410 and len(response["data"]) > 0: lanzar_error = False
 
-        if response['code'] == 503: # Permitir 503 de cloudflare por si hay reintentos en anti-cloudflare
+        # ~ Permitir 503 de cloudflare por si hay reintentos en anti-cloudflare
+        if response['code'] == 503:
             for header in response['headers']:
                 if 'cloudflare' in response['headers'][header]:
                     lanzar_error = False
@@ -431,12 +452,60 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
         if lanzar_error:
             is_channel = inspect.getmodule(inspect.currentframe().f_back)
             if is_channel == None: is_channel = inspect.getmodule(inspect.currentframe().f_back.f_back)
-            is_channel = str(is_channel).replace("/servers/","\\servers\\")
-            if "\\servers\\" in is_channel or 'servertools' in is_channel:
-                lanzar_error = False
+            is_channel = str(is_channel).replace("/servers/", "\\servers\\")
+
+            if "\\servers\\" in is_channel or 'servertools' in is_channel: lanzar_error = False
 
         if lanzar_error:
             raise WebErrorException(urlparse(url)[1])
+
+    # ~ 21/3/2023  Nexus  Response error: property 'status' of 'addinfourl' object has no setter
+    if PY3:
+        if "'addinfourl'" in str(response['error']):
+            error_py3 = True
+
+            if follow_redirects: pass
+            else:
+               is_channel = inspect.getmodule(inspect.currentframe().f_back)
+               if is_channel == None: is_channel = inspect.getmodule(inspect.currentframe().f_back.f_back)
+               is_channel = str(is_channel).replace("/servers/", "\\servers\\")
+               if "\\servers\\" in is_channel or 'servertools' in is_channel:
+                   if not location_url_headers: error_py3 = False
+
+               if error_py3:
+                   if not follow_redirects:
+                       if 'location:' in str(location_url_headers):
+                           try: location_url = location_url_headers['location']
+                           except: location_url = ''
+
+                       elif 'Location:' in str(location_url_headers):
+                           try: location_url = location_url_headers['Location']
+                           except: location_url = ''
+
+                       if location_url:
+                           response["sucess"] = True
+                           response["code"] = 302
+                           response["error"] = None
+                           response["headers"] = location_url_headers
+                           response["data"] = location_url_headers
+                           response["url"] = location_url
+
+                           response['headers'] = dict([(k.lower(), v) for k, v in response['headers'].items()])
+
+                           logger.info("Response location_url_headers:")
+                           for header in response["headers"]:
+                               logger.info("- %s: %s" % (header, response["headers"][header]))
+
+                           logger.info("Response location 302: %s" % (location_url))
+
+                           return type('HTTPResponse', (), response)
+
+            if error_py3:
+               # ~ 0 (error), 1 (error+info), 2 (error+info+debug)
+               loglevel = config.get_setting('debug', 0)
+               if loglevel >= 2:
+                   if config.get_setting('developer_mode', default=False):
+                       platformtools.dialog_notification('ERROR PY3:  Check addinfourl', dominio + ' f_r=' + str(follow_redirects) + ' o_h=' + str(only_headers))
 
     if cookies:
         save_cookies()
@@ -446,24 +515,25 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
     if response["headers"].get('content-encoding') == 'gzip':
         try:
             response["data"] = gzip.GzipFile(fileobj=BytesIO(response["data"])).read()
-            logger.info("Descomprimido Gzip")
+            logger.info("Gzip descomprimido")
         except:
             response["data"] = ""
-            logger.info("No se pudo descomprimir Gzip")
+            logger.info("Gzip NO se pudo descomprimir")
 
     elif response["headers"].get('content-encoding') == 'br':
         try:
             from lib.br import brotlidec
+
             response["data"] = brotlidec(response["data"], [])
-            logger.info("Descomprimido Br")
+            logger.info("Br descomprimido")
         except:
             response["data"] = ""
-            logger.info("No se pudo descomprimir Br")
+            logger.info("Br NO se pudo descomprimir")
     else:
         logger.info("No se debe ó No se pudo descomprimir")
         logger.info("Encoding: %s" % (response["headers"].get('content-encoding')))
 
-    # Anti Cloudflare
+    # ~ Anti Cloudflare
     if PY3:
         if bypass_cloudflare == True: bypass_cloudflare = False
 
@@ -472,9 +542,10 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
             cf = Cloudflare(response)
             if cf.is_cloudflare:
                 count_retries += 1
-                logger.info("cloudflare detectado, esperando %s segundos..." % cf.wait_time)
+                logger.info("cloudflare, espera %s segundos" % cf.wait_time)
                 auth_url = cf.get_url()
-                logger.info("Autorizando... intento %d url: %s" % (count_retries, auth_url))
+                logger.info("Autorizando, intento %d url: %s" % (count_retries, auth_url))
+
                 # ~ debug_file = os.path.join(config.get_data_path(), 'cloudflare-info.txt')
                 # ~ with open(debug_file, 'a') as myfile: myfile.write("Url: %s Intento %d auth_url: %s\n\n" % (url, count_retries, auth_url))
                 if not '&s=' in auth_url and 'jschl_answer=' in auth_url:
@@ -486,22 +557,24 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
                 if not request_headers: request_headers = {'Referer': url }
                 else: request_headers['Referer'] = url
 
-                resp_auth = downloadpage(auth_url, post=post_cf, headers=request_headers, replace_headers=True, count_retries=count_retries,
-                                     use_proxy=use_proxy, raise_weberror=False)
+                resp_auth = downloadpage(auth_url, post=post_cf, headers=request_headers, replace_headers=True, count_retries=count_retries, use_proxy=use_proxy, raise_weberror=False)
 
-                if count_retries == 1 and type(resp_auth.code) == int and resp_auth.code == 403: # repetir desde inicio con cookies recargadas
+                # ~ repetir desde inicio con cookies recargadas
+                if count_retries == 1 and type(resp_auth.code) == int and resp_auth.code == 403:
                     load_cookies()
+
                     return downloadpage(url, post=post, headers=headers, timeout=timeout, follow_redirects=follow_redirects, cookies=cookies,
-                                    replace_headers=replace_headers, add_referer=add_referer, only_headers=only_headers, 
-                                    bypass_cloudflare=bypass_cloudflare, count_retries=1, raise_weberror=raise_weberror, 
-                                    use_proxy=use_proxy, use_cache=use_cache, cache_duration=cache_duration)
+                                        replace_headers=replace_headers, add_referer=add_referer, only_headers=only_headers, 
+                                        bypass_cloudflare=bypass_cloudflare, count_retries=1, raise_weberror=raise_weberror, 
+                                        use_proxy=use_proxy, use_cache=use_cache, cache_duration=cache_duration)
 
                 if resp_auth.sucess:
-                    logger.info("Autorización correcta, descargando página")
+                    logger.info("Autorizado")
+
                     resp = downloadpage(url=response["url"], post=post, headers=headers, timeout=timeout,
-                                    follow_redirects=follow_redirects,
-                                    cookies=cookies, replace_headers=replace_headers, add_referer=add_referer, 
+                                    follow_redirects=follow_redirects, cookies=cookies, replace_headers=replace_headers, add_referer=add_referer, 
                                     use_proxy=use_proxy, use_cache=use_cache, cache_duration=cache_duration, count_retries=9)
+
                     response["sucess"] = resp.sucess
                     response["code"] = resp.code
                     response["error"] = resp.error
@@ -510,7 +583,7 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
                     response["time"] = resp.time
                     response["url"] = resp.url
                 else:
-                    logger.info("No se pudo autorizar")
+                    logger.info("NO se pudo autorizar")
 
         except: pass
 
@@ -534,14 +607,14 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
            import traceback
            logger.error(traceback.format_exc(1))
 
-    # Guardar en caché si la respuesta parece válida (no parece not found ni bloqueado, al menos un enlace o json, al menos 1000 bytes)
+    # ~ Guardar en caché si la respuesta parece válida (no parece not found ni bloqueado, al menos un enlace o json, al menos 1000 bytes)
     if use_cache and type(response['code']) == int and response['code'] >= 200 and response['code'] < 400 and response['data'] != '' \
        and len(response['data']) > 1000 \
        and 'ERROR 404 - File not found' not in str(response['data']) and 'HTTP Error 404: Not Found' not in str(response['data']) and '<title>Site Blocked</title>' not in str(response['data']) \
        and 'HTTP/1.1 400 Bad Request' not in str(response['data']) \
        and ('href=' in str(response['data']) or str(response['data']).startswith('{')):
-        with open(cache_file, 'wb') as f: f.write(str(response['data'])); f.close()
-        logger.info("Guardado en caché %s la url %s" % (cache_md5url, url))
+            with open(cache_file, 'wb') as f: f.write(str(response['data'])); f.close()
+            logger.info("Guardado caché %s url %s" % (cache_md5url, url))
 
     try:
         if isinstance(response['data'], bytes):
@@ -568,20 +641,40 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
 
 class NoRedirectHandler(HTTPRedirectHandler):
     def http_error_302(self, req, fp, code, msg, headers):
+        global location_url_headers
+
         infourl = addinfourl(fp, headers, req.get_full_url())
+
+        location_url_headers = ''
+
+        if PY3:
+            if infourl.status is None:
+                if 'location:' in str(headers):
+                    try: location_url = headers['location']
+                    except: location_url = ''
+
+                elif 'Location:' in str(headers):
+                    try: location_url = headers['Location']
+                    except: location_url = ''
+
+                if location_url:
+                    location_url_headers = headers
+
         infourl.status = code
         infourl.code = code
         return infourl
 
     http_error_300 = http_error_302
     http_error_301 = http_error_302
+    http_error_302 = http_error_302
     http_error_303 = http_error_302
+    http_error_304 = http_error_302
     http_error_307 = http_error_302
+    http_error_308 = http_error_302
 
 
-# Devuelve un diccionario con las cookies set-cookie en headers de descarga
+# ~ Devuelve un diccionario con las cookies set-cookie en headers de descarga
 def get_cookies_from_headers(headers):
-    import re
     cookies = {}
 
     for h in headers:
@@ -613,4 +706,5 @@ def get_cookie(url, name, follow_redirects=False):
     for cookie in cj:
         if cookie.name == name and domain in cookie.domain:
             return cookie.value
+
     return False

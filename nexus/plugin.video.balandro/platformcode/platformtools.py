@@ -6,6 +6,7 @@ import xbmc, xbmcgui, xbmcplugin, xbmcvfs
 from platformcode import config, logger
 from core.item import Item
 
+
 if sys.version_info[0] >= 3:
     PY3 = True
 
@@ -41,10 +42,6 @@ def compat(line1, line2, line3):
     if line3:
         message += '\n' + line3
     return message
-
-# ~  def compat(**kwargs):
-    # ~  message = '\n'.join([line for line in kwargs.values()])
-    # ~  return message
 
 
 def dialog_ok(heading, line1, line2="", line3=""):
@@ -97,11 +94,6 @@ def dialog_progress(heading, line1, line2="", line3=""):
 
     dialog.create(heading, compat(line1, line2, line3))
     return dialog
-
-# ~  def dialog_progress(heading, line1, line2=" ", line3=" "):
-    # ~  dialog = xbmcgui.DialogProgress()
-    # ~  dialog.create(heading, compat(line1=line1, line2=line2, line3=line3))
-    # ~  return dialog
 
 
 def dialog_progress_bg(heading, message=""):
@@ -419,7 +411,7 @@ def set_context_commands(item, parent_item, colores):
                     item.clone(channel="tracking", action="addFavourite", from_channel=item.channel, from_action=item.action))) )
 
     # Buscar misma peli/serie en otros canales
-    if item.contentType in ['movie', 'tvshow'] and parent_item.channel not in ['tmdblists', 'filmaffinitylists']:
+    if item.contentType in ['movie', 'tvshow'] and parent_item.channel not in ['tmdblists', 'filmaffinitylists', 'search']:
         buscando = item.contentTitle if item.contentType == 'movie' else item.contentSerieName
         if not item.contentExtra in ['documentary', 'adults']:
             infolabels = {'tmdb_id': item.infoLabels['tmdb_id']} if item.infoLabels['tmdb_id'] else {}
@@ -441,8 +433,7 @@ def set_context_commands(item, parent_item, colores):
 
     # Buscar trailer
     if item.contentType in ['movie', 'tvshow'] and item.infoLabels['tmdb_id']:
-        context_commands.append( ('[B][COLOR %s]Buscar Tráiler[/COLOR][/B]' % colores['trailer'], config.build_RunPlugin(
-            item.clone(channel="actions", action="search_trailers"))) )
+        context_commands.append( ('[B][COLOR %s]Buscar Tráiler[/COLOR][/B]' % colores['trailer'], config.build_RunPlugin(item.clone(channel="actions", action="search_trailers"))) )
 
     # ~ # Mostrar info haciendo una nueva llamada a tmdb para recuperar más datos
     # ~ if item.contentType in ['movie', 'tvshow', 'season', 'episode'] and item.contentExtra != 'documentary':
@@ -556,6 +547,7 @@ def developer_mode_check_findvideos(itemlist, parent_item):
     for it in itemlist:
         # Verificar servers desconocidos o no implementados
         apuntar = False
+
         if it.server == 'desconocido':
             # El canal no ha fijado server, y la url no se ha detectado de ningún server conocido
             apuntar = True
@@ -568,12 +560,21 @@ def developer_mode_check_findvideos(itemlist, parent_item):
                 if not os.path.isfile(path):
                     apuntar = True
 
+        # Server Various
+        if it.server in ['dropload', 'fastupload', 'filemoon', 'moonplayer', 'hexupload', 'krakenfiles', 'mvidoo', 'rutube', 'streamhub', 'streamwish', 'tubeload', 'uploadever', 'videowood', 'yandex', 'desiupload', 'filelions', 'youdbox', 'yodbox', 'youdboox', 'vudeo', 'embedgram']:
+            apuntar = False
+
+        elif it.server in ['ddownload', 'dfiles', 'dropapk', 'fileflares', 'filerice', 'fireload', 'katfile', 'megaupload', 'oload', 'pandafiles', 'rockfile', 'turbobit', 'uploadrive', 'uppit', 'userload']:
+            apuntar = False
+
         if apuntar:
             txt_log_servers += 'Canal: %s Server: %s Url: %s' % (it.channel, it.server, it.url)
+
             if parent_item.contentType == 'movie':
                 txt_log_servers += ' Película: %s' % (parent_item.contentTitle)
             else:
                 txt_log_servers += ' Serie: %s Temporada %s Episodio %s' % (parent_item.contentSerieName, parent_item.contentSeason, parent_item.contentEpisodeNumber)
+
             txt_log_servers += os.linesep
 
         # Verificar calidades
@@ -686,7 +687,7 @@ def play_from_itemlist(itemlist, parent_item):
     if autoplay:
         esperar_seleccion = False
         num_opciones = float(len(itemlist))
-        p_dialog = dialog_progress_bg('Reproducción con AutoPlay', 'Espere por favor...')
+        p_dialog = dialog_progress_bg('Reproducción con Auto Play', 'Espere por favor...')
         ok_play = False
 
         for i, it in enumerate(itemlist):
@@ -695,7 +696,7 @@ def play_from_itemlist(itemlist, parent_item):
                 break
 
             perc = int(i / num_opciones * 100)
-            p_dialog.update(perc, 'Reproducción con AutoPlay', '%d/%d: %s' % (i+1, num_opciones, it.title))
+            p_dialog.update(perc, 'Reproducción con Auto Play', '%d/%d: %s' % (i+1, num_opciones, it.title))
 
             # Si el canal tiene play propio interpretar el itemlist que devuelve (Item o list)
             canal_play = __import__('channels.' + it.channel, fromlist=[''])
@@ -716,18 +717,18 @@ def play_from_itemlist(itemlist, parent_item):
                 ok_play = play_video(it, parent_item, autoplay=autoplay)
 
             if ok_play: 
-                logger.debug('Autoplay, resuelto %s con url %s' % (it.server, it.url))
+                logger.debug('Auto Play, resuelto %s con url %s' % (it.server, it.url))
                 break
             else:
                 erroneos.append(i)
-                logger.debug('Autoplay, falla %s con url %s' % (it.server, it.url))
+                logger.debug('Auto Play, falla %s con url %s' % (it.server, it.url))
 
             if xbmc.Monitor().abortRequested(): break
 
         p_dialog.close()
         if not ok_play:
             if esperar_seleccion: # si se ha llegado al límite de enlaces a intentar y todavía quedan, se muestra diálogo para selección del usuario
-                dialog_notification('Autoplay sin éxito', 'Fallaron los %d primeros enlaces' % autoplay_max_links, time=3000)
+                dialog_notification('Auto Play sin éxito', 'Fallaron los %d primeros enlaces' % autoplay_max_links, time=3000)
             else:
                 play_fake()
                 txt = 'el enlace' if len(itemlist) == 1 else 'ningún enlace'
@@ -737,8 +738,8 @@ def play_from_itemlist(itemlist, parent_item):
                     el_txt = ('[B][COLOR %s]No se pudo reproducir ' + txt) % color_exec
                     dialog_notification(config.__addon_name, el_txt + '[/COLOR][/B]')
         else:
-            if len(itemlist) == 1: dialog_notification('Autoplay resuelto', it.title, time=2000, sound=False)
-            else: dialog_notification('Autoplay resuelto', it.title)
+            if len(itemlist) == 1: dialog_notification('Auto Play resuelto', it.title, time=2000, sound=False)
+            else: dialog_notification('Auto Play resuelto', it.title)
 
     # Diálogo hasta que el usuario cancele o play ok
     if esperar_seleccion:
@@ -750,7 +751,7 @@ def play_from_itemlist(itemlist, parent_item):
                 else:
                     opciones.append(it.title)
 
-            seleccion = dialog_select('Enlaces disponibles en [COLOR yellow]%s[/COLOR]' % itemlist[0].channel.capitalize(), opciones)
+            seleccion = dialog_select('[COLOR fuchsia]Players[/COLOR] disponibles en [COLOR yellow]%s[/COLOR]' % itemlist[0].channel.capitalize(), opciones)
 
             if seleccion == -1:
                 play_fake()
@@ -796,8 +797,6 @@ def play_fake(resuelto=False):
         xbmc.Player().stop()
     else:
         xbmcplugin.setResolvedUrl(int(sys.argv[1]), False, xbmcgui.ListItem(path=os.path.join(config.get_runtime_path(), 'resources', 'subtitle.mp4')) )
-        # recomendable en advancedsettings.xml tener <playlistretries>-1</playlistretries> y <playlisttimeout>-1</playlisttimeout>
-        # para evitar que se muestre diálogo "Playback failed" "Reproducción de lista abortada"
 
 
 # Hacer la reproducción del item recibido. Devuelve False si falla el vídeo, True si ok o cancelado
@@ -830,13 +829,17 @@ def play_video(item, parent_item, autoplay=False):
         return False
 
     opciones = []
+
     for video_url in video_urls:
-        opciones.append("Ver el vídeo" + " " + video_url[0])
+        if '[/B]' in str(video_url):
+           opciones.append('[COLOR fuchsia]Play[COLOR moccasin] ver el vídeo en [B]' + video_url[0] + '[/COLOR]')
+        else:
+           opciones.append('[COLOR fuchsia]Play[COLOR moccasin] ver el vídeo en [B]' + video_url[0] + '[/B][/COLOR]')
 
     # Si hay varias opciones dar a elegir, si sólo hay una reproducir directamente
     if len(opciones) > 1:
         if not autoplay: 
-            seleccion = dialog_select("Elige una opción [B][COLOR yellow]" + item.server.capitalize() + '[/B][/COLOR]', opciones)
+            seleccion = dialog_select("Seleccione una opción para [B][COLOR fuchsia]" + item.server.capitalize() + '[/B][/COLOR]', opciones)
         else:
             seleccion = len(opciones) - 1 # la última es la de más calidad !?
     else:
@@ -863,7 +866,7 @@ def play_video(item, parent_item, autoplay=False):
             return play_torrent(mediaurl, parent_item)
 
         # ~ Para evitar ERROR: CCurlFile::Stat - Failed: Peer certificate cannot be authenticated with given CA certificates(60)
-        if item.server not in ['m3u8hls', 'zembed']:
+        if item.server not in ['blenditall', 'm3u8hls', 'zembed', 'youtube']:
             if 'verifypeer=false' not in mediaurl and 'googleusercontent' not in mediaurl: 
                 mediaurl += '|' if '|' not in mediaurl else '&'
                 mediaurl += 'verifypeer=false'
@@ -959,23 +962,23 @@ def play_torrent(mediaurl, parent_item):
     torrent_clients = jsontools.get_node_from_file('torrent.json', 'clients', os.path.join(config.get_runtime_path(), 'servers'))
 
     cliente_torrent = config.get_setting('cliente_torrent', default='Seleccionar')
+
+    if cliente_torrent == 'Ninguno':
+        dialog_ok(config.__addon_name, '[COLOR red][B]Ningún Cliente/Motor Torrent asignado en la configuración[/B][/COLOR]')
+        return False
+
     if cliente_torrent == 'Seleccionar':
         from modules import filters
 
         ret = filters.show_clients_torrent(parent_item)
 
-        if ret == -1:
-            cliente_torrent = 'Ninguno'
+        if ret == -1: return False
         else:
-           seleccionado = torrent_clients[ret]
-           cliente_torrent = seleccionado['name']
+           cliente_torrent = ret[0]
 
-           if dialog_yesno(config.__addon_name, 'Selecionado:  ' + cliente_torrent.capitalize(), '¿ Desea mantener este Cliente/Motor torrent, como motor habitual y no volver a seleccionarlo más ?'): 
-               config.set_setting('cliente_torrent', cliente_torrent.capitalize())
-
-    if cliente_torrent == 'Ninguno':
-        dialog_ok(config.__addon_name, '[COLOR moccasin][B]Necesitas tener instalado un Cliente/Motor Torrent e indicarlo en la configuración[/B][/COLOR]')
-        return False
+           if xbmc.getCondVisibility('System.HasAddon("%s")' % ret[1]):
+               if dialog_yesno(config.__addon_name, 'Selecionado: [COLOR yellow][B]' + cliente_torrent.capitalize() + '[/B][/COLOR]', '[COLOR greenyellow][B]¿ Desea asignar este Cliente/Motor torrent, como motor habitual para no volver a seleccionarlo más ?[/B][/COLOR]'): 
+                   config.set_setting('cliente_torrent', cliente_torrent.capitalize())
 
     cliente_torrent = cliente_torrent.lower()
 
@@ -985,7 +988,7 @@ def play_torrent(mediaurl, parent_item):
             if xbmc.getCondVisibility('System.HasAddon("%s")' % client['id']):
                 plugin_url = client['url_magnet'] if 'url_magnet' in client and mediaurl.startswith('magnet:') else client['url']
             else:
-                dialog_ok(config.__addon_name, '[COLOR moccasin][B]Necesitas instalar el Cliente/Motor Torrent:[/B][/COLOR] ' + client['name'], client['id'])
+                dialog_ok(config.__addon_name, '[COLOR moccasin][B]Falta instalar el Cliente/Motor Torrent:[/B][/COLOR][COLOR chartreuse][B] ' + client['name'].capitalize() + '[/B][/COLOR]', client['id'])
                 return False
 
     if plugin_url == '':
@@ -1030,17 +1033,17 @@ def dialogo_busquedas_por_fallo_web(item):
     else:
         busqueda = 'la serie [COLOR gold]%s[/COLOR]' % item.contentSerieName
 
-    if dialog_yesno('Error en el canal ' + item.channel, 
+    if dialog_yesno('Error en el canal [COLOR yellow][B]' + item.channel.capitalize() + '[/B][/COLOR]', 
                     'El enlace o la web de la que depende parece no estar disponible.',
-                    '¿ Buscar %s en otros canales ?' % busqueda):
+                    '¿ Buscar %s en [COLOR pink][B]Otros canales[/B][/COLOR] ?' % busqueda):
 
         infolabels = {'tmdb_id': item.infoLabels['tmdb_id']} if item.infoLabels['tmdb_id'] else {}
         item_search = Item(channel='search', action='search', from_channel=item.channel, infoLabels=infolabels)
 
     else:
-        if dialog_yesno('Error en el canal ' + item.channel, 
+        if dialog_yesno('Error en el canal [COLOR yellow][B]' + item.channel.capitalize() + '[/B][/COLOR]', 
                         'Si crees que la web funciona, quizás ha cambiado el enlace.',
-                        '¿ Volver a buscar %s en el mismo canal ?' % busqueda):
+                        '¿ Volver a buscar %s en el[COLOR cyan][B] Mismo canal[/B][/COLOR] ?' % busqueda):
 
             item_search = Item(channel=item.channel, action='search')
 

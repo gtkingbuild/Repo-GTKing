@@ -8,7 +8,11 @@
     "ignore_urls": [],
     "patterns": [
       {
-        "pattern": "http(?:s|)://mixdrop.(?:co|to|sx|bz|ch)/(?:e|f|embed)/(?:embed-|)([A-z0-9]+)",
+        "pattern": "http(?:s|)://mixdrop.(?:co|to|sx|bz|ch|gl|club)/(?:e|f|embed)/(?:embed-|)([A-z0-9]+)",
+        "url": "https://mixdrop.co/e/\\1"
+      },
+      {
+        "pattern": "http(?:s|)://mixdroop.(?:co|to|sx|bz|ch|gl|club)/(?:e|f|embed)/(?:embed-|)([A-z0-9]+)",
         "url": "https://mixdrop.co/e/\\1"
       },
       {

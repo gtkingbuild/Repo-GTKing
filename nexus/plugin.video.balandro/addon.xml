@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.balandro" name="Balandro" version="2.5.6" provider-name="Balandro Team">
+<addon id="plugin.video.balandro" name="Balandro" version="3.0.9" provider-name="Balandro Team">
   <requires>
      <import addon="script.module.requests"/>
   </requires>
@@ -14,15 +14,18 @@
       <icon>icon.png</icon>
     </assets>
     <news>
-    [COLOR darkorange][B]Versión  [/COLOR][COLOR yellow]2.5.6[/COLOR][COLOR red]  Enero 2023[/B][/COLOR]
+    [COLOR darkorange][B]Versión  [/COLOR][COLOR yellow]3.0.9[/COLOR][COLOR chartreuse]  Agosto de 2023[/B][/COLOR]
 
     [COLOR goldenrod][B]Media Centers Soportados[/COLOR][COLOR plum]  20.x,  19.x,  18.x  y  17.x[/B][/COLOR]
 
-    [COLOR springgreen][B]Fuente:[/COLOR]  [COLOR cyan]balandro-tk.github.io/balandro/[/B][/COLOR]
+    [COLOR springgreen][B]Fuente:[/COLOR]  [COLOR cyan]https://balandro-tk.github.io/balandro/[/B][/COLOR]
+
+    [COLOR firebrick][B]Desarrollo:[/COLOR]  [COLOR orange]github.com/balandro-tk/balandro-addon[/B][/COLOR]
 
     [COLOR limegreen][B]Contacto:[/B][/COLOR]
-        Foro  mimediacenter.info/foro/
-        Telegram  t.me/@balandro_asesor
+        Foro  www.mimediacenter.info/foro/
+        Telegram  t.me/balandro_asesor
+        Team  t.me/Balandro_team
 
     [COLOR blue][B]Agradecimientos:[/B][/COLOR]
         Cita destacada a los miembros de Balandro Team

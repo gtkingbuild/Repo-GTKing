@@ -42,7 +42,7 @@ def categorias(item):
     for url, title in matches:
         if url.startswith('/'): url = host + url
 
-        itemlist.append(item.clone( action='list_all', title=title, url=url ))
+        itemlist.append(item.clone( action='list_all', title=title, url=url, text_color='cyan' ))
 
     return itemlist
 
@@ -67,7 +67,7 @@ def series(item):
         url = host + url
         title = title.split("<")[0].capitalize()
 
-        itemlist.append(item.clone( action='list_videos', url=url, title=title, infoLabels = {'year': '-'} ))
+        itemlist.append(item.clone( action='list_series', url=url, title=title, infoLabels = {'year': '-'}, text_color='moccasin' ))
 
         if len(itemlist) >= perpage: break
 
@@ -79,6 +79,38 @@ def series(item):
 
             if hasta < num_matches:
                 itemlist.append(item.clone( title='Siguientes ...', page=item.page + 1, action='series', text_color='coral' ))
+
+    return itemlist
+
+
+def list_series(item):
+    logger.info()
+    itemlist = []
+
+    datas = httptools.downloadpage(item.url).data
+
+    data = scrapertools.find_single_match(datas, 'Populares</a>(.*?)>Destacados<')
+
+    matches = scrapertools.find_multiple_matches(data, 'href="([^"]+).*?src="([^"]+).*?bookmark">([^<]+)')
+
+    for url, thumb, title in matches:
+        title = title.replace("&#8211;","-").strip()
+
+        if not title: continue
+
+        if url == '#': continue
+
+        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, infoLabels = {'year': '-'},
+                                    contentType='movie', contentTitle=title, contentExtra='documentary' ))
+
+    tmdb.set_infoLabels(itemlist)
+
+    if itemlist:
+        next_url = scrapertools.find_single_match(datas, '<link rel="next" href="(.*?)"')
+
+        if next_url:
+            if'/page/' in next_url:
+               itemlist.append(item.clone( title='Siguientes ...', url=next_url,  action='list_series', text_color='coral' ))
 
     return itemlist
 
@@ -98,12 +130,12 @@ def list_all(item):
 
         if not url or not title: continue
 
+        if '/series-temas/' in url: continue
+
         title = title.replace('&#8230;', '').replace('&#8211;', '')
 
         thumb = scrapertools.find_single_match(article, 'itemprop="image".*?data-src="(.*?)"')
         plot = scrapertools.htmlclean(scrapertools.find_single_match(article, '<p>(.*?)</p>'))
-
-        if '/series-temas/' in url: continue
 
         itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, plot=plot, infoLabels = {'year': '-'},
                                     contentType='movie', contentTitle=title, contentExtra='documentary' ))
@@ -138,8 +170,7 @@ def list_top(item):
 
         title = title.replace('&#8230;', '').replace('&#8211;', '')
 
-        itemlist.append(item.clone( action='findvideos', url=url, title=title, infoLabels = {'year': '-'},
-                                    contentType='movie', contentTitle=title, contentExtra='documentary' ))
+        itemlist.append(item.clone( action='findvideos', url=url, title=title, infoLabels = {'year': '-'}, contentType='movie', contentTitle=title, contentExtra='documentary' ))
 
         if len(itemlist) >= perpage: break
 
@@ -151,37 +182,6 @@ def list_top(item):
 
             if hasta < num_matches:
                 itemlist.append(item.clone( title='Siguientes ...', page=item.page + 1, action='list_top', text_color='coral' ))
-
-    return itemlist
-
-
-def list_videos(item):
-    logger.info()
-    itemlist = []
-
-    datas = httptools.downloadpage(item.url).data
-
-    data = scrapertools.find_single_match(datas, 'Populares</a>(.*?)>Destacados<')
-
-    matches = scrapertools.find_multiple_matches(data, 'href="([^"]+).*?src="([^"]+).*?bookmark">([^<]+)')
-
-    for url, thumb, title in matches:
-        title = title.replace("&#8211;","-").strip()
-        if not title: continue
-
-        if url == '#': continue
-
-        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, infoLabels = {'year': '-'},
-                                    contentType='movie', contentTitle=title, contentExtra='documentary' ))
-
-    tmdb.set_infoLabels(itemlist)
-
-    if itemlist:
-        next_url = scrapertools.find_single_match(datas, '<link rel="next" href="(.*?)"')
-
-        if next_url:
-            if'/page/' in next_url:
-               itemlist.append(item.clone( title='Siguientes ...', url=next_url,  action='list_videos', text_color='coral' ))
 
     return itemlist
 

@@ -233,6 +233,8 @@ def read(path, linea_inicio=0, total_lineas=None, whence=0, mode='r'):
 
         elif path.lower().startswith("smb://"):
             f = samba.smb_open(path, "rb")
+            mode = 'rbs'
+
         elif PY3 and mode in ['r', 'ra']:
             f = open(path, mode_open, encoding=fs_encoding)
         else:
@@ -254,6 +256,8 @@ def read(path, linea_inicio=0, total_lineas=None, whence=0, mode='r'):
             return "".join(data)
         elif mode in ['rbs', 'rabs'] and isinstance(data, (bytes, bytearray)):
             return "".join(chr(x) for x in data)
+        elif mode in ['rbs', 'rabs'] and isinstance(data, (list)):
+            return "".join(decode(data))
         else:
             return b"".join(data)
 

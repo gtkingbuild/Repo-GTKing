@@ -18,7 +18,7 @@ from platformcode.config import WebErrorException
 
 logger.info('[COLOR blue]Starting with %s[/COLOR]' % sys.argv[1])
 
-# Obtener parámetros de lo que hay que ejecutar
+# ~ Obtener parámetros de lo que hay que ejecutar
 
 if sys.argv[2]:
     item = Item().fromurl(sys.argv[2])
@@ -28,7 +28,7 @@ else:
 sys.path.append(os.path.join(config.get_runtime_path(), 'lib'))
 
 
-# Establecer si channel es un canal web o un módulo
+# ~ Establecer si channel es un canal web o un módulo
 
 tipo_channel = ''
 
@@ -36,7 +36,7 @@ if item.channel == '' or item.action == '':
     logger.info('Empty channel/action, nothing to do')
 
 else:
-    # channel puede ser un canal web o un módulo
+    # ~ channel puede ser un canal web o un módulo
     path = os.path.join(config.get_runtime_path(), 'channels', item.channel + ".py")
     if os.path.exists(path):
         tipo_channel = 'channels.'
@@ -48,13 +48,13 @@ else:
             logger.error('Channel/Module not found, nothing to do')
 
 
-# Ejecutar según los parámetros recibidos
+# ~ Ejecutar según los parámetros recibidos
 
 if tipo_channel != '':
     try:
         canal = __import__(tipo_channel + item.channel, fromlist=[''])
 
-        # findvideos se considera reproducible y debe acabar haciendo play (o play_fake en su defecto)
+        # ~ findvideos se considera reproducible y debe acabar haciendo play (o play_fake en su defecto)
         if item.action == 'findvideos':
             if hasattr(canal, item.action):
                 itemlist = canal.findvideos(item)
@@ -65,7 +65,7 @@ if tipo_channel != '':
             platformtools.play_from_itemlist(itemlist, item)
 
         else:
-            # search pide el texto a buscar antes de llamar a la rutina del canal (pasar item.buscando para no mostrar diálogo)
+            # ~ search pide el texto a buscar antes de llamar a la rutina del canal (pasar item.buscando para no mostrar diálogo)
             if item.action == 'search':
                 if item.buscando != '':
                     tecleado = item.buscando
@@ -93,20 +93,22 @@ if tipo_channel != '':
                     item.folder = False
                     itemlist = False
 
-            # cualquier otra acción se ejecuta en el canal, y se renderiza si devuelve una lista de items
+            # ~ cualquier otra acción se ejecuta en el canal, y se renderiza si devuelve una lista de items
             else:
                 if hasattr(canal, item.action):
                     func = getattr(canal, item.action)
                     itemlist = func(item)
                 else:
+                    # ~ Si item.folder kodi espera un listado
                     logger.info('Action not found in channel')
-                    itemlist = [] if item.folder else False  # Si item.folder kodi espera un listado
+                    itemlist = [] if item.folder else False
 
             if type(itemlist) == list:
                 logger.info('renderizar itemlist')
                 platformtools.render_items(itemlist, item)
 
-            elif itemlist == None: # Si kodi espera un listado (desactivar si provoca ERROR: GetDirectory en el log)
+            elif itemlist == None:
+                # ~ Si kodi espera un listado (desactivar si provoca ERROR: GetDirectory en el log)
                 logger.info('sin renderizar')
                 platformtools.render_no_items()
 
@@ -120,13 +122,13 @@ if tipo_channel != '':
         import traceback
         logger.error(traceback.format_exc())
 
-        # Grab inner and third party errors
+        # ~ Grab inner and third party errors
         if hasattr(e, 'reason'):
             logger.error("Razon del error, codigo: %s | Razon: %s" % (str(e.reason[0]), str(e.reason[1])))
-            texto = "No se puede conectar con el servidor"  # "No se puede conectar con el sitio web"
+            texto = "No se puede conectar con el servidor ó con el sitio web"
             platformtools.dialog_ok(config.__addon_name, texto)
 
-        # Grab server response errors
+        # ~ Grab server response errors
         elif hasattr(e, 'code'):
             logger.error("Codigo de error HTTP : %d" % e.code)
             platformtools.dialog_ok(config.__addon_name, "El sitio web no funciona correctamente (error http %d)" % e.code)
@@ -135,7 +137,7 @@ if tipo_channel != '':
         import traceback
         logger.error(traceback.format_exc())
 
-        # Ofrecer buscar en otros canales o en el mismo canal, si está activado en la configuración
+        # ~ Ofrecer buscar en otros canales o en el mismo canal, si está activado en la configuración
         if item.contentType in ['movie', 'tvshow', 'season', 'episode'] and config.get_setting('tracking_weberror_dialog', default=True):
             if item.action == 'findvideos': platformtools.play_fake()
 
@@ -144,14 +146,19 @@ if tipo_channel != '':
                 platformtools.itemlist_update(item_search)
 
         else:
-            platformtools.dialog_ok('[COLOR red]Error en el canal [COLOR gold]' + item.channel.capitalize() + '[/COLOR]', 
-                                    'La web asociada a este canal, parece no estar disponible, puede volver a intentarlo pasados unos minutos, y si el problema persiste verifique mediante un navegador de internet la web: [COLOR cyan][B]%s[/B][/COLOR]' % (e) )
+            platformtools.dialog_ok('[COLOR red][B]Error en el canal [COLOR yellow]' + item.channel.capitalize() + '[/B][/COLOR]', 
+                                    '[COLOR yellowgreen][B]La web asociada a este canal, parece no estar disponible[/B][/COLOR], puede volver a intentarlo pasados unos minutos, y si el problema persiste compruebe mediante un navegador de internet la web: [COLOR cyan][B]%s[/B][/COLOR]' % (e) )
 
     except:
         import traceback
         logger.error(traceback.format_exc())
-        platformtools.dialog_ok('[COLOR red]Error inesperado en [COLOR gold]' + item.channel.capitalize() + '[/COLOR]',
-            'Puede deberse a un fallo de conexión, o que la web asociada a este canal ha cambiado su estructura, o bien a un error interno del addon. Para saber más detalles, consulta el log de su Media Center.')
+
+        if not item.channel in ['mainmenu', 'actions', 'domains', 'downloads', 'favoritos', 'filmaffinitylists', 'filters', 'generos', 'groups', 'helper', 'proxysearch', 'search', 'submnuctext', 'submnuteam', 'tester', 'tmdblists', 'tracking']:
+            platformtools.dialog_ok('[COLOR red][B]Error inesperado en [COLOR yellow]' + item.channel.capitalize() + '[/B][/COLOR]',
+                                    '[COLOR moccasin][B]Quizás puede deberse a un fallo de conexión[/B][/COLOR], [COLOR cyan][B]ó que la web asociada a este canal ha variado su estructura[/B][/COLOR], ó bien ser un error interno del Add-On. [COLOR yellowgreen][B]Para saber más detalles, consulta el fichero Log de su Media Center.[/B][/COLOR]')
+        else:
+            platformtools.dialog_ok('[COLOR red][B]Error inesperado en [COLOR gold]' + item.channel.capitalize() + '[/B][/COLOR]',
+                                    '[COLOR moccasin][B]Podría estar corrupto su fichero de Configuración de Balandro[/B][/COLOR], de ser así, [COLOR cyan][B]pruebe a Re-Instalar el Add-On[/B][/COLOR], ó bien ser un error interno del Add-On/Modulo. [COLOR yellowgreen][B]Para saber más detalles, consulta el fichero Log de su Media Center.[/B][/COLOR]')
 
 
 logger.info('[COLOR blue]Ending with %s[/COLOR]' % sys.argv[1])

@@ -3,7 +3,7 @@
   "name": "Pelis28",
   "thumbnail": "pelis28.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["movie"],
@@ -13,5 +13,5 @@
 
   "clusters": ["current", "news", "years", "producers", "lists", "kids", "docs", "vos"],
 
-  "notes": "Películas por géneros y año. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Web CERRADA. Películas por géneros y año. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

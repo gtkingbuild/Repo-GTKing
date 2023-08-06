@@ -6,6 +6,7 @@ from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
+
 host = 'https://www.lacartoons.cc/'
 
 
@@ -74,6 +75,9 @@ def generos(item):
     logger.info()
     itemlist = []
 
+    if item.search_type == 'movie': text_color = 'deepskyblue'
+    else: text_color = 'hotpink'
+
     data = do_downloadpage(host)
 
     bloque = scrapertools.find_single_match(data, '>GÉNEROS<(.*?)</ul>')
@@ -81,7 +85,7 @@ def generos(item):
     matches = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)">(.*?)</a>')
 
     for url, title in matches:
-        itemlist.append(item.clone( action = 'list_all', title = title, url = url ))
+        itemlist.append(item.clone( action = 'list_all', title = title, url = url, text_color = text_color ))
 
     return sorted(itemlist, key=lambda it: it.title)
 
@@ -89,6 +93,9 @@ def generos(item):
 def anios(item):
     logger.info()
     itemlist = []
+
+    if item.search_type == 'movie': text_color = 'deepskyblue'
+    else: text_color = 'hotpink'
 
     from datetime import datetime
     current_year = int(datetime.today().year)
@@ -99,7 +106,7 @@ def anios(item):
     for x in range(current_year, top_year, -1):
         url = host + 'release/' + str(x) + '/'
 
-        itemlist.append(item.clone( title = str(x), url = url, action='list_all' ))
+        itemlist.append(item.clone( title = str(x), url = url, action='list_all', text_color = text_color ))
 
     return itemlist
 
@@ -147,7 +154,7 @@ def plataformas(item):
     for opc, tit in productoras:
         url = host + 'network/' + opc + '/'
 
-        itemlist.append(item.clone( title = tit, action = 'list_all', url = url ))
+        itemlist.append(item.clone( title = tit, action = 'list_all', url = url, text_color = 'hotpink' ))
 
     return itemlist
 
@@ -182,6 +189,8 @@ def list_all(item):
         if year: title = title.replace('(' + year + ')', '').strip()
         else: year = '-'
 
+        title = title.replace('&#8230;', '')
+
         langs = []
         if '/flags/es.png' in match: langs.append('Esp')
         if '/flags/mx.png' in match: langs.append('Lat')
@@ -206,6 +215,7 @@ def list_all(item):
             patron += "href='(.*?)'"
 
             next_page = scrapertools.find_single_match(data, patron)
+
             if next_page:
                 if '/page/' in next_page:
                     itemlist.append(item.clone( title = 'Siguientes ...', url = next_page, action = 'list_all', text_color='coral' ))
@@ -233,7 +243,7 @@ def temporadas(item):
             itemlist = episodios(item)
             return itemlist
 
-        itemlist.append(item.clone( action = 'episodios', title = title, url = item.url, page = 0, contentType = 'season', contentSeason = tempo ))
+        itemlist.append(item.clone( action = 'episodios', title = title, url = item.url, page = 0, contentType = 'season', contentSeason = tempo, text_color = 'tan' ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -250,17 +260,18 @@ def episodios(item):
     if not item.perpage: item.perpage = 50
 
     bloque = scrapertools.find_single_match(data, "<div class='se-q'>.*?<span class='title'>" + str(item.title) + "(.*?)</div></div>")
-    if not bloque:
-        bloque = scrapertools.find_single_match(data, "<div class='se-q'>.*?<span class='title'>Temporada(.*?)</div></div>")
+    if not bloque: bloque = scrapertools.find_single_match(data, "<div class='se-q'>.*?<span class='title'>Temporada(.*?)</div></div>")
 
     patron = "<div class='imagen'.*?data-id='(.*?)'.*?src='(.*?)'.*?<div class='numerando'(.*?)</div>.*?<a href='(.*?)'>(.*?)</a>.*?</span>(.*?)</div></li>"
 
     episodes = scrapertools.find_multiple_matches(bloque, patron)
 
-    if item.page == 0:
+    if item.page == 0 and item.perpage == 50:
         sum_parts = len(episodes)
 
-        try: tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+        try:
+            tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+            if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
         if tvdb_id:
@@ -268,6 +279,7 @@ def episodios(item):
                 platformtools.dialog_notification('LaCartoonsCc', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
         else:
+            item.perpage = sum_parts
 
             if sum_parts >= 1000:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]500[/B][/COLOR] elementos ?'):
@@ -280,14 +292,20 @@ def episodios(item):
                     item.perpage = 250
 
             elif sum_parts >= 250:
-                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]100[/B][/COLOR] elementos ?'):
-                    platformtools.dialog_notification('LaCartoonsCc', '[COLOR cyan]Cargando 100 elementos[/COLOR]')
-                    item.perpage = 100
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]125[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('LaCartoonsCc', '[COLOR cyan]Cargando 125 elementos[/COLOR]')
+                    item.perpage = 125
+
+            elif sum_parts >= 125:
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]75[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('LaCartoonsCc', '[COLOR cyan]Cargando 75 elementos[/COLOR]')
+                    item.perpage = 75
 
             elif sum_parts > 50:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos [COLOR cyan][B]Todos[/B][/COLOR] de una sola vez ?'):
                     platformtools.dialog_notification('LaCartoonsCc', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
                     item.perpage = sum_parts
+                else: item.perpage = 50
 
     for data_id, thumb, temp_epis, url, title, idiomas in episodes[item.page * item.perpage:]:
         langs = []
@@ -341,14 +359,11 @@ def findvideos(item):
         if 'trailer' in servidor: continue
 
         elif 'hqq' in servidor or 'waaw' in servidor or 'netu' in servidor: continue
-        elif 'flix555' in servidor: continue
-        elif 'openload' in servidor: continue
-        elif 'powvideo' in servidor: continue
-        elif 'streamplay' in servidor: continue
-        elif 'rapidvideo' in servidor: continue
-        elif 'streamango' in servidor: continue
-        elif 'verystream' in servidor: continue
-        elif 'vidtodo' in servidor: continue
+
+        if servertools.is_server_available(servidor):
+            if not servertools.is_server_enabled(servidor): continue
+        else:
+            if not config.get_setting('developer_mode', default=False): continue
 
         lang = scrapertools.find_single_match(match, " src='.*?/flags/(.*?).png'")
 
@@ -369,23 +384,11 @@ def findvideos(item):
         url = scrapertools.find_single_match(match, "<a href='(.*?)'")
 
         if '/hqq.' in url or '/waaw.' in url or '/netu.' in url: continue
-        elif 'openload' in url: continue
-        elif 'powvideo' in url: continue
-        elif 'streamplay' in url: continue
-        elif 'rapidvideo' in url: continue
-        elif 'streamango' in url: continue
-        elif 'verystream' in url: continue
-        elif 'vidtodo' in url: continue
-
-        elif 'ul.to' in url: continue
-        elif 'katfile' in url: continue
-        elif 'rapidgator' in url: continue
-        elif 'rockfile' in url: continue
-        elif 'nitroflare' in url: continue
-        elif '1fichier' in url: continue
 
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
+
+        if servidor == 'directo': continue
 
         url = servertools.normalize_url(servidor, url)
 
@@ -455,6 +458,8 @@ def list_search(item):
         year = scrapertools.find_single_match(article, '<span class="year">(\d{4})</span>')
         if year: title = title.replace('(' + year + ')', '').strip()
         else: year = '-'
+
+        title = title.replace('&#8230;', '')
 
         plot = scrapertools.htmlclean(scrapertools.find_single_match(article, '<div class="contenido"><p>(.*?)</p>'))
 

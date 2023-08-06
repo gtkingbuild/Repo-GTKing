@@ -2,8 +2,11 @@
 
 import xbmc, base64, time
 
-from core import httptools, scrapertools
 from platformcode import config, logger, platformtools
+from core import httptools, scrapertools
+
+
+espera = config.get_setting('servers_waiting', default=6)
 
 
 color_exec = config.get_setting('notification_exec_color', default='cyan')
@@ -53,6 +56,7 @@ def get_video_url(page_url, url_referer=''):
     page_url = normalizar_url(page_url)
 
     data = httptools.downloadpage(page_url).data
+
     if 'This video has been removed from public access' in data or 'Video not found' in data or '<div class="message_page_title">Error</div>' in data:
         return 'El archivo ya no esta disponible o ha sido borrado'
 
@@ -65,6 +69,7 @@ def get_video_url(page_url, url_referer=''):
     p_id = scrapertools.find_single_match(bloque, 'id: "([^"]+)')
     p_server = scrapertools.find_single_match(bloque, 'server: "([^"]+)')
     p_token = scrapertools.find_single_match(bloque, 'token: "([^"]+)')
+
     p_credentials = scrapertools.find_single_match(bloque, 'credentials: "([^"]+)')
     p_c_key = scrapertools.find_single_match(bloque, 'c_key: "([^"]+)')
     p_e_key = scrapertools.find_single_match(bloque, 'e_key: "([^"]+)')
@@ -72,8 +77,7 @@ def get_video_url(page_url, url_referer=''):
 
     if not p_id or not p_server or not p_token: return video_urls
 
-    url = 'https://%s/method/video.get?credentials=%s&token=%s&videos=%s&extra_key=%s&ckey=%s' % \
-        (base64.b64decode(p_server[::-1]), p_credentials, p_token, p_id, p_e_key, p_c_key)
+    url = 'https://%s/method/video.get?credentials=%s&token=%s&videos=%s&extra_key=%s&ckey=%s' % (base64.b64decode(p_server[::-1]), p_credentials, p_token, p_id, p_e_key, p_c_key)
 
     if "/b'" in str(url): url = url.replace("/b'", "/").replace("'/", "/")
           
@@ -82,10 +86,14 @@ def get_video_url(page_url, url_referer=''):
     bloque = scrapertools.find_single_match(data, '"files":\{(.*?)\}')
 
     matches = scrapertools.find_multiple_matches(bloque, '"([^"]+)":"([^"]+)')
+
     for lbl, url in matches:
         video_urls.append([lbl, url])
 
     if not video_urls:
+        platformtools.dialog_notification('Cargando [COLOR cyan][B]Vk[/B][/COLOR]', 'Espera requerida de %s segundos' % espera)
+        time.sleep(int(espera))
+
         if xbmc.getCondVisibility('System.HasAddon("script.module.resolveurl")'):
             try:
                 import_libs('script.module.resolveurl')
@@ -95,7 +103,7 @@ def get_video_url(page_url, url_referer=''):
                 resuelto = resolveurl.resolve(page_url)
 
                 if resuelto:
-                    video_urls.append(['mp4', resuelto + '|Referer=%s' % page_url])
+                    video_urls.append(['mp4', resuelto])
                     return video_urls
 
                 platformtools.dialog_notification(config.__addon_name, el_srv, time=3000)

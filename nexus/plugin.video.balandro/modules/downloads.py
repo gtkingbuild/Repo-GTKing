@@ -23,7 +23,7 @@ color_avis = config.get_setting('notification_avis_color', default='yellow')
 color_exec = config.get_setting('notification_exec_color', default='cyan')
 
 
-# Ruta para las descargas
+# Ruta descargas
 download_path = config.get_setting('downloadpath', default='')
 if not download_path:
     download_path = filetools.join(config.get_data_path(), 'downloads')
@@ -71,11 +71,25 @@ def mainlist(item):
 
         itemlist.append(it)
 
+
     if not itemlist:
         platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Aún no tiene Descargas[/COLOR][/B]' % color_exec)
 
-    itemlist.append(item.clone( channel='actions', title= '[COLOR chocolate][B]Ajustes[/B][/COLOR] configuración (categoría [COLOR seagreen][B]Descargas[/B][/COLOR])',
-                                action = 'open_settings', thumbnail=config.get_thumb('settings') ))
+        try:
+           filetools.rmdirtree(download_path)
+        except:
+           pass
+
+        # por si varió el path y quedaron descargas huerfanas en el path default
+        if download_path:
+           try:
+              path = filetools.join(config.get_data_path(), 'downloads')
+              filetools.rmdirtree(path)
+           except:
+              pass
+
+
+    itemlist.append(item.clone( channel='actions', action = 'open_settings', title= '[COLOR chocolate][B]Ajustes[/B][/COLOR] configuración (categoría [COLOR seagreen][B]Descargas[/B][/COLOR])', thumbnail=config.get_thumb('settings') ))
 
     itemlist.append(item.clone( title = '[B]Ubicación actual de las[/B] [COLOR seagreen][B]Descargas[/B][/COLOR]', action = 'show_folder_downloads', thumbnail=config.get_thumb('downloads') ))
 
@@ -117,7 +131,7 @@ def acciones_enlace(item):
 
     ret = platformtools.dialog_select('¿Qué hacer con esta descarga?', acciones)
     if ret == -1: 
-        return False # pedido cancel
+        return False # cancel
 
     elif acciones[ret] == 'Eliminar descarga':
         if not platformtools.dialog_yesno('Eliminar descarga', '¿ [COLOR red][B]Confirma Eliminar la descarga[/B][/COLOR] %s ?' % item.title, 'Se eliminará el fichero %s y su json con la información.' % item.downloadFilename): 
@@ -154,7 +168,7 @@ def acciones_enlace(item):
 
     elif acciones[ret] == 'Guardar una copia en ...':
         import xbmcgui
-        destino_path = xbmcgui.Dialog().browseSingle(3, 'Seleccionar carpeta dónde copiar', 'files', '', False, False, '')
+        destino_path = xbmcgui.Dialog().browseSingle(3, 'Seleccionar la carpeta dónde copiar', 'files', '', False, False, '')
         if not destino_path: return False
         origen = filetools.join(download_path, item.downloadFilename)
         destino = filetools.join(destino_path, item.downloadFilename)
@@ -186,6 +200,7 @@ def save_download(item):
 
             # Reordenar/Filtrar enlaces
             itemlist = filter(lambda it: it.action == 'play', itemlist) # aunque por ahora no se usan action != 'play' en los findvideos
+
             from core import servertools
             itemlist = servertools.filter_and_sort_by_quality(itemlist)
             itemlist = servertools.filter_and_sort_by_server(itemlist)
@@ -193,7 +208,7 @@ def save_download(item):
 
             if len(itemlist) == 0:
                 if notification_d_ok:
-                    platformtools.dialog_ok(config.__addon_name, 'No hay enlaces disponibles')
+                    platformtools.dialog_ok(config.__addon_name, 'Sin enlaces disponibles')
                 else:
                     platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Sin enlaces disponibles[/COLOR][/B]' % color_exec)
 
@@ -201,6 +216,7 @@ def save_download(item):
 
             import xbmc
             erroneos = []
+
             # Bucle hasta cancelar o descargar
             while not xbmc.Monitor().abortRequested():
                 opciones = []
@@ -210,7 +226,8 @@ def save_download(item):
                     else:
                         opciones.append(it.title)
 
-                seleccion = platformtools.dialog_select('Enlaces disponibles en %s' % itemlist[0].channel, opciones)
+                seleccion = platformtools.dialog_select('[COLOR seagreen]Descargas[/COLOR] disponibles en [COLOR yellow]%s[/COLOR]' % itemlist[0].channel.capitalize(), opciones)
+
                 if seleccion == -1:
                     # ~ platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Descarga cancelada[/B]' % color_infor)
                     break
@@ -281,12 +298,16 @@ def download_video(item, parent_item):
         return False
 
     opciones = []
+
     for video_url in video_urls:
-        opciones.append("Descargar " + video_url[0])
+        if '[/B]' in str(video_url):
+           opciones.append('[COLOR seagreen]Descargar[COLOR moccasin] el vídeo en [B]' + video_url[0] + '[/COLOR]')
+        else:
+           opciones.append('[COLOR seagreen]Descargar[COLOR moccasin] el vídeo en [B]' + video_url[0] + '[/B][/COLOR]')
 
     # Si hay varias opciones dar a elegir, si sólo hay una reproducir directamente
     if len(opciones) > 1:
-        seleccion = platformtools.dialog_select("Elige una opción", opciones)
+        seleccion = platformtools.dialog_select("Seleccione una opción para [B][COLOR seagreen]" + item.server.capitalize() + '[/B][/COLOR]', opciones)
     else:
         seleccion = 0
 
@@ -386,6 +407,7 @@ def do_download(mediaurl, file_name, parent_item, server_item):
     update_download_json(path_down_json, down_stats)
 
     if down_stats['downloadStatus'] == STATUS_CODES.error:
+        platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]No se pudo descargar[/COLOR][/B]' % color_alert)
         return False
     else:
         if down_stats['downloadStatus'] == STATUS_CODES.completed:

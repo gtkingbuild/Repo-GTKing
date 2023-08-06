@@ -270,8 +270,6 @@ class EvalJs(object):
                 time.sleep(0.01)
 
 
-#print x
-
 if __name__ == '__main__':
     #with open('C:\Users\Piotrek\Desktop\esprima.js', 'rb') as f:
     #    x = f.read()

@@ -13,5 +13,5 @@
 
   "clusters": ["problematic", "adults", "languages", "qualityes", "years", "kids", "docs", "vos", "3d"],
 
-  "notes": "Películas en por idioma, géneros, año y calidad."
+  "notes": "Películas por idioma, géneros, año y calidad."
 }

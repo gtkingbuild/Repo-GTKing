@@ -11,7 +11,7 @@
   "categories": ["movie", "adults"],
   "language": ["vo"],
 
-  "clusters": ["notice", "adults"],
+  "clusters": ["adults"],
 
-  "notes": "Vídeos en versión Original para Adultos +18. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Vídeos en versión Original para Adultos +18"
 }

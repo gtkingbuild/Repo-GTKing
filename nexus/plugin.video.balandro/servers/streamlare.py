@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import xbmc
+import xbmc, time
 
-from core import httptools, scrapertools, jsontools
 from platformcode import config, logger, platformtools
+from core import httptools, scrapertools, jsontools
 
+
+espera = config.get_setting('servers_waiting', default=6)
 
 color_exec = config.get_setting('notification_exec_color', default='cyan')
 el_srv = ('Sin respuesta en [B][COLOR %s]') % color_exec
@@ -59,12 +61,26 @@ def get_video_url(page_url, url_referer=''):
     except:
         media_url = scrapertools.find_single_match(str(jdata), ".*?'file':.*?'(.*?)'")
 
+    if not media_url:
+        platformtools.dialog_notification('Cargando [COLOR cyan][B]Streamlare[/B][/COLOR]', 'Espera requerida de %s segundos' % espera)
+        time.sleep(int(espera))
+
+        data = httptools.downloadpage("https://streamlare.com/api/video/stream/get", post=post).data
+
+        jdata = jsontools.load(data)
+
+        try:
+            media_url = jdata["result"]["file"]
+        except:
+            media_url = scrapertools.find_single_match(str(jdata), ".*?'file':.*?'(.*?)'")
+  
     if media_url:
         if 'm3u8' in media_url: ext = 'm3u8'
         elif 'm3u' in media_url: ext = 'm3u'
-        else: ext = ''
+        else: ext = 'mp4'
 
-        media_url += "|User-Agent=%s&%s" %(httptools.get_user_agent(), ini_page_url)
+        media_url += '|User-Agent=%s' % (httptools.get_user_agent())
+        media_url += '&Referer=' + ini_page_url
 
         video_urls.append([ext, media_url])
 
@@ -75,12 +91,13 @@ def get_video_url(page_url, url_referer=''):
 
                 import resolveurl
                 page_url = ini_page_url
+
                 resuelto = resolveurl.resolve(page_url)
 
                 if resuelto:
                     if 'm3u8' in resuelto: ext = 'm3u8'
                     elif 'm3u' in resuelto: ext = 'm3u'
-                    else: ext = ''
+                    else: ext = 'mp4'
 
                     video_urls.append([ext, resuelto])
                     return video_urls

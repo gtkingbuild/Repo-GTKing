@@ -5,6 +5,7 @@ import sys
 PY3 = False
 if sys.version_info[0] >= 3: PY3 = True
 
+
 import re, os
 
 from platformcode import logger, config, platformtools
@@ -14,12 +15,13 @@ from core import httptools, scrapertools, tmdb
 from lib import decrypters
 
 
-host = 'https://www.divxtotal.pl/'
+host = 'https://www.divxtotal.win/'
 
 
 # ~ por si viene de enlaces guardados
 ant_hosts = ['https://www.divxtotal.re/', 'https://www.divxtotal.ac/', 'https://www.divxtotal.dev/',
-             'https://www.divxtotal.ms/', 'https://www.divxtotal.fi/', 'https://www.divxtotal.cat/']
+             'https://www.divxtotal.ms/', 'https://www.divxtotal.fi/', 'https://www.divxtotal.cat/',
+             'https://www.divxtotal.pl/', 'https://www.divxtotal.wf/']
 
 
 domain = config.get_setting('dominio', 'divxtotal', default='')
@@ -67,8 +69,10 @@ def do_downloadpage(url, post=None, headers=None):
     for ant in ant_hosts:
         url = url.replace(ant, host)
 
-    # ~ data = httptools.downloadpage(url, post=post, headers=headers).data
-    data = httptools.downloadpage_proxy('divxtotal', url, post=post, headers=headers).data
+    if not url.startswith(host):
+        data = httptools.downloadpage(url, post=post, headers=headers).data
+    else:
+        data = httptools.downloadpage_proxy('divxtotal', url, post=post, headers=headers).data
 
     return data
 
@@ -105,7 +109,7 @@ def mainlist(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados ó bloqueos Play)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone( title = 'Buscar ...', action = 'search', search_type = 'all', text_color = 'yellow' ))
 
@@ -119,13 +123,15 @@ def mainlist_pelis(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados ó bloqueos Play)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone( title = 'Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'peliculas/', search_type = 'movie' ))
 
     itemlist.append(item.clone( title = 'Últimas', action = 'list_all', url = host, group = 'lasts', search_type = 'movie' ))
+
+    itemlist.append(item.clone( title = 'Españolas', action = 'list_all', url = host + 'peliculas/?category_name=espanolas', search_type = 'movie', text_color = 'moccasin' ))
 
     itemlist.append(item.clone( title = 'Por calidad', action = 'calidades',  search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie', tipo = 'genero' ))
@@ -137,7 +143,7 @@ def mainlist_series(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados ó bloqueos Play)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
@@ -152,9 +158,9 @@ def calidades(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title = 'En DVDR', action = 'list_all', url = host + 'peliculas-dvdr/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'En HD', action = 'list_all', url = host + 'peliculas-hd-5/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'En 3D', action = 'list_all', url = host + 'peliculas-3-d/', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'En DVDR', action = 'list_all', url = host + 'peliculas-dvdr/', search_type = 'movie', text_color = 'moccasin' ))
+    itemlist.append(item.clone( title = 'En HD', action = 'list_all', url = host + 'peliculas-hd-5/', search_type = 'movie', text_color = 'moccasin' ))
+    itemlist.append(item.clone( title = 'En 3D', action = 'list_all', url = host + 'peliculas-3-d/', search_type = 'movie', text_color = 'moccasin' ))
 
     return itemlist
 
@@ -170,7 +176,9 @@ def generos(item):
     matches = scrapertools.find_multiple_matches(bloque, "href='(.*?)'.*?'>(.*?)</button>")
 
     for url, title in matches:
-        itemlist.append(item.clone( action='list_all', title=title, url=url ))
+        if title == 'Españolas': continue
+
+        itemlist.append(item.clone( action='list_all', title=title, url=url, text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -211,6 +219,8 @@ def list_all(item):
         tipo = 'movie' if '/peliculas/' in url else 'tvshow'
         sufijo = '' if item.search_type != 'all' else tipo
 
+        title = title.replace("&#8217;", "'")
+
         titulo = title
 
         titulo = titulo.replace('(720)', '').replace('(720p)', '').replace('(1080)', '').replace('(1080p)', '').replace('(microHD)', '').replace('(BR-Line)', '').strip()
@@ -219,16 +229,19 @@ def list_all(item):
 
         thumb = scrapertools.find_single_match(match, "'(.*?)'")
 
-        if '/peliculas/' in url:
+        tipo = 'movie' if '/peliculas/' in url or '/peliculas-' in url else 'tvshow'
+        sufijo = '' if item.search_type != 'all' else tipo
+
+        if tipo == 'movie':
             if not item.search_type == 'all':
                 if item.search_type == 'tvshow': continue
 
             if "(" in titulo: titulo = titulo.split("(")[0]
 
             itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, fmt_sufijo=sufijo,
-                                    contentType='movie', contentTitle=titulo, infoLabels={'year': "-" } ))
+                                        contentType='movie', contentTitle=titulo, infoLabels={'year': "-" } ))
 
-        if '/series/' in url:
+        if tipo == 'tvshow':
             if not item.search_type == 'all':
                 if item.search_type == 'movie': continue
 
@@ -272,7 +285,7 @@ def temporadas(item):
             itemlist = episodios(item)
             return itemlist
 
-        itemlist.append(item.clone( action = 'episodios', title = title, contentType = 'season', contentSeason = tempo ))
+        itemlist.append(item.clone( action = 'episodios', title = title, contentType = 'season', contentSeason = tempo, text_color = 'tan' ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -366,8 +379,7 @@ def findvideos(item):
             if link.startswith('/'): link = host[:-1] + link
             other = 'Directo'
 
-        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = link, server = 'torrent',
-                              language = lang, quality = qlty, other = other))
+        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = link, server = 'torrent', language = lang, quality = qlty, other = other))
 
     if not itemlist:
         if not ses == 0:
@@ -392,9 +404,8 @@ def play(item):
 
         if data:
             try:
-               if 'Página no encontrada</title>' in str(data) or 'no encontrada</title>' in str(data):
-                   platformtools.dialog_ok('DivxTotal', '[COLOR yellow]Archivo no encontrado[/COLOR]')
-                   return itemlist
+               if 'Página no encontrada</title>' in str(data) or 'no encontrada</title>' in str(data) or '<h1>403 Forbidden</h1>' in str(data):
+                   return 'Archivo [COLOR red]No encontrado[/COLOR]'
                elif '<p>Por causas ajenas a ' in str(data):
                    if not config.get_setting('proxies', item.channel, default=''):
                        return 'Archivo [COLOR red]bloqueado[/COLOR] [COLOR yellow]Configure proxies a usar ...[/COLOR]'
@@ -425,9 +436,8 @@ def play(item):
 
         if data:
             try:
-               if 'Página no encontrada</title>' in str(data) or 'no encontrada</title>' in str(data):
-                   platformtools.dialog_ok('DivxTotal', '[COLOR yellow]Archivo no encontrado[/COLOR]')
-                   return itemlist
+               if 'Página no encontrada</title>' in str(data) or 'no encontrada</title>' in str(data) or '<h1>403 Forbidden</h1>' in str(data):
+                   return 'Archivo [COLOR red]No encontrado[/COLOR]'
                elif '<p>Por causas ajenas a ' in str(data):
                    if not config.get_setting('proxies', item.channel, default=''):
                        return 'Archivo [COLOR red]bloqueado[/COLOR] [COLOR yellow]Configure proxies a usar ...[/COLOR]'

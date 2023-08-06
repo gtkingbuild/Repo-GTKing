@@ -3,7 +3,7 @@
   "name": "PeliculasFlv",
   "thumbnail": "peliculasflv.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["movie"],
@@ -13,5 +13,5 @@
 
   "clusters": ["suggested", "kids", "docs", "vos"],
 
-  "notes": "Películas por géneros."
+  "notes": "Web CERRADA. Películas por géneros."
 }

@@ -11,7 +11,7 @@
   "categories": ["movie", "tvshow", "torrent"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["current", "suggested", "torrents", "news", "rankings", "kids", "docs", "vos", "anime", "4k"],
+  "clusters": ["current", "suggested", "torrents", "news", "years", "rankings", "kids", "docs", "vos", "anime", "4k"],
 
   "notes": "Canal con enlaces Streaming y Torrent. Acceso por separado Castellano y Latino. Películas por géneros. Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

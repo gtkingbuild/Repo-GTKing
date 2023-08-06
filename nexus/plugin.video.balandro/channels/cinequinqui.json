@@ -3,7 +3,7 @@
   "name": "CineQuinqui",
   "thumbnail": "cinequinqui.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["movie"],
@@ -13,5 +13,5 @@
 
   "clusters": ["classic", "rankings"],
 
-  "notes": "Películas clásicas del género quinqui."
+  "notes": "Web ANULADA. Películas clásicas del género quinqui."
 }

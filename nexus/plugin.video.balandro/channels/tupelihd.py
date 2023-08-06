@@ -33,7 +33,7 @@ def item_configurar_proxies(item):
 
     plot = 'Es posible que para poder utilizar este canal necesites configurar algún proxy, ya que no es accesible desde algunos países/operadoras.'
     plot += '[CR]Si desde un navegador web no te funciona el sitio ' + host + ' necesitarás un proxy.'
-    return item.clone( title = 'Configurar proxies a usar ... [COLOR plum](si no hay resultados)[/COLOR]', action = 'configurar_proxies', folder=False, context=context, plot=plot, text_color='red' )
+    return item.clone( title = '[B]Configurar proxies a usar ...[/B]', action = 'configurar_proxies', folder=False, context=context, plot=plot, text_color='red' )
 
 def quitar_proxies(item):
     from modules import submnuctext
@@ -52,8 +52,29 @@ def do_downloadpage(url, post=None, headers=None):
     for ant in ant_hosts:
         url = url.replace(ant, host)
 
-    data = httptools.downloadpage(url, post=post, headers=headers).data
+    raise_weberror = True
+    if '/peliculas/estrenos-' in url: raise_weberror = False
+
+    if not url.startswith(host):
+        data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
+    else:
+        data = httptools.downloadpage_proxy('tupelihd', url, post=post, headers=headers, raise_weberror=raise_weberror).data
+
     return data
+
+
+def acciones(item):
+    logger.info()
+    itemlist = []
+
+    itemlist.append(item.clone( channel='submnuctext', action='_test_webs', title='Test Web del canal [COLOR yellow][B] ' + host + '[/B][/COLOR]',
+                                from_channel='tupelihd', folder=False, text_color='chartreuse' ))
+
+    itemlist.append(item_configurar_proxies(item))
+
+    platformtools.itemlist_refresh()
+
+    return itemlist
 
 
 def mainlist(item):
@@ -64,7 +85,7 @@ def mainlist_pelis(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item_configurar_proxies(item))
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone( title = 'Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
 
@@ -73,6 +94,7 @@ def mainlist_pelis(item):
     itemlist.append(item.clone( title = 'Estrenos', action = 'estrenos', search_type = 'movie' ))
 
     itemlist.append(item.clone( title = 'Por calidad', action = 'calidades',  search_type = 'movie' ))
+
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'movie' ))
 
@@ -85,10 +107,11 @@ def estrenos(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title = 'Estrenos 2021', action = 'list_all', url = host + 'peliculas/estrenos-2021/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'Estrenos 2020', action = 'list_all', url = host + 'peliculas/estrenos-2020/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'Estrenos 2019', action = 'list_all', url = host + 'peliculas/estrenos-2019/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'Estrenos 2018', action = 'list_all', url = host + 'peliculas/estrenos-2018/', search_type = 'movie' ))
+    from datetime import datetime
+    current_year = int(datetime.today().year)
+
+    for x in range(current_year, 2017, -1):
+        itemlist.append(item.clone( title = 'Estrenos ' + str(x), action = 'list_all', url = host + 'peliculas/estrenos-' + str(x) +'/', text_color='moccasin' ))
 
     return itemlist
 
@@ -97,10 +120,13 @@ def calidades(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title = 'En 4K UHD Micro', action = 'list_all', url = host + 'peliculas/4k-uhdmicro/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'En 4K UHD Rip', action = 'list_all', url = host + 'peliculas/4k-uhdrip/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'En Bluray MicroHD', action = 'list_all', url = host + 'peliculas/bluray-microhd/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'En BDremux', action = 'list_all', url = host + 'peliculas/bdremux/', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'En 4K UHD Micro', action = 'list_all', url = host + 'peliculas/4k-uhdmicro/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En 4K UHD Remux', action = 'list_all', url = host + 'peliculas/4k-uhdremux/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En 4K UHD Rip', action = 'list_all', url = host + 'peliculas/4k-uhdrip/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En 4K WEB Rip', action = 'list_all', url = host + 'peliculas/4kwebrip/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En BDremux', action = 'list_all', url = host + 'peliculas/bdremux/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En Bluray 1080p', action = 'list_all', url = host + 'peliculas/bluray-1080p/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En Bluray MicroHD', action = 'list_all', url = host + 'peliculas/bluray-microhd/', text_color='moccasin' ))
 
     return itemlist
 
@@ -119,11 +145,7 @@ def generos(item):
 
         if '/estrenos/' in url: continue
 
-        itemlist.append(item.clone( action='list_all', title=title, url=url ))
-
-    if itemlist:
-        if item.search_type == 'movie':
-            itemlist.append(item.clone( action = 'list_all', title = 'Cine Clásico', url = host + 'peliculas/cine-clasico/' ))
+        itemlist.append(item.clone( action='list_all', title=title, url=url, text_color = 'deepskyblue' ))
 
     return sorted(itemlist,key=lambda x: x.title)
 
@@ -136,7 +158,7 @@ def anios(item):
     current_year = int(datetime.today().year)
 
     for x in range(current_year, 1938, -1):
-        itemlist.append(item.clone( title=str(x), url= host + 'release/' + str(x) + '/', action='list_all' ))
+        itemlist.append(item.clone( title=str(x), url= host + 'release/' + str(x) + '/', action='list_all', text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -151,7 +173,7 @@ def alfabetico(item):
 
         url = host + 'letters/' + letras + '/'
 
-        itemlist.append(item.clone( action = 'list_all', title = letra, url = url ))
+        itemlist.append(item.clone( action = 'list_all', title = letra, url = url, text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -173,6 +195,8 @@ def list_all(item):
         if not title: title = scrapertools.find_single_match(article, '<h2 class=.*?>(.*?)</h2>')
 
         if not url or not title: continue
+
+        if '/series/' in url: continue
 
         thumb = scrapertools.find_single_match(article, ' src="([^"]+)"')
         year = scrapertools.find_single_match(article, '<span class="year">(\d+)</span>')
@@ -206,6 +230,7 @@ def puntuar_calidad(txt):
 
     orden = [
           'cam',
+          'camrip',
           'hdcam',
           'webscreener',
           'tsscreener',
@@ -234,10 +259,11 @@ def puntuar_calidad(txt):
 
 def normalize_server(server):
     server = servertools.corregir_servidor(server)
-    if server:
-        server = server.replace('.com', '').replace('.net', '').replace('.to', '')
+
+    server = server.replace('.com', '').replace('.net', '').replace('.to', '')
 
     if server == 'uploaded': return 'uploadedto'
+
     return server
 
 
@@ -268,14 +294,19 @@ def findvideos(item):
 
         url = scrapertools.find_single_match(bloque, '<div id="options-' + opt + '.*?<iframe src="(.*?)"')
         if not url: url = scrapertools.find_single_match(bloque, '<div id="options-' + opt + '.*?<iframe data-src="(.*?)"')
+
         if not url: continue
 
         servidor = normalize_server(servidor)
-		
-        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, other = 'e',
-                              language = IDIOMAS.get(lang, lang) ))
 
-    # descargas
+        if servertools.is_server_available(servidor):
+            if not servertools.is_server_enabled(servidor): continue
+        else:
+            if not config.get_setting('developer_mode', default=False): continue
+
+        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, other = 'e', language = IDIOMAS.get(lang, lang) ))
+
+    # ~ descargas
     if '>Descargar Torrent<' in data:
         bloque = scrapertools.find_single_match(data, '<table>(.*?)</table>')
 
@@ -286,20 +317,27 @@ def findvideos(item):
 
             url = scrapertools.find_single_match(match, ' href="([^"]+)"')
             if url.startswith('//'): url = 'https:' + url
+
             if not url: continue
 
             servidor = scrapertools.find_single_match(match, 'class=".*?">(.*?)</a>').strip()
+
             if not servidor: continue
 
             lang = scrapertools.find_single_match(match, '</td>.*?<td>(.*?)</td>').strip()
             qlty = scrapertools.find_single_match(match, '<td><span>(.*?)</span>').strip()
 
             other = ''
-            if servidor.lower() != 'torrent':
-                other = 't'
-                servidor = ''
 
-            servidor = normalize_server(servidor)
+            if servidor.lower() != 'torrent': other = 't'
+
+            if servidor:
+                servidor = normalize_server(servidor)
+
+                if servertools.is_server_available(servidor):
+                   if not servertools.is_server_enabled(servidor): continue
+                else:
+                   if not config.get_setting('developer_mode', default=False): continue
 
             itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, other = other,
                                   language = IDIOMAS.get(lang, lang), quality = qlty, quality_num = puntuar_calidad(qlty) ))
@@ -321,15 +359,17 @@ def play(item):
     url = ''
 
     if item.other:
-        if not item.url.startswith == host:
-            return itemlist
+        if not item.url.startswith == host: return itemlist
 
     if item.server == 'torrent':
         itemlist.append(item.clone( url = item.url, server = 'torrent' ))
         return itemlist
 
     elif item.other == 't':
-        url = httptools.downloadpage(item.url, only_headers = True, follow_redirects = False).headers.get('location')
+        if not item.url.startswith(host):
+            url = httptools.downloadpage(item.url, only_headers = True, follow_redirects = False).headers.get('location')
+        else:
+            url = httptools.downloadpage_proxy('tupelihd', item.url, only_headers = True, follow_redirects = False).headers.get('location')
 
         if url:
             if url.endswith('.torrent'):
@@ -350,6 +390,7 @@ def play(item):
 
             if servidor and servidor != 'directo':
                 url = servertools.normalize_url(servidor, url)
+
                 itemlist.append(item.clone( url = url, server = servidor ))
 
     return itemlist

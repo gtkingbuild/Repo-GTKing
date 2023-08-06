@@ -3,7 +3,7 @@
   "name": "Jetload",
  
   "active": false,
-  "notes": "Requiere recaptcha, y requería pairing desde navegador web, pero está anulado",
+  "notes": "Requiere recaptcha, y pairing desde navegador web",
 
   "find_videos": {
     "ignore_urls": [],

@@ -32,7 +32,7 @@ def categorias(item):
     matches = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)">(.*?)</a>')
 
     for url, title in matches:
-        itemlist.append(item.clone( action = 'list_all', title = title, url = url ))
+        itemlist.append(item.clone( action = 'list_all', title = title, url = url, text_color='cyan' ))
 
     return itemlist
 
@@ -48,6 +48,8 @@ def list_all(item):
     for match in matches:
         title = scrapertools.find_single_match(match, 'title="(.*?)"')
         url = scrapertools.find_single_match(match, ' href="(.*?)"')
+
+        title = title.replace('&#8211', '')
 
         thumb = scrapertools.find_single_match(match, ' src="(.*?)"')
         plot = scrapertools.find_single_match(match, ' <p>(.*?)</p>')

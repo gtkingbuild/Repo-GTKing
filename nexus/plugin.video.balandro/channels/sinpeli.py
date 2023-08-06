@@ -41,11 +41,11 @@ def idiomas(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title = 'Castellano', action = 'list_all', url = host + 'idioma/castellano/' ))
-    itemlist.append(item.clone( title = 'Castellano AC3 5.1', action = 'list_all', url = host + 'idioma/castellano51/' ))
-    itemlist.append(item.clone( title = 'Latino', action = 'list_all', url = host + 'idioma/latino/' ))
-    itemlist.append(item.clone( title = 'Latino AC3 5.1', action = 'list_all', url = host + 'idioma/latino51/' ))
-    itemlist.append(item.clone( title = 'Subtitulado', action = 'list_all', url = host + 'idioma/subtituladas/' ))
+    itemlist.append(item.clone( title = 'Castellano', action = 'list_all', url = host + 'idioma/castellano/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'Castellano AC3 5.1', action = 'list_all', url = host + 'idioma/castellano51/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'Latino', action = 'list_all', url = host + 'idioma/latino/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'Latino AC3 5.1', action = 'list_all', url = host + 'idioma/latino51/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'Subtitulado', action = 'list_all', url = host + 'idioma/subtituladas/', text_color='moccasin' ))
 
     return itemlist
 
@@ -61,7 +61,7 @@ def generos(item):
     matches = re.compile('<a href="(.*?)">(.*?)</a>', re.DOTALL).findall(bloque)
 
     for url, title in matches:
-        itemlist.append(item.clone( action = 'list_all', title = title, url = url ))
+        itemlist.append(item.clone( action = 'list_all', title = title, url = url, text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -70,9 +70,9 @@ def calidades(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title = 'Cam', action = 'list_all', url = host + 'calidad/cam/' ))
-    itemlist.append(item.clone( title = '720p', action = 'list_all', url = host + 'calidad/720p/' ))
-    itemlist.append(item.clone( title = '1080p', action = 'list_all', url = host + 'calidad/1080p/' ))
+    itemlist.append(item.clone( title = 'Cam', action = 'list_all', url = host + 'calidad/cam/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = '720p', action = 'list_all', url = host + 'calidad/720p/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = '1080p', action = 'list_all', url = host + 'calidad/1080p/', text_color='moccasin' ))
 
     return itemlist
 
@@ -109,6 +109,8 @@ def list_all(item):
 
            if not year: year = '-'
 
+        title = title.replace('&#8211;', '').replace('&#8217;', '').replace('&#038;', '&')
+
         langs = []
         lngs = scrapertools.find_multiple_matches(match, 'bold;"><img src="(.*?)"')
 
@@ -125,6 +127,7 @@ def list_all(item):
 
     if itemlist:
         next_url = scrapertools.find_single_match(data, "<span aria-current='page' class='current'>.*?" + 'href="(.*?)"')
+
         if next_url:
             if '/page/' in next_url:
                 itemlist.append(item.clone( title = 'Siguientes ...', url = next_url, action = 'list_all', text_color = 'coral' ))
@@ -193,8 +196,7 @@ def findvideos(item):
 
                     if servidor == 'directo': other = 'cuevana3'
 
-                    itemlist.append(Item( channel = item.channel, action = 'play', url = url, server = servidor, title = '',
-                                                                  language = lang, quality = qlty, other = other ))
+                    itemlist.append(Item( channel = item.channel, action = 'play', url = url, server = servidor, title = '', language = lang, quality = qlty, other = other ))
 
     # Descargas recaptcha y comprimidos por partes
     # patron = 'class="Button STPb  toggle_links">Download.*?">(.*?)</span>.*?href="(.*?)".*?alt=.*?">(.*?)</span>.*?class=.*?">(.*?)</span>'

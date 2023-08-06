@@ -2,31 +2,108 @@
 
 import re, os
 
-from platformcode import logger
+from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, tmdb
 
 
-host = 'https://mejortorrent.wtf'
+host = 'https://www4.mejortorrent.rip'
+
+
+# ~ por si viene de enlaces guardados
+ant_hosts = ['https://mejortorrent.app', 'https://mejortorrent.wtf', 'https://www1.mejortorrent.rip',
+             'https://www2.mejortorrent.rip', 'https://www3.mejortorrent.rip']
+
+
+domain = config.get_setting('dominio', 'mejortorrentapp', default='')
+
+if domain:
+    if domain == host: config.set_setting('dominio', '', 'mejortorrentapp')
+    elif domain in str(ant_hosts): config.set_setting('dominio', '', 'mejortorrentapp')
+    else: host = domain
 
 
 perpage = 30
 
 
+def item_configurar_proxies(item):
+    color_list_proxies = config.get_setting('channels_list_proxies_color', default='red')
+
+    color_avis = config.get_setting('notification_avis_color', default='yellow')
+    color_exec = config.get_setting('notification_exec_color', default='cyan')
+
+    context = []
+
+    tit = '[COLOR %s]Información proxies[/COLOR]' % color_avis
+    context.append({'title': tit, 'channel': 'helper', 'action': 'show_help_proxies'})
+
+    if config.get_setting('channel_mejortorrentapp_proxies', default=''):
+        tit = '[COLOR %s][B]Quitar los proxies del canal[/B][/COLOR]' % color_list_proxies
+        context.append({'title': tit, 'channel': item.channel, 'action': 'quitar_proxies'})
+
+    tit = '[COLOR %s]Ajustes categoría proxies[/COLOR]' % color_exec
+    context.append({'title': tit, 'channel': 'actions', 'action': 'open_settings'})
+
+    plot = 'Es posible que para poder utilizar este canal necesites configurar algún proxy, ya que no es accesible desde algunos países/operadoras.'
+    plot += '[CR]Si desde un navegador web no te funciona el sitio ' + host + ' necesitarás un proxy.'
+    return item.clone( title = '[B]Configurar proxies a usar ...[/B]', action = 'configurar_proxies', folder=False, context=context, plot=plot, text_color='red' )
+
+def quitar_proxies(item):
+    from modules import submnuctext
+    submnuctext._quitar_proxies(item)
+    return True
+
+def configurar_proxies(item):
+    from core import proxytools
+    return proxytools.configurar_proxies_canal(item.channel, host)
+
+
 def do_downloadpage(url, post=None, headers=None):
     # ~ por si viene de enlaces guardados
-    ant_hosts = ['https://mejortorrent.app']
-
     for ant in ant_hosts:
         url = url.replace(ant, host)
 
-    data = httptools.downloadpage(url, post=post).data
+    if not url.startswith(host):
+        data = httptools.downloadpage(url, post=post, headers=headers).data
+    else:
+        data = httptools.downloadpage_proxy('mejortorrentapp', url, post=post, headers=headers).data
+
     return data
+
+
+def acciones(item):
+    logger.info()
+    itemlist = []
+
+    domain_memo = config.get_setting('dominio', 'mejortorrentapp', default='')
+
+    if domain_memo: url = domain_memo
+    else: url = host
+
+    itemlist.append(Item( channel='actions', action='show_latest_domains', title='[COLOR moccasin][B]Últimos Cambios de Dominios[/B][/COLOR]', thumbnail=config.get_thumb('pencil') ))
+
+    itemlist.append(Item( channel='helper', action='show_help_domains', title='[B]Información Dominios[/B]', thumbnail=config.get_thumb('help'), text_color='green' ))
+
+    itemlist.append(item.clone( channel='domains', action='test_domain_mejortorrentapp', title='Test Web del canal [COLOR yellow][B] ' + url + '[/B][/COLOR]',
+                                from_channel='mejortorrentapp', folder=False, text_color='chartreuse' ))
+
+    if domain_memo: title = '[B]Modificar/Eliminar el dominio memorizado[/B]'
+    else: title = '[B]Informar Nuevo Dominio manualmente[/B]'
+
+    itemlist.append(item.clone( channel='domains', action='manto_domain_mejortorrentapp', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
+
+    itemlist.append(item_configurar_proxies(item))
+
+    platformtools.itemlist_refresh()
+
+    return itemlist
 
 
 def mainlist(item):
     logger.info()
     itemlist = []
+
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone( title = 'Buscar ...', action = 'search', search_type = 'all', text_color = 'yellow' ))
 
@@ -41,16 +118,15 @@ def mainlist_pelis(item):
     logger.info()
     itemlist = []
 
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
+
     itemlist.append(item.clone( title = 'Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
 
-    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + '/peliculas/', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + '/public/peliculas/', search_type = 'movie' ))
 
     itemlist.append(item.clone( title = 'Últimas', action = 'list_list', url = host + '/public/torrents/', search_type = 'movie' ))
 
     itemlist.append(item.clone( title = 'Más vistas', action = 'list_list', url = host + '/busqueda/', search_type = 'movie' ))
-
-    itemlist.append(item.clone( title = 'En HD', action = 'list_all', url = host + '/peliculas-hd/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'En 4K', action = 'list_all', url = host + '/peliculas-4k/', search_type = 'movie' ))
 
     itemlist.append(item.clone( action = 'calidades', title = 'Por calidad', search_type = 'movie' ))
     itemlist.append(item.clone( action = 'generos', title = 'Por género', search_type = 'movie' ))
@@ -64,6 +140,8 @@ def mainlist_pelis(item):
 def mainlist_series(item):
     logger.info()
     itemlist = []
+
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
@@ -84,6 +162,8 @@ def mainlist_documentales(item):
     logger.info()
     itemlist = []
 
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
+
     itemlist.append(item.clone( title = 'Buscar documental ...', action = 'search', search_type = 'tvshow', text_color = 'cyan' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + '/documentales/', search_type = 'documentary' ))
@@ -101,17 +181,20 @@ def calidades(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title = 'En 4K', action = 'list_list', url = host + '/peliculas/quality/4k/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'En BDremux 1080', action = 'list_list', url = host + '/peliculas/quality/bdremux-1080p/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'En BluRay 720', action = 'list_list', url = host + '/peliculas/quality/bluray-7200p/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'En BluRay 1080', action = 'list_list', url = host + '/peliculas/quality/bluray-1080p/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'En DVDrip', action = 'list_list', url = host + '/peliculas/quality/dvdrip/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'En HDrip', action = 'list_list', url = host + '/peliculas/quality/hdrip/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'En MIcroHD 720', action = 'list_list', url = host + '/peliculas/quality/microhd-720p/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'En MicroHD 1080', action = 'list_list', url = host + '/peliculas/quality/microhd-1080p/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'En Screener', action = 'list_list', url = host + '/peliculas/quality/screener/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'En VHSrip', action = 'list_list', url = host + '/peliculas/quality/vhsrip/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'En VHSscreener', action = 'list_list', url = host + '/peliculas/quality/vhsscreener/', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'En Hd', action = 'list_all', url = host + '/peliculas-hd/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En 4k', action = 'list_all', url = host + '/peliculas-4k/', text_color='moccasin' ))
+
+    itemlist.append(item.clone( title = 'En 4K', action = 'list_list', url = host + '/peliculas/quality/4k/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En BDremux 1080', action = 'list_list', url = host + '/peliculas/quality/bdremux-1080p/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En BluRay 720', action = 'list_list', url = host + '/peliculas/quality/bluray-7200p/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En BluRay 1080', action = 'list_list', url = host + '/peliculas/quality/bluray-1080p/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En DVDrip', action = 'list_list', url = host + '/peliculas/quality/dvdrip/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En HDrip', action = 'list_list', url = host + '/peliculas/quality/hdrip/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En MIcroHD 720', action = 'list_list', url = host + '/peliculas/quality/microhd-720p/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En MicroHD 1080', action = 'list_list', url = host + '/peliculas/quality/microhd-1080p/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En Screener', action = 'list_list', url = host + '/peliculas/quality/screener/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En VHSrip', action = 'list_list', url = host + '/peliculas/quality/vhsrip/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En VHSscreener', action = 'list_list', url = host + '/peliculas/quality/vhsscreener/', text_color='moccasin' ))
 
     return itemlist
 
@@ -146,7 +229,7 @@ def generos(item):
         title = opc[0]
         url = host + '/peliculas/genre/' + opc[1]
 
-        itemlist.append(item.clone( title = title, url = url, action = 'list_list' ))
+        itemlist.append(item.clone( title = title, url = url, action = 'list_list', text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -161,7 +244,7 @@ def anios(item):
     for x in range(current_year, 1919, -1):
         url = host + '/peliculas/year/' + str(x) + '/'
 
-        itemlist.append(item.clone( title = str(x), url = url, action = 'list_list' ))
+        itemlist.append(item.clone( title = str(x), url = url, action = 'list_list', text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -170,6 +253,10 @@ def alfabetico(item):
     logger.info()
     itemlist = []
 
+    if item.search_type == 'movie': text_color = 'deepskyblue'
+    elif item.search_type == 'tvshow': text_color = 'hotpink'
+    else: text_color = 'cyan'
+
     if item.search_type == 'movie': url_alfa = host + '/peliculas/letter/'
     elif item.search_type == 'tvshow': url_alfa = host + '/series/letter/'
     else: url_alfa = host + '/documentales/letter/'
@@ -177,7 +264,7 @@ def alfabetico(item):
     for letra in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
          url = url_alfa + letra.lower() + '/'
 
-         itemlist.append(item.clone( title = letra, action = 'list_list', url = url ))
+         itemlist.append(item.clone( title = letra, action = 'list_list', url = url, text_color = text_color ))
 
     return itemlist
 
@@ -215,6 +302,8 @@ def list_all(item):
             itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, qualities=qlty,
                                         contentType='movie', contentTitle=titulo, infoLabels={'year': '-'} ))
 
+            continue
+
         if item.search_type == 'tvshow':
             if " Temporada" in title: SerieName = title.split(" Temporada")[0]
             else: SerieName = title
@@ -222,8 +311,10 @@ def list_all(item):
             itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb, qualities=qlty,
                                         contentType='tvshow', contentSerieName=SerieName, infoLabels={'year': '-'} ))
 
+            continue
+
         else:
-            if "(" in title: titulo = titulo.split("(")[0]
+            if "(" in title: titulo = title.split("(")[0]
             else: titulo = title
 
             titulo = titulo.strip()
@@ -245,6 +336,7 @@ def list_all(item):
 
         if buscar_next:
             next_page = scrapertools.find_single_match(data, '<span aria-current="page">.*?<a href="(.*?)"')
+
             if next_page:
                 if '/page/' in next_page:
                     itemlist.append(item.clone( title='Siguientes ...', page = 0, action='list_all', url=next_page, text_color='coral' ))
@@ -278,8 +370,9 @@ def list_list(item):
         qlty = qlty.replace ('(', '').replace (')', '').strip()
 
         year = '-'
-        if '/year/' in item.url: year = scrapertools.find_single_match(item.url, '/year/(.*?)/')
-        if not year: year = '-'
+        if '/year/' in item.url:
+            year = scrapertools.find_single_match(item.url, '/year/(.*?)/')
+            if not year: year = '-'
 
         type = scrapertools.find_single_match(match, 'capitalize">(.*?)</span>')
 
@@ -323,6 +416,12 @@ def list_list(item):
             if " Temporada" in title: SerieName = title.split(" Temporada")[0]
             else: SerieName = title
 
+            if "ª" in SerieName:
+                SerieName = SerieName.split("ª")[0]
+                if "  " in SerieName: SerieName = SerieName.split("  ")[0]
+
+                SerieName = SerieName.strip()
+
             itemlist.append(item.clone( action='episodios', url = url, title = title, fmt_sufijo = sufijo,
                                         contentType = 'tvshow', contentSerieName = SerieName, infoLabels = {'year': year} ))
 
@@ -352,6 +451,7 @@ def list_list(item):
 
         if buscar_next:
             next_page = scrapertools.find_single_match(data, '<span aria-current="page">.*?<a href="(.*?)"')
+
             if next_page:
                 if '/page/' in next_page:
                     itemlist.append(item.clone( title='Siguientes ...', page = 0, action='list_list', url=next_page, text_color='coral' ))

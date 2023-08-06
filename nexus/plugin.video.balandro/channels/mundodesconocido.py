@@ -59,7 +59,7 @@ def categorias(item):
 
         cats.append(title)
 
-        itemlist.append(item.clone( action = 'list_all', title = title, url = url ))
+        itemlist.append(item.clone( action = 'list_all', title = title, url = url, text_color = 'cyan' ))
 
     return sorted(itemlist, key=lambda i: i.title)
 
@@ -73,11 +73,11 @@ def list_all(item):
     matches = scrapertools.find_multiple_matches(data, 'by: <a href=.*?data-a2a-url="(.*?)".*?data-a2a-title="(.*?)".*?src="(.*?)"')
 
     for url, title, thumb in matches:
-        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb,
-                                    contentType='movie', contentTitle=title, contentExtra='documentary' ))
+        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, contentType='movie', contentTitle=title, contentExtra='documentary' ))
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, 'class="page-numbers current">.*?href="(.*?)"')
+
         if next_page:
             if '/page/' in next_page:
                 itemlist.append(item.clone( title='Siguientes ...', action='list_all', url = next_page, text_color='coral' ))
@@ -92,8 +92,10 @@ def findvideos(item):
     data = httptools.downloadpage(item.url).data
 
     url = scrapertools.find_single_match(data, '<iframe  id=".*?src="(.*?)"')
+
     if url:
         servidor = servertools.get_server_from_url(url)
+
         if servidor and servidor != 'directo':
             itemlist.append(Item( channel = item.channel, action = 'play', server=servidor, title = '', url = url, language = 'Esp' ))
 

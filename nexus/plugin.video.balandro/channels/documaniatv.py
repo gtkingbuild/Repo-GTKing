@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import time
+
+
 from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools
@@ -15,6 +18,9 @@ tex_esrn = ' por favor espere unos segundos ... y Reintentelo de nuevo'
 
 
 perpage = 25
+
+
+espera = config.get_setting('servers_waiting', default=6)
 
 
 def do_downloadpage(url, headers=None, post=None):
@@ -68,15 +74,15 @@ def top_100(item):
     itemlist.append(item.clone( title = 'Top 100 documentales', action = 'list_all', url = host + url, page = 0))
     itemlist.append(item.clone( title = 'Top 100 más Populares', action = 'list_all', url = host + url + '?do=rating', page = 0 ))
     itemlist.append(item.clone( title = 'Top 100 más Recientes', action = 'list_all', url = host + url +'?do=recent', page = 0 ))
-    itemlist.append(item.clone( title = 'Top 100 de Arte y Cine', action = 'list_all', url = host + url + '?c=arte-y-cine', page = 0 ))
-    itemlist.append(item.clone( title = 'Top 100 de Biografías', action = 'list_all', url = host + url + '?c=biografias' ))
-    itemlist.append(item.clone( title = 'Top 100 de Ciencia y Tecnología', action = 'list_all', url = host + url + '?c=ciencia-y-tecnologia', page = 0 ))
-    itemlist.append(item.clone( title = 'Top 100 de Deporte', action = 'list_all', url = host + url + '?c=deporte', page = 0 ))
-    itemlist.append(item.clone( title = 'Top 100 de Historia', action = 'list_all', url = host + url + '?c=historia', page = 0 ))
-    itemlist.append(item.clone( title = 'Top 100 de Naturaleza', action = 'list_all', url = host + url + '?c=naturaleza', page = 0 ))
-    itemlist.append(item.clone( title = 'Top 100 de Política', action = 'list_all', url = host + url + '?c=politica', page = 0 ))
-    itemlist.append(item.clone( title = 'Top 100 de Social', action = 'list_all', url = host + url + '?c=social', page = 0 ))
-    itemlist.append(item.clone( title = 'Top 100 de Viajes', action = 'list_all', url = host + url + '?c=viajes', page = 0 ))
+    itemlist.append(item.clone( title = 'Top 100 Arte y Cine', action = 'list_all', url = host + url + '?c=arte-y-cine', page = 0 ))
+    itemlist.append(item.clone( title = 'Top 100 Biografías', action = 'list_all', url = host + url + '?c=biografias' ))
+    itemlist.append(item.clone( title = 'Top 100 Ciencia y Tecnología', action = 'list_all', url = host + url + '?c=ciencia-y-tecnologia', page = 0 ))
+    itemlist.append(item.clone( title = 'Top 100 Deporte', action = 'list_all', url = host + url + '?c=deporte', page = 0 ))
+    itemlist.append(item.clone( title = 'Top 100 Historia', action = 'list_all', url = host + url + '?c=historia', page = 0 ))
+    itemlist.append(item.clone( title = 'Top 100 Naturaleza', action = 'list_all', url = host + url + '?c=naturaleza', page = 0 ))
+    itemlist.append(item.clone( title = 'Top 100 Política', action = 'list_all', url = host + url + '?c=politica', page = 0 ))
+    itemlist.append(item.clone( title = 'Top 100 Social', action = 'list_all', url = host + url + '?c=social', page = 0 ))
+    itemlist.append(item.clone( title = 'Top 100 Viajes', action = 'list_all', url = host + url + '?c=viajes', page = 0 ))
 
     return itemlist
 
@@ -86,22 +92,22 @@ def canales(item):
     itemlist = []
 
     url = host + 'documentales/bbc/'
-    itemlist.append(item.clone( action = 'list_all', title = 'BBC', url = url, referer = url ))
+    itemlist.append(item.clone( action = 'list_all', title = 'BBC', url = url, referer = url, text_color='cyan' ))
 
     url = host + 'documentales/documentos-tv/'
-    itemlist.append(item.clone( action = 'list_all', title = 'Documentos tv', url = url, referer = url ))
+    itemlist.append(item.clone( action = 'list_all', title = 'Documentos tv', url = url, referer = url, text_color='cyan' ))
 
     url = host + 'documentales/history-channel/'
-    itemlist.append(item.clone( action = 'list_all', title = 'History channel', url = url, referer = url ))
+    itemlist.append(item.clone( action = 'list_all', title = 'History channel', url = url, referer = url, text_color='cyan' ))
 
     url = host + 'documentales/la-noche-tematica/'
-    itemlist.append(item.clone( action='list_all', title = 'La noche temática', url = url, referer = url ))
+    itemlist.append(item.clone( action='list_all', title = 'La noche temática', url = url, referer = url, text_color='cyan' ))
 
     url = host + 'documentales/national-geographic/'
-    itemlist.append(item.clone( action='list_all', title = 'National geographic', url = url, referer = url ))
+    itemlist.append(item.clone( action='list_all', title = 'National geographic', url = url, referer = url, text_color='cyan' ))
 
     url = host + 'documentales/segunda-guerra-mundial/'
-    itemlist.append(item.clone( action='list_all', title = 'Segunda guerra mundial', url = url, referer = url ))
+    itemlist.append(item.clone( action='list_all', title = 'Segunda guerra mundial', url = url, referer = url, text_color='cyan' ))
 
     return itemlist
 
@@ -119,7 +125,7 @@ def categorias(item):
     for url, title in matches:
         if 'documentales/' in url: continue
 
-        itemlist.append(item.clone ( action = 'list_all', title = title, url = url ))
+        itemlist.append(item.clone ( action = 'list_all', title = title, url = url, text_color='cyan' ))
 
     return sorted(itemlist, key=lambda it: it.title)
 
@@ -136,6 +142,8 @@ def series(item):
     matches = scrapertools.find_multiple_matches(data, '<div class="pm-li-category">.*?<a href="([^"]+)".*?title="(.*?)".*?<img src="(.*?)"')
 
     for url, title, thumb in matches:
+        title = title.replace('Serie documental', '').strip()
+
         title = title.capitalize()
 
         if title == 'Bbc': continue
@@ -145,7 +153,7 @@ def series(item):
         elif title == 'National geographic': continue
         elif title == 'Segunda guerra mundial' in url: continue
 
-        itemlist.append(item.clone ( action = 'list_all', title = title, thumbnail = thumb, url = url ))
+        itemlist.append(item.clone ( action = 'list_all', title = title, thumbnail = thumb, url = url, text_color='cyan' ))
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<link rel="next" href="(.*?)"')
@@ -181,12 +189,14 @@ def list_all(item):
         url, title = scrapertools.find_single_match(article, '<a href="([^"]+)".*?title="([^"]+)"')
 
         thumb = scrapertools.find_single_match(article, '<img src="([^"]+)"')
+
         durada = scrapertools.htmlclean(scrapertools.find_single_match(article, '<span class="pm-label-duration">(.*?)</span>'))
 
-        if durada: durada = '[COLOR tan](%s)[/COLOR]' % durada
+        if durada: durada = '[COLOR tan]%s[/COLOR]' % durada
 
-        itemlist.append(item.clone ( action = 'findvideos', url = url, title = title, thumbnail = thumb, 
-                                     fmt_sufijo = durada, contentType = 'movie', contentTitle = title, contentExtra = 'documentary' ))
+        titulo = durada + ' ' + title
+
+        itemlist.append(item.clone ( action = 'findvideos', url = url, title = titulo, thumbnail = thumb, contentType = 'movie', contentTitle = title, contentExtra = 'documentary' ))
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<link rel="next" href="(.*?)"')
@@ -194,6 +204,7 @@ def list_all(item):
         if not next_page:
             if '/documentales-nuevos.html?d=month' in item.url or '/search.php?keywords=' in item.url:
                 next_page = scrapertools.find_single_match(data, '"Pagination">.*?<li class="active">.*?<li class="">.*?</li>.*?href="(.*?)"')
+
                 if next_page:
                     if not next_page.startswith('http'): next_page = host + next_page
 
@@ -216,9 +227,6 @@ def findvideos(item):
     data = do_downloadpage(item.url, headers = headers)
 
     if len(data) == 0:
-        import time
-        espera = 5
-
         platformtools.dialog_notification('Re-Cargando vídeo', 'Espera requerida de %s segundos' % espera)
         time.sleep(int(espera))
 

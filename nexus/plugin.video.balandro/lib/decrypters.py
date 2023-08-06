@@ -221,7 +221,9 @@ def sorted_urls(url, url_base64, host_torrent):
             'linkup.wf': ['linkser=uggcf%3A%2F%2Flrfgbeerag.arg', "TTTOzBmk\s*=\s*'(.*?)'", 14, 8, False],
             'link-vip.xyz': ['linkser=uggcf%3A%2F%2Flrfgbeerag.arg', "TTTOzBmk\s*=\s*'(.*?)'", 14, 8, False],
             'recorta-enlace.com': [None, [64, 123 ,77, 91, 96, 109, 13, 13], 0, 0, False],
-            'enlace-rapido.com': [None, [64, 123 ,77, 91, 96, 109, 13, 13], 0, 0, False]
+            'enlace-rapido.com': [None, [64, 123 ,77, 91, 96, 109, 13, 13], 0, 0, False],
+            'enlace-protegido.com': [None, [64, 123 ,77, 91, 96, 109, 13, 13], 0, 0, False],
+            'super-enlace.com': [None, [64, 123 ,77, 91, 96, 109, 13, 13], 0, 0, False]
             }
 
     if not url_base64 or url_base64.startswith('magnet') or url_base64.endswith('.torrent'): return url_base64

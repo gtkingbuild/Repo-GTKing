@@ -3,7 +3,7 @@
   "name": "PelisPlay",
   "thumbnail": "pelisplay.png",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["all", "movie", "tvshow"],
@@ -13,5 +13,5 @@
 
   "clusters": ["adults", "news", "rankings", "producers", "kids", "docs", "vos", "anime"],
 
-  "notes": "Películas por géneros. Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Web CERRADA. Películas por géneros. Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

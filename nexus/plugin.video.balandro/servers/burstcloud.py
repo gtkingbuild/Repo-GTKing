@@ -31,16 +31,18 @@ def get_video_url(page_url, url_referer=''):
     base_url = "https://www.burstcloud.co/file/play-request/"
     fileId = scrapertools.find_single_match(data, 'data-file-id="([^"]+)"')
 
-    post = {"fileId": fileId}
-    data = httptools.downloadpage(base_url, post=post, headers={"Referer": page_url}).data
+    if fileId:
+        post = {"fileId": fileId}
+        data = httptools.downloadpage(base_url, post=post, headers={"Referer": page_url}).data
 
-    url = scrapertools.find_single_match(data, '"cdnUrl".*?"([^"]+)"')
+        url = scrapertools.find_single_match(data, '"cdnUrl".*?"([^"]+)"')
 
-    if url:
-        url = httptools.downloadpage(url, headers={'Referer': 'https://www.burstcloud.co/'}, follow_redirects=False).headers.get('location', '')
+        if url:
+            url = httptools.downloadpage(url, headers={'Referer': 'https://www.burstcloud.co/'}, follow_redirects=False).headers.get('location', '')
 
-        if url: url = url + '|referer=https://www.burstcloud.co/'
+            if url:
+                url = url + '|referer=https://www.burstcloud.co/'
 
-        video_urls.append(['mp4', url])
+                video_urls.append(['mp4', url])
 
     return video_urls

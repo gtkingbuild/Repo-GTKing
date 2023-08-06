@@ -35,13 +35,39 @@ def mainlist_pelis(item):
     itemlist.append(item.clone( title = 'Buscar vídeo ...', action = 'search', search_type = 'movie', text_color = 'orange' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'newest/'))
+
     itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = host + 'mostviewed/' ))
     itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = host + 'top/' ))
 
-    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url= host + 'categories/popular/' ))
     itemlist.append(item.clone( title = 'Por canal', action = 'canales', url= host + 'channel/top-rated/' ))
-
+    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url= host + 'categories/popular/' ))
     itemlist.append(item.clone( title = 'Por estrella', action = 'pornstars', url = host + 'pornstar/' ))
+
+    return itemlist
+
+
+def canales(item):
+    logger.info()
+    itemlist = []
+
+    data = do_downloadpage(item.url)
+    data = re.sub(r'\n|\r|\t|&nbsp;|<br>', '', data)
+
+    patron  = '<li class="channel-box channel-box-layout-shift">.*?<a href="([^"]+)".*?alt="([^"]+)".*?data-src="([^"]+)"'
+
+    matches = re.compile(patron, re.DOTALL).findall(data)
+
+    for url, title, thumb in matches:
+         url = host[:-1] + url
+
+         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, contentType = 'movie', contentTitle = title, text_color = 'orange' ))
+
+    if itemlist:
+        next_page = scrapertools.find_single_match(data, '<a id="wp_navNext".*?href="([^"]+)">')
+        if next_page:
+            next_page = host[:-1] + next_page
+
+            itemlist.append(item.clone (action='canales', title='Siguientes ...', url=next_page, text_color = 'coral') )
 
     return itemlist
 
@@ -64,37 +90,9 @@ def categorias(item):
 
          url = host[:-1] + url
 
-         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, contentType = 'movie',
-                                    contentTitle = title, contentExtra='adults') )
+         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, contentType = 'movie', contentTitle = title, text_color='tan' ))
 
     return sorted(itemlist,key=lambda x: x.title)
-
-
-def canales(item):
-    logger.info()
-    itemlist = []
-
-    data = do_downloadpage(item.url)
-    data = re.sub(r'\n|\r|\t|&nbsp;|<br>', '', data)
-
-    patron  = '<li class="channel-box channel-box-layout-shift">.*?<a href="([^"]+)".*?alt="([^"]+)".*?data-src="([^"]+)"'
-
-    matches = re.compile(patron, re.DOTALL).findall(data)
-
-    for url, title, thumb in matches:
-         url = host[:-1] + url
-
-         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, contentType = 'movie',
-                                    contentTitle = title, contentExtra='adults') )
-
-    if itemlist:
-        next_page = scrapertools.find_single_match(data, '<a id="wp_navNext".*?href="([^"]+)">')
-        if next_page:
-            next_page = host[:-1] + next_page
-
-            itemlist.append(item.clone (action='canales', title='Siguientes ...', url=next_page, text_color = 'coral') )
-
-    return itemlist
 
 
 def pornstars(item):
@@ -113,8 +111,7 @@ def pornstars(item):
     for url, thumb, title in matches:
          url = host[:-1] + url
 
-         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, contentType = 'movie',
-                                    contentTitle = title, contentExtra='adults') )
+         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, contentType = 'movie', contentTitle = title, text_color='moccasin' ))
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<a id="wp_navNext".*?href="([^"]+)">')
@@ -150,8 +147,7 @@ def list_all(item):
 
         title = "[COLOR tan]%s[/COLOR] %s" % (duration, title)
 
-        itemlist.append(item.clone (action='findvideos', title=title, url=url, thumbnail=thumb, contentType = 'movie',
-                                    contentTitle = title, contentExtra='adults') )
+        itemlist.append(item.clone (action='findvideos', title=title, url=url, thumbnail=thumb, contentType = 'movie', contentTitle = title, contentExtra='adults') )
 
     if itemlist:
         next_page = scrapertools.find_single_match(data,'<a id="wp_navNext".*?href="([^"]+)">').replace("amp;", "")
@@ -196,6 +192,8 @@ def get_video_url(page_url, url_referer=''):
     data = resp.data
 
     url = scrapertools.find_single_match(data,'"format":"mp4","videoUrl":"([^"]+)"').replace("\\", "")
+
+    if url.startswith('/'): url = host[:-1] + url
 
     data = httptools.downloadpage(url).data
 

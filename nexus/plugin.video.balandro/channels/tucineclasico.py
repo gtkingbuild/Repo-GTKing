@@ -9,6 +9,7 @@ from core import httptools, scrapertools, tmdb, servertools
 
 host = 'https://online.tucineclasico.es/'
 
+
 perpage = 25
 
 
@@ -24,8 +25,8 @@ def mainlist_pelis(item):
     itemlist.append(item.clone ( title = 'Catálogo', action = 'list_all', url = host + 'peliculas/?get=movies' ))
 
     itemlist.append(item.clone ( title = 'Más vistas', action = 'list_all', url = host + 'tendencias/?get=movies' ))
-
     itemlist.append(item.clone ( title = 'Más valoradas', action = 'list_all', url = host + '22-2/?get=movies' ))
+
     itemlist.append(item.clone ( title = 'Subtitulado', action = 'list_all', url = host + 'genero/version-original-subtitulada/?get=movies' ))
 
     itemlist.append(item.clone ( title = 'Por género', action = 'generos', search_type = 'movie' ))
@@ -46,7 +47,7 @@ def generos(item):
     for url, title in matches:
         if 'genero/version-original-subtitulada' in url: continue
 
-        itemlist.append(item.clone( action='list_all', title=title, url=url ))
+        itemlist.append(item.clone( action='list_all', title=title, url=url, text_color = 'deepskyblue' ))
 
     return sorted(itemlist, key = lambda it: it.title)
 
@@ -64,7 +65,7 @@ def anios(item):
         itemlist.append(item.clone( action='list_all', title=title, url=url ))
 
     for ano in range(1948, 1921, -1):
-        itemlist.append(item.clone( action = 'list_all', title = str(ano), url = host + 'lanzamiento/' + str(ano) + '/' ))
+        itemlist.append(item.clone( action = 'list_all', title = str(ano), url = host + 'lanzamiento/' + str(ano) + '/', text_color = 'deepskyblue' ))
 
     return sorted(itemlist, key = lambda it: it.title, reverse=True)
 
@@ -92,20 +93,21 @@ def list_all(item):
         url = scrapertools.find_single_match(article, ' href="([^"]+)"')
         title = scrapertools.find_single_match(article, '<h4>(.*?)</h4>')
         if not title: title = scrapertools.find_single_match(article, ' alt="([^"]+)"')
+
         if not url or not title: continue
+
+        title = title.replace('&#8230;', '')
 
         thumb = scrapertools.find_single_match(article, ' src="([^"]+)"')
         year = scrapertools.find_single_match(article, '<span>(\d{4})</span>')
         if not year: year = scrapertools.find_single_match(article, ' (\d{4})</span>')
         if not year: year = '-'
 
-        if ('(' + year + ')') in title:
-            title = title.replace(('(' + year + ')'), '')
+        if ('(' + year + ')') in title: title = title.replace(('(' + year + ')'), '')
 
         plot = scrapertools.find_single_match(article, '<div class="texto">(.*?)</div>')
 
-        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, 
-                                    contentType='movie', contentTitle=title, infoLabels={'year': year, 'plot': plot} ))
+        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, contentType='movie', contentTitle=title, infoLabels={'year': year, 'plot': plot} ))
 
         if len(itemlist) >= perpage: break
 
@@ -121,6 +123,7 @@ def list_all(item):
 
         if buscar_next:
             next_page = scrapertools.find_single_match(data, '<a href="([^"]+)"[^>]*><span class="fas fa-chevron-right">')
+
             if next_page:
                 itemlist.append(item.clone (url = next_page, page = 0, title = 'Siguientes ...', action = 'list_all', text_color='coral' ))
 
@@ -158,6 +161,7 @@ def findvideos(item):
         dtype = scrapertools.find_single_match(enlace, "data-type='([^']+)")
         dpost = scrapertools.find_single_match(enlace, "data-post='([^']+)")
         dnume = scrapertools.find_single_match(enlace, "data-nume='([^']+)")
+
         if not dtype or not dpost or not dnume or dnume == 'trailer': continue
 
         url = get_url(dpost, dnume, dtype, item.url)
@@ -171,8 +175,7 @@ def findvideos(item):
 
             url = servertools.normalize_url(servidor, url)
 
-            if '\\' in url:
-                url = url.replace('\\', '/')
+            if '\\' in url: url = url.replace('\\', '/')
 
             itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = IDIOMAS.get(lang, lang) ))
 
@@ -200,8 +203,7 @@ def list_search(item):
         year = scrapertools.find_single_match(article, '<span class="year">(\d+)</span>')
         if not year: year = scrapertools.find_single_match(article, '<span>(\d{4})</span>')
 
-        if ('(' + year + ')') in title:
-            title = title.replace(('(' + year + ')'), '')
+        if ('(' + year + ')') in title: title = title.replace(('(' + year + ')'), '')
 
         plot = scrapertools.htmlclean(scrapertools.find_single_match(article, '<p>(.*?)</p>'))
 
@@ -210,8 +212,7 @@ def list_search(item):
         if 'img/flags/mx.png' in article: langs.append('Lat')
         if 'img/flags/en.png' in article: langs.append('Vose')
 
-        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, languages = ', '.join(langs), 
-                                    contentType='movie', contentTitle=title, infoLabels={'year': year, 'plot': plot} ))
+        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, languages = ', '.join(langs), contentType='movie', contentTitle=title, infoLabels={'year': year, 'plot': plot} ))
 
         if len(itemlist) >= perpage: break
 
@@ -227,6 +228,7 @@ def list_search(item):
 
         if buscar_next:
             next_page_link = scrapertools.find_single_match(data, ' href="([^"]+)"[^>]*><span class="fas fa-chevron-right">')
+
             if next_page_link:
                 itemlist.append(item.clone( title='Siguientes ...', url=next_page_link, page = 0, action='list_search', text_color='coral' ))
 

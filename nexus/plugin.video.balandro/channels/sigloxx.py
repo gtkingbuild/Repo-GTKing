@@ -7,6 +7,7 @@ from core import httptools, scrapertools, servertools, tmdb
 
 host = 'https://2000peliculassigloxx.com/'
 
+
 perpage = 25
 
 
@@ -27,8 +28,7 @@ def mainlist_pelis(item):
     itemlist.append(item.clone ( title = 'Por actor', action = 'listas', url = host + 'actores/', group = 'Actores' ))
     itemlist.append(item.clone ( title = 'Por actriz', action = 'listas', url = host + 'actrices/', group = 'Actrices' ))
     itemlist.append(item.clone ( title = 'Por dirección, guionistas, productores', action = 'listas', url = host + 'directores/', group = 'Directores' ))
-    itemlist.append(item.clone ( title = 'Por compositores, escritores, novelistas', action = 'listas', url = host + 'otras-biografias/',
-                                 group = 'Otras biografías' ))
+    itemlist.append(item.clone ( title = 'Por compositores, escritores, novelistas', action = 'listas', url = host + 'otras-biografias/', group = 'Otras biografías' ))
 
     return itemlist
 
@@ -46,7 +46,7 @@ def sagas(item):
     for thumb, title, url in matches:
         if not title or not url: continue
 
-        itemlist.append(item.clone( action = 'list_films', title = title, url = url, thumbnail = thumb ))
+        itemlist.append(item.clone( action = 'list_films', title = title, url = url, thumbnail = thumb, text_color = 'moccasin' ))
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<li class="page-item active">.*?<li class="page-item">.*?href="(.*?)"')
@@ -73,7 +73,7 @@ def anios(item):
 
         if not '/anos-' in url: continue
 
-        itemlist.append(item.clone( action = 'list_films', title = title, url = url ))
+        itemlist.append(item.clone( action = 'list_films', title = title, url = url, text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -92,14 +92,14 @@ def listas(item):
         for url, title in matches:
             if not url or not title: continue
 
-            itemlist.append(item.clone( action= 'list_films', title = title, url = url ))
+            itemlist.append(item.clone( action= 'list_films', title = title, url = url, text_color='tan' ))
     else:
        matches = scrapertools.find_multiple_matches(bloque, 'data-src="(.*?)".*?alt="(.*?)".*?href="(.*?)"')
 
        for thumb, title, url in matches:
            if not url or not title: continue
 
-           itemlist.append(item.clone( action = 'list_films', title = title, url = url, thumbnail = thumb ))
+           itemlist.append(item.clone( action = 'list_films', title = title, url = url, thumbnail = thumb, text_color='moccasin' ))
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<li class="page-item active">.*?<li class="page-item">.*?href="(.*?)"')
@@ -152,8 +152,7 @@ def list_films(item):
 
         if not year: year = '-'
 
-        itemlist.append(item.clone( action = 'findvideos', title = title, url = url, thumbnail = thumb,
-                                    contentType = 'movie', contentTitle = name, infoLabels = {'year': year} ))
+        itemlist.append(item.clone( action = 'findvideos', title = title, url = url, thumbnail = thumb, contentType = 'movie', contentTitle = name, infoLabels = {'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 

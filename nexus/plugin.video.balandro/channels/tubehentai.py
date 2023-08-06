@@ -43,6 +43,25 @@ def mainlist_pelis(item):
     return itemlist
 
 
+def categorias(item):
+    logger.info()
+    itemlist = []
+
+    data = httptools.downloadpage(host + 'channels/').data
+    data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
+
+    matches = re.compile('<div class="videobox.*?<a href="(.*?)".*?<img src="(.*?)".*?alt="(.*?)"').findall(data)
+
+    for url, thumb, title in matches:
+        if title == 'Photos': continue
+
+        title = title.capitalize()
+
+        itemlist.append(item.clone( action = 'list_all', url = url, title = title, thumbnail = thumb, text_color='moccasin' ))
+
+    return itemlist
+
+
 def list_all(item):
     logger.info()
     itemlist = []
@@ -65,8 +84,7 @@ def list_all(item):
 
         titulo = "[COLOR tan]%s[/COLOR] %s" % (duration, title)
                              
-        itemlist.append(item.clone( action = 'findvideos', url = url, title = titulo, thumbnail = thumb, contentType = 'movie',
-                                    contentTitle = title, contentExtra='adults' ))
+        itemlist.append(item.clone( action = 'findvideos', url = url, title = titulo, thumbnail = thumb, contentType = 'movie', contentTitle = title, contentExtra='adults' ))
 
     if itemlist:
         next_page = scrapertools.find_single_match(data,'<a href=\'([^\']+)\' class="next"')
@@ -78,30 +96,12 @@ def list_all(item):
     return itemlist
 
 
-def categorias(item):
-    logger.info()
-    itemlist = []
-
-    data = httptools.downloadpage(host + 'channels/').data
-    data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
-
-    matches = re.compile('<div class="videobox.*?<a href="(.*?)".*?<img src="(.*?)".*?alt="(.*?)"').findall(data)
-
-    for url, thumb, title in matches:
-        if title == 'Photos': continue
-
-        title = title.capitalize()
-
-        itemlist.append(item.clone( action = 'list_all', url = url, title = title, thumbnail = thumb ))
-
-    return itemlist
-
-
 def findvideos(item):
     logger.info()
     itemlist = []
 
     data = httptools.downloadpage(item.url).data
+
     url = scrapertools.find_single_match(data, '<source src="([^"]+\.mp4)"')
     if not url: url = scrapertools.find_single_match(data, '<div class="videohere".*?src="([^"]+)"')
 

@@ -53,7 +53,7 @@ def generos(item):
     for genero in generos:
         url = host + 'category/' + genero + '/'
 
-        itemlist.append(item.clone( action = 'list_all', title = genero.capitalize(), url = url ))
+        itemlist.append(item.clone( action = 'list_all', title = genero.capitalize(), url = url, text_color = 'hotpink' ))
 
     return itemlist
 
@@ -79,8 +79,7 @@ def list_all(item):
         year = scrapertools.find_single_match(match, '<span class="Date">(.*?)</span>')
         if not year: year = '-'
 
-        itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb, 
-                                    contentType = 'tvshow', contentSerieName = title, infoLabels={'year': year } ))
+        itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb, contentType = 'tvshow', contentSerieName = title, infoLabels={'year': year } ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -117,7 +116,7 @@ def temporadas(item):
             itemlist = episodios(item)
             return itemlist
 
-        itemlist.append(item.clone( action = 'episodios', title = title, url = url, page = 0, contentType = 'season', contentSeason = tempo ))
+        itemlist.append(item.clone( action = 'episodios', title = title, url = url, page = 0, contentType = 'season', contentSeason = tempo, text_color = 'tan' ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -137,10 +136,12 @@ def episodios(item):
 
     episodes = scrapertools.find_multiple_matches(data, patron)
 
-    if item.page == 0:
+    if item.page == 0 and item.perpage == 50:
         sum_parts = len(episodes)
 
-        try: tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+        try:
+            tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+            if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
         if tvdb_id:
@@ -148,6 +149,7 @@ def episodios(item):
                 platformtools.dialog_notification('SeriesPepitoTop', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
         else:
+            item.perpage = sum_parts
 
             if sum_parts >= 1000:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]500[/B][/COLOR] elementos ?'):
@@ -160,14 +162,20 @@ def episodios(item):
                     item.perpage = 250
 
             elif sum_parts >= 250:
-                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]100[/B][/COLOR] elementos ?'):
-                    platformtools.dialog_notification('SeriesPepitoTop', '[COLOR cyan]Cargando 100 elementos[/COLOR]')
-                    item.perpage = 100
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]125[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('SeriesPepitoTop', '[COLOR cyan]Cargando 125 elementos[/COLOR]')
+                    item.perpage = 125
+
+            elif sum_parts >= 125:
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]75[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('SeriesPepitoTop', '[COLOR cyan]Cargando 75 elementos[/COLOR]')
+                    item.perpage = 75
 
             elif sum_parts > 50:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos [COLOR cyan][B]Todos[/B][/COLOR] de una sola vez ?'):
                     platformtools.dialog_notification('SeriesPepitoTop', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
                     item.perpage = sum_parts
+                else: item.perpage = 50
 
     for epis, url, thumb, title, in episodes[item.page * item.perpage:]:
         if thumb.startswith('//'): thumb = 'https:' + thumb
@@ -215,16 +223,14 @@ def findvideos(item):
 
             if 'hqq' in other or 'waaw' in other or 'netu' in other: continue
 
-            elif 'openload' in other: continue
-            elif 'powvideo' in other: continue
-            elif 'streamplay' in other: continue
-            elif 'rapidvideo' in other: continue
-            elif 'streamango' in other: continue
-            elif 'verystream' in other: continue
-            elif 'vidtodo' in other: continue
+            other = servertools.corregir_servidor(other)
 
-            itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', url = url,
-                                  language = IDIOMAS.get(lang, lang), quality = qlty, other = other.capitalize() ))
+            if servertools.is_server_available(other):
+                if not servertools.is_server_enabled(other): continue
+            else:
+               if not config.get_setting('developer_mode', default=False): continue
+
+            itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', url = url, language = IDIOMAS.get(lang, lang), quality = qlty, other = other.capitalize() ))
 
     # ~ Descargas
     bloque = scrapertools.find_single_match(data, '<div class="OptionBx on">(.*?)</section>')
@@ -238,8 +244,7 @@ def findvideos(item):
 
         lang = lang.lower()
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', url = url,
-                              language = IDIOMAS.get(lang, lang), quality = qlty, other = srv  + ' d' ))
+        itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', url = url, language = IDIOMAS.get(lang, lang), quality = qlty, other = srv  + ' d' ))
 
     if not itemlist:
         if not ses == 0:

@@ -11,7 +11,7 @@
   "categories": ["movie"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["temporary", "problematic", "classic", "languages", "years", "adults", "docs", "vos"],
+  "clusters": ["problematic", "classic", "languages", "years", "adults", "docs", "vos"],
 
-  "notes": "Películas clásicas, por idiomas, géneros y años."
+  "notes": "Web ANULADA. Películas clásicas, por idiomas, géneros y años."
 }

@@ -14,7 +14,7 @@ from core import httptools, scrapertools, tmdb
 from lib import decrypters
 
 
-host = 'https://grantorrent.fi/'
+host = 'https://grantorrent.zip/'
 
 
 # ~ por si viene de enlaces guardados
@@ -23,7 +23,8 @@ ant_hosts = ['http://grantorrent.net/', 'https://grantorrent1.com/', 'https://gr
              'https://grantorrent.eu/', 'https://grantorrent.cc/', 'https://grantorrent.li/',
              'https://grantorrent.online/', 'https://grantorrentt.com/', 'https://grantorrent.nl/',
              'https://grantorrent.ch/', 'https://grantorrent.ac/', 'https://grantorrent.re/',
-             'https://grantorrent.se/,' 'https://grantorrent.si/']
+             'https://grantorrent.se/,' 'https://grantorrent.si/', 'https://grantorrent.fi/',
+             'https://grantorrent.bz/']
 
 
 domain = config.get_setting('dominio', 'grantorrent', default='')
@@ -82,16 +83,21 @@ def do_downloadpage(url, post=None, headers=None):
     for ant in ant_hosts:
         url = url.replace(ant, host)
 
-    # ~ timeout 13/7/2022
-    timeout = 15
-
-    if '/?query' in url: timeout = 30
-    elif '/categoria/' in url: timeout = 30
+    timeout = None
+    if host in url:
+        if config.get_setting('channel_grantorrent_proxies', default=''): timeout = config.get_setting('channels_repeat', default=30)
 
     headers = {'Referer': host}
-   
-    # ~ data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
-    data = httptools.downloadpage_proxy('grantorrent', url, post=post, headers=headers, timeout=timeout).data
+
+    if not url.startswith(host):
+        data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+    else:
+        data = httptools.downloadpage_proxy('grantorrent', url, post=post, headers=headers, timeout=timeout).data
+
+        if not data:
+            if not '?s=' in url:
+                platformtools.dialog_notification('GranTorrent', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+                data = httptools.downloadpage_proxy('grantorrent', url, post=post, headers=headers, timeout=timeout).data
 
     if '<title>You are being redirected...</title>' in data:
         try:
@@ -99,8 +105,11 @@ def do_downloadpage(url, post=None, headers=None):
             ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
             if ck_name and ck_value:
                 httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
-                # ~ data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
-                data = httptools.downloadpage_proxy('grantorrent', url, post=post, headers=headers, timeout=timeout).data
+
+                if not url.startswith(host):
+                    data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+                else:
+                    data = httptools.downloadpage_proxy('grantorrent', url, post=post, headers=headers, timeout=timeout).data
         except:
             pass
 
@@ -183,7 +192,7 @@ def generos(item):
         }
 
     for opc in sorted(opciones):
-        itemlist.append(item.clone( title = opciones[opc], url = host + 'categoria/' + opc + '/', action ='list_all' ))
+        itemlist.append(item.clone( title = opciones[opc], url = host + 'categoria/' + opc + '/', action ='list_all', text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -206,7 +215,7 @@ def calidades(item):
 
         url = host + 'tag/' + value.replace(' ', '-').lower() + '/'
 
-        itemlist.append(item.clone( title=title, url=url, action='list_all' ))
+        itemlist.append(item.clone( title=title, url=url, action='list_all', text_color='moccasin' ))
 
     return itemlist
 
@@ -232,6 +241,8 @@ def list_all(item):
 
         qlty = scrapertools.find_single_match(match, ' text-center">.*?<span>(.*?)</span>')
 
+        title = title.replace('&#038;', '').strip()
+
         itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, languages=lang, qualities=qlty,
                                     contentType='movie', contentTitle=title, infoLabels={'year': '-'} ))
 
@@ -251,6 +262,7 @@ def list_all(item):
 
 def puntuar_calidad(txt):
     txt = txt.lower().replace(' ', '').replace('-', '')
+
     orden = ['3d',
              'screener',
              'screener720p',
@@ -265,6 +277,7 @@ def puntuar_calidad(txt):
              'microhd',
              'microhd1080p',
              '1080p',
+             'blurayrip',
              'bluray1080p',
              'fullbluray1080p',
              'bdremux1080p',
@@ -319,6 +332,12 @@ def play(item):
                 data = do_downloadpage(item.url)
 
             if data:
+                if '<h1>404 Not Found</h1>' in str(data) or '<h1>Not Found</h1>' in str(data) or '<!DOCTYPE html>' in str(data) or '<!DOCTYPE>' in str(data) or '<!doctype' in str(data):
+                    return 'Archivo [COLOR red]Inexistente[/COLOR]'
+
+                elif 'Página no encontrada</title>' in str(data) or 'no encontrada</title>' in str(data) or '<h1>403 Forbidden</h1>' in str(data):
+                    return 'Archivo [COLOR red]No encontrado[/COLOR]'
+
                 import os
 
                 file_local = os.path.join(config.get_data_path(), "temp.torrent")

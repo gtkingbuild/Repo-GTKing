@@ -35,7 +35,7 @@ def mainlist_pelis(item):
     itemlist.append(item.clone( title = 'Alta definición', action = 'list_all', url = host + 'archivos/high-definition/' ))
     itemlist.append(item.clone( title = 'Los mejores', action = 'list_all', url = host + 'archivos/ranking-hentai/' ))
 
-    itemlist.append(item.clone( title = 'Mangas H', action = 'list_all', url = host + 'archivos/m2/' ))
+    itemlist.append(item.clone( title = 'Mangas H', action = 'list_all', url = host + 'archivos/m2/', text_color='moccasin' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos' ))
 
@@ -54,7 +54,7 @@ def generos(item):
     matches = re.compile('href="([^"]+)"[^>]+>(.*?)</a>', re.DOTALL).findall(bloque)
 
     for url, title in matches:
-        itemlist.append(item.clone( action = 'list_all', url = url, title = title ))
+        itemlist.append(item.clone( action = 'list_all', url = url, title = title, text_color='orange' ))
 
     return itemlist
 
@@ -75,11 +75,9 @@ def list_all(item):
         title = title.replace('][', ' ').replace('[', ' ').replace(']', ' ')
 
         if item.group == 'find':
-            itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb,
-                                        contentType = 'movie', contentTitle = title, contentExtra='adults' ))
+            itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, contentType = 'movie', contentTitle = title, contentExtra='adults' ))
         else:
-            itemlist.append(item.clone( action = 'episodios', url = url, title = title, thumbnail = thumb,
-                                        contentType = 'movie', contentTitle = title, contentExtra='adults' ))
+            itemlist.append(item.clone( action = 'episodios', url = url, title = title, thumbnail = thumb, contentType = 'movie', contentTitle = title, contentExtra='adults' ))
 
     if itemlist:
         bloque = scrapertools.find_single_match(data, "<div class='wp-pagenavi'(.*?)</div>")
@@ -155,6 +153,7 @@ def findvideos(item):
 
     for url in videos:
         if '/hqq.' in url or '/waaw.' in url or '/netu.' in url: continue
+        elif '/vapley.top/' in url: continue
         elif '/megadl.fr/' in url: continue
         elif '/1fichier.com/' in url: continue
 
@@ -163,7 +162,8 @@ def findvideos(item):
 
         url = servertools.normalize_url(servidor, url)
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = url, language = 'VO' ))
+        if url:
+            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = url, language = 'VO' ))
 
     if not itemlist:
         if not ses == 0:

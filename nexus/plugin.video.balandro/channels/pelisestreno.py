@@ -4,6 +4,7 @@ from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
+
 host = 'https://ww1.pelisestreno.cc/'
 
 
@@ -56,7 +57,7 @@ def generos(item):
     for url, title in matches:
         if title == 'Estrenos': continue
 
-        itemlist.append(item.clone( action = 'list_all', title = title, url = url ))
+        itemlist.append(item.clone( action = 'list_all', title = title, url = url, text_color = 'deepskyblue' ))
 
     return sorted(itemlist, key=lambda it: it.title)
 
@@ -71,7 +72,7 @@ def anios(item):
     for x in range(current_year, 1938, -1):
         url = host + 'release/' + str(x) + '/'
 
-        itemlist.append(item.clone( title = str(x), url = url, action='list_all', page = 1 ))
+        itemlist.append(item.clone( title = str(x), url = url, action='list_all', page = 1, text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -112,13 +113,14 @@ def list_all(item):
         if year: title = title.replace('(' + year + ')', '').strip()
         else: year = '-'
 
+        title = title.replace('&#8211;', '').replace('&#8217;', '').replace('&#038;', '&')
+
         langs = []
         if 'title="Español"' in match: langs.append('Esp')
         if 'title="Latino"' in match: langs.append('Lat')
         if 'title="Subtitulado"' in match: langs.append('Vose')
 
-        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, languages = ', '.join(langs),
-                                    contentType = 'movie', contentTitle = title, infoLabels={'year': year} ))
+        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, languages = ', '.join(langs), contentType = 'movie', contentTitle = title, infoLabels={'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -128,6 +130,7 @@ def list_all(item):
             patron += "href='(.*?)'"
 
             next_page = scrapertools.find_single_match(data, patron)
+
             if next_page:
                 if '/page/' in next_page:
                     itemlist.append(item.clone( title = 'Siguientes ...', url = next_page, action = 'list_all', text_color='coral' ))
@@ -163,13 +166,13 @@ def findvideos(item):
             continue
 
         elif 'hqq' in servidor or 'waaw' in servidor or 'netu' in servidor: continue
-        elif 'openload' in servidor: continue
-        elif 'powvideo' in servidor: continue
-        elif 'streamplay' in servidor: continue
-        elif 'rapidvideo' in servidor: continue
-        elif 'streamango' in servidor: continue
-        elif 'verystream' in servidor: continue
-        elif 'vidtodo' in servidor: continue
+
+        servidor = servertools.corregir_servidor(servidor)
+
+        if servertools.is_server_available(servidor):
+            if not servertools.is_server_enabled(servidor): continue
+        else:
+            if not config.get_setting('developer_mode', default=False): continue
 
         lang = scrapertools.find_single_match(match, " src='.*?/flags/(.*?).png'")
 
@@ -178,8 +181,7 @@ def findvideos(item):
 
         if not dpost or not dnume: continue
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', dpost = dpost, dnume = dnume, other = servidor.capitalize(),
-                              language = IDIOMAS.get(lang, lang) ))
+        itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', dpost = dpost, dnume = dnume, other = servidor.capitalize(), language = IDIOMAS.get(lang, lang) ))
 
     # enlaces
     matches = scrapertools.find_multiple_matches(data, "<tr id='link-'(.*?)</tr>")
@@ -189,7 +191,10 @@ def findvideos(item):
 
         url = scrapertools.find_single_match(match, "<a href='(.*?)'")
 
+        if not url: continue
+
         if '/hqq.' in url or '/waaw.' in url or '/netu.' in url: continue
+
         elif 'openload' in url: continue
         elif 'powvideo' in url: continue
         elif 'streamplay' in url: continue
@@ -208,6 +213,11 @@ def findvideos(item):
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 
+        if servertools.is_server_available(servidor):
+            if not servertools.is_server_enabled(servidor): continue
+        else:
+            if not config.get_setting('developer_mode', default=False): continue
+
         url = servertools.normalize_url(servidor, url)
 
         if url:
@@ -215,7 +225,8 @@ def findvideos(item):
 
             lang = scrapertools.find_single_match(match, " src='.*?/flags/(.*?).png'")
 
-            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = url, language = IDIOMAS.get(lang, lang), quality = qlty ))
+            if not servidor == 'directo':
+                itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = url, language = IDIOMAS.get(lang, lang), quality = qlty ))
 
     if not itemlist:
         if not ses == 0:
@@ -279,6 +290,8 @@ def list_search(item):
         if year: title = title.replace('(' + year + ')', '').strip()
         else: year = '-'
 
+        title = title.replace('&#8211;', '').replace('&#8217;', '').replace('&#038;', '&')
+
         langs = []
         if '/flags/es.png' in article: langs.append('Esp')
         if '/flags/mx.png' in article: langs.append('Lat')
@@ -286,8 +299,7 @@ def list_search(item):
 
         plot = scrapertools.htmlclean(scrapertools.find_single_match(article, '<div class="contenido"><p>(.*?)</p>'))
 
-        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, languages = ', '.join(langs),
-                                    contentType='movie', contentTitle=title, infoLabels={'year': year, 'plot': plot} ))
+        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, languages = ', '.join(langs), contentType='movie', contentTitle=title, infoLabels={'year': year, 'plot': plot} ))
 
     tmdb.set_infoLabels(itemlist)
 

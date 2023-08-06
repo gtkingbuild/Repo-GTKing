@@ -12,7 +12,7 @@
         "url": "https://cloudvideo.tv/embed-\\1.html"
       },
       {
-        "pattern": "https://cloudvideo.tv/emb\\.html\\?([a-z0-9]+)",
+        "pattern": "https://cloudvideo.tv/emb/([a-z0-9]+)",
         "url": "https://cloudvideo.tv/embed-\\1.html"
       },
       {

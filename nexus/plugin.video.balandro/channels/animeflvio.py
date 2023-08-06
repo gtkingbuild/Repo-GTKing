@@ -102,7 +102,7 @@ def generos(item):
 
         url = url + '?page=1'
 
-        itemlist.append(item.clone( title = title.capitalize(), action = 'list_all', url = url ))
+        itemlist.append(item.clone( title = title.capitalize(), action = 'list_all', url = url, text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -117,7 +117,7 @@ def anios(item):
     for x in range(current_year, 1999, -1):
         url = host + 'peliculas-' + str(x) + '?page=1'
 
-        itemlist.append(item.clone( title = str(x), url = url, action = 'list_all' ))
+        itemlist.append(item.clone( title = str(x), url = url, action = 'list_all', text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -156,14 +156,12 @@ def list_all(item):
 
             SerieName = SerieName.strip()
 
-            itemlist.append(item.clone( action='temporadas', url=url, title=title, thumbnail=thumb,
-                                        contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': '-'} ))
+            itemlist.append(item.clone( action='temporadas', url=url, title=title, thumbnail=thumb, contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': '-'} ))
 
         else:
             if item.search_type == 'tvshow': continue
 
-            itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb,
-                                        contentType='movie', contentTitle=title, infoLabels={'year': '-'} ))
+            itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, contentType='movie', contentTitle=title, infoLabels={'year': '-'} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -209,10 +207,12 @@ def episodios(item):
 
     matches = re.compile('<a href="(.*?)".*?</i>(.*?)</a>', re.DOTALL).findall(bloque)
 
-    if item.page == 0:
+    if item.page == 0 and item.perpage == 50:
         sum_parts = len(matches)
 
-        try: tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+        try:
+            tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+            if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
         if tvdb_id:
@@ -220,6 +220,7 @@ def episodios(item):
                 platformtools.dialog_notification('AnimeFlvIo', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
         else:
+            item.perpage = sum_parts
 
             if sum_parts >= 1000:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]500[/B][/COLOR] elementos ?'):
@@ -232,24 +233,29 @@ def episodios(item):
                     item.perpage = 250
 
             elif sum_parts >= 250:
-                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]100[/B][/COLOR] elementos ?'):
-                    platformtools.dialog_notification('AnimeFlvIo', '[COLOR cyan]Cargando 100 elementos[/COLOR]')
-                    item.perpage = 100
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]125[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('AnimeFlvIo', '[COLOR cyan]Cargando 125 elementos[/COLOR]')
+                    item.perpage = 125
+
+            elif sum_parts >= 125:
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]75[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('AnimeFlvIo', '[COLOR cyan]Cargando 75 elementos[/COLOR]')
+                    item.perpage = 75
 
             elif sum_parts > 50:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos [COLOR cyan][B]Todos[/B][/COLOR] de una sola vez ?'):
                     platformtools.dialog_notification('AnimeFlvIo', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
                     item.perpage = sum_parts
+                else: item.perpage = 50
 
     for url, title in matches[item.page * item.perpage:]:
         url = host[:-1] + url
 
         episode = title.replace('Episodio', '').strip()
 
-        titulo = str(item.contentSeason) + 'x' + str(episode) + ' ' + title
+        titulo = str(item.contentSeason) + 'x' + str(episode) + ' ' + title + ' ' + item.contentSerieName
 
-        itemlist.append(item.clone( action='findvideos', url = url, title = titulo,
-                                    contentType = 'episode', contentSeason = item.contentSeason, contentEpisodeNumber=episode ))
+        itemlist.append(item.clone( action='findvideos', url = url, title = titulo, contentType = 'episode', contentSeason = item.contentSeason, contentEpisodeNumber=episode ))
 
         if len(itemlist) >= item.perpage:
             break
@@ -274,8 +280,6 @@ def findvideos(item):
 
     matches = scrapertools.find_multiple_matches(bloque, '<li role="presentation".*?data-video="(.*?)"')
 
-    lang = 'Vose'
-
     ses = 0
 
     for url in matches:
@@ -292,7 +296,7 @@ def findvideos(item):
 
         if servidor == 'directo': continue
 
-        itemlist.append(Item( channel = item.channel, action = 'play', url = url, server = servidor, title = '', language = lang ))
+        itemlist.append(Item( channel = item.channel, action = 'play', url = url, server = servidor, title = '', language = 'Vose' ))
 
     if not itemlist:
         if not ses == 0:

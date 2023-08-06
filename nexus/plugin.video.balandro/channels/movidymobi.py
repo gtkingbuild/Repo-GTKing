@@ -70,7 +70,7 @@ def generos(item):
     for genero in generos:
         url = host + 'pelis/category/' + genero + '/'
 
-        itemlist.append(item.clone( action = 'list_all', title = genero.capitalize(), url = url ))
+        itemlist.append(item.clone( action = 'list_all', title = genero.capitalize(), url = url, text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -85,7 +85,7 @@ def anios(item):
     for x in range(current_year, 1979, -1):
         url = host + 'pelis/peliculas/fecha/' + str(x) + '/'
 
-        itemlist.append(item.clone( title = str(x), url = url, action='list_all' ))
+        itemlist.append(item.clone( title = str(x), url = url, action='list_all', text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -121,8 +121,7 @@ def list_all(item):
 
         thumb = scrapertools.find_single_match(article, ' src="([^"]+)"')
 
-        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb,
-                                    contentType = 'movie', contentTitle = title, infoLabels = {'year': '-'} ))
+        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, contentType = 'movie', contentTitle = title, infoLabels = {'year': '-'} ))
 
         if len(itemlist) >= perpage: break
 
@@ -147,8 +146,7 @@ def list_all(item):
 
             post = {'action': 'action_sorting_post', 'number': 22, 'page': item.next_page, 'types': 'movie'}
 
-            itemlist.append(item.clone( title = 'Siguientes ...', url = url, post = post, action = 'list_all',
-                                        page = 0, next = item.next_page, text_color='coral' ))
+            itemlist.append(item.clone( title = 'Siguientes ...', url = url, post = post, action = 'list_all', page = 0, next = item.next_page, text_color='coral' ))
 
     return itemlist
 
@@ -169,10 +167,7 @@ def findvideos(item):
         if '/hqq.' in url or '/waaw.' in url or '/netu.' in url: continue
         elif '/player.cuevana.ac' in url: continue
 
-        elif '/gounlimited.' in url: continue
-        elif '/jetload.' in url: continue
-        elif '/vidcloud.' in url: continue
-        elif '.mystream.' in url: continue
+        if '.mystream.' in url: continue
 
         if lang == 'es': lang = 'Esp'
         elif lang == 'la': lang = 'Lat'
@@ -181,6 +176,11 @@ def findvideos(item):
 
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
+
+        if servertools.is_server_available(servidor):
+            if not servertools.is_server_enabled(servidor): continue
+        else:
+            if not config.get_setting('developer_mode', default=False): continue
 
         url = servertools.normalize_url(servidor, url)
 
@@ -203,8 +203,6 @@ def findvideos(item):
             continue
 
         itemlist.append(Item (channel = item.channel, action = 'play', title = '', server = servidor, url = url, language = lang, quality = qlty ))
-
-    itemlist = servertools.get_servers_itemlist(itemlist)
 
     if not itemlist:
         if not ses == 0:

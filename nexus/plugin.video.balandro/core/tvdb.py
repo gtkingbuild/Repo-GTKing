@@ -311,8 +311,7 @@ class Tvdb:
             self.__get_by_id(kwargs.get('tvdb_id', ''))
             if not self.list_results and config.get_setting('tvdb_retry_eng', default=True):
                 from platformcode import platformtools
-                platformtools.dialog_notification("No se ha encontrado en idioma '%s'" % DEFAULT_LANG,
-                                                  "Se busca en idioma 'en'", sound=False)
+                platformtools.dialog_notification("No se ha encontrado en idioma '%s'" % DEFAULT_LANG, "Se busca en idioma 'en'", sound=False)
                 self.__get_by_id(kwargs.get('tvdb_id', ''), "en")
                 self.lang = "en"
 
@@ -321,8 +320,7 @@ class Tvdb:
             self.__search(kwargs.get('search', ''), kwargs.get('imdb_id', ''), kwargs.get('zap2it_id', ''))
             if not self.list_results and config.get_setting('tvdb_retry_eng', default=True):
                 from platformcode import platformtools
-                platformtools.dialog_notification("No se ha encontrado en idioma '%s'" % DEFAULT_LANG,
-                                                  "Se busca en idioma 'en'")
+                platformtools.dialog_notification("No se ha encontrado en idioma '%s'" % DEFAULT_LANG, "Se busca en idioma 'en'")
                 self.__search(kwargs.get('search', ''), kwargs.get('imdb_id', ''), kwargs.get('zap2it_id', ''), "en")
                 self.lang = "en"
 

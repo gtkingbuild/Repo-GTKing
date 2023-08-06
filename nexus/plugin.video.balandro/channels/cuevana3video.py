@@ -15,7 +15,7 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-host = 'https://www4.cuevana3.ch'
+host = 'https://www12.cuevana3.ch'
 
 
 # ~ por si viene de enlaces guardados
@@ -25,7 +25,9 @@ ant_hosts = ['https://www1.cuevana3.video', 'https://www2.cuevana3.video', 'http
              'https://www1.cuevana3.pe', 'https://www2.cuevana3.pe', 'https://cuevana3.vc',
              'https://www1.cuevana3.vc', 'https://cuevana3.fm', 'https://www1.cuevana3.fm',
              'https://cuevana3.ch/', 'https://www1.cuevana3.ch', 'https://www2.cuevana3.ch',
-             'https://www3.cuevana3.ch']
+             'https://www3.cuevana3.ch', 'https://www4.cuevana3.ch', 'https://www5.cuevana3.ch',
+             'https://www6.cuevana3.ch', 'https://www7.cuevana3.ch', 'https://www8.cuevana3.ch',
+             'https://www9.cuevana3.ch', 'https://www10.cuevana3.ch', 'https://www11.cuevana3.ch']
 
 
 domain = config.get_setting('dominio', 'cuevana3video', default='')
@@ -76,8 +78,29 @@ def do_downloadpage(url, post=None, headers=None):
     for ant in ant_hosts:
         url = url.replace(ant, host)
 
-    # ~ data = httptools.downloadpage(url, post=post, headers=headers).data
-    data = httptools.downloadpage_proxy('cuevana3video', url, post=post, headers=headers).data
+    if not url.startswith(host):
+        data = httptools.downloadpage(url, post=post, headers=headers).data
+    else:
+        data = httptools.downloadpage_proxy('cuevana3video', url, post=post, headers=headers).data
+
+    if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
+        try:
+            from lib import balandroresolver
+            ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
+            if ck_name and ck_value:
+                httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
+
+                if not url.startswith(host):
+                    data = httptools.downloadpage(url, post=post, headers=headers).data
+                else:
+                    data = httptools.downloadpage_proxy('cuevana3video', url, post=post, headers=headers).data
+        except:
+            pass
+
+    if '<title>Just a moment...</title>' in data:
+        if not '/search.html?keyword=' in url:
+            platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]CloudFlare[COLOR orangered] Protection[/B][/COLOR]')
+        return ''
 
     return data
 
@@ -104,6 +127,8 @@ def acciones(item):
     itemlist.append(item.clone( channel='domains', action='manto_domain_cuevana3video', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
 
     itemlist.append(item_configurar_proxies(item))
+
+    itemlist.append(Item( channel='helper', action='show_help_cuevana3video', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('help') ))
 
     platformtools.itemlist_refresh()
 
@@ -151,7 +176,7 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catalogo', action = 'list_all', url = host + '/serie', filtro = 'tabserie-1', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_episodes', url = host + '/serie', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_episodes', url = host + '/serie', search_type = 'tvshow', text_color = 'olive' ))
 
     itemlist.append(item.clone( title = 'Más vistas', action = 'list_all', url = host + '/serie', filtro = 'tabserie-4', search_type = 'tvshow' ))
 
@@ -171,7 +196,7 @@ def generos(item):
         url = scrapertools.find_single_match(match,'<a href="(.*?)">')
         title = scrapertools.find_single_match(match,'>(.*?)</a>')
 
-        itemlist.append(item.clone( title = title, url = host + url, action = 'list_all', search_type = item.search_type ))
+        itemlist.append(item.clone( title = title, url = host + url, action = 'list_all', search_type = item.search_type, text_color = 'deepskyblue' ))
 
     return sorted(itemlist, key=lambda it: it.title)
 
@@ -311,7 +336,7 @@ def temporadas(item):
             itemlist = episodios(item)
             return itemlist
 
-        itemlist.append(item.clone( action='episodios', title=title, page = 0, contentType='season', contentSeason=tempo ))
+        itemlist.append(item.clone( action='episodios', title=title, page = 0, contentType='season', contentSeason=tempo, text_color = 'tan' ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -332,10 +357,12 @@ def episodios(item):
 
     matches = re.compile('<a href="(.*?)">(.*?)</li>', re.DOTALL).findall(data)
 
-    if item.page == 0:
+    if item.page == 0 and item.perpage == 50:
         sum_parts = len(matches)
 
-        try: tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+        try:
+            tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+            if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
         if tvdb_id:
@@ -343,6 +370,7 @@ def episodios(item):
                 platformtools.dialog_notification('Cuevana3Video', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
         else:
+            item.perpage = sum_parts
 
             if sum_parts >= 1000:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]500[/B][/COLOR] elementos ?'):
@@ -355,14 +383,20 @@ def episodios(item):
                     item.perpage = 250
 
             elif sum_parts >= 250:
-                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]100[/B][/COLOR] elementos ?'):
-                    platformtools.dialog_notification('Cuevana3Video', '[COLOR cyan]Cargando 100 elementos[/COLOR]')
-                    item.perpage = 100
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]125[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('Cuevana3Video', '[COLOR cyan]Cargando 125 elementos[/COLOR]')
+                    item.perpage = 125
+
+            elif sum_parts >= 125:
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]75[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('Cuevana3Video', '[COLOR cyan]Cargando 75 elementos[/COLOR]')
+                    item.perpage = 75
 
             elif sum_parts > 50:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos [COLOR cyan][B]Todos[/B][/COLOR] de una sola vez ?'):
                     platformtools.dialog_notification('Cuevana3Video', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
                     item.perpage = sum_parts
+                else: item.perpage = 50
 
     for url, datos in matches[item.page * item.perpage:]:
         try:
@@ -381,8 +415,7 @@ def episodios(item):
 
         url = host + url
 
-        itemlist.append(item.clone( action='findvideos', title = title, thumbnail=thumb, url = url,
-                                    contentType = 'episode', contentSeason = season, contentEpisodeNumber = epis ))
+        itemlist.append(item.clone( action='findvideos', title = title, thumbnail=thumb, url = url, contentType = 'episode', contentSeason = season, contentEpisodeNumber = epis ))
 
         if len(itemlist) >= item.perpage:
             break
@@ -448,7 +481,9 @@ def findvideos(item):
 
                             url = servertools.normalize_url(servidor, link2)
 
-                            if servidor == 'directo':
+                            if '/clonamesta' in url: continue
+
+                            if servidor == 'directo' or servidor == 'various':
                                 link_other = normalize_other(url)
                                 if link_other == '': continue
                             else: link_other = 'play'
@@ -466,7 +501,9 @@ def findvideos(item):
 
                 url = servertools.normalize_url(servidor, url)
 
-                if servidor == 'directo':
+                if '/clonamesta' in url: continue
+
+                if servidor == 'directo' or servidor == 'various':
                     link_other = normalize_other(url)
                     if link_other == '': continue
                 else: link_other = ''
@@ -488,7 +525,7 @@ def findvideos(item):
                 if hay_pelisplay: url = ''
                 else:
                    new_url = url.replace('/download', '/play')
-	
+
                    data2 = do_downloadpage(new_url)
 
                    links2 = scrapertools.find_multiple_matches(data2, '<li class="linkserver".*?data-status="1".*?data-video="(.*?)"')
@@ -500,14 +537,13 @@ def findvideos(item):
 
                            url = servertools.normalize_url(servidor, link2)
 
-                           if servidor == 'directo': link_other = normalize_other(url)
+                           if servidor == 'directo' or servidor == 'various': link_other = normalize_other(url)
                            else: link_other = 'play'
 
                            if not config.get_setting('developer_mode', default=False):
                                if link_other == 'hydrax': continue
 
-                           itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, referer = item.url,
-                                                 quality = 'HD', other = link_other ))
+                           itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, referer = item.url, quality = 'HD', other = link_other ))
 
                            continue
 
@@ -517,15 +553,14 @@ def findvideos(item):
 
             url = servertools.normalize_url(servidor, url)
 
-            if servidor == 'directo': link_other = normalize_other(url)
+            if servidor == 'directo' or servidor == 'various': link_other = normalize_other(url)
             else: link_other = ''
 
             if not config.get_setting('developer_mode', default=False):
                 if link_other == 'hydrax': link_other = ''
 
             if link_other:
-                itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, referer = item.url,
-                                      quality = 'HD', other = link_other ))
+                itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, referer = item.url, quality = 'HD', other = link_other ))
 
     if not itemlist:
         if not ses == 0:
@@ -548,6 +583,9 @@ def normalize_other(url):
     elif 'apialfa' in url: link_other = 'apialfa'
     elif 'tomatomatela' in url: link_other = 'dame'
     elif 'hydrax' in url: link_other = 'hydrax'
+    elif 'streamwish' in url: link_other = 'streamwish'
+    elif 'filemoon' in url: link_other = 'filemoon'
+
     else:
        if config.get_setting('developer_mode', default=False):
            try:
@@ -660,13 +698,39 @@ def play(item):
 
     elif item.other == 'apialfa':
         fid = scrapertools.find_single_match(item.url, "h=([^&]+)")
+
         if fid:
+            if '/sc/' in item.url:
+                post = {'h': fid}
+
+                vid = item.url.replace('https://apialfa.tomatomatela.club/sc/index.php', 'https://apialfa.tomatomatela.club/sc/r.php')
+
+                if not vid.startswith(host):
+                    data = httptools.downloadpage(vid, post=post).data
+                else:
+                    data = httptools.downloadpage_proxy('cuevana3video', vid, post=post).data
+
+                url = scrapertools.find_single_match(data, '<meta name="og:url" content="(.*?)"')
+
+                if url:
+                    servidor = servertools.get_server_from_url(url)
+                    servidor = servertools.corregir_servidor(servidor)
+
+                    url = servertools.normalize_url(servidor, url)
+
+                    itemlist.append(item.clone(url=url, server=servidor))
+
+                return itemlist
+
             vid = item.url.replace('https://apialfa.tomatomatela.club/ir/player.php', 'https://apialfa.tomatomatela.club/ir/rd.php')
+
             post = {'url': fid}
 
             try:
-                # ~ new_url = httptools.downloadpage(vid, post=post, follow_redirects=False).headers['location']
-                new_url = httptools.downloadpage_proxy('cuevana3video', vid, post=post, follow_redirects=False).headers['location']
+                if not vid.startswith(host):
+                    new_url = httptools.downloadpage(vid, post=post, follow_redirects=False).headers['location']
+                else:
+                    new_url = httptools.downloadpage_proxy('cuevana3video', vid, post=post, follow_redirects=False).headers['location']
             except:
                 new_url = ''
 
@@ -677,28 +741,55 @@ def play(item):
                 vid = scrapertools.find_single_match(data, 'value="(.*?)"')
 
                 if vid:
-                    post = {'url': vid}
-
                     try:
-                        # ~ url = httptools.downloadpage('https://apialfa.tomatomatela.club/ir/redirect_ddh.php', post=post, follow_redirects=False).headers['location']
-                        url = httptools.downloadpage_proxy('cuevana3video', 'https://apialfa.tomatomatela.club/ir/redirect_ddh.php', post=post, follow_redirects=False).headers['location']
+                        if not vid.startswith(host):
+                            new_url = httptools.downloadpage(vid, post=post, follow_redirects=False).headers['location']
+                        else:
+                            new_url = httptools.downloadpage_proxy('cuevana3video', vid, post=post, follow_redirects=False).headers['location']
                     except:
-                        url = ''
+                        new_url = ''
 
-                    if url:
-                        if '//damedamehoy.' in url or '//tomatomatela.' in url :
-                            url = resuelve_dame_toma(url)
+                if new_url:
+                    servidor = servertools.get_server_from_url(new_url)
+                    servidor = servertools.corregir_servidor(servidor)
 
-                            if url: itemlist.append(item.clone(url=url, server='directo'))
-                            return itemlist
-
-                        servidor = servertools.get_server_from_url(url)
-                        servidor = servertools.corregir_servidor(servidor)
-
-                        url = servertools.normalize_url(servidor, url)
+                    if servidor and servidor != 'directo':
+                        url = servertools.normalize_url(servidor, new_url)
 
                         itemlist.append(item.clone(url=url, server=servidor))
+
+                    return itemlist
+
+            else:
+                vid = 'https://apialfa.tomatomatela.club/ir/redirect_ddh.php'
+                try:
+                    if not vid.startswith(host):
+                        url = httptools.downloadpage(vid, post=post, follow_redirects=False).headers['location']
+                    else:
+                        url = httptools.downloadpage_proxy('cuevana3video', vid, post=post, follow_redirects=False).headers['location']
+                except:
+                    url = ''
+
+                if url:
+                    if '//damedamehoy.' in url or '//tomatomatela.' in url :
+                        url = resuelve_dame_toma(url)
+
+                        if url: itemlist.append(item.clone(url=url, server='directo'))
                         return itemlist
+
+                    servidor = servertools.get_server_from_url(url)
+                    servidor = servertools.corregir_servidor(servidor)
+
+                    url = servertools.normalize_url(servidor, url)
+
+                    itemlist.append(item.clone(url=url, server=servidor))
+                    return itemlist
+
+    if url:
+        if '/hqq.' in url or '/waaw.' in url or '/netu.' in url or '/clonamesta' in url:
+            return 'Requiere verificación [COLOR red]reCAPTCHA[/COLOR]'
+
+        itemlist.append(item.clone(url = url, server = servidor))
 
     return itemlist
 

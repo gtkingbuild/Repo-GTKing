@@ -13,5 +13,5 @@
 
   "clusters": ["problematic", "news", "rankings", "years", "lasts", "docs", "anime", "dorama", "vos"],
 
-  "notes": "Películas por géneros y años. También series por Géneros, animes y doramas"
+  "notes": "Películas por géneros y años. Series por Géneros."
 }

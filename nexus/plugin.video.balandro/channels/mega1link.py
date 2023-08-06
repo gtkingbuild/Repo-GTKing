@@ -33,9 +33,9 @@ def idiomas(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title='Castellano', action='list_all', url = host + 'tag/espanol-castellano/' ))
-    itemlist.append(item.clone( title='Latino', action='list_all', url = host + 'tag/espanol-latino/' ))
-    itemlist.append(item.clone( title='Subtitulado', action='list_all', url = host + 'tag/subtitulada/' ))
+    itemlist.append(item.clone( title='Castellano', action='list_all', url = host + 'tag/espanol-castellano/', text_color='moccasin' ))
+    itemlist.append(item.clone( title='Latino', action='list_all', url = host + 'tag/espanol-latino/', text_color='moccasin' ))
+    itemlist.append(item.clone( title='Subtitulado', action='list_all', url = host + 'tag/subtitulada/', text_color='moccasin' ))
 
     return itemlist
 
@@ -48,16 +48,17 @@ def generos(item):
 
     bloque = scrapertools.find_single_match(data, '>Genero</a>(.*?)</ul>')
 
-    matches = scrapertools.find_multiple_matches(bloque, '<a href=(.*?)>(.*?)</a>')
+    matches = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)">(.*?)</a>')
+    if not matches: matches = scrapertools.find_multiple_matches(bloque, '<a href=(.*?)>(.*?)</a>')
 
     for url, title in matches:
         if '/genero/' not in url: continue
 
-        itemlist.append(item.clone( action = 'list_all', title = title, url = url ))
+        itemlist.append(item.clone( action = 'list_all', title = title, url = url, text_color = 'deepskyblue' ))
 
     if itemlist:
-        itemlist.append(item.clone( action = 'list_all', title = 'Bélica', url = host + 'genero/belica/' ))
-        itemlist.append(item.clone( action = 'list_all', title = 'Western', url = host + 'genero/western/' ))
+        itemlist.append(item.clone( action = 'list_all', title = 'Bélica', url = host + 'genero/belica/', text_color = 'deepskyblue' ))
+        itemlist.append(item.clone( action = 'list_all', title = 'Western', url = host + 'genero/western/', text_color = 'deepskyblue' ))
 
     return sorted(itemlist, key=lambda it: it.title)
 
@@ -70,10 +71,11 @@ def calidades(item):
 
     bloque = scrapertools.find_single_match(data, 'Calidad</a>(.*?)</ul>')
 
-    matches = scrapertools.find_multiple_matches(bloque, '<a href=(.*?)>(.*?)</a>')
+    matches = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)">(.*?)</a>')
+    if not matches: matches = scrapertools.find_multiple_matches(bloque, '<a href=(.*?)>(.*?)</a>')
 
     for url, title in matches:
-        itemlist.append(item.clone( action='list_all', title='En ' + title, url = url ))
+        itemlist.append(item.clone( action='list_all', title='En ' + title, url = url, text_color='moccasin' ))
 
     return itemlist
 
@@ -93,6 +95,7 @@ def list_all(item):
         article = scrapertools.decodeHtmlentities(article)
 
         url = scrapertools.find_single_match(article, ' href="(.*?)"')
+        if not url: url = scrapertools.find_single_match(article, " href='(.*?)'")
         if not url: url = scrapertools.find_single_match(article, ' href=(.*?)>')
 
         title = scrapertools.find_single_match(article, ' alt="(.*?)"')
@@ -120,7 +123,8 @@ def list_all(item):
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
-        next_page = scrapertools.find_single_match(data, '<span class=current>.*?<a href=(.*?)class=').strip()
+        next_page = scrapertools.find_single_match(data, '<span class="current">.*?' + "<a href='(.*?)'")
+
         if next_page:
             if '/page/' in next_page:
                 itemlist.append(item.clone (url = next_page, page = 0, title = 'Siguientes ...', action = 'list_all', text_color='coral'))
@@ -153,15 +157,19 @@ def findvideos(item):
 
         if '<th' in lin: continue
 
-        url = scrapertools.find_single_match(lin, "<a href='(.*?)'")
-        if not url: url = scrapertools.find_single_match(lin, "<a href=(.*?) ")
+        url = scrapertools.find_single_match(lin, '<a href="(.*?)"')
+        if not url: url = scrapertools.find_single_match(lin, "<a href='(.*?)'")
 
         server = servertools.corregir_servidor(scrapertools.find_single_match(lin, "domain=([^.']+)"))
+
         if not url or not server: continue
 
-        if 'fireload' in server: continue
-        elif 'megaupload' in server: continue
-        elif server == 'soon': continue
+        if server == 'soon': continue
+
+        if servertools.is_server_available(server):
+            if not servertools.is_server_enabled(server): continue
+        else:
+            if not config.get_setting('developer_mode', default=False): continue
 
         if url.startswith('//'): url = 'https:' + url
 
@@ -221,6 +229,7 @@ def list_search(item):
         article = scrapertools.decodeHtmlentities(article)
 
         url = scrapertools.find_single_match(article, ' href="(.*?)"')
+        if not url: url = scrapertools.find_single_match(article, " href='(.*?)'")
         if not url: url = scrapertools.find_single_match(article, ' href=(.*?)>')
 
         title = scrapertools.find_single_match(article, ' alt="(.*?)"')
@@ -231,6 +240,7 @@ def list_search(item):
         if not thumb: thumb = scrapertools.find_single_match(article, ' data-src=(.*?) ')
 
         year = scrapertools.find_single_match(article, '<span class=year>(.*?)</span>')
+        if not year: year = scrapertools.find_single_match(article, '<span class="year">(.*?)</span>')
         if not year: year = scrapertools.find_single_match(article, '<span>.*?,(.*?)</span>').strip()
         if not year: year = scrapertools.find_single_match(article, '<span>(.*?)</span>').strip()
 
@@ -239,13 +249,13 @@ def list_search(item):
         if year: title = title = title.replace(' ' + year, '').strip()
         else: year = '-'
 
-        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, 
-                                    contentType='movie', contentTitle=title, infoLabels={'year': year, 'plot': plot} ))
+        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, contentType='movie', contentTitle=title, infoLabels={'year': year, 'plot': plot} ))
 
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, ' href="([^"]+)"[^>]*><span class="icon-chevron-right">')
+
         if next_page:
             itemlist.append(item.clone( title='Siguientes ...', url=next_page, action='list_search', text_color='coral' ))
 

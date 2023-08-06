@@ -56,7 +56,7 @@ def categorias(item):
     matches = re.compile(patron,re.DOTALL).findall(data)
 
     for url, title, cantidad in matches:
-        titulo = '%s %s' % (title, cantidad)
+        titulo = '[COLOR orange]%s[/COLOR] %s' % (title, cantidad)
 
         url = url.replace('..', '')
 
@@ -64,7 +64,7 @@ def categorias(item):
 
         url = host + url
 
-        itemlist.append(item.clone (action='list_all', title=titulo, url=url, contentType = 'movie', contentTitle = title, contentExtra='adults') )
+        itemlist.append(item.clone (action='list_all', title=titulo, url=url, contentType = 'movie' ))
 
     return sorted(itemlist,key=lambda x: x.title)
 
@@ -87,8 +87,7 @@ def list_all(item):
 
         titulo = "[COLOR tan]%s[/COLOR] %s" % (time, title)
 
-        itemlist.append(item.clone (action='findvideos', title=titulo, url=url, thumbnail=thumb, contentType = 'movie',
-                                    contentTitle = title, contentExtra='adults') )
+        itemlist.append(item.clone (action='findvideos', title=titulo, url=url, thumbnail=thumb, contentType = 'movie', contentTitle = title, contentExtra='adults') )
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<span class="text16">\d+</span> <a href="..([^"]+)"')

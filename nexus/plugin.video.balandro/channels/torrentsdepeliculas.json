@@ -3,7 +3,7 @@
   "name": "TorrentsDePeliculas",
   "thumbnail": "torrentsdepeliculas.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["movie"],
@@ -13,5 +13,5 @@
 
   "clusters": ["torrents", "years", "docs"],
 
-  "notes": "Canal con enlaces Torrent exclusivamente. Películas por géneros y año."
+  "notes": "Web CERRADA. Canal con enlaces Torrent exclusivamente. Películas por géneros y año."
 }

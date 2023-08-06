@@ -75,4 +75,12 @@ def get_video_url(page_url, url_referer=''):
 
         video_urls.append(["mp4", mp4])
 
+    if not video_urls:
+        data = httptools.downloadpage('https://gamovideo.net/').data
+
+        work = scrapertools.find_single_match(data, '<div class="main_box_left">.*?<img src="(.*?)".*?</div>')
+
+        if '/wp.png' in work: return '[COLOR cyan]Servidor en mantenimiento[/COLOR]'
+
+
     return video_urls

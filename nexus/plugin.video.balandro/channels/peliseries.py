@@ -51,8 +51,8 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Más vistas', action = 'list_all', url = host + '/Top30dias.html?page=1', search_type = 'movie' ))
 
-    itemlist.append(item.clone( title = 'Marvel', action = 'list_all', url = host + '/Buscar.html?s=Marvel', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'DC', action = 'list_all', url = host + '/Buscar.html?s=DC', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Marvel', action = 'list_all', url = host + '/Buscar.html?s=Marvel', search_type = 'movie', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'DC', action = 'list_all', url = host + '/Buscar.html?s=DC', search_type = 'movie', text_color='moccasin' ))
 
     return itemlist
 
@@ -72,11 +72,11 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Más vistas', action = 'list_all', url = host + '/Top30dias.html?page=1', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Novelas', action = 'list_all', url = host + '/Novelas.html?page=1', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Novelas', action = 'list_all', url = host + '/Novelas.html?page=1', search_type = 'tvshow', text_color='limegreen' ))
 
-    itemlist.append(item.clone( title = 'Anime', action = 'list_all', url = host + '/Anime.html?page=1', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Animes', action = 'list_all', url = host + '/Anime.html?page=1', search_type = 'tvshow', text_color='springgreen' ))
 
-    itemlist.append(item.clone( title = 'Anime más vistas', action = 'list_all', url = host + '/AnimeTop.html?page=1', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Animes más vistos', action = 'list_all', url = host + '/AnimeTop.html?page=1', search_type = 'tvshow' ))
 
     return itemlist
 
@@ -100,7 +100,9 @@ def list_all(item):
 
         if not url or not title: continue
 
-        title = title.replace('&ntilde;', 'ñ')
+        title = title.replace('&ntilde;', 'ñ').replace('&iquest;', '¿').replace('&ccedil;', 'ç')
+
+        title = title.replace('&aacute;', 'a').replace('&eacute;', 'e').replace('&iacute;', 'i').replace('&oacute;', 'o').replace('&uacute;', 'u')
 
         url = host + url
 
@@ -137,16 +139,14 @@ def list_all(item):
             elif "<div class='ln'>Anime</div>" in match: tv_tipo = 'Anime'
             elif "<div class='ln'>Novela</div>" in match: tv_tipo = 'Novela'
 
-            itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb, referer=item.url,
-                                        tv_tipo = tv_tipo, fmt_sufijo=sufijo,
+            itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb, referer=item.url, tv_tipo = tv_tipo, fmt_sufijo=sufijo,
                                         languages = ', '.join(langs), contentType = 'tvshow', contentSerieName = title, infoLabels = {'year': year} ))
 
         if tipo == 'movie':
             if item.search_type != 'all':
                 if item.search_type == 'tvshow': continue
 
-            itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, referer=item.url,
-                                        fmt_sufijo=sufijo,
+            itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, referer=item.url, fmt_sufijo=sufijo,
                                         languages = ', '.join(langs), contentType = 'movie', contentTitle = title, infoLabels = {'year': year} ))
 
         if len(itemlist) >= perpage: break
@@ -207,7 +207,7 @@ def temporadas(item):
             itemlist = episodios(item)
             return itemlist
 
-        itemlist.append(item.clone( action = 'episodios', title = title, pid = pid, page = 0, contentType = 'season', contentSeason = tempo ))
+        itemlist.append(item.clone( action = 'episodios', title = title, pid = pid, page = 0, contentType = 'season', contentSeason = tempo, text_color = 'tan' ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -266,8 +266,7 @@ def episodios(item):
 
         titulo = str(item.contentSeason) + 'x' + str(epis) + ' ' + item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'")
 
-        itemlist.append(item.clone( action='findvideos', url = url, title = titulo,
-                                    contentType = 'episode', contentSeason = item.contentSeason, contentEpisodeNumber = epis ))
+        itemlist.append(item.clone( action='findvideos', url = url, title = titulo, contentType = 'episode', contentSeason = item.contentSeason, contentEpisodeNumber = epis ))
 
         if len(itemlist) >= item.perpage: break
 
@@ -405,48 +404,32 @@ def findvideos(item):
             hst = hst.lower()
 
             if 'hqq.' in hst or 'waaw.' in hst or 'netu.' in hst: continue
+
             elif 'youtube' in hst: continue
 
             elif 'megaplay' in hst: continue
             elif 'megavideo' in hst: continue
-
             elif 'cuevana3' in hst: continue
             elif 'repelis24' in hst: continue
+            elif 'apialfa' in hst: continue
             elif 'flixplayer' in hst: continue
-            elif 'vidcloud' in hst: continue
+
             elif 'mystream' in hst: continue
-            elif 'stormo' in hst: continue
-            elif 'moovies' in hst: continue
-            elif '1fichier' in hst: continue
-            elif 'mediafire' in hst: continue
-            elif 'pandafiles' in hst: continue
-            elif 'myfiles' in hst: continue
-            elif 'dropapk' in hst: continue
-            elif 'nitroflare' in hst: continue
-            elif 'owndrives' in hst: continue
-            elif 'hopigrarn' in hst: continue
-            elif 'homoluath' in hst: continue
-            elif 'primeuploads' in hst: continue
-
-            elif 'openload' in hst: continue
-            elif 'powvideo' in hst: continue
-            elif 'streamplay' in hst: continue
-            elif 'rapidvideo' in hst: continue
-            elif 'streamango' in hst: continue
-            elif 'verystream' in hst: continue
-            elif 'vidtodo' in hst: continue
-
             elif 'drive' in hst: continue
             elif 'hls' in hst: continue
-            elif 'indishare' in hst: continue
-            elif 'apialfa' in hst: continue
 
             other = hst
+
             other = other.replace('www.', '').replace('www', '').replace('fe.', '')
             other = other.replace('.com', '').replace('.net', '').replace('.live', '').replace('api.', '').replace('.io', '').replace('.me', '').replace('.am', '')
             other = other.replace('.co', '').replace('.tv', '').replace('.ru', '').replace('.to', '').replace('.cc', '').replace('.nz', '').replace('.xyz', '')
             other = other.replace('.site', '').replace('.live', '').replace('.club', '').replace('.org', '').replace('.info', '')
             other = other.replace('.pelisplay', '').replace('.google', '').replace('player.', '').replace('play.', '').replace('.playerd', '')
+
+            if servertools.is_server_available(other):
+                if not servertools.is_server_enabled(other): continue
+            else:
+                if not config.get_setting('developer_mode', default=False): continue
 
             other = other.capitalize() + play_down
 

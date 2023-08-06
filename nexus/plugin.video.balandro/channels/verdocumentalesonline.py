@@ -56,8 +56,7 @@ def list_playlists(item):
             title = '%s [COLOR tan](%d vídeos)[/COLOR]' % (vid['name'], vid['videos_total'])
             plot = '' if not vid['description'] else scrapertools.htmlclean(vid['description'])
 
-            itemlist.append(item.clone( action='list_all', title=title, playlist_id=vid['id'], page=1, 
-                                        thumbnail=vid['thumbnail_480_url'], plot=plot ))
+            itemlist.append(item.clone( action='list_all', title=title, playlist_id=vid['id'], page=1, thumbnail=vid['thumbnail_480_url'], plot=plot, text_color = 'cyan' ))
 
         if itemlist:
             if data['has_more']:
@@ -96,8 +95,7 @@ def list_all(item):
             title = '[COLOR tan](%s)[/COLOR] %s' % (config.format_seconds_to_duration(vid['duration']), vid['title'])
             plot = '' if not vid['description'] else scrapertools.htmlclean(vid['description'])
 
-            itemlist.append(item.clone( action='findvideos', url=vid['embed_url'], title=title, 
-                                        thumbnail=vid['thumbnail_url'], plot=plot,
+            itemlist.append(item.clone( action='findvideos', url=vid['embed_url'], title=title, thumbnail=vid['thumbnail_url'], plot=plot,
                                         contentType='movie', contentTitle=vid['title'], contentExtra='documentary' ))
 
         if itemlist:

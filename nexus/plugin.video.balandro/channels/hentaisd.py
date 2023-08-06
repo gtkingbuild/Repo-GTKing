@@ -51,7 +51,7 @@ def generos(item):
     matches = re.compile('<h3 class="media-heading"><a href="([^"]+)" alt="([^"]+)"', re.DOTALL).findall(data)
 
     for url, title in matches:
-        itemlist.append(item.clone( action = 'list_list', url = url, title = title ))
+        itemlist.append(item.clone( action = 'list_list', url = url, title = title, text_color='orange' ))
 
     return sorted(itemlist, key=lambda i: i.title)
 
@@ -73,6 +73,7 @@ def list_all(item):
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<li class="next"><a href="([^"]+)"')
+
         if next_page:
             itemlist.append(item.clone( title = 'Siguientes ...', action = 'list_all', url = next_page, text_color = 'coral' ))
 
@@ -89,11 +90,11 @@ def list_list(item):
     matches = re.compile('<div class="col-sm-6 col-md-2 central">.*?<a href="([^"]+)".*?<img src="([^"]+)".*?<h5>([^<]+)</h5>', re.DOTALL).findall(data)
 
     for url, thumb, title in matches:
-        itemlist.append(item.clone( action = 'episodios', url = url, title = title, thumbnail = thumb,
-                                    contentType = 'movie', contentTitle = title, contentExtra='adults' ))
+        itemlist.append(item.clone( action = 'episodios', url = url, title = title, thumbnail = thumb, contentType = 'movie', contentTitle = title, contentExtra='adults' ))
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<li class="next"><a href="([^"]+)"')
+
         if next_page:
             itemlist.append(item.clone( title = 'Siguientes ...', action = 'list_list', url = next_page, text_color = 'coral' ))
 
@@ -112,8 +113,7 @@ def episodios(item):
     for url, title in matches:
         title = title + " - " + item.title
 
-        itemlist.append(item.clone( action = 'findvideos', url = url, title = title,
-                                    contentType = 'movie', contentTitle = title, contentExtra='adults' ))
+        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, contentType = 'movie', contentTitle = title, contentExtra='adults' ))
 
     return itemlist
 

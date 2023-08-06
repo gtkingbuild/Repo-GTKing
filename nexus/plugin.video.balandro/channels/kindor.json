@@ -3,7 +3,7 @@
   "name": "Kindor",
   "thumbnail": "kindor.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["all", "movie", "tvshow"],
@@ -13,5 +13,5 @@
 
   "clusters": ["current", "news", "rankings", "lasts", "docs", "kids", "vos"],
 
-  "notes": "Películas por géneros. Series por Géneros"
+  "notes": "Web ANULADA. Películas por géneros. Series por Géneros"
 }

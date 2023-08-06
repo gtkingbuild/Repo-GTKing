@@ -2,7 +2,7 @@
 
 import re, os, string
 
-from platformcode import logger, platformtools
+from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, tmdb
 
@@ -12,14 +12,66 @@ from lib import decrypters
 host = 'https://naranjatorrent.com/'
 
 
+def item_configurar_proxies(item):
+    color_list_proxies = config.get_setting('channels_list_proxies_color', default='red')
+
+    color_avis = config.get_setting('notification_avis_color', default='yellow')
+    color_exec = config.get_setting('notification_exec_color', default='cyan')
+
+    context = []
+
+    tit = '[COLOR %s]Información proxies[/COLOR]' % color_avis
+    context.append({'title': tit, 'channel': 'helper', 'action': 'show_help_proxies'})
+
+    if config.get_setting('channel_naranjatorrent_proxies', default=''):
+        tit = '[COLOR %s][B]Quitar los proxies del canal[/B][/COLOR]' % color_list_proxies
+        context.append({'title': tit, 'channel': item.channel, 'action': 'quitar_proxies'})
+
+    tit = '[COLOR %s]Ajustes categoría proxies[/COLOR]' % color_exec
+    context.append({'title': tit, 'channel': 'actions', 'action': 'open_settings'})
+
+    plot = 'Es posible que para poder utilizar este canal necesites configurar algún proxy, ya que no es accesible desde algunos países/operadoras.'
+    plot += '[CR]Si desde un navegador web no te funciona el sitio ' + host + ' necesitarás un proxy.'
+    return item.clone( title = '[B]Configurar proxies a usar ...[/B]', action = 'configurar_proxies', folder=False, context=context, plot=plot, text_color='red' )
+
+def quitar_proxies(item):
+    from modules import submnuctext
+    submnuctext._quitar_proxies(item)
+    return True
+
+def configurar_proxies(item):
+    from core import proxytools
+    return proxytools.configurar_proxies_canal(item.channel, host)
+
+
 def do_downloadpage(url, post=None, headers=None):
-    data = httptools.downloadpage(url, post=post).data
+    if not url.startswith(host):
+        data = httptools.downloadpage(url, post=post, headers=headers).data
+    else:
+        data = httptools.downloadpage_proxy('naranjatorrent', url, post=post, headers=headers).data
+
     return data
+
+
+def acciones(item):
+    logger.info()
+    itemlist = []
+
+    itemlist.append(item.clone( channel='submnuctext', action='_test_webs', title='Test Web del canal [COLOR yellow][B] ' + host + '[/B][/COLOR]',
+                                from_channel='naranjatorrent', folder=False, text_color='chartreuse' ))
+
+    itemlist.append(item_configurar_proxies(item))
+
+    platformtools.itemlist_refresh()
+
+    return itemlist
 
 
 def mainlist(item):
     logger.info()
     itemlist = []
+
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone( title = 'Buscar ...', action = 'search', search_type = 'all', text_color = 'yellow' ))
 
@@ -33,6 +85,8 @@ def mainlist(item):
 def mainlist_pelis(item):
     logger.info()
     itemlist = []
+
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone( title = 'Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
 
@@ -57,6 +111,8 @@ def mainlist_series(item):
     logger.info()
     itemlist = []
 
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
+
     itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
     itemlist.append(item.clone( title = 'Catálogo (alfabético)', action = 'list_all', url = host + 'series/letra-.', search_type = 'tvshow' ))
@@ -73,6 +129,8 @@ def mainlist_series(item):
 def mainlist_documentary(item):
     logger.info()
     itemlist = []
+
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone( title = 'Buscar documental ...', action = 'search', search_type = 'documentary', text_color = 'cyan' ))
 
@@ -109,7 +167,7 @@ def generos(item):
        ]
 
     for genre in genres:
-        itemlist.append(item.clone( action = "call_post", title = genre, url = host + 'peliculas/buscar', tipo='genero', genre=genre ))
+        itemlist.append(item.clone( action = "call_post", title = genre, url = host + 'peliculas/buscar', tipo='genero', genre=genre, text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -118,8 +176,12 @@ def alfabetico(item):
     logger.info()
     itemlist = []
 
+    if item.search_type == 'movie': text_color = 'deepskyblue'
+    elif item.search_type == 'tvshow': text_color = 'hotpink'
+    else: text_color = 'cyan'
+
     for letra in string.ascii_uppercase:
-        itemlist.append(item.clone(action="call_post", title=letra, letra=letra, tipo='letra'))
+        itemlist.append(item.clone(action="call_post", title=letra, letra=letra, tipo='letra', text_color = text_color ))
 
     return itemlist
 
@@ -145,8 +207,7 @@ def list_all(item):
 
             thumb if "http" in thumb else "https:" + thumb
 
-            itemlist.append(item.clone( action='findvideos', url=host[:-1] + url, title=title, thumbnail=thumb,
-                                        contentType='movie', contentTitle=titulo, infoLabels={'year': "-"} ))
+            itemlist.append(item.clone( action='findvideos', url=host[:-1] + url, title=title, thumbnail=thumb, contentType='movie', contentTitle=titulo, infoLabels={'year': "-"} ))
 
     elif item.search_type== 'tvshow':
         matches = re.compile(r"<a href='([^']+)'>([^<]+)").findall(data)
@@ -155,14 +216,13 @@ def list_all(item):
             if " - " in title: SerieName = title.split(" - ")[0]
             else: SerieName = title
 
-            itemlist.append(item.clone( action='episodios', url=host[:-1] + url, title=title, 
-                                        contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year':"-"} ))
+            itemlist.append(item.clone( action='episodios', url=host[:-1] + url, title=title, contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year':"-"} ))
 
     else:
         matches = re.compile(r"<a href='([^']+)'>([^<]+)").findall(data)
 
         for url, title in matches:
-            if "(" in title: titulo = titulo.split("(")[0]
+            if "(" in title: titulo = title.split("(")[0]
             else: titulo = title
 
             titulo = titulo.strip()
@@ -174,6 +234,7 @@ def list_all(item):
 
     if itemlist:
         next_url = scrapertools.find_single_match(data, '<a class="page-link" href="([^"]+)">Siguiente')
+
         if next_url:
             next_url = host[:-1] + next_url
 
@@ -197,17 +258,15 @@ def list_last(item):
 
     for url, title in matches:
         if item.search_type== 'movie':
-            if "(" in title: titulo = titulo.split("(")[0]
+            if "(" in title: titulo = title.split("(")[0]
             else: titulo = title
 
-            itemlist.append(item.clone( action='findvideos', url=host + url, title=title,
-                                        contentType=item.search_type, contentTitle=titulo, infoLabels={'year': "-"} ))
+            itemlist.append(item.clone( action='findvideos', url=host + url, title=title, contentType=item.search_type, contentTitle=titulo, infoLabels={'year': "-"} ))
         else:
             if " - " in title: SerieName = title.split(" - ")[0]
             else: SerieName = title
 
-            itemlist.append(item.clone( action='episodios', url=host + url, title=title, 
-                                        contentType=item.search_type, contentSerieName=SerieName, infoLabels={'year':"-"} ))
+            itemlist.append(item.clone( action='episodios', url=host + url, title=title, contentType=item.search_type, contentSerieName=SerieName, infoLabels={'year':"-"} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -225,12 +284,19 @@ def call_post(item):
 
         item.post = "campo=%s&valor=%s&valor2=&valor3=&valor4=&pagina=%s" % ('anyo', val, str(item.page))
 
+        item.contentType = item.search_type
+
     elif item.tipo == 'genero':
         item.post = "campo=%s&valor=&valor2=%s&valor3=&valor4=&pagina=%s" % ('genero', item.genre, str(item.page))
+
+        item.contentType = item.search_type
 
     elif item.tipo == 'letra':
         if item.search_type == 'movie':
             item.post = "campo=%s&valor=&valor2=&valor3=%s&valor4=&pagina=%s" % ('letra', item.letra, str(item.page))
+
+            item.contentType = item.search_type
+
         else:
             if item.search_type == "tvshow": tipo = "series"
             else: tipo = "documentales"
@@ -255,17 +321,18 @@ def list_post(item):
     matches = re.compile(patron).findall(data)
 
     for url, title, info, thumb in matches:
-        if "(" in title: titulo = titulo.split("(")[0]
+        if "(" in title: titulo = title.split("(")[0]
         else: titulo = title
 
         itemlist.append(item.clone( action='findvideos', url=host[:-1] + url, title=title, thumbnail=thumb if "http" in thumb else "https:" + thumb,
-                                            contentType=item.contentType, contentTitle=titulo, infoLabels={'year': "-", 'plot': info} ))
+                                    contentType=item.contentType, contentTitle=titulo, infoLabels={'year': "-", 'plot': info} ))
 
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
         if item.post:
             next_page = scrapertools.find_single_match(item.post, '(.*?)pagina=')
+
             if next_page:
                 item.page = item.page + 1
                 exist_page = scrapertools.find_single_match(data, "<option value='" + str(item.page) + "'")
@@ -358,8 +425,7 @@ def findvideos(item):
               servidor = 'directo'
               if '/ttlinks.live/' in url: other = 'ttlinks'
 
-           itemlist.append(Item( channel = item.channel, action = 'play', title = '', language = lang, quality = qlty, url = url,
-                                 server = servidor, other = other))
+           itemlist.append(Item( channel = item.channel, action = 'play', title = '', language = lang, quality = qlty, url = url, server = servidor, other = other))
 
     return itemlist
 
@@ -425,7 +491,8 @@ def list_search(item):
             if not item.search_type == 'all':
                 if item.search_type == "movie": continue
 
-            if " - " in title: SerieName = title.split(" - ")[0]
+            if "[" in title: SerieName = title.split("[")[0]
+            elif " - " in title: SerieName = title.split(" - ")[0]
             else: SerieName = title
 
             itemlist.append(item.clone( action='episodios', url=host[:-1] + url, title=title, fmt_sufijo=sufijo, 
@@ -439,7 +506,8 @@ def list_search(item):
                 itemlist.append(item.clone( action = 'findvideos', url = host[:-1] + url, title = title, fmt_sufijo=sufijo,
                                             contentType = 'movie', contentTitle = title, contentExtra = 'documentary', infoLabels={'year': "-"} ))
             else:
-                if "(" in title: titulo = titulo.split("(")[0]
+                if "[" in title: titulo = title.split("[")[0]
+                elif "(" in title: titulo = title.split("(")[0]
                 else: titulo = title
 
                 itemlist.append(item.clone( action='findvideos', url=host[:-1] + url, title=title, fmt_sufijo=sufijo,

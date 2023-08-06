@@ -1,11 +1,25 @@
 # -*- coding: utf-8 -*-
 
-import xbmc
+import xbmc, time
 
 from platformcode import logger, config, platformtools
 from core import httptools, scrapertools
 
-from lib import balandroresolver
+
+BR2 = False
+
+try:
+   from lib import balandroresolver
+except:
+   try:
+      from lib import balandroresolver2 as balandroresolver
+
+      BR2 = True
+   except:
+      BR2 = None
+
+
+espera = config.get_setting('servers_waiting', default=6)
 
 color_exec = config.get_setting('notification_exec_color', default='cyan')
 el_srv = ('Sin respuesta en [B][COLOR %s]') % color_exec
@@ -52,10 +66,13 @@ def get_video_url(page_url, url_referer=''):
     if "Unfortunately, the file you want is not available." in data or "Unfortunately, the video you want to see is not available" in data or "This stream doesn" in data or "Page not found" in data or "Archivo no encontrado" in data:
         return "El archivo no existe o ha sido borrado"
  
-    espera = scrapertools.find_single_match(data, "data-remaining-time='(.*?)'")
+    waiting = scrapertools.find_single_match(data, "data-remaining-time='(.*?)'")
 
-    if espera:
+    if waiting:
         platformtools.dialog_notification(config.__addon_name, "Tiempo de espera indeterminado")
+    else:
+        platformtools.dialog_notification('Cargando U[COLOR cyan][B]ptobox[/B][/COLOR]', 'Espera requerida de %s segundos' % espera)
+        time.sleep(int(espera))
 
     if xbmc.getCondVisibility('System.HasAddon("script.module.resolveurl")'):
         try:
@@ -66,7 +83,7 @@ def get_video_url(page_url, url_referer=''):
             resuelto = resolveurl.resolve(page_url)
 
             if resuelto:
-                video_urls.append(['m3u8', resuelto + '|Referer=%s' % page_url])
+                video_urls.append(['m3u8', resuelto])
                 return video_urls
 
             platformtools.dialog_notification(config.__addon_name, el_srv, time=3000)
@@ -77,22 +94,32 @@ def get_video_url(page_url, url_referer=''):
             platformtools.dialog_notification(config.__addon_name, el_srv, time=3000)
             return video_urls
 
-    try:
-       video_urls = balandroresolver.resolve_uptobox().getLink(vid, video_urls)
-    except Exception as e:
-       e = str(e)
-       if '150 minutos' in e:
-           return "Debes esperar 150 minutos para poder reproducir"
-       elif 'Unfortunately, the file you want is not available' in e or 'Unfortunately, the video you want to see is not available' in e or 'This stream doesn' in e or 'Page not found' in e or 'Archivo no encontrado' in e:
-           return "El archivo no existe o ha sido borrado"
-       elif "'str' object has no attribute 'get'" in e:
-           return video_urls
+    if not BR2 is not None:
+        if BR2:
+            try:
+               lbl, url = balandroresolver.decode_video_uptostream(data)
 
-       return "Acceso temporalmente restringido"
+               if lbl and url:
+                   video_urls.append([lbl, url])
+            except:
+               pass
+        else:
+            try:
+               video_urls = balandroresolver.resolve_uptobox().getLink(vid, video_urls)
+            except Exception as e:
+               e = str(e)
+               if '150 minutos' in e: return "Debes esperar 150 minutos para poder reproducir"
 
-    except:
-       import traceback
-       logger.error(traceback.format_exc(1))
+               elif 'Unfortunately, the file you want is not available' in e or 'Unfortunately, the video you want to see is not available' in e or 'This stream doesn' in e or 'Page not found' in e or 'Archivo no encontrado' in e:
+                   return "El archivo no existe o ha sido borrado"
+
+               elif "'str' object has no attribute 'get'" in e: return video_urls
+
+               return "Acceso temporalmente restringido"
+
+            except:
+               import traceback
+               logger.error(traceback.format_exc())
 
     if not video_urls:
         if xbmc.getCondVisibility('System.HasAddon("script.module.resolveurl")'):
@@ -104,7 +131,7 @@ def get_video_url(page_url, url_referer=''):
                 resuelto = resolveurl.resolve(page_url)
 
                 if resuelto:
-                    video_urls.append(['mp4', resuelto + '|Referer=%s' % page_url])
+                    video_urls.append(['mp4', resuelto])
                     return video_urls
 
                 platformtools.dialog_notification(config.__addon_name, el_srv, time=3000)
@@ -115,6 +142,10 @@ def get_video_url(page_url, url_referer=''):
                platformtools.dialog_notification(config.__addon_name, el_srv, time=3000)
         else:
            return 'Acceso limitado restringido (2do.)'
+
+    # ~ 31/1/2023  Pendiente porque algo no ha funcionado bien
+    if BR2 is None:
+        platformtools.dialog_notification(config.__addon_name, "BR2 Not Resolve")
 
     return video_urls
 

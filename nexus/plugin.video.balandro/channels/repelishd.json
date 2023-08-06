@@ -3,7 +3,7 @@
   "name": "RePelisHd",
   "thumbnail": "repelishd.png",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["all", "movie", "tvshow"],
@@ -13,6 +13,6 @@
 
   "clusters": ["current", "notice", "languages", "rankings", "years", "lists", "producers", "kids", "docs", "vos", "anime"],
 
-  "notes": "Películas por idioma, géneros y año. Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Web ANULADA. Películas por idioma, géneros y año. Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 
 }

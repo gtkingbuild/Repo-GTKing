@@ -65,10 +65,10 @@ def idiomas(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title = 'Castellano', action = 'list_all', url = host + 'idioma/espanol/' ))
-    itemlist.append(item.clone( title = 'Latino', action = 'list_all', url = host + 'idioma/espanol-latino-1/' ))
-    itemlist.append(item.clone( title = 'Inglés', action = 'list_all', url = host + 'idioma/ingles/' ))
-    itemlist.append(item.clone( title = 'Subtitulado', action = 'list_all', url = host + 'idioma/vose/' ))
+    itemlist.append(item.clone( title = 'Castellano', action = 'list_all', url = host + 'idioma/espanol/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'Latino', action = 'list_all', url = host + 'idioma/espanol-latino-1/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'Inglés', action = 'list_all', url = host + 'idioma/ingles/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'Subtitulado', action = 'list_all', url = host + 'idioma/vose/', text_color='moccasin' ))
 
     return itemlist
 
@@ -77,12 +77,12 @@ def calidades(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title = 'En 720', action = 'list_all', url = host + 'calidad/720p/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'En 1080', action = 'list_all', url = host + 'calidad/1080p/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'En DVD Rip', action = 'list_all', url = host + 'calidad/dvdrip/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'En HD Rip', action = 'list_all', url = host + 'peliculas-hdrip/', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'En 720', action = 'list_all', url = host + 'calidad/720p/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En 1080', action = 'list_all', url = host + 'calidad/1080p/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En DVD Rip', action = 'list_all', url = host + 'calidad/dvdrip/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En HD Rip', action = 'list_all', url = host + 'peliculas-hdrip/', text_color='moccasin' ))
 
-    itemlist.append(item.clone( title = 'En Micro HD', action = 'list_all', url = host + 'peliculas-microhd/', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'En Micro HD', action = 'list_all', url = host + 'peliculas-microhd/', text_color='moccasin' ))
 
     return itemlist
 
@@ -102,7 +102,7 @@ def generos(item):
 
         if '/animacion-2' in url: title = title + '-2'
 
-        itemlist.append(item.clone( action='list_all', title=title, url=url ))
+        itemlist.append(item.clone( action='list_all', title=title, url=url, text_color = 'deepskyblue' ))
 
     return sorted(itemlist,key=lambda x: x.title)
 
@@ -134,10 +134,13 @@ def list_all(item):
         title = title.replace('(720)', '').replace('(720p)', '').replace('(1080)', '').replace('(1080p)', '').replace('(microHD)', '').replace('(BR-Line)', '').strip()
         title = title.replace('(HDR)', '').replace('(HDRip)', '').replace('(DVDRip)', '').replace('(BR-SCREENER)', '').replace('(TS-SCREENER)', '').strip()
 
+        title = title.replace('&#8217;', "'")
+
         thumb = scrapertools.find_single_match(match, 'data-src="(.*?)"')
         thumb = host[:-1] + thumb
 
         qlty = scrapertools.find_single_match(match, 'style="right.*?<i>(.*?)</i>')
+        if qlty == '---': qlty = ''
 
         lngs = []
         langs = scrapertools.find_multiple_matches(match, "data-src='.*?/images/(.*?).png'")
@@ -158,6 +161,8 @@ def list_all(item):
         tipo = 'movie' if '/peliculas/' in url else 'tvshow'
         sufijo = '' if item.search_type != 'all' else tipo
 
+        title = title.replace('&#8211;', '').replace('&amp;', '').replace('&#8215;', ' ')
+
         if tipo == 'movie':
             if not item.search_type == 'all':
                 if item.search_type == 'tvshow': continue
@@ -169,8 +174,6 @@ def list_all(item):
         if tipo == 'tvshow':
             if not item.search_type == 'all':
                 if item.search_type == 'movie': continue
-
-            title = title.replace('&#8211;', '').replace('&#215;', ' ')
 
             SerieName = url
 
@@ -247,6 +250,8 @@ def findvideos(item):
     links = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)"')
 
     for link in links:
+        if '/tienda/' in link: continue
+
         other = ''
         if 'magnet' in link: other = 'Magnet'
 
@@ -286,6 +291,11 @@ def play(item):
             itemlist.append(item.clone( url = url_base64, server = 'torrent' ))
 
         elif url_base64.endswith(".torrent"):
+            data = do_downloadpage(url_base64)
+
+            if not data or data == 'Fallo de consulta':
+               return 'Archivo [COLOR red]Corrupto[/COLOR]'
+
             itemlist.append(item.clone( url = url_base64, server = 'torrent' ))
 
     return itemlist

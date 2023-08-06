@@ -49,7 +49,7 @@ def generos(item):
     matches = re.compile('<a href="(.*?)">(.*?)</a>').findall(bloque)
 
     for url, title in matches:
-        itemlist.append(item.clone( title = title.capitalize(), action = 'list_all', url = url ))
+        itemlist.append(item.clone( title = title.capitalize(), action = 'list_all', url = url, text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -78,11 +78,9 @@ def list_all(item):
         thumb = scrapertools.find_single_match(match, ' src="(.*?)"')
 
         year = scrapertools.find_single_match(match, '<span class="year">(.*?)</span>')
-
         if not year: year = '-'
 
-        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb,
-                                    contentType = 'movie', contentTitle = title, infoLabels = {'year': year} ))
+        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, contentType = 'movie', contentTitle = title, infoLabels = {'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -120,8 +118,7 @@ def findvideos(item):
 
         if other == 'Hqq': continue
 
-        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = 'directo',
-                              language = lang, other = other ))
+        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = 'directo', language = lang, other = other ))
 
     return itemlist
 
@@ -134,6 +131,7 @@ def play(item):
 
     data = do_downloadpage(item.url)
     url = scrapertools.find_single_match(data, '<iframe.*?src="([^"]+)')
+    if not url: url = scrapertools.find_single_match(data, '<IFRAME.*?SRC="([^"]+)')
 
     if url:
         if '/hqq.' in url or '/waaw.' in url or '/netu.' in url:

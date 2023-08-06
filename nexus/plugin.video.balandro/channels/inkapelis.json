@@ -3,7 +3,7 @@
   "name": "InkaPelis",
   "thumbnail": "inkapelis.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["all", "movie", "tvshow"],
@@ -11,7 +11,7 @@
   "categories": ["movie", "tvshow"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["current", "suggested", "notice", "news", "rankings", "languages", "years", "lasts", "producers", "kids", "docs", "vos", "anime"],
+  "clusters": ["problematic", "current", "notice", "news", "rankings", "languages", "years", "lasts", "producers", "kids", "docs", "vos", "anime"],
 
-  "notes": "Películas por géneros, año, idioma. Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Web ANULADA. Películas por géneros, año, idioma. Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

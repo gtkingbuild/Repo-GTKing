@@ -16,6 +16,12 @@ perpage = 30
 
 
 def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
+    # ~ por si viene de enlaces guardados
+    ant_hosts = ['https://cine24h.online/']
+
+    for ant in ant_hosts:
+        url = url.replace(ant, host)
+
     if '&years%5B%5D=' in url: raise_weberror = False
 
     data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
@@ -73,7 +79,7 @@ def generos(item):
     ]
 
     for opc, tit in opciones:
-        itemlist.append(item.clone( title=tit, url= host + 'category/' + opc + '/', action = 'list_all' ))
+        itemlist.append(item.clone( title=tit, url= host + 'category/' + opc + '/', action = 'list_all', text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -88,7 +94,7 @@ def anios(item):
     for x in range(current_year, 1939, -1):
         url = host + '?s=trfilter&trfilter=1&years%5B%5D=' + str(x)
 
-        itemlist.append(item.clone( title=str(x), url=url, action='list_all' ))
+        itemlist.append(item.clone( title=str(x), url=url, action='list_all', text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -120,12 +126,20 @@ def list_all(item):
         title = re.sub(r'\((.*)', '', title)
         title = re.sub(r'\[(.*?)\]', '', title)
 
+        title = title.replace('&#8211;', '')
+
         thumb = scrapertools.find_single_match(article, '<img src="(.*?)"')
+
+        if not thumb.startswith("http"): thumb = "https:" + thumb
 
         year = scrapertools.find_single_match(article, '<span class="Year">(.*?)</span>')
         if not year: year = '-'
 
-        itemlist.append(item.clone( action='findvideos', url=url, title = title, thumbnail = thumb,
+        lang = 'Lat'
+        if '-sub/' in url: lang = 'Vose'
+        if '-es/' in url: lang = 'Esp'
+
+        itemlist.append(item.clone( action='findvideos', url=url, title = title, thumbnail = thumb, languages = lang,
                                     contentType='movie', contentTitle=title, infoLabels={'year': year} ))
 
         if len(itemlist) >= perpage: break
@@ -189,8 +203,7 @@ def findvideos(item):
         if not url: url = scrapertools.find_single_match(data, 'id="' + opt + '".*?src=&quot;(.*?)&quot;')
 
         if url:
-           itemlist.append(Item( channel = item.channel, action = 'play', title = '', server = 'directo', url = url,
-                                 language = lang, quality = qlty, other = other.capitalize() ))
+           itemlist.append(Item( channel = item.channel, action = 'play', title = '', server = 'directo', url = url, language = lang, quality = qlty, other = other.capitalize() ))
 
     # ~ downloads
 
@@ -207,7 +220,7 @@ def findvideos(item):
         servidor = servertools.corregir_servidor(servidor)
 
         if url:
-           itemlist.append(Item( channel = item.channel, action = 'play', title = '', server = servidor, url = url, language = lang, quality = qlty ))
+           itemlist.append(Item( channel = item.channel, action = 'play', title = '', server = servidor, url = url, language = item.languages ))
 
     if not itemlist:
         if not ses == 0:

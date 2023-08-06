@@ -93,7 +93,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone ( title = 'Búsquedas:', action = '', folder=False, text_color='plum' ))
     itemlist.append(item.clone ( title = ' - Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
-    itemlist.append(item.clone ( title = ' - Buscar dirección, intérprete ...', action = 'search', grupo = 'agrupa', search_type = 'movie', text_color='salmon' ))
+    itemlist.append(item.clone ( title = ' - Buscar por dirección, intérprete ...', action = 'search', grupo = 'agrupa', search_type = 'movie', text_color='salmon' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host_opts ))
 
@@ -142,7 +142,7 @@ def generos(item):
     bloque = scrapertools.find_single_match(str(jdata), "'options':.*?'a5':(.*?)'a4':")
     if not bloque: bloque = scrapertools.find_single_match(str(jdata), "'options':.*?'a5':(.*?)'a3':") # PY3
 
-    matches = scrapertools.find_multiple_matches(str(bloque), "'value': '(.*?)'.*?'label': '(.*?)'")
+    matches = scrapertools.find_multiple_matches(str(bloque), "'label': '(.*?)'.*?'value': '(.*?)'")
 
     _epochs = str(list(epochs))
     _writers = str(list(writers))
@@ -178,8 +178,11 @@ def generos(item):
         elif title == 'Erótico': title = title + ' (+18)'
         elif title == 'Pornografía': title = title + ' (+18)'
 
+        title = title.replace('&amp;', '&')
+
         post = {'start': 0, 'length': perpage, 'metodo': 'ObtenerListaTotal', 'searchPanes[a5][0]': genre, 'search[value]': '', 'searchPanes[a3][0]': '', 'searchPanes[a4][0]': '', 'searchPanes[a6][0]': ''}
-        itemlist.append(item.clone( title = title, action = 'list_all', url = host_opts, pane = genre, post = post ))
+
+        itemlist.append(item.clone( title = title, action = 'list_all', url = host_opts, pane = genre, post = post, text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -193,7 +196,8 @@ def epocas(item):
         epoca = title
 
         post = {'start': 0, 'length': perpage, 'metodo': 'ObtenerListaTotal', 'searchPanes[a5][0]': epoca, 'search[value]': '', 'searchPanes[a3][0]': '', 'searchPanes[a4][0]': '', 'searchPanes[a6][0]': ''}
-        itemlist.append(item.clone( title = title, action = 'list_all', url = host_opts, pane = epoca, post = post ))
+
+        itemlist.append(item.clone( title = title, action = 'list_all', url = host_opts, pane = epoca, post = post, text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -207,7 +211,8 @@ def escritores(item):
         writer = title
 
         post = {'start': 0, 'length': perpage, 'metodo': 'ObtenerListaTotal', 'searchPanes[a5][0]': writer, 'search[value]': '', 'searchPanes[a3][0]': '', 'searchPanes[a4][0]': '', 'searchPanes[a6][0]': ''}
-        itemlist.append(item.clone( title = title, action = 'list_all', url = host_opts, pane = writer, post = post ))
+
+        itemlist.append(item.clone( title = title, action = 'list_all', url = host_opts, pane = writer, post = post, text_color='tan' ))
 
     return itemlist
 
@@ -219,11 +224,12 @@ def anios(item):
     from datetime import datetime
     current_year = int(datetime.today().year)
 
-    for x in range(current_year, 1899, -1):
+    for x in range(current_year, 1894, -1):
         any = str(x)
 
         post = {'start': 0, 'length': perpage, 'metodo': 'ObtenerListaTotal', 'searchPanes[a5][0]': '', 'search[value]': '', 'searchPanes[a3][0]': '', 'searchPanes[a4][0]': any, 'searchPanes[a6][0]': ''}
-        itemlist.append(item.clone( title = any, action = 'list_all', url = host_opts, any = any, post = post ))
+
+        itemlist.append(item.clone( title = any, action = 'list_all', url = host_opts, any = any, post = post, text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -244,7 +250,7 @@ def paises(item):
     bloque = scrapertools.find_single_match(str(jdata), "'options':.*?'a6':(.*?)'data'")
     if not bloque: bloque = scrapertools.find_single_match(str(jdata), "'options':.*?'a6':(.*?)'a5':") # PY3
 
-    matches = scrapertools.find_multiple_matches(str(bloque), "'value': '(.*?)'.*?'label': '(.*?)'")
+    matches = scrapertools.find_multiple_matches(str(bloque), "'label': '(.*?)'.*?'value': '(.*?)'")
 
     for value, label in matches:
         if '\\' in label:
@@ -262,7 +268,8 @@ def paises(item):
         country = title
 
         post = {'start': 0, 'length': perpage, 'metodo': 'ObtenerListaTotal', 'searchPanes[a5][0]': '', 'search[value]': '', 'searchPanes[a3][0]': '', 'searchPanes[a4][0]': '', 'searchPanes[a6][0]': country}
-        itemlist.append(item.clone( title = title, action = 'list_all', url = host_opts, country = country, post = post ))
+
+        itemlist.append(item.clone( title = title, action = 'list_all', url = host_opts, country = country, post = post, text_color='moccasin' ))
 
     return itemlist
 
@@ -297,7 +304,7 @@ def directores(item):
     bloque = scrapertools.find_single_match(str(jdata), "'options':.*?'a3':(.*?)'a5':")
     if not bloque: bloque = scrapertools.find_single_match(str(jdata), "'options':.*?'a3':(.*?)}}}") # PY3
 
-    matches = scrapertools.find_multiple_matches(str(bloque), "'value': '(.*?)'.*?'label': '(.*?)'")
+    matches = scrapertools.find_multiple_matches(str(bloque), "'label': '(.*?)'.*?'value': '(.*?)'")
 
     for value, label in matches:
         if '\\' in label:
@@ -326,7 +333,8 @@ def directores(item):
         director = title
 
         post = {'start': 0, 'length': perpage, 'metodo': 'ObtenerListaTotal', 'searchPanes[a3][0]': director, 'search[value]': '', 'searchPanes[a4][0]': '', 'searchPanes[a5][0]': '', 'searchPanes[a6][0]': ''}
-        itemlist.append(item.clone( title = title, action = 'list_all', url = host_opts, director = director, post = post ))
+
+        itemlist.append(item.clone( title = title, action = 'list_all', url = host_opts, director = director, post = post, text_color='moccasin' ))
 
         if len(itemlist) >= paginacion: break
 
@@ -362,7 +370,7 @@ def list_all(item):
     else:
        post = item.post
 
-    # Menu Principal addon opcion Generos
+    # ~ Menu Principal addon opcion Generos
     if item.zoo_genre:
         pane = item.zoo_genre
         post = {'start': start, 'length': perpage, 'metodo': 'ObtenerListaTotal', 'searchPanes[a5][0]': pane, 'search[value]': '', 'searchPanes[a3][0]': '', 'searchPanes[a4][0]': '', 'searchPanes[a6][0]': ''}
@@ -394,8 +402,7 @@ def list_all(item):
 
             plot = elem.get('a100', '')
 
-            itemlist.append(item.clone( action='findvideos', _id=_id, title=titulo, thumbnail=thumb,
-                                        contentType='movie', contentTitle=title, contentTitleAlt = title_alt, infoLabels={'year': year, 'plot': plot} ))
+            itemlist.append(item.clone( action='findvideos', _id=_id, title=titulo, thumbnail=thumb, contentType='movie', contentTitle=title, contentTitleAlt = title_alt, infoLabels={'year': year, 'plot': plot} ))
     except:
         return itemlist
 
@@ -408,8 +415,8 @@ def list_all(item):
            zoo_genre = item.zoo_genre
 
            post = {'start': start, 'length': perpage, 'metodo': 'ObtenerListaTotal', 'search[value]': search, 'searchPanes[a3][0]': director, 'searchPanes[a4][0]': any, 'searchPanes[a5][0]': pane, 'searchPanes[a6][0]': country}
-           itemlist.append(item.clone (url = item.url, post = post, start = start, pane = pane, search = search, director = director, any = any, country = country,
-                                       title = 'Siguientes ...', action = 'list_all', text_color='coral' ))
+	
+           itemlist.append(item.clone (url = item.url, post = post, start = start, pane = pane, search = search, director = director, any = any, country = country, title = 'Siguientes ...', action = 'list_all', text_color='coral' ))
 
     return itemlist
 
@@ -515,6 +522,7 @@ def _las1001(item):
     item.post = {'start': 0, 'length': perpage, 'metodo': 'ObtenerListaTotal', 'searchPanes[a5][0]': 'Las 1001', 'search[value]': '', 'searchPanes[a3][0]': '', 'searchPanes[a4][0]': '', 'searchPanes[a6][0]': ''}
 
     return list_all(item)
+
 
 def _culto(item):
     logger.info()

@@ -20,7 +20,7 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host, search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Más destacadas', action = 'list_all', url = host + '/?Categoria_id=1', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Más destacadas', action = 'list_all', url = host + '?Categoria_id=1', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Por productora', action = 'categorias', url = host, search_type = 'tvshow' ))
 
@@ -42,7 +42,7 @@ def categorias(item):
     for title, id in matches:
         if id == '1': continue
 
-        itemlist.append(item.clone( title = title, url = host + '?Categoria_id=' + id, action = 'list_all' ))
+        itemlist.append(item.clone( title = title, url = host + '?Categoria_id=' + id, action = 'list_all', text_color = 'hotpink' ))
 
     return itemlist
 
@@ -51,8 +51,8 @@ def alfabetico(item):
     logger.info()
     itemlist = []
 
-    for letra in 'abcdefghijklmnopqrstuvwxyz#':
-        itemlist.append(item.clone ( title = letra.upper(), url = host + '?utf8=✓&Titulo=' + letra, action = 'list_all', filtro_search = letra ))
+    for letra in '#abcdefghijklmnopqrstuvwxyz':
+        itemlist.append(item.clone ( title = letra.upper(), url = host + '?utf8=✓&Titulo=' + letra, action = 'list_all', filtro_search = letra, text_color = 'hotpink' ))
 
     return itemlist
 
@@ -86,6 +86,8 @@ def list_all(item):
         if thumb.startswith('/'): thumb = host[:-1] + thumb
 
         if not year: year = '-'
+
+        title = title.replace('&amp;', '&')
 
         itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb,
                                     contentType = 'tvshow', contentSerieName = title, infoLabels = {'year': year} ))
@@ -125,7 +127,7 @@ def temporadas(item):
             itemlist = episodios(item)
             return itemlist
 
-        itemlist.append(item.clone( action = 'episodios', title = title, page = 0, contentType = 'season', contentSeason = season ))
+        itemlist.append(item.clone( action = 'episodios', title = title, page = 0, contentType = 'season', contentSeason = season, text_color = 'tan' ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -144,10 +146,12 @@ def episodios(item):
     bloque = scrapertools.find_single_match(data, '"fa fa-chevron-right"></span> Temporada ' + str(item.contentSeason) + '(.*?)</div>')
     matches = scrapertools.find_multiple_matches(bloque, 'href="(.*?)".*?<span>(.*?)</span>(.*?)</a>')
 
-    if item.page == 0:
+    if item.page == 0 and item.perpage == 50:
         sum_parts = len(matches)
 
-        try: tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+        try:
+            tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+            if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
         if tvdb_id:
@@ -155,6 +159,7 @@ def episodios(item):
                 platformtools.dialog_notification('LaCartoons', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
         else:
+            item.perpage = sum_parts
 
             if sum_parts >= 1000:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]500[/B][/COLOR] elementos ?'):
@@ -167,14 +172,20 @@ def episodios(item):
                     item.perpage = 250
 
             elif sum_parts >= 250:
-                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]100[/B][/COLOR] elementos ?'):
-                    platformtools.dialog_notification('LaCartoons', '[COLOR cyan]Cargando 100 elementos[/COLOR]')
-                    item.perpage = 100
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]125[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('LaCartoons', '[COLOR cyan]Cargando 125 elementos[/COLOR]')
+                    item.perpage = 125
+
+            elif sum_parts >= 125:
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]75[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('LaCartoons', '[COLOR cyan]Cargando 75 elementos[/COLOR]')
+                    item.perpage = 75
 
             elif sum_parts > 50:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos [COLOR cyan][B]Todos[/B][/COLOR] de una sola vez ?'):
                     platformtools.dialog_notification('LaCartoons', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
                     item.perpage = sum_parts
+                else: item.perpage = 50
 
     for url, capitulo, title in matches[item.page * item.perpage:]:
         if url.startswith('/'): url = host[:-1] + url
@@ -184,8 +195,7 @@ def episodios(item):
         title = '%sx%s %s %s' % (str(item.contentSeason), epis, capitulo, title)
         title = title.replace('--', '').replace('-', '')
 
-        itemlist.append(item.clone( action = 'findvideos', url = url, title = title,
-                                    contentType='episode', contentSeason = item.contentSeason, contentEpisodeNumber = epis ))
+        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, contentType='episode', contentSeason = item.contentSeason, contentEpisodeNumber = epis ))
 
         if len(itemlist) >= item.perpage:
             break
@@ -217,12 +227,18 @@ def findvideos(item):
     for url in matches:
         ses += 1
 
+        if '/oload.' in url: continue
+
         servidor = servertools.get_server_from_url(url)
 
-        if servidor:
-            url = normalize_other(url)
-            if url:
-               itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = url, language = 'Lat' ))
+        servidor = servertools.corregir_servidor(servidor)
+
+        if servertools.is_server_available(servidor):
+            if not servertools.is_server_enabled(servidor): continue
+        else:
+            if not config.get_setting('developer_mode', default=False): continue
+
+        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = url, language = 'Lat' ))
 
     if not itemlist:
         if not ses == 0:
@@ -230,26 +246,6 @@ def findvideos(item):
             return
 
     return itemlist
-
-
-def normalize_other(url):
-    url = servertools.corregir_servidor(url)
-
-    if url == 'netutv': url = ''
-    elif url == 'powvideo': url = ''
-    elif url == 'streamplay': url = ''
-    elif url == 'uploadedto': url = ''
-
-    elif '/openload.' in url: url = ''
-    elif '/oload.' in url: url = ''
-    elif '/www.rapidvideo.' in url: url = ''
-    elif '/streamango.' in url: url = ''
-    elif '/streamcloud.' in url: url = ''
-    elif '/thevid.' in url: url = ''
-    elif '/thevideo.' in url: url = ''
-    elif '/www.uploadmp4.' in url: url = ''
-
-    return url
 
 
 def search(item, texto):

@@ -11,7 +11,7 @@
   "categories": ["movie", "tvshow"],
   "language": ["cast", "lat", "vose", "vo"],
 
-  "clusters": ["inestable", "current", "register", "suggested", "notice", "news", "rankings", "languages", "qualityes", "countries", "years", "lists", "lasts", "producers", "kids", "docs", "vos", "anime"],
+  "clusters": ["current", "register", "suggested", "notice", "news", "rankings", "languages", "qualityes", "countries", "years", "lists", "lasts", "producers", "kids", "docs", "vos", "anime"],
 
-  "notes": "Películas por géneros, Series por Géneros y Animes, también por año. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Películas por géneros y año. Series y Animes por Géneros y año. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

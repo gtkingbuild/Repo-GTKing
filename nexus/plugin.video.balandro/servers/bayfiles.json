@@ -10,6 +10,10 @@
       {
         "pattern": "(https://bayfiles.com/\\w+)",
         "url": "\\1"
+      },
+      {
+        "pattern": "(https://bayfile.com/\\w+)",
+        "url": "\\1"
       }
     ]
   }

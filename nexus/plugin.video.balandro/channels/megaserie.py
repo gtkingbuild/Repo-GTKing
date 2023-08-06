@@ -32,7 +32,7 @@ def item_configurar_proxies(item):
 
     plot = 'Es posible que para poder utilizar este canal necesites configurar algún proxy, ya que no es accesible desde algunos países/operadoras.'
     plot += '[CR]Si desde un navegador web no te funciona el sitio ' + host + ' necesitarás un proxy.'
-    return item.clone( title = 'Configurar proxies a usar ... [COLOR plum](si no hay resultados)[/COLOR]', action = 'configurar_proxies', folder=False, context=context, plot=plot, text_color='red' )
+    return item.clone( title = '[B]Configurar proxies a usar ...[/B]', action = 'configurar_proxies', folder=False, context=context, plot=plot, text_color='red' )
 
 def quitar_proxies(item):
     from modules import submnuctext
@@ -45,30 +45,73 @@ def configurar_proxies(item):
 
 
 def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
+    if url.startswith(host):
+        if not headers: headers = {'Referer': host}
+
     if '/release/' in url: raise_weberror = False
 
-    # ~ data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
-    data = httptools.downloadpage_proxy('megaserie', url, post=post, headers=headers, raise_weberror=raise_weberror).data
+    timeout = None
+    if host in url:
+        if config.get_setting('channel_megaserie_proxies', default=''): timeout = config.get_setting('channels_repeat', default=30)
 
-    if '<title>You are being redirected...</title>' in data:
+    if not url.startswith(host):
+        data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+    else:
+        data = httptools.downloadpage_proxy('megaserie', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+
+        if not data:
+            if not '?s=' in url:
+                platformtools.dialog_notification('MegaSerie', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+                data = httptools.downloadpage_proxy('megaserie', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+
+    if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
         try:
             from lib import balandroresolver
             ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
             if ck_name and ck_value:
                 httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
-                # ~ data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
-                data = httptools.downloadpage_proxy('megaserie', url, post=post, headers=headers, raise_weberror=raise_weberror).data
+
+                if not url.startswith(host):
+                    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+                else:
+                    data = httptools.downloadpage_proxy('megaserie', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
         except:
             pass
 
+    if '<title>Just a moment...</title>' in data:
+        if not '?s=' in url:
+            platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]CloudFlare[COLOR orangered] Protection[/B][/COLOR]')
+        return ''
+
+    elif '<title>Bot Verification</title>' in data:
+        if not '?s=' in url:
+            platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]CloudFlare[COLOR orangered] reCAPTCHA[/B][/COLOR]')
+        return ''
+
     return data
+
+
+def acciones(item):
+    logger.info()
+    itemlist = []
+
+    itemlist.append(item.clone( channel='submnuctext', action='_test_webs', title='Test Web del canal [COLOR yellow][B] ' + host + '[/B][/COLOR]',
+                                from_channel='megaserie', folder=False, text_color='chartreuse' ))
+
+    itemlist.append(item_configurar_proxies(item))
+
+    itemlist.append(Item( channel='helper', action='show_help_megaserie', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('help') ))
+
+    platformtools.itemlist_refresh()
+
+    return itemlist
 
 
 def mainlist(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item_configurar_proxies(item))
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone ( title = 'Buscar ...', action = 'search', search_type = 'all', text_color = 'yellow' ))
 
@@ -82,7 +125,7 @@ def mainlist_pelis(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item_configurar_proxies(item))
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone ( title = 'Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
 
@@ -99,7 +142,7 @@ def mainlist_series(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item_configurar_proxies(item))
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone ( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
@@ -115,6 +158,9 @@ def mainlist_series(item):
 def generos(item):
     logger.info()
     itemlist = []
+
+    if item.search_type == 'movie': text_color = 'deepskyblue'
+    else: text_color = 'hotpink'
 
     opciones = [
         ('accion', 'Acción'), 
@@ -156,7 +202,7 @@ def generos(item):
         if item.search_type == 'movie': url += '/?type=movies'
         else: url += '/?type=series'
 
-        itemlist.append(item.clone( title = tit, url = url, action = 'list_all' ))
+        itemlist.append(item.clone( title = tit, url = url, action = 'list_all', text_color = text_color ))
 
     return itemlist
 
@@ -165,6 +211,9 @@ def anios(item):
     logger.info()
     itemlist = []
 
+    if item.search_type == 'movie': text_color = 'deepskyblue'
+    else: text_color = 'hotpink'
+
     from datetime import datetime
     current_year = int(datetime.today().year)
 
@@ -172,7 +221,7 @@ def anios(item):
     else: top_year = 1998
 
     for x in range(current_year, top_year, -1):
-        itemlist.append(item.clone( title = str(x), url = host + 'release/' + str(x) + '/', action = 'list_all' ))
+        itemlist.append(item.clone( title = str(x), url = host + 'release/' + str(x) + '/', action = 'list_all', text_color = text_color ))
 
     return itemlist
 
@@ -192,6 +241,8 @@ def list_all(item):
         title = scrapertools.find_single_match(article, '<h2 class="entry-title">(.*?)</h2>')
 
         if not url or not title: continue
+
+        title = title.replace('&#8211;', '').replace('&#8217;', '').replace('&#038;', '&')
 
         thumb = scrapertools.find_single_match(article, ' src="([^"]+)"')
         if thumb.startswith('//'): thumb = 'https:' + thumb
@@ -213,8 +264,7 @@ def list_all(item):
             if not item.search_type == "all":
                 if item.search_type == "tvshow": continue
 
-            itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb,
-                                        qualities=qlty, languages=', '.join(langs), fmt_sufijo=sufijo, 
+            itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, qualities=qlty, languages=', '.join(langs), fmt_sufijo=sufijo, 
                                         contentType='movie', contentTitle=title, infoLabels={'year': year} ))
 
         if tipo == 'tvshow':
@@ -229,6 +279,7 @@ def list_all(item):
     if itemlist:
         if '>SIGUIENTE' in data:
             next_page = scrapertools.find_single_match(data, '<a class="page-link current".*?</a>.*?href="([^"]+)')
+
             if next_page:
                 if '/page/' in next_page:
                     itemlist.append(item.clone (url = next_page, title = 'Siguientes ...', action = 'list_all', text_color='coral' ))
@@ -255,7 +306,7 @@ def temporadas(item):
             itemlist = episodios(item)
             return itemlist
 
-        itemlist.append(item.clone( action = 'episodios', title = title, page = 0, contentType = 'season', contentSeason = numtempo ))
+        itemlist.append(item.clone( action = 'episodios', title = title, page = 0, contentType = 'season', contentSeason = numtempo, text_color='tan' ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -283,10 +334,12 @@ def episodios(item):
 
     matches = scrapertools.find_multiple_matches(data, patron)
 
-    if item.page == 0:
+    if item.page == 0 and item.perpage == 50:
         sum_parts = len(matches)
 
-        try: tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+        try:
+            tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
+            if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
         if tvdb_id:
@@ -294,6 +347,7 @@ def episodios(item):
                 platformtools.dialog_notification('MegaSerie', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
         else:
+            item.perpage = sum_parts
 
             if sum_parts >= 1000:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]500[/B][/COLOR] elementos ?'):
@@ -306,14 +360,20 @@ def episodios(item):
                     item.perpage = 250
 
             elif sum_parts >= 250:
-                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]100[/B][/COLOR] elementos ?'):
-                    platformtools.dialog_notification('MegaSerie', '[COLOR cyan]Cargando 100 elementos[/COLOR]')
-                    item.perpage = 100
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]125[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('MegaSerie', '[COLOR cyan]Cargando 125 elementos[/COLOR]')
+                    item.perpage = 125
+
+            elif sum_parts >= 125:
+                if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]75[/B][/COLOR] elementos ?'):
+                    platformtools.dialog_notification('MegaSerie', '[COLOR cyan]Cargando 75 elementos[/COLOR]')
+                    item.perpage = 75
 
             elif sum_parts > 50:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos [COLOR cyan][B]Todos[/B][/COLOR] de una sola vez ?'):
                     platformtools.dialog_notification('MegaSerie', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
                     item.perpage = sum_parts
+                else: item.perpage = 50
 
     for thumb, temp_epis, title, url in matches[item.page * item.perpage:]:
         if not 'http' in thumb: thumb = 'https:' + thumb
@@ -358,11 +418,11 @@ def findvideos(item):
 
         if srv == 'hqq' or srv == 'waaw' or srv == 'netu': continue
 
-        elif srv == 'ul': continue
-        elif srv == '1fichier': continue
-        elif srv == 'rapidgator': continue
-        elif srv == 'mediafire': continue
-        elif srv == 'uploaded': continue
+        if not srv == 'descargaonline':
+            if servertools.is_server_available(srv):
+                if not servertools.is_server_enabled(srv): continue
+            else:
+                if not config.get_setting('developer_mode', default=False): continue
 
         lang = scrapertools.find_single_match(srv_lang, '.*?-(.*?)$').strip()
 
@@ -373,7 +433,10 @@ def findvideos(item):
                 host_torrent = host[:-1]
                 url_base64 = decrypters.decode_url_base64(url, host_torrent)
 
-                new_url = httptools.downloadpage_proxy('megaserie', url_base64, follow_redirects=False).headers.get('location', '')
+                if not url_base64.startswith(host):
+                    new_url = httptools.downloadpage(url_base64, follow_redirects=False).headers.get('location', '')
+                else:
+                    new_url = httptools.downloadpage_proxy('megaserie', url_base64, follow_redirects=False).headers.get('location', '')
 
                 if new_url:
                     data1 = do_downloadpage(new_url)
@@ -383,25 +446,18 @@ def findvideos(item):
                     for link in matches1:
                         if '/hqq' in link or '/waaw' in link or '/netu' in link: continue
 
-                        elif '/ul' in link: continue
-                        elif '/1fichier' in link: continue
-                        elif '/rapidgator' in link: continue
-                        elif '/mediafire' in link: continue
-                        elif '/uploaded' in link: continue
-
                         servidor = servertools.get_server_from_url(link)
                         servidor = servertools.corregir_servidor(servidor)
 
                         if servidor != 'directo':
                             link = servertools.normalize_url(servidor, link)
 
-                            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = link,
-                                                  language = IDIOMAS.get(lang, lang)))
+                            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = link, language = IDIOMAS.get(lang, lang)))
 
                     continue
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', title = '', url = url,
-                              language = IDIOMAS.get(lang, lang), other = srv ))
+        if url:
+            itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', title = '', url = url, language = IDIOMAS.get(lang, lang), other = srv ))
 
     # ~ Descargar
     matches = scrapertools.find_multiple_matches(data, '<td><span class="num">.*?</span>(.*?)</td>.*?<td>(.*?)</td>.*?<td><span>(.*?)</span>.*?href="(.*?)"')
@@ -415,18 +471,21 @@ def findvideos(item):
 
         if srv == 'hqq' or srv == 'waaw' or srv == 'netu': continue
 
-        elif 'ul' in srv: continue
-        elif '1fichier' in srv: continue
-        elif 'rapidgator' in srv: continue
-        elif 'mediafire' in srv: continue
-        elif 'uploaded' in srv: continue
+        if not srv == 'descargaonline':
+            if servertools.is_server_available(srv):
+                if not servertools.is_server_enabled(srv): continue
+            else:
+                if not config.get_setting('developer_mode', default=False): continue
 
         if srv == 'descargaonline':
             if '/acortar24.xyz/' in url:
                 host_torrent = host[:-1]
                 url_base64 = decrypters.decode_url_base64(url, host_torrent)
 
-                new_url = httptools.downloadpage_proxy('megaserie', url_base64, follow_redirects=False).headers.get('location', '')
+                if not url_base64.startswith(host):
+                    new_url = httptools.downloadpage(url_base64, follow_redirects=False).headers.get('location', '')
+                else:
+                    new_url = httptools.downloadpage_proxy('megaserie', url_base64, follow_redirects=False).headers.get('location', '')
 
                 if new_url:
                     data2 = do_downloadpage(new_url)
@@ -435,12 +494,6 @@ def findvideos(item):
 
                     for link in matches2:
                         if '/hqq' in link or '/waaw' in link or '/netu' in link: continue
-
-                        elif '/ul' in link: continue
-                        elif '/1fichier' in link: continue
-                        elif '/rapidgator' in link: continue
-                        elif '/mediafire' in link: continue
-                        elif '/uploaded' in link: continue
 
                         servidor = servertools.get_server_from_url(link)
                         servidor = servertools.corregir_servidor(servidor)
@@ -458,8 +511,7 @@ def findvideos(item):
 
             other = 'D ' + srv
 
-            itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', title = '', url = url,
-                                  language = IDIOMAS.get(lang, lang), other = other ))
+            itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', title = '', url = url, language = IDIOMAS.get(lang, lang), other = other ))
 
     if not itemlist:
         if not ses == 0:
@@ -500,7 +552,10 @@ def play(item):
         host_torrent = host[:-1]
         url_base64 = decrypters.decode_url_base64(url, host_torrent)
 
-        url = httptools.downloadpage_proxy('megaserie', url_base64, follow_redirects=False).headers.get('location', '')
+        if not url_base64.startswith(host):
+            url = httptools.downloadpage(url_base64, follow_redirects=False).headers.get('location', '')
+        else:
+            url = httptools.downloadpage_proxy('megaserie', url_base64, follow_redirects=False).headers.get('location', '')
 
         if url:
             servidor = servertools.get_server_from_url(url)

@@ -62,18 +62,18 @@ def get_video_url(page_url, url_referer=''):
         if PY3 and isinstance(response.data, bytes): response.data = response.data.decode('utf-8')
 
         if response.code == 429:
-            return "Demasiadas conexiones al servidor, inténtelo después"
+            return "Servidor saturado, inténtelo más tarde"
 
         if "no+existe" in response.data:
             return "El vídeo no existe o ha sido borrado"
         elif "Se+ha+excedido+el" in response.data:
             return "Se ha excedido el número de reproducciones permitidas"
         elif "No+tienes+permiso" in response.data:
-            return "No tienes permiso para acceder a este vídeo"
+            return "No tiene permiso para acceder al vídeo"
         elif "Se ha producido un error" in response.data:
             return "Se ha producido un error en el reproductor de google"
         elif "No+se+puede+procesar+este" in response.data:
-            return "No se puede procesar este vídeo"
+            return "No se puede procesar el vídeo"
 
         cookies = ""
         cookie = response.headers["set-cookie"].split("HttpOnly, ")
@@ -81,7 +81,6 @@ def get_video_url(page_url, url_referer=''):
         for c in cookie:
             cookies += c.split(";", 1)[0] + "; "
 
-        #data = response.data.decode('unicode-escape')
         data = codecs.decode(response.data, 'unicode-escape')
         data = urllib.unquote_plus(urllib.unquote_plus(data))
 

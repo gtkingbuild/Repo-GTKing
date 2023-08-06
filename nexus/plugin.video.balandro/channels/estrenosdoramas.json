@@ -11,7 +11,7 @@
   "categories": ["movie", "tvshow"],
   "language": ["lat", "vose"],
 
-  "clusters": ["dorama"],
+  "clusters": ["current", "dorama"],
 
   "notes": "Web dedicada exclusivamente al dorama"
 }

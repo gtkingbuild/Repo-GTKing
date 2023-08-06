@@ -51,11 +51,11 @@ def list_all(item):
     matches = scrapertools.find_multiple_matches(data, patron)
 
     for url, title, thumb, in matches:
-        itemlist.append(item.clone (action='findvideos', title=title, url=url, thumbnail=thumb, contentType = 'movie',
-                                    contentTitle = title, contentExtra='adults') )
+        itemlist.append(item.clone (action='findvideos', title=title, url=url, thumbnail=thumb, contentType = 'movie', contentTitle = title, contentExtra='adults') )
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<a class="next page-numbers" href="(.*?)"')
+
         if next_page:
             itemlist.append(item.clone (action='list_all', title='Siguientes ...', url=next_page, text_color = 'coral') )
 

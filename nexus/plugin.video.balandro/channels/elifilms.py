@@ -61,8 +61,10 @@ def do_downloadpage(url, post=None, headers=None):
 
     raise_weberror = False if '/year/' in url else True
 
-    # ~ data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
-    data = httptools.downloadpage_proxy('elifilms', url, post=post, headers=headers, raise_weberror=raise_weberror).data
+    if not url.startswith(host):
+        data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
+    else:
+        data = httptools.downloadpage_proxy('elifilms', url, post=post, headers=headers, raise_weberror=raise_weberror).data
 
     return data
 
@@ -112,7 +114,6 @@ def mainlist_pelis(item):
     itemlist.append(item.clone( title = 'En 4K UHD', action = 'list_all', url = host + '4k-peliculas/', search_type = 'movie' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
-
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'movie' ))
 
     return itemlist
@@ -129,7 +130,7 @@ def generos(item):
     matches = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)">(.*?)</a>')
 
     for url, title in matches:
-        itemlist.append(item.clone( action='list_all', title=title, url=url ))
+        itemlist.append(item.clone( action='list_all', title=title, url=url, text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -142,9 +143,10 @@ def anios(item):
     current_year = int(datetime.today().year)
 
     for x in range(current_year, 1993, -1):
-        itemlist.append(item.clone( title=str(x), url= host + 'year/' + str(x) + '/', action='list_all', any = str(x) ))
+        itemlist.append(item.clone( title=str(x), url= host + 'year/' + str(x) + '/', action='list_all', any = str(x), text_color = 'deepskyblue' ))
 
     return itemlist
+
 
 def list_all(item):
     logger.info()
@@ -167,8 +169,9 @@ def list_all(item):
         year = '-'
         if item.any: year = item.any
 
-        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb,
-                                    contentType='movie', contentTitle=title, infoLabels={'year': year} ))
+        title = title.replace('&#8211;', '').replace('&#8217;', '').replace('#038;', '')
+
+        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, contentType='movie', contentTitle=title, infoLabels={'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -206,8 +209,7 @@ def findvideos(item):
 
         elif srv == 'vip': continue
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', title = '', dvid = dvid,
-                              language = 'Lat', other = srv.capitalize() ))
+        itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', title = '', dvid = dvid, language = 'Lat', other = srv.capitalize() ))
 
     # Descarga y Torrents
     bloque = scrapertools.find_single_match(data, '<tbody>(.*?)</tbody>')
@@ -223,13 +225,12 @@ def findvideos(item):
 
         if not lng: lng = 'Lat'
 
-        if '1fichier' in srv: continue
-        elif 'mediafire' in srv: continue
-        elif 'google drive' in srv: continue
-        elif 'turbobit' in srv: continue
+        if servertools.is_server_available(srv):
+            if not servertools.is_server_enabled(srv): continue
+        else:
+            if not config.get_setting('developer_mode', default=False): continue
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', title = '', dvid = dvid,
-                              quality = qlty, language = lng, other = srv.capitalize() ))
+        itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', title = '', dvid = dvid, quality = qlty, language = lng, other = srv.capitalize() ))
 
     if not itemlist:
         if not ses == 0:

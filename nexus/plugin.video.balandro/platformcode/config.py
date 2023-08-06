@@ -38,6 +38,18 @@ def build_ContainerUpdate(item, replace=False):
         return 'Container.Update(%s?%s)' % (__base_url, item.tourl())
 
 
+def get_temp_file(filename):
+    from core import filetools
+
+    temp = os.path.join(get_data_path(), filename)
+
+    if os.path.exists(temp): filetools.rmdirtree(temp)
+
+    if not os.path.exists(temp): os.makedirs(temp)
+
+    return temp
+
+
 def get_runtime_path():
     return translatePath(__settings__.getAddonInfo('Path'))
 
@@ -86,7 +98,7 @@ def get_thumb(thumb_name, theme='default', mtype='themes'):
 def get_localized_category(categ):
     categories = {'movie': 'Películas', 'tvshow': 'Series', 
                   'documentary': 'Documentales', 'vos': 'Versiones originales',
-                  'anime': 'Anime', 'adult': 'Adultos',
+                  'dorama': 'Dorama', 'anime': 'Anime', 'adult': 'Adultos',
                   'direct': 'Directos', 'torrent': 'Torrents'}
 
     return categories[categ] if categ in categories else categ

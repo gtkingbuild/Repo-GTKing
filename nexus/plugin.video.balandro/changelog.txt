@@ -2,72 +2,82 @@
 
 [COLOR yellow][B]2023[/B][/COLOR]
 
-2.5.6  [COLOR darkorange] 19 de Enero 2023[/COLOR]
+3.0.9  [COLOR darkorange] 4 de Agosto de 2023[/COLOR]
     Correcciones: Bugs de la version anterior
-
     Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
 
-    Canales:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
-
-    Servidores:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
-
-2.5.5  [COLOR darkorange] 9 de Enero 2023[/COLOR]
+3.0.8  [COLOR darkorange] 7 de Julio de 2023[/COLOR]
     Correcciones: Bugs de la version anterior
-
     Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
 
-    Canales:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
+3.0.7  [COLOR darkorange] 12 de Junio de 2023[/COLOR]
+    Correcciones: Bugs de la version anterior
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
 
-    Servidores:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
+3.0.6  [COLOR darkorange] 1 de Junio de 2023[/COLOR]
+    Correcciones: Bugs de la version anterior
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
+
+3.0.5  [COLOR darkorange] 12 de Mayo de 2023[/COLOR]
+    Correcciones: Bugs de la version anterior
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
+
+3.0.4  [COLOR darkorange] 27 de Abril de 2023[/COLOR]
+    Correcciones: Bugs de la version anterior
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
+
+3.0.3  [COLOR darkorange] 13 de Abril de 2023[/COLOR]
+    Correcciones: Bugs de la version anterior
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
+
+3.0.2  [COLOR darkorange] 16 de Marzo de 2023[/COLOR]
+    Correcciones: Bugs de la version anterior
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
+
+3.0.1  [COLOR darkorange] 11 de Febrero de 2023[/COLOR]
+    Correcciones: Bugs de la version anterior
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
+
+3.0.0  [COLOR darkorange] 1 de Febrero de 2023[/COLOR]
+    Correcciones: Bugs de la version anterior
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
+
+2.5.6  [COLOR darkorange] 19 de Enero de 2023[/COLOR]
+    Correcciones: Bugs de la version anterior
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
+
+2.5.5  [COLOR darkorange] 9 de Enero de 2023[/COLOR]
+    Correcciones: Bugs de la version anterior
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
 
 [COLOR yellow][B]2022[/B][/COLOR]
 
 2.5.4  [COLOR darkorange] 22 de Diciembre 2022[/COLOR]
     Correcciones: Bugs de la version anterior
-
     Generos: Re-configurados
-
-    Canales:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
-
-    Servidores:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
+    Canales y Servidores: Sin variaciones
 
 2.5.3  [COLOR darkorange] 16 de Diciembre 2022[/COLOR]
     Correcciones: Bugs de la version anterior
-
     Generos: Re-configurados
-
-    Canales:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
-
-    Servidores:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
+    Canales y Servidores: Sin variaciones
 
 2.5.2  [COLOR darkorange] 28 de Noviembre 2022[/COLOR]
     Correcciones: Bugs de la version anterior
-
     Generos: Re-configurados
-
-    Canales:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
-
-    Servidores:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
+    Canales y Servidores: Sin variaciones
 
 2.5.1  [COLOR darkorange] 11 de Noviembre 2022[/COLOR]
     Correcciones: Bugs de la version anterior
@@ -76,131 +86,52 @@
        Sistema: Nueva opcion para comprobar Balandro Repo
 
     Generos: Re-configurados
-
-    Canales:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
-
-    Servidores:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
+    Canales y Servidores: Sin variaciones
 
 2.5.0  [COLOR darkorange] 28 de Octubre 2022[/COLOR]
     Correcciones: Bugs de la version anterior
-
     Generos: Re-configurados
-
-    Canales:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
-
-    Servidores:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
+    Canales y Servidores: Sin variaciones
 
 2.4.2  [COLOR darkorange] 8 de Octubre 2022[/COLOR]
     Correcciones: Bugs de la version anterior
-
     Generos: Re-configurados
-
-    Canales:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
-
-    Servidores:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
+    Canales y Servidores: Sin variaciones
 
 2.4.1  [COLOR darkorange]29 de Septiembre 2022[/COLOR]
     Correcciones: Bugs de la version anterior
-
     Generos: Re-configurados
-
-    Canales:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
-
-    Servidores:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
+    Canales y Servidores: Sin variaciones
 
 2.4.0  [COLOR darkorange]1 de Septiembre 2022[/COLOR]
     Correcciones: Bugs de la version anterior
-
     Generos: Re-configurados
-
-    Canales:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
-
-    Servidores:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
+    Canales y Servidores: Sin variaciones
 
 2.3.9  [COLOR darkorange]13 de Agosto 2022[/COLOR]
     Correcciones: Bugs de la version anterior
-
     Generos: Re-configurados
-
-    Canales:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
-
-    Servidores:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
+    Canales y Servidores: Sin variaciones
 
 2.3.8  [COLOR darkorange]8 de Agosto 2022[/COLOR]
     Correcciones: Bugs de la version anterior
-
     Generos: Re-configurados
-
-    Canales:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
-
-    Servidores:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
+    Canales y Servidores: Sin variaciones
 
 2.3.7  [COLOR darkorange]1 de Agosto 2022[/COLOR]
     Correcciones: Bugs de la version anterior
-
     Generos: Re-configurados
-
-    Canales:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
-
-    Servidores:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
+    Canales y Servidores: Sin variaciones
 
 2.3.6  [COLOR darkorange]14 de Julio 2022[/COLOR]
     Correcciones: Bugs de la version anterior
-
     Generos: Re-configurados
-
-    Canales:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
-
-    Servidores:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
+    Canales y Servidores: Sin variaciones
 
 2.3.5  [COLOR darkorange]1 de Julio 2022[/COLOR]
     Correcciones: Bugs de la version anterior
-
     Generos: Re-configurados
-
-    Canales:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
-
-    Servidores:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
+    Canales y Servidores: Sin variaciones
 
 2.3.4  [COLOR darkorange]16 de Junio 2022[/COLOR]
     Correcciones: Bugs de la version anterior
@@ -211,14 +142,7 @@
        Ayuda: Nuevas opciones
 
     Generos: Re-configurados
-
-    Canales:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
-
-    Servidores:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
+    Canales y Servidores: Sin variaciones
 
 2.3.3  [COLOR darkorange]1 de Junio 2022[/COLOR]
     Correcciones: Bugs de la version anterior
@@ -229,39 +153,18 @@
        Ayuda: Nueva opciones
 
     Generos: Re-configurados
-
-    Canales:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
-
-    Servidores:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
+    Canales y Servidores: Sin variaciones
 
 2.3.2  [COLOR darkorange]10 de Mayo 2022[/COLOR]
     Correcciones: Bugs de la version anterior
     Generos: Re-configurados
-
-    Canales:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
-
-    Servidores:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
+    Canales y Servidores: Sin variaciones
 
 2.3.1  [COLOR darkorange]5 de Mayo 2022[/COLOR]
     Correcciones: Bugs de la version anterior
     Configuracion: Cuentas - Dominio HdFull
     Generos: Re-configurados
-
-    Canales:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
-
-    Servidores:
-       Modificados: Revision generalizada
-       Anulados: Las webs cerradas
+    Canales y Servidores: Sin variaciones
 
 2.3.0  [COLOR darkorange]30 de Mayo 2022[/COLOR]
     Correcciones: Bugs de la version anterior
@@ -288,14 +191,12 @@
 2.2.5  [COLOR darkorange]1 de Abril 2022[/COLOR]
     Correcciones: Bugs de la version anterior
     Generos: Re-configurados
-    Canales: Modificados - Revision generalizada
-    Servidores: Modificados - Revision generalizada
+    Canales y Servidores: Sin variaciones
 
 2.2.4  [COLOR darkorange]1 de Marzo 2022[/COLOR]
     Correcciones: Bugs de la version anterior
     Generos: Re-configurados
-    Canales: Modificados - Revision generalizada
-    Servidores: Modificados - Revision generalizada
+    Canales y Servidores: Sin variaciones
 
 2.2.3  [COLOR darkorange]22 de Febrero 2022[/COLOR]
     Correcciones: Bugs de la version anterior
@@ -312,8 +213,7 @@
 2.2.2  [COLOR darkorange]31 de Enero 2022[/COLOR]
     Correcciones: Bugs de la version anterior
     Generos: Re-configurados
-    Canales: Modificados - Revision generalizada
-    Servidores: Modificados - Revision generalizada
+    Canales y Servidores: Sin variaciones
 
 2.2.1  [COLOR darkorange]17 de Enero 2022[/COLOR]
     Correcciones: Bugs de la version anterior
@@ -382,7 +282,6 @@
        Modificados:
           Doodstream, Fembed, Highload, Mega, Nupload,
           Streamsb, Streamtape, Upvideo, Vidoza
-
 
 2.1.2  [COLOR darkorange]23 de Octubre 2021[/COLOR]
     Correcciones: Bugs de la version anterior
