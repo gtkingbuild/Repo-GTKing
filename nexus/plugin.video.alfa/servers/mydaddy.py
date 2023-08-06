@@ -10,8 +10,9 @@ from platformcode import logger
 def test_video_exists(page_url):
     logger.info("(page_url='%s')" % page_url)
     global data
-    data = httptools.downloadpage(page_url).data
-    if "Not Found" in data \
+    response = httptools.downloadpage(page_url)
+    data = response.data
+    if response.code == 404 or "Not Found" in data \
        or "File was deleted" in data \
        or "is no longer available" in data:
         return False, "[mydaddy] El fichero no existe o ha sido borrado"

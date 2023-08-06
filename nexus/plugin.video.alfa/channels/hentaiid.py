@@ -15,7 +15,7 @@ from core import scrapertools
 from core.item import Item
 from platformcode import config, logger
 from channels import filtertools
-from channels import autoplay
+from modules import autoplay
 
 IDIOMAS = {'vo': 'VO'}
 list_language = list(IDIOMAS.values())

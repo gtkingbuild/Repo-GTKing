@@ -12,7 +12,7 @@ else:
 
 import re
 
-from channels import autoplay
+from modules import autoplay
 from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, jsontools, tmdb

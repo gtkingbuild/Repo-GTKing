@@ -16,7 +16,7 @@ from core import scrapertools
 from core import servertools
 from core.item import Item
 from core import httptools
-from channels import autoplay
+from modules import autoplay
 from bs4 import BeautifulSoup
 
 list_quality = ['default']

@@ -40,7 +40,7 @@ def load(*args, **kwargs):
 
     try:
         value = json.loads(*args, **kwargs)
-    except:
+    except Exception as e:
         if silence: return {}
         try:
             import inspect
@@ -54,8 +54,7 @@ def load(*args, **kwargs):
         except:
             module = ''
         
-        logger.error("**NO** se ha podido cargar el JSON: %s, args: %s, kwargs: %s" % (str(module), str(args), str(kwargs)))
-        logger.error(traceback.format_exc())
+        logger.error("ERROR %s: **NO** se ha podido cargar el JSON: %s, args: %s, kwargs: %s" % (str(e), str(module), str(args), str(kwargs)))
         value = {}
         module = ''
 
@@ -69,7 +68,7 @@ def dump(*args, **kwargs):
 
     try:
         value = json.dumps(*args, **kwargs)
-    except:
+    except Exception as e:
         if silence: return ""
         try:
             import inspect
@@ -83,8 +82,7 @@ def dump(*args, **kwargs):
         except:
             module = ''
         
-        logger.error("**NO** se ha podido guardar el JSON: %s, args: %s, kwargs: %s" % (str(module), str(args), str(kwargs)))
-        logger.error(traceback.format_exc())
+        logger.error("ERROR %s: **NO** se ha podido guardar el JSON: %s, args: %s, kwargs: %s" % (str(e), str(module), str(args), str(kwargs)))
         module = ''
         value = ""
     return value
@@ -105,7 +103,7 @@ def to_utf8(dct):
         return dct
 
 
-def get_node_from_file(name_file, node, path=None, display=True, debug=False):
+def get_node_from_file(name_file, node, path=None, display=False, debug=False):
     """
     Obtiene el nodo de un fichero JSON
 
@@ -190,7 +188,7 @@ def get_node_from_file(name_file, node, path=None, display=True, debug=False):
     return dict_node
 
 
-def check_to_backup(data, fname, dict_data, display=True):
+def check_to_backup(data, fname, dict_data, display=False):
     """
     Comprueba que si dict_data(conversion del fichero JSON a dict) no es un diccionario, se genere un fichero con
     data de nombre fname.bk.
@@ -219,7 +217,7 @@ def check_to_backup(data, fname, dict_data, display=True):
             logger.debug("Está vacío el fichero: %s" % fname)
 
 
-def update_node(dict_node, name_file, node, path=None, display=True, debug=False):
+def update_node(dict_node, name_file, node, path=None, display=False, debug=False):
     """
     actualiza el json_data de un fichero con el diccionario pasado
 

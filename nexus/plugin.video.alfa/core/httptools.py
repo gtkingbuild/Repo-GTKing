@@ -63,11 +63,11 @@ if HTTPTOOLS_DEFAULT_DOWNLOAD_TIMEOUT == 0: HTTPTOOLS_DEFAULT_DOWNLOAD_TIMEOUT =
 # Uso aleatorio de User-Agents, si no se especifica nada
 HTTPTOOLS_DEFAULT_RANDOM_HEADERS = False
 
-# Se activa desde Test
-TEST_ON_AIR = False
-
 # Se activa cuando se actualiza la Videoteca
 VIDEOLIBRARY_UPDATE = False
+
+# Se activa desde Test
+TEST_ON_AIR = False
 
 # Activa DEBUG extendido cuando se extrae un Informe de error (log)
 DEBUG = config.get_setting('debug_report', default=False) if not TEST_ON_AIR else False
@@ -159,9 +159,10 @@ def get_cookie(url, name, follow_redirects=False):
             pass
         
     domain = obtain_domain(url, sub=True, point=True)
+    name_like = (name if '*' in name else '').replace('*', '')
 
     for cookie in cj:
-        if cookie.name == name and domain in cookie.domain:
+        if (cookie.name == name or (name_like and name_like in cookie.name)) and domain in cookie.domain:
             return cookie.value
     return False
 
@@ -228,11 +229,11 @@ def set_cookies(dict_cookie, clear=True, alfa_s=False):
             pass
 
     ck = cookielib.Cookie(version=0, name=name, value=value, port=None, 
-                    port_specified=False, domain=domain, 
-                    domain_specified=False, domain_initial_dot=domain_initial_dot,
-                    path='/', path_specified=True, secure=secure, 
-                    expires=expires, discard=True, comment=None, comment_url=None, 
-                    rest={'HttpOnly': None}, rfc2109=False)
+                          port_specified=False, domain=domain, 
+                          domain_specified=False, domain_initial_dot=domain_initial_dot,
+                          path='/', path_specified=True, secure=secure, 
+                          expires=expires, discard=True, comment=None, comment_url=None, 
+                          rest={'HttpOnly': None}, rfc2109=False)
     
     cj.set_cookie(ck)
     save_cookies()
@@ -924,7 +925,9 @@ def downloadpage(url, **opt):
                 HTTPResponse.canonical:| str     | Dirección actual de la página descargada
                 HTTPResponse.proxy__: | str      | Si la página se descarga con proxy, datos del proxy usado: proxy-type:addr:estado
     """
-    global CF_LIST, CS_stat, ssl_version, ssl_context
+    global CF_LIST, CS_stat, ssl_version, ssl_context, DEBUG
+    DEBUG = config.get_setting('debug_report', default=False) if not TEST_ON_AIR else False
+    #logger.error('alfa_s: %s; TEST_ON_AIR: %s; DEBUG: %s' % (opt.get('alfa_s', False), TEST_ON_AIR, DEBUG))
     
     if 'api.themoviedb' in url: opt['hide_infobox'] = True
 
@@ -1713,7 +1716,8 @@ def obtain_domain(url, sub=False, point=False, scheme=False):
 
     if url and len(url) > 1:
         url = urlparse.urlparse(url).netloc
-        if sub:
+        ip = bool(scrapertools.find_single_match(url, '\d+\.\d+\.\d+\.\d+'))
+        if sub and not ip:
             split_lst = url.split(".")
             if len(split_lst) > 2:
                 if not point:

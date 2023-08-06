@@ -16,7 +16,7 @@ from core.item import Item
 from core import servertools
 from platformcode import config, logger
 from channels import filtertools
-from channels import autoplay
+from modules import autoplay
 from lib import jsunpack
 
 IDIOMAS = {'vo': 'VO'}

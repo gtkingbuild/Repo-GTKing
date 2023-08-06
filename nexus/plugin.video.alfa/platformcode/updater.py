@@ -186,6 +186,7 @@ def check_addon_updates(verbose=False, monitor=None):
             logger.info('No se encuentran actualizaciones de esta versión del addon', force=True)
             if verbose:
                 dialog_notification('Alfa ya está actualizado', 'No hay ninguna actualización urgente')
+            verify_emergency_update(proxy_only=True)
             check_update_to_others(verbose=verbose)                             # Comprueba las actualuzaciones de otros productos
             verify_script_alfa_update_helper(emergency=False)                   # Verifica si hay una nueva versión de Alfa e instala
             return False
@@ -199,6 +200,7 @@ def check_addon_updates(verbose=False, monitor=None):
             if verbose:
                 dialog_notification('Alfa ya está actualizado', 'No hay ninguna actualización urgente')
             if monitor:
+                verify_emergency_update(proxy_only=True)
                 check_update_to_others(verbose=verbose)                         # Comprueba las actualuzaciones de otros productos
                 verify_script_alfa_update_helper(emergency=False)               # Verifica si hay una nueva versión de Alfa e instala
             return False
@@ -399,20 +401,22 @@ def verify_emergency_update(proxy_only=False):
         result = alfaresolver.frequency_count(ITEM, emergency=True)
         if result:
             for x, (fecha, addon_version, fix_version_, install, key) in enumerate(result):
-                if verify_addon_version(CURRENT_VERSION, addon_version):
+                fix_version__ = fix_version_.split('|')
 
-                    fix_version__ = fix_version_.split('|')
+                if int(key) == 1:
+                    if len(fix_version__) >= 4:
+                        proxyCF = fix_version__[3]
+                    if len(fix_version__) >= 5:
+                        proxySSL = fix_version__[4]
+                    parse_emergency_proxies(proxyCF, proxySSL)
+                    if proxy_only: break
+
+                if verify_addon_version(CURRENT_VERSION, addon_version):
                     fix_version = fix_version__[0] or '*'
                     if len(fix_version__) >= 2:
                         updates_url = fix_version__[1]
                     if len(fix_version__) >= 3:
                         github_url = fix_version__[2]
-                    if int(key) == 1:
-                        if len(fix_version__) >= 4:
-                            proxyCF = fix_version__[3]
-                        if len(fix_version__) >= 5:
-                            proxySSL = fix_version__[4]
-                        parse_emergency_proxies(proxyCF, proxySSL)
 
                     if str(install).startswith('-') or proxy_only: break
 

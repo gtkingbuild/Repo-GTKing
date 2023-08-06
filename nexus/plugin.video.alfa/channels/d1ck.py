@@ -98,9 +98,6 @@ def mainlist(item):
     itemlist.append(Item(channel=item.channel, title="TeenAnal" , action="submenu", url="https://teenanal.co/", chanel="teenanal", thumbnail="https://i.postimg.cc/pLZM5VDt/teenanal.png"))
     itemlist.append(Item(channel=item.channel, title="WankTank" , action="submenu", url="https://wanktank.co/", chanel="wanktank", thumbnail="https://i.postimg.cc/GtQxJfz9/wanktank.png"))
 
-    AlfaChannel.host = item.url
-    AlfaChannel.canonical = canonical.update({'channel': item.chanel, 'host': config.get_setting("current_host", item.chanel, default=''), 'host_alt': AlfaChannel.host})    
-    
     return itemlist
 
 
@@ -108,12 +105,15 @@ def submenu(item):
     logger.info()
     itemlist = []
     config.set_setting("current_host", item.url, item.chanel)
-    # itemlist.append(Item(channel=item.channel, title="Nuevas" , action="list_all", url=host + "latest-updates/?sort_by=post_date&from=01"))
-    itemlist.append(Item(channel=item.channel, title="Nuevas" , action="list_all", url=item.url + "latest-updates/1/"))
-    itemlist.append(Item(channel=item.channel, title="Mas Vistas" , action="list_all", url=item.url + "most-popular/1/"))
-    itemlist.append(Item(channel=item.channel, title="Mejor valorada" , action="list_all", url=item.url + "top-rated/1/"))
-    itemlist.append(Item(channel=item.channel, title="Categorias" , action="section", url=item.url + "categories/", extra="Categorias"))
-    itemlist.append(Item(channel=item.channel, title="Buscar", action="search", url=item.url))
+    AlfaChannel.host = item.url
+    AlfaChannel.canonical.update({'channel': item.chanel, 'host': AlfaChannel.host, 'host_alt': [AlfaChannel.host]})
+    
+    # itemlist.append(Item(channel=item.channel, title="Nuevas" , action="list_all", url=host + "latest-updates/?sort_by=post_date&from=01", chanel=item.chanel))
+    itemlist.append(Item(channel=item.channel, title="Nuevas" , action="list_all", url=item.url + "latest-updates/1/", chanel=item.chanel))
+    itemlist.append(Item(channel=item.channel, title="Mas Vistas" , action="list_all", url=item.url + "most-popular/1/", chanel=item.chanel))
+    itemlist.append(Item(channel=item.channel, title="Mejor valorada" , action="list_all", url=item.url + "top-rated/1/", chanel=item.chanel))
+    itemlist.append(Item(channel=item.channel, title="Categorias" , action="section", url=item.url + "categories/", extra="Categorias", chanel=item.chanel))
+    itemlist.append(Item(channel=item.channel, title="Buscar", action="search", url=item.url, chanel=item.chanel))
     
     return itemlist
 
@@ -151,6 +151,9 @@ def findvideos(item):
 def play(item):
     logger.info()
     itemlist = []
+    
+    AlfaChannel.host = config.get_setting("current_host", item.chanel, default=host)
+    AlfaChannel.canonical.update({'channel': item.chanel, 'host': AlfaChannel.host, 'host_alt': [AlfaChannel.host]})
     
     soup = AlfaChannel.create_soup(item.url, **kwargs)
     url = soup.find('div', class_='player-holder').iframe['src']

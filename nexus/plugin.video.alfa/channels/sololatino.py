@@ -19,7 +19,8 @@ from core import jsontools
 from lib import jsunpack
 from channelselector import get_thumb
 from platformcode import config, logger
-from channels import filtertools, autoplay
+from channels import filtertools
+from modules import autoplay
 
 
 IDIOMAS = {'2': 'VOSE', "0": "LAT", "1": "CAST", "LAT": "LAT"}

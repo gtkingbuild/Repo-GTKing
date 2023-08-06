@@ -7,34 +7,28 @@ import sys
 PY3 = False
 if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
-import re
-import traceback
-if not PY3: _dict = dict; from collections import OrderedDict as dict
-
-from channelselector import get_thumb
-from core import scrapertools
-from core.item import Item
-from platformcode import config, logger
-from channels import autoplay
-from channels import filtertools
-from lib.AlfaChannelHelper import DictionaryAllChannel
+from lib import AlfaChannelHelper
+if not PY3: _dict = dict; from AlfaChannelHelper import dict
+from AlfaChannelHelper import DictionaryAllChannel
+from AlfaChannelHelper import re, traceback, time, base64, xbmcgui
+from AlfaChannelHelper import Item, servertools, scrapertools, jsontools, get_thumb, config, logger, filtertools, autoplay
 
 # Canal común con Cinetorrent(muerto), Magnetpelis (muerto), Pelispanda, Yestorrent
 
-IDIOMAS = {'Latino': 'LAT', 'Castellano': 'CAST', 'Version Original': 'VO', 
-           'Original subtitulado': 'VOS', 'subtitulado en español': 'VOSE'}
-list_language = list(IDIOMAS.values())
-list_quality = []
-list_quality_movies = ['DVDR', 'HDRip', 'VHSRip', 'HD', '2160p', '1080p', '720p', '4K', '3D', 'Screener', 'BluRay']
-list_quality_tvshow = ['HDTV', 'HDTV-720p', 'WEB-DL 1080p', '4KWebRip']
-list_servers = ['torrent']
+IDIOMAS = AlfaChannelHelper.IDIOMAS_T
+list_language = list(set(IDIOMAS.values()))
+list_quality_movies = AlfaChannelHelper.LIST_QUALITY_MOVIES_T
+list_quality_tvshow = AlfaChannelHelper.LIST_QUALITY_TVSHOW
+list_quality = list_quality_movies + list_quality_tvshow
+list_servers = AlfaChannelHelper.LIST_SERVERS_T
+forced_proxy_opt = 'ProxySSL'
 
 canonical = {
              'channel': 'yestorrent', 
              'host': config.get_setting("current_host", 'yestorrent', default=''), 
              'host_alt': ['https://yestorrent.org/'], 
              'host_black_list': ['https://yestorrent.cx/'], 
-             'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 
+             'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'forced_proxy_ifnot_assistant': forced_proxy_opt, 
              'CF': False, 'CF_test': False, 'alfa_s': True
             }
 host = canonical['host'] or canonical['host_alt'][0]

@@ -7,39 +7,27 @@ import sys
 PY3 = False
 if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
-import re
-import traceback
-if not PY3: _dict = dict; from collections import OrderedDict as dict
+from lib import AlfaChannelHelper
+if not PY3: _dict = dict; from AlfaChannelHelper import dict
+from AlfaChannelHelper import DictionaryAllChannel
+from AlfaChannelHelper import re, traceback, time, base64, xbmcgui
+from AlfaChannelHelper import Item, servertools, scrapertools, jsontools, get_thumb, config, logger, filtertools, autoplay
 
-from core.item import Item
-from core import servertools
-from core import scrapertools
-from core import jsontools
-from core.httptools import channel_proxy_list
-from channelselector import get_thumb
-from platformcode import config, logger
-from channels import filtertools, autoplay
-from lib.AlfaChannelHelper import DictionaryAllChannel
-
-IDIOMAS = {"latino": "LAT", "castellano": "CAST", "subtitulado": "VOSE"}
+IDIOMAS = AlfaChannelHelper.IDIOMAS_T
 list_language = list(set(IDIOMAS.values()))
-list_quality = []
-list_quality_movies = ['DVDR', 'HDRip', 'VHSRip', 'HD', '2160p', '1080p', '720p', '4K', '3D', 'Screener', 'BluRay']
-list_quality_tvshow = ['HDTV', 'HDTV-720p', 'WEB-DL 1080p', '4KWebRip']
-list_servers = ['mega', 'fembed', 'vidtodo', 'gvideo']
-forced_proxy_opt = 'ProxyCF'
-host = 'https://entrepeliculasyseries.nz/'
-assistant = config.get_setting('assistant_version', default='') and not channel_proxy_list(host)
+list_quality_movies = AlfaChannelHelper.LIST_QUALITY_MOVIES
+list_quality_tvshow = AlfaChannelHelper.LIST_QUALITY_TVSHOW
+list_quality = list_quality_movies + list_quality_tvshow
+list_servers = AlfaChannelHelper.LIST_SERVERS
+forced_proxy_opt = 'ProxySSL'
 
 canonical = {
              'channel': 'entrepeliculasyseries', 
              'host': config.get_setting("current_host", 'entrepeliculasyseries', default=''), 
-             'host_alt': [host], 
+             'host_alt': ["https://entrepeliculasyseries.nz/"], 
              'host_black_list': ['https://entrepeliculasyseries.pro/', 'https://entrepeliculasyseries.nu/'],   
              'pattern_proxy': '(?i)<div\s*class="TpRwCont\s*Container">', 
              'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 1, 'forced_proxy_ifnot_assistant': forced_proxy_opt, 
-             'CF_stat': True if assistant else False, 'session_verify': True if assistant else False, 
-             'CF_if_assistant': True if assistant else False, 'CF_if_NO_assistant': False,  
              'CF': False, 'CF_test': False, 'alfa_s': True
             }
 host = canonical['host'] or canonical['host_alt'][0]
@@ -362,7 +350,8 @@ def findvideos_matches(item, matches_int, langs, response, **AHkwargs):
         try:
             elem_json['language'] = '*%s' % elem.find('h3', class_="select-idioma").get_text('|', strip=True).split('|')[0]
             if "descargar" in str(elem_json['language']).lower(): continue
-            elem_json['quality'] = '*%s' % elem.find('h3', class_="select-idioma").get_text('|', strip=True).split('|')[1]
+            elem_json['quality'] = elem.find('h3', class_="select-idioma").get_text('|', strip=True).split('|')[1]
+            elem_json['quality'] = elem_json['quality'].replace('HD - ', '').replace('- ', '') or '*'
             elem_json['title'] = '%s'
             
             for link in elem.find_all('li', class_='option'):
@@ -399,7 +388,7 @@ def play(item):
     
     itemlist = list()
     kwargs = {'set_tls': True, 'set_tls_min': True, 'retries_cloudflare': 0, 'ignore_response_code': True, 'timeout': 5, 
-              'canonical': {}, 'soup': False}
+              'canonical': {}, 'preferred_proxy_ip': '', 'soup': False, 'forced_proxy_opt': forced_proxy_opt}
 
     id = scrapertools.find_single_match(item.url, "h=([^$]+)")
     headers = item.headers or {"Referer": item.url}
@@ -409,9 +398,8 @@ def play(item):
     url = ''
     
     for x in range(2):
-        resp = AlfaChannel.create_soup(base_url, post=post, headers=headers, follow_redirects=False, 
-                                       forced_proxy_opt=forced_proxy_opt, **kwargs)
-        url = AlfaChannel.get_cookie(url, 'nofernu')
+        resp = AlfaChannel.create_soup(base_url, post=post, headers=headers, follow_redirects=False, **kwargs)
+        url = AlfaChannel.get_cookie(AlfaChannel.response_preferred_proxy_ip or base_url, '*nofernu')
         if url:
             url = AlfaChannel.do_unquote(url)
             break

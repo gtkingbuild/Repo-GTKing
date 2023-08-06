@@ -11,7 +11,7 @@ from core import httptools, scrapertools, servertools
 from core.item import Item
 from platformcode import config, logger, platformtools
 from channelselector import get_thumb
-from channels import autoplay
+from modules import autoplay
 from lib import strptime_fix
 
 IDIOMAS = {'VOSE': 'VOSE', 'CAST': 'CAST'}

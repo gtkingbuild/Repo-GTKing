@@ -14,7 +14,7 @@ else:
 
 import re, base64
 
-from channels import autoplay
+from modules import autoplay
 from channels import filtertools
 from core import httptools
 from core import jsontools

@@ -1,7 +1,7 @@
 {
   "id": "mangovideo",
   "name": "mangovideo",
-  "active": true,
+  "active": false,
   "adult": true,
   "language": ["*"],
   "thumbnail": "https://mangovideo.pw/images/logo.png",

@@ -86,8 +86,11 @@ class CipherSuiteAdapter(HTTPAdapter):
             self.ssl_context.set_ciphers(self.cipherSuite)
             self.ssl_context.set_ecdh_curve(self.ecdhCurve)
 
-            self.ssl_context.minimum_version = ssl.TLSVersion.TLSv1_2
-            self.ssl_context.maximum_version = ssl.TLSVersion.TLSv1_3
+            try:
+                self.ssl_context.minimum_version = ssl.TLSVersion.TLSv1_2
+                self.ssl_context.maximum_version = ssl.TLSVersion.TLSv1_3
+            except:
+                pass
 
         super(CipherSuiteAdapter, self).__init__(**kwargs)
 

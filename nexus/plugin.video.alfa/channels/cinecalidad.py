@@ -7,25 +7,18 @@ import sys
 PY3 = False
 if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
-import re
-import traceback
-if not PY3: _dict = dict; from collections import OrderedDict as dict
+from lib import AlfaChannelHelper
+if not PY3: _dict = dict; from AlfaChannelHelper import dict
+from AlfaChannelHelper import DictionaryAllChannel
+from AlfaChannelHelper import re, traceback, time, base64, xbmcgui
+from AlfaChannelHelper import Item, servertools, scrapertools, jsontools, get_thumb, config, logger, filtertools, autoplay
 
-from core.item import Item
-from core import servertools
-from core import scrapertools
-from core import jsontools
-from channelselector import get_thumb
-from platformcode import config, logger
-from channels import filtertools, autoplay
-from lib.AlfaChannelHelper import DictionaryAllChannel
-
-IDIOMAS = {'latino': 'LAT', 'castellano': 'CAST', 'portugues': 'VOSE'}
+IDIOMAS = AlfaChannelHelper.IDIOMAS_T
 list_language = list(IDIOMAS.values())
-list_quality = []
-list_quality_movies = ['DVDR', 'HDRip', 'VHSRip', 'HD', '2160p', '1080p', '720p', '4K', '3D', 'Screener', 'BluRay']
+list_quality_movies = AlfaChannelHelper.LIST_QUALITY_MOVIES
 list_quality_tvshow = []
-list_servers = ['gounlimited', 'mega', 'vidcloud', 'torrent']
+list_quality = list_quality_movies + list_quality_tvshow
+list_servers = AlfaChannelHelper.LIST_SERVERS
 forced_proxy_opt = 'ProxySSL'
 
 canonical = {
@@ -120,7 +113,7 @@ def mainlist(item):
         item.url = host if site == 1 else host+'espana/'
         return submenu(item)
 
-    autoplay.init(item.channel, list_servers, list_quality)
+    autoplay.init(item.channel, AlfaChannel.list_servers, list_quality)
 
     itemlist.append(Item(channel=item.channel,
                          title="CineCalidad Latino",
@@ -317,6 +310,7 @@ def list_all_matches(item, matches_int, **AHkwargs):
                 elem_json['title'], elem_json['year'] = elem.find('img', class_='w-full').get("title", "").split(' (')
             else:
                 elem_json['title'] = elem.find('img', class_='w-full').get("alt", "")
+            if 'Premium' in elem_json['title']: continue
 
             if not elem_json.get('year'):
                 elem_json['year'] = '-'
@@ -358,7 +352,8 @@ def findvideos_matches(item, matches_int, langs, response, **AHkwargs):
                "Maxplay": "voe",
                "1fichier": "Onefichier",
                "Latmax": "Fembed", 
-               "Ok": "Okru"}
+               "Ok": "Okru", 
+               "Torrent": "torrent"}
 
     for elem in matches_int:
         elem_json = {}
@@ -370,16 +365,14 @@ def findvideos_matches(item, matches_int, langs, response, **AHkwargs):
                 if elem.get_text(strip=True).capitalize() != 'Torrent': continue
                 elem_json['url'] = AlfaChannel.create_soup(elem_json['url']).find("div", id="btn_enlace").a.get("href", "")
 
-                elem_json['quality'] = '*'
-
-                elem_json['language'] = '*LAT'
-
             elem_json['server'] = elem.get_text(strip=True).capitalize()
-            if elem_json['server'] in ["Cineplay", "Netu", "trailer"]: continue
+            if elem_json['server'] in ["Cineplay", "Netu", "trailer", "Fembed"]: continue
             if elem_json['server'] in srv_ids:
                 elem_json['server'] = srv_ids[elem_json['server']]
             
             if not elem_json.get('language'): elem_json['language'] = item.language
+
+            elem_json['quality'] = '*HD'
 
         except:
             logger.error(elem)
@@ -402,13 +395,16 @@ def actualizar_titulos(item):
 
 def play(item):
     logger.info()
+    
+    itemlist = [item]
 
-    if not 'magnet' in item.url and not 'torrent' in item.url:
-        item.url = AlfaChannel.create_soup(item.url).find("iframe").get("src", "")
+    try:
+        if not 'magnet' in item.url and not 'torrent' in item.url:
+            item.url = AlfaChannel.create_soup(item.url).find("iframe").get("src", "")
 
-        itemlist = servertools.get_servers_itemlist([item])
-    else:
-        itemlist = [item]
+            itemlist = servertools.get_servers_itemlist([item])
+    except:
+        logger.error(traceback.format_exc())
 
     return itemlist
 

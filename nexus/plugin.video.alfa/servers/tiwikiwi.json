@@ -12,6 +12,14 @@
         "url": "\\1"
       },
       {
+        "pattern": "(https://filelions.(?:sx|to|in)/(?:e|d|v)/[a-z0-9]+)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "https://vidello.net/(?:embed-|)([a-z0-9]+.html)",
+        "url": "https://vidello.net/\\1"
+      },
+      {
         "pattern": "(https://doodporn.xyz/(?:e|d)/[a-z0-9]+)",
         "url": "\\1"
       }

@@ -24,7 +24,11 @@
         "url": "\\1/"
       },
       {
-        "pattern": "(https://fuckamouth.com/hdporn/[0-9]+/[A-z0-9-]+)",
+        "pattern": "(https://(?:www.|)fuckamouth.com/hdporn/[0-9]+/[A-z0-9-]+(?:/|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://(?:www.|)freeuseporn.com/video/[0-9]+/[A-z0-9-]+(?:/|))",
         "url": "\\1"
       },
       {

@@ -7,28 +7,21 @@ import sys
 PY3 = False
 if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
-import re
-import traceback
-if not PY3: _dict = dict; from collections import OrderedDict as dict
+from lib import AlfaChannelHelper
+if not PY3: _dict = dict; from AlfaChannelHelper import dict
+from AlfaChannelHelper import DictionaryAdultChannel
+from AlfaChannelHelper import re, traceback, time, base64, xbmcgui
+from AlfaChannelHelper import Item, servertools, scrapertools, jsontools, get_thumb, config, logger, filtertools, autoplay
 
-from core.item import Item
-from core import servertools
-from core import scrapertools
-from core import jsontools
-from channelselector import get_thumb
-from platformcode import config, logger
-from channels import filtertools, autoplay
-from lib.AlfaChannelHelper import DictionaryAdultChannel
-
-IDIOMAS = {}
+IDIOMAS = AlfaChannelHelper.IDIOMAS_A
 list_language = list(set(IDIOMAS.values()))
-list_quality = []
-list_quality_movies = []
+list_quality_movies = AlfaChannelHelper.LIST_QUALITY_MOVIES_A
 list_quality_tvshow = []
-list_servers = []
+list_quality = list_quality_movies + list_quality_tvshow
+list_servers = AlfaChannelHelper.LIST_SERVERS_A
 forced_proxy_opt = 'ProxySSL'
 
-####################  Canal titula mal NO COGE BIEN CANTIDAD
+###################  Canal titula mal NO COGE BIEN CANTIDAD
 canonical = {
              'channel': 'camwhoresbay', 
              'host': config.get_setting("current_host", 'camwhoresbay', default=''), 
@@ -59,7 +52,7 @@ finds = {'find':  dict([('find', [{'tag': ['div'], 'class': ['video-list']}]),
          'next_page_rgx': [['&from_videos=\d+', '&from_videos=%s'], ['&from=\d+', '&from=%s']], 
          'last_page': dict([('find', [{'tag': ['div'], 'class': ['pagination']}]), 
                             ('find_all', [{'tag': ['a'], '@POS': [-2], 
-                                           '@ARG': 'data-parameters', '@TEXT': ':(\d+)'}])]), 
+                                           '@ARG': 'data-parameters', '@TEXT': '\:(\d+)'}])]), 
          'plot': {}, 
          'findvideos': dict([('find', [{'tag': ['li'], 'class': 'link-tabs-container', '@ARG': 'href'}]),
                              ('find_all', [{'tag': ['a'], '@ARG': 'href'}])]),
@@ -77,7 +70,7 @@ finds = {'find':  dict([('find', [{'tag': ['div'], 'class': ['video-list']}]),
                                                       # ('get_text', [{'tag': '', 'strip': True, '@TEXT': '(\d+)'}])])
 
                             },
-         'controls': {'url_base64': False, 'cnt_tot': 35, 'reverse': False, 'profile': 'default'},  ##'jump_page': True, ##Con last_page  aparecerá una línea por encima de la de control de página, permitiéndote saltar a la página que quieras
+         'controls': {'url_base64': False, 'cnt_tot': 35, 'reverse': False, 'profile': 'default', 'premium_skip': 'Private'},  ##'jump_page': True, ##Con last_page  aparecerá una línea por encima de la de control de página, permitiéndote saltar a la página que quieras
          'timeout': timeout}
 AlfaChannel = DictionaryAdultChannel(host, movie_path=movie_path, tv_path=tv_path, movie_action='play', canonical=canonical, finds=finds, 
                                      idiomas=IDIOMAS, language=language, list_language=list_language, list_servers=list_servers, 
@@ -123,11 +116,37 @@ def findvideos(item):
                                          verify_links=False, findvideos_proc=True, **kwargs)
 
 
+def play(item):
+    logger.info()
+    itemlist = []
+    
+    soup = AlfaChannel.create_soup(item.url, **kwargs)
+    if soup.find_all('a', href=re.compile("/(?:pornstars|models)/[A-z0-9-]+/")):
+        pornstars = soup.find_all('a', href=re.compile("/(?:pornstars|models)/[A-z0-9-]+/"))
+        
+        for x, value in enumerate(pornstars):
+            pornstars[x] = value.get_text(strip=True)
+        pornstar = ' & '.join(pornstars)
+        pornstar = AlfaChannel.unify_custom('', item, {'play': pornstar})
+        lista = item.contentTitle.split('[/COLOR]')
+        pornstar = pornstar.replace('[/COLOR]', '')
+        pornstar = ' %s' %pornstar
+        if "HD" in item.contentTitle:
+            lista.insert (2, pornstar)
+        else:
+            lista.insert (1, pornstar)
+        item.contentTitle = '[/COLOR]'.join(lista)
+    
+    itemlist.append(Item(channel=item.channel, action="play", title= "%s", contentTitle = item.contentTitle, url=item.url))
+    itemlist = servertools.get_servers_itemlist(itemlist, lambda i: i.title % i.server.capitalize())
+    
+    return itemlist
+
+
 def search(item, texto, **AHkwargs):
     logger.info()
     kwargs.update(AHkwargs)
     
-    # item.url = "%ssearch/%s/?sort_by=post_date&from_videos=01"  % (host, texto.replace(" ", "-"))
     item.url = "%ssearch/?q=%s&sort_by=post_date&from_videos=1" % (host, texto.replace(" ", "+"))
     
     try:

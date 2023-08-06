@@ -561,7 +561,7 @@ def get_episodes(item):
 
 
 def findvideos(item):
-    from channels import autoplay
+    from modules import autoplay
     logger.info()
     # logger.debug("item:\n" + item.tostring('\n'))
 

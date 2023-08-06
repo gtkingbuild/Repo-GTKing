@@ -7,25 +7,18 @@ import sys
 PY3 = False
 if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
-import re
-import traceback
-if not PY3: _dict = dict; from collections import OrderedDict as dict
+from lib import AlfaChannelHelper
+if not PY3: _dict = dict; from AlfaChannelHelper import dict
+from AlfaChannelHelper import DictionaryAdultChannel
+from AlfaChannelHelper import re, traceback, time, base64, xbmcgui
+from AlfaChannelHelper import Item, servertools, scrapertools, jsontools, get_thumb, config, logger, filtertools, autoplay
 
-from core.item import Item
-from core import servertools
-from core import scrapertools
-from core import jsontools
-from channelselector import get_thumb
-from platformcode import config, logger
-from channels import filtertools, autoplay
-from lib.AlfaChannelHelper import DictionaryAdultChannel
-
-IDIOMAS = {}
+IDIOMAS = AlfaChannelHelper.IDIOMAS_A
 list_language = list(set(IDIOMAS.values()))
-list_quality = []
-list_quality_movies = []
+list_quality_movies = AlfaChannelHelper.LIST_QUALITY_MOVIES_A
 list_quality_tvshow = []
-list_servers = []
+list_quality = list_quality_movies + list_quality_tvshow
+list_servers = AlfaChannelHelper.LIST_SERVERS_A
 forced_proxy_opt = 'ProxySSL'
 
 canonical = {
@@ -94,12 +87,12 @@ def section(item):
     if item.extra == 'Canal':
         findS['categories'] = dict([('find', [{'tag': ['div'], 'class': ['nav-menu-control']}]), 
                                     ('find_all', [{'tag': ['a'], 'href': re.compile(r"/country/")}])])
+    if item.extra == 'Pornstar':
+        findS['categories'] = dict([('find', [{'tag': ['div'], 'class': ['nav-menu-control']}]), 
+                                    ('find_all', [{'tag': ['a'], 'href': re.compile(r"/decades/\d+s/")}])])
     if item.extra == 'Categorias':
         findS['categories'] = dict([('find', [{'tag': ['div'], 'class': ['nav-menu-control']}]), 
                                     ('find_all', [{'tag': ['a'], 'href': re.compile(r"/genre/")}])])
-    if item.extra == 'PornStar':
-        findS['categories'] = dict([('find', [{'tag': ['div'], 'class': ['nav-menu-control']}]), 
-                                    ('find_all', [{'tag': ['a'], 'href': re.compile(r"/decades/[0-9]+")}])])
     
     return AlfaChannel.section(item, finds=findS, **kwargs)
 
@@ -127,9 +120,9 @@ def findvideos(item):
 def search(item, texto, **AHkwargs):
     logger.info()
     kwargs.update(AHkwargs)
-    # url = "https://eroticmv.com/wp-admin/admin-ajax.php?action=ajaxsearchpro_search&aspp=&asid=1&asp_inst_id=1_3&options=customset[]=post&asp_gen[]=title&filters_initial=1&filters_changed=0&qtranslate_lang=0&current_page_id=18375"
     
-    item.url = "%ssearch/%s/" % (host, texto.replace(" ", "%20"))
+    # item.url = "%sbuscar/?q=%s&sort_by=video_viewed&from_videos=1" % (host, texto.replace(" ", "+"))
+    item.url = "%ssearch/%s/" % (host, texto.replace(" ", "-"))
     
     try:
         if texto:

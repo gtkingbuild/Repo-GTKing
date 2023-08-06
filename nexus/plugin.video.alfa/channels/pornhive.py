@@ -9,7 +9,7 @@ from core import servertools
 from core.item import Item
 from core import httptools
 from channels import filtertools
-from channels import autoplay
+from modules import autoplay
 
 IDIOMAS = {'vo': 'VO'}
 list_language = IDIOMAS.values()

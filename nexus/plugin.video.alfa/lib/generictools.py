@@ -73,11 +73,12 @@ find_alt_domains = 'atomohd'   # Solo poner uno.  Alternativas: pctmix, pctmix1,
 btdigg_url = config.BTDIGG_URL
 btdigg_label = config.BTDIGG_LABEL
 btdigg_label_B = config.BTDIGG_LABEL_B
-DEBUG = config.get_setting('debug_report', default=False)
+TEST_ON_AIR = False
+DEBUG = config.get_setting('debug_report', default=False) if not TEST_ON_AIR else False
 
 
 def convert_url_base64(url, host='', referer=None, rep_blanks=True, force_host=False, item=Item()):
-    logger.info('URL: ' + url + ', HOST: ' + host)
+    if not TEST_ON_AIR: logger.info('URL: ' + url + ', HOST: ' + host)
     
     host_whitelist = ['mediafire.com']
     host_whitelist_skip = ['adfly.mobi']
@@ -115,7 +116,7 @@ def convert_url_base64(url, host='', referer=None, rep_blanks=True, force_host=F
                 url_base64 = url
             except Exception:
                 if url_base64 and url_base64 != url:
-                    logger.info('Url base64 convertida: %s' % url_base64)
+                    if not TEST_ON_AIR: logger.info('Url base64 convertida: %s' % url_base64)
                     if rep_blanks: url_base64 = url_base64.replace(' ', '%20')
                 #logger.error(traceback.format_exc())
                 if not url_base64:
@@ -137,7 +138,7 @@ def convert_url_base64(url, host='', referer=None, rep_blanks=True, force_host=F
                 if domain_bis: domain = domain_bis
                 if url_base64_bis != url_base64:
                     url_base64 = url_base64_bis
-                    logger.info('Url base64 RE-convertida: %s' % url_base64)
+                    if not TEST_ON_AIR: logger.info('Url base64 RE-convertida: %s' % url_base64)
                 
     if not domain: domain = 'default'
     if host and host not in url_base64 and not url_base64.startswith('magnet') \
@@ -149,7 +150,7 @@ def convert_url_base64(url, host='', referer=None, rep_blanks=True, force_host=F
         if url_base64 != url or host not in url_base64:
             host_name = scrapertools.find_single_match(url_base64, patron_host) + '/'
             url_base64 = re.sub(host_name, host, url_base64)
-            logger.info('Url base64 urlparsed: %s' % url_base64)
+            if not TEST_ON_AIR: logger.info('Url base64 urlparsed: %s' % url_base64)
 
     return url_base64 + url_sufix
 
@@ -164,6 +165,9 @@ def js2py_conversion(data, url, domain_name='', channel='', size=10000, resp={},
     
     from lib import js2py
     from core import httptools
+    global DEBUG, TEST_ON_AIR
+    TEST_ON_AIR = httptools.TEST_ON_AIR
+    DEBUG = DEBUG if not TEST_ON_AIR else False
     
     if DEBUG: logger.debug('url: %s; domain_name: %s, channel: %s, size: %s; kwargs: %s, DATA: %s' \
                             % (url, domain_name, channel, size, kwargs, data[:1000]))
@@ -454,7 +458,7 @@ def update_title(item):
                     del item.from_update
                     if item.AHkwargs:
                         try:
-                            item = AH_find_videolab_status(item, [item], **item.AHkwargs)[0]
+                            item = AH_find_videolab_status({}, item, [item], **item.AHkwargs)[0]
                             del item.AHkwargs
                         except Exception:
                             logger.error(traceback.format_exc())
@@ -715,8 +719,11 @@ def context_for_videolibray(item):
     return item
 
 
-def AH_find_videolab_status(item, itemlist, **AHkwargs):
+def AH_find_videolab_status(self, item, itemlist, **AHkwargs):
     logger.info()
+    global DEBUG, TEST_ON_AIR
+    if self: TEST_ON_AIR = self.TEST_ON_AIR
+    DEBUG = DEBUG if not TEST_ON_AIR else False
     if DEBUG: logger.debug('video_list_str: %s; function: %s' % (video_list_str, AHkwargs.get('function', '')))
 
     res = False
@@ -729,7 +736,7 @@ def AH_find_videolab_status(item, itemlist, **AHkwargs):
         if AHkwargs.get('function', '') == 'list_all':
             #tmdb.set_infoLabels_itemlist(itemlist, True)
             for item_local in itemlist:
-                item_local.video_path = AH_check_title_in_videolibray(item_local)
+                item_local.video_path = AH_check_title_in_videolibray(self, item_local)
                 if item_local.video_path:
                     item_local.title  = '(V)-%s' % item_local.title
                     item_local.contentTitle = '(V)-%s' % (item_local.contentSerieName or item_local.contentTitle)
@@ -790,7 +797,7 @@ def AH_find_videolab_status(item, itemlist, **AHkwargs):
     return itemlist
 
 
-def AH_check_title_in_videolibray(item):
+def AH_check_title_in_videolibray(self, item):
     """
     Comprueba si el item listado está en la videoteca Alfa.  Si lo está devuelve True
     """
@@ -833,8 +840,11 @@ def AH_check_title_in_videolibray(item):
     return res
 
 
-def AH_post_tmdb_listado(item, itemlist, **AHkwargs):
+def AH_post_tmdb_listado(self, item, itemlist, **AHkwargs):
     logger.info()
+    global DEBUG, TEST_ON_AIR
+    if self: TEST_ON_AIR = self.TEST_ON_AIR
+    DEBUG = DEBUG if not TEST_ON_AIR else False
 
     """
         
@@ -1056,6 +1066,9 @@ def AH_post_tmdb_listado(item, itemlist, **AHkwargs):
 
 def AH_find_seasons(self, item, matches, **AHkwargs):
     logger.info()
+    global DEBUG, TEST_ON_AIR
+    if self: TEST_ON_AIR = self.TEST_ON_AIR
+    DEBUG = DEBUG if not TEST_ON_AIR else False
 
     # Si hay varias temporadas, buscamos todas las ocurrencias y las filtrados por TMDB, calidad e idioma
     findS = AHkwargs.get('finds', {})
@@ -1246,8 +1259,11 @@ def AH_find_seasons(self, item, matches, **AHkwargs):
     return list_temp
 
 
-def AH_post_tmdb_seasons(item, itemlist, **AHkwargs):
+def AH_post_tmdb_seasons(self, item, itemlist, **AHkwargs):
     logger.info()
+    global DEBUG, TEST_ON_AIR
+    if self: TEST_ON_AIR = self.TEST_ON_AIR
+    DEBUG = DEBUG if not TEST_ON_AIR else False
     
     """
 
@@ -1291,8 +1307,11 @@ def AH_post_tmdb_seasons(item, itemlist, **AHkwargs):
     return item, itemlist
     
 
-def AH_post_tmdb_episodios(item, itemlist, **AHkwargs):
+def AH_post_tmdb_episodios(self, item, itemlist, **AHkwargs):
     logger.info()
+    global DEBUG, TEST_ON_AIR
+    if self: TEST_ON_AIR = self.TEST_ON_AIR
+    DEBUG = DEBUG if not TEST_ON_AIR else False
 
     itemlist_fo = []
         
@@ -1334,8 +1353,11 @@ def AH_post_tmdb_episodios(item, itemlist, **AHkwargs):
     return item, itemlist
 
 
-def AH_post_tmdb_findvideos(item, itemlist, **AHkwargs):
+def AH_post_tmdb_findvideos(self, item, itemlist, **AHkwargs):
     logger.info()
+    global DEBUG, TEST_ON_AIR
+    if self: TEST_ON_AIR = self.TEST_ON_AIR
+    DEBUG = DEBUG if not TEST_ON_AIR else False
     
     """
         
@@ -1540,6 +1562,9 @@ def AH_find_btdigg_matches(item, matches, **AHkwargs):
 def AH_find_btdigg_list_all_from_channel_py(self, item, matches=[], matches_index={}, channel_alt=channel_py, 
                                             channel_entries=20, btdigg_entries=80, **AHkwargs):
     logger.info('"%s"' % len(matches))
+    global DEBUG, TEST_ON_AIR
+    if self: TEST_ON_AIR = self.TEST_ON_AIR
+    DEBUG = DEBUG if not TEST_ON_AIR else False
 
     matches_inter = []
     matches_btdigg = matches[:]
@@ -1697,6 +1722,9 @@ def AH_find_btdigg_list_all_from_channel_py(self, item, matches=[], matches_inde
 def AH_find_btdigg_list_all_from_BTDIGG(self, item, matches=[], matches_index={}, channel_alt=channel_py, 
                                         channel_entries=15, btdigg_entries=45, **AHkwargs):
     logger.info('"%s"' % len(matches))
+    global DEBUG, TEST_ON_AIR
+    if self: TEST_ON_AIR = self.TEST_ON_AIR
+    DEBUG = DEBUG if not TEST_ON_AIR else False
 
     matches_inter = []
     matches_btdigg = matches[:]
@@ -1841,6 +1869,9 @@ def AH_find_btdigg_list_all_from_BTDIGG(self, item, matches=[], matches_index={}
 
 def AH_find_btdigg_list_all(self, item, matches=[], channel_alt=channel_py, **AHkwargs):
     logger.info('"%s"' % len(matches))
+    global DEBUG, TEST_ON_AIR
+    if self: TEST_ON_AIR = self.TEST_ON_AIR
+    DEBUG = DEBUG if not TEST_ON_AIR else False
 
     canonical = self.canonical
     controls = self.finds.get('controls', {})
@@ -2122,7 +2153,9 @@ def CACHING_find_btdigg_list_all_NEWS_from_BTDIGG_(options=None):
 
 def AH_find_btdigg_seasons(self, item, matches=[], domain_alt=channel_py, **AHkwargs):
     logger.info()
-    global channel_py_episode_list
+    global channel_py_episode_list, DEBUG, TEST_ON_AIR
+    if self: TEST_ON_AIR = self.TEST_ON_AIR
+    DEBUG = DEBUG if not TEST_ON_AIR else False
 
     controls = self.finds.get('controls', {})
     url = AHkwargs.pop('url', item.url)
@@ -2262,7 +2295,9 @@ def AH_find_btdigg_seasons(self, item, matches=[], domain_alt=channel_py, **AHkw
 
 
 def AH_find_btdigg_episodes(self, item, matches=[], domain_alt=channel_py, **AHkwargs):
-    global channel_py_episode_list
+    global channel_py_episode_list, DEBUG, TEST_ON_AIR
+    if self: TEST_ON_AIR = self.TEST_ON_AIR
+    DEBUG = DEBUG if not TEST_ON_AIR else False
 
     controls = self.finds.get('controls', {})
     contentSeason = AHkwargs.pop('btdigg_contentSeason', controls.get('btdigg_contentSeason', 0))
@@ -2467,6 +2502,9 @@ def AH_find_btdigg_episodes(self, item, matches=[], domain_alt=channel_py, **AHk
 
 def AH_find_btdigg_findvideos(self, item, matches=[], domain_alt=channel_py, **AHkwargs):
     logger.info()
+    global DEBUG, TEST_ON_AIR
+    if self: TEST_ON_AIR = self.TEST_ON_AIR
+    DEBUG = DEBUG if not TEST_ON_AIR else False
 
     if item.matches and item.channel != 'videolibrary' and item.contentChannel != 'videolibrary' and item.from_channel != 'videolibrary':
         return matches
@@ -2841,7 +2879,7 @@ def get_torrent_size(url, **kwargs):
             is_channel = inspect.getmodule(inspect.currentframe().f_back)
             is_channel = scrapertools.find_single_match(str(is_channel), "<module\s*'channels\.(.*?)'")
             if is_channel:
-                from channels import autoplay
+                from modules import autoplay
                 res = autoplay.is_active(is_channel)
                 if res:
                     torrent_params['url'] = 'autoplay'

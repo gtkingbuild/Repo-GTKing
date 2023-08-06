@@ -17,7 +17,7 @@ from core import servertools
 from core.item import Item
 from core import httptools
 from bs4 import BeautifulSoup
-from channels import autoplay
+from modules import autoplay
 from lib import alfa_assistant
 
 list_quality = ['default']

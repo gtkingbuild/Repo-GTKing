@@ -8,7 +8,7 @@
         "url": "\\1"
       },
       {
-        "pattern": "(https://(?:www.|)(?:fetishshrine|javbangers|fapnado|xozilla|camwhoresbay|pornrewind|megatube|zbporn|momvids|wankoz|4kporn|freeporn8|porndictator|fapster|rat|pornwhite|pornicom|hqbang|homemade|ebony8|bobs-tuber|pornditt|filtercams).(?:com|xxx)/(?:video|videos)/[0-9]+/[A-z0-9-]+(?:/|))",
+        "pattern": "(https://(?:www.|v.|)(?:fetishshrine|javbangers|fapnado|xozilla|camwhoresbay|pornrewind|megatube|zbporn|momvids|wankoz|4kporn|freeporn8|porndictator|fapster|rat|pornwhite|pornicom|hqbang|homemade|ebony8|bobs-tuber|pornditt|filtercams).(?:com|xxx)/(?:video|videos)/[0-9]+/[A-z0-9-]+(?:/|))",
         "url": "\\1"
       },
       {
@@ -16,7 +16,7 @@
         "url": "\\1"
       },
       {
-        "pattern": "(https://(?:www.|)(?:ballzdeep|pornxpert|hoes|bigtitslust|mondetube|watchporn|faapy|pornvase|sortporn|4wank|porncaper).(?:com|xxx|tube|to)/video(?:s|)/[0-9]+/[A-z0-9-]+(?:/|))",
+        "pattern": "(https://(?:www.|)(?:ballzdeep|pornxpert|hoes|bigtitslust|mondetube|watchporn|faapy|pornvase|sortporn|4wank|porncaper|camstreams).(?:com|xxx|tube|to|tv)/video(?:s|)/[0-9]+/[A-z0-9-]+(?:/|))",
         "url": "\\1"
       },
       {
@@ -112,7 +112,7 @@
         "url": "\\1"
       },
       {
-        "pattern": "(https://(?:hello|3prn|xxxi).(?:porn|com)/video(?:s|)/[0-9]+(?:/|))",
+        "pattern": "(https://(?:es.|)(?:hello|3prn|xxxi|rusoska).(?:porn|com)/video(?:s|)/[0-9]+(?:/|))",
         "url": "\\1"
       },
       {
@@ -140,7 +140,7 @@
         "url": "\\1"
       },
       {
-        "pattern": "https://mangovideoTTTT.(?:pw|club)/(?:embed|videos)/(\\d+)",
+        "pattern": "https://mangovideo(?:TTTT|).(?:pw|club)/(?:embed|videos)/(\\d+)",
         "url": "https://mangovideo.pw/embed/\\1"
       },
       {
@@ -160,7 +160,7 @@
         "url": "\\1"
       },
       {
-        "pattern": "(https://area51.porn/view/[A-z0-9-]+)(?:/|)",
+        "pattern": "(https://area51.porn/view/[0-9-]+/[A-z0-9-]+(?:/|))",
         "url": "\\1"
       },
       {

@@ -76,7 +76,7 @@ def get_channel_attr(channel_name, attr, item):
     @rtype: list, any, None
     """
     from core import filetools
-    from channels import autoplay
+    from modules import autoplay
     channel_file = filetools.join(config.get_runtime_path(), 'channels', channel_name + ".py")
     channel = None
     itemlist = None

@@ -18,7 +18,7 @@ from core import scrapertools
 from core import servertools
 from core import tmdb
 from core.item import Item
-from channels import autoplay
+from modules import autoplay
 from platformcode import config, logger
 
 

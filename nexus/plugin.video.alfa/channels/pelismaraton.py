@@ -17,7 +17,8 @@ from core import servertools
 from bs4 import BeautifulSoup
 from channelselector import get_thumb
 from platformcode import config, logger
-from channels import filtertools, autoplay
+from channels import filtertools
+from modules import autoplay
 
 IDIOMAS = {'latino': 'LAT', 'castellano': 'CAST', 'subtitulado': 'VOSE'}
 list_language = list(IDIOMAS.values())

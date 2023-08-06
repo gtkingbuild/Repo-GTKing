@@ -15,7 +15,7 @@ from platformcode import config, logger
 from core import httptools, scrapertools, tmdb
 from core import servertools
 from core.item import Item
-from channels import autoplay
+from modules import autoplay
 from bs4 import BeautifulSoup
 
 list_quality = []

@@ -11,7 +11,7 @@ else:
 
 import re
 
-from channels import autoplay
+from modules import autoplay
 from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, jsontools, tmdb
@@ -31,8 +31,8 @@ list_servers = list(SERVER.values())
 canonical = {
              'channel': 'pelisflix', 
              'host': config.get_setting("current_host", 'pelisflix', default=''), 
-             'host_alt': ["https://pelisflix.hair/"], 
-             'host_black_list': ["https://pelisflix.store/", 
+             'host_alt': ["https://pelisflix.quest/"], 
+             'host_black_list': ["https://pelisflix.hair/", "https://pelisflix.store/", 
                                  "https://pelis28.art/", "https://pelisflix2.fun/", "https://pelisflix.run/", 
                                  "https://pelisflix.pw/", "https://pelisflix.biz/", "https://ww2.pelisflix2.one/", 
                                  "https://pelisflix2.one/", "https://pelisflix.li/", "https://ww3.pelisflix2.one/"], 
@@ -345,34 +345,51 @@ def episodios(item):
 
 def findvideos(item):
     logger.info()
+    import base64
     
     itemlist = []
     serv=[]
     
     soup = create_soup(item.url)
     matches = soup.find_all('button', class_='sgty')
+    if not matches:
+        data = soup.find('script', string=re.compile('var\s*playsss\s*='))
+        logger.error(data)
+        matches = jsontools.load(scrapertools.find_single_match(str(data), '\:(\{[^\}]+\})'))
+        logger.error(matches)
 
-    for elem in matches:
-        num= elem['data-key']
-        id= elem['data-id']
-        type = elem['data-typ']
-        if "movie" in type: type = "1"
-        else: type = "2"
-        prop = elem.find_all('span')[1].text.split()
-        lang= prop[0]
-        server = prop[-1]
-        if "•" in server:
-            server = elem.find('span', class_='nmopt').text.strip()
-        lang = IDIOMAS.get(lang, lang)
-        url = "%s?trembed=%s&trid=%s&trtype=%s"  %  (host,num,id, type)
-        server = SERVER.get(server.capitalize(), server.capitalize())
-        if not config.get_setting('unify') and not channeltools.get_channel_parameters(__channel__)['force_unify']:
-            title = "[%s] [COLOR darkgrey][%s][/COLOR]" %(server, lang)
-        else:
-            title = server
-        
-        if not "gounlimited" in server:
-            itemlist.append(item.clone(action="play", title=title, url=url, server=server.lower(), language=lang ))
+    if isinstance(matches, dict):
+        for key, value in list(matches.items()):
+
+            url = base64.b64decode(value).decode('utf-8') +'?h='
+            server = ''
+            title = '%s'
+            lang = ''
+            logger.error(url)
+            if not "gounlimited" in server:
+                itemlist.append(item.clone(action="play", title=title, url=url, server=server.lower(), language=lang ))
+    else:
+        for elem in matches:
+            num= elem['data-key']
+            id= elem['data-id']
+            type = elem['data-typ']
+            if "movie" in type: type = "1"
+            else: type = "2"
+            prop = elem.find_all('span')[1].text.split()
+            lang= prop[0]
+            server = prop[-1]
+            if "•" in server:
+                server = elem.find('span', class_='nmopt').text.strip()
+            lang = IDIOMAS.get(lang, lang)
+            url = "%s?trembed=%s&trid=%s&trtype=%s"  %  (host,num,id, type)
+            server = SERVER.get(server.capitalize(), server.capitalize())
+            if not config.get_setting('unify') and not channeltools.get_channel_parameters(__channel__)['force_unify']:
+                title = "[%s] [COLOR darkgrey][%s][/COLOR]" %(server, lang)
+            else:
+                title = server
+            
+            if not "gounlimited" in server:
+                itemlist.append(item.clone(action="play", title=title, url=url, server=server.lower(), language=lang ))
 
     itemlist.sort(key=lambda it: (it.language))
     itemlist = servertools.get_servers_itemlist(itemlist, lambda i: i.title.capitalize())

@@ -8,26 +8,18 @@ import sys
 PY3 = False
 if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
-import re
-import traceback
-if not PY3: _dict = dict; from collections import OrderedDict as dict
+from lib import AlfaChannelHelper
+if not PY3: _dict = dict; from AlfaChannelHelper import dict
+from AlfaChannelHelper import DictionaryAllChannel
+from AlfaChannelHelper import re, traceback, time, base64, xbmcgui
+from AlfaChannelHelper import Item, servertools, scrapertools, jsontools, get_thumb, config, logger, filtertools, autoplay
 
-from core.item import Item
-from core import servertools
-from core import scrapertools
-from core import jsontools
-from channelselector import get_thumb
-from platformcode import config, logger
-from channels import filtertools, autoplay
-from lib.AlfaChannelHelper import DictionaryAllChannel
-
-IDIOMAS = {'Latino': 'LAT', 'Castellano': 'CAST', 'Subtitulado': 'VOSE', 'Ingles': 'VO', 
-           'la': 'Latino', 'es': 'Castellano', 'us': 'VOSE', '🇲🇽': 'Latino', '🇪🇸': 'Castellano'}
+IDIOMAS = AlfaChannelHelper.IDIOMAS
 list_language = list(set(IDIOMAS.values()))
-list_quality = []
-list_quality_movies = ['DVDR', 'HDRip', 'VHSRip', 'HD', '2160p', '1080p', '720p', '4K', '3D', 'Screener', 'BluRay']
+list_quality_movies = AlfaChannelHelper.LIST_QUALITY_MOVIES
 list_quality_tvshow = []
-list_servers = ['cinemaupload', 'fastream']
+list_quality = list_quality_movies + list_quality_tvshow
+list_servers = AlfaChannelHelper.LIST_SERVERS
 forced_proxy_opt = 'ProxySSL'
 
 canonical = {

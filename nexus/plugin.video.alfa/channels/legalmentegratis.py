@@ -16,7 +16,7 @@ from core import servertools
 from core import tmdb
 from core.item import Item
 from platformcode import config, logger
-from channels import autoplay
+from modules import autoplay
 from channels import filtertools
 
 IDIOMAS = {'español':'CAST', 'VOSE': 'VOSE'}

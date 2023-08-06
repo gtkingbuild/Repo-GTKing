@@ -11,7 +11,7 @@ else:
 
 import re
 
-from channels import autoplay
+from modules import autoplay
 from platformcode import config, logger, platformtools
 from core import scrapertools
 from core.item import Item

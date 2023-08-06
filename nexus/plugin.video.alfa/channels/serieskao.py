@@ -23,7 +23,8 @@ from core import jsontools
 from lib import jsunpack
 from channelselector import get_thumb
 from platformcode import config, logger
-from channels import filtertools, autoplay
+from channels import filtertools
+from modules import autoplay
 from bs4 import BeautifulSoup
 
 

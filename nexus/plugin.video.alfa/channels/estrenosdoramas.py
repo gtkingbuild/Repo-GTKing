@@ -10,7 +10,7 @@ if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int
 
 import re
 
-from channels import autoplay
+from modules import autoplay
 from channels import filtertools
 from core import httptools
 from core import scrapertools
@@ -38,8 +38,8 @@ list_servers = ['openload', 'streamango', 'netutv', 'okru', 'mp4upload']
 canonical = {
              'channel': 'estrenosdoramas', 
              'host': config.get_setting("current_host", 'estrenosdoramas', default=''), 
-             'host_alt': ["https://www24.estrenosdoramas.net/"], 
-             'host_black_list': ["https://www23.estrenosdoramas.net/"], 
+             'host_alt': ["https://www25.estrenosdoramas.net/"], 
+             'host_black_list': [ "https://www24.estrenosdoramas.net/", "https://www23.estrenosdoramas.net/"], 
              'pattern': '<link\s*rel="shortcut\s*icon"\s*href="([^"]+)"', 
              'CF': False, 'CF_test': False, 'alfa_s': True
             }

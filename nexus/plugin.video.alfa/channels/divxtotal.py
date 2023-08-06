@@ -7,27 +7,19 @@ import sys
 PY3 = False
 if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
-import re
-import traceback
-if not PY3: _dict = dict; from collections import OrderedDict as dict
+from lib import AlfaChannelHelper
+if not PY3: _dict = dict; from AlfaChannelHelper import dict
+from AlfaChannelHelper import DictionaryAllChannel
+from AlfaChannelHelper import re, traceback, time, base64, xbmcgui
+from AlfaChannelHelper import Item, servertools, scrapertools, jsontools, get_thumb, config, logger, filtertools, autoplay
 
-from core.item import Item
-from core import servertools
-from core import scrapertools
-from core import jsontools
-from channelselector import get_thumb
-from platformcode import config, logger
-from channels import filtertools, autoplay
-from lib.AlfaChannelHelper import DictionaryAllChannel
-
-IDIOMAS = {'es': 'CAST', 'la': 'LAT', 'us': 'VOSE', 'ES': 'CAST', 'LA': 'LAT', 'US': 'VOSE', 
-           'Castellano': 'CAST', 'Latino': 'LAT', 'Version Original': 'VOSE'}
+IDIOMAS = AlfaChannelHelper.IDIOMAS_T
 list_language = list(set(IDIOMAS.values()))
-list_quality = []
-list_quality_movies = ['DVDR', 'HDRip', 'VHSRip', 'HD', '2160p', '1080p', '720p', '4K', '3D', 'Screener', 'BluRay']
-list_quality_tvshow = ['HDTV', 'HDTV-720p', 'WEB-DL 1080p', '4KWebRip']
-list_servers = ['torrent']
-forced_proxy_opt = 'ProxyWeb'
+list_quality_movies = AlfaChannelHelper.LIST_QUALITY_MOVIES_T
+list_quality_tvshow = AlfaChannelHelper.LIST_QUALITY_TVSHOW
+list_quality = list_quality_movies + list_quality_tvshow
+list_servers = AlfaChannelHelper.LIST_SERVERS_T
+forced_proxy_opt = 'ProxySSL'
 
 canonical = {
              'channel': 'divxtotal', 
@@ -271,7 +263,7 @@ def list_all_matches(item, matches_int, **AHkwargs):
                 elem_json['thumbnail'] = elem.find('p', class_="secconimagen").img.get("src", "")
                 #elem_json['year'] = scrapertools.find_single_match(elem.find('p', class_="seccontfetam").get_text(strip=True), '\d{4}')
 
-            elem_json['quality'] = elem_json.get('quality', '') or 'HDTV' if tv_path in elem_json['url'] else ''
+            elem_json['quality'] = elem_json.get('quality', '') or 'HDTV' if tv_path in elem_json.get('url', '') else ''
 
         except:
             logger.error(elem)
@@ -421,7 +413,7 @@ def findvideos_matches(item, matches_int, langs, response, **AHkwargs):
                                 AlfaChannel.get_language_and_set_filter(td, elem_json)
                                 if not elem_json['language']: elem_json['language'] = '*%s' % td.img.get('src', '').replace('N/A', '')
                             if x == 2: elem_json['quality'] = '*%s' % td.get_text().replace('-', '').replace('N/A', '')
-                            if x == 3: elem_json['torrent_info'] =  td.get_text().replace('-', '').replace('N/A', '')
+                            if x == 3: elem_json['size'] =  td.get_text().replace('-', '').replace('N/A', '')
                             if x == 4:
                                 elem_json['url'] = td.a.get('href', '')
                                 if host not in elem_json['url'] and elem.find('a', class_="opcion_2").get('href', ''):
@@ -435,12 +427,14 @@ def findvideos_matches(item, matches_int, langs, response, **AHkwargs):
                                 AlfaChannel.get_language_and_set_filter(td, elem_json)
                                 if not elem_json['language']: elem_json['language'] = '*'
                                 elem_json['quality'] = '*3D'
-                                elem_json['torrent_info'] = ''
+                                elem_json['size'] = ''
 
                         else:
                             break
 
                     elem_json['server'] = 'torrent'
+                    if elem_json.get('size', ''): 
+                        elem_json['size'] = re.sub('(\d+)GB', r'\1 GB', elem_json['size']).replace('.', ',')
 
                     if elem_json.get('url', ''):
                         elem_json['url'] = elem_json['url'].replace("download/torrent.php', {u: ", "download_tt.php?u=")

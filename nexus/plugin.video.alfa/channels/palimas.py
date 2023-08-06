@@ -17,7 +17,7 @@ from core import scrapertools
 from core.item import Item
 from core import servertools
 from core import httptools
-from channels import autoplay
+from modules import autoplay
 
 list_quality = []
 list_servers = ['mixdrop']

@@ -19,7 +19,7 @@ from core import scrapertools
 from core import tmdb
 from core.item import Item
 from platformcode import config, logger
-from channels import autoplay
+from modules import autoplay
 from channels import filtertools
 from channelselector import get_thumb
 

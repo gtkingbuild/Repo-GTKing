@@ -11,7 +11,7 @@ if PY3:
 else:
     import urlparse
 from channelselector import get_thumb
-from channels import autoplay
+from modules import autoplay
 from channels import filtertools
 from core import httptools
 from core import scrapertools

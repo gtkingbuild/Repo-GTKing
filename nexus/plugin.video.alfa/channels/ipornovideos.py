@@ -17,7 +17,7 @@ from core.item import Item
 from core import servertools
 from core import httptools
 from bs4 import BeautifulSoup
-from channels import autoplay
+from modules import autoplay
 
 IDIOMAS = {'vo': 'VO'}
 list_language = list(IDIOMAS.values())

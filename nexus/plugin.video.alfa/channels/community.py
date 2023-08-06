@@ -18,7 +18,7 @@ from channelselector import get_thumb
 from core import tmdb
 from core.item import Item
 from platformcode import logger, config, platformtools
-from channels import autoplay
+from modules import autoplay
 from channels import filtertools
 
 list_data = {}

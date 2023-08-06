@@ -20,6 +20,7 @@ TAG_TITLE = "season_search"
 TAG_LANGUAGE = "language"
 TAG_QUALITY_ALLOWED = "quality_allowed"
 TAG_ALL = 'No filtrar'
+ALFA_S = False
 
 COLOR = {"parent_item": "yellow", "error": "red", "warning": "orange", "selected": "blue", 
          "striped_even_active": "blue", "striped_even_inactive": "limegreen", 
@@ -87,7 +88,7 @@ class Filter(object):
 
                     try:
                         language = control["lvalues"][global_filter_language]
-                        # logger.debug("language %s" % language)
+                        # if not ALFA_S: logger.debug("language %s" % language)
                     except:
                         logger.error("No se ha encontrado el valor asociado al codigo '%s': %s" %
                                      (global_filter_lang_id, global_filter_language))
@@ -229,7 +230,7 @@ def check_conditions(_filter, list_item, item, list_language, list_quality, qual
     is_language_valid = True
 
     if _filter.language:
-        # logger.debug("title es %s" % item.title)
+        # if not ALFA_S: logger.debug("title es %s" % item.title)
         #2nd lang
         
         media_type = _filter.media_type or item.media_type or item.contentType.replace('episode', TAG_MEDIA_DEF)\
@@ -302,18 +303,18 @@ def check_conditions(_filter, list_item, item, list_language, list_quality, qual
                 item.list_quality = list_quality
             item.context = context(item, exist=True)
             list_item.append(item)
-            # logger.debug("{0} | context: {1}".format(item.title, item.context))
-            # logger.debug(" -Enlace añadido")
+            # if not ALFA_S: logger.debug("{0} | context: {1}".format(item.title, item.context))
+            # if not ALFA_S: logger.debug(" -Enlace añadido")
 
-        logger.debug(" idioma valido?: %s, item.language: %s, filter.language: %s" %
-                     (is_language_valid, item.language, _filter.language))
-        logger.debug(" calidad valida?: %s, item.quality: %s, filter.quality_allowed: %s"
-                     % (is_quality_valid, quality.replace(config.BTDIGG_LABEL, '').lower(), _filter.quality_allowed))
+        if not ALFA_S: logger.debug(" idioma valido?: %s, item.language: %s, filter.language: %s" %
+                                    (is_language_valid, item.language, _filter.language))
+        if not ALFA_S: logger.debug(" calidad valida?: %s, item.quality: %s, filter.quality_allowed: %s"
+                                    % (is_quality_valid, quality.replace(config.BTDIGG_LABEL, '').lower(), _filter.quality_allowed))
 
     return list_item, quality_count, language_count, _filter.language
 
 
-def get_link(list_item, item, list_language, list_quality=None, global_filter_lang_id="filter_languages"):
+def get_link(list_item, item, list_language, list_quality=None, global_filter_lang_id="filter_languages", alfa_s=ALFA_S):
     """
     Devuelve una lista de enlaces, si el item está filtrado correctamente se agrega a la lista recibida.
 
@@ -331,18 +332,18 @@ def get_link(list_item, item, list_language, list_quality=None, global_filter_la
     @rtype: list[Item]
     """
     logger.info()
+    global filter_global, ALFA_S
+    ALFA_S = alfa_s
 
     # si los campos obligatorios son None salimos
     if list_item is None or item is None:
         return []
 
-    logger.debug("total de items : %s" % len(list_item))
-
-    global filter_global
+    if not ALFA_S: logger.debug("total de items : %s" % len(list_item))
 
     if not filter_global:
         filter_global = Filter(item, global_filter_lang_id).result
-    logger.debug("filter: '%s' datos: '%s'" % (normalize(item.show or item.contentTitle).title(), filter_global))
+    if not ALFA_S: logger.debug("filter: '%s' datos: '%s'" % (normalize(item.show or item.contentTitle).title(), filter_global))
 
     if filter_global and filter_global.active:
         list_item, quality_count, language_count = \
@@ -354,7 +355,7 @@ def get_link(list_item, item, list_language, list_quality=None, global_filter_la
     return list_item
 
 
-def get_links(list_item, item_in, list_language, list_quality=None, global_filter_lang_id="filter_languages", replace_label=None):
+def get_links(list_item, item_in, list_language, list_quality=None, global_filter_lang_id="filter_languages", replace_label=None, alfa_s=ALFA_S):
     """
     Devuelve una lista de enlaces filtrados.
 
@@ -372,6 +373,8 @@ def get_links(list_item, item_in, list_language, list_quality=None, global_filte
     @rtype: list[Item]
     """
     logger.info()
+    global ALFA_S
+    ALFA_S = alfa_s
 
     # si los campos obligatorios son None salimos
     if list_item is None or item_in is None:
@@ -388,14 +391,14 @@ def get_links(list_item, item_in, list_language, list_quality=None, global_filte
     from core import servertools
     list_item= servertools.filter_servers(list_item)
 
-    logger.debug("total de items : %s" % len(list_item))
+    if not ALFA_S: logger.debug("total de items : %s" % len(list_item))
 
     new_itemlist = []
     quality_count = 0
     language_count = 0
 
     _filter = Filter(item_in, global_filter_lang_id).result
-    logger.debug("filter: '%s' datos: '%s'" % (normalize(item_in.show or item_in.contentTitle).title(), _filter))
+    if not ALFA_S: logger.debug("filter: '%s' datos: '%s'" % (normalize(item_in.show or item_in.contentTitle).title(), _filter))
 
     if _filter and _filter.active:
         generic_filter = False
@@ -430,9 +433,9 @@ def get_links(list_item, item_in, list_language, list_quality=None, global_filte
 
         if _filter.title.startswith('*') and len(new_itemlist) != len(list_item): generic_filter = True
         
-        logger.debug("ITEMS FILTRADOS: %s/%s, idioma [%s]: %s, calidad_permitida %s: %s"
-                    % (len(new_itemlist), len(list_item), _filter.language, language_count, _filter.quality_allowed,
-                       quality_count))
+        if not ALFA_S: logger.debug("ITEMS FILTRADOS: %s/%s, idioma [%s]: %s, calidad_permitida %s: %s"
+                                    % (len(new_itemlist), len(list_item), _filter.language, language_count, _filter.quality_allowed,
+                                       quality_count))
 
         if (not new_itemlist and item_in.sub_action not in ["tvshow", "season", "unseen", "auto"]) \
                              or (new_itemlist and new_itemlist[-1].action not in ["findvideos", "play", "episodios"]) \
@@ -555,7 +558,7 @@ def config_item(item):
     @type item: Item
     """
     logger.info()
-    logger.debug("item %s" % item.tostring())
+    if not ALFA_S: logger.debug("item %s" % item.tostring())
     
     # Si viene de una lista de enlaces vacía, se restauran valores originales del canal
     if item.context and isinstance(item.context, list):
@@ -765,7 +768,7 @@ def save(item, dict_data_saved):
     logger.info()
 
     if item and dict_data_saved:
-        logger.debug('item: %s\ndatos: %s' % (item.tostring(), dict_data_saved))
+        if not ALFA_S: logger.debug('item: %s\ndatos: %s' % (item.tostring(), dict_data_saved))
 
         if item.from_channel == "videolibrary":
             item.from_channel = item.contentChannel

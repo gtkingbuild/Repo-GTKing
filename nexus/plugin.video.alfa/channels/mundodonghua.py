@@ -15,7 +15,8 @@ from core import servertools
 from core.item import Item
 from platformcode import config, logger
 from platformcode import platformtools
-from channels import filtertools, autoplay
+from channels import filtertools
+from modules import autoplay
 from modules import renumbertools
 from core import tmdb
 

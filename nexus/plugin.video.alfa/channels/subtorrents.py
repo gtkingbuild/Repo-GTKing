@@ -7,26 +7,18 @@ import sys
 PY3 = False
 if sys.version_info[0] >= 3: PY3 = True; unicode = str; unichr = chr; long = int; _dict = dict
 
-import re
-import traceback
-if not PY3: _dict = dict; from collections import OrderedDict as dict
+from lib import AlfaChannelHelper
+if not PY3: _dict = dict; from AlfaChannelHelper import dict
+from AlfaChannelHelper import DictionaryAllChannel
+from AlfaChannelHelper import re, traceback, time, base64, xbmcgui
+from AlfaChannelHelper import Item, servertools, scrapertools, jsontools, get_thumb, config, logger, filtertools, autoplay
 
-from core.item import Item
-from core import servertools
-from core import scrapertools
-from core import jsontools
-from channelselector import get_thumb
-from platformcode import config, logger
-from channels import filtertools, autoplay
-from lib.AlfaChannelHelper import DictionaryAllChannel
-
-IDIOMAS = {'es': 'CAST', 'la': 'LAT', 'us': 'VOSE', 'ES': 'CAST', 'LA': 'LAT', 'US': 'VOSE', 
-           'espaniol': 'CAST', 'Castellano': 'CAST', 'Latino': 'LAT', 'Version Original': 'VOSE'}
+IDIOMAS = AlfaChannelHelper.IDIOMAS_T
 list_language = list(set(IDIOMAS.values()))
-list_quality = []
-list_quality_movies = ['DVDR', 'HDRip', 'VHSRip', 'HD', '2160p', '1080p', '720p', '4K', '3D', 'Screener', 'BluRay']
-list_quality_tvshow = ['HDTV', 'HDTV-720p', 'WEB-DL 1080p', '4KWebRip']
-list_servers = ['torrent']
+list_quality_movies = AlfaChannelHelper.LIST_QUALITY_MOVIES_T
+list_quality_tvshow = AlfaChannelHelper.LIST_QUALITY_TVSHOW
+list_quality = list_quality_movies + list_quality_tvshow
+list_servers = AlfaChannelHelper.LIST_SERVERS_T
 forced_proxy_opt = 'ProxySSL'
 
 canonical = {
@@ -302,8 +294,11 @@ def episodesxseason_matches(item, matches_int, **AHkwargs):
                 sxe = elem.get_text(strip=True)
                 if scrapertools.find_single_match(sxe, '(?i)(\d+)x(\d+)'):
                     season, episode = scrapertools.find_single_match(sxe, '(?i)(\d+)x(\d+)')
-                else:
+                elif scrapertools.find_single_match(sxe, '(?i)\[Cap\.(\d{1})(\d{2})\]'):
                     season, episode = scrapertools.find_single_match(sxe, '(?i)\[Cap\.(\d{1})(\d{2})\]')
+                else:
+                    logger.error(elem)
+                    continue
 
                 if len(season) > 2:
                     pos = len(str(item.contentSeason)) * -1
@@ -403,7 +398,7 @@ def findvideos_matches(item, matches_int, langs, response, **AHkwargs):
                 logger.error(elem)
                 logger.error(traceback.format_exc())
 
-            if not elem_json.get('url', ''): 
+            if not elem_json.get('url', '') or elem_json['url'] in str(matches): 
                 continue
 
             matches.append(elem_json.copy())

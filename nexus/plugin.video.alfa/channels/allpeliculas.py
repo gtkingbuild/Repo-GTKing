@@ -18,7 +18,7 @@ from platformcode import logger, config
 from channelselector import get_thumb
 from bs4 import BeautifulSoup
 from channels import filtertools
-from channels import autoplay
+from modules import autoplay
 import datetime
 
 
