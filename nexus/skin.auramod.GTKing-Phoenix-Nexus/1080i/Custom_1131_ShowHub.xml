@@ -46,13 +46,41 @@
                         <control type="radiobutton" id="9003" description="Instalar PVR IPTV Simple Client">
                             <include>Dialog_Standard_ListButton</include>
 							<radioposx>630</radioposx>
-                            <label>PVR IPTV Simple Client (necesario)</label>
+                            <label>PVR IPTV Simple Client (Necesario)</label>
 							<selected>System.HasAddon(pvr.iptvsimple)</selected>							
                             <onclick>InstallAddon(pvr.iptvsimple)</onclick>	
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/QO5MWaJ.jpg)</onfocus>
-                        </control>						
+                        </control>
+
+						<control type="radiobutton" id="9004" description="Instalar Palantir 2">
+                            <include>Dialog_Standard_ListButton</include>
+                            <radioposx>630</radioposx>
+                            <label>[COLOR gold]Palantir 2[/COLOR] (Necesario)</label>
+							<selected>System.HasAddon(plugin.video.palantir2)</selected>							
+                            <onclick>InstallAddon(plugin.video.palantir2)</onclick>	
+							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/WlWLdLl.png)</onfocus>
+                        </control>
 						
-						<control type="radiobutton" id="9004" description="Moe's TV">
+						<control type="radiobutton" id="9005" description="Instalar Alfa">
+                            <include>Dialog_Standard_ListButton</include>
+                            <radioposx>630</radioposx>
+                            <label>Alfa (Necesario)</label>
+							<selected>System.HasAddon(plugin.video.alfa)</selected>
+                            <onclick>InstallAddon(plugin.video.alfa)</onclick>	
+							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/Ii3dBvu.png)</onfocus>
+                        </control>
+
+						<control type="radiobutton" id="9006" description="Instalar Balandro">
+                            <include>Dialog_Standard_ListButton</include>
+                            <radioposx>630</radioposx>
+                            <label>Balandro (Necesario)</label>
+							<selected>System.HasAddon(plugin.video.balandro)</selected>
+                            <onclick>InstallAddon(plugin.video.balandro)</onclick>	
+							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/dKLvZFr.png)</onfocus>
+                        </control>
+					
+						
+						<control type="radiobutton" id="9007" description="Moe's TV">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Moe's TV</label>
@@ -70,7 +98,7 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/hEAC8cq.jpg)</onfocus>
                         </control> -->
 						
-                       <control type="radiobutton" id="9006" description="Instalar Horus">
+                       <control type="radiobutton" id="9008" description="Instalar Horus">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Horus</label>
@@ -78,17 +106,8 @@
                             <onclick>InstallAddon(script.module.horus)</onclick>	
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/zOhCSGc.png)</onfocus>
                         </control>
-
-						<control type="radiobutton" id="9007" description="Instalar Palantir 2">
-                            <include>Dialog_Standard_ListButton</include>
-                            <radioposx>630</radioposx>
-                            <label>[COLOR gold]Palantir 2[/COLOR]</label>
-							<selected>System.HasAddon(plugin.video.palantir2)</selected>							
-                            <onclick>InstallAddon(plugin.video.palantir2)</onclick>	
-							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/WlWLdLl.png)</onfocus>
-                        </control>
 						
-						<control type="radiobutton" id="9008" description="Instalar Tacones">
+						<control type="radiobutton" id="9009" description="Instalar Tacones">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>[COLOR red]Tacones[/COLOR]</label>
@@ -96,27 +115,8 @@
                             <onclick>InstallAddon(plugin.video.tacones)</onclick>	
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/aciSu1i.png)</onfocus>
                         </control>
-						
-						<control type="radiobutton" id="9009" description="Instalar Alfa">
-                            <include>Dialog_Standard_ListButton</include>
-                            <radioposx>630</radioposx>
-                            <label>Alfa</label>
-							<selected>System.HasAddon(plugin.video.alfa)</selected>
-                            <onclick>InstallAddon(plugin.video.alfa)</onclick>	
-							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/Ii3dBvu.png)</onfocus>
-                        </control>
 
-						<control type="radiobutton" id="9010" description="Instalar Balandro">
-                            <include>Dialog_Standard_ListButton</include>
-                            <radioposx>630</radioposx>
-                            <label>Balandro</label>
-							<selected>System.HasAddon(plugin.video.balandro)</selected>
-                            <onclick>InstallAddon(plugin.video.balandro)</onclick>	
-							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/dKLvZFr.png)</onfocus>
-                        </control>
-
-
-						<control type="radiobutton" id="9011" description="Pluto TV">
+						<control type="radiobutton" id="9010" description="Pluto TV">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Pluto TV</label>
@@ -125,7 +125,7 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/vy04p7L.png)</onfocus>
                         </control>
 
-						<control type="radiobutton" id="9012" description="Samsung TV+">
+						<control type="radiobutton" id="9011" description="Samsung TV+">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Samsung TV+</label>
@@ -134,7 +134,7 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/uwEvfRF.png)</onfocus>
                         </control>
 
-						<control type="radiobutton" id="9013" description="Red Bull TV">
+						<control type="radiobutton" id="9012" description="Red Bull TV">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>Red Bull TV</label>
