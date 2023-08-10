@@ -124,7 +124,7 @@ HEADERTYPE = 'Image'
 FONTHEADER = ''
 HEADERMESSAGE = '[B][COLOR azure]GTKing[/COLOR] [COLOR gold]PHOENIX[/COLOR] [COLOR darkmagenta]NEXUS[/COLOR][/B]'
 # url to image if using Image 424x180
-HEADERIMAGE = 'https://i.imgur.com/AbQH8Jl.png'
+HEADERIMAGE = 'https://i.imgur.com/QR3Xsee.png'
 # Font for Notification Window
 FONTSETTINGS = ''
 # Background for Notification Window
