@@ -30,8 +30,8 @@ description="[COLOR azure][B]GTactil [COLOR limegreen]MATRIX[/B][/COLOR] para [C
 [B][COLOR dodgerblue]Developer:[/COLOR] DavidZgZ[/B]
 [B][COLOR orange]Colaboradores-Test:[/COLOR] [COLOR cyan]GTKing PHOENIX TEAM.[/B][/COLOR]"
 
-name="GTKing Phoenix Prime NEXUS-FULL"
-version="1.0"
+name="GTKing Phoenix Prime NEXUS"
+version="20.0"
 url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/20.0/Phoenix.NEXUS.Prime.zip"
 minor="http://"
 gui="http://"
