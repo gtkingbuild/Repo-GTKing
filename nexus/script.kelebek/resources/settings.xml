@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+ <category label="Options">
+  <setting default="" id="basesource" type="text" visible="false">
+  </setting>
+  <setting default="" id="URL_Base Source" label="URL Base Source: " type="text" visible="true">
+  </setting>
+  <setting default="true" id="Play_Media_Initial" label="Play Media Inicial" type="bool" visible="true">
+  </setting>
+  <setting default="true" id="Loop_Media_Initial" label="Loop Media Inicial" type="bool" visible="true">
+  </setting>
+  <setting default="true" id="Play_Media" label="Play Media" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Auto_Update" label="Automatic Update" type="bool" visible="true">
+  </setting>
+ </category>
+ <category label="Kodi Log">
+  <setting default="true" id="loginvert" label="32042" type="bool">
+  </setting>
+  <setting default="true" id="onlyerrors" label="32043" type="bool">
+  </setting>
+ </category>
+ <category label="Automatic_Update">
+  <setting default="false" id="OVNI" label="OVNI" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="ALMA" label="ALMA" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="MUNDOOSCURO" label="MUNDO OSCURO" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="RedBull" label="RedBull" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="SportsExtreme" label="Sports Extreme" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="SportsWA" label="Sports WA" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="YouKids" label="YouKids" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="ColombiaTV" label="Colombia TV" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="DiscoKelebek" label="Disco Kelebek" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="YouMusic" label="YouMusic" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="NowMusic" label="Now Music" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Chillout" label="Chillout" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Alfa" label="Alfa" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="MediaExplorer" label="MediaExplorer" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Tesla" label="Tesla" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="TempTV" label="Temp TV" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="CCloudTV" label="CCloudTV" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Magellan" label="Magellan" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="tvchopo" label="TvChopo" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="cristalazul" label="Cristal Azul" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="mundrone" label="Mundrone" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Alma" label="Alma" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="ccloudtv" label="CCloudTV" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="festa" label="Festa" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="F4MTester" label="F4M Tester" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="F4MProxy" label="F4M Proxy" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="CatchUpTVK" label="CatchUp TV Krypton" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Motor99" label="Motor99" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Noise" label="Noise" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Vikir" label="Vikir" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="cometelo" label="Cometelo" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="justforlaughs" label="Just For Laughs" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="canalcocina" label="Canal Cocina" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="HEIHEI" label="HEIHEI" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="MetallicaTV" label="Metallica TV" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="InSession" label="In Session" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="OnAir" label="On Air" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="TVCartaKrypton" label="TV a la Carta Krypton" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="TVCartaLeia" label="TV a la Carta Leia" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="AdrianaEurope" label="Adriana Europe" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="TeleMadrid" label="TeleMadrid" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="ATRESPLAYER" label="atresplayer" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="CANALSUR" label="Canal Sur" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="EITB" label="EITB" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Foodandtravel" label="Food and Travel" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Magufo" label="Magufo" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Mitele" label="Mitele" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="RTVE" label="RTVE" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="TV3" label="TV3alacarta" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="AragonTV" label="Aragon tv" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="TVG" label="TVG" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="ElementumW32" label="Elementum Windows 32bits" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="ElementumW64" label="Elementum Windows 64bits" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="ElementumA32" label="Elementum Android 32bits" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="ElementumA64" label="Elementum Android 64bits" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Eliminar_Indigo" label="Eliminar Indigo" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="GDrive" label="GDrive" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="F4MTesteryF4MProxy" label="F4MTester y F4MProxy" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="ResolveURL" label="ResolveURL" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="URLResolver" label="URLResolver" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="ITesting" label="Inputstream Testing" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="PCM" label="PyCryptodome" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Kelebek" label="Kelebek" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Inklusion" label="Inklusion" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="EnjoyTheSilence" label="Enjoy the Silence" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Sports55" label="Sports 55 Classic Repo Shark" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="TheEndZone" label="The End Zone Repo Grindhouse" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="SportHD" label="SportHD Repo Bugatsinho" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Winner" label="Winner" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="basketandgo" label="Basket and GO" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="MotorHall" label="Motor Hall" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Tide" label="Tide" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="backtothefutbol" label="backtothefutbol" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Padel99" label="Padel99" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="KinderLand" label="KinderLand" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="FestaKids" label="FestaKids" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Clan" label="Clan" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="MusicHall" label="Music Hall" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="MetalOnMetal" label="MetalOnMetal" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Radio" label="Radio" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="OrbitalMusicRadio" label="OrbirtalMusicRadio" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Music" label="Music" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Dance" label="Dance" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="HouseMixes" label="House Mixes" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Tacones" label="Tacones" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="NovelasHall" label="Novelas Hall" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Butaca" label="La Butaca" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="AnimeHall" label="Anime Hall" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Lilianime" label="Lilianime" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="DocuHall" label="Docu Hall" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="ChopoCine" label="ChopoCine" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="ChopoSeries" label="ChopoSeries" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="PataNegra" label="PataNegra" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Palantir2" label="Palantir 2" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="iNovelas" label="iNovelas" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Agora" label="Agora" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Koditv" label="Kodi tv" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="CMM" label="CMMedia" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="RTPA" label="RTPA" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="MTMAD" label="MTMAD" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Super3" label="Super3" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="DiscoveryplusChopo" label="Discoveryplus Chopo" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Discoveryplus" label="Discoveryplus" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Apunt" label="A Punt" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="MiteleChopo" label="MiTele Chopo" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="atresplayerchopo" label="atresplayer chopo" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="RepoTorrest" label="Repo Torrest" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="BodyGym" label="Body Gym" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="SedalyPosta" label="Sedal y Posta" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="PVYoutube" label="Plugin Video Youtube" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="OldQueen" label="Old Queen" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Choposex" label="Choposex" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Fogo" label="Fogo Brasil Repo Vikings" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="StefanoRepo" label="Stefano Repo Italia" type="bool" visible="true">
+  </setting>
+  <setting default="false" id="Asgard" label="Asgard Repo" type="bool" visible="true">
+  </setting>
+ </category>
+</settings>

@@ -1,0 +1,15 @@
+{
+  "id": "pornky",
+  "name": "pornky",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://i.postimg.cc/NFh8876f/pornky.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

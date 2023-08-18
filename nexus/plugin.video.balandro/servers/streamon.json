@@ -1,0 +1,21 @@
+{
+  "id": "streamon",
+  "name": "Streamon",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "https://streamon.to/(?:embed-|v/|)([A-z0-9]+)",
+        "url": "https://streamon.to/v/\\1"
+      },
+      {
+        "pattern": "https://streamon.to/(?:embed-|d/|e/|f/)([A-z0-9]+)",
+        "url": "https://streamon.to/v/\\1"
+      }
+    ]
+  }
+
+}

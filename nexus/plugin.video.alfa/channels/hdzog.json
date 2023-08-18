@@ -1,0 +1,15 @@
+{
+  "id": "hdzog",
+  "name": "hdzog",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://i.postimg.cc/yxqs9k46/hdzog.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "1fichier",
+  "name": "1Fichier",
+ 
+  "active": false,
+  "notes": "Requiere Debrider",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "https://1fichier.com/\\?([a-z0-9]+)",
+        "url": "https://1fichier.com/?\\1"
+      }
+    ]
+  }
+
+}

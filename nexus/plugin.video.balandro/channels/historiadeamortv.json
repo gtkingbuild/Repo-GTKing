@@ -1,0 +1,17 @@
+{
+  "id": "historiadeamortv",
+  "name": "HistoriadeAmorTv",
+  "thumbnail": "historiadeamortv.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["notice", "years", "countries", "qualityes", "vos", "tales", "anime"],
+
+  "notes": "Web dedicada principalmente en Novelas. Películas por géneros y Series por Géneros"
+}

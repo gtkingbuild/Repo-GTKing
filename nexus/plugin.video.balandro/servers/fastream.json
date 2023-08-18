@@ -1,0 +1,25 @@
+{
+  "id": "fastream",
+  "name": "Fastream",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "https://fastream.to/embed-([A-z0-9]+).html",
+        "url": "https://fastream.to/embed-\\1.html"
+      },
+      {
+        "pattern": "https://fastream.to/emb.html\\?(.+?)=",
+        "url": "https://fastream.to/embed-\\1.html?auto=1&referer="
+      },
+      {
+        "pattern": "https://fastream.to/embed-\\w+.html",
+        "url": "\\1"
+      }
+    ]
+  }
+
+}

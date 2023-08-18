@@ -1,0 +1,17 @@
+{
+  "id": "mirapeliculas",
+  "name": "MiraPeliculas",
+  "thumbnail": "mirapeliculas.png",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["inestable", "notice", "news", "languages", "kids", "docs", "vos"],
+
+  "notes": "Películas por idioma y géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

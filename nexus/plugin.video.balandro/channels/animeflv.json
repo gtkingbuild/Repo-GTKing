@@ -1,0 +1,17 @@
+{
+  "id": "animeflv",
+  "name": "AnimeFlv",
+  "thumbnail": "animeflv.png",
+
+  "active": true,
+
+  "searchable": false,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["cast", "lat", "vose", "vo"],
+
+  "clusters": ["current", "anime"],
+
+  "notes": "Web dedicada exclusivamente al anime."
+}

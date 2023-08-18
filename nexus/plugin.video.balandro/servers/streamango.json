@@ -1,0 +1,22 @@
+{
+  "id": "streamango",
+  "name": "Streamango",
+
+  "active": false,
+  "notes": "Cerrado el 1/11/2019",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "streamango.com/(?:embed|f)/([A-z0-9]+)",
+        "url": "http://streamango.com/embed/\\1"
+      },
+      {
+        "pattern": "https://fruitadblock.net/embed/([A-z0-9]+)",
+        "url": "http://streamango.com/embed/\\1"
+      }
+    ]
+  }
+
+}

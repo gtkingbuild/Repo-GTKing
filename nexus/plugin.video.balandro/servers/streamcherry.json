@@ -1,0 +1,18 @@
+{
+  "id": "streamcherry",
+  "name": "Streamcherry",
+
+  "active": false,
+  "notes": "Cerrado el 1/11/2019",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "streamcherry.com/(?:embed|f)/([A-z0-9]+)",
+        "url": "http://streamcherry.com/embed/\\1"
+      }
+    ]
+  }
+
+}

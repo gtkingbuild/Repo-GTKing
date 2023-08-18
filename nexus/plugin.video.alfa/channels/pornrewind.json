@@ -1,0 +1,15 @@
+{
+  "id": "pornrewind",
+  "name": "pornrewind",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://www.pornrewind.com/static/images/logo-light-pink.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

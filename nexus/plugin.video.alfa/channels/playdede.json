@@ -1,0 +1,65 @@
+{
+  "id": "playdede",
+  "name": "Playdede",
+  "active": true,
+  "adult": false,
+  "language": ["cast", "lat", "vose", "vos"],
+  "thumbnail": "https://i.postimg.cc/ppKpC03B/playdd.png",
+  "banner": "",
+  "fanart": "https://i.imgur.com/A1AZwk6.jpg",
+  "categories": [
+    "anime",
+    "movie",
+    "tvshow"
+  ],
+  "login_required": true,
+  "settings": [
+    {
+      "id": "user",
+      "type": "text",
+      "label": "@30014",
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "pass",
+      "type": "text",
+      "label": "@30015",
+      "hidden": true,
+      "enabled": "!eq(-1,'')",
+      "visible": true
+    },
+    {
+      "id": "show_langs",
+      "type": "bool",
+      "label": "Mostrar idiomas en titulos",
+      "default": false,
+      "enabled": false,
+      "visible": false
+    },
+    {
+      "id": "filter_languages",
+      "type": "list",
+      "label": "Mostrar enlaces en idioma...",
+      "default": 0,
+      "enabled": false,
+      "visible": false,
+      "lvalues": [
+        "No filtrar",
+        "CAST",
+        "LAT",
+        "VOSE",
+        "VOS",
+        "VO"
+      ]
+    },
+    {
+      "id": "include_in_global_search",
+      "type": "bool",
+      "label": "Incluir en busqueda global",
+      "default": false,
+      "enabled": true,
+      "visible": true
+    }
+  ]
+}

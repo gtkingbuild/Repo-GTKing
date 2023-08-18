@@ -1,0 +1,18 @@
+{
+  "id": "videoko",
+  "name": "Videoko",
+
+  "active": false,
+  "notes": "Cerrado en Diciembre 2020",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "http(?:s|)://videoko.to/([A-z0-9]+)",
+        "url": "https://videoko.to/\\1"
+      }
+    ]
+  }
+
+}

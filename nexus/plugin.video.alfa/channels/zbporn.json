@@ -1,0 +1,15 @@
+{
+  "id": "zbporn",
+  "name": "zbporn",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://zbporn.com/images/favicons/apple-touch-icon.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

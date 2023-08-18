@@ -1,0 +1,15 @@
+{
+  "id": "ghettotube",
+  "name": "ghettotube",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://www.ghettotube.com/templates/ghettotube/images/logo.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

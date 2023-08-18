@@ -1,0 +1,22 @@
+{
+    "addon_version": "3.0.9",
+    "files": {
+        "core": [
+            "proxytools",
+            "proxytoolsz",
+            "servertools"
+        ],
+        "modules": [
+            "submnuteam"
+        ],
+        "root dir": [
+            "dominios",
+            "version"
+        ],
+        "servers": [
+            "various"
+        ]
+    },
+    "fix_version": 1,
+    "hash": "541b970dfa8629f5d83c84ce9ad584ab"
+}

@@ -1,0 +1,15 @@
+{
+  "id": "documaniacosesp",
+  "name": "DocumaniacosEsp",
+  "thumbnail": "documaniacosesp.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["documentary"],
+
+  "categories": ["documentary"],
+  "language": ["cast"],
+
+  "notes": "Web CERRADA. Documentales en castellano."
+}

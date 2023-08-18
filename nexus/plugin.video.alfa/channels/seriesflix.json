@@ -1,0 +1,39 @@
+{
+  "id": "seriesflix",
+  "name": "SeriesFlix",
+  "active": false,
+  "adult": false,
+  "language": ["lat","cast"],
+  "thumbnail": "https://i.postimg.cc/fScDcPkt/cropped-seriesflix-logo-1.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "tvshow",
+    "vos"
+  ],
+  "force_unify": false,
+  "settings": [
+    {
+      "id": "include_in_global_search",
+      "type": "bool",
+      "label": "Incluir en busqueda global",
+      "default": true,
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "filter_languages",
+      "type": "list",
+      "label": "Mostrar enlaces en idioma...",
+      "default": 0,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "No filtrar",
+        "LAT",
+        "CAST",
+        "VOSE"
+      ]
+    }
+  ]
+}

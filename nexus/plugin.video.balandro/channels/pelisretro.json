@@ -1,0 +1,17 @@
+{
+  "id": "pelisretro",
+  "name": "PelisRetro",
+  "thumbnail": "pelisretro.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie"],
+  "language": ["lat"],
+
+  "clusters": ["classic", "kids"],
+
+  "notes": "Web CERRADA. Películas clásicas, por géneros."
+}

@@ -1,0 +1,18 @@
+{
+  "id": "zippyshare",
+  "name": "Zippyshare",
+
+  "active": true,
+  "notes": "Web no disponible en España",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "([a-z0-9]+\\.zippyshare.com/v/[A-z0-9]+/file.html)",
+        "url": "http://\\1"
+      }
+    ]
+  }
+
+}

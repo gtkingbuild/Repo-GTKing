@@ -1,0 +1,17 @@
+{
+  "id": "mp4upload",
+  "name": "Mp4upload",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "mp4upload.com/(?:embed-|)([A-z0-9]+)",
+        "url": "https://www.mp4upload.com/embed-\\1.html"
+      }
+    ]
+  }
+
+}

@@ -1,0 +1,25 @@
+{
+  "id": "highstream",
+  "name": "Highstream",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "highstream.tv/(e.*?.html)",
+        "url": "https://highstream.tv/\\1"
+      },
+      {
+        "pattern": "highstream.tv/(\\w+)",
+        "url": "https://highstream.tv/embed-\\1.html"
+      },
+      {
+        "pattern": "highstream.tv/(?:embed-|/)([A-z0-9]+)",
+        "url": "https://highstream.tv/embed-\\1.html"
+      }
+    ]
+  }
+
+}

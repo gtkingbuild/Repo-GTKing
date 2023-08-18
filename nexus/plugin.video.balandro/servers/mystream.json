@@ -1,0 +1,18 @@
+{
+  "id": "mystream",
+  "name": "Mystream",
+
+  "active": false,
+  "notes": "Cerrado en Junio 2021",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "((?:embed.|)(?:mystream.to|mstream.fun|mstream.website|mystream.best)/(?:watch/|)[A-z0-9]+)",
+        "url": "https://\\1"
+      }
+    ]
+  }
+
+}

@@ -1,0 +1,25 @@
+{
+    "id": "yohentai",
+    "name": "YoHentai",
+    "active": true,
+    "adult": true,
+    "language": ["vos", "cast"],
+    "thumbnail": "https://yohentai.net/assets/img/logo.png",
+    "banner": "",
+    "fanart": "https://yohentai.net/assets/img/serie/portada/FurueruKuchibiruaport.jpg",
+    "categories": [
+      "adult",
+      "vos"
+    ],
+    "settings": [
+      {
+        "id": "include_in_global_search",
+        "type": "bool",
+        "label": "Incluir en busqueda global",
+        "default": false,
+        "enabled": true,
+        "visible": true
+      }
+    ]
+  }
+  

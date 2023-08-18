@@ -1,0 +1,17 @@
+{
+  "id": "embedy",
+  "name": "Embedy",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "http(?:s|)://embedy.cc/embed/([A-z0-9=]+)",
+        "url": "https://embedy.cc/embed/\\1"
+      }
+    ]
+  }
+
+}

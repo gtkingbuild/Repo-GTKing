@@ -1,0 +1,17 @@
+{
+  "id": "123pelis",
+  "name": "123Pelis",
+  "thumbnail": "123pelis.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["years", "rankings", "languages", "producers", "vos"],
+
+  "notes": "Web CERRADA. Películas por géneros y año. También Series"
+}

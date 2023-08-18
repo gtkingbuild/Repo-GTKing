@@ -1,0 +1,15 @@
+{
+  "id": "porncom",
+  "name": "PornCom",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://i.postimg.cc/jWkJxm2b/porncom.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

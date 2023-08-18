@@ -1,0 +1,21 @@
+{
+  "id": "vup",
+  "name": "Vup",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "(https://(?:vupload|vup).\\w{2,4}/(?:embed-|v/|e/)[A-z0-9]+(?:.html)?)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "https://vup.to/(?:embed-|emb.html\\?|)([A-z0-9]+)",
+        "url": "https://vup.to/embed-\\1.html"
+      }
+    ]
+  }
+
+}

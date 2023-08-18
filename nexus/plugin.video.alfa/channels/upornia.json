@@ -1,0 +1,15 @@
+{
+  "id": "upornia",
+  "name": "upornia",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://i.postimg.cc/B6PJtPZC/upornia.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

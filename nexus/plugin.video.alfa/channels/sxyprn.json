@@ -1,0 +1,15 @@
+{
+  "id": "sxyprn",
+  "name": "sxyprn",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://www.sxyprn.com/favicon.ico",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

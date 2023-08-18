@@ -1,0 +1,6 @@
+﻿<settings>
+  <category label="Acerca de">
+     <setting type="lsep" label="[COLOR red]TACONES:[/COLOR] Addon sin ánimo de lucro y con fines exclusivamente educativos" option="close" action="RunPlugin(plugin://plugin.video.tacones/?mode=7)" />
+	 <setting id="debug" type="bool" label="Activar Modo Depuración" default="false" visible="false"/>
+  </category>
+</settings>

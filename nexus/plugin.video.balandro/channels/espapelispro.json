@@ -1,0 +1,17 @@
+{
+  "id": "espapelispro",
+  "name": "EspaPelisPro",
+  "thumbnail": "espapelispro.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["years", "kids", "docs"],
+
+  "notes": "Web CERRADA. Películas por géneros."
+}

@@ -1,0 +1,17 @@
+{
+  "id": "clasicotv",
+  "name": "ClasicoTv",
+  "thumbnail": "clasicotv.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": [ "movie", "tvshow" ],
+  "language": ["lat"],
+
+  "clusters": ["producers", "lasts", "kids", "docs"],
+
+  "notes": "Web CERRADA. Películas por géneros y Series por Géneros."
+}

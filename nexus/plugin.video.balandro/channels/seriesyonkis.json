@@ -1,0 +1,17 @@
+{
+  "id": "seriesyonkis",
+  "name": "SeriesYonkis",
+  "thumbnail": "seriesyonkis.png",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose", "vo"],
+
+  "clusters": ["current", "suggested", "producers", "rankings", "kids", "docs", "vos", "anime"],
+
+  "notes": "Películas por géneros. Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

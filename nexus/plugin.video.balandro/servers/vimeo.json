@@ -1,0 +1,17 @@
+{
+  "id": "vimeo",
+  "name": "Vimeo",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "(?:vimeo.com/|player.vimeo.com/video/)([0-9]+)",
+        "url": "https://player.vimeo.com/video/\\1"
+      }
+    ]
+  }
+
+}

@@ -1,0 +1,17 @@
+{
+  "id": "allpeliculas",
+  "name": "AllPeliculas",
+  "thumbnail": "allpeliculas.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["news", "languages", "years", "producers", "kids", "docs", "vos"],
+
+  "notes": "Web CERRADA. Películas por Idioma, géneros y año."
+}

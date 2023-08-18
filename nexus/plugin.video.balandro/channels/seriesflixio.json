@@ -1,0 +1,17 @@
+{
+  "id": "seriesflixio",
+  "name": "SeriesFlixIo",
+  "thumbnail": "seriesflixio.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["countries", "producers", "kids", "docs", "vos"],
+
+  "notes": "Web CERRADA. Series, por géneros, productora y paises."
+}

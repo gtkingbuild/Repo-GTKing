@@ -1,0 +1,18 @@
+{
+  "id": "cine24h",
+  "name": "Cine24h",
+  "thumbnail": "cine24h.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["suggested", "rankings", "years", "kids", "docs", "vos"],
+
+  "notes": "Películas por géneros y año."
+
+}

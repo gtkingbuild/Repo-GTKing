@@ -1,0 +1,91 @@
+{
+  "id": "hdfull",
+  "name": "HDFull",
+  "active": true,
+  "login_required": true,
+  "adult": false,
+  "language": ["cast", "lat"],
+  "thumbnail": "https://i.postimg.cc/HskwLYrk/hdfull.png",
+  "banner": "hdfull.png",
+  "fanart": "",
+  "categories": [
+    "movie",
+    "tvshow",
+    "vos"
+  ],
+  "settings": [
+    {
+      "id": "hdfulluser",
+      "type": "text",
+      "label": "@30014",
+      "default": "",
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "hdfullpassword",
+      "type": "text",
+      "label": "@30015",
+      "default": "",
+      "hidden": true,
+      "enabled": "!eq(-1,'')",
+      "visible": true
+    },
+    {
+      "id": "silence_mode",
+      "type": "bool",
+      "label": "Deshabilitar notificaciones (login/logout)",
+      "default": false,
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "show_langs",
+      "type": "bool",
+      "label": "Mostrar idiomas en titulos",
+      "default": true,
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "filter_languages",
+      "type": "list",
+      "label": "Mostrar enlaces en idioma...",
+      "default": 0,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "No filtrar",
+        "CAST",
+        "LAT",
+        "VOSE",
+        "VOS",
+        "VO"
+      ]
+    },   
+    {
+      "id": "modo_grafico",
+      "type": "bool",
+      "label": "Buscar información extra (TMDB)",
+      "default": true,
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "pagination_abc",
+      "type": "bool",
+      "label": "Paginación Sección Series A-Z",
+      "default": true,
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "include_in_global_search",
+      "type": "bool",
+      "label": "Incluir en busqueda global",
+      "default": true,
+      "enabled": true,
+      "visible": true
+    }
+  ]
+}

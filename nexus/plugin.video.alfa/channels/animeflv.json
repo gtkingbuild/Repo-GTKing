@@ -1,0 +1,52 @@
+{
+  "id": "animeflv",
+  "name": "AnimeFLV",
+  "active": true,
+  "adult": false,
+  "language": ["cast", "lat"],
+  "thumbnail": "https://i.postimg.cc/GBXbdqsv/animeflv.png",
+  "banner": "animeflv.png",
+  "fanart": "",
+  "categories": [
+    "anime"
+  ],
+  "settings": [
+    {
+      "id": "include_in_global_search",
+      "type": "bool",
+      "label": "Incluir en busqueda global",
+      "default": true,
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "include_in_newest_anime",
+      "type": "bool",
+      "label": "Incluir en Novedades - Episodios de anime",
+      "default": true,
+      "enabled": true,
+      "visible": true
+    },
+    {
+      "id": "filter_languages",
+      "type": "list",
+      "label": "Mostrar enlaces en idioma...",
+      "default": 0,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "No filtrar",
+        "VOSE",
+        "LAT"
+      ]
+    },
+	{
+      "id": "use_clone",
+      "type": "bool",
+      "label": "Utilizar clon (si no te cargan los enlaces)",
+      "default": false,
+      "enabled": true,
+      "visible": true
+    }
+  ]
+}

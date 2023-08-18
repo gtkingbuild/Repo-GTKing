@@ -1,0 +1,18 @@
+{
+  "id": "openload",
+  "name": "Openload",
+
+  "active": false,
+  "notes": "Cerrado el 1/11/2019",
+
+  "find_videos": {
+    "ignore_urls": ["https://openload.co/soon"],
+    "patterns": [
+      {
+        "pattern": "(?:openload|oload).*?/(?:embed|f)/([0-9a-zA-Z-_]+)",
+        "url": "https://oload.tv/embed/\\1/"
+      }
+    ]
+  }
+
+}

@@ -1,0 +1,17 @@
+{
+  "id": "userscloud",
+  "name": "Userscloud",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "userscloud.com/(?:embed-|embed/|)([a-zA-Z0-9]+)",
+        "url": "https://userscloud.com/\\1"
+      }
+    ]
+  }
+
+}
