@@ -39,7 +39,7 @@
 	</extension>
 </addon>
 
-<addon id="repository.GTKing-Phoenix-Nexus" name="[B][COLOR steelblue]Repo [COLOR azure]GTKing [COLOR gold]PHOENIX [COLOR limegreen]TEAM[/COLOR][/B]" version="20.0.0" provider-name="GTKing PHOENIX TEAM">
+<addon id="repository.GTKing-Phoenix-Nexus" name="[B][COLOR steelblue]Repo [COLOR azure]GTKing [COLOR gold]PHOENIX [COLOR limegreen]TEAM[/COLOR][/B]" version="20.0" provider-name="GTKing PHOENIX TEAM">
     <extension point="xbmc.addon.repository" name="[B][COLOR dodgerblue]Repo [COLOR azure]GTKing [COLOR gold]PHOENIX [COLOR limegreen]TEAM[/COLOR][/B]">
         <dir minversion="18.0" maxversion="18.9.0">
             <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/leia/zips/addons.xml</info>
