@@ -156,7 +156,7 @@ def purge_db_file(name):
     else:
         logging.log('{0} no encontrado.'.format(name), level=xbmc.LOGERROR)
         return False
-    textexe.execute("SELECCIONE el nombre de sqlite_master DONDE tipo = 'tabla'")
+    textexe.execute("SELECT name FROM sqlite_master WHERE type = 'table'")
     for table in textexe.fetchall():
         if table[0] == 'version':
             logging.log('Datos de la tabla `{0}` omitido.'.format(table[0]))

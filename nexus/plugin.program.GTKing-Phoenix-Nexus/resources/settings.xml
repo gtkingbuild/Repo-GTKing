@@ -188,7 +188,7 @@
         <setting id="viewType" type="number" label="Tipo de Vista" default="50" visible="!eq(-1, false)" enable="!eq(-1,false)"/>
         <setting type="lsep" label="Ventana de Notificación al Inicio:"/>
         <setting id="notify" type="bool" label="Deshabilitar la Notificación al Iniciar" default="false" />
-        <setting id="noteid" type="number" label="Ultima Notificacion" visible="false" default="0" />
+        <setting id="noteid" type="number" label="Ultima Notificacion" visible="true" default="0" />
         <setting id="notedismiss" type="bool" label="Cerrar o Recordarme Más Tarde" visible="false" />
 		<setting label="Activar modo depuración de skin" type="action" action="Skin.ToggleDebug" />
 		<setting label="Registro de depuración" type="bool" id="logging.debug" default="false" />
