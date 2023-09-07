@@ -21,6 +21,13 @@
     }
   },
   {
+    "id": "script.elementum.jackett",
+    "username": "fugkco",
+    "assets": {
+      "zip": "https://github.com/{username}/{repository}/releases/download/v{version}/{id}.zip"
+    }
+  },
+  {
     "id": "context.elementum",
     "username": "elgatito",
     "assets": {
