@@ -315,7 +315,7 @@ class Config:
             use = 1
 
         if cat is not None:
-            category_id = cat + offset[use][0]
+            category_id = cat + str(offset[use][0])
             xbmc.executebuiltin('SetFocus({})'.format(category_id))
             if set is not None:
                 setting_id = set + offset[use][1]

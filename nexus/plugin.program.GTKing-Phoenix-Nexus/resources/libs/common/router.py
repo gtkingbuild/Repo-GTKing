@@ -54,7 +54,7 @@ class Router:
 
         # SETTINGS
         elif mode == 'settings':  # OpenWizard settings
-            CONFIG.open_settings(name)
+            CONFIG.open_settings(cat = name)
             xbmc.executebuiltin('Container.Refresh()')
         elif mode == 'opensettings':  # Open other addons' settings
             settings_id = eval(url.upper() + 'ID')[name]['plugin']
@@ -152,6 +152,8 @@ class Router:
         elif mode == 'apk':  # APK Installer
             menu.apk_menu(url)
             self._finish(handle)
+        elif mode == 'kodiapk':  # APK Installer -> Official Kodi APK's
+            xbmc.executebuiltin('RunScript(script.kodi.android.update)')                                                                      
         elif mode == 'fmchoose':
             from resources.libs import install
             install.choose_file_manager()

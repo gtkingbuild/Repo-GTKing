@@ -65,7 +65,7 @@ from resources.libs.common.config import CONFIG
 
 
 def read_from_file(file, mode='r'):
-    f = open(file, mode, encoding='utf-8')
+    f = open(file, mode, encoding='utf-8', errors='ignore')
     a = f.read()
     f.close()
     return a
