@@ -32,7 +32,7 @@ description="[COLOR azure][B]GTactil [COLOR limegreen]MATRIX[/B][/COLOR] para [C
 
 name="GTKing Phoenix Prime NEXUS"
 version="20.0"
-url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/20.0/Phoenix.NEXUS.Prime.zip"
+url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/20.0.Prime/Phoenix.NEXUS.Prime.zip"
 minor="http://"
 gui="http://"
 kodi="20"
