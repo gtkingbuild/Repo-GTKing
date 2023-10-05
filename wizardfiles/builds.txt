@@ -60,7 +60,7 @@ description="[COLOR azure][B]GTKing [COLOR gold]Phoenix [COLOR limegreen]TEAM [C
 
 name="PRUEBA GTKing Phoenix GTactil NEXUS"
 version="20.0"
-url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/20.0.GTactil/Phoenix.NEXUS.GTactil.zip"
+url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/20.0.GTactil/Phoenix.NEXUS.GTactil.TEST.zip"
 minor="http://"
 gui="http://"
 kodi="18"
