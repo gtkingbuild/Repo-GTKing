@@ -1,5 +1,5 @@
-name="[B][COLOR white]•• [COLOR red]Parche: [COLOR crimson]GTactil NEXUS [COLOR tan]01/10/2023[/COLOR][/B]"
-url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/20.0.Prime/Parche.GTKing.Phoenix.Prime.NEXUS.zip"
+name="[B][COLOR white]•• [COLOR red]Parche: [COLOR crimson]GTactil NEXUS [COLOR tan]27/10/2023[/COLOR][/B]"
+url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/20.0.GTactil/Parche.GTKing.Phoenix.GTactil.NEXUS.zip"
 icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
 fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
 adult="no"
