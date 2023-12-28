@@ -52,7 +52,8 @@ shifts = [[[0, 0], [1, 3], [2, 2], [3, 1]],
           [[0, 0], [1, 7], [3, 5], [4, 4]]]
 
 # [keysize][block_size]
-num_rounds = {16: {16: 10, 24: 12, 32: 14}, 24: {16: 12, 24: 12, 32: 14}, 32: {16: 14, 24: 14, 32: 14}}
+num_rounds = {16: {16: 10, 24: 12, 32: 14}, 24: {
+    16: 12, 24: 12, 32: 14}, 32: {16: 14, 24: 14, 32: 14}}
 
 A = [[1, 1, 1, 1, 1, 0, 0, 0],
      [0, 1, 1, 1, 1, 1, 0, 0],
@@ -136,7 +137,8 @@ for i in xrange(4):
             pivot = AA[i][i]
     for j in xrange(8):
         if AA[i][j] != 0:
-            AA[i][j] = alog[(255 + log[AA[i][j] & 0xFF] - log[pivot & 0xFF]) % 255]
+            AA[i][j] = alog[(255 + log[AA[i][j] & 0xFF] -
+                             log[pivot & 0xFF]) % 255]
     for t in xrange(4):
         if i != t:
             for j in xrange(i + 1, 8):
@@ -293,7 +295,8 @@ class rijndael:
 
     def encrypt(self, plaintext):
         if len(plaintext) != self.block_size:
-            raise ValueError('wrong block length, expected ' + str(self.block_size) + ' got ' + str(len(plaintext)))
+            raise ValueError('wrong block length, expected ' +
+                             str(self.block_size) + ' got ' + str(len(plaintext)))
         Ke = self.Ke
 
         BC = self.block_size / 4
@@ -329,14 +332,17 @@ class rijndael:
         for i in xrange(BC):
             tt = Ke[ROUNDS][i]
             result.append((S[(t[i] >> 24) & 0xFF] ^ (tt >> 24)) & 0xFF)
-            result.append((S[(t[(i + s1) % BC] >> 16) & 0xFF] ^ (tt >> 16)) & 0xFF)
-            result.append((S[(t[(i + s2) % BC] >> 8) & 0xFF] ^ (tt >> 8)) & 0xFF)
+            result.append(
+                (S[(t[(i + s1) % BC] >> 16) & 0xFF] ^ (tt >> 16)) & 0xFF)
+            result.append(
+                (S[(t[(i + s2) % BC] >> 8) & 0xFF] ^ (tt >> 8)) & 0xFF)
             result.append((S[t[(i + s3) % BC] & 0xFF] ^ tt) & 0xFF)
         return string.join(map(chr, result), '')
 
     def decrypt(self, ciphertext):
         if len(ciphertext) != self.block_size:
-            raise ValueError('wrong block length, expected ' + str(self.block_size) + ' got ' + str(len(ciphertext)))
+            raise ValueError('wrong block length, expected ' +
+                             str(self.block_size) + ' got ' + str(len(ciphertext)))
         Kd = self.Kd
 
         BC = self.block_size / 4
@@ -372,8 +378,10 @@ class rijndael:
         for i in xrange(BC):
             tt = Kd[ROUNDS][i]
             result.append((Si[(t[i] >> 24) & 0xFF] ^ (tt >> 24)) & 0xFF)
-            result.append((Si[(t[(i + s1) % BC] >> 16) & 0xFF] ^ (tt >> 16)) & 0xFF)
-            result.append((Si[(t[(i + s2) % BC] >> 8) & 0xFF] ^ (tt >> 8)) & 0xFF)
+            result.append(
+                (Si[(t[(i + s1) % BC] >> 16) & 0xFF] ^ (tt >> 16)) & 0xFF)
+            result.append(
+                (Si[(t[(i + s2) % BC] >> 8) & 0xFF] ^ (tt >> 8)) & 0xFF)
             result.append((Si[t[(i + s3) % BC] & 0xFF] ^ tt) & 0xFF)
         return string.join(list(map(chr, result)), '')
 

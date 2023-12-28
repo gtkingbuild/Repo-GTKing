@@ -47,56 +47,76 @@ from resources.lib.pyaesnew.util import append_PKCS7_padding, strip_PKCS7_paddin
 # ECB and CBC are block-only ciphers
 
 def _block_can_consume(self, size):
-    if size >= 16: return 16
+    if size >= 16:
+        return 16
     return 0
 
 # After padding, we may have more than one block
+
+
 def _block_final_encrypt(self, data):
     data = append_PKCS7_padding(data)
     if len(data) == 32:
         return self.encrypt(data[:16]) + self.encrypt(data[16:])
     return self.encrypt(data)
 
+
 def _block_final_decrypt(self, data):
     return strip_PKCS7_padding(self.decrypt(data))
+
 
 AESBlockModeOfOperation._can_consume = _block_can_consume
 AESBlockModeOfOperation._final_encrypt = _block_final_encrypt
 AESBlockModeOfOperation._final_decrypt = _block_final_decrypt
 
 # CFB is a segment cipher
+
+
 def _segment_can_consume(self, size):
     return self.segment_bytes * int(size // self.segment_bytes)
 
 # CFB can handle a non-segment-sized block at the end using the remaining cipherblock
+
+
 def _segment_final_encrypt(self, data):
-    faux_padding = (chr(0) * (self.segment_bytes - (len(data) % self.segment_bytes)))
+    faux_padding = (chr(0) * (self.segment_bytes -
+                    (len(data) % self.segment_bytes)))
     padded = data + to_bufferable(faux_padding)
     return self.encrypt(padded)[:len(data)]
 
 # CFB can handle a non-segment-sized block at the end using the remaining cipherblock
+
+
 def _segment_final_decrypt(self, data):
-    faux_padding = (chr(0) * (self.segment_bytes - (len(data) % self.segment_bytes)))
+    faux_padding = (chr(0) * (self.segment_bytes -
+                    (len(data) % self.segment_bytes)))
     padded = data + to_bufferable(faux_padding)
     return self.decrypt(padded)[:len(data)]
+
 
 AESSegmentModeOfOperation._can_consume = _segment_can_consume
 AESSegmentModeOfOperation._final_encrypt = _segment_final_encrypt
 AESSegmentModeOfOperation._final_decrypt = _segment_final_decrypt
 
 # OFB and CTR are stream ciphers
+
+
 def _stream_can_consume(self, size):
     return size
+
 
 def _stream_final_encrypt(self, data):
     return self.encrypt(data)
 
+
 def _stream_final_decrypt(self, data):
     return self.decrypt(data)
+
 
 AESStreamModeOfOperation._can_consume = _stream_can_consume
 AESStreamModeOfOperation._final_encrypt = _stream_final_encrypt
 AESStreamModeOfOperation._final_decrypt = _stream_final_decrypt
+
 
 class BlockFeeder(object):
     '''The super-class for objects to handle chunking a stream of bytes
@@ -132,7 +152,8 @@ class BlockFeeder(object):
         result = to_bufferable('')
         while len(self._buffer) > 16:
             can_consume = self._mode._can_consume(len(self._buffer) - 16)
-            if can_consume == 0: break
+            if can_consume == 0:
+                break
             result += self._feed(self._buffer[:can_consume])
             self._buffer = self._buffer[can_consume:]
 
@@ -155,6 +176,7 @@ class Decrypter(BlockFeeder):
 
 # 8kb blocks
 BLOCK_SIZE = (1 << 13)
+
 
 def _feed_stream(feeder, in_stream, out_stream, block_size=BLOCK_SIZE):  # @UnusedVariable
     'Uses feeder to read and convert from in_stream and write to out_stream.'

@@ -96,7 +96,8 @@ class python_Rijndael(BlockCipher):
         cipher_module = rijndael
         args = {'block_size': blocksize}
         self.blocksize = blocksize
-        BlockCipher.__init__(self, key, mode, IV, counter, cipher_module, segment_size, args)
+        BlockCipher.__init__(self, key, mode, IV, counter,
+                             cipher_module, segment_size, args)
 
     def keylen_valid(self, key):
         return len(key) in (16, 24, 32)

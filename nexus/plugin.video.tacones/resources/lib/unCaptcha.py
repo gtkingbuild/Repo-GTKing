@@ -10,9 +10,12 @@ __addon__ = xbmcaddon.Addon(__scriptID__)
 
 class cInputWindow(xbmcgui.WindowDialog):
     def __init__(self, *args, **kwargs):
-        bg_image = os.path.join(__addon__.getAddonInfo('path'), 'Images/') + "background.png"
-        check_image = os.path.join(__addon__.getAddonInfo('path'), 'Images/') + "trans_checked.png"
-        uncheck_image = os.path.join(__addon__.getAddonInfo('path'), 'Images/') + "trans_unchecked1.png"
+        bg_image = os.path.join(__addon__.getAddonInfo(
+            'path'), 'Images/') + "background.png"
+        check_image = os.path.join(__addon__.getAddonInfo(
+            'path'), 'Images/') + "trans_checked.png"
+        uncheck_image = os.path.join(__addon__.getAddonInfo(
+            'path'), 'Images/') + "trans_unchecked1.png"
         self.ctrlBackgound = xbmcgui.ControlImage(
             0, 0,
             1280, 720,
@@ -20,12 +23,15 @@ class cInputWindow(xbmcgui.WindowDialog):
         )
         self.cancelled = False
         self.addControl(self.ctrlBackgound)
-        self.msg = kwargs.get('msg') + '\nNormally there are 3-4 selections and 2 rounds of pictures'
+        self.msg = kwargs.get(
+            'msg') + '\nNormally there are 3-4 selections and 2 rounds of pictures'
         self.round = kwargs.get('round')
-        self.strActionInfo = xbmcgui.ControlLabel(335, 120, 700, 300, self.msg, 'font13', '0xFFFF00FF')
+        self.strActionInfo = xbmcgui.ControlLabel(
+            335, 120, 700, 300, self.msg, 'font13', '0xFFFF00FF')
         self.addControl(self.strActionInfo)
 
-        self.strActionInfo = xbmcgui.ControlLabel(335, 20, 724, 400, 'Captcha round %s' % (str(self.round)), 'font40', '0xFFFF00FF')
+        self.strActionInfo = xbmcgui.ControlLabel(
+            335, 20, 724, 400, 'Captcha round %s' % (str(self.round)), 'font40', '0xFFFF00FF')
         self.addControl(self.strActionInfo)
 
         self.cptloc = kwargs.get('captcha')
@@ -44,24 +50,41 @@ class cInputWindow(xbmcgui.WindowDialog):
         self.chkstate = [False] * 9
 
         self.chk[0] = xbmcgui.ControlImage(imgX, imgY, pw, ph, check_image)
-        self.chk[1] = xbmcgui.ControlImage(imgX + pw, imgY, pw, ph, check_image)
-        self.chk[2] = xbmcgui.ControlImage(imgX + pw + pw, imgY, pw, ph, check_image)
-        self.chk[3] = xbmcgui.ControlImage(imgX, imgY + ph, pw, ph, check_image)
-        self.chk[4] = xbmcgui.ControlImage(imgX + pw, imgY + ph, pw, ph, check_image)
-        self.chk[5] = xbmcgui.ControlImage(imgX + pw + pw, imgY + ph, pw, ph, check_image)
-        self.chk[6] = xbmcgui.ControlImage(imgX, imgY + ph + ph, pw, ph, check_image)
-        self.chk[7] = xbmcgui.ControlImage(imgX + pw, imgY + ph + ph, pw, ph, check_image)
-        self.chk[8] = xbmcgui.ControlImage(imgX + pw + pw, imgY + ph + ph, pw, ph, check_image)
+        self.chk[1] = xbmcgui.ControlImage(
+            imgX + pw, imgY, pw, ph, check_image)
+        self.chk[2] = xbmcgui.ControlImage(
+            imgX + pw + pw, imgY, pw, ph, check_image)
+        self.chk[3] = xbmcgui.ControlImage(
+            imgX, imgY + ph, pw, ph, check_image)
+        self.chk[4] = xbmcgui.ControlImage(
+            imgX + pw, imgY + ph, pw, ph, check_image)
+        self.chk[5] = xbmcgui.ControlImage(
+            imgX + pw + pw, imgY + ph, pw, ph, check_image)
+        self.chk[6] = xbmcgui.ControlImage(
+            imgX, imgY + ph + ph, pw, ph, check_image)
+        self.chk[7] = xbmcgui.ControlImage(
+            imgX + pw, imgY + ph + ph, pw, ph, check_image)
+        self.chk[8] = xbmcgui.ControlImage(
+            imgX + pw + pw, imgY + ph + ph, pw, ph, check_image)
 
-        self.chkbutton[0] = xbmcgui.ControlButton(imgX, imgY, pw, ph, '1', font='font1')
-        self.chkbutton[1] = xbmcgui.ControlButton(imgX + pw, imgY, pw, ph, '2', font='font1')
-        self.chkbutton[2] = xbmcgui.ControlButton(imgX + pw + pw, imgY, pw, ph, '3', font='font1')
-        self.chkbutton[3] = xbmcgui.ControlButton(imgX, imgY + ph, pw, ph, '4', font='font1')
-        self.chkbutton[4] = xbmcgui.ControlButton(imgX + pw, imgY + ph, pw, ph, '5', font='font1')
-        self.chkbutton[5] = xbmcgui.ControlButton(imgX + pw + pw, imgY + ph, pw, ph, '6', font='font1')
-        self.chkbutton[6] = xbmcgui.ControlButton(imgX, imgY + ph + ph, pw, ph, '7', font='font1')
-        self.chkbutton[7] = xbmcgui.ControlButton(imgX + pw, imgY + ph + ph, pw, ph, '8', font='font1')
-        self.chkbutton[8] = xbmcgui.ControlButton(imgX + pw + pw, imgY + ph + ph, pw, ph, '9', font='font1')
+        self.chkbutton[0] = xbmcgui.ControlButton(
+            imgX, imgY, pw, ph, '1', font='font1')
+        self.chkbutton[1] = xbmcgui.ControlButton(
+            imgX + pw, imgY, pw, ph, '2', font='font1')
+        self.chkbutton[2] = xbmcgui.ControlButton(
+            imgX + pw + pw, imgY, pw, ph, '3', font='font1')
+        self.chkbutton[3] = xbmcgui.ControlButton(
+            imgX, imgY + ph, pw, ph, '4', font='font1')
+        self.chkbutton[4] = xbmcgui.ControlButton(
+            imgX + pw, imgY + ph, pw, ph, '5', font='font1')
+        self.chkbutton[5] = xbmcgui.ControlButton(
+            imgX + pw + pw, imgY + ph, pw, ph, '6', font='font1')
+        self.chkbutton[6] = xbmcgui.ControlButton(
+            imgX, imgY + ph + ph, pw, ph, '7', font='font1')
+        self.chkbutton[7] = xbmcgui.ControlButton(
+            imgX + pw, imgY + ph + ph, pw, ph, '8', font='font1')
+        self.chkbutton[8] = xbmcgui.ControlButton(
+            imgX + pw + pw, imgY + ph + ph, pw, ph, '9', font='font1')
 
         for obj in self.chk:
             self.addControl(obj)
@@ -69,8 +92,10 @@ class cInputWindow(xbmcgui.WindowDialog):
         for obj in self.chkbutton:
             self.addControl(obj)
 
-        self.cancelbutton = xbmcgui.ControlButton(imgX + (imgw / 2) - 110, imgY + imgh + 10, 100, 40, 'Cancel', alignment=2)
-        self.okbutton = xbmcgui.ControlButton(imgX + (imgw / 2) + 10, imgY + imgh + 10, 100, 40, 'OK', alignment=2)
+        self.cancelbutton = xbmcgui.ControlButton(
+            imgX + (imgw / 2) - 110, imgY + imgh + 10, 100, 40, 'Cancel', alignment=2)
+        self.okbutton = xbmcgui.ControlButton(
+            imgX + (imgw / 2) + 10, imgY + imgh + 10, 100, 40, 'OK', alignment=2)
         self.addControl(self.okbutton)
         self.addControl(self.cancelbutton)
 
@@ -157,8 +182,10 @@ class cInputWindow(xbmcgui.WindowDialog):
                 index = control.getLabel()
 
                 if index.isnumeric():
-                    self.chkstate[int(index) - 1] = not self.chkstate[int(index) - 1]
-                    self.chk[int(index) - 1].setVisible(self.chkstate[int(index) - 1])
+                    self.chkstate[int(index) -
+                                  1] = not self.chkstate[int(index) - 1]
+                    self.chk[int(index) -
+                             1].setVisible(self.chkstate[int(index) - 1])
         except:
             pass
 
@@ -173,12 +200,15 @@ def getUrl(url, cookieJar=None, post=None, timeout=20, headers=None, noredir=Fal
     cookie_handler = urllib_request.HTTPCookieProcessor(cookieJar)
 
     if noredir:
-        opener = urllib_request.build_opener(NoRedirection, cookie_handler, urllib_request.HTTPBasicAuthHandler(), urllib_request.HTTPHandler())
+        opener = urllib_request.build_opener(
+            NoRedirection, cookie_handler, urllib_request.HTTPBasicAuthHandler(), urllib_request.HTTPHandler())
     else:
-        opener = urllib_request.build_opener(cookie_handler, urllib_request.HTTPBasicAuthHandler(), urllib_request.HTTPHandler())
+        opener = urllib_request.build_opener(
+            cookie_handler, urllib_request.HTTPBasicAuthHandler(), urllib_request.HTTPHandler())
 
     req = urllib_request.Request(url)
-    req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.154 Safari/537.36')
+    req.add_header(
+        'User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.154 Safari/537.36')
     if headers:
         for h, hv in headers:
             req.add_header(h, hv)
@@ -196,17 +226,21 @@ class UnCaptchaReCaptcha:
                    ("Referer", "https://www.google.com/recaptcha/api2/demo"),
                    ("Accept-Language", lang)]
 
-        html = getUrl("http://www.google.com/recaptcha/api/fallback?k=" + key, headers=headers)
+        html = getUrl(
+            "http://www.google.com/recaptcha/api/fallback?k=" + key, headers=headers)
         token = ""
         round = 0
         while True:
             payload = re.findall("\"(/recaptcha/api2/payload[^\"]+)", html)
             round += 1
-            message = re.findall("<label .*?class=\"fbc-imageselect-message-text\">(.*?)</label>", html)
+            message = re.findall(
+                "<label .*?class=\"fbc-imageselect-message-text\">(.*?)</label>", html)
             if len(message) == 0:
-                message = re.findall("<div .*?class=\"fbc-imageselect-message-error\">(.*?)</div>", html)
+                message = re.findall(
+                    "<div .*?class=\"fbc-imageselect-message-error\">(.*?)</div>", html)
             if len(message) == 0:
-                token = re.findall("\"this\\.select\\(\\)\">(.*?)</textarea>", html)[0]
+                token = re.findall(
+                    "\"this\\.select\\(\\)\">(.*?)</textarea>", html)[0]
                 if not token == "":
                     line1 = "Captcha Sucessfull"
                     xbmcgui.Dialog().notification('LSPro', line1, None, 3000, False)
@@ -226,12 +260,14 @@ class UnCaptchaReCaptcha:
                        ("Accept-Language", lang)]
 
             cval = re.findall('name="c" value="(.*?)"', html)[0]
-            captcha_imgurl = "https://www.google.com" + payload.replace('&amp;', '&')
+            captcha_imgurl = "https://www.google.com" + \
+                payload.replace('&amp;', '&')
 
             message = message.replace('<strong>', '')
             message = message.replace('</strong>', '')
 
-            oSolver = cInputWindow(captcha=captcha_imgurl, msg=message, round=round)
+            oSolver = cInputWindow(
+                captcha=captcha_imgurl, msg=message, round=round)
             captcha_response = oSolver.get()
             if captcha_response == "":
                 break
@@ -258,7 +294,8 @@ def performCaptcha(sitename, cj, returnpage=True, captcharegex='data-sitekey="(.
                            ("Referer", sitename)]
             else:
                 headers += [("Referer", sitename)]
-            sitepage = getUrl(sitename, cookieJar=cj, post=urllib_parse.urlencode({"g-recaptcha-response": token}), headers=headers)
+            sitepage = getUrl(sitename, cookieJar=cj, post=urllib_parse.urlencode(
+                {"g-recaptcha-response": token}), headers=headers)
 
     if returnpage:
         return sitepage

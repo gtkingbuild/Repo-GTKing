@@ -30,8 +30,10 @@
 def to_bufferable(binary):
     return binary
 
+
 def _get_byte(c):
     return ord(c)
+
 
 # Python 3 compatibility
 try:
@@ -47,9 +49,11 @@ except Exception:
     def _get_byte(c):
         return c
 
+
 def append_PKCS7_padding(data):
     pad = 16 - (len(data) % 16)
     return data + to_bufferable(chr(pad) * pad)
+
 
 def strip_PKCS7_padding(data):
     if len(data) % 16 != 0:

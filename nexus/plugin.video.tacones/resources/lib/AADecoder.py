@@ -10,7 +10,8 @@ import re
 from six.moves import urllib_request
 
 headers = [
-    ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0'],
+    ['User-Agent',
+        'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0'],
     ['Accept-Encoding', 'gzip, deflate'],
     ['Connection', 'keep-alive']
 ]
@@ -26,7 +27,8 @@ class AADecoder(object):
                   "(ﾟДﾟ) ['c']", "(ﾟДﾟ) .ﾟｰﾟﾉ", "(ﾟДﾟ) .ﾟДﾟﾉ", "(ﾟДﾟ) [ﾟΘﾟ]"]
 
     def is_aaencoded(self):
-        idx = self.encoded_str.find("ﾟωﾟﾉ= /｀ｍ´）ﾉ ~┻━┻   //*´∇｀*/ ['_']; o=(ﾟｰﾟ)  =_=3; c=(ﾟΘﾟ) =(ﾟｰﾟ)-(ﾟｰﾟ); ")
+        idx = self.encoded_str.find(
+            "ﾟωﾟﾉ= /｀ｍ´）ﾉ ~┻━┻   //*´∇｀*/ ['_']; o=(ﾟｰﾟ)  =_=3; c=(ﾟΘﾟ) =(ﾟｰﾟ)-(ﾟｰﾟ); ")
         if idx == -1:
             return False
 
@@ -210,9 +212,11 @@ class AADecoder(object):
 def getUrl(url, cookieJar=None, post=None, timeout=20, headers=None):
 
     cookie_handler = urllib_request.HTTPCookieProcessor(cookieJar)
-    opener = urllib_request.build_opener(cookie_handler, urllib_request.HTTPBasicAuthHandler(), urllib_request.HTTPHandler())
+    opener = urllib_request.build_opener(
+        cookie_handler, urllib_request.HTTPBasicAuthHandler(), urllib_request.HTTPHandler())
     req = urllib_request.Request(url)
-    req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.154 Safari/537.36')
+    req.add_header(
+        'User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.154 Safari/537.36')
     if headers:
         for h, hv in headers:
             req.add_header(h, hv)

@@ -123,6 +123,7 @@ class ConnectionManager:
     The connection manager must be able to:
       * keep track of all existing
       """
+
     def __init__(self):
         self._lock = thread.allocate_lock()
         self._hostmap = {}  # map hosts to a list of connections
@@ -243,7 +244,8 @@ class KeepAliveHandler:
                 # no (working) free connections were found.  Create a new one.
                 h = self._get_connection(host)
                 if DEBUG:
-                    DEBUG.info("creating new connection to %s (%d)", host, id(h))
+                    DEBUG.info(
+                        "creating new connection to %s (%d)", host, id(h))
                 self._cm.add(host, h, 0)
                 self._start_transaction(h, req)
                 r = h.getresponse()
@@ -298,7 +300,8 @@ class KeepAliveHandler:
             # that it's now possible this call will raise
             # a DIFFERENT exception
             if DEBUG:
-                DEBUG.error("unexpected exception - closing connection to %s (%d)", host, id(h))
+                DEBUG.error(
+                    "unexpected exception - closing connection to %s (%d)", host, id(h))
             self._cm.remove(h)
             h.close()
             raise
@@ -309,7 +312,8 @@ class KeepAliveHandler:
             # the socket has been closed by the server since we
             # last used the connection.
             if DEBUG:
-                DEBUG.info("failed to re-use connection to %s (%d)", host, id(h))
+                DEBUG.info(
+                    "failed to re-use connection to %s (%d)", host, id(h))
             r = None
         else:
             if DEBUG:

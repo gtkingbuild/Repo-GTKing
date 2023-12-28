@@ -209,7 +209,8 @@ def __ANSI_X923_unpad(padded):
     if padded.count('\x00', -length, -1) == length - 1:
         return padded[:-length]
     else:
-        print('error: padding pattern not recognized %s' % padded.count('\x00', -length, -1))
+        print('error: padding pattern not recognized %s' %
+              padded.count('\x00', -length, -1))
         return padded
 
 
@@ -245,7 +246,8 @@ def ISO_10126(padData, direction, length=None):
 
 def __ISO_10126(toPad, length):
     bytesToPad = length - len(toPad) % length
-    randomPattern = ''.join(chr(random.randint(0, 255)) for x in range(0, bytesToPad - 1))
+    randomPattern = ''.join(chr(random.randint(0, 255))
+                            for x in range(0, bytesToPad - 1))
     return toPad + randomPattern + chr(bytesToPad)
 
 

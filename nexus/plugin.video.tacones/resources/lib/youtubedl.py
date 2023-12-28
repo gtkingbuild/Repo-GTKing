@@ -5,7 +5,8 @@ try:
     from YDStreamExtractor import getVideoInfo
     from YDStreamExtractor import handleDownload
 except Exception:
-    xbmcgui.Dialog().notification("LiveStreamsPro", "Please [COLOR yellow]install Youtube-dl[/COLOR] module", "", 10000, False)
+    xbmcgui.Dialog().notification("LiveStreamsPro",
+                                  "Please [COLOR yellow]install Youtube-dl[/COLOR] module", "", 10000, False)
 
 
 def single_YD(url, download=False, dl_info=False, audio=False):
@@ -24,12 +25,14 @@ def single_YD(url, download=False, dl_info=False, audio=False):
                     for i in range(len(s['ytdl_format']['formats'])):
                         if s['ytdl_format']['formats'][i]['format_id'] == '140':
                             if six.PY2:
-                                audio_url = s['ytdl_format']['formats'][i]['url'].encode('utf-8', 'ignore')
+                                audio_url = s['ytdl_format']['formats'][i]['url'].encode(
+                                    'utf-8', 'ignore')
                                 title = s['title'].encode('utf-8', 'ignore')
                             else:
                                 audio_url = s['ytdl_format']['formats'][i]['url']
                                 title = s['title']
-                            info = {'url': audio_url, 'title': title, 'media_type': 'audio'}
+                            info = {'url': audio_url, 'title': title,
+                                    'media_type': 'audio'}
                             break
             except Exception:
                 return
@@ -38,7 +41,8 @@ def single_YD(url, download=False, dl_info=False, audio=False):
     else:
         for s in info.streams():
             try:
-                stream_url = s['xbmc_url'].encode('utf-8', 'ignore') if six.PY2 else s['xbmc_url']
+                stream_url = s['xbmc_url'].encode(
+                    'utf-8', 'ignore') if six.PY2 else s['xbmc_url']
                 return stream_url
             except Exception:
                 return None

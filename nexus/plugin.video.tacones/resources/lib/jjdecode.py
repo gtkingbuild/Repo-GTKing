@@ -48,7 +48,8 @@ class JJDecoder(object):
 
         data = self.encoded_str[startpos:endpos]
 
-        b = ['___+', '__$+', '_$_+', '_$$+', '$__+', '$_$+', '$$_+', '$$$+', '$___+', '$__$+', '$_$_+', '$_$$+', '$$__+', '$$_$+', '$$$_+', '$$$$+']
+        b = ['___+', '__$+', '_$_+', '_$$+', '$__+', '$_$+', '$$_+', '$$$+',
+             '$___+', '$__$+', '$_$_+', '$_$$+', '$$__+', '$$_$+', '$$$_+', '$$$$+']
 
         str_l = '(![]+"")[' + gv + '._$_]+'
         str_o = gv + '._$+'
@@ -203,7 +204,8 @@ class JJDecoder(object):
                                 raise '+ no match S block: ' + data
                             data = data[len(str_end):]
                             break  # step out of the while loop
-                        elif data.find(str_upper) == 0:  # r4 reached end off S block ? - check if "R n >= 128
+                        # r4 reached end off S block ? - check if "R n >= 128
+                        elif data.find(str_upper) == 0:
                             if match == 0:
                                 raise 'no match S block n>128: ' + data
                             data = data[len(str_upper):]  # skip sig
@@ -282,7 +284,8 @@ class JJDecoder(object):
                                                 break
 
                                             ch_str += str(k)
-                                            data = data[len(gvsig):]  # skip gvsig
+                                            # skip gvsig
+                                            data = data[len(gvsig):]
                                             data = data[len(b[k]):]
                                             break
 

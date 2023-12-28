@@ -138,7 +138,6 @@ class AES(object):
 
         # Encryption round keys
         self._Ke = [[0] * 4 for i in xrange(rounds + 1)]
-
         # Decryption round keys
         self._Kd = [[0] * 4 for i in xrange(rounds + 1)]
 

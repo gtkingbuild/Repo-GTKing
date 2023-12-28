@@ -89,11 +89,13 @@ def unwise(w, i, s, e, wi, ii, si, ei):
 
 def unwise_process(result):
     while True:
-        a = re.compile(r';?eval\s*\(\s*function\s*\(\s*w\s*,\s*i\s*,\s*s\s*,\s*e\s*\).+?[\"\']\s*\)\s*\)(?:\s*;)?').search(result)
+        a = re.compile(
+            r';?eval\s*\(\s*function\s*\(\s*w\s*,\s*i\s*,\s*s\s*,\s*e\s*\).+?[\"\']\s*\)\s*\)(?:\s*;)?').search(result)
         if not a:
             break
         a = a.group()
-        tmp = re.compile(r'\}\s*\(\s*[\"\'](\w*)[\"\']\s*,\s*[\"\'](\w*)[\"\']\s*,\s*[\"\'](\w*)[\"\']\s*,\s*[\"\'](\w*)[\"\']').search(a)
+        tmp = re.compile(
+            r'\}\s*\(\s*[\"\'](\w*)[\"\']\s*,\s*[\"\'](\w*)[\"\']\s*,\s*[\"\'](\w*)[\"\']\s*,\s*[\"\'](\w*)[\"\']').search(a)
         if not tmp:
             result = result.replace(a, "")
         else:
@@ -105,12 +107,14 @@ def unwise_process(result):
                 c = 0
                 wisestr = ["", "", "", ""]
                 wiseint = [0, 0, 0, 0]
-                b = re.compile(r'while(.+?)var\s*\w+\s*=\s*\w+\.join\(\s*[\"\'][\"\']\s*\)').search(a).group(1)
+                b = re.compile(
+                    r'while(.+?)var\s*\w+\s*=\s*\w+\.join\(\s*[\"\'][\"\']\s*\)').search(a).group(1)
                 for d in re.compile(r'if\s*\(\s*\w*\s*\<\s*(\d+)\)\s*\w+\.push').findall(b):
                     wisestr[c] = wise[c]
                     wiseint[c] = int(d)
                     c += 1
-                result = result.replace(a, unwise(wisestr[0], wisestr[1], wisestr[2], wisestr[3], wiseint[0], wiseint[1], wiseint[2], wiseint[3]))
+                result = result.replace(a, unwise(
+                    wisestr[0], wisestr[1], wisestr[2], wisestr[3], wiseint[0], wiseint[1], wiseint[2], wiseint[3]))
     return result
 
 
@@ -118,17 +122,22 @@ def resolve_var(HTML, key):  # this should probably be located elsewhere
     key = re.escape(key)
     tmp1 = HTML.replace("\r", "")
     tmp1 = tmp1.replace("\n", ";")
-    tmp2 = re.compile(r'[^\w\.]' + key + r'\s*=\s*([^\"\']*?)[;,]').search(tmp1)  # expect var first, movshare
+    # expect var first, movshare
+    tmp2 = re.compile(r'[^\w\.]' + key +
+                      r'\s*=\s*([^\"\']*?)[;,]').search(tmp1)
     if tmp2:
         tmp2 = resolve_var(HTML, tmp2.group(1))
     else:
-        tmp2 = re.compile(r'[^\w\.]' + key + r'\s*=\s*[\"\'](.*?)[\"\']').search(tmp1)
+        tmp2 = re.compile(r'[^\w\.]' + key +
+                          r'\s*=\s*[\"\'](.*?)[\"\']').search(tmp1)
         if tmp2:
             tmp2 = tmp2.group(1)
         else:
             key = key.split("\\.")
             if len(key) == 2:
-                tmp2 = re.compile(r'[^\w\.]' + key[0] + r'\s*=\s*\{.*[^\w\.]' + key[1] + r'\s*\:\s*[\"\'](.*?)[\"\']').search(tmp1)  # for 'vars = { key: "value" }', cloudy
+                # for 'vars = { key: "value" }', cloudy
+                tmp2 = re.compile(
+                    r'[^\w\.]' + key[0] + r'\s*=\s*\{.*[^\w\.]' + key[1] + r'\s*\:\s*[\"\'](.*?)[\"\']').search(tmp1)
             if tmp2:
                 tmp2 = tmp2.group(1)
             else:

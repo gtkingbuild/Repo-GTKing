@@ -31,7 +31,8 @@ def evpKDF(passwd, salt, key_size=8, iv_size=4, iterations=1, hash_algorithm="md
             block = hasher.digest()
             hasher = hashlib.new(hash_algorithm)
 
-        derived_bytes += block[0: min(len(block), (target_key_size - number_of_derived_words) * 4)]
+        derived_bytes += block[0: min(len(block),
+                                      (target_key_size - number_of_derived_words) * 4)]
 
         number_of_derived_words += len(block) / 4
 
@@ -90,10 +91,12 @@ def decode(ciphertext, passphrase, salt=None):
 def getUrl(url, cookieJar=None, post=None, timeout=20, headers=None):
 
     cookie_handler = urllib_request.HTTPCookieProcessor(cookieJar)
-    opener = urllib_request.build_opener(cookie_handler, urllib_request.HTTPBasicAuthHandler(), urllib_request.HTTPHandler())
+    opener = urllib_request.build_opener(
+        cookie_handler, urllib_request.HTTPBasicAuthHandler(), urllib_request.HTTPHandler())
     # opener = urllib2.install_opener(opener)
     req = urllib_request.Request(url)
-    req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.154 Safari/537.36')
+    req.add_header(
+        'User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.154 Safari/537.36')
     if headers:
         for h, hv in headers:
             req.add_header(h, hv)
@@ -125,14 +128,16 @@ def gettvnDecryptedURL(cookiejar=None, globalkey="XXX", passphrase="turbo", vide
 
     post = {'key': getpart}
     post = urllib_parse.urlencode(post)
-    challenge = getUrl(handshakeurl, post=post, cookieJar=jw, headers=[('Referer', ref)])
+    challenge = getUrl(handshakeurl, post=post, cookieJar=jw,
+                       headers=[('Referer', ref)])
 
     challenge = eval(challenge)["challenge"]
     cc = encode(videoid, key)
 
     post = {'key': cc}
     post = urllib_parse.urlencode(post)
-    url = getUrl(getvideourl, post=post, cookieJar=jw, headers=[('Referer', ref)])
+    url = getUrl(getvideourl, post=post, cookieJar=jw,
+                 headers=[('Referer', ref)])
 
     url = eval(url)["url"]
     finalurl = decode(url, key)

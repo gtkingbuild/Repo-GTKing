@@ -136,7 +136,8 @@ class JSUnfuck(object):
             offset = self.js.find(key) + len(key)
             if self.js[offset] == '(' and self.js[offset + 2] == ')':
                 c = self.js[offset + 1]
-                self.js = self.js.replace('%s(%s)' % (key, c), urllib_parse.quote(c))
+                self.js = self.js.replace(
+                    '%s(%s)' % (key, c), urllib_parse.quote(c))
 
             if start_js == self.js:
                 break
@@ -166,7 +167,8 @@ class JSUnfuck(object):
                 last_c = c
 
             if not abort:
-                self.js = self.js.replace(key + extra, urllib_parse.unquote(expr))
+                self.js = self.js.replace(
+                    key + extra, urllib_parse.unquote(expr))
 
                 if start_js == self.js:
                     break
@@ -230,7 +232,8 @@ class JSUnfuck(object):
 
 
 def cfunfuck(fuckedup):
-    fuck = re.findall(r's,t,o,p,b,r,e,a,k,i,n,g,f,\s*(\w+=).*?:\+?\(?(.*?)\)?\}', fuckedup)
+    fuck = re.findall(
+        r's,t,o,p,b,r,e,a,k,i,n,g,f,\s*(\w+=).*?:\+?\(?(.*?)\)?\}', fuckedup)
     fucks = re.findall(r'(\w+)\.\w+([\+\-\*\/]=)\+?\(?(.*?)\)?;', fuckedup)
     endunfuck = fuck[0][0].split('=')[0]
     unfuck = JSUnfuck(fuck[0][1]).decode()

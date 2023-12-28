@@ -47,6 +47,7 @@ class Counter(str):
     Input/output is a raw string.
 
     Counter value is big endian"""
+
     def __init__(self, initial_ctr):
         if not isinstance(initial_ctr, str):
             raise TypeError("nonce must be str")

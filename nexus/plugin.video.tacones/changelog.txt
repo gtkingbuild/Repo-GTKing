@@ -1,4 +1,10 @@
-Version 3.0.0
+[B]Version 3.4.0[/B]
+ - Versión basada en LSP de Someone Like You
+ - Añadida función de paginado
+ - Añadido TMDB Scrapper
+ - Compatible con DuffYou
+
+[B]Version 3.0.0[/B]
 Primera versión compatible con Kodi 19 Matrix. Versión basada en LSP3 alpha4 de Gujal.
 
 [B]Version 1.4[/B]

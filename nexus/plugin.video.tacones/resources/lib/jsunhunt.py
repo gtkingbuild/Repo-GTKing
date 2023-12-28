@@ -47,7 +47,8 @@ def _dehunt(d, e, f):
     h = g[0:e]
     i = g[0:f]
     d = d[::-1]
-    j = reduce(lambda a, b: a + int(h[int(b[1])]) * (e ** int(b[0])) if int(h[int(b[1])]) != -1 else None, enumerate(d), 0)
+    j = reduce(lambda a, b: a + int(h[int(b[1])]) * (e ** int(b[0]))
+               if int(h[int(b[1])]) != -1 else None, enumerate(d), 0)
     k = ""
     while j > 0:
         k = i[int(j % f)] + k
