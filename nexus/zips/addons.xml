@@ -968,6 +968,52 @@ No se acepta ninguna responsabilidad por el uso de este addon.
     </extension>
 </addon>
 
+  <addon
+  id="repository.arrownegra"
+  name="[COLOR red]Arrow[/COLOR] [COLOR black]Negra[/COLOR] [COLORcyan]Repository[/COLOR]"
+  version="2.05"
+  provider-name="Flecha Negra">
+  <requires>
+    <import addon="xbmc.addon" version="12.0.0"/>
+  </requires>
+  <extension point="xbmc.addon.repository" name="[COLOR red]Arrow Negra [COLOR red]Repositorio[/COLOR]">
+      <dir>
+      <info compressed="true">https://raw.github.com/arrownegra/arrownegra.github.io/master/addons.xml</info>
+      <checksum>https://raw.github.com/arrownegra/arrownegra.github.io/master/addons.xml.md5</checksum>
+      <datadir zip="true">https://raw.github.com/arrownegra/arrownegra.github.io/master</datadir>
+      <hashes>false</hashes>
+  </dir>
+  <dir minversion="19.9.9">
+      <info compressed="true">https://raw.github.com/arrownegra/arrownegra.github.io/master/nexus/addons.xml</info>
+      <checksum>https://raw.github.com/arrownegra/arrownegra.github.io/master/nexus/addons.xml.md5</checksum>
+      <datadir zip="true">https://raw.github.com/arrownegra/arrownegra.github.io/master/nexus</datadir>
+      <hashes>false</hashes>
+  </dir>
+  <dir minversion="19.0.0">
+      <info compressed="true">https://raw.github.com/arrownegra/arrownegra.github.io/master/matrix/addons.xml</info>
+      <checksum>https://raw.github.com/arrownegra/arrownegra.github.io/master/matrix/addons.xml.md5</checksum>
+      <datadir zip="true">https://raw.github.com/arrownegra/arrownegra.github.io/master/matrix</datadir>
+      <hashes>false</hashes>
+  </dir>
+  <dir minversion="17.0.0" maxversion="18.9.0">
+      <info compressed="true">https://raw.github.com/arrownegra/arrownegra.github.io/master/leia/addons.xml</info>
+      <checksum>https://raw.github.com/arrownegra/arrownegra.github.io/master/leia/addons.xml.md5</checksum>
+      <datadir zip="true">https://raw.github.com/arrownegra/arrownegra.github.io/master/leia</datadir>
+      <hashes>false</hashes>
+  </dir>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>repositorio Arrow Negra</summary>
+    <description>repositorio oficial Arrow Negra - Proibido reproducao sem autorização prévia</description>
+    <disclaimer></disclaimer>
+    <platform>all</platform>
+    <assets>
+      <icon>icon.png</icon>
+      <fanart>fanart.jpg</fanart>
+    </assets>
+  </extension>
+</addon>
+
 <addon id="repository.arxtic-ape" name="arxtic-ape repository" version="1.0.0" provider-name="arxtic-ape">
 	<extension point="xbmc.addon.repository" name="Arxtic Ape Addon Repository">
 		<dir>
@@ -1397,6 +1443,25 @@ No se acepta ninguna responsabilidad por el uso de este addon.
       <fanart>fanart.jpg</fanart>
     </assets>
   </extension>
+</addon>
+
+<addon id="repository.tvchopo" name="[COLOR lime]tvchopo[/COLOR] Repo" version="3" provider-name="torete">
+    <extension point="xbmc.addon.repository" name="tvchoco Jose">
+        <info>https://raw.githubusercontent.com/elchocolate/repotvchopo/master/Repositorio/addons.xml</info>
+        <checksum>https://raw.githubusercontent.com/elchocolate/repotvchopo/master/Repositorio/addons.xml.md5</checksum>
+        <datadir zip="true">https://raw.githubusercontent.com/elchocolate/repotvchopo/master/Repositorio/</datadir>
+	    <dir>
+        <info compressed="false">https://raw.githubusercontent.com/elchocolate/repotvchopo/master/Repositorio/addons.xml</info>
+        <checksum>https://raw.githubusercontent.com/elchocolate/repotvchopo/master/Repositorio/addons.xml.md5</checksum>
+        <datadir zip="true">https://raw.githubusercontent.com/elchocolate/repotvchopo/master/Repositorio/</datadir>
+        </dir>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary>Repositorio para familia chopo</summary>
+        <description></description>
+        <disclaimer></disclaimer>
+        <platform>all</platform>
+    </extension>
 </addon>
 
 <addon id="script.colorbox" name="colorbox Script" version="2.0.8" provider-name="BADMS, drinfernoo">
