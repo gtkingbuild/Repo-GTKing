@@ -1,5 +1,14 @@
 
 
+
+
+
+-cristal azul 3.0.8:
+  - se hacen lo arreglos para que funcione el repositorio.
+
+-cristal azul 3.0.7:
+  - se hacen lo arreglos para que funcione con otra source.
+
 -cristal azul 3.0.6:
   - se hacen lo arreglos para que funcione correctamente con la version 20 de kodi
 
