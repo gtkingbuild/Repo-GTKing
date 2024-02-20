@@ -63,18 +63,20 @@ def get_video_url(page_url, url_referer=''):
 
     data = httptools.downloadpage(page_url).data
 
-    if "Unfortunately, the file you want is not available." in data or "Unfortunately, the video you want to see is not available" in data or "This stream doesn" in data or "Page not found" in data or "Archivo no encontrado" in data:
-        return "El archivo no existe o ha sido borrado"
- 
+    if '404 Not Found' in data or 'Unfortunately, the file you want is not available' in data or 'Unfortunately, the video you want to see is not available' in data or 'This stream doesn' in data or 'Page not found' in data or 'Archivo no encontrado' in data:
+        return 'Archivo inexistente ó eliminado'
+    elif '.rar' in data:
+        return 'El archivo está en formato comprimido'
+
     waiting = scrapertools.find_single_match(data, "data-remaining-time='(.*?)'")
 
-    if waiting:
-        platformtools.dialog_notification(config.__addon_name, "Tiempo de espera indeterminado")
-    else:
-        platformtools.dialog_notification('Cargando U[COLOR cyan][B]ptobox[/B][/COLOR]', 'Espera requerida de %s segundos' % espera)
-        time.sleep(int(espera))
+    if waiting: platformtools.dialog_notification(config.__addon_name, "Tiempo de espera indeterminado")
 
     if xbmc.getCondVisibility('System.HasAddon("script.module.resolveurl")'):
+        if config.get_setting('servers_time', default=True):
+            platformtools.dialog_notification('Cargando [COLOR cyan][B]Uptobox[/B][/COLOR]', 'Espera requerida de %s segundos' % espera)
+            time.sleep(int(espera))
+
         try:
             import_libs('script.module.resolveurl')
 
@@ -91,6 +93,17 @@ def get_video_url(page_url, url_referer=''):
         except:
             import traceback
             logger.error(traceback.format_exc())
+
+            if 'resolveurl.resolver.ResolverError:' in traceback.format_exc():
+                trace = traceback.format_exc()
+                if 'File Not Found or' in trace or 'The requested video was not found' in trace or 'File deleted' in trace or 'No video found' in trace or 'No playable video found' in trace or 'Video cannot be located' in trace or 'file does not exist' in trace or 'Video not found' in trace:
+                    return 'Archivo inexistente ó eliminado'
+                elif 'No se ha encontrado ningún link al' in trace or 'Unable to locate link' in trace or 'Video Link Not Found' in trace:
+                    return 'Fichero sin link al vídeo'
+
+            elif '<urlopen error' in traceback.format_exc():
+                return 'No se puede establecer la conexión'
+
             platformtools.dialog_notification(config.__addon_name, el_srv, time=3000)
             return video_urls
 
@@ -111,7 +124,7 @@ def get_video_url(page_url, url_referer=''):
                if '150 minutos' in e: return "Debes esperar 150 minutos para poder reproducir"
 
                elif 'Unfortunately, the file you want is not available' in e or 'Unfortunately, the video you want to see is not available' in e or 'This stream doesn' in e or 'Page not found' in e or 'Archivo no encontrado' in e:
-                   return "El archivo no existe o ha sido borrado"
+                   return "Archivo inexistente ó eliminado"
 
                elif "'str' object has no attribute 'get'" in e: return video_urls
 
@@ -123,6 +136,10 @@ def get_video_url(page_url, url_referer=''):
 
     if not video_urls:
         if xbmc.getCondVisibility('System.HasAddon("script.module.resolveurl")'):
+            if config.get_setting('servers_time', default=True):
+                platformtools.dialog_notification('Cargando [COLOR cyan][B]Uptobox[/B][/COLOR]', 'Espera requerida de %s segundos' % espera)
+                time.sleep(int(espera))
+
             try:
                 import_libs('script.module.resolveurl')
 
@@ -135,13 +152,27 @@ def get_video_url(page_url, url_referer=''):
                     return video_urls
 
                 platformtools.dialog_notification(config.__addon_name, el_srv, time=3000)
+                return "Acceso limitado restringido (2do.)"
 
             except:
                import traceback
                logger.error(traceback.format_exc())
+
+               if 'resolveurl.resolver.ResolverError:' in traceback.format_exc():
+                   trace = traceback.format_exc()
+                   if 'File Not Found or' in trace or 'The requested video was not found' in trace or 'File deleted' in trace or 'No video found' in trace or 'No playable video found' in trace or 'Video cannot be located' in trace or 'file does not exist' in trace or 'Video not found' in trace:
+                       return 'Archivo inexistente ó eliminado'
+                   elif 'No se ha encontrado ningún link al' in trace or 'Unable to locate link' in trace or 'Video Link Not Found' in trace:
+                       return 'Fichero sin link al vídeo'
+
+               elif '<urlopen error' in traceback.format_exc():
+                   return 'No se puede establecer la conexión'
+
                platformtools.dialog_notification(config.__addon_name, el_srv, time=3000)
+               return video_urls
+
         else:
-           return 'Acceso limitado restringido (2do.)'
+           return 'ResolveUrl NO instalado'
 
     # ~ 31/1/2023  Pendiente porque algo no ha funcionado bien
     if BR2 is None:

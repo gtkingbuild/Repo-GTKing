@@ -16,7 +16,7 @@ def get_video_url(page_url, url_referer=''):
     json_data = jsontools.load(data)
 
     if 'Video file not found' in data:
-        return "El archivo no existe o ha sido borrado"
+        return "Archivo inexistente ó eliminado"
 
     for info in json_data["video"]["sources"]:
         video_urls.append(['mp4', info["file"]])

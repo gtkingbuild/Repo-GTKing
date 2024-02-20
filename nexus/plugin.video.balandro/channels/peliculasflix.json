@@ -3,7 +3,7 @@
   "name": "PeliculasFlix",
   "thumbnail": "peliculasflix.jpg",
 
-  "active": false,
+  "active": true,
 
   "searchable": true,
   "search_types": ["movie"],
@@ -11,7 +11,7 @@
   "categories": ["movie"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["producers", "kids", "vos"],
+  "clusters": ["suggested", "producers", "adults", "kids", "docs", "vos"],
 
-  "notes": "Web CERRADA. Películas por géneros y productoras."
+  "notes": "Películas por géneros y productoras."
 }

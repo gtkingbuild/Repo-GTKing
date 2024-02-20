@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import re
+import re, base64
 
 from platformcode import config, logger, platformtools
 from core.item import Item
@@ -72,7 +72,9 @@ def mainlist(item):
     itemlist.append(item.clone( title = 'Películas', action = 'mainlist_pelis', text_color = 'deepskyblue' ))
     itemlist.append(item.clone( title = 'Series', action = 'mainlist_series', text_color = 'hotpink' ))
 
-    itemlist.append(item.clone( title = 'Animes', action = 'mainlist_animes', text_color = 'springgreen' ))
+    if not config.get_setting('descartar_anime', default=False):
+        itemlist.append(item.clone( title = 'Animes', action = 'mainlist_animes', text_color = 'springgreen' ))
+
     itemlist.append(item.clone( title = 'Doramas', action = 'mainlist_series', text_color = 'firebrick' ))
 
     return itemlist
@@ -104,7 +106,8 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'series/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Animes', action = 'mainlist_animes', search_type = 'tvshow', text_color = 'springgreen' ))
+    if not config.get_setting('descartar_anime', default=False):
+        itemlist.append(item.clone( title = 'Animes', action = 'mainlist_animes', search_type = 'tvshow', text_color = 'springgreen' ))
 
     itemlist.append(item.clone( title = 'Doramas', action = 'list_all', url = host + 'generos/dorama/', search_type = 'tvshow', text_color = 'firebrick' ))
 
@@ -276,7 +279,9 @@ def temporadas(item):
         title = 'Temporada ' + season
 
         if len(temporadas) == 1:
-            platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+            if config.get_setting('channels_seasons', default=True):
+                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+
             item.page = 0
             item.contentType = 'season'
             item.contentSeason = int(season)
@@ -312,7 +317,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('SeriesKao', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -378,48 +384,89 @@ def findvideos(item):
     link = scrapertools.find_single_match(data, '<iframe src="(.*?)"')
     if '+video[1]+' in str(link): link = scrapertools.find_single_match(data, "video\[1\] = '([^']+)")
 
-    if '.php?id=' in link:
-         link = scrapertools.find_single_match(data, "video\[3\] = '([^']+)")
-
-         if link:
-             if 'furl.php?id=' in link:
-                 url = link.replace('https://api.mycdn.moe/furl.php?id=', 'https://owodeuwu.xyz/v/')
-
-                 itemlist.append(Item( channel = item.channel, action = 'play', server = 'fembed', title = '', url = url ))
-
-         return itemlist
-
     if not link: return itemlist
 
     data = do_downloadpage(link)
 
-    matches = re.compile("go_to_player(.*?)</li>", re.DOTALL).findall(data)
+    matches = re.compile('<li onclick="go_to_player(.*?)</li>', re.DOTALL).findall(data)
 
     ses = 0
 
-    for match in matches:
-        ses += 1
+    if not matches:
+        url = scrapertools.find_single_match(data, '<iframe.*?src="(.*?)"')
 
-        url = scrapertools.find_single_match(match, "'(.*?)'")
+        if url:
+            servidor = servertools.get_server_from_url(url)
+            servidor = servertools.corregir_servidor(servidor)
 
-        lang = scrapertools.find_single_match(match, 'data-lang="(.*?)"')
+            url = servertools.normalize_url(servidor, url)
 
-        lng = IDIOMAS.get(lang, lang)
+            other = ''
+            if servidor == 'various': other = servertools.corregir_other(url)
 
-        other = scrapertools.find_single_match(match, '<span>(.*?)</span>').strip().lower()
+            if not servidor == 'directo':
+                itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, other = other ))
 
-        if other == 'plusvip': continue
-        elif other == '1fichier': continue
+    else:
+        for match in matches:
+            ses += 1
 
-        elif other == 'netu' or other == 'hqq' or other == 'waaw': continue
+            url = scrapertools.find_single_match(match, "'(.*?)'")
 
-        other = servertools.corregir_servidor(other)
+            if not url: continue
 
-        if other == 'various':
-            if 'filemoon' in match: other = 'filemoon'
-            elif 'streamwish' in match: other = 'streamwish'
+            try:
+                url = base64.b64decode(url).decode("utf-8")
+            except:
+                pass
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', title = '', url = url, language = lng, other = other.capitalize() ))
+            if '/?uptobox=' in url:
+                url = scrapertools.find_single_match(url, '/?uptobox=(.*?)$')
+                url = 'https://uptobox.com/' + url
+
+            lang = scrapertools.find_single_match(match, 'data-lang="(.*?)"')
+
+            lng = IDIOMAS.get(lang, lang)
+
+            other = scrapertools.find_single_match(match, '<span>(.*?)</span>').strip().lower()
+
+            if other == '1fichier': continue
+            elif other == 'plusclick': continue
+
+            other = servertools.corregir_servidor(other)
+
+            servidor = other
+
+            if other == 'plusvip':
+                vid_url = url
+
+                url_pattern = '(?:[\w\d]+://)?[\d\w]+\.[\d\w]+/moe\?data=(.+)$'
+                src_pattern = "this\[_0x5507eb\(0x1bd\)\]='(.+?)'"
+
+                data = do_downloadpage(vid_url)
+
+                url = scrapertools.find_single_match(vid_url, url_pattern)
+                src = scrapertools.find_single_match(data, src_pattern)
+
+                src_url = "https://plusvip.net{}".format(src)
+
+                url = do_downloadpage(src_url, post={'link': url}, headers = {'Referer': vid_url})
+
+                url = scrapertools.find_single_match(url, '"link":"(.*?)"')
+
+                if not url: continue
+
+                url = url.replace('\\/', '/')
+
+                servidor = 'directo'
+
+            if other == 'various': other = servertools.corregir_other(url)
+
+            elif other == 'stp': other = 'streamtape'
+
+            if other == servidor: other = ''
+
+            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = lng, other = other.capitalize() ))
 
     if not itemlist:
         if not ses == 0:
@@ -433,6 +480,8 @@ def play(item):
     logger.info()
     itemlist = []
 
+    url = item.url
+
     if not item.server == 'directo':
         servidor = servertools.get_server_from_url(item.url)
         servidor = servertools.corregir_servidor(servidor)
@@ -443,42 +492,14 @@ def play(item):
 
         return itemlist
 
-    url = 'https://api.mycdn.moe/player/?id=%s' % item.url
+    servidor = servertools.get_server_from_url(url)
+    servidor = servertools.corregir_servidor(servidor)
 
-    data = do_downloadpage(url)
+    url = servertools.normalize_url(servidor, url)
 
-    url = scrapertools.find_single_match(data, '<iframe src="(.*?)"')
+    if servidor == 'zplayer': url = url + '|' + host
 
-    if not url: return itemlist
-
-    if 'uptobox=' in url:
-        url = scrapertools.find_single_match(url, 'uptobox=([A-z0-9]+)')
-        url = 'https://uptobox.com/%s' % url
-
-    elif "/embedsito.net/" in url:
-        if url.endswith('.srt'):
-            url = scrapertools.find_single_match(url, '(.*?)poster=')
-        else:
-            data = httptools.downloadpage(url).data
-
-            url = scrapertools.find_single_match(data, 'var shareId = "([^"]+)"')
-
-            if not url: return itemlist
-
-            url = 'https://www.amazon.com/clouddrive/share/%s' % url
-
-    if '/hqq.' in url or '/waaw.' in url or '/netu.' in url:
-        return 'Requiere verificación [COLOR red]reCAPTCHA[/COLOR]'
-
-    if url:
-        servidor = servertools.get_server_from_url(url)
-        servidor = servertools.corregir_servidor(servidor)
-
-        url = servertools.normalize_url(servidor, url)
-
-        if servidor == 'zplayer': url = url + '|' + host
-
-        itemlist.append(item.clone(url = url, server = servidor))
+    itemlist.append(item.clone(url = url, server = servidor))
 
     return itemlist
 

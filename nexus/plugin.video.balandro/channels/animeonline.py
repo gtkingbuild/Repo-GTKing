@@ -1,10 +1,47 @@
 # -*- coding: utf-8 -*-
 
+import sys
+
+PY3 = False
+if sys.version_info[0] >= 3: PY3 = True
+
 import re
 
 from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
+
+
+LINUX = False
+BR = False
+BR2 = False
+
+if PY3:
+    try:
+       import xbmc
+       if xbmc.getCondVisibility("system.platform.Linux.RaspberryPi") or xbmc.getCondVisibility("System.Platform.Linux"): LINUX = True
+    except: pass
+
+try:
+   if LINUX:
+       try:
+          from lib import balandroresolver2 as balandroresolver
+          BR2 = True
+       except: pass
+   else:
+       if PY3:
+           from lib import balandroresolver
+           BR = true
+       else:
+          try:
+             from lib import balandroresolver2 as balandroresolver
+             BR2 = True
+          except: pass
+except:
+   try:
+      from lib import balandroresolver2 as balandroresolver
+      BR2 = True
+   except: pass
 
 
 host = 'https://ww3.animeonline.ninja/'
@@ -59,33 +96,48 @@ def do_downloadpage(url, post=None, headers=None):
     for ant in ant_hosts:
         url = url.replace(ant, host)
 
+    hay_proxies = False
+    if config.get_setting('channel_animeonline_proxies', default=''): hay_proxies = True
+
     timeout = None
     if host in url:
-        if config.get_setting('channel_animeonline_proxies', default=''): timeout = config.get_setting('channels_repeat', default=30)
+        if hay_proxies: timeout = config.get_setting('channels_repeat', default=30)
 
     if not url.startswith(host):
         data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
     else:
-        data = httptools.downloadpage_proxy('animeonline', url, post=post, headers=headers, timeout=timeout).data
+        if hay_proxies:
+            data = httptools.downloadpage_proxy('animeonline', url, post=post, headers=headers, timeout=timeout).data
+        else:
+            data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
 
         if not data:
             if not '?s=' in url:
-                platformtools.dialog_notification('AnimeOnline', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
-                data = httptools.downloadpage_proxy('animeonline', url, post=post, headers=headers, timeout=timeout).data
+                if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('AnimeOnline', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+
+                timeout = config.get_setting('channels_repeat', default=30)
+
+                if hay_proxies:
+                    data = httptools.downloadpage_proxy('animeonline', url, post=post, headers=headers, timeout=timeout).data
+                else:
+                    data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
 
     if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
-        try:
-            from lib import balandroresolver
-            ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
-            if ck_name and ck_value:
-                httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
+        if BR or BR2:
+            try:
+                ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
+                if ck_name and ck_value:
+                    httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
 
                 if not url.startswith(host):
                     data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
                 else:
-                    data = httptools.downloadpage_proxy('animeonline', url, post=post, headers=headers, timeout=timeout).data
-        except:
-            pass
+                    if hay_proxies:
+                        data = httptools.downloadpage_proxy('animeonline', url, post=post, headers=headers, timeout=timeout).data
+                    else:
+                        data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+            except:
+                pass
 
     if '<title>Just a moment...</title>' in data:
         if not '?s=' in url:
@@ -133,13 +185,11 @@ def mainlist_animes(item):
     logger.info()
     itemlist = []
 
-    descartar_anime = config.get_setting('descartar_anime', default=False)
-
-    if descartar_anime: return itemlist
+    if config.get_setting('descartar_anime', default=False): return
 
     if config.get_setting('adults_password'):
         from modules import actions
-        if actions.adults_password(item) == False: return itemlist
+        if actions.adults_password(item) == False: return
 
     itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
@@ -147,7 +197,7 @@ def mainlist_animes(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'online/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimos episodios', action = 'list_all', url = host + 'episodio/', group = 'last_epis', search_type = 'tvshow', text_color = 'olive' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'list_all', url = host + 'episodio/', group = 'last_epis', search_type = 'tvshow', text_color = 'cyan' ))
 
     itemlist.append(item.clone( title = 'En emisión', action = 'list_all',  url = host + 'genero/en-emision/', search_type = 'tvshow' ))
 
@@ -291,6 +341,8 @@ def list_all(item):
                 itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, qualities=qlty, languages=lang,
                                             contentType='movie', contentTitle=PeliName, infoLabels={'year': year} ))
             else:
+                if '>Película<' in match: continue
+
                 SerieName = title
 
                 if 'Cap' in title: SerieName = title.split("Cap")[0]
@@ -340,7 +392,9 @@ def temporadas(item):
         title = 'Temporada ' + tempo
 
         if len(temporadas) == 1:
-            platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+            if config.get_setting('channels_seasons', default=True):
+                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+
             item.page = 0
             item.contentType = 'season'
             item.contentSeason = tempo
@@ -378,7 +432,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('AnimeOnline', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -498,11 +553,12 @@ def findvideos(item):
 
             url = scrapertools.find_single_match(dat_server, "to_player.*?'(.*?)'")
 
-            if '/netu' in url or '/hqq' in url or '/waaw' in url: continue
-            elif '/saikoudane.' in url: continue
+            if '/saikoudane.' in url: continue
 
             if url:
                 if url == 'undefined': continue
+
+                if url.startswith('https:/streamwish.'): url = url.replace('https:/streamwish.', 'https://streamwish.')
 
                 if 'Sub Español' in dat_server: lang = 'Vose'
                 elif 'Sub Latino' in dat_server: lang = 'Vose'
@@ -519,17 +575,19 @@ def findvideos(item):
 
                 if config.get_setting('developer_mode', default=False):
                     try:
-                       link_other = url.split('//')[1]
+                       if '//' in url: link_other = url.split('//')[1]
+                       else: link_other = url.split('/')[1]
+
                        link_other = link_other.split('/')[0]
                     except:
                        link_other = url
                 else: link_other = url
 
-                link_other = link_other.replace('www.', '').replace('.com', '').replace('.net', '').replace('.org', '').replace('.top', '')
+                link_other = link_other.replace('www.', '').replace('.com', '').replace('.net', '').replace('.org', '').replace('.top', '').replace('.do', '')
                 link_other = link_other.replace('.co', '').replace('.cc', '').replace('.sh', '').replace('.to', '').replace('.tv', '').replace('.ru', '').replace('.io', '')
-                link_other = link_other.replace('.eu', '').replace('.ws', '').replace('.sx', '')
+                link_other = link_other.replace('.eu', '').replace('.ws', '').replace('.sx', '').replace('.online', '')
 
-                if servidor == 'various': other = link_other
+                if servidor == 'various': other = servertools.corregir_other(link_other)
                 else:
                     link_other = servertools.corregir_servidor(link_other)
 

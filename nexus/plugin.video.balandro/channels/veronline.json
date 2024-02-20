@@ -1,0 +1,17 @@
+{
+  "id": "veronline",
+  "name": "VerOnline",
+  "thumbnail": "veronline.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["suggested", "years", "kids", "docs", "vos"],
+
+  "notes": "Series por Géneros."
+}

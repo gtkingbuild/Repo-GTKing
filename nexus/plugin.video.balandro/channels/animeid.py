@@ -10,16 +10,51 @@ from core import httptools, scrapertools, servertools, tmdb
 host = 'https://animeid.live/'
 
 
+# ~ por si viene de enlaces guardados
+ant_hosts = ['https://animeid.to/']
+
+domain = config.get_setting('dominio', 'animeid', default='')
+
+if domain:
+    if domain == host: config.set_setting('dominio', '', 'animeid')
+    elif domain in str(ant_hosts): config.set_setting('dominio', '', 'animeid')
+    else: host = domain
+
+
 def do_downloadpage(url, post=None, headers=None):
     # ~ por si viene de enlaces guardados
-    ant_hosts = ['https://animeid.to/']
-
     for ant in ant_hosts:
         url = url.replace(ant, host)
 
     data = httptools.downloadpage(url, post=post, headers=headers).data
 
     return data
+
+
+def acciones(item):
+    logger.info()
+    itemlist = []
+
+    domain_memo = config.get_setting('dominio', 'animeid', default='')
+
+    if domain_memo: url = domain_memo
+    else: url = host
+
+    itemlist.append(Item( channel='actions', action='show_latest_domains', title='[COLOR moccasin][B]Últimos Cambios de Dominios[/B][/COLOR]', thumbnail=config.get_thumb('pencil') ))
+
+    itemlist.append(Item( channel='helper', action='show_help_domains', title='[B]Información Dominios[/B]', thumbnail=config.get_thumb('help'), text_color='green' ))
+
+    itemlist.append(item.clone( channel='domains', action='test_domain_animeid', title='Test Web del canal [COLOR yellow][B] ' + url + '[/B][/COLOR]',
+                                from_channel='animeid', folder=False, text_color='chartreuse' ))
+
+    if domain_memo: title = '[B]Modificar/Eliminar el dominio memorizado[/B]'
+    else: title = '[B]Informar Nuevo Dominio manualmente[/B]'
+
+    itemlist.append(item.clone( channel='domains', action='manto_domain_animeid', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
+
+    platformtools.itemlist_refresh()
+
+    return itemlist
 
 
 def mainlist(item):
@@ -30,20 +65,19 @@ def mainlist_animes(item):
     logger.info()
     itemlist = []
 
-    descartar_anime = config.get_setting('descartar_anime', default=False)
-
-    if descartar_anime: return itemlist
+    if config.get_setting('descartar_anime', default=False): return
 
     if config.get_setting('adults_password'):
         from modules import actions
-        if actions.adults_password(item) == False:
-            return itemlist
+        if actions.adults_password(item) == False: return
+
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone( title = 'Buscar anime ...', action = 'search', search_type = 'tvshow', text_color='springgreen' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host, search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Nuevas temporadas', action = 'list_all', url = host + 'new-season', search_type = 'tvshow', text_color = 'olive' ))
+    itemlist.append(item.clone( title = 'Nuevas temporadas', action = 'list_all', url = host + 'new-season', search_type = 'tvshow', text_color = 'moccasin' ))
 
     itemlist.append(item.clone( title = 'En emisión', action = 'list_all', url = host + 'ongoing-series', search_type = 'tvshow' ))
 
@@ -96,12 +130,12 @@ def list_all(item):
 
     if itemlist:
         if "<ul class='pagination'" in data:
-            next_url = scrapertools.find_single_match(data, "<ul class='pagination'.*?class=active>.*?</li>.*?href='(.*?)'")
+            next_page = scrapertools.find_single_match(data, "<ul class='pagination'.*?class=active>.*?</li>.*?href='(.*?)'")
 
-            if next_url:
-                next_url = host[:-1] + next_url
+            if next_page:
+                next_page = host[:-1] + next_page
 
-                itemlist.append(item.clone( title = 'Siguientes ...', url = next_url, action = 'list_all', text_color = 'coral' ))
+                itemlist.append(item.clone( title = 'Siguientes ...', url = next_page, action = 'list_all', text_color = 'coral' ))
 
     return itemlist
 
@@ -128,7 +162,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('AnimeId', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -212,9 +247,7 @@ def findvideos(item):
 
         srv = srv.lower()
 
-        if '/hqq.' in url or '/waaw.' in url or '/netu.' in url: continue
-
-        elif 'jetload.' in url: continue
+        if 'jetload.' in url: continue
 
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
@@ -223,6 +256,8 @@ def findvideos(item):
 
         other = ''
         if servidor == 'directo': other = srv
+
+        if servidor == 'various': other = servertools.corregir_other(url)
 
         itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = 'Vose', other = other ))
 

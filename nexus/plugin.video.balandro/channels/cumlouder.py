@@ -18,24 +18,22 @@ def mainlist_pelis(item):
     logger.info()
     itemlist = []
 
-    descartar_xxx = config.get_setting('descartar_xxx', default=False)
+    if config.get_setting('descartar_xxx', default=False): return
 
-    if descartar_xxx: return itemlist
     if config.get_setting('adults_password'):
         from modules import actions
-        if actions.adults_password(item) == False:
-            return itemlist
+        if actions.adults_password(item) == False: return
 
     itemlist.append(item.clone( title = 'Buscar vídeo ...', action = 'search', search_type = 'movie', text_color='orange' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all' ))
 
-    itemlist.append(item.clone( title = 'Últimos', action = 'list_all', url = host +'/2/', page = 1 ))
+    itemlist.append(item.clone( title = 'Últimos', action = 'list_all', url = host +'/2/', page = 1, text_color = 'cyan' ))
 
     itemlist.append(item.clone( title = 'Por repertorio', action = 'repertorios' ))
     itemlist.append(item.clone( title = 'Por canal', action = 'canales' ))
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias' ))
-    itemlist.append(item.clone( title = 'Por estrella', action = 'pornstars' ))
+    itemlist.append(item.clone( title = 'Por estrella', action = 'pornstars', ))
 
     return itemlist
 
@@ -50,7 +48,7 @@ def repertorios(item):
 
     data = httptools.downloadpage(item.url).data
 
-    patron = '<a onclick=.*?href="([^"]+)".*?data-src="([^"]+)".*?h2 itemprop="name">([^<]+).*?p>([^<]+)</p>'
+    patron = '<div itemprop="itemListElement".*?href="([^"]+)".*?data-src="([^"]+)".*?h2 itemprop="name">([^<]+).*?p>([^<]+)</p>'
 
     matches = re.compile(patron, re.DOTALL).findall(data)
 
@@ -62,7 +60,7 @@ def repertorios(item):
 
         titulo = '[COLOR orange]%s[/COLOR] (%s)' % (title, vid)
 
-        itemlist.append(item.clone( action = 'list_all', url = url, thumbnail = thumb, title = titulo, page = 1 ))
+        itemlist.append(item.clone( action = 'list_all', url = url, thumbnail = thumb, title = titulo, page = 1, text_color='orange' ))
 
     if itemlist:
         next_url = scrapertools.find_single_match(data, '<a class="btn-pagination" itemprop="name" href="(.*?)"')
@@ -101,7 +99,7 @@ def canales(item):
 
         if not thumb.startswith('http'): thumb = 'https:' + thumb
 
-        itemlist.append(item.clone( action = 'list_all', url = url, title = titulo, thumbnail = thumb, page = 1 ))
+        itemlist.append(item.clone( action = 'list_all', url = url, title = titulo, thumbnail = thumb, page = 1, text_color = 'tan' ))
 
     if itemlist:
         next_url = scrapertools.find_single_match(data, '<a class="btn-pagination" itemprop="name" href="(.*?)"')
@@ -134,7 +132,7 @@ def categorias(item):
 
         if not thumb.startswith('http'): thumb = 'https:' + thumb
 
-        itemlist.append(item.clone( action = 'list_all', url = url, title = title, thumbnail = thumb, page = 1, text_color='orange' ))
+        itemlist.append(item.clone( action = 'list_all', url = url, title = title, thumbnail = thumb, page = 1, text_color='tan' ))
 
     if itemlist:
         next_url = scrapertools.find_single_match(data, '<a class="btn-pagination" itemprop="name" href="(.*?)"')
@@ -172,7 +170,7 @@ def pornstars(item):
 
         titulo = '[COLOR orange]%s[/COLOR] (%s)' % (title, vid)
 
-        itemlist.append(item.clone( action = 'list_all', url = url, thumbnail = thumb, title = titulo, page = 1 ))
+        itemlist.append(item.clone( action = 'list_all', url = url, thumbnail = thumb, title = titulo, page = 1, text_color='moccasin' ))
 
     if itemlist:
         next_url = scrapertools.find_single_match(data, '<a class="btn-pagination" itemprop="name" href="(.*?)"')
@@ -240,7 +238,7 @@ def findvideos(item):
     for url, qlty in matches:
         url = url.replace("&amp;", "&")
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', quality = qlty, url = url, language = 'VO' ))
+        itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', quality = qlty, url = url, language = 'Vo' ))
 
     return itemlist
 

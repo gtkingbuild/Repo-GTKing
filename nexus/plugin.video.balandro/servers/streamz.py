@@ -13,7 +13,7 @@ def get_video_url(page_url, url_referer=''):
     data = httptools.downloadpage(page_url).data
 
     if "<b>File not found, sorry!</b" in data:
-        return "El fichero no existe o ha sido borrado"
+        return "Archivo inexistente ó eliminado"
 
     try:
        pack = scrapertools.find_single_match(data, 'p,a,c,k,e,d.*?</script>')

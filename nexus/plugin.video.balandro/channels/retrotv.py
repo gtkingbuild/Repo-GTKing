@@ -46,7 +46,7 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'lista-series/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimos episodios', action = 'list_epis', url = host + 'lista-series/episodios-agregados-actualizados/', search_type = 'tvshow', text_color = 'olive' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'list_epis', url = host + 'lista-series/episodios-agregados-actualizados/', search_type = 'tvshow', text_color = 'cyan' ))
 
     itemlist.append(item.clone( title = 'Animación', action ='list_all', url = host + 'category/animacion/', search_type = 'tvshow', text_color='moccasin' ))
 
@@ -262,7 +262,9 @@ def temporadas(item):
         title = 'Temporada ' + tempo
 
         if len(matches) == 1:
-            platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+            if config.get_setting('channels_seasons', default=True):
+                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+
             item.page = 0
             item.contentType = 'season'
             item.contentSeason = tempo
@@ -299,7 +301,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('RetroTv', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts

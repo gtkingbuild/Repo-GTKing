@@ -11,7 +11,7 @@ def get_video_url(page_url, url_referer=''):
     data = httptools.downloadpage(page_url).data
 
     if "Not found" in data or "File not found" in data or "File is no longer available" in data or "Error 404" in data:
-        return "El fichero no existe o ha sido borrado"
+        return "Archivo inexistente ó eliminado"
 
     video_srcs = scrapertools.find_multiple_matches(data, r"mp4': '([^']+)'")
 

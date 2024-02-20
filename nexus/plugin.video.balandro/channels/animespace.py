@@ -21,6 +21,17 @@ from core import httptools, scrapertools, servertools, tmdb
 host = 'https://animespace.club/'
 
 
+def do_downloadpage(url, post=None, headers=None):
+    data = httptools.downloadpage(url, post=post, headers=headers).data
+
+    # ~ 30/11/2023
+    if data.startswith("b'"):
+        if not 'search?q=' in url: platformtools.dialog_notification('AnimeSpace', '[COLOR red]Re-direcciona a Web Maliciosa[/COLOR]')
+        data = ''
+
+    return data
+
+
 def mainlist(item):
     return mainlist_animes(item)
 
@@ -29,24 +40,23 @@ def mainlist_animes(item):
     logger.info()
     itemlist = []
 
-    descartar_anime = config.get_setting('descartar_anime', default=False)
-
-    if descartar_anime: return itemlist
+    if config.get_setting('descartar_anime', default=False): return
 
     if config.get_setting('adults_password'):
         from modules import actions
-        if actions.adults_password(item) == False:
-            return itemlist
+        if actions.adults_password(item) == False: return
 
     itemlist.append(item.clone( title = 'Buscar anime ...', action = 'search', search_type = 'tvshow', text_color='springgreen' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'animes', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host, search_type = 'tvshow', text_color = 'olive' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host, search_type = 'tvshow', text_color = 'cyan' ))
 
     itemlist.append(item.clone( title = 'En emisión', action = 'list_all', url = host + 'emision', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Por categorías', action = 'categorias', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host + 'categoria/pelicula', search_type = 'movie', text_color = 'deepskyblue' ))
+
+    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', search_type = 'tvshow' ))
 
     return itemlist
 
@@ -55,14 +65,16 @@ def categorias(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title = 'Animes', action = 'list_all', url = host + 'categoria/anime', search_type = 'tvshow', text_color='springgreen' ))
-    itemlist.append(item.clone( title = 'Caricaturas', action = 'list_all', url = host + 'categoria/caricaturas', search_type = 'tvshow', text_color='springgreen' ))
-    itemlist.append(item.clone( title = 'Cortos', action = 'list_all', url = host + 'categoria/corto', search_type = 'tvshow', text_color='springgreen' ))
-    itemlist.append(item.clone( title = 'Especiales', action = 'list_all', url = host + 'categoria/especial', search_type = 'tvshow', text_color='springgreen' ))
-    itemlist.append(item.clone( title = 'Live action', action = 'list_all', url = host + 'categoria/live-action', search_type = 'tvshow', text_color='springgreen' ))
-    itemlist.append(item.clone( title = 'Onas', action = 'list_all', url = host + 'categoria/ona', search_type = 'tvshow', text_color='springgreen' ))
-    itemlist.append(item.clone( title = 'Ovas', action = 'list_all', url = host + 'categoria/ova', search_type = 'tvshow', text_color='springgreen' ))
-    itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host + 'categoria/pelicula', search_type = 'tvshow', text_color = 'deepskyblue' ))
+    text_color = 'springgreen'
+
+    itemlist.append(item.clone( title = 'Animes', action = 'list_all', url = host + 'categoria/anime', search_type = 'tvshow', text_color=text_color ))
+    itemlist.append(item.clone( title = 'Caricaturas', action = 'list_all', url = host + 'categoria/caricaturas', search_type = 'tvshow', text_color=text_color ))
+    itemlist.append(item.clone( title = 'Cortos', action = 'list_all', url = host + 'categoria/corto', search_type = 'tvshow', text_color=text_color ))
+    itemlist.append(item.clone( title = 'Especiales', action = 'list_all', url = host + 'categoria/especial', search_type = 'tvshow', text_color=text_color ))
+    itemlist.append(item.clone( title = 'Live action', action = 'list_all', url = host + 'categoria/live-action', search_type = 'tvshow', text_color=text_color ))
+    itemlist.append(item.clone( title = 'Onas', action = 'list_all', url = host + 'categoria/ona', search_type = 'tvshow', text_color=text_color ))
+    itemlist.append(item.clone( title = 'Ovas', action = 'list_all', url = host + 'categoria/ova', search_type = 'tvshow', text_color=text_color ))
+    itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host + 'categoria/pelicula', search_type = 'movie', text_color=text_color ))
 
     return itemlist
 
@@ -71,7 +83,7 @@ def list_all(item):
     logger.info()
     itemlist = []
 
-    data = httptools.downloadpage(item.url).data
+    data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
     patron = '<article.*?href="([^"]+)">.*?src="([^"]+)".*?<h3 class="Title">([^<]+)</h3>.*?</i>([^<]+)'
@@ -111,7 +123,7 @@ def last_epis(item):
     logger.info()
     itemlist = []
 
-    data = httptools.downloadpage(item.url).data
+    data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
     bloque = scrapertools.find_single_match(data, '<section class="caps">.*?</section>')
@@ -153,7 +165,7 @@ def episodios(item):
     if not item.page: item.page = 0
     if not item.perpage: item.perpage = 50
 
-    data = httptools.downloadpage(item.url).data
+    data = do_downloadpage(item.url)
 
     anime_info = eval(scrapertools.find_single_match(data, "var anime_info = ([^;]+);"))
 
@@ -169,7 +181,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('AnimeSpace', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -227,7 +240,7 @@ def findvideos(item):
     logger.info()
     itemlist = []
 
-    data = httptools.downloadpage(item.url).data
+    data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
     ses = 0
@@ -240,7 +253,7 @@ def findvideos(item):
         url = url.replace('&quot;', '')
 
         if "/stream/" in url:
-            new_data = httptools.downloadpage(url).data
+            new_data = do_downloadpage(url)
 
             url = scrapertools.find_single_match(new_data, '<source src="([^"]+)"')
 
@@ -250,8 +263,6 @@ def findvideos(item):
 
         if url:
             if url.startswith('//'): url = 'https:' + url
-
-            if '/hqq.' in url or '/waaw.' in url or '/netu.' in url: continue
 
             servidor = servertools.get_server_from_url(url)
             servidor = servertools.corregir_servidor(servidor)

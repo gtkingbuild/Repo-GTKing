@@ -11,35 +11,15 @@ def get_video_url(page_url, url_referer=''):
 
     if not 'http' in page_url: return video_urls
 
-    page_url = page_url.replace('mixdrop.to/', 'mixdrop.co/')
-    page_url = page_url.replace('mixdrop.sx/', 'mixdrop.co/')
-    page_url = page_url.replace('mixdrop.bz/', 'mixdrop.co/')
-    page_url = page_url.replace('mixdrop.ch/', 'mixdrop.co/')
-    page_url = page_url.replace('mixdrop.gl/', 'mixdrop.co/')
-    page_url = page_url.replace('mixdrop.club/', 'mixdrop.co/')
-
-    page_url = page_url.replace('mixdroop.to/', 'mixdrop.co/')
-    page_url = page_url.replace('mixdroop.sx/', 'mixdrop.co/')
-    page_url = page_url.replace('mixdroop.bz/', 'mixdrop.co/')
-    page_url = page_url.replace('mixdroop.ch/', 'mixdrop.co/')
-    page_url = page_url.replace('mixdroop.gl/', 'mixdrop.co/')
-    page_url = page_url.replace('mixdroop.club/', 'mixdrop.co/')
-
-    page_url = page_url.replace('mixdrp.co/', 'mixdrop.co/')
-    page_url = page_url.replace('mixdrp.to/', 'mixdrop.co/')
-
-    page_url = page_url.replace('mixdrop.co/f/', 'mixdrop.co/e/')
-    page_url = page_url.replace('mixdrop.co/embed/', 'mixdrop.co/e/')
-
-    headers = {'Referer': page_url.replace('mixdrop.co/e/', 'mixdrop.co/f/')}
+    headers = {'Referer': page_url.replace('mixdrop.ag/e/', 'mixdrop.ag/f/')}
     data = httptools.downloadpage(page_url, headers=headers).data
 
     if '>WE ARE SORRY</h2>' in data or '<title>404 Not Found</title>' in data:
-        return 'El archivo no existe o ha sido borrado'
+        return 'Archivo inexistente ó eliminado'
 
     url = scrapertools.find_single_match(data, 'window\.location\s*=\s*"([^"]+)')
     if url:
-        if url.startswith('/e/'): url = 'https://mixdrop.co' + url
+        if url.startswith('/e/'): url = 'https://mixdrop.ag' + url
         data = httptools.downloadpage(url).data
 
     packed = scrapertools.find_multiple_matches(data, "(?s)eval(.*?)\s*</script>")

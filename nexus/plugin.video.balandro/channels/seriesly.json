@@ -11,7 +11,7 @@
   "categories": ["movie", "tvshow"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["problematic", "docs", "kids", "vos"],
+  "clusters": ["docs", "kids", "vos"],
 
   "notes": "Web CERRADA. Películas por géneros. Series por Géneros.  Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

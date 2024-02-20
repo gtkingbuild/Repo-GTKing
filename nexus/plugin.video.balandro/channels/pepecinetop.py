@@ -1,10 +1,47 @@
 ﻿# -*- coding: utf-8 -*-
 
+import sys
+
+PY3 = False
+if sys.version_info[0] >= 3: PY3 = True
+
 import re
 
 from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, tmdb, servertools
+
+
+LINUX = False
+BR = False
+BR2 = False
+
+if PY3:
+    try:
+       import xbmc
+       if xbmc.getCondVisibility("system.platform.Linux.RaspberryPi") or xbmc.getCondVisibility("System.Platform.Linux"): LINUX = True
+    except: pass
+
+try:
+   if LINUX:
+       try:
+          from lib import balandroresolver2 as balandroresolver
+          BR2 = True
+       except: pass
+   else:
+       if PY3:
+           from lib import balandroresolver
+           BR = true
+       else:
+          try:
+             from lib import balandroresolver2 as balandroresolver
+             BR2 = True
+          except: pass
+except:
+   try:
+      from lib import balandroresolver2 as balandroresolver
+      BR2 = True
+   except: pass
 
 
 host = 'https://pepecine.top/'
@@ -46,43 +83,57 @@ def do_downloadpage(url, post=None, headers=None):
     if url.startswith(host):
         if not headers: headers = {'Referer': host}
 
+    hay_proxies = False
+    if config.get_setting('channel_pepecinetop_proxies', default=''): hay_proxies = True
+
     timeout = None
     if host in url:
-        if config.get_setting('channel_pepecinetop_proxies', default=''): timeout = config.get_setting('channels_repeat', default=30)
+        if hay_proxies: timeout = config.get_setting('channels_repeat', default=30)
 
     if not url.startswith(host):
         data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
     else:
-        data = httptools.downloadpage_proxy('pepecinetop', url, post=post, headers=headers, timeout=timeout).data
+        if hay_proxies:
+            data = httptools.downloadpage_proxy('pepecinetop', url, post=post, headers=headers, timeout=timeout).data
+        else:
+            data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
 
         if not data:
             if not '?s=' in url:
-                platformtools.dialog_notification('PepeCineTop', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
-                data = httptools.downloadpage_proxy('pepecinetop', url, post=post, headers=headers, timeout=timeout).data
+                if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('PepeCineTop', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+
+                timeout = config.get_setting('channels_repeat', default=30)
+
+                if hay_proxies:
+                    data = httptools.downloadpage_proxy('pepecinetop', url, post=post, headers=headers, timeout=timeout).data
+                else:
+                    data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
 
     if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
-        try:
-            from lib import balandroresolver
-            ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
-            if ck_name and ck_value:
-                httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
+        if BR or BR2:
+            try:
+                ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
+                if ck_name and ck_value:
+                    httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
 
                 if not url.startswith(host):
                     data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
                 else:
-                    data = httptools.downloadpage_proxy('pepecinetop', url, post=post, headers=headers, timeout=timeout).data
-        except:
-            pass
+                    if hay_proxies:
+                        data = httptools.downloadpage_proxy('pepecinetop', url, post=post, headers=headers, timeout=timeout).data
+                    else:
+                        data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+            except:
+                pass
 
-    if '<title>Just a moment...</title>' in data:
-        if not '?s=' in url:
+    if not '?s=' in url:
+        if '<title>Just a moment...</title>' in data:
             platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]CloudFlare[COLOR orangered] Protection[/B][/COLOR]')
-        return ''
+            return ''
 
-    elif '<title>One moment, please...</title>' in data:
-        if not '?s=' in url:
+        elif '<title>One moment, please...</title>' in data:
             platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]CloudFlare[COLOR orangered] Protection [COLOR plum]Level 2[/B][/COLOR]')
-        return ''
+            return ''
 
     return data
 
@@ -127,7 +178,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone ( title = 'Catálogo', action = 'list_all', url = host + 'peliculas/', search_type = 'movie' ))
 
-    itemlist.append(item.clone ( title = 'Estrenos', action = 'list_all', url = host + 'ver/genero/estrenos/', search_type = 'movie' ))
+    itemlist.append(item.clone ( title = 'Estrenos', action = 'list_all', url = host + 'ver/genero/estrenos/', search_type = 'movie', text_color='cyan' ))
 
     itemlist.append(item.clone ( title = 'Por género', action = 'generos', search_type = 'movie' ))
 
@@ -144,7 +195,7 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'series-pepecine/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'ver/genero/estrenos/', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'ver/genero/estrenos/', search_type = 'tvshow', text_color='cyan' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
 
@@ -206,6 +257,8 @@ def list_all(item):
 
         if not url or not title: continue
 
+        if title == 'CATÁLOGO PELICULAS': continue
+
         thumb = scrapertools.find_single_match(article, ' src="([^"]+)"')
         if thumb.startswith('//'): thumb = 'https:' + thumb
 
@@ -258,7 +311,9 @@ def temporadas(item):
         title = 'Temporada ' + season
 
         if len(matches) == 1:
-            platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+            if config.get_setting('channels_seasons', default=True):
+                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+
             item.page = 0
             item.contentType = 'season'
             item.contentSeason = season
@@ -295,7 +350,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('PepeCineTop', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -393,7 +449,7 @@ def findvideos(item):
 
         data3 = do_downloadpage(new_url)
 
-        links = scrapertools.find_multiple_matches(data3, '<li onclick="go_to_player.*?' + "'(.*?)'.*?<p>(.*?)-")
+        links = scrapertools.find_multiple_matches(data3, 'go_to_player.*?' + "'(.*?)'.*?<p>(.*?)-")
 
         for link, lang2 in links:
             servidor = servertools.get_server_from_url(link)

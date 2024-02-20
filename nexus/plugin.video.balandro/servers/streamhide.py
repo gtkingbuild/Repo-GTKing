@@ -35,7 +35,7 @@ def get_video_url(page_url, url_referer=''):
     data = response.data
 
     if not response.sucess or "Not Found" in data or "File was deleted" in data or "is no longer available" in data:
-        return "El fichero no existe o ha sido borrado"
+        return "Archivo inexistente ó eliminado"
 
     url = scrapertools.find_single_match(data, 'sources: \[{file:"([^"]+)"')
 

@@ -13,7 +13,7 @@ def get_video_url(page_url, url_referer=''):
     data = httptools.downloadpage(page_url).data
 
     if "File was deleted" in data or "File not found" in data or 'og:video">' in data:
-        return 'El archivo no existe o ha sido borrado'
+        return 'Archivo inexistente ó eliminado'
 
     url1 = httptools.downloadpage(page_url, follow_redirects=False, only_headers=True).headers.get("location", "")
 

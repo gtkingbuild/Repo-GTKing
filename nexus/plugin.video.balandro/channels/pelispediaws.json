@@ -11,7 +11,7 @@
   "categories": ["movie"],
   "language": ["cast", "lat", "vose", "vo"],
 
-  "clusters": ["current", "years", "kids", "docs", "anime", "vos"],
+  "clusters": ["current", "news", "years", "kids", "docs", "anime", "vos"],
 
   "notes": "Películas por géneros y año."
 }

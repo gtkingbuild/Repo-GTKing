@@ -62,22 +62,20 @@ def proxysearch_all(item):
     if proxies_todos:
         if proxies_auto:
             if item.extra:
-               if not platformtools.dialog_yesno(config.__addon_name, '[COLOR plum][B]Este proceso Podría necesitar un considerable espacio de tiempo según su configuración actual de proxies.[/B][/COLOR]', "[COLOR yellow][B]¿ Desea iniciar la búsqueda de proxies para TODOS los canales que los necesiten ?[/B][/COLOR]"):
+               if not platformtools.dialog_yesno(config.__addon_name, '[COLOR plum][B]Este proceso Podría necesitar un considerable espacio de tiempo según sus Ajustes actuales de proxies.[/B][/COLOR]', "[COLOR yellow][B]¿ Desea iniciar la búsqueda de proxies para TODOS los canales que los necesiten ?[/B][/COLOR]"):
                    return
             else:
-               if not platformtools.dialog_yesno(config.__addon_name, '[COLOR plum][B]Este proceso Requerirá un considerable consumo de tiempo según su configuración actual de proxies.[/B][/COLOR]', "[COLOR yellow][B]¿ Desea iniciar la búsqueda de proxies para TODOS los canales que los necesiten ?[/B][/COLOR]"):
+               if not platformtools.dialog_yesno(config.__addon_name, '[COLOR plum][B]Este proceso Requerirá un considerable consumo de tiempo según su Ajustes actuales de proxies.[/B][/COLOR]', "[COLOR yellow][B]¿ Desea iniciar la búsqueda de proxies para TODOS los canales que los necesiten ?[/B][/COLOR]"):
                    return
         else:
-           platformtools.dialog_ok(config.__addon_name, '[COLOR red][B]En los Ajustes categoría proxies de la configuración, No tiene el Modo buscar automaticamente.[/B][/COLOR]')
+           platformtools.dialog_ok(config.__addon_name, '[COLOR red][B]En sus Ajustes/Preferenncias (categoría proxies), No tiene el Modo buscar automaticamente.[/B][/COLOR]')
            return
-
 
     cfg_excludes = 'proxysearch_excludes'
     channels_excludes = config.get_setting(cfg_excludes, default='')
 
     channels_proxies_memorized = config.get_setting('channels_proxies_memorized', default='')
     iniciales_channels_proxies_memorized = channels_proxies_memorized
-
 
     proceso_seleccionar = True
 
@@ -340,7 +338,6 @@ def proxysearch_all(item):
 
         proxysearch_channel(item, ch['id'], ch['name'], iniciales_channels_proxies_memorized)
 
-
     # ~ los que No intervienen en el buscar ganeral
     if not config.get_setting('mnu_simple', default=False):
         filtros = {'searchable': False}
@@ -381,10 +378,8 @@ def proxysearch_all(item):
 
                proxysearch_channel(item, ch['id'], ch['name'], iniciales_channels_proxies_memorized)
 
-
     config.set_setting('proxysearch_process', '')
     config.set_setting('proxysearch_process_proxies', '')
-
 
     if procesados == 0:
         if iniciales_channels_proxies_memorized:
@@ -443,7 +438,6 @@ def proxysearch_channel(item, channel_id, channel_name, iniciales_channels_proxi
 
     global procesados
 
-
     channels_proxies_memorized = config.get_setting('channels_proxies_memorized', default='')
 
     if config.get_setting('memorize_channels_proxies', default=True):
@@ -452,6 +446,11 @@ def proxysearch_channel(item, channel_id, channel_name, iniciales_channels_proxi
 
             if iniciales_channels_proxies_memorized:
                 if not el_memorizado in str(channels_proxies_memorized): return
+
+            channel_json = channel_id + '.json'
+            filename_json = os.path.join(config.get_runtime_path(), 'channels', channel_json)
+            existe = filetools.exists(filename_json)
+            if not existe: return
 
             cfg_proxies_channel = 'channel_' + channel_id + '_proxies'
 
@@ -505,32 +504,36 @@ def proxysearch_channel(item, channel_id, channel_name, iniciales_channels_proxi
     if not esta_en_poe:
        if dominio: host = dominio
        else:
-           try:
-              data = filetools.read(filename_py)
-           except:
-              el_canal = ('Se ignora este canal en el proceso, no se pudo acceder a su módulo ' + channel_py  + '[B][COLOR %s] en el caso de que requiera proxies, deberá efectuar esta Configuracíon dentro del propio canal.') % color_alert
-              platformtools.dialog_ok(config.__addon_name + ' ' + channel_name , el_canal + '[/COLOR][/B]')
-              return
+          if channel_id == 'playdede':
+              el_canal = ('[COLOR cyan][B]Cargando espere ... [/B][/COLOR][B][COLOR %s]' + channel_name) % color_avis
+              platformtools.dialog_notification(config.__addon_name, el_canal + '[/COLOR][/B]', time=3000)
 
-           part_py = 'def mainlist'
+          try:
+             data = filetools.read(filename_py)
+          except:
+             el_canal = ('Se ignora este canal en el proceso, no se pudo acceder a su módulo ' + channel_py  + '[B][COLOR %s] en el caso de que requiera proxies, deberá efectuar esta Configuracíon dentro del propio canal.') % color_alert
+             platformtools.dialog_ok(config.__addon_name + ' ' + channel_name , el_canal + '[/COLOR][/B]')
+             return
 
-           if 'CLONES ' in data or 'clones ' in data: part_py = 'clones '
-           elif 'CLASS ' in data or 'class ' in data: part_py = 'class '
+          part_py = 'def mainlist'
 
-           elif 'def login' in data: part_py = 'def login'
-           elif 'def configurar_proxies' in data: part_py = 'def configurar_proxies'
-           elif 'def do_downloadpage' in data: part_py = 'def do_downloadpage'
+          if 'CLONES ' in data or 'clones ' in data: part_py = 'clones '
+          elif 'CLASS ' in data or 'class ' in data: part_py = 'class '
 
-           bloc = scrapertools.find_single_match(data.lower(), '(.*?)' + part_py)
-           if 'ant_hosts' in bloc: bloc = scrapertools.find_single_match(data.lower(), '(.*?)ant_hosts')
+          elif 'def login' in data: part_py = 'def login'
+          elif 'def configurar_proxies' in data: part_py = 'def configurar_proxies'
+          elif 'def do_downloadpage' in data: part_py = 'def do_downloadpage'
 
-           bloc = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', bloc)
+          bloc = scrapertools.find_single_match(data.lower(), '(.*?)' + part_py)
+          if 'ant_hosts' in bloc: bloc = scrapertools.find_single_match(data.lower(), '(.*?)ant_hosts')
 
-           host = scrapertools.find_single_match(str(bloc), ".*?host = '(.*?)'")
-           if not host: host = scrapertools.find_single_match(str(bloc), '.*?host = "(.*?)"')
+          bloc = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', bloc)
 
-           if not host: host = scrapertools.find_single_match(bloc, '.*?host.*?"(.*?)"')
-           if not host: host = scrapertools.find_single_match(bloc, ".*?host.*?'(.*?)'")
+          host = scrapertools.find_single_match(str(bloc), ".*?host = '(.*?)'")
+          if not host: host = scrapertools.find_single_match(str(bloc), '.*?host = "(.*?)"')
+
+          if not host: host = scrapertools.find_single_match(bloc, '.*?host.*?"(.*?)"')
+          if not host: host = scrapertools.find_single_match(bloc, ".*?host.*?'(.*?)'")
 
     host = host.strip()
 
@@ -589,8 +592,8 @@ def proxysearch_channel(item, channel_id, channel_name, iniciales_channels_proxi
             config.set_setting('channels_proxies_memorized', channels_proxies_memorized)
         else:
            if not el_memorizado in str(channels_proxies_memorized):
-               if not channels_proxies_memorized: channels_proxies_memorized = channels_proxies_memorized  + el_memorizado + ','
-               else: channels_proxies_memorized = channels_proxies_memorized + ' ,' + el_memorizado
+               if not channels_proxies_memorized: channels_proxies_memorized = channels_proxies_memorized + el_memorizado
+               else: channels_proxies_memorized = channels_proxies_memorized + ', ' + el_memorizado
 
                config.set_setting('channels_proxies_memorized', channels_proxies_memorized)
 

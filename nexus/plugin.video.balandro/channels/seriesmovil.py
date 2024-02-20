@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import re
-
 from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
@@ -10,75 +8,10 @@ from core import httptools, scrapertools, servertools, tmdb
 host = 'https://seriesmovil.top/'
 
 
-def item_configurar_proxies(item):
-    color_list_proxies = config.get_setting('channels_list_proxies_color', default='red')
-
-    color_avis = config.get_setting('notification_avis_color', default='yellow')
-    color_exec = config.get_setting('notification_exec_color', default='cyan')
-
-    context = []
-
-    tit = '[COLOR %s]Información proxies[/COLOR]' % color_avis
-    context.append({'title': tit, 'channel': 'helper', 'action': 'show_help_proxies'})
-
-    if config.get_setting('channel_seriesmovil_proxies', default=''):
-        tit = '[COLOR %s][B]Quitar los proxies del canal[/B][/COLOR]' % color_list_proxies
-        context.append({'title': tit, 'channel': item.channel, 'action': 'quitar_proxies'})
-
-    tit = '[COLOR %s]Ajustes categoría proxies[/COLOR]' % color_exec
-    context.append({'title': tit, 'channel': 'actions', 'action': 'open_settings'})
-
-    plot = 'Es posible que para poder utilizar este canal necesites configurar algún proxy, ya que no es accesible desde algunos países/operadoras.'
-    plot += '[CR]Si desde un navegador web no te funciona el sitio ' + host + ' necesitarás un proxy.'
-    return item.clone( title = '[B]Configurar proxies a usar ...[/B]', action = 'configurar_proxies', folder=False, context=context, plot=plot, text_color='red' )
-
-def quitar_proxies(item):
-    from modules import submnuctext
-    submnuctext._quitar_proxies(item)
-    return True
-
-def configurar_proxies(item):
-    from core import proxytools
-    return proxytools.configurar_proxies_canal(item.channel, host)
-
-
-def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
-    if not headers: headers = {'Referer': host}
-
-    if not url.startswith(host):
-        data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
-    else:
-        data = httptools.downloadpage_proxy('seriesmovil', url, post=post, headers=headers, raise_weberror=raise_weberror).data
-
-    if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
-        try:
-            from lib import balandroresolver
-            ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
-            if ck_name and ck_value:
-                httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
-
-                if not url.startswith(host):
-                    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
-                else:
-                    data = httptools.downloadpage_proxy('seriesmovil', url, post=post, headers=headers, raise_weberror=raise_weberror).data
-        except:
-            pass
+def do_downloadpage(url, post=None, headers=None):
+    data = httptools.downloadpage(url, post=post, headers=headers).data
 
     return data
-
-
-def acciones(item):
-    logger.info()
-    itemlist = []
-
-    itemlist.append(item.clone( channel='submnuctext', action='_test_webs', title='Test Web del canal [COLOR yellow][B] ' + host + '[/B][/COLOR]',
-                                from_channel='seriesmovil', folder=False, text_color='chartreuse' ))
-
-    itemlist.append(item_configurar_proxies(item))
-
-    platformtools.itemlist_refresh()
-
-    return itemlist
 
 
 def mainlist(item):
@@ -88,8 +21,6 @@ def mainlist(item):
 def mainlist_series(item):
     logger.info()
     itemlist = []
-
-    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
@@ -173,7 +104,9 @@ def temporadas(item):
         title = 'Temporada ' + tempo
 
         if len(seasons) == 1:
-            platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+            if config.get_setting('channels_seasons', default=True):
+                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+
             item.page = 0
             item.url = url
             item.contentType = 'season'
@@ -209,7 +142,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('SeriesMovil', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -286,8 +220,6 @@ def findvideos(item):
             other = scrapertools.find_single_match(data, '<span class="nmopt">' + opt + '</span>.*?<span>.*?<span>(.*?)</span>').strip()
             other = scrapertools.find_single_match(other, ' • (.*?)$').strip().lower()
 
-            if 'hqq' in other or 'waaw' in other or 'netu' in other: continue
-
             other = servertools.corregir_servidor(other)
 
             if servertools.is_server_available(other):
@@ -295,7 +227,41 @@ def findvideos(item):
             else:
                 if not config.get_setting('developer_mode', default=False): continue
 
-            itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', url = url, language = IDIOMAS.get(lang, lang), quality = qlty, other = other.capitalize() ))
+            itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', url = url,
+                                  language = IDIOMAS.get(lang, lang), quality = qlty, other = other.capitalize() ))
+
+    # ~ Embeds
+    matches = scrapertools.find_multiple_matches(data, '<li data-typ="episode".*?data-key="(.*?)".*?data-id="(.*?)".*?</div>(.*?)</li>')
+
+    for _key, _id, datos in matches:
+        ses += 1
+
+        if not _key or not _id: continue
+
+        lang = scrapertools.find_single_match(datos, '<p class="AAIco-language">(.*?)</p>').strip().lower()
+
+        qlty = scrapertools.find_single_match(datos, '<p class="AAIco-equalizer">(.*?)</p>').strip()
+
+        other = scrapertools.find_single_match(datos, '<p class="AAIco-dns">(.*?)</p>').strip().lower()
+
+        post = {'action': 'action_player_change_new', 'id': _id, 'key': _key, 'typ': 'episode'}
+
+        datae = do_downloadpage(host + 'wp-admin/admin-ajax.php', post = post)
+
+        other = servertools.corregir_servidor(other)
+
+        url = scrapertools.find_single_match(datae, '<IFRAME SRC="(.*?)"')
+        if not url: url = scrapertools.find_single_match(datae, '<iframe src="(.*?)"')
+
+        if url:
+            if servertools.is_server_available(other):
+                if not servertools.is_server_enabled(other): continue
+            else:
+                if not config.get_setting('developer_mode', default=False): continue
+
+            other = other.capitalize() + ' E'
+
+            itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', url = url, language = IDIOMAS.get(lang, lang), quality = qlty, other = other ))
 
     # ~ Descargas
     bloque = scrapertools.find_single_match(data, '<div class="OptionBx on">(.*?)</section>')
@@ -309,7 +275,10 @@ def findvideos(item):
 
         lang = lang.lower()
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', url = url, language = IDIOMAS.get(lang, lang), quality = qlty, other = srv  + ' d' ))
+        if url:
+           other = srv  + ' D'
+
+           itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', url = url, language = IDIOMAS.get(lang, lang), quality = qlty, other = other ))
 
     if not itemlist:
         if not ses == 0:
@@ -328,17 +297,14 @@ def play(item):
     url = url.replace('&amp;#038;', '&').replace('&#038;', '&').replace('&amp;', '&')
 
     if '?trdownload=' in url:
-        if not url.startswith(host):
-            new_url = httptools.downloadpage(url, follow_redirects=False).headers.get('location', '')
-        else:
-            new_url = httptools.downloadpage_proxy('seriesmovil', url, follow_redirects=False).headers.get('location', '')
+        new_url = httptools.downloadpage(url, follow_redirects=False).headers.get('location', '')
     else:
         data = do_downloadpage(url)
 
-        new_url = scrapertools.find_single_match(data, '<IFRAME SRC="(.*?)"')
-        if not new_url: new_url = scrapertools.find_single_match(data, '<iframe src="(.*?)"')
+        new_url = scrapertools.find_single_match(data, '<IFRAME.*?SRC="(.*?)"')
+        if not new_url: new_url = scrapertools.find_single_match(data, '<iframe.*?src="(.*?)"')
  
-    if new_url: url = new_url
+        if new_url: url = new_url
 
     if url:
         servidor = servertools.get_server_from_url(url)

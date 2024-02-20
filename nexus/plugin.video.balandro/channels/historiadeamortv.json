@@ -3,7 +3,7 @@
   "name": "HistoriadeAmorTv",
   "thumbnail": "historiadeamortv.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["all", "movie", "tvshow"],
@@ -13,5 +13,5 @@
 
   "clusters": ["notice", "years", "countries", "qualityes", "vos", "tales", "anime"],
 
-  "notes": "Web dedicada principalmente en Novelas. Películas por géneros y Series por Géneros"
+  "notes": "Web ANULADA. Web dedicada principalmente en Novelas. Películas por géneros y Series por Géneros"
 }

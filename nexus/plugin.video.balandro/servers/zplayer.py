@@ -21,7 +21,7 @@ def get_video_url(page_url, url_referer=''):
     data = httptools.downloadpage(page_url, headers={"Referer": referer}).data
 
     if "File is no longer available" in data:
-        return 'El fichero no existe o ha sido borrado'
+        return 'Archivo inexistente ó eliminado'
     elif "Video link direct restricted" in data:
         return 'El fichero está restringido'
 

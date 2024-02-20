@@ -15,7 +15,7 @@ def mainlist(item):
 
     item.category = 'TMDB'
 
-    itemlist.append(item.clone( action='show_help', title='[B]Información TMDB[/B]', folder=False, thumbnail=config.get_thumb('help'), text_color='green' ))
+    itemlist.append(item.clone( action='show_help', title='[COLOR green][B]Información[/B][/COLOR] TMDB', folder=False, thumbnail=config.get_thumb('help') ))
 
     itemlist.append(item.clone( action='', title= '[B]Búsquedas a través de [COLOR pink]Personas[/COLOR]:[/B]', text_color='yellowgreen' ))
 
@@ -78,7 +78,7 @@ def mainlist(item):
 
 
 def show_help(item):
-    txt = 'En este apartado se pueden hacer consultas a la web [COLOR gold][B]The Movie Database[/B][/COLOR] (TMDb), un proyecto comunitario que ofrece información de películas, series y personas.'
+    txt = 'En este apartado se pueden hacer consultas a la web [COLOR gold][B]The Movie Database[/B][/COLOR] (TMDB), un proyecto comunitario que ofrece información de películas, series y personas.'
 
     txt += '[CR]'
     txt += '[CR]Se puede buscar la [COLOR moccasin][B]filmografía[/B][/COLOR] de una persona y ver las películas/series dónde ha participado.'
@@ -129,6 +129,8 @@ def lista(item, elementos):
 def listado(item):
     logger.info()
 
+    if not item.page: item.page = 1
+
     tipo = 'movie' if item.search_type == 'movie' else 'tv'
     elementos = tmdb.get_list(tipo, item.extra, item.page)
 
@@ -137,6 +139,8 @@ def listado(item):
 
 def descubre(item):
     logger.info()
+
+    if not item.page: item.page = 1
 
     tipo = 'movie' if item.search_type == 'movie' else 'tv'
     elementos = tmdb.get_discover(tipo, item.extra, item.page)
@@ -147,6 +151,8 @@ def descubre(item):
 def descubre_networks(item):
     logger.info()
 
+    if not item.page: item.page = 1
+
     tipo = 'movie' if item.search_type == 'movie' else 'tv'
     elementos = tmdb.get_discover_networks(tipo, item.extra, item.page)
 
@@ -156,6 +162,8 @@ def descubre_networks(item):
 def generos(item):
     logger.info()
     itemlist = []
+
+    if not item.page: item.page = 1
 
     if item.search_type == 'movie': text_color = 'deepskyblue'
     else: text_color = 'hotpink'
@@ -216,6 +224,8 @@ def networks(item):
 
 def descubre_anios(item):
     logger.info()
+
+    if not item.page: item.page = 1
 
     tipo = 'movie' if item.search_type == 'movie' else 'tv'
     elementos = tmdb.get_discover_anios(tipo, item.extra, item.page)

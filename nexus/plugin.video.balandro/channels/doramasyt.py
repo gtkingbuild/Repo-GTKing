@@ -14,7 +14,7 @@ def mainlist(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title = 'Buscar dorama ...', action = 'search', search_type = 'all', text_color = 'firebrick' ))
+    itemlist.append(item.clone( title = 'Buscar ...', action = 'search', search_type = 'all', text_color = 'yellow' ))
 
     itemlist.append(item.clone( title = 'Películas', action = 'mainlist_pelis', text_color = 'deepskyblue' ))
     itemlist.append(item.clone( title = 'Series', action = 'mainlist_series', text_color = 'hotpink' ))
@@ -40,13 +40,13 @@ def mainlist_series(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
+    itemlist.append(item.clone( title = 'Buscar dorama ...', action = 'search', search_type = 'tvshow', text_color = 'firebrick' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'doramas?categoria=dorama', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Episodios recientes', action = 'last_epis', url = host, search_type = 'tvshow', text_color = 'olive' ))
+    itemlist.append(item.clone( title = 'Episodios recientes', action = 'last_epis', url = host, search_type = 'tvshow', text_color = 'cyan' ))
 
-    itemlist.append(item.clone( title = 'Live action', action = 'list_all', url = host + 'doramas?categoria=live-action', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Live action', action = 'list_all', url = host + 'doramas?categoria=live-action', search_type = 'tvshow', text_color = 'moccasin' ))
 
     itemlist.append(item.clone( title = 'En emisión', action = 'list_all', url = host + 'emision', search_type = 'tvshow' ))
 
@@ -61,7 +61,7 @@ def generos(item):
     itemlist = []
 
     if item.search_type == 'movie': text_color = 'deepskyblue'
-    else: text_color = 'hotpink'
+    else: text_color = 'firebrick'
 
     genres = [
        ['policial', 'Policial'],
@@ -172,6 +172,8 @@ def list_all(item):
         title = re.sub(r'Audio|Latino|Castellano|\((.*?)\)', '', title)
         title = re.sub(r'\s:', ':', title)
 
+        title = title.replace('&#039;', '')
+
         if '<button class="btnone">Pelicula</button>' in match:
             tipo = 'movie' if '<button class="btnone">Pelicula</button>' in match else 'tvshow'
         else: tipo = item.search_type
@@ -221,6 +223,8 @@ def last_epis(item):
     for url, thumb, title, epis in matches:
         if not url or not title: continue
 
+        title = title.replace('&#039;', '')
+
         title = title.strip()
 
         if "capitulo" in title: SerieName = title.split("capitulo")[0]
@@ -247,9 +251,11 @@ def temporadas(item):
     logger.info()
     itemlist = []
 
-    title = 'Sin temporadas'
+    if config.get_setting('channels_seasons', default=True):
+        title = 'Sin temporadas'
 
-    platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#039;', "'").replace('&#8217;', "'"), '[COLOR tan]' + title + '[/COLOR]')
+        platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#039;', "'").replace('&#8217;', "'"), '[COLOR tan]' + title + '[/COLOR]')
+
     item.page = 0
     item.contentType = 'season'
     item.contentSeason = 1
@@ -267,9 +273,8 @@ def episodios(item):
     data = httptools.downloadpage(item.url).data
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
-    patron = '<div class="col-item">.*?<a href="(.*?)".*?<img src="(.*?)".*?<p>(.*?)</p>'
-
-    matches = re.compile(patron, re.DOTALL).findall(data)
+    matches = re.compile('<div class="col-item">.*?<a href="(.*?)".*?<img src="(.*?)".*?<p>(.*?)</p>', re.DOTALL).findall(data)
+    if not matches: matches = re.compile('<div class="col-item.*?<a href="(.*?)".*?<img src="(.*?)".*?<p>(.*?)</p>', re.DOTALL).findall(data)
 
     if item.page == 0 and item.perpage == 50:
         sum_parts = len(matches)
@@ -279,7 +284,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('DoramasYt', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -356,8 +362,7 @@ def findvideos(item):
 
         srv = srv.lower()
 
-        if 'hqq' in srv or 'waaw' in srv or 'netu' in srv: continue
-        elif 'fireload' in srv: continue
+        if 'fireload' in srv: continue
 
         elif 'ok' in srv: srv = 'okru'
         elif 'mixdropco' in srv: srv = 'mixdrop'
@@ -374,7 +379,12 @@ def findvideos(item):
 
             servidor = servertools.corregir_servidor(srv)
 
-            itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', title = '', url = url, other = servidor.capitalize() ))
+            if servidor == 'various': srv = servertools.corregir_other(url)
+
+            if not servidor == 'directo':
+                if srv == servidor: srv = ''
+
+            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, other = srv.capitalize() ))
 
     # Enlaces descarga
 
@@ -401,7 +411,10 @@ def findvideos(item):
 
             servidor = servertools.corregir_servidor(srv)
 
-            itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', title = '', url = url, other = servidor.capitalize() + ' (D)' ))
+            if not servidor == 'directo':
+                if srv == servidor: srv = ''
+
+            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, other = srv.capitalize() + ' (D)' ))
 
     if not itemlist:
         if not ses == 0:
@@ -432,9 +445,6 @@ def play(item):
             return 'Servidor [COLOR tan]Videa[/COLOR] NO Soportado'
 
     if url:
-        if '/hqq.' in url or '/waaw.' in url or '/netu.' in url:
-            return 'Requiere verificación [COLOR red]reCAPTCHA[/COLOR]'
-
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 

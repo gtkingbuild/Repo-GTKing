@@ -18,6 +18,38 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
+LINUX = False
+BR = False
+BR2 = False
+
+if PY3:
+    try:
+       import xbmc
+       if xbmc.getCondVisibility("system.platform.Linux.RaspberryPi") or xbmc.getCondVisibility("System.Platform.Linux"): LINUX = True
+    except: pass
+ 
+try:
+   if LINUX:
+       try:
+          from lib import balandroresolver2 as balandroresolver
+          BR2 = True
+       except: pass
+   else:
+       if PY3:
+           from lib import balandroresolver
+           BR = true
+       else:
+          try:
+             from lib import balandroresolver2 as balandroresolver
+             BR2 = True
+          except: pass
+except:
+   try:
+      from lib import balandroresolver2 as balandroresolver
+      BR2 = True
+   except: pass
+
+
 host = 'https://meganovelas.online/'
 
 
@@ -74,24 +106,33 @@ def do_downloadpage(url, post=None, headers=None):
 
     if not headers: headers = {'Referer': host}
 
+    hay_proxies = False
+    if config.get_setting('channel_srnovelas_proxies', default=''): hay_proxies = True
+
     if not url.startswith(host):
         data = httptools.downloadpage(url, post=post, headers=headers).data
     else:
-        data = httptools.downloadpage_proxy('srnovelas', url, post=post, headers=headers).data
+        if hay_proxies:
+            data = httptools.downloadpage_proxy('srnovelas', url, post=post, headers=headers).data
+        else:
+            data = httptools.downloadpage(url, post=post, headers=headers).data
 
     if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
-        try:
-            from lib import balandroresolver
-            ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
-            if ck_name and ck_value:
-                httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
+        if BR or BR2:
+            try:
+                ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
+                if ck_name and ck_value:
+                    httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
 
                 if not url.startswith(host):
                     data = httptools.downloadpage(url, post=post, headers=headers).data
                 else:
-                    data = httptools.downloadpage_proxy('srnovelas', url, post=post, headers=headers).data
-        except:
-            pass
+                    if hay_proxies:
+                        data = httptools.downloadpage_proxy('srnovelas', url, post=post, headers=headers).data
+                    else:
+                        data = httptools.downloadpage(url, post=post, headers=headers).data
+            except:
+                pass
 
     if '<title>Just a moment...</title>' in data:
         if not '?s=' in url:
@@ -145,9 +186,11 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'novelas-completas/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host, search_type = 'tvshow', text_color = 'olive' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host, search_type = 'tvshow', text_color = 'cyan' ))
 
     itemlist.append(item.clone( title = 'En emisión', action = 'list_all', url = host, group = 'onair', search_type = 'tvshow' ))
+
+    itemlist.append(item.clone( title = 'Programas de TV', action = 'list_all', url = host + 'programas-tv/', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Por país', action = 'paises', search_type = 'tvshow' ))
 
@@ -193,7 +236,9 @@ def list_all(item):
 
         if not url or not title: continue
 
-        ref_serie = url
+        title = title.replace('&#8211;', "").replace('&#8220;', "").replace('&#8221;', "").strip()
+        title = title.replace('&#8216;', "").replace('&#8217;', "").strip()
+        title = title.replace('&amp;', '&')
 
         year = '-'
 
@@ -223,7 +268,8 @@ def list_all(item):
 
         title = title.capitalize()
 
-        itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb, ref_serie = ref_serie, contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': year} ))
+        itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb,
+                                    contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': year} ))
 
         if len(itemlist) >= perpage: break
 
@@ -258,8 +304,6 @@ def last_epis(item):
 
         if not url or not title: continue
 
-        ref_serie = url
-
         year = '-'
 
         try:
@@ -287,8 +331,6 @@ def last_epis(item):
 
         SerieName = SerieName.strip()
 
-        ref_serie = url
-
         thumb = scrapertools.find_single_match(match, 'src="(.*?)"')
 
         epis = scrapertools.find_single_match(url, '-capitulo-(.*?)$')
@@ -301,7 +343,7 @@ def last_epis(item):
 
         title = title.replace('capitulo', '[COLOR goldenrod]Capitulo[/COLOR]').replace('capítulo', '[COLOR goldenrod]Capítulo[/COLOR]')
 
-        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, ref_serie = ref_serie, infoLabels={'year': year},
+        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, infoLabels={'year': year},
                                     contentSerieName = SerieName, contentType = 'episode', contentSeason = 1, contentEpisodeNumber = epis ))
 
     tmdb.set_infoLabels(itemlist)
@@ -318,7 +360,9 @@ def temporadas(item):
     seasons = scrapertools.find_multiple_matches(data, '<span class="su-spoiler-icon">.*?Temporada(.*?)</div>')
 
     if not seasons:
-        platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'sin [COLOR tan]Temporadas[/COLOR]')
+        if config.get_setting('channels_seasons', default=True):
+            platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'sin [COLOR tan]Temporadas[/COLOR]')
+
         item.page = 0
         item.contentType = 'season'
         item.contentSeason = 1
@@ -331,7 +375,9 @@ def temporadas(item):
         title = 'Temporada ' + title.strip()
 
         if len(seasons) == 1:
-            platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+            if config.get_setting('channels_seasons', default=True):
+                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+
             item.page = 0
             item.contentType = 'season'
             item.contentSeason = tempo
@@ -370,7 +416,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('SrNovelas', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -432,87 +479,190 @@ def findvideos(item):
     logger.info()
     itemlist = []
 
+    if item.lang == 'Esp': lang = 'Esp'
+    elif item.lang == 'Vose': lang = 'Vose'
+    else: lang = 'Lat'
+
     data = do_downloadpage(item.url)
 
+    ses = 0
+
     # ~ embeds
-    matches = scrapertools.find_multiple_matches(data, 'data-title="Opción.*?src="(.*?)"')
-    if not matches: matches = scrapertools.find_multiple_matches(data, '<iframe.*?src="(.*?)"')
+    matches = scrapertools.find_multiple_matches(data, 'data-title="Opción.*?data-src="(.*?)"')
+    if not matches: matches = scrapertools.find_multiple_matches(data, '<iframe.*?data-src="(.*?)"')
 
     for url in matches:
+        ses += 1
+
         url = url.strip()
-        ref = item.url
 
-        lang = 'Lat'
+        if '/likessb.' in url: continue
 
-        itemlist.append(Item( channel=item.channel, action = 'play', server = 'directo', url = url, ref = ref, ref_serie = item.ref_serie, language = lang ))
+        if 'api.mycdn.moe/uqlink.php?id=' in url: url = url.replace('api.mycdn.moe/uqlink.php?id=', 'uqload.com/embed-')
 
-    return itemlist
+        elif 'api.mycdn.moe/dourl.php?id=' in url: url = url.replace('api.mycdn.moe/dourl.php?id=', 'dood.to/e/')
 
+        elif 'api.mycdn.moe/dl/?uptobox=' in url: url = url.replace('api.mycdn.moe/dl/?uptobox=', 'uptobox.com/')
 
-def play(item):
-    logger.info()
-    itemlist = []
+        elif url.startswith('http://vidmoly/'): url = url.replace('http://vidmoly/w/', 'https://vidmoly/embed-').replace('http://vidmoly/', 'https://vidmoly/')
 
-    url = item.url
+        elif url.startswith('https://sr.ennovelas.net/'): url = url.replace('/sr.ennovelas.net/', '/waaw.to/')
+        elif url.startswith('https://video.ennovelas.net/'): url = url.replace('/video.ennovelas.net/', '/waaw.to/')
+        elif url.startswith('https://reproductor.telenovelas-turcas.com.es/'): url = url.replace('/reproductor.telenovelas-turcas.com.es/', '/waaw.to/')
+        elif url.startswith('https://novelas360.cyou/player/'): url = url.replace('/novelas360.cyou/player/', '/waaw.to/')
+        elif url.startswith('https://novelas360.cyou/'): url = url.replace('/novelas360.cyou/', '/waaw.to/')
 
-    if '/hqq.' in url or '/waaw.' in url or '/netu.' in url:
-        return 'Requiere verificación [COLOR red]reCAPTCHA[/COLOR]'
+        url = url.replace('&amp;', '&')
 
-    servidor = servertools.get_server_from_url(url)
-    servidor = servertools.corregir_servidor(servidor)
+        servidor = servertools.get_server_from_url(url)
+        servidor = servertools.corregir_servidor(servidor)
 
-    if not servidor == 'direct':
-        url = servertools.normalize_url(servidor, url)
+        other = ''
 
-        itemlist.append(item.clone( url = url, server = servidor ))
+        if servidor == 'various': other = servertools.corregir_other(url)
 
-        httptools.save_cookie('w3tc_referrer', host, 'srnovelas.com')
+        if not servidor == 'directo':
+            itemlist.append(Item( channel=item.channel, action = 'play', server = servidor, url = url, language = lang, other = other.capitalize() ))
 
-        return itemlist
+    # ~ links
 
-    CUSTOM_HEADERS = {}
-    CUSTOM_HEADERS['Cookie'] = 'w3tc_referrer=' + item.ref_serie
-    CUSTOM_HEADERS['Referer'] = item.ref
+    data = do_downloadpage(item.url + '?do=watch')
+    data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
-    httptools.save_cookie('w3tc_referrer', item.ref_serie, 'srnovelas.com')
+    values = scrapertools.find_multiple_matches(data, '<form method="post".*?action="(.*?)".*?<input type="hidden".*?name="(.*?)".*?value="(.*?)"')
 
-    data = httptools.downloadpage(item.url, headers=CUSTOM_HEADERS).data
+    for link, type, value in values:
+        ses += 1
 
-    olid = scrapertools.find_single_match(data, "var OLID = '(.*?)'")
+        if not link: continue
 
-    if olid:
-       new_url = scrapertools.find_single_match(data, 'src="(.*?)"')
+        if type == 'watch': post = {'watch': str(value)}
+        else: post = {'download': str(value)}
 
-       if new_url:
-           new_url = new_url.replace("'+OLID+'", '')
-           new_url = new_url + olid
+        data1 = do_downloadpage(link, post = post, headers = {'Referer': item.url} )
 
-           referer = item.url.replace('/?or=', '/?od=')
+        matches = scrapertools.find_multiple_matches(data1, "<iframe.*?src='(.*?)'")
+        if not matches: matches = scrapertools.find_multiple_matches(data1, '<iframe.*?src="(.*?)"')
+        if not matches: matches = scrapertools.find_multiple_matches(data1, '<td>Server.*?href="(.*?)"')
 
-           resp = httptools.downloadpage(new_url, headers={'Referer': referer}, follow_redirects=False, only_headers=True)
+        for url in matches:
+            if '/wp-admin/' in url: continue
 
-           httptools.save_cookie('w3tc_referrer', host, 'srnovelas.com')
+            if url.startswith('//'): url = 'https:' + url
 
-           if 'location' in resp.headers:
-              url = resp.headers['location']
-              url = unquote(str(url))
-           else:
-              return 'Archivo [COLOR plum]inexistente[/COLOR]'
+            elif 'api.mycdn.moe/uqlink.php?id=' in url: url = url.replace('api.mycdn.moe/uqlink.php?id=', 'uqload.com/embed-')
 
-           if "b'" in str(url): url = scrapertools.find_single_match(str(url), "'(.*?)'")
+            elif 'api.mycdn.moe/dourl.php?id=' in url: url = url.replace('api.mycdn.moe/dourl.php?id=', 'dood.to/e/')
 
-    if url:
-        if '/hqq.' in url or '/waaw.' in url or '/netu.' in url:
-            return 'Requiere verificación [COLOR red]reCAPTCHA[/COLOR]'
+            elif 'api.mycdn.moe/dl/?uptobox=' in url: url = url.replace('api.mycdn.moe/dl/?uptobox=', 'uptobox.com/')
+
+            elif url.startswith('http://vidmoly/'): url = url.replace('http://vidmoly/w/', 'https://vidmoly/embed-').replace('http://vidmoly/', 'https://vidmoly/')
+
+            elif url.startswith('https://sr.ennovelas.net/'): url = url.replace('/sr.ennovelas.net/', '/waaw.to/')
+            elif url.startswith('https://video.ennovelas.net/'): url = url.replace('/video.ennovelas.net/', '/waaw.to/')
+            elif url.startswith('https://reproductor.telenovelas-turcas.com.es/'): url = url.replace('/reproductor.telenovelas-turcas.com.es/', '/waaw.to/')
+            elif url.startswith('https://novelas360.cyou/player/'): url = url.replace('/novelas360.cyou/player/', '/waaw.to/')
+            elif url.startswith('https://novelas360.cyou/'): url = url.replace('/novelas360.cyou/', '/waaw.to/')
+
+            url = url.replace('&amp;', '&')
+
+            servidor = servertools.get_server_from_url(url)
+            servidor = servertools.corregir_servidor(servidor)
+
+            url = servertools.normalize_url(servidor, url)
+
+            other = ''
+            if servidor == 'various': other = servertools.corregir_other(url)
+
+            if type == 'download':
+                if other: other = other + ' D'
+                else: other = 'D'
+
+            if not servidor == 'directo':
+                itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = servidor, language = lang, other = other ))
+
+    t_link = scrapertools.find_single_match(data, 'var vo_theme_dir = "(.*?)"')
+    id_link = scrapertools.find_single_match(data, 'vo_postID = "(.*?)"')
+
+    if t_link and id_link:
+        i = 0
+
+        while i <= 5:
+           data2 = do_downloadpage(t_link + '/temp/ajax/iframe.php?id=' + id_link + '&video=' + str(i), headers = {'Referer': item.url, 'x-requested-with': 'XMLHttpRequest'} )
+
+           data2 = data2.strip()
+
+           if not data2: break
+
+           ses += 1
+
+           u_link = scrapertools.find_single_match(data2, '<iframe.*?src="(.*?)"')
+           if not u_link: u_link = scrapertools.find_single_match(data2, '<IFRAME.*?SRC="(.*?)"')
+
+           if u_link.startswith('//'): u_link = 'https:' + u_link
+
+           if '/wp-admin/' in u_link: u_link = ''
+
+           if u_link:
+               if u_link.startswith('https://sr.ennovelas.net/'): u_link = u_link.replace('/sr.ennovelas.net/', '/waaw.to/')
+               elif u_link.startswith('https://video.ennovelas.net/'): u_link = u_link.replace('/video.ennovelas.net/', '/waaw.to/')
+               elif u_link.startswith('https://reproductor.telenovelas-turcas.com.es/'): u_link = u_link.replace('/reproductor.telenovelas-turcas.com.es/', '/waaw.to/')
+               elif u_link.startswith('https://novelas360.cyou/player/'): u_link = u_link.replace('/novelas360.cyou/player/', '/waaw.to/')
+               elif u_link.startswith('https://novelas360.cyou/'): u_link = u_link.replace('/novelas360.cyou/', '/waaw.to/')
+
+               elif u_link.startswith('https://vk.com/'): u_link = u_link.replace('&amp;', '&')
+
+               u_link = u_link.replace('&amp;', '&')
+
+               servidor = servertools.get_server_from_url(u_link)
+               servidor = servertools.corregir_servidor(servidor)
+
+               u_link = servertools.normalize_url(servidor, u_link)
+
+               other = ''
+               if servidor == 'various': other = servertools.corregir_other(u_link)
+
+               if not servidor == 'directo':
+                   itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = u_link, server = servidor, language = lang, other = other ))
+
+           i += 1
+
+    # ~ Downloads
+    data = do_downloadpage(item.url + '?do=downloads', headers = {'Referer': item.url, 'x-requested-with': 'XMLHttpRequest'})
+
+    matches = scrapertools.find_multiple_matches(data, '<td>Server.*?href="(.*?)"')
+
+    for url in matches:
+        ses += 1
+
+        if '/wp-admin/' in url: continue
+
+        if url.startswith('https://sr.ennovelas.net/'): url = url.replace('/sr.ennovelas.net/', '/waaw.to/')
+        elif url.startswith('https://video.ennovelas.net/'): url = url.replace('/video.ennovelas.net/', '/waaw.to/')
+        elif url.startswith('https://reproductor.telenovelas-turcas.com.es/'): url = url.replace('/reproductor.telenovelas-turcas.com.es/', '/waaw.to/')
+        elif url.startswith('https://novelas360.cyou/player/'): url = url.replace('/novelas360.cyou/player/', '/waaw.to/')
+        elif url.startswith('https://novelas360.cyou/'): url = url.replace('/novelas360.cyou/', '/waaw.to/')
+
+        url = url.replace('&amp;', '&')
 
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 
         url = servertools.normalize_url(servidor, url)
 
-        itemlist.append(item.clone( url = url, server = servidor ))
+        other = ''
+        if servidor == 'various': other = servertools.corregir_other(url)
 
-    httptools.save_cookie('w3tc_referrer', host, 'srnovelas.com')
+        if other: other = other + ' d'
+        else: other = 'd'
+
+        if not servidor == 'directo':
+            itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = servidor, language = lang, other = other ))
+
+    if not itemlist:
+        if not ses == 0:
+            platformtools.dialog_notification(config.__addon_name, '[COLOR tan][B]Sin enlaces Soportados[/B][/COLOR]')
+            return
 
     return itemlist
 
@@ -543,8 +693,6 @@ def list_search(item):
 
         SerieName = SerieName.strip()
 
-        ref_serie = url
-
         title = title.capitalize()
 
         if '-capitulo-' in url:
@@ -554,11 +702,11 @@ def list_search(item):
 
             if not epis: epis = 1
 
-            itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, ref_serie = ref_serie, infoLabels={'year': '-'},
+            itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, infoLabels={'year': '-'},
                                         contentSerieName = SerieName, contentType = 'episode', contentSeason = 1, contentEpisodeNumber = epis ))
 
         else:
-            itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb, ref_serie = ref_serie, infoLabels={'year': '-'}, 
+            itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb, infoLabels={'year': '-'}, 
                                         contentSerieName = SerieName, contentType = 'tvshow' ))
 
     tmdb.set_infoLabels(itemlist)

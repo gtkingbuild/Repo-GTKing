@@ -15,6 +15,7 @@ from core import httptools, scrapertools, tmdb
 
 host = 'https://pasateatorrent.org/'
 
+
 # ~  03/2022 algunas series No hay enlaces
 # ~  04/2022 algunas pelis salta Recaptcha
 
@@ -222,7 +223,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('PasateaTorrent', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -330,7 +332,7 @@ def play(item):
 
     if PY3:
         from core import requeststools
-        data = requeststools.read(item.url, '')
+        data = requeststools.read(item.url, 'pasateatorrent')
     else:
         data = do_downloadpage(item.url)
 

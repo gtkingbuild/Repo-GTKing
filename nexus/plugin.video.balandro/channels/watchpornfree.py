@@ -13,6 +13,27 @@ host = 'https://watchpornfree.info/'
 perpage = 30
 
 
+def do_downloadpage(url, post=None, headers=None):
+    timeout = None
+    if host in url: timeout = config.get_setting('channels_repeat', default=30)
+
+    raise_weberror = True
+    if 'release-year/' in url: raise_weberror = False
+
+    data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout, raise_weberror=raise_weberror).data
+
+    if not data:
+        if url.startswith(host):
+            if not '?s' in url:
+                if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('WatchPornFree', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+
+                timeout = config.get_setting('channels_repeat', default=30)
+
+                data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout, raise_weberror=raise_weberror).data
+
+    return data
+
+
 def mainlist(item):
     return mainlist_pelis(item)
 
@@ -21,20 +42,17 @@ def mainlist_pelis(item):
     logger.info()
     itemlist = []
 
-    descartar_xxx = config.get_setting('descartar_xxx', default=False)
-
-    if descartar_xxx: return itemlist
+    if config.get_setting('descartar_xxx', default=False): return
 
     if config.get_setting('adults_password'):
         from modules import actions
-        if actions.adults_password(item) == False:
-            return itemlist
+        if actions.adults_password(item) == False: return
 
     itemlist.append(item.clone( title = 'Buscar vídeo ...', action = 'search', search_type = 'movie', text_color = 'orange' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'scenes/' ))
 
-    itemlist.append(item.clone( title = 'Últimos', action = 'list_all', url = host + 'category/featured/' ))
+    itemlist.append(item.clone( title = 'Últimos', action = 'list_all', url = host + 'category/featured/', text_color = 'cyan' ))
 
     itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host, text_color = 'deepskyblue' ))
 
@@ -43,7 +61,7 @@ def mainlist_pelis(item):
     itemlist.append(item.clone( title = 'Por estudio', action = 'categorias', url = host, group = 'estudios' ))
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url = host, group = 'categorias'))
 
-    itemlist.append(item.clone( title = 'Por año', action = 'categorias', url = host, group = 'years'))
+    itemlist.append(item.clone( title = 'Por año', action = 'anios', url = host))
 
     return itemlist
 
@@ -52,13 +70,11 @@ def categorias(item):
     logger.info()
     itemlist = []
 
-    data = httptools.downloadpage(item.url).data
+    data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|&nbsp;|<br>', '', data)
 
     if item.group == 'estudios':
         data = scrapertools.find_single_match(data, 'Studios</a>(.*?)</ul>')
-    elif item.group == 'years':
-        data = scrapertools.find_single_match(data, 'Years</a>(.*?)</ul>')
     else:
         data = scrapertools.find_single_match(data, '>Categories</div>(.*?)</ul>')
 
@@ -73,8 +89,21 @@ def categorias(item):
 
     if item.group == 'estudios':
         return sorted(itemlist, key=lambda x: x.title)
-    elif item.group == 'years':
-        return sorted(itemlist, key=lambda x: x.title, reverse=True)
+
+    return itemlist
+
+
+def anios(item):
+    logger.info()
+    itemlist = []
+
+    from datetime import datetime
+    current_year = int(datetime.today().year)
+
+    for x in range(current_year, 1971, -1):
+        url = host + 'release-year/' + str(x)
+
+        itemlist.append(item.clone( title = str(x), url = url, action = 'list_all', text_color='orange' ))
 
     return itemlist
 
@@ -85,7 +114,7 @@ def list_all(item):
 
     if not item.page: item.page = 0
 
-    data = httptools.downloadpage(item.url).data
+    data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|&nbsp;|<br>', '', data)
 
     patron = '<article class="TPost B">.*?<a href="(.*?)">.*?data-lazy-src="(.*?)".*?<div class="Title">(.*?)</div>'
@@ -121,7 +150,7 @@ def findvideos(item):
     logger.info()
     itemlist = []
 
-    data = httptools.downloadpage(item.url).data
+    data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|&nbsp;|<br>|\s{2,}', '', data)
 
     bloque = scrapertools.find_single_match(data, '>Watch Online<(.*?)</div></div></div>')
@@ -133,24 +162,16 @@ def findvideos(item):
     for url in matches:
         ses += 1
 
-        if '/hqq.' in url or '/waaw.' in url or '/netu.' in url: continue
-        elif 'vev.io' in url: continue
+        if 'vev.io' in url: continue
 
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 
         other = ''
-        if servidor == 'directo':
-            if '/yodbox.' in url: other = 'Yodbox'
-            else: continue
 
-        if servidor == 'various':
-            if '/tubeload.' in url: other = 'Tubeload'
-            elif '/mvidoo.' in url: other = 'Mvidoo'
-            elif '/streamhub.' in url: other = 'Streamhub'
-            elif '/filemoon.' in url: other = 'Filemoon'
+        if servidor == 'various': other = servertools.corregir_other(url)
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = 'VO', other = other ))
+        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = 'Vo', other = other ))
 
     # ~  Download
     if '>Download<' in data:
@@ -166,20 +187,26 @@ def findvideos(item):
             elif '/nitro.' in url: continue
             elif '/ddownload.' in url: continue
             elif '/hexupload.' in url: continue
+            elif '/nitroflare.' in url: continue
+            elif '/katfile.' in url: continue
+            elif '/fikper.' in url: continue
+            elif '/turbobit.' in url: continue
+            elif '/hitfile.' in url: continue
 
-            servidor = servertools.get_server_from_url(url)
-            servidor = servertools.corregir_servidor(servidor)
+            if '/drivevideo.' in url:
+                if 'link=' in url: url = scrapertools.find_single_match(url, '.*?link=(.*?)$')
 
-            other = 'D'
-            if servidor == 'directo':
-               if '/yodbox.' in url: other = 'Yodbox'
-               else: continue
+            if url:
+                url = url.replace('//filemoon.sx/download/', '//filemoon.sx/d/')
 
-            if servidor == 'various':
-                if '/tubeload.' in url: other = other + ' Tubeload'
-                elif '/mvidoo.' in url: other = other + ' Mvidoo'
+                servidor = servertools.get_server_from_url(url)
+                servidor = servertools.corregir_servidor(servidor)
 
-            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = 'VO', other = other ))
+                other = 'D'
+
+                if servidor == 'various': other = servertools.corregir_other(url)
+
+                itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = 'Vo', other = other ))
 
 
     if not itemlist:
@@ -199,21 +226,14 @@ def play(item):
     servidor = item.server
 
     if item.server == 'directo':
-        data = httptools.downloadpage(item.url).data
+        data = do_downloadpage(item.url)
 
         url = scrapertools.find_single_match(data, '<source src="(.*?)"')
 
-        if url:
-            servidor = servertools.get_server_from_url(url)
-            servidor = servertools.corregir_servidor(servidor)
+        if not url: return itemlist
 
-    else:
-       if '/drivevideo.' in url:
-           if '?link=' in url:
-               url = scrapertools.find_single_match(url, '.*?link=(.*?)$')
-
-               servidor = servertools.get_server_from_url(url)
-               servidor = servertools.corregir_servidor(servidor)
+        servidor = servertools.get_server_from_url(url)
+        servidor = servertools.corregir_servidor(servidor)
 
     itemlist.append(item.clone(server = servidor, url = url))
 

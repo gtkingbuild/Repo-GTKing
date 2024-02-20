@@ -3,7 +3,7 @@
   "name": "LaCartoonsCc",
   "thumbnail": "lacartoonscc.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["all", "movie", "tvshow"],
@@ -11,7 +11,7 @@
   "categories": ["movie", "tvshow"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["suggested", "news", "rankings", "years", "infantil", "classic", "anime", "producers", "kids"],
+  "clusters": ["news", "rankings", "years", "infantil", "classic", "anime", "producers", "kids"],
 
-  "notes": "Películas por géneros. Series por Géneros."
+  "notes": "Web ANULADA. Películas por géneros. Series por Géneros."
 }

@@ -1,0 +1,17 @@
+{
+  "id": "novelas24",
+  "name": "Novelas24",
+  "thumbnail": "novelas24.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["cast", "lat"],
+
+  "clusters": ["lasts", "producers", "vos", "tales", "docs"],
+
+  "notes": "Web dedicada exclusivamente en Novelas. Series por Géneros."
+}

@@ -102,7 +102,7 @@ def addFavourite(item):
         if item.contentType == 'movie': done, msg = trackingtools.scrap_and_save_movie(item.clone())
         else: done, msg = trackingtools.scrap_and_save_tvshow(item.clone())
     except:
-        msg = '[B][COLOR yellow]Comprobar modulos (.scrap_and_save_....)[/COLOR][/B]'
+        msg = '[B][COLOR yellow]Comprobar modulos (.scrap_and_save_...)[/COLOR][/B]'
 
     if not done:
         platformtools.dialog_ok(config.__addon_name, '[B][COLOR red]No se pudieron añadir los enlaces[/COLOR][/B]', msg)
@@ -147,7 +147,7 @@ def mainlist(item):
 
         itemlist.append(item.clone( title='Gestionar listas', action='mainlist_listas' )) 
 
-    itemlist.append(item.clone( channel='actions', title= '[COLOR chocolate][B]Ajustes[/B][/COLOR] configuración (categoría [COLOR wheat][B]Preferidos[/B][/COLOR])', action = 'open_settings', thumbnail=config.get_thumb('settings') ))
+    itemlist.append(item.clone( channel='actions', title= '[COLOR chocolate][B]Ajustes[/B][/COLOR] preferencias (categoría [COLOR wheat][B]Preferidos[/B][/COLOR])', action = 'open_settings', thumbnail=config.get_thumb('settings') ))
 
     itemlist.append(item.clone( channel='helper', title = '[COLOR green][B]Información[/B][/COLOR] ¿ Cómo funciona ?', action = 'show_help_tracking', thumbnail=config.get_thumb('help') ))
 
@@ -447,7 +447,7 @@ def info_tracking_shows(item):
         dt_scrap = datetime.fromtimestamp(float(lastscrap))
         txt += ' El servicio de búsqueda se ejecuta cada %d horas. Última ejecución: %s.' % (int(interval), dt_scrap.strftime('%d/%m/%Y a las %H:%M'))
     else:
-        txt += ' Servicio de búsqueda desactivado en la configuración del addon.'
+        txt += ' Servicio de búsqueda desactivado en los Ajustesc preferencias (categoria Preferidos).'
 
     for tmdb_id, periodicity, tvdbinfo, lastscrap, title in series:
         txt += '[CR][CR][B][COLOR gold]%s[/COLOR][/B], con tmdb_id %s : ' % (title.encode('utf-8'), tmdb_id.encode('utf-8'))

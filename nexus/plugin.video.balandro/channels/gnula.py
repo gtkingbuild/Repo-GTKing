@@ -58,19 +58,31 @@ def do_downloadpage(url, post=None):
     for ant in ant_hosts:
         url = url.replace(ant, host)
 
+    hay_proxies = False
+    if config.get_setting('channel_gnula_proxies', default=''): hay_proxies = True
+
     timeout = None
     if host in url:
-        if config.get_setting('channel_gnula_proxies', default=''): timeout = config.get_setting('channels_repeat', default=30)
+        if hay_proxies: timeout = config.get_setting('channels_repeat', default=30)
 
     if not url.startswith(host):
         data = httptools.downloadpage(url, post=post, timeout=timeout).data
     else:
-        data = httptools.downloadpage_proxy('gnula', url, post=post, timeout=timeout).data
+        if hay_proxies:
+            data = httptools.downloadpage_proxy('gnula', url, post=post, timeout=timeout).data
+        else:
+            data = httptools.downloadpage(url, post=post, timeout=timeout).data
 
         if not data:
             if '/lista-' in url or '/ver-' in url or '/generos/' in url:
-                platformtools.dialog_notification('Gnula', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
-                data = httptools.downloadpage_proxy('gnula', url, post=post, timeout=timeout).data
+                if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('Gnula', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+
+                timeout = config.get_setting('channels_repeat', default=30)
+
+                if hay_proxies:
+                    data = httptools.downloadpage_proxy('gnula', url, post=post, timeout=timeout).data
+                else:
+                    data = httptools.downloadpage(url, post=post, timeout=timeout).data
 
     return data
 
@@ -100,11 +112,11 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
 
-    itemlist.append(item.clone( title = 'Últimas', action = 'list_last', url = host, group = 'estrenos' ))
+    itemlist.append(item.clone( title = 'Últimas', action = 'list_last', url = host, group = 'estrenos', text_color = 'moccasin' ))
     itemlist.append(item.clone( title = 'Novedades', action = 'list_last', url = host, group = 'novedades' ))
     itemlist.append(item.clone( title = 'Más vistas', action = 'list_last', url = host, group = 'recomendadas' ))
 
-    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = url_estrenos ))
+    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = url_estrenos, text_color='cyan' ))
 
     itemlist.append(item.clone( title = 'Recomendadas', action = 'list_all', url = url_recomendadas ))
 
@@ -129,7 +141,8 @@ def generos(item):
     matches = re.compile('<td>\s*<strong>([^<]+)</strong>\s*\[<a href="([^"]+)"', re.DOTALL).findall(data)
 
     for title, url in matches:
-        if url in [it.url for it in itemlist]: continue # descartar repetidos
+        # ~ descartar repetidos
+        if url in [it.url for it in itemlist]: continue
 
         itemlist.append(item.clone( title=title, url=url, action='list_all', text_color = 'deepskyblue' ))
 
@@ -142,6 +155,7 @@ def idiomas(item):
 
     # ~ Enlaces por idioma según las preferencias del usuario en servidores
     idio = {'Esp': ['Castellano', 'VC'], 'Lat': ['Latino', 'VL'], 'VO': ['Subtitulado', 'VS']}
+
     prefs = config.get_lang_preferences()
     prefs = sorted(prefs.items(), key=lambda p: p[1])
 
@@ -166,7 +180,7 @@ def list_all(item):
     patron += '<img src="([^"]+)"></span></a>(.*?)<br'
     matches = re.compile(patron, re.DOTALL).findall(data)
 
-    # ~  reducir lista según idioma
+    # ~ reducir lista según idioma
     if item.filtro_lang:
         matches = list(filter(lambda m: '(%s)' % item.filtro_lang in m[3], matches))
 
@@ -179,7 +193,8 @@ def list_all(item):
             # ~ descartar palabras demasiado cortas (la, de, los, etc)
             palabras = list(filter(lambda p: len(p) > 3, buscado.split(' ')))
 
-            if len(palabras) == 0: return [] # ~ No hay palabras a buscar
+             # ~ No hay palabras a buscar
+            if len(palabras) == 0: return []
 
             def contiene(texto, palabras):
                 found = False
@@ -205,6 +220,8 @@ def list_all(item):
             elif len(langs) > 0:
                 quality = span
                 break
+
+        title = title.replace('&#8217;', "'")
 
         itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, languages=', '.join(langs), qualities=quality,
                                     contentType='movie', contentTitle=title, infoLabels={'year': year} ))
@@ -235,11 +252,10 @@ def list_last(item):
 
     matches = re.compile('<a href="(.*?)".*?alt="(.*?)".*?src="(.*?)"', re.DOTALL).findall(bloque)
 
-    #if item.filtro_lang:
-    #    matches = list(filter(lambda m: '(%s)' % item.filtro_lang in m[3], matches))
-
     for url, title, thumb in list(matches):
         title = title.replace('Poster pequeño de', '').replace('Poster pequeño', '').strip()
+
+        title = title.replace('&#8217;', "'")
 
         titulo = title
 
@@ -318,8 +334,9 @@ def findvideos(item):
     return itemlist
 
 
-# ~ No hay buscador propio en la web, usan el buscador genérico de google en su site.
 def search(item, texto):
+    # ~ No hay buscador propio en la web, usan el buscador genérico de google en su site.
+
     logger.info()
     itemlist2 = []
     itemlist3 = []
@@ -331,31 +348,32 @@ def search(item, texto):
         item.url = url_estrenos
         itemlist = list_all(item)
 
-        if itemlist:
-            item.url = host
-            item.group = 'estrenos'
-            itemlist2 = list_last(item)
+        if not itemlist:
+            if not config.get_setting('channel_gnula_proxies', default=''):
+               item.url = host
+               item.group = 'estrenos'
+               itemlist2 = list_last(item)
 
-            for it2 in itemlist2:
-                if it2.url not in [it.url for it in itemlist]:
-                    itemlist.append(it2)
+               for it2 in itemlist2:
+                   if it2.url not in [it.url for it in itemlist]:
+                       itemlist.append(it2)
 
-            if itemlist2:
-                item.url = host
-                item.group = 'novedades'
-                itemlist3 = list_last(item)
+               if not itemlist2:
+                   item.url = host
+                   item.group = 'novedades'
+                   itemlist3 = list_last(item)
 
-                for it3 in itemlist3:
-                    if it3.url not in [it.url for it in itemlist]:
-                        itemlist.append(it3)
+                   for it3 in itemlist3:
+                       if it3.url not in [it.url for it in itemlist]:
+                           itemlist.append(it3)
 
-            if not itemlist2 and not itemlist3:
-                item.url = url_recomendadas
-                itemlist4 = list_all(item)
+               if not itemlist2 and not itemlist3:
+                   item.url = url_recomendadas
+                   itemlist4 = list_all(item)
 
-                for it4 in itemlist4:
-                    if it4.url not in [it.url for it in itemlist]:
-                        itemlist.append(it4)
+                   for it4 in itemlist4:
+                       if it4.url not in [it.url for it in itemlist]:
+                           itemlist.append(it4)
 
         return itemlist
 

@@ -22,14 +22,11 @@ def mainlist(item):
     logger.info()
     itemlist = []
 
-    descartar_anime = config.get_setting('descartar_anime', default=False)
-
-    if descartar_anime: return itemlist
+    if config.get_setting('descartar_anime', default=False): return
 
     if config.get_setting('adults_password'):
         from modules import actions
-        if actions.adults_password(item) == False:
-            return itemlist
+        if actions.adults_password(item) == False: return
 
     itemlist.append(item.clone( title = 'Buscar ...', action = 'search', search_type = 'all', text_color = 'yellow' ))
 
@@ -56,7 +53,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'peliculas?page=1', search_type = 'movie' ))
 
-    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'estrenos?page=1', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'estrenos?page=1', search_type = 'movie', text_color = 'cyan' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'movie' ))
@@ -167,13 +164,14 @@ def list_all(item):
 
     if itemlist:
         if '>Ver Más<' in data:
-            next_url = scrapertools.find_single_match(item.url, '(.*?)page=')
-            if next_url:
+            next_page = scrapertools.find_single_match(item.url, '(.*?)page=')
+
+            if next_page:
                 item.page = int(item.page) + 1
                 next_pag = str(item.page)
-                next_url = next_url + 'page=' + str(next_pag)
+                next_page = next_page + 'page=' + str(next_pag)
 
-                itemlist.append(item.clone( title = 'Siguientes ...', url = next_url, action = 'list_all', page = next_pag, text_color = 'coral' ))
+                itemlist.append(item.clone( title = 'Siguientes ...', url = next_page, action = 'list_all', page = next_pag, text_color = 'coral' ))
 
     return itemlist
 
@@ -182,10 +180,11 @@ def temporadas(item):
     logger.info()
     itemlist = []
 
-    # ~ No hay temporadas
-    title = 'Temporadas'
+    if config.get_setting('channels_seasons', default=True):
+        title = 'Temporadas'
 
-    platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'sin [COLOR tan]' + title + '[/COLOR]')
+        platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'sin [COLOR tan]' + title + '[/COLOR]')
+
     item.page = 0
     item.contentType = 'season'
     item.contentSeason = 1
@@ -215,7 +214,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('AnimeFlvIo', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -287,8 +287,6 @@ def findvideos(item):
 
         if url.startswith('//'): url = 'https:' + url
 
-        if '/hqq.' in url or '/waaw.' in url or '/netu.' in url: continue
-
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 
@@ -296,7 +294,10 @@ def findvideos(item):
 
         if servidor == 'directo': continue
 
-        itemlist.append(Item( channel = item.channel, action = 'play', url = url, server = servidor, title = '', language = 'Vose' ))
+        other = ''
+        if servidor == 'various': other = servertools.corregir_other(url)
+
+        itemlist.append(Item( channel = item.channel, action = 'play', url = url, server = servidor, title = '', language = 'Vose', other = other ))
 
     if not itemlist:
         if not ses == 0:

@@ -11,7 +11,7 @@ def get_video_url(page_url, url_referer=''):
     data = httptools.downloadpage(page_url).data
 
     if 'File Not Found' in data or 'File is no longer available' in data:
-        return 'El archivo ha sido eliminado o no existe'
+        return 'Archivo inexistente ó eliminado'
 
     if 'sources: [{file:"' in str(data):
         new_data = data

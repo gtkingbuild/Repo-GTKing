@@ -27,12 +27,11 @@ def mainlist_pelis(item):
     logger.info()
     itemlist = []
 
-    descartar_xxx = config.get_setting('descartar_xxx', default=False)
+    if config.get_setting('descartar_xxx', default=False): return
 
-    if descartar_xxx: return itemlist
     if config.get_setting('adults_password'):
         from modules import actions
-        if actions.adults_password(item) == False: return itemlist
+        if actions.adults_password(item) == False: return
 
     itemlist.append(item.clone( title = 'Buscar vídeo ...', action = 'search', search_type = 'movie', text_color = 'orange' ))
 
@@ -155,6 +154,9 @@ def list_stars(item):
     matches = re.compile('<li><a href="([^"]+)">(.*?)</a>').findall(data)
 
     for url, title in matches:
+        if 'Todas las etiquetas' in title: continue
+        elif '&iacuate;' in title: continue
+
         title = title.replace('&ntilde;', 'ñ')
 
         itemlist.append(item.clone( action = 'pornstars', url = url if url.startswith('http') else host[:-1] + url, title = title, text_color='moccasin' ))
@@ -251,7 +253,7 @@ def findvideos(item):
 
         url = m3u8url.replace("hls.m3u8", url)
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', quality = calidad, url = url, language = 'VO' ))
+        itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', quality = calidad, url = url, language = 'Vo' ))
 
     return sorted(itemlist, key=lambda i: i.quality)
 

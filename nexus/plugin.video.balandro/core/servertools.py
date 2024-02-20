@@ -74,12 +74,19 @@ def normalize_url(serverid, url):
             url = url.encode('utf-8', 'strict')
         elif PY3 and isinstance(url, bytes):
             url = url.decode('utf-8', 'strict')
+
         for match in re.compile(pattern["pattern"], re.DOTALL).finditer(url):
             new_url = pattern["url"]
+
             for x in range(len(match.groups())):
                 new_url = new_url.replace("\\%s" % (x + 1), match.groups()[x])
 
-            if new_url not in server_parameters["find_videos"].get("ignore_urls", []):
+            ignore_urls = server_parameters["find_videos"].get("ignore_urls", [])
+
+            if new_url not in ignore_urls:
+                if str(ignore_urls) == "['https://vk.com/video']":
+                    new_url = url
+
                 found = True
             else:
                 new_url = url
@@ -100,6 +107,8 @@ def get_servers_itemlist(itemlist):
     # Recorre los servidores
     for serverid in get_servers_list().keys():
         server_parameters = get_server_parameters(serverid)
+
+        if server_parameters.get("active") == False: continue
 
         # Recorre los patrones
         for pattern in server_parameters.get("find_videos", {}).get("patterns", []):
@@ -396,16 +405,22 @@ def get_servers_list():
 def corregir_servidor(servidor):
     servidor = servidor.strip().lower()
 
-    if servidor in ['netutv', 'waaw', 'waaw1', 'waav', 'netu', 'hqq', 'megavideo', 'megaplay']: return 'netutv'
+    if servidor in ['netuplayer', 'netutv', 'waaw1', 'waaws', 'waaw', 'netu', 'hqq', 'megavideo', 'megaplay', 'vidxhot', 'player.moovies.in', 'richhioon', 'woffxxx', 'pornjustx', 'doplay', 'younetu', 'stbnetu', 'ncdn22', 'oyohd']: return 'waaw'
+    # ~ if servidor in ['netutv', 'waaw1', 'waaws', 'waaw', 'netu', 'hqq', 'megavideo', 'megaplay', 'vidxhot', 'player.moovies.in', 'richhioon', 'woffxxx', 'pornjustx']: return 'netutv'
+
     elif servidor in ['powvideo', 'povwideo', 'powvldeo', 'powv1deo', 'povw1deo']: return 'powvideo'
     elif servidor in ['streamplay', 'steamplay', 'streamp1ay']: return 'streamplay'
 
-    elif servidor in ['fembed', 'fembed-hd', 'fembeder', 'divload', 'ilovefembed', 'myurlshort', 'jplayer', 'feurl', 'fembedisthebest', 'femax20', 'fcdn', 'fembad', 'pelispng', 'hlshd', 'embedsito', 'mrdhan', 'dutrag', 'fplayer', 'diasfem', 'suzihaza', 'vanfem', 'youtvgratis', 'oceanplay', 'gotovideo.kiev.ua', 'owodeuwu', 'sypl', 'fembed9hd', 'watchse', 'vcdn', 'femoload', 'cubeembed']: return 'fembed'
+    # ~ elif servidor in ['fembed', 'fembed-hd', 'fembeder', 'divload', 'ilovefembed', 'myurlshort', 'jplayer', 'feurl', 'fembedisthebest', 'femax20', 'fcdn', 'fembad', 'pelispng', 'hlshd', 'embedsito', 'mrdhan', 'dutrag', 'fplayer', 'diasfem', 'suzihaza', 'vanfem', 'youtvgratis', 'oceanplay', 'gotovideo.kiev.ua', 'owodeuwu', 'sypl', 'fembed9hd', 'watchse', 'vcdn', 'femoload', 'cubeembed']: return 'fembed'
+
     elif servidor in ['evoplay']: return 'evoload'
-    elif servidor in ['streamta.pe', 'strtapeadblock', 'strtapeadblocker', 'streamtapeadblock', 'streamadblockplus', 'adblockstrtech', 'adblockstrtape', 'adblockstreamtape', 'adblockeronstape', 'playstp', 'strcloud', 'strtpe', 'stape', 'strtape', 'scloud', 'shavetape', 'stapewithadblock', 'streamtapeadblockuser', 'stapadblockuser', 'adblocktape', 'streamta.site', 'streamadblocker']: return 'streamtape'
-    elif servidor in ['sbembed', 'sbembed1', 'sbembed2', 'sbvideo', 'japopav']: return 'sbembed'
+    elif servidor in ['streamta.pe', 'strtapeadblock', 'strtapeadblocker', 'streamtapeadblock', 'streamadblockplus', 'adblockstrtech', 'adblockstrtape', 'adblockstreamtape', 'adblockeronstape', 'playstp', 'strcloud', 'strtpe', 'stape', 'strtape', 'scloud', 'shavetape', 'stapewithadblock', 'streamtapeadblockuser', 'stapadblockuser', 'adblocktape', 'streamta.site', 'streamadblocker', 'stp', 'tapewithadblock.org', 'adblocktape.wiki', 'antiadtape.com', 'tapeblocker.com', 'streamnoads.com']: return 'streamtape'
+
+    # ~ elif servidor in ['sbembed', 'sbembed1', 'sbembed2', 'sbvideo', 'japopav']: return 'sbembed'
+
     elif servidor in ['streams1', 'streams2']: return 'streams3'
-    elif servidor in ['sbplay', 'sbplay1', 'sbplay2', 'pelistop', 'sbfast', 'sbfull', 'ssbstream', 'sbthe', 'sbspeed', 'cloudemb', 'tubesb', 'embedsb', 'playersb', 'sbcloud1', 'watchsb', 'viewsb', 'watchmo', 'streamsss', 'sblanh', 'sbanh', 'sblongvu', 'sbchill', 'sbrity', 'sbhight', 'sbbrisk', 'sbface', 'view345', 'sbone', 'sbasian', 'streaamss', 'lvturbo', 'sbnet', 'sbani', 'sbrapid', 'cinestart', 'vidmoviesb', 'sbsonic', 'sblona', 'likessb']: return 'streamsb'
+
+    # ~ elif servidor in ['sbplay', 'sbplay1', 'sbplay2', 'pelistop', 'sbfast', 'sbfull', 'ssbstream', 'sbthe', 'sbspeed', 'cloudemb', 'tubesb', 'embedsb', 'playersb', 'sbcloud1', 'watchsb', 'viewsb', 'watchmo', 'streamsss', 'sblanh', 'sbanh', 'sblongvu', 'sbchill', 'sbrity', 'sbhight', 'sbbrisk', 'sbface', 'view345', 'sbone', 'sbasian', 'streaamss', 'lvturbo', 'sbnet', 'sbani', 'sbrapid', 'cinestart', 'vidmoviesb', 'sbsonic', 'sblona', 'likessb']: return 'streamsb'
 
     elif servidor in ['slmaxed', 'sltube', 'slwatch']: return 'streamlare'
     elif servidor in ['streamhide', 'playhide', 'guccihide', 'moviesm4u', 'louishide', 'ahvsh', 'movhide']: return 'streamhide'
@@ -413,8 +428,8 @@ def corregir_servidor(servidor):
     elif servidor in ['highload', 'streamon']: return 'highload'
     elif servidor in ['vupload']: return 'vup'
     elif servidor in ['hdvid', 'vidhdthe']: return 'vidhd'
-    elif servidor in ['vtube', 'vidhdthe']: return 'playtube'
-    elif servidor in ['voesx', 'voe-', 'voeun', '-voe', 'reputationsheriffkennethsand', 'fittingcentermondaysunday.com', 'tinycat-voe-fashion.com', 'scatch176duplicities.com']: return 'voe'
+    elif servidor in ['vtube', 'vidhdthe', 'vtplay', 'vtbe']: return 'playtube'
+    elif servidor in ['voesx', 'voe-', 'voeun', '-voe', 'reputationsheriffkennethsand', 'fittingcentermondaysunday.com', 'tinycat-voe-fashion.com', 'scatch176duplicities.com', 'voex', 'yodelswartlike', 'nectareousoverelate', 'apinchcaseation', 'strawberriesporail', 'crownmakermacaronicism', 'cigarlessarefy', 'generatesnitrosate', 'figeterpiazine', 'timberwoodanotia', 'tubelessceliolymph', 'wolfdyslectic', 'metagnathtuggers', 'chromotypic', 'gamoneinterrupted', 'rationalityaloelike', 'valeronevijao']: return 'voe'
 
     elif servidor in ['dai.ly']: return 'dailymotion'
     elif servidor in ['ploud', 'midov']: return 'peertube'
@@ -428,11 +443,11 @@ def corregir_servidor(servidor):
     elif servidor in ['mailru', 'my.mail', 'my.mail.ru', 'my', 'mail', 'mail.ru']: return 'mailru'
 
     elif servidor in ['vidtodo', 'vidto', 'vidtodoo', 'vixtodo']: return 'vidtodo'
-    elif servidor in ['okru', 'ok', 'ok.ru', 'ok server', 'okru.link', 'odnoklassniki']: return 'okru'
+    elif servidor in ['okru', 'ok.ru', 'ok-ru', 'ok server', 'okru.link', 'odnoklassniki', 'okrufer', 'ok']: return 'okru'
     elif servidor in ['streamz', 'streamzz']: return 'streamz'
     elif servidor in ['vevio', 'vev']: return 'vevio'
     elif servidor in ['vsmobi', 'v-s']: return 'vsmobi'
-    elif servidor in ['doodstream', 'dood', 'dooood']: return 'doodstream'
+    elif servidor in ['doodstream', 'dood', 'dooood', 'ds2play', 'doods', 'ds2video', 'd0o0d', 'do0od']: return 'doodstream'
     elif servidor in ['archiveorg', 'archive.org', 'archive']: return 'archiveorg'
     elif servidor in ['youtube', 'youtu']: return 'youtube'
     elif servidor in ['mp4upload', 'mp4up']: return 'mp4upload'
@@ -443,12 +458,79 @@ def corregir_servidor(servidor):
     elif servidor in ['thevideome', 'thevideo']: return 'thevideome'
     elif servidor in ['1fichier', 'onefichier']: return '1fichier'
     elif servidor in ['uploadedto', 'uploaded', 'ul', 'ul.to']: return 'uploadedto'
+
     elif servidor == 'uptostream': return 'uptobox'
     elif servidor == ['pixel']: return 'pixeldrain'
 
-    elif servidor in ['tubeload', 'mvidoo', 'rutube', 'filemoon', 'moonplayer', 'streamhub', 'uploadever', 'videowood', 'yandex', 'yadi.', 'fastupload', 'dropload', 'streamwish', 'krakenfiles', 'hexupload', 'desiupload', 'filelions', 'youdbox', 'yodbox', 'youdboox', 'vudeo', 'embedgram', 'embedwish']: return 'various'
+    elif servidor in ['tubeload', 'mvidoo', 'rutube', 'filemoon', 'moonplayer', 'streamhub', 'uploadever', 'videowood', 'yandex', 'yadi.', 'fastupload', 'dropload', 'streamwish', 'krakenfiles', 'hexupload', 'hexload', 'desiupload', 'filelions', 'youdbox', 'yodbox', 'youdboox', 'vudeo', 'embedgram', 'embedrise', 'embedwish', 'wishembed', 'vidguard', 'vgfplay', 'v6embed', 'vgembed', 'vembed', 'vid-guard', 'strwish', 'azipcdn', 'awish', 'dwish', 'mwish', 'swish', 'lulustream', 'luluvdo', 'lion', 'alions', 'dlions', 'mlions', 'turboviplay', 'emturbovid', 'tuborstb', 'streamvid' 'upload.do', 'uploaddo', 'file-upload', 'wishfast', 'doodporn', 'vidello', 'vidspeed', 'sfastwish', 'fviplions', 'moonmov', 'flaswish', 'vkspeed', 'vkspeed7', 'obeywish', 'twitch', 'vidhidepro', 'hxfile', 'drop', 'embedv', 'vgplayer', 'userload', 'uploadraja']: return 'various'
 
     else: return servidor
+
+
+def corregir_other(srv):
+    srv = srv.lower().strip()
+
+    if 'tubeload' in srv: srv = 'Tubeload'
+    elif 'mvidoo' in srv: srv = 'Mvidoo'
+    elif 'rutube' in srv: srv = 'Rutube'
+    elif 'videowood' in srv: srv = 'Videowood'
+    elif 'yandex' in srv: srv = 'Yandex'
+    elif 'fastupload' in srv: srv = 'Fastupload'
+    elif 'dropload' in srv: srv = 'Dropload'
+    elif 'krakenfiles' in srv: srv = 'Krakenfiles'
+
+    elif 'hexupload' in srv or 'hexload' in srv: srv = 'Hexupload'
+
+    elif 'embedgram' in srv: srv = 'Embedgram'
+    elif 'embedrise' in srv: srv = 'Embedrise'
+    elif 'streamvid' in srv: srv = 'Streamvid'
+
+    elif 'upload.do' in srv or 'uploaddo' in srv: srv = 'Upload'
+
+    elif 'filemoon' in srv: srv = 'Filemoon'
+    elif 'streamhub' in srv: srv = 'Streamhub'
+    elif 'uploadever' in srv: srv = 'Uploadever'
+    elif 'moonmov' in srv: srv = 'Moonplayer'
+    elif 'moonplayer' in srv: srv = 'Moonplayer'
+    elif 'yadi' in srv: srv = 'Yandex'
+
+    elif 'streamwish' in srv or 'strwish' in srv or 'embedwish' in srv or 'wishembed' in srv or 'awish' in srv or 'dwish' in srv or 'mwish' in srv or 'wishfast' in srv or 'doodporn' in srv or 'sfastwish' in srv or 'flaswish' in srv or 'obeywish' in srv: srv = 'Streamwish'
+
+    elif 'desiupload' in srv: srv = 'Desiupload'
+
+    elif 'filelions' in srv or 'azipcdn' in srv or 'alions' in srv or 'dlions' in srv or 'mlions' in srv or 'lion' in srv or 'fviplions' in srv: srv = 'Filelions'
+
+    elif 'youdbox' in srv or 'yodbox' in srv or 'youdboox' in srv: srv = 'Youdbox'
+
+    elif 'vudeo' in srv: srv = 'Vudeo'
+
+    elif 'vidguard' in srv or 'vgfplay' in srv or 'vgembed' in srv or 'v6embed' in srv or 'vembed' in srv or 'vid-guard' in srv or 'embedv' in srv or 'vgplayer' in srv: srv = 'Vidguard'
+
+    elif 'lulustream' in srv or 'luluvdo' in srv: srv = 'Lulustream'
+
+    elif 'turboviplay' in srv or 'emturbovid' in srv or 'tuborstb' in srv: srv = 'Turboviplay'
+
+    elif 'file-upload' in srv: srv = 'Fileupload'
+
+    elif 'vidello' in srv: srv = 'Vidello'
+
+    elif 'vidspeed' in srv or 'vidspeeds' in srv: srv = 'Vidspeed'
+
+    elif 'vkspeed' in srv or 'vkspeed7' in srv: srv = 'Vkspeed'
+
+    elif 'twitch' in srv: srv = 'Twitch'
+
+    elif 'vidhidepro' in srv: srv = 'Vidhidepro'
+
+    elif 'hxfile' in srv: srv = 'Hxfile'
+
+    elif 'drop' in srv: srv = 'Drop'
+
+    elif 'userload' in srv: srv = 'Userload'
+
+    elif 'uploadraja' in srv: srv = 'Uploadraja'
+
+    return srv
 
 
 # Reordenación/Filtrado de enlaces

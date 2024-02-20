@@ -9,6 +9,7 @@ from core import httptools, scrapertools, jsontools
 
 host = 'https://beeg.com/'
 
+
 url_api = 'https://store.externulls.com/'
 
 
@@ -23,14 +24,11 @@ def mainlist_pelis(item):
     logger.info()
     itemlist = []
 
-    descartar_xxx = config.get_setting('descartar_xxx', default=False)
-
-    if descartar_xxx: return itemlist
+    if config.get_setting('descartar_xxx', default=False): return
 
     if config.get_setting('adults_password'):
         from modules import actions
-        if actions.adults_password(item) == False:
-            return itemlist
+        if actions.adults_password(item) == False: return
 
     # ~ itemlist.append(item.clone( title = 'Buscar vídeo ...', action = 'search', search_type = 'movie', text_color = 'orange' ))
 
@@ -45,6 +43,9 @@ def mainlist_pelis(item):
 def categorias(item):
     logger.info()
     itemlist = []
+
+    if item.group == 'chan': text_color = 'tan'
+    else: text_color = 'moccasin'
 
     data = httptools.downloadpage(item.url).data
 
@@ -76,7 +77,7 @@ def categorias(item):
 
         title = title.capitalize()
 
-        itemlist.append(item.clone( action = 'list_all', url = url, title = title, thumbnail = thumb, text_color = 'orange' ))
+        itemlist.append(item.clone( action = 'list_all', url = url, title = title, thumbnail = thumb, text_color = text_color ))
 
     return sorted(itemlist, key=lambda x: x.title)
 
@@ -96,6 +97,7 @@ def list_all(item):
             stuff = video["file"]["stuff"]
 
             title = stuff["sf_name"]
+            stime = video["file"]["fl_duration"]
         except:
             continue
 
@@ -103,7 +105,18 @@ def list_all(item):
 
         url = url_api + 'facts/file/' + str(id)
 
-        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, contentType = 'movie', contentTitle = title, contentExtra='adults' ))
+        time = str(stime)
+
+        try:
+            pos = int(len(time)/2)
+            new = time[:pos] + ":" + time[pos:]
+            time = new
+        except:
+            pass
+
+        titulo = "[COLOR tan]%s[/COLOR] %s" % (time, title)
+
+        itemlist.append(item.clone( action = 'findvideos', url = url, title = titulo, thumbnail = thumb, contentType = 'movie', contentTitle = title, contentExtra='adults' ))
 
     if itemlist:
          page = int(scrapertools.find_single_match(item.url, '&offset=([0-9]+)'))
@@ -128,7 +141,7 @@ def findvideos(item):
     for qlty, url in matches:
         url = 'https://video.beeg.com/' + url
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', quality = qlty, url = url, language = 'VO' ))
+        itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', quality = qlty, url = url, language = 'Vo' ))
 
     return sorted(itemlist, key=lambda it: it.quality)
 

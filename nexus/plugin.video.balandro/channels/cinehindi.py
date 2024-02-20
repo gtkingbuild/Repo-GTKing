@@ -2,7 +2,7 @@
 
 import re
 
-from platformcode import logger
+from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
@@ -30,7 +30,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host, search_type = 'movie' ))
 
-    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'genero/estreno/', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'genero/estreno/', search_type = 'movie', text_color='cyan' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
 
@@ -106,7 +106,11 @@ def findvideos(item):
 
     matches = re.compile('<div id="options-(.*?)"(.*?)</div>', re.DOTALL).findall(data)
 
+    ses = 0
+
     for opt, match in matches:
+        ses += 1
+
         url = scrapertools.find_single_match(match, '<iframe src="(.*?)"')
         if not url: url = scrapertools.find_single_match(match, '<iframe data-src="(.*?)"')
 
@@ -116,9 +120,22 @@ def findvideos(item):
 
         other = other.replace('-Subtitulado', '').strip()
 
-        if other == 'Hqq': continue
+        srv = other.lower().strip()
 
-        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = 'directo', language = lang, other = other ))
+        if other == 'hqq': continue
+
+        servidor = servertools.corregir_servidor(srv)
+
+        other = srv
+
+        if servidor == srv: other = ''
+
+        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = servidor, language = lang, other = other.capitalize() ))
+
+    if not itemlist:
+        if not ses == 0:
+            platformtools.dialog_notification(config.__addon_name, '[COLOR tan][B]Sin enlaces Soportados[/B][/COLOR]')
+            return
 
     return itemlist
 
@@ -130,13 +147,11 @@ def play(item):
     item.url = item.url.replace('&#038;', '&')
 
     data = do_downloadpage(item.url)
+
     url = scrapertools.find_single_match(data, '<iframe.*?src="([^"]+)')
     if not url: url = scrapertools.find_single_match(data, '<IFRAME.*?SRC="([^"]+)')
 
     if url:
-        if '/hqq.' in url or '/waaw.' in url or '/netu.' in url:
-            return 'Requiere verificación [COLOR red]reCAPTCHA[/COLOR]'
-
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 

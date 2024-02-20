@@ -24,7 +24,7 @@ def get_video_url(page_url, url_referer=''):
     data = httptools.downloadpage(page_url).data
 
     if 'File is no longer available as it expired or has been deleted' in data:
-        return 'El archivo no existe o ha sido borrado'
+        return 'Archivo inexistente ó eliminado'
 
     try:
         packed = scrapertools.find_single_match(data, "text/javascript'>(eval.*?)\s*</script>")

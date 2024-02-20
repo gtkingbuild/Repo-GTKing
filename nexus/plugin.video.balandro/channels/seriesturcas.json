@@ -1,0 +1,17 @@
+{
+  "id": "seriesturcas",
+  "name": "SeriesTurcas",
+  "thumbnail": "seriesturcas.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["problematic", "lasts", "vos", "tales"],
+
+  "notes": "Web ANULADA. Web dedicada principalmente en Novelas. Películas y Series"
+}

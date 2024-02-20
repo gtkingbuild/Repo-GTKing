@@ -31,7 +31,7 @@ def mainlist(item):
 
     itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', group = 'vistos' ))
 
-    itemlist.append(item.clone( title = 'Por listas', action = 'list_playlists' ))
+    itemlist.append(item.clone( title = 'Por lista', action = 'list_playlists' ))
 
     return itemlist
 

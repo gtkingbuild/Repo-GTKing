@@ -8,17 +8,8 @@ from core import httptools, scrapertools, jsontools
 
 try:
    from lib.megaserver import Client
-
-   MS2 = False
 except:
    from lib.megaserver2 import Client
-
-   MS2 = True
-
-
-# ~ 31/1/2023  Pendiente porque Aborta si K20.0 Android instalación Limpia
-# ~ if MS2:
-# ~     platformtools.dialog_notification(config.__addon_name, "M2 Resolve Posible Crash")
 
 
 def get_video_url(page_url, url_referer=''):
@@ -43,7 +34,7 @@ def get_video_url(page_url, url_referer=''):
             nro = random.randint(0, 0xFFFFFFFF)
 
             api = 'https://g.api.mega.co.nz/cs?id=%d%s' % (nro, get)
-            resp = httptools.downloadpage(api, post=jsontools.dump([post]))#, headers={'Referer': 'https://mega.nz/'})
+            resp = httptools.downloadpage(api, post=jsontools.dump([post]))
 
             if resp.data == '[-18]': return 'Temporalmente No disponible'
             elif resp.data == '[-17]': return 'Excedida su cuota de transferiencia permitida'

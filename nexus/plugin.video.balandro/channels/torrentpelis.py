@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import sys
+
+PY3 = False
+if sys.version_info[0] >= 3: PY3 = True
+
 import re, base64
 
 from platformcode import config, logger, platformtools
@@ -9,7 +14,42 @@ from core import httptools, scrapertools, tmdb
 from lib import decrypters
 
 
+LINUX = False
+BR = False
+BR2 = False
+
+if PY3:
+    try:
+       import xbmc
+       if xbmc.getCondVisibility("system.platform.Linux.RaspberryPi") or xbmc.getCondVisibility("System.Platform.Linux"): LINUX = True
+    except: pass
+
+try:
+   if LINUX:
+       try:
+          from lib import balandroresolver2 as balandroresolver
+          BR2 = True
+       except: pass
+   else:
+       if PY3:
+           from lib import balandroresolver
+           BR = true
+       else:
+          try:
+             from lib import balandroresolver2 as balandroresolver
+             BR2 = True
+          except: pass
+except:
+   try:
+      from lib import balandroresolver2 as balandroresolver
+      BR2 = True
+   except: pass
+
+
 host = 'https://torrentpelis.org/'
+
+
+_players = ['https://torrentpelis.', '.torrentpelis.']
 
 
 # ~ por si viene de enlaces guardados
@@ -61,33 +101,48 @@ def do_downloadpage(url, post=None, headers=None):
     for ant in ant_hosts:
         url = url.replace(ant, host)
 
+    hay_proxies = False
+    if config.get_setting('channel_torrentpelis_proxies', default=''): hay_proxies = True
+
     timeout = None
     if host in url:
-        if config.get_setting('channel_torrentpelis_proxies', default=''): timeout = config.get_setting('channels_repeat', default=30)
+        if hay_proxies: timeout = config.get_setting('channels_repeat', default=30)
 
     if not url.startswith(host):
         data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
     else:
-        data = httptools.downloadpage_proxy('torrentpelis', url, post=post, headers=headers, timeout=timeout).data
+        if hay_proxies:
+            data = httptools.downloadpage_proxy('torrentpelis', url, post=post, headers=headers, timeout=timeout).data
+        else:
+            data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
 
         if not data:
             if not '?s=' in url:
-                platformtools.dialog_notification('TorrentPelis', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
-                data = httptools.downloadpage_proxy('torrentpelis', url, post=post, headers=headers, timeout=timeout).data
+                if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('TorrentPelis', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+
+                timeout = config.get_setting('channels_repeat', default=30)
+
+                if hay_proxies:
+                    data = httptools.downloadpage_proxy('torrentpelis', url, post=post, headers=headers, timeout=timeout).data
+                else:
+                    data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
 
     if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
-        try:
-            from lib import balandroresolver
-            ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
-            if ck_name and ck_value:
-                httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
+        if BR or BR2:
+            try:
+                ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
+                if ck_name and ck_value:
+                    httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
 
                 if not url.startswith(host):
                     data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
                 else:
-                    data = httptools.downloadpage_proxy('torrentpelis', url, post=post, headers=headers, timeout=timeout).data
-        except:
-            pass
+                    if hay_proxies:
+                        data = httptools.downloadpage_proxy('torrentpelis', url, post=post, headers=headers, timeout=timeout).data
+                    else:
+                        data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+            except:
+                pass
 
     if '<title>Just a moment...</title>' in data:
         if not '?s=' in url:
@@ -247,6 +302,11 @@ def play(item):
     logger.info()
     itemlist = []
 
+    domain_memo = config.get_setting('dominio', 'torrentpelis', default='')
+
+    if domain_memo: host_player = domain_memo
+    else: host_player = host
+
     url = item.url
 
     urlb64 = scrapertools.find_single_match(url, "urlb64=(.*?)$")
@@ -255,10 +315,22 @@ def play(item):
         urlb64 = base64.b64decode(urlb64).decode('utf-8')
 
         if '/enlaces/' in urlb64:
-            if not urlb64.startswith(host):
+            if not host_player in urlb64:
+                for _player in _players:
+                    if _player in urlb64:
+                        url_avis = urlb64
+                        if 'enlaces/' in url_avis: url_avis = urlb64.split('enlaces/')[0]
+
+                        platformtools.dialog_ok(config.__addon_name + ' TorrentPelis', '[COLOR cyan][B]Al parecer el Canal cambió de Dominio.[/B][/COLOR]', '[COLOR yellow][B]' + url_avis + '[/B][/COLOR]', 'Por favor, Reviselo en [COLOR goldenrod][B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]')
+                        return itemlist
+
+            if not urlb64.startswith(host_player):
                 resp = httptools.downloadpage(urlb64, follow_redirects=False, only_headers=True)
             else:
-                resp = httptools.downloadpage_proxy('torrentpelis', urlb64, follow_redirects=False, only_headers=True)
+                if config.get_setting('channel_torrentpelis_proxies', default=''):
+                    resp = httptools.downloadpage_proxy('torrentpelis', urlb64, follow_redirects=False, only_headers=True)
+                else:
+                    resp = httptools.downloadpage(urlb64, follow_redirects=False, only_headers=True)
 
             if 'location' in resp.headers: url = resp.headers['location']
         else:
@@ -266,10 +338,22 @@ def play(item):
             url = scrapertools.find_single_match(data, '<a id="link".*?href="(.*?)"')
 
     elif '/enlaces/' in url:
-        if not url.startswith(host):
+        if not host_player in url:
+            for _player in _players:
+                if _player in url:
+                    url_avis = url
+                    if 'enlaces/' in url_avis: url_avis = url.split('enlaces/')[0]
+
+                    platformtools.dialog_ok(config.__addon_name + ' TorrentPelis', '[COLOR cyan][B]Al parecer el Canal cambió de Dominio.[/B][/COLOR]', '[COLOR yellow][B]' + url_avis + '[/B][/COLOR]', 'Por favor, Reviselo en [COLOR goldenrod][B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]')
+                    return itemlist
+
+        if not url.startswith(host_player):
             resp = httptools.downloadpage(url, follow_redirects=False, only_headers=True)
         else:
-            resp = httptools.downloadpage_proxy('torrentpelis', url, follow_redirects=False, only_headers=True)
+            if config.get_setting('channel_torrentpelis_proxies', default=''):
+                resp = httptools.downloadpage_proxy('torrentpelis', url, follow_redirects=False, only_headers=True)
+            else:
+                resp = httptools.downloadpage(url, follow_redirects=False, only_headers=True)
 
         if 'location' in resp.headers: url = resp.headers['location']
 
@@ -280,7 +364,7 @@ def play(item):
         itemlist.append(item.clone( url = url, server = 'torrent' ))
 
     else:
-        host_torrent = host[:-1]
+        host_torrent = host_player[:-1]
         url_base64 = decrypters.decode_url_base64(url, host_torrent)
 
         if url_base64.startswith('magnet:'):

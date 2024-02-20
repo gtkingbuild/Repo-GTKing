@@ -1,17 +1,17 @@
 {
   "id": "pandrama",
-  "name": "PanDrama",
+  "name": "Pandrama",
   "thumbnail": "pandrama.jpg",
 
-  "active": false,
+  "active": true,
 
   "searchable": false,
-  "search_types": ["tvshow"],
+  "search_types": ["all", "movie", "tvshow"],
 
-  "categories": ["tvshow"],
+  "categories": ["movie", "tvshow"],
   "language": ["lat", "vose"],
 
   "clusters": ["dorama"],
 
-  "notes": "Web ANULADA. Web dedicada exclusivamente al dorama"
+  "notes": "Web dedicada exclusivamente al dorama"
 }

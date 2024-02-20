@@ -45,10 +45,16 @@ def configurar_proxies(item):
 
 
 def do_downloadpage(url, post=None, headers=None):
+    hay_proxies = False
+    if config.get_setting('channel_naranjatorrent_proxies', default=''): hay_proxies = True
+
     if not url.startswith(host):
         data = httptools.downloadpage(url, post=post, headers=headers).data
     else:
-        data = httptools.downloadpage_proxy('naranjatorrent', url, post=post, headers=headers).data
+        if hay_proxies:
+            data = httptools.downloadpage_proxy('naranjatorrent', url, post=post, headers=headers).data
+        else:
+            data = httptools.downloadpage(url, post=post, headers=headers).data
 
     return data
 
@@ -92,9 +98,9 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'peliculas/page/1', search_type = 'movie' ))
 
-    itemlist.append(item.clone( title = 'Lo último', action = 'list_last', url = host + 'ultimos', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Lo último', action = 'list_last', url = host + 'ultimos', search_type = 'movie', text_color='cyan' ))
 
-    itemlist.append(item.clone( title = 'En 4K', action = 'list_all', url = host + 'peliculas/4K/page/1', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'En [COLOR moccasin]4K[/COLOR]', action = 'list_all', url = host + 'peliculas/4K/page/1', search_type = 'movie' ))
 
     itemlist.append(item.clone( title = 'En HD', action = 'list_all', url = host + 'peliculas/hd/page/1', search_type = 'movie' ))
 
@@ -117,7 +123,7 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo (alfabético)', action = 'list_all', url = host + 'series/letra-.', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Lo último', action = 'list_last', url = host + 'ultimos', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Lo último', action = 'list_last', url = host + 'ultimos', search_type = 'tvshow', text_color='cyan' ))
 
     itemlist.append(item.clone( title = 'En HD (alfabético)', action = 'list_all', url = host + 'series/hd/letra-.', search_type = 'tvshow' ))
 
@@ -136,7 +142,7 @@ def mainlist_documentary(item):
 
     itemlist.append(item.clone( title = 'Catálogo (alfabético)', action = 'list_all', url = host + 'documentales/letra-.', search_type = 'documentary'))
 
-    itemlist.append(item.clone( title = 'Lo último', action = 'list_last', url = host + 'ultimos', search_type = 'documentary' ))
+    itemlist.append(item.clone( title = 'Lo último', action = 'list_last', url = host + 'ultimos', search_type = 'documentary', text_color='darkcyan' ))
 
     itemlist.append(item.clone( title = 'Por letra (A - Z)', action = 'alfabetico', url = host + 'documentales', search_type = 'documentary' ))
 
@@ -247,18 +253,28 @@ def list_last(item):
     logger.info()
     itemlist = []
 
-    if item.search_type == "movie": search_type = "PELÍCULAS"
+    if item.search_type == "movie": search_type = "PELICULAS"
     elif item.search_type == "tvshow": search_type = "SERIES"
     elif item.search_type == "documentary": search_type = "DOCUMENTALES"
 
     data = do_downloadpage(item.url)
 
-    match = re.compile("""(?s)<div class="h5 text-dark">%s:<\/div>(.*?)<br><br>""" % (search_type)).findall(data)[0]
-    matches = re.compile(r"""<span class="text-muted">\d+-\d+-\d+<\/span> <a href='([^']+)' class="text-primary">([^<]+)""").findall(match)
+    if not data: return itemlist
+
+    if not '<div class="h5 text-dark">' in data:
+        data = data.replace("<div class='h5 text-dark'>", '<div class="h5 text-dark">')
+        data = data.replace("<span class='text-muted'>", '<span class="text-muted">')
+        data = data.replace("class='text-primary'>", 'class="text-primary">')
+
+    try:
+        bloque = re.compile('<div class="h5 text-dark">%s:<\/div>(.*?)<br><br>' % (search_type)).findall(data)[0]
+        matches = re.compile('<span class="text-muted">.*?' + "<a href='(.*?)'.*?" + 'class="text-primary">(.*?)</a>').findall(bloque)
+    except: return itemlist
 
     for url, title in matches:
         if item.search_type== 'movie':
             if "(" in title: titulo = title.split("(")[0]
+            elif "[" in title: titulo = title.split("[")[0]
             else: titulo = title
 
             itemlist.append(item.clone( action='findvideos', url=host + url, title=title, contentType=item.search_type, contentTitle=titulo, infoLabels={'year': "-"} ))
@@ -375,7 +391,7 @@ def episodios(item):
 
         if url.startswith("//"): url = "https:" + url
 
-        itemlist.append(item.clone( action='findvideos', url=url, title="%s %s" %(title, item.contentSerieName), 
+        itemlist.append(item.clone( action='findvideos', url=url, title="%s %s" %(title, item.contentSerieName),
                                     language = 'Esp', contentSeason = season, contentType = 'episode', contentEpisodeNumber = episode ))
 
     tmdb.set_infoLabels(itemlist)

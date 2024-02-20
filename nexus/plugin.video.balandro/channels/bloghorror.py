@@ -155,7 +155,7 @@ def findvideos(item):
     elif lang == 'Latino': lang = 'Lat'
     else:
         idioma = lang
-        lang = 'VO'
+        lang = 'Vo'
 
     if 'FICHA TECNICA' in data:
         bloque = scrapertools.find_single_match(data, 'FICHA TECNICA(.*?)</div>')
@@ -196,6 +196,8 @@ def findvideos(item):
         url1 = url.replace('&amp;', '&')
 
         other = idioma
+
+        other = other.replace('de toda la vida', '').strip()
 
         if url.endswith('.torrent'): servidor = 'torrent'
         elif url.startswith('magnet:?'):

@@ -2,7 +2,7 @@
 
 import re
 
-from platformcode import config, logger
+from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools
 
@@ -23,21 +23,24 @@ def mainlist_pelis(item):
     logger.info()
     itemlist = []
 
-    descartar_xxx = config.get_setting('descartar_xxx', default=False)
-
-    if descartar_xxx: return itemlist
+    if config.get_setting('descartar_xxx', default=False): return
 
     if config.get_setting('adults_password'):
         from modules import actions
-        if actions.adults_password(item) == False:
-            return itemlist
+        if actions.adults_password(item) == False: return
 
     itemlist.append(item.clone( title = 'Buscar vídeo ...', action = 'search', search_type = 'movie', text_color = 'orange' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'newest/'))
 
+    itemlist.append(item.clone( title = 'En castellano', action = 'list_all', url = host + 'inyourlanguage/es/'))
+
+    itemlist.append(item.clone( title = 'Tendencias', action = 'list_all', url = host + 'hot/' ))
+
     itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = host + 'mostviewed/' ))
     itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = host + 'top/' ))
+
+    itemlist.append(item.clone( title = 'Long Play', action = 'list_all', url = host + 'longest?period=alltime' ))
 
     itemlist.append(item.clone( title = 'Por canal', action = 'canales', url= host + 'channel/top-rated/' ))
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url= host + 'categories/popular/' ))
@@ -60,7 +63,7 @@ def canales(item):
     for url, title, thumb in matches:
          url = host[:-1] + url
 
-         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, contentType = 'movie', contentTitle = title, text_color = 'orange' ))
+         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color = 'orange' ))
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<a id="wp_navNext".*?href="([^"]+)">')
@@ -90,7 +93,7 @@ def categorias(item):
 
          url = host[:-1] + url
 
-         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, contentType = 'movie', contentTitle = title, text_color='tan' ))
+         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color='tan' ))
 
     return sorted(itemlist,key=lambda x: x.title)
 
@@ -111,7 +114,7 @@ def pornstars(item):
     for url, thumb, title in matches:
          url = host[:-1] + url
 
-         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, contentType = 'movie', contentTitle = title, text_color='moccasin' ))
+         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color='moccasin' ))
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<a id="wp_navNext".*?href="([^"]+)">')
@@ -145,6 +148,9 @@ def list_all(item):
 
         duration = scrapertools.find_single_match(duration, '(\d+:\d+)')
 
+        title = title.replace('&ntilde;', 'ñ').replace('&Ntilde;', 'Ñ').replace('&apos;', "'")
+        title = title.replace('&amp;', '').strip()
+
         title = "[COLOR tan]%s[/COLOR] %s" % (duration, title)
 
         itemlist.append(item.clone (action='findvideos', title=title, url=url, thumbnail=thumb, contentType = 'movie', contentTitle = title, contentExtra='adults') )
@@ -169,7 +175,8 @@ def findvideos(item):
     videos = get_video_url(item.url)
 
     if not videos:
-        return 'El archivo no existe o ha sido borrado'
+        platformtools.dialog_notification('RedTube', '[COLOR red]El archivo no existe o ha sido borrado[/COLOR]')
+        return
 
     for vid in videos:
         qlty = vid[0]
@@ -180,18 +187,21 @@ def findvideos(item):
     return itemlist
 
 
-def get_video_url(page_url, url_referer=''):
+def get_video_url(page_url):
     logger.info("(page_url='%s')" % page_url)
 
     video_urls = []
 
     resp = httptools.downloadpage(page_url)
+
     if not resp.sucess or "Not Found" in resp.data or "File was deleted" in resp.data or "This video has been removed" in resp.data or "Video has been flagged for verification" in resp.data or "is no longer available" in resp.data:
         return video_urls
 
     data = resp.data
 
-    url = scrapertools.find_single_match(data,'"format":"mp4","videoUrl":"([^"]+)"').replace("\\", "")
+    url = scrapertools.find_single_match(data,'"format":"mp4","videoUrl":"([^"]+)"')
+
+    url = url.replace("\\", "")
 
     if url.startswith('/'): url = host[:-1] + url
 

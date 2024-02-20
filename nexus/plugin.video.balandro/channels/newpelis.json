@@ -3,7 +3,7 @@
   "name": "NewPelis",
   "thumbnail": "newpelis.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["movie"],

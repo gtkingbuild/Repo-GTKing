@@ -35,7 +35,7 @@ def mainlist_series(item):
 
     itemlist.append(item.clone ( title = 'Catálogo', action = 'list_all', url = url_doramas, search_type = 'tvshow' ))
 
-    itemlist.append(item.clone ( title = 'Últimos episodios', action = 'list_all', url = host + 'ultimoscapitulos.php', group = 'last', search_type = 'tvshow', text_color='olive' ))
+    itemlist.append(item.clone ( title = 'Últimos episodios', action = 'list_all', url = host + 'ultimoscapitulos.php', group = 'last', search_type = 'tvshow', text_color='cyan' ))
 
     itemlist.append(item.clone ( title = 'En emisión', action = 'list_lst',
                                  post = {"countries": "", "generos": "", "years": "", "emition": "[\"Si\"]", "submit": ""}, search_type = 'tvshow' ))
@@ -242,10 +242,11 @@ def temporadas(item):
     logger.info()
     itemlist = []
 
-    # ~ No hay temporadas
-    title = 'Temporadas'
+    if config.get_setting('channels_seasons', default=True):
+        title = 'Temporadas'
 
-    platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'sin [COLOR tan]' + title + '[/COLOR]')
+        platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'sin [COLOR tan]' + title + '[/COLOR]')
+
     item.page = 0
     item.contentType = 'season'
     item.contentSeason = 1
@@ -286,7 +287,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('DoramasQueen', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -378,7 +380,10 @@ def findvideos(item):
         url = servertools.normalize_url(servidor, url)
 
         other = ''
-        if servidor == 'directo': other = '?'
+
+        if servidor == 'various': other = servertools.corregir_other(url)
+
+        elif servidor == 'directo': other = '?'
 
         itemlist.append(Item( channel = item.channel, action = 'play', title = '', server = servidor, url = url, ref = item.url, language = lang, other = other ))
 

@@ -21,7 +21,7 @@ def get_video_url(page_url, url_referer=''):
     data = httptools.downloadpage(page_url).data
 
     if not 'data-stream=' in data and not "source: '" in data:
-        return 'El archivo ha sido eliminado o no existe'
+        return 'Archivo inexistente ó eliminado'
 
     stream = scrapertools.find_single_match(data, 'data-stream="([^"]+)')
     if stream:
@@ -38,6 +38,7 @@ def get_video_url(page_url, url_referer=''):
             b = ord(x) + 47
             if b > 126: url += chr(b - 94)
             else: url += chr(b)
+
         if url: video_urls.append(['mp4', url])
 
     return video_urls

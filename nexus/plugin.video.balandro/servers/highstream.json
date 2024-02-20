@@ -18,6 +18,10 @@
       {
         "pattern": "highstream.tv/(?:embed-|/)([A-z0-9]+)",
         "url": "https://highstream.tv/embed-\\1.html"
+      },
+      {
+        "pattern": "(https://highstream.tv/[A-z0-9]+)",
+        "url": "\\1"
       }
     ]
   }

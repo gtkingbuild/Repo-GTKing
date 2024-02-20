@@ -1,0 +1,17 @@
+{
+  "id": "tiwi",
+  "name": "Tiwi",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "https://tiwi.kiwi/embed-([a-z0-9]+).html",
+        "url": "https://tiwi.kiwi/embed-\\1.html"
+      }
+    ]
+  }
+
+}

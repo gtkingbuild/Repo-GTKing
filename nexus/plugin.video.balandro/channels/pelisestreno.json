@@ -8,10 +8,10 @@
   "searchable": true,
   "search_types": ["movie"],
 
-  "categories": ["movie"],
+  "categories": ["movie", "torrent"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["news", "years", "rankings", "docs", "kids", "vos", "anime"],
+  "clusters": ["torrents", "years", "kids", "vos"],
 
   "notes": "Películas por géneros y año."
 }

@@ -1,10 +1,47 @@
 # -*- coding: utf-8 -*-
 
+import sys
+
+PY3 = False
+if sys.version_info[0] >= 3: PY3 = True
+
 import re
 
 from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
+
+
+LINUX = False
+BR = False
+BR2 = False
+
+if PY3:
+    try:
+       import xbmc
+       if xbmc.getCondVisibility("system.platform.Linux.RaspberryPi") or xbmc.getCondVisibility("System.Platform.Linux"): LINUX = True
+    except: pass
+ 
+try:
+   if LINUX:
+       try:
+          from lib import balandroresolver2 as balandroresolver
+          BR2 = True
+       except: pass
+   else:
+       if PY3:
+           from lib import balandroresolver
+           BR = true
+       else:
+          try:
+             from lib import balandroresolver2 as balandroresolver
+             BR2 = True
+          except: pass
+except:
+   try:
+      from lib import balandroresolver2 as balandroresolver
+      BR2 = True
+   except: pass
 
 
 host = 'https://papayaseries.net/'
@@ -51,33 +88,48 @@ def do_downloadpage(url, post=None, referer=None, raise_weberror=True):
 
     headers = {'Referer': host}
 
+    hay_proxies = False
+    if config.get_setting('channel_seriespapayato_proxies', default=''): hay_proxies = True
+
     timeout = None
     if host in url:
-        if config.get_setting('channel_seriespapayato_proxies', default=''): timeout = config.get_setting('channels_repeat', default=30)
+        if hay_proxies: timeout = config.get_setting('channels_repeat', default=30)
 
     if not url.startswith(host):
         data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
     else:
-        data = httptools.downloadpage_proxy('seriespapayato', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+        if hay_proxies:
+            data = httptools.downloadpage_proxy('seriespapayato', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+        else:
+            data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
 
         if not data:
             if not '?s=' in url:
-                platformtools.dialog_notification('SeriesPapayaTo', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
-                data = httptools.downloadpage_proxy('seriespapayato', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+                if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('SeriesPapayaTo', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+
+                timeout = config.get_setting('channels_repeat', default=30)
+
+                if hay_proxies:
+                    data = httptools.downloadpage_proxy('seriespapayato', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+                else:
+                    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
 
     if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
-        try:
-            from lib import balandroresolver
-            ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
-            if ck_name and ck_value:
-                httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
+        if BR or BR2:
+            try:
+                ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
+                if ck_name and ck_value:
+                    httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
 
                 if not url.startswith(host):
                     data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
                 else:
-                    data = httptools.downloadpage_proxy('seriespapayato', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
-        except:
-            pass
+                   if hay_proxies:
+                       data = httptools.downloadpage_proxy('seriespapayato', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+                   else:
+                       data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+            except:
+                pass
 
     if '<title>Just a moment...</title>' in data:
         if not '?s=' in url:
@@ -244,7 +296,9 @@ def temporadas(item):
         title = 'Temporada ' + tempo
 
         if len(seasons) == 1:
-            platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+            if config.get_setting('channels_seasons', default=True):
+                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+
             item.page = 0
             item.url = url
             item.contentType = 'season'
@@ -280,7 +334,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('SeriesPapayaTo', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -356,11 +411,11 @@ def findvideos(item):
         servidor = servertools.corregir_servidor(servidor)
 
         other = servidor
-        if other == 'cinemaupload': other = ''
 
         url = host + '?trembed=' + data_key + '&trid=' + data_id + '&trtype=2'
 
-        itemlist.append(Item(channel = item.channel, action = 'play', server='directo', title = '', url = url, language = IDIOMAS.get(lang,lang), quality = qlty, quality_num = puntuar_calidad(qlty), other = other ))
+        itemlist.append(Item(channel = item.channel, action = 'play', server='directo', title = '', url = url,
+                             language = IDIOMAS.get(lang,lang), quality = qlty, quality_num = puntuar_calidad(qlty), other = other ))
 
     return itemlist
 

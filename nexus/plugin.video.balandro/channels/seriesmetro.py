@@ -2,7 +2,7 @@
 
 import re
 
-from platformcode import logger, platformtools
+from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
@@ -10,13 +10,48 @@ from core import httptools, scrapertools, servertools, tmdb
 host = 'https://metroseries.net/'
 
 
+# ~ por si viene de enlaces guardados
+ant_hosts = ['https://seriesmetro.com/', 'https://seriesmetro.net/']
+
+domain = config.get_setting('dominio', 'seriesmetro', default='')
+
+if domain:
+    if domain == host: config.set_setting('dominio', '', 'seriesmetro')
+    elif domain in str(ant_hosts): config.set_setting('dominio', '', 'seriesmetro')
+    else: host = domain
+
+
 perpage = 30
+
+
+def acciones(item):
+    logger.info()
+    itemlist = []
+
+    domain_memo = config.get_setting('dominio', 'seriesmetro', default='')
+
+    if domain_memo: url = domain_memo
+    else: url = host
+
+    itemlist.append(Item( channel='actions', action='show_latest_domains', title='[COLOR moccasin][B]Últimos Cambios de Dominios[/B][/COLOR]', thumbnail=config.get_thumb('pencil') ))
+
+    itemlist.append(Item( channel='helper', action='show_help_domains', title='[B]Información Dominios[/B]', thumbnail=config.get_thumb('help'), text_color='green' ))
+
+    itemlist.append(item.clone( channel='domains', action='test_domain_seriesmetro', title='Test Web del canal [COLOR yellow][B] ' + url + '[/B][/COLOR]',
+                                from_channel='seriesmetro', folder=False, text_color='chartreuse' ))
+
+    if domain_memo: title = '[B]Modificar/Eliminar el dominio memorizado[/B]'
+    else: title = '[B]Informar Nuevo Dominio manualmente[/B]'
+
+    itemlist.append(item.clone( channel='domains', action='manto_domain_seriesmetro', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
+
+    platformtools.itemlist_refresh()
+
+    return itemlist
 
 
 def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
     # ~ por si viene de enlaces guardados
-    ant_hosts = ['https://seriesmetro.com/', 'https://seriesmetro.net/']
-
     for ant in ant_hosts:
         url = url.replace(ant, host)
 
@@ -33,11 +68,13 @@ def mainlist_series(item):
     logger.info()
     itemlist = []
 
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
+
     itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action ='list_all', url = host + 'series/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host + 'ultimos-capitulos/', search_type = 'tvshow', text_color = 'olive' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host + 'ultimos-capitulos/', search_type = 'tvshow', text_color = 'cyan' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
 
@@ -213,7 +250,9 @@ def temporadas(item):
         title = 'Temporada ' + '0' + tempo
 
         if len(matches) == 1:
-            platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+            if config.get_setting('channels_seasons', default=True):
+                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+
             item.page = 0
             item.dobject = dobject
             item.dpost = dpost
@@ -258,11 +297,38 @@ def episodios(item):
                 if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
             except: tvdb_id = ''
 
-            if tvdb_id:
+            if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+            elif tvdb_id:
                 if sum_parts > 50:
                     platformtools.dialog_notification('SeriesMetro', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
+            else:
+                item.perpage = sum_parts
 
-            item.perpage = sum_parts
+                if sum_parts >= 1000:
+                    if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]500[/B][/COLOR] elementos ?'):
+                        platformtools.dialog_notification('SeriesMetro', '[COLOR cyan]Cargando 500 elementos[/COLOR]')
+                        item.perpage = 500
+
+                elif sum_parts >= 500:
+                    if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]250[/B][/COLOR] elementos ?'):
+                        platformtools.dialog_notification('SeriesMetro', '[COLOR cyan]Cargando 250 elementos[/COLOR]')
+                        item.perpage = 250
+
+                elif sum_parts >= 250:
+                    if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]125[/B][/COLOR] elementos ?'):
+                        platformtools.dialog_notification('SeriesMetro', '[COLOR cyan]Cargando 125 elementos[/COLOR]')
+                        item.perpage = 125
+
+                elif sum_parts >= 125:
+                    if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]75[/B][/COLOR] elementos ?'):
+                        platformtools.dialog_notification('SeriesMetro', '[COLOR cyan]Cargando 75 elementos[/COLOR]')
+                        item.perpage = 75
+
+                elif sum_parts > 50:
+                    if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos [COLOR cyan][B]Todos[/B][/COLOR] de una sola vez ?'):
+                        platformtools.dialog_notification('SeriesMetro', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
+                        item.perpage = sum_parts
+                    else: item.perpage = 50
 
         for url, title in matches[item.page * item.perpage:]:
             s_e = scrapertools.find_single_match(title, '(\d+)(?:x|X)(\d+)')

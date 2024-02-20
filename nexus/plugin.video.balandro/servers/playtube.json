@@ -3,6 +3,7 @@
   "name": "Playtube",
 
   "active": true,
+  "notes": "Alternative vía: Script.Module.ResolveUrl",
 
   "find_videos": {
     "ignore_urls": [],
@@ -12,12 +13,28 @@
         "url": "https://playtube.ws/embed-\\1.html"
       },
       {
-        "pattern": "((https://(?:vtube|clicknplay).to/embed-[A-z0-9]+.html))",
-        "url": "\\1"
+        "pattern": "https://vtube.(?:to|network|clicknplay)/embed-[A-z0-9]+.html",
+        "url": "https://vtbe.to/\\1"
       },
       {
-        "pattern": "(https://(?:vtube|clicknplay).to/([A-z0-9-]+))",
-        "url": "\\1"
+        "pattern": "https://vtube.(?:to|network|clicknplay)/([A-z0-9-]+)",
+        "url": "https://vtbe.to/\\1"
+      },
+      {
+        "pattern": "https://vtbe.(?:net|to|network)/embed-[A-z0-9]+.html",
+        "url": "https://vtbe.to/\\1"
+      },
+      {
+        "pattern": "https://vtbe.(?:net|to|network)/([A-z0-9-]+)",
+        "url": "https://vtbe.to/\\1"
+      },
+      {
+        "pattern": "https://vtplay.net/embed-[A-z0-9]+.html",
+        "url": "https://vtbe.to/\\1"
+      },
+      {
+        "pattern": "https://vtplay.net/([A-z0-9-]+)",
+        "url": "https://vtbe.to/\\1"
       }
     ]
   }

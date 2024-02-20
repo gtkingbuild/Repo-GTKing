@@ -11,7 +11,7 @@
   "categories": ["movie"],
   "language": ["cast"],
 
-  "clusters": ["suggested", "classic", "rankings", "lists", "categories", "stars", "directors"],
+  "clusters": ["problematic", "classic", "rankings", "lists", "categories", "stars", "directors"],
 
   "notes": "Películas clásicas."
 }

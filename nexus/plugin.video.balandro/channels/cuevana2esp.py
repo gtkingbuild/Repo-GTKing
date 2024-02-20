@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import sys
+
+PY3 = False
+if sys.version_info[0] >= 3: PY3 = True
+
 import re
 
 from platformcode import config, logger, platformtools
@@ -7,7 +12,51 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-host = 'https://www.cuevana2espanol.icu/'
+LINUX = False
+BR = False
+BR2 = False
+
+if PY3:
+    try:
+       import xbmc
+       if xbmc.getCondVisibility("system.platform.Linux.RaspberryPi") or xbmc.getCondVisibility("System.Platform.Linux"): LINUX = True
+    except: pass
+
+try:
+   if LINUX:
+       try:
+          from lib import balandroresolver2 as balandroresolver
+          BR2 = True
+       except: pass
+   else:
+       if PY3:
+           from lib import balandroresolver
+           BR = true
+       else:
+          try:
+             from lib import balandroresolver2 as balandroresolver
+             BR2 = True
+          except: pass
+except:
+   try:
+      from lib import balandroresolver2 as balandroresolver
+      BR2 = True
+   except: pass
+
+
+host = 'https://www.cuevana2espanol.net/'
+
+
+# ~ por si viene de enlaces guardados
+ant_hosts = ['https://cuevana2espanol.com/', 'https://www.cuevana2espanol.icu/']
+
+
+domain = config.get_setting('dominio', 'cuevana2esp', default='')
+
+if domain:
+    if domain == host: config.set_setting('dominio', '', 'cuevana2esp')
+    elif domain in str(ant_hosts): config.set_setting('dominio', '', 'cuevana2esp')
+    else: host = domain
 
 
 def item_configurar_proxies(item):
@@ -42,43 +91,77 @@ def configurar_proxies(item):
     return proxytools.configurar_proxies_canal(item.channel, host)
 
 
-def do_downloadpage(url, post=None, headers=None, follow_redirects=True, only_headers=False, raise_weberror=True):
+def do_downloadpage(url, post=None, headers=None):
     # ~ por si viene de enlaces guardados
-    ant_hosts = ['https://cuevana2espanol.com/']
-
     for ant in ant_hosts:
         url = url.replace(ant, host)
 
-    if not url.startswith(host):
-        resp = httptools.downloadpage(url, post=post, headers=headers, follow_redirects=follow_redirects, only_headers=only_headers, raise_weberror=raise_weberror)
-    else:
-        resp = httptools.downloadpage_proxy('cuevana2esp', url, post=post, headers=headers, follow_redirects=follow_redirects, only_headers=only_headers, raise_weberror=raise_weberror)
+    hay_proxies = False
+    if config.get_setting('channel_cuevana2esp_proxies', default=''): hay_proxies = True
 
-    if '<title>You are being redirected...</title>' in resp.data:
-        try:
-            from lib import balandroresolver
-            ck_name, ck_value = balandroresolver.get_sucuri_cookie(resp.data)
-            if ck_name and ck_value:
-                httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
+    timeout = None
+    if host in url:
+        if hay_proxies: timeout = config.get_setting('channels_repeat', default=30)
+
+    if not url.startswith(host):
+        data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+    else:
+        if hay_proxies:
+            data = httptools.downloadpage_proxy('cuevana2esp', url, post=post, headers=headers, timeout=timeout).data
+        else:
+            data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+
+        if not data:
+            if not 'search?q=' in url:
+                if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('Cuevana2Esp', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+
+                timeout = config.get_setting('channels_repeat', default=30)
+
+                if hay_proxies:
+                    data = httptools.downloadpage_proxy('cuevana2esp', url, post=post, headers=headers, timeout=timeout).data
+                else:
+                    data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+
+    if '<title>You are being redirected...</title>' in data:
+        if BR or BR2:
+            try:
+                ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
+                if ck_name and ck_value:
+                    httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
 
                 if not url.startswith(host):
-                    resp = httptools.downloadpage(url, post=post, headers=headers, follow_redirects=follow_redirects, only_headers=only_headers, raise_weberror=raise_weberror)
+                    data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
                 else:
-                    resp = httptools.downloadpage_proxy('cuevana2esp', url, post=post, headers=headers, follow_redirects=follow_redirects, only_headers=only_headers, raise_weberror=raise_weberror)
-        except:
-            pass
+                    if hay_proxies:
+                        data = httptools.downloadpage_proxy('cuevana2esp', url, post=post, headers=headers, timeout=timeout).data
+                    else:
+                        data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+            except:
+                pass
 
-    if only_headers: return resp.headers
-
-    return resp.data
+    return data
 
 
 def acciones(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( channel='submnuctext', action='_test_webs', title='Test Web del canal [COLOR yellow][B] ' + host + '[/B][/COLOR]',
+    domain_memo = config.get_setting('dominio', 'cuevana2esp', default='')
+
+    if domain_memo: url = domain_memo
+    else: url = host
+
+    itemlist.append(Item( channel='actions', action='show_latest_domains', title='[COLOR moccasin][B]Últimos Cambios de Dominios[/B][/COLOR]', thumbnail=config.get_thumb('pencil') ))
+
+    itemlist.append(Item( channel='helper', action='show_help_domains', title='[B]Información Dominios[/B]', thumbnail=config.get_thumb('help'), text_color='green' ))
+
+    itemlist.append(item.clone( channel='domains', action='test_domain_cuevana2esp', title='Test Web del canal [COLOR yellow][B] ' + url + '[/B][/COLOR]',
                                 from_channel='cuevana2esp', folder=False, text_color='chartreuse' ))
+
+    if domain_memo: title = '[B]Modificar/Eliminar el dominio memorizado[/B]'
+    else: title = '[B]Informar Nuevo Dominio manualmente[/B]'
+
+    itemlist.append(item.clone( channel='domains', action='manto_domain_cuevana2esp', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
 
     itemlist.append(item_configurar_proxies(item))
 
@@ -111,7 +194,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'archives/movies', search_type = 'movie' ))
 
-    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'archives/movies/releases', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'archives/movies/releases', search_type = 'movie', text_color='cyan' ))
 
     itemlist.append(item.clone( title = 'Más vistas', action = 'list_all', url = host + 'archives/movies/top/day', search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Más valoradas', action = 'list_all', url = host + 'archives/movies/top/week', search_type = 'movie' ))
@@ -131,9 +214,9 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'archives/series', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host + 'archives/episodes', search_type = 'tvshow', text_color = 'olive' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host + 'archives/episodes', search_type = 'tvshow', text_color = 'cyan' ))
 
-    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'archives/series/releases', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'archives/series/releases', search_type = 'tvshow', text_color = 'moccasin' ))
 
     itemlist.append(item.clone( title = 'Más vistas', action = 'list_all', url = host + 'archives/series/top/day', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Más valoradas', action = 'list_all', url = host + 'archives/series/top/week', search_type = 'tvshow' ))
@@ -200,6 +283,8 @@ def list_all(item):
         url = host[:-1] + url
 
         thumb = scrapertools.find_single_match(article, ' src="(.*?)"')
+        thumb = thumb.replace('&amp;', '&')
+
         thumb = host[:-1] + thumb
 
         year = scrapertools.find_single_match(article, '<span>(\d{4})</span>')
@@ -260,7 +345,7 @@ def last_epis(item):
         thumb = scrapertools.find_single_match(match, ' src="(.*?)"')
         thumb = host[:-1] + thumb
 
-        temp_epis = scrapertools.find_single_match(match, '</h2></a><span>(.*?)</span>')
+        temp_epis = scrapertools.find_single_match(match, '</h3></a><span>(.*?)</span>')
         temp_epis = temp_epis.replace('<!-- -->', '')
 
         season = scrapertools.find_single_match(temp_epis, '(.*?)x')
@@ -299,7 +384,9 @@ def temporadas(item):
         title = 'Temporada ' + tempo
 
         if len(temporadas) == 1:
-            platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+            if config.get_setting('channels_seasons', default=True):
+                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+
             item.page = 0
             item.contentType = 'season'
             item.contentSeason = tempo
@@ -339,7 +426,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('Cuevana2Esp', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -419,9 +507,19 @@ def findvideos(item):
 
             srv = srv.lower().strip()
 
-            if srv == 'hqq' or srv == 'waaw' or srv == 'netu': continue
+            if srv == 'fembed': continue
+            elif srv == 'streamsb': continue
 
-            itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', title = '', url = link, quality = qlty, language = 'Lat', other = srv ))
+            elif srv == 'ok-ru': srv = 'okru'
+
+            servidor = servertools.corregir_servidor(srv)
+
+            other = srv
+
+            if servidor == srv: other = ''
+
+            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = link,
+                                  quality = qlty, language = 'Lat', other = other.capitalize() ))
 
 
     if '"spanish":' in str(block):
@@ -434,9 +532,19 @@ def findvideos(item):
 
             srv = srv.lower().strip()
 
-            if srv == 'hqq' or srv == 'waaw' or srv == 'netu': continue
+            if srv == 'fembed': continue
+            elif srv == 'streamsb': continue
 
-            itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', title = '', url = link, quality = qlty, language = 'Esp', other = srv ))
+            elif srv == 'ok-ru': srv = 'okru'
+
+            servidor = servertools.corregir_servidor(srv)
+
+            other = srv
+
+            if servidor == srv: other = ''
+
+            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = link,
+                                  quality = qlty, language = 'Esp', other = other.capitalize() ))
 
     if '"english":' in str(block):
         bloque = scrapertools.find_single_match(str(block), '"english":(.*?)]')
@@ -448,9 +556,19 @@ def findvideos(item):
 
             srv = srv.lower().strip()
 
-            if srv == 'hqq' or srv == 'waaw' or srv == 'netu': continue
+            if srv == 'fembed': continue
+            elif srv == 'streamsb': continue
 
-            itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', title = '', url = link, quality = qlty, language = 'Vose', other = srv ))
+            elif srv == 'ok-ru': srv = 'okru'
+
+            servidor = servertools.corregir_servidor(srv)
+
+            other = srv
+
+            if servidor == srv: other = ''
+
+            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = link,
+                                  quality = qlty, language = 'Vose', other = other.capitalize() ))
 
     # ~ Descargas
     if '"downloads":' in str(block):
@@ -464,13 +582,24 @@ def findvideos(item):
             srv = srv.lower().strip()
 
             if srv == '1fichier': continue
+            elif srv == 'fembed': continue
+            elif srv == 'streamsb': continue
+
+            elif srv == 'ok-ru': srv = 'okru'
 
             if lang == 'Latino': lang = 'Lat'
             elif lang == 'Español': lang = 'Esp'
             elif lang == 'Subtitulado': lang = 'Vose'
             else: lang = '?'
 
-            itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', title = '', url = link, quality = qlty, language = lang, other = srv + ' D'))
+            servidor = servertools.corregir_servidor(srv)
+
+            other = srv
+
+            if servidor == srv: other = ''
+
+            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = link,
+                                  quality = qlty, language = lang, other = other.capitalize() + ' D'))
 
     if not itemlist:
         if not ses == 0:
@@ -493,13 +622,10 @@ def play(item):
 
     if new_url: url = new_url
 
-    if '/cinestart.streams3.com/' in url: url = ''
+    if '/cinestart.' in url: url = ''
     elif '/player.php?' in url: url = ''
 
     if url:
-        if '/hqq.' in url or '/waaw.' in url or '/netu.' in url:
-            return 'Requiere verificación [COLOR red]reCAPTCHA[/COLOR]'
-
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 

@@ -4,7 +4,7 @@ import os, xbmc, xbmcgui
 
 from platformcode import config, logger, platformtools
 from core.item import Item
-from core import channeltools, scrapertools
+from core import channeltools, scrapertools, filetools, jsontools
 
 
 color_list_prefe = config.get_setting('channels_list_prefe_color', default='gold')
@@ -53,7 +53,7 @@ def mainlist(item):
     if channels_search_excluded_documentaries: tot_opt_anular += 1
 
     if config.get_setting('channels_link_main', default=True):
-        itemlist.append(item.clone( action = 'channels_excluded', title='Excluir canales en las búsquedas de [COLOR yellow][B]Películas y/o Series[/B][/COLOR]',
+        itemlist.append(item.clone( action = 'channels_excluded', title='Excluir canales en las búsquedas de [COLOR yellow][B]Películas y/ó Series[/B][/COLOR]',
                                     extra = 'mixed', folder = False ))
 
     itemlist.append(item.clone( action = 'channels_excluded', title='Excluir canales en las búsquedas de [COLOR deepskyblue][B]Películas[/B][/COLOR]',
@@ -71,7 +71,7 @@ def mainlist(item):
 
     if config.get_setting('channels_link_main', default=True):
         if channels_search_excluded_mixed:
-            itemlist.append(item.clone( title = '[B]Anular las exclusiones para [COLOR yellow]Películas y/o Series[/COLOR][/B]', action = 'channels_excluded_del',
+            itemlist.append(item.clone( title = '[B]Anular las exclusiones para [COLOR yellow]Películas y/ó Series[/COLOR][/B]', action = 'channels_excluded_del',
                                         extra = 'mixed', folder = False, text_color='coral' ))
 
     if channels_search_excluded_movies:
@@ -95,6 +95,9 @@ def mainlist(item):
             itemlist.append(item.clone( title = '[B]Anular [COLOR green]Todas[/COLOR][/B] las exclusiones', action = 'channels_excluded_del',
                                         extra= 'all', folder = False, text_color='yellow' ))
 
+    itemlist.append(item.clone( title='[B]Quitar otros posibles canales excluidos en las búsquedas de [COLOR green]Todos[/B]', action='del_no_searchables',
+                                extra='all', text_color='red' ))
+
     platformtools.itemlist_refresh()
 
     return itemlist
@@ -108,12 +111,37 @@ def mainlist2(item):
                                 extra = 'included', folder = False ))
 
     if channels_search_included:
-        itemlist.append(item.clone( title = '[COLOR coral][B]Anular Todos los canales[/COLOR][/B] En las búsquedas de Solo determinados canales',
+        itemlist.append(item.clone( title = '[COLOR coral][B]Anular Todos los canales[/COLOR][/B] en las búsquedas de Solo determinados canales',
                                     action = 'channels_excluded_del', extra = 'included', folder = False, text_color='yellow' ))
 
     platformtools.itemlist_refresh()
 
     return itemlist
+
+
+def del_no_searchables(item):
+    logger.info()
+
+    filtros = {'searchable': True}
+
+    ch_list = channeltools.get_channels_list(filtros=filtros)
+
+    i = 0
+
+    if ch_list:
+       txt_ch = ''
+
+       for ch in ch_list:
+           cfg_searchable_channel = 'channel_' + ch['id'] + '_no_searchable'
+
+           if not config.get_setting(cfg_searchable_channel, default=False): continue
+
+           if platformtools.dialog_yesno(config.__addon_name + ' [B][COLOR yellow]' + ch['id'].capitalize() + '[/B][/COLOR]', '[COLOR red][B]¿ Confirma Quitar el canal excluido de búsquedas ?[/B][/COLOR]'):
+               i += 1
+               config.set_setting(cfg_searchable_channel, False)
+
+    if i == 0:
+        platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Sin canales de este tipo[/B][/COLOR]' % color_adver)
 
 
 def only_animes(item):
@@ -299,12 +327,17 @@ def with_proxies(item):
 
         if item.memo_proxies:
             if channels_proxies_memorized:
+                channel_json = ch['id'] + '.json'
+                filename_json = os.path.join(config.get_runtime_path(), 'channels', channel_json)
+                existe = filetools.exists(filename_json)
+                if not existe: continue
+
                 el_memorizado = "'" + ch['id'] + "'"
                 if not el_memorizado in str(channels_proxies_memorized):
                     if not config.get_setting(cfg_proxies_channel, default=''): continue
                 else:
                    if item.memo_proxies:
-                        if not config.get_setting(cfg_proxies_channel, default=''): continue
+                       if not config.get_setting(cfg_proxies_channel, default=''): continue
             else:
                 if not config.get_setting(cfg_proxies_channel, default=''): continue
 
@@ -370,7 +403,7 @@ def no_actives(item):
         filtros = {'searchable': False}
     else:
         cabecera = 'Canales Desactivados'
-        filtros = {'searchable': True}
+        filtros = {}
 
     opciones_channels = []
     canales_no_actives = []
@@ -578,8 +611,8 @@ def only_torrents(item):
 def channels_status(item):
     logger.info()
 
-    if item.des_rea: cabecera = 'Desactivar o Re-activar'
-    else: cabecera = 'Marcar o Des-marcar Preferidos'
+    if item.des_rea: cabecera = 'Desactivar ó Re-activar'
+    else: cabecera = 'Marcar ó Des-marcar Preferidos'
 
     filtros = {}
 
@@ -590,6 +623,9 @@ def channels_status(item):
     ch_list = channeltools.get_channels_list(filtros=filtros)
 
     for ch in ch_list:
+        if not config.get_setting('mnu_adultos', default=True):
+            if '+18' in ch['notes']: continue
+
         info = ''
 
         if ch['status'] == 1: info = info + '[B][COLOR %s][I] Preferido [/I][/B][/COLOR]' % color_list_prefe
@@ -604,24 +640,26 @@ def channels_status(item):
         cfg_proxies_channel = 'channel_' + ch['id'] + '_proxies'
         if config.get_setting(cfg_proxies_channel, default=''): info = info + '[B][COLOR %s] Proxies [/B][/COLOR]' % color_list_proxies
 
-        if '+18' in ch['notes']: info = info + '[COLOR pink][B] Adultos [/B][/COLOR]'
-        elif 'anime' in ch['clusters']: info = info + '[COLOR fuchsia][B] Anime [/B][/COLOR]'
-        elif 'torrents' in ch['clusters']: info = info + '[COLOR violet][B] Torrents [/B][/COLOR]'
+        if '+18' in ch['notes']: info = info + '[COLOR orange][B] Adultos [/B][/COLOR]'
+        elif 'anime' in ch['clusters']: info = info + '[COLOR springgreen][B] Anime [/B][/COLOR]'
+        elif 'torrents' in ch['clusters']: info = info + '[COLOR blue][B] Torrents [/B][/COLOR]'
         elif 'dorama' in ch['clusters']: info = info + '[COLOR firebrick][B] Doramas [/B][/COLOR]'
 
         tipos = ch['search_types']
         tipos = str(tipos).replace('[', '').replace(']', '').replace("'", '')
-        tipos = str(tipos).replace('movie', 'Películas').replace('tvshow', 'Series').replace('documentary', 'Documentales').replace('all,', '').strip()
+        tipos = str(tipos).replace('movie', '[COLOR deepskyblue]Películas[/COLOR]').replace('tvshow', '[COLOR hotpink]Series[/COLOR]').replace('documentary', '[COLOR cyan]Documentales[/COLOR]').replace('all,', '').strip()
+
+        if '+18' in ch['notes']: tipos = str(tipos).replace('[COLOR deepskyblue]Películas[/COLOR]', '[COLOR teal]Vídeos[/COLOR]')
 
         if info: info = info + '  '
-        info = info + '[COLOR mediumspringgreen][B]' + tipos + '[/B][/COLOR]'
+        info = info + '[B]' + tipos + '[/B]'
 
         idiomas = ch['language']
         idiomas = str(idiomas).replace('[', '').replace(']', '').replace("'", '')
-        idiomas = str(idiomas).replace('cast', 'Esp').replace('lat', 'Lat').replace('vose', 'Vose').replace('vo', 'VO')
+        idiomas = str(idiomas).replace('cast', 'Esp').replace('lat', 'Lat').replace('vose', 'Vose').replace('vo', 'Vo').replace('vos', 'Vos')
 
         if info: info = info + '  '
-        info = info + '[COLOR mediumaquamarine]' + idiomas + '[/COLOR]'
+        info = info + '[COLOR coral]' + idiomas + '[/COLOR]'
 
         it = xbmcgui.ListItem(ch['name'], info)
         it.setArt({'thumb': ch['thumbnail']})
@@ -629,7 +667,7 @@ def channels_status(item):
 
         channels_ids.append(ch['id'])
 
-    ret = xbmcgui.Dialog().multiselect('Personalizar canales [COLOR yellow]' + cabecera + '[/COLOR]', opciones, preselect=preselect, useDetails=True)
+    ret = xbmcgui.Dialog().multiselect('Personalizar Canales [COLOR yellow]' + cabecera + '[/COLOR]', opciones, preselect=preselect, useDetails=True)
 
     if ret is None: return
 
@@ -704,7 +742,7 @@ def channels_excluded(item):
         cabecera = 'Torrents'
         filtros = {'categories': 'torrent', 'searchable': True}
     elif item.extra == 'mixed':
-        cabecera = 'Películas y/o Series'
+        cabecera = 'Películas y/ó Series'
         filtros = {'searchable': True}
     else:
         cabecera = 'Todos'
@@ -787,7 +825,11 @@ def channels_excluded(item):
 
         if channels_search:
             channels_preselct = str(channels_search).replace('[', '').replace(']', ',')
-            if ("'" + ch['id'] + "'") in str(channels_preselct): info = info + '[COLOR violet][B]EXCLUIDO [/B][/COLOR]'
+
+            if item.extra == 'included': tex_ch = '[COLOR yellow][B]INCLUIDO [/B][/COLOR]'
+            else: tex_ch = '[COLOR violet][B]EXCLUIDO [/B][/COLOR]'
+
+            if ("'" + ch['id'] + "'") in str(channels_preselct): info = info + tex_ch
 
         if ch['status'] == 1: info = info + '[B][COLOR %s][I] Preferido [/I][/B][/COLOR]' % color_list_prefe
         elif ch['status'] == -1: info = info + '[B][COLOR %s][I] Desactivado [/I][/B][/COLOR]' % color_list_inactive
@@ -838,7 +880,8 @@ def channels_excluded_del(item):
     logger.info()
 
     if item.extra == 'included':
-        canales_excluidos = channels_search_included
+        cfg_includes = 'search_included_all'
+        canales_excluidos = config.get_setting(cfg_includes, default='')
         txt = 'Todos'
 
     elif item.extra == 'movies':
@@ -855,7 +898,7 @@ def channels_excluded_del(item):
         txt = 'Torrents'
     elif item.extra == 'mixed':
         canales_excluidos = channels_search_excluded_mixed
-        txt = 'Películas y/o Series'
+        txt = 'Películas y/ó Series'
     else:
         canales_excluidos = channels_search_excluded_all
         txt = 'Películas, Series y Documentales'
@@ -865,18 +908,48 @@ def channels_excluded_del(item):
     txt_excluidos = ''
 
     for orden_nro, id_canal in canales_excluidos:
+        if not id_canal: continue
+
         if not txt_excluidos: txt_excluidos = id_canal.capitalize()
         else: txt_excluidos += (', ' + id_canal.capitalize())
 
+        if item.only_one:
+            if not id_canal == item.from_channel: continue
+
+            if item.extra == 'included':
+               if platformtools.dialog_yesno(config.__addon_name + ' [COLOR greenyellow][B]Inclusiones[/B][/COLOR]', '[COLOR plum]' + id_canal + '[/COLOR]', '[COLOR red]¿ Desea Quitar el canal memorizado de Solo Buscar en ? [COLOR yellow] ' + txt + '[/COLOR]'):
+                   channels_search_included = config.get_setting(cfg_includes, default='')
+
+                   el_memorizado = "'" + id_canal + "'"
+
+                   if el_memorizado in channels_search_included:
+                       channels_search_included = str(channels_search_included).replace(el_memorizado, '').strip()
+                       config.set_setting(cfg_includes, channels_search_included)
+
+                   platformtools.itemlist_refresh()
+                   return
+
+    if not item.extra == 'included':
+        if txt_excluidos:
+            if not platformtools.dialog_yesno(config.__addon_name + ' [COLOR cyan][B]Exclusiones[/B][/COLOR]', '[COLOR plum][B]' + str(txt_excluidos) + '[/B][/COLOR]', '[COLOR red][B]¿ Desea anular los canales memorizados para excluirlos en las búsquedas de ? [COLOR yellow] ' + txt + '[/B][/COLOR]'):
+                return
+
     if item.extra == 'included':
-        if not platformtools.dialog_yesno(config.__addon_name + ' [COLOR greenyellow][B]Inclusiones[/B][/COLOR]', '[COLOR plum]' + str(txt_excluidos) + '[/COLOR]', '[COLOR red]¿ Desea anular los canales memorizados para Incluirlos de Nuevo en las búsquedas de ? [COLOR yellow] ' + txt + '[/COLOR]'):
-            return
+        if txt_excluidos:
+            if not platformtools.dialog_yesno(config.__addon_name + ' [COLOR yellow][B]Inclusiones[/B][/COLOR]', '[COLOR plum][B]' + str(txt_excluidos) + '[/B][/COLOR]', '[COLOR red][B]¿ Desea anular los canales memorizados para Incluirlos de Nuevo en las búsquedas de ? [COLOR yellow] ' + txt + '[/B][/COLOR]'):
+                return
 
-    else:
-        if not platformtools.dialog_yesno(config.__addon_name + ' [COLOR cyan][B]Exclusiones[/B][/COLOR]', '[COLOR plum]' + str(txt_excluidos) + '[/COLOR]', '[COLOR red]¿ Desea anular los canales memorizados para excluirlos en las búsquedas de ? [COLOR yellow] ' + txt + '[/COLOR]'):
-            return
+        channels_search_included = config.get_setting(cfg_includes, default='')
 
-    if item.extra == 'included': config.set_setting(cfg_search_included, '')
+        if txt_excluidos:
+            el_memorizado = "'" + txt_excluidos + "'"
+            el_memorizado = el_memorizado.lower().strip()
+
+            if el_memorizado in channels_search_included:
+                channels_search_included = str(channels_search_included).replace(el_memorizado, '').strip()
+                config.set_setting(cfg_includes, channels_search_included)
+        else:
+            config.set_setting(cfg_search_included, '')
 
     elif item.extra == 'movies': config.set_setting(cfg_search_excluded_movies, '')
     elif item.extra == 'tvshows': config.set_setting(cfg_search_excluded_tvshows, '')
@@ -955,8 +1028,6 @@ def show_servers_list(item):
 
     servers_discarded = config.get_setting('servers_discarded', default='')
     if servers_discarded: servers_discarded_list = servers_discarded.lower().replace(' ', '').split(',')
-
-    from core import filetools, jsontools
 
     if item.tipo == 'activos':
         cabecera = 'Servidores Disponibles'
@@ -1103,6 +1174,7 @@ def show_channels_list(item):
         elif item.mismatched == True: filtros = {'clusters': 'mismatched'}
         elif item.problematics == True: filtros = {'clusters': 'problematic'}
         elif item.notices == True: filtros = {'clusters': 'notice'}
+        elif item.onlyone == True: filtros = {'clusters': 'onlyone'}
         else: filtros = {}
 
         ch_list = channeltools.get_channels_list(filtros=filtros)
@@ -1132,6 +1204,8 @@ def show_channels_list(item):
             if not 'problematic' in ch['clusters']: continue
         elif item.notices:
             if not 'notice' in ch['clusters']: continue
+        elif item.onlyone:
+            if not 'onlyone' in ch['clusters']: continue
 
         cfg_proxies_channel = 'channel_' + ch['id'] + '_proxies'
 
@@ -1139,7 +1213,12 @@ def show_channels_list(item):
 
         if ch['active'] == False:
             if 'temporary' in ch['clusters']: info = info + '[COLOR pink][B] Temporalmente Inactivo [/B][/COLOR]'
-            else: info = info + '[COLOR red][B] Inactivo [/B][/COLOR]'
+            else:
+               info = info + '[COLOR red][B] Inactivo [/B][/COLOR]'
+               if 'web anulada.' in ch['notes'].lower(): info = info + '[COLOR pink][B] ANULADO[/B][/COLOR]'
+               elif 'web cerrada.' in ch['notes'].lower(): info = info + '[COLOR gold][B] CERRADO[/B][/COLOR]'
+               elif 'canal privado' in ch['notes'].lower(): info = info + '[COLOR grey][B] PRIVADO[/B][/COLOR]'
+
         elif ch['searchable'] == False: info = info + '[COLOR coral][B] No búsquedas [/B][/COLOR]'
         elif channels_search:
             if no_proxies:
@@ -1218,6 +1297,7 @@ def show_channels_list(item):
         elif item.mismatched == True: cabecera = 'Canales [COLOR yellow]Incompatibles con su Media Center[/COLOR]'
         elif item.problematics == True: cabecera = 'Canales [COLOR yellow]Problemáticos[/COLOR]'
         elif item.notices == True: cabecera = 'Canales con [COLOR yellow]Aviso CloudFlare Protection[/COLOR]'
+        elif item.onlyone == True: cabecera = 'Canales con [COLOR yellow]Un Único Servidor[/COLOR]'
         else: cabecera = 'Canales [COLOR yellow]Disponibles[/COLOR]'
 
     ret = platformtools.dialog_select(cabecera, opciones_channels, useDetails=True)
@@ -1230,8 +1310,6 @@ def show_clients_torrent(item):
     logger.info()
 
     cliente_torrent = config.get_setting('cliente_torrent', default='Seleccionar')
-
-    from core import jsontools
 
     torrent_clients = jsontools.get_node_from_file('torrent.json', 'clients', os.path.join(config.get_runtime_path(), 'servers'))
 
@@ -1252,6 +1330,10 @@ def show_clients_torrent(item):
         else: exists_torrent = ' [COLOR red][B] No instalado [/B]'
 
         if client_name == 'Elementum': client_recommended = '[COLOR limegreen][B]  Recomendado[/B][/COLOR]'
+        elif client_name == 'Pulsar': client_recommended = '[COLOR goldenrod][B]  Obsoleto[/B][/COLOR]'
+        elif client_name == 'Quasar': client_recommended = '[COLOR goldenrod][B]  Obsoleto[/B][/COLOR]'
+        elif client_name == 'Stream': client_recommended = '[COLOR goldenrod][B]  Obsoleto[/B][/COLOR]'
+        elif client_name == 'Xbmctorrent': client_recommended = '[COLOR goldenrod][B]  Obsoleto[/B][/COLOR]'
         else: client_recommended = ''
 
         opciones_torrent.append(platformtools.listitem_to_select('[COLOR cyan]' + client_name + '[/COLOR]', '[COLOR moccasin]' + client_id + exists_torrent + '[/COLOR]' + client_recommended, thumb))
@@ -1291,7 +1373,7 @@ def search_new_proxies(canal_0, canal_1, canal_2):
     return False
 
 def tests_channels(canal_0, canal_1, canal_2):
-    if platformtools.dialog_yesno(canal_0, '[COLOR darkorange][B]¿ Efectuar Test Web del Canal ?[/B][/COLOR]', canal_1, canal_2):
+    if platformtools.dialog_yesno(canal_0, '[COLOR goldenrod][B]¿ Efectuar Test Web del Canal ?[/B][/COLOR]', canal_1, canal_2):
         from modules import tester
 
         config.set_setting('developer_test_channels', '')
@@ -1302,7 +1384,7 @@ def tests_channels(canal_0, canal_1, canal_2):
             platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Error comprobación, Reintentelo de Nuevo[/B][/COLOR]' % color_alert)
 
 def tests_servers(servidor_0, servidor_1):
-    if platformtools.dialog_yesno(servidor_0,'[COLOR darkorange][B]¿ Efectuar Test Web del Servidor ?[/B][/COLOR]', servidor_1):
+    if platformtools.dialog_yesno(servidor_0,'[COLOR goldenrod][B]¿ Efectuar Test Web del Servidor ?[/B][/COLOR]', servidor_1):
         from modules import tester
 
         config.set_setting('developer_test_servers', '')

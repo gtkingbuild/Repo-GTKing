@@ -143,7 +143,9 @@ def temporadas(item):
         title = 'Temporada ' + tempo
 
         if len(temporadas) == 1:
-            platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+            if config.get_setting('channels_seasons', default=True):
+                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+
             item.page = 0
             item.contentType = 'season'
             item.contentSeason = tempo
@@ -183,7 +185,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('AresHd', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -260,6 +263,8 @@ def findvideos(item):
          for link, srv in matches:
              ses += 1
 
+             if 'youtube' in srv: continue
+
              if i == 0: lang = idiomas[0]
              elif i == 1: lang = idiomas[1]
              elif i == 2: lang = idiomas[2]
@@ -270,10 +275,17 @@ def findvideos(item):
              elif 'Subtitulado' in lang or 'VOSE' in lang: lang = 'Vose'
              else: lang = '?'
 
-             if 'youtube' in srv: continue
-             elif 'waaw' in srv or 'hqq' in srv or 'netu' in srv: continue
+             srv = srv.lower().strip()
 
-             itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', title = '', url = link, language = lang, other = srv.capitalize() ))
+             servidor = servertools.corregir_servidor(srv)
+
+             other = srv
+
+             if servidor == srv: other = ''
+             elif not servidor == 'directo':
+                if not servidor == 'various': other = ''
+
+             itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = link, language = lang, other = other.capitalize() ))
 
          i += 1
 
@@ -298,10 +310,7 @@ def play(item):
     if vid: url = vid
 
     if url:
-        if '/hqq.' in url or '/waaw.' in url or '/netu.' in url:
-            return 'Requiere verificación [COLOR red]reCAPTCHA[/COLOR]'
-
-        if '/cinestart.streams3.com/' in url: return itemlist
+        if '/cinestart.' in url: return itemlist
 
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)

@@ -12,17 +12,36 @@ from core.item import Item
 from core import httptools, scrapertools, jsontools, servertools, tmdb
 
 
+LINUX = False
+BR = False
 BR2 = False
 
+if PY3:
+    try:
+       import xbmc
+       if xbmc.getCondVisibility("system.platform.Linux.RaspberryPi") or xbmc.getCondVisibility("System.Platform.Linux"): LINUX = True
+    except: pass
+
 try:
-   from lib import balandroresolver
+   if LINUX:
+       try:
+          from lib import balandroresolver2 as balandroresolver
+          BR2 = True
+       except: pass
+   else:
+       if PY3:
+           from lib import balandroresolver
+           BR = true
+       else:
+          try:
+             from lib import balandroresolver2 as balandroresolver
+             BR2 = True
+          except: pass
 except:
    try:
       from lib import balandroresolver2 as balandroresolver
-
       BR2 = True
-   except:
-      BR2 = None
+   except: pass
 
 
 # ~ webs para comprobar dominio vigente en actions pero pueden requerir proxies
@@ -30,6 +49,11 @@ except:
 
 
 dominios = [
+         'https://hd-full.biz/',
+         'https://hd-full.in/',
+         'https://hd-full.im/',
+         'https://hd-full.one/',
+         'https://hdfull.icu/',
          'https://hdfull.quest/',
          'https://hdfull.today/',
          'https://hdfull.sbs/',
@@ -53,7 +77,11 @@ ant_hosts = ['https://hdfull.sh/', 'https://hdfull.im/', 'https://hdfull.in/',
              'https://hdfull.digital/']
 
 
+if host in str(ant_hosts): config.set_setting('dominio', dominios[0], 'hdfull')
+
+
 login_ok = '[COLOR chartreuse]HdFull Login correcto[/COLOR]'
+start_ses_ok = '[COLOR chartreuse][B]Sesión Iniciada[/B][/COLOR], Por favor [COLOR cyan][B]Retroceda Menús[/B][/COLOR] y acceda de Nuevo al Canal.'
 
 perpage = 20
 
@@ -138,24 +166,35 @@ class login_dialog(xbmcgui.WindowDialog):
 
 
 def do_make_login_logout(url, post=None):
-    if not url.startswith(host):
+    domain = config.get_setting('dominio', 'hdfull', default=dominios[0])
+
+    hay_proxies = False
+    if config.get_setting('channel_hdfull_proxies', default=''): hay_proxies = True
+
+    if not url.startswith(domain):
         data = httptools.downloadpage(url, post=post, raise_weberror=False).data
     else:
-        data = httptools.downloadpage_proxy('hdfull', url, post=post, raise_weberror=False).data
+        if hay_proxies:
+            data = httptools.downloadpage_proxy('hdfull', url, post=post, raise_weberror=False).data
+        else:
+            data = httptools.downloadpage(url, post=post, raise_weberror=False).data
 
     if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
-        try:
-            # ~ from lib import balandroresolver
-            ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
-            if ck_name and ck_value:
-                httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
+        if BR or BR2:
+            try:
+                ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
+                if ck_name and ck_value:
+                    httptools.save_cookie(ck_name, ck_value, domain.replace('https://', '')[:-1])
 
-                if not url.startswith(host):
+                if not url.startswith(domain):
                     data = httptools.downloadpage(url, post=post, raise_weberror=False).data
                 else:
-                    data = httptools.downloadpage_proxy('hdfull', url, post=post, raise_weberror=False).data
-        except:
-            pass
+                    if hay_proxies:
+                        data = httptools.downloadpage_proxy('hdfull', url, post=post, raise_weberror=False).data
+                    else:
+                        data = httptools.downloadpage(url, post=post, raise_weberror=False).data
+            except:
+                pass
 
     if '<title>Just a moment...</title>' in data:
         platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]CloudFlare[COLOR orangered] Protection[/B][/COLOR]')
@@ -176,6 +215,8 @@ def login(item):
 
     data = ''
 
+    domain_unknow = False
+
     if domain:
         if domain in dominios:
             if not config.get_setting('dominio', 'hdfull'): config.set_setting('dominio', domain, 'hdfull')
@@ -185,7 +226,7 @@ def login(item):
                     data = do_make_login_logout(domain + 'login')
                     if not data: return False
         else:
-            platformtools.dialog_notification(config.__addon_name, '[COLOR yellowgreen]HdFull comprobar Dominio [COLOR moccasin]' + domain + '[/COLOR]')
+            domain_unknow = True
 
     user = scrapertools.find_single_match(data, '<a href="[^"]+" class="tour-join2 join">([^<]+)<\/a>')
 
@@ -197,6 +238,9 @@ def login(item):
                 if not item: platformtools.dialog_notification(config.__addon_name, login_ok)
                 else:
                    if config.get_setting('notificar_login', default=False): platformtools.dialog_notification(config.__addon_name, login_ok)
+
+                if item:
+                    if item.start_ses: platformtools.dialog_ok(config.__addon_name + ' HdFull', start_ses_ok)
                 return True
 
     if not username or not password:
@@ -217,7 +261,9 @@ def login(item):
     url = '%slogin' %(domain)
 
     data = do_make_login_logout(url)
-    if not data: return False
+    if not data:
+        if domain_unknow: platformtools.dialog_notification(config.__addon_name + ' - HdFull', 'Comprobar Dominio [COLOR moccasin]' + domain + '[/COLOR]')
+        return False
 
     sid = scrapertools.find_single_match(data, '__csrf_magic.*?value="(.*?)"')
     if sid:
@@ -230,12 +276,17 @@ def login(item):
                 if config.get_setting('notificar_login', default=False): platformtools.dialog_notification(config.__addon_name, login_ok)
             else:
                 if config.get_setting('notificar_login', default=False): platformtools.dialog_notification(config.__addon_name, login_ok)
+
+            if item:
+                if item.start_ses: platformtools.dialog_ok(config.__addon_name + ' HdFull', start_ses_ok)
             return True
 
     post = {'username': username, 'password': password}
 
     data = do_make_login_logout(url, post=post)
-    if not data: return False
+    if not data:
+        if domain_unknow: platformtools.dialog_notification(config.__addon_name + ' - HdFull', 'Comprobar Dominio [COLOR moccasin]' + domain + '[/COLOR]')
+        return False
 
     jdata = jsontools.load(data)
 
@@ -243,6 +294,9 @@ def login(item):
         try:
             if jdata.get('status') == "OK":
                 if not status: config.set_setting('hdfull_login', True, 'hdfull')
+
+                if item:
+                    if item.start_ses: platformtools.dialog_ok(config.__addon_name + ' HdFull', start_ses_ok)
                 return True
         except:
             pass
@@ -263,6 +317,10 @@ def logout(item):
     config.set_setting('hdfull_login', False, 'hdfull')
 
     platformtools.dialog_notification(config.__addon_name, '[COLOR chartreuse]HdFull Sesión cerrada[/COLOR]')
+
+    if item:
+        if item.category: 
+            platformtools.dialog_ok(config.__addon_name + ' HdFull', '[COLOR yellow][B]Sesión Cerrada[/B][/COLOR].', 'Por favor [COLOR cyan][B]Retroceda Menús[/B][/COLOR] e [COLOR chartreuse][B]Inicie Sesión[/B][/COLOR] de nuevo.')
 
 
 def item_configurar_dominio(item):
@@ -346,10 +404,38 @@ def do_downloadpage(url, post=None, referer=None):
     if referer: headers = {'Referer': referer}
     else: headers = {'Referer': domain}
 
-    if not url.startswith(host):
+    hay_proxies = False
+    if config.get_setting('channel_hdfull_proxies', default=''): hay_proxies = True
+
+    if not url.startswith(domain):
         data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=False).data
     else:
-        data = httptools.downloadpage_proxy('hdfull', url, post=post, headers=headers, raise_weberror=False).data
+        if hay_proxies:
+            data = httptools.downloadpage_proxy('hdfull', url, post=post, headers=headers, raise_weberror=False).data
+        else:
+            data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=False).data
+
+    if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
+        if BR or BR2:
+            try:
+                ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
+                if ck_name and ck_value:
+                    httptools.save_cookie(ck_name, ck_value, domain.replace('https://', '')[:-1])
+
+                if not url.startswith(domain):
+                    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=False).data
+                else:
+                    if hay_proxies:
+                        data = httptools.downloadpage_proxy('hdfull', url, post=post, headers=headers, raise_weberror=False).data
+                    else:
+                        data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=False).data
+            except:
+                pass
+
+    if '<title>Just a moment...</title>' in data:
+        if not 'buscar' in url:
+            platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]CloudFlare[COLOR orangered] Protection[/B][/COLOR]')
+        return ''
 
     if '<div id="popup_login_result"></div>' in data:
         if not config.get_setting('hdfull_login', 'hdfull', default=False):
@@ -393,7 +479,9 @@ def acciones(item):
 
     if not config.get_setting('hdfull_login', 'hdfull', default=False):
         if username:
-            itemlist.append(item.clone( title = '[COLOR chartreuse][B]Iniciar sesión[/B][/COLOR]', action = 'login' ))
+            itemlist.append(item.clone( title = '[COLOR chartreuse][B]Iniciar sesión[/B][/COLOR]', action = 'login', start_ses = True ))
+
+            itemlist.append(item.clone( title = '[COLOR springgreen][B]Ver las credenciales[/B][/COLOR]', action = 'shuw_credenciales', thumbnail=config.get_thumb('pencil') ))
             itemlist.append(Item( channel='domains', action='del_datos_hdfull', title='[B]Eliminar credenciales cuenta[/B]', thumbnail=config.get_thumb('folder'), text_color='crimson' ))
         else:
             itemlist.append(Item( channel='helper', action='show_help_register', title='[B]Información para registrarse[/B]', thumbnail=config.get_thumb('help'), text_color='green' ))
@@ -402,6 +490,9 @@ def acciones(item):
 
     if config.get_setting('hdfull_login', 'hdfull', default=False):
         itemlist.append(item.clone( title = '[COLOR chartreuse][B]Cerrar sesión[/B][/COLOR]', action = 'logout' ))
+
+        itemlist.append(item.clone( title = '[COLOR springgreen][B]Ver las credenciales[/B][/COLOR]', action = 'shuw_credenciales', thumbnail=config.get_thumb('pencil') ))
+        itemlist.append(Item( channel='domains', action='del_datos_hdfull', title='[B]Eliminar credenciales cuenta[/B]', thumbnail=config.get_thumb('folder'), text_color='crimson' ))
 
     itemlist.append(item_configurar_dominio(item))
     itemlist.append(item_configurar_proxies(item))
@@ -432,9 +523,11 @@ def mainlist(item):
         itemlist.append(item.clone( title = 'Películas', action = 'mainlist_pelis', text_color = 'deepskyblue' ))
         itemlist.append(item.clone( title = 'Series', action = 'mainlist_series', text_color = 'hotpink' ))
 
-        itemlist.append(item.clone( title='Animes', action = 'mainlist_series', text_color = 'springgreen' ))
-        itemlist.append(item.clone( title='Doramas', action = 'mainlist_series', text_color = 'firebrick' ))
         itemlist.append(item.clone( title='Novelas', action = 'mainlist_series', text_color = 'limegreen' ))
+        itemlist.append(item.clone( title='Doramas', action = 'mainlist_series', text_color = 'firebrick' ))
+
+        if not config.get_setting('descartar_anime', default=False):
+            itemlist.append(item.clone( title='Animes', action = 'mainlist_series', text_color = 'springgreen' ))
 
         itemlist.append(item.clone( title = 'Búsqueda de personas:', action = '', folder=False, text_color='tan' ))
 
@@ -472,7 +565,7 @@ def mainlist_pelis(item):
 
         itemlist.append(item.clone( action='list_all', title='Catálogo', url = dominio + 'peliculas', search_type = 'movie' ))
 
-        itemlist.append(item.clone( action='list_all', title='Últimos estrenos', url = dominio + 'peliculas-estreno', search_type = 'movie' ))
+        itemlist.append(item.clone( action='list_all', title='Últimos estrenos', url = dominio + 'peliculas-estreno', search_type = 'movie', text_color='cyan' ))
         itemlist.append(item.clone( action='list_all', title='Últimas actualizadas', url = dominio + 'peliculas-actualizadas', search_type = 'movie' ))
 
         itemlist.append(item.clone( action='list_all', title='Más valoradas', url = dominio + 'peliculas/imdb_rating', search_type = 'movie' ))
@@ -506,19 +599,24 @@ def mainlist_series(item):
 
         itemlist.append(item.clone( action='list_all', title='Catálogo', url = dominio + 'series', search_type = 'tvshow' ))
 
-        itemlist.append(item.clone( action='list_all', title='Últimas', url = dominio + 'series/date', search_type='tvshow' ))
+        itemlist.append(item.clone( action='list_all', title='Últimas', url = dominio + 'series/date', search_type='tvshow', text_color='cyan' ))
 
         itemlist.append(item.clone( action='list_all', title='Más valoradas', url= dominio + 'series/imdb_rating', search_type = 'tvshow' ))
 
-        itemlist.append(item.clone( action='list_all', title='Animes', url= dominio + 'tags-tv/anime', search_type = 'tvshow', text_color='springgreen' ))
-        itemlist.append(item.clone( action='list_all', title='Doramas', url= dominio + 'tags-tv/dorama', search_type = 'tvshow', text_color='firebrick' ))
         itemlist.append(item.clone( action='list_all', title='Novelas', url= dominio + 'tags-tv/soap', search_type = 'tvshow', text_color='limegreen' ))
+        itemlist.append(item.clone( action='list_all', title='Doramas', url= dominio + 'tags-tv/dorama', search_type = 'tvshow', text_color='firebrick' ))
+
+        if not config.get_setting('descartar_anime', default=False):
+            itemlist.append(item.clone( action='list_all', title='Animes', url= dominio + 'tags-tv/anime', search_type = 'tvshow', text_color='springgreen' ))
 
         itemlist.append(item.clone( title = 'Episodios:', action = '', folder=False, text_color='tan' ))
 
-        itemlist.append(item.clone( action='list_episodes', title=' - Estreno', opcion = 'premiere', search_type = 'tvshow' ))
-        itemlist.append(item.clone( action='list_episodes', title=' - [COLOR springgreen]Anime[/COLOR]', opcion = 'anime', search_type = 'tvshow' ))
-        itemlist.append(item.clone( action='list_episodes', title=' - Últimos', opcion = 'latest', search_type = 'tvshow' ))
+        itemlist.append(item.clone( action='list_episodes', title=' - [COLOR cyan]Estreno[/COLOR]', opcion = 'premiere', search_type = 'tvshow' ))
+
+        if not config.get_setting('descartar_anime', default=False):
+            itemlist.append(item.clone( action='list_episodes', title=' - [COLOR springgreen]Anime[/COLOR]', opcion = 'anime', search_type = 'tvshow' ))
+
+        itemlist.append(item.clone( action='list_episodes', title=' - [COLOR moccasin]Últimos[/COLOR]', opcion = 'latest', search_type = 'tvshow' ))
         itemlist.append(item.clone( action='list_episodes', title=' - Actualizados', opcion = 'updated', search_type = 'tvshow' ))
 
         itemlist.append(item.clone( action='series_abc', title='Por letra (A - Z)', search_type = 'tvshow' ))
@@ -584,6 +682,9 @@ def generos(item):
     for url, title in matches:
         if item.search_type == 'movie':
             if title == 'Novela': continue
+
+        if config.get_setting('descartar_anime', default=False):
+            if title == 'Anime': continue
 
         if url.startswith('/'): url = dominio + url[1:]
 
@@ -821,7 +922,9 @@ def temporadas(item):
         if retitle != title: titulo += ' - ' + retitle
 
         if len(matches) == 1:
-            platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+            if config.get_setting('channels_seasons', default=True):
+                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+
             item.page = 0
             item.referer = item.url
             item.url = url
@@ -905,7 +1008,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('HdFull', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -988,14 +1092,13 @@ def findvideos(item):
 
     data_js = do_downloadpage(dominio + 'js/providers.js')
 
-    # ~ 31/7/2022
-    # ~      "22": {"t": "d", "d": "https://mexa.sh/%s"},
+    # ~ 31/7/2022  "22": {"t": "d", "d": "https://mexa.sh/%s"},
+    # ~ 15/8/2022  "7": {"t": "s", "d": "https://watchsb.com/%s.html"},
 
     provs = {
              "4": {"t": "s", "d": "https://upstream.to/embed-%s.html"}, 
              "5": {"t": "s", "d": "https://cloudvideo.tv/embed-%s.html"},
              "6": {"t": "s", "d": "https://streamtape.com/e/%s"},
-             "7": {"t": "s", "d": "https://watchsb.com/%s.html"}, 
              "8": {"t": "d", "d": "https://www.filefactory.com/file/%s"},
              "9": {"t": "d", "d": "https://uploaded.net/f/%s"},
              "10": {"t": "d", "d": "https://rapidgator.net/file/%s.html"},
@@ -1010,6 +1113,7 @@ def findvideos(item):
              "35": {"t": "s", "d": "https://uptobox.com/%s"},
              "38": {"t": "s", "d": "https://clicknupload.cc/%s"},
              "40": {"t": "s", "d": "https://vidmoly.me/embed-%s.html"},
+             "45": {"t": "s", "d": "https://waaw.to/f/%s"}
              }
 
     # ~ try:
@@ -1053,7 +1157,11 @@ def findvideos(item):
     for idioma, calidad, url, embed in matches:
         ses += 1
 
-        if embed == 'd' and 'uptobox' not in url: continue
+        if embed == 'd':
+            if not 'uptobox' in url: continue
+
+        elif '/powvideo.' in url: continue
+        elif '/streamplay.' in url: continue
 
         if not PY3: calidad = unicode(calidad, 'utf8').upper().encode('utf8')
 
@@ -1212,6 +1320,15 @@ def list_listas(item):
                 itemlist.append(item.clone( title = 'Siguientes ...', post = next_post, page = next_page, pageaction = 'list_listas', text_color = 'coral' ))
 
     return itemlist
+
+
+def shuw_credenciales(item):
+    logger.info()
+
+    username = config.get_setting('hdfull_username', 'hdfull', default='')
+    password = config.get_setting('hdfull_password', 'hdfull', default='')
+
+    platformtools.dialog_ok(config.__addon_name + ' HdFull - Credenciales', 'User..:  [COLOR yellow][B]' + username, '[/B][/COLOR]Pass.:  [COLOR yellow][B]' + password + '[/B][/COLOR]')
 
 
 def search(item, texto):

@@ -14,7 +14,7 @@ def get_video_url(page_url, url_referer=''):
     data = httptools.downloadpage(page_url).data
 
     if "Object not found" in data or "longer exists on our servers" in data:
-        return 'El archivo no existe o ha sido borrado'
+        return 'Archivo inexistente ó eliminado'
 
     if "p,a,c,k,e,d" in data:
         data = jsunpack.unpack(data).replace("\\", "")
@@ -23,7 +23,6 @@ def get_video_url(page_url, url_referer=''):
 
     subtitulo = scrapertools.find_single_match(data, 'tracks\s*:\s*\[{file:"(.*?)"')
     if "http" not in subtitulo and subtitulo != '':
-        # ~ subtitulo = "http://fastplay.cc" + subtitulo
         subtitulo = "http://fastplay.to" + subtitulo
 
     if videos:

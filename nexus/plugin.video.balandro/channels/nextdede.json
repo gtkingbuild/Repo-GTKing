@@ -3,7 +3,7 @@
   "name": "NextDede",
   "thumbnail": "nextdede.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["all", "movie", "tvshow"],
@@ -11,7 +11,7 @@
   "categories": ["movie", "tvshow"],
   "language": ["cast", "lat", "vose", "vo"],
 
-  "clusters": ["register", "suggested", "news", "rankings", "years", "lists", "lasts", "kids", "docs", "vos"],
+  "clusters": ["temporary", "register", "current", "suggested", "news", "rankings", "years", "lists", "lasts", "kids", "docs", "vos"],
 
-  "notes": "Películas por géneros y año. Series por Géneros y año."
+  "notes": "Películas por géneros y año. Series por Géneros y año. Dispone de varios posibles dominios. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

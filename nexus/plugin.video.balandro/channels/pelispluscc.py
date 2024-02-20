@@ -42,6 +42,10 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Más populares', action = 'list_all', url = host + 'peliculas/populares?page=', search_type = 'movie' ))
 
+    itemlist.append(item.clone( title = 'Animes', action = 'list_all', url = host + 'animes?page=', search_type = 'movie', text_color='springgreen' ))
+
+    itemlist.append(item.clone( title = 'Doramas', action = 'list_all', url = host + 'generos/dorama?page=', search_type = 'movie', text_color='firebrick' ))
+
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'movie' ))
 
@@ -153,7 +157,7 @@ def list_all(item):
             if ' (' in title: title = title.replace(' (' + year + ')', '').strip()
             elif ' [' in title: title = title.replace(' [' + year + ']', '').strip()
 
-        if '/pelicula/' in url:
+        if '/pelicula/' in url or '/anime/' in url:
             if item.search_type == 'tvshow': continue
 
             itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, contentType = 'movie', contentTitle = title, infoLabels = {'year': year} ))
@@ -165,7 +169,7 @@ def list_all(item):
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
-        if len(itemlist) == 24:
+        if len(itemlist) <= 24:
             itemlist.append(item.clone (url = item.url, page = item.page + 1, title = 'Siguientes ...', action = 'list_all', text_color='coral' ))
 
     return itemlist
@@ -200,7 +204,9 @@ def temporadas(item):
         title = 'Temporada ' + nro_tempo
 
         if len(temporadas) == 1:
-            platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+            if config.get_setting('channels_seasons', default=True):
+                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+
             item.page = 0
             item.contentType = 'season'
             item.contentSeason = tempo
@@ -244,7 +250,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('PelisPlusCc', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -340,13 +347,16 @@ def findvideos(item):
         ses += 1
 
         if '/player.moovies.in/' in url: continue
-        elif 'mystream.to' in url: continue
+        elif '.mystream.' in url: continue
+        elif '/pelistop.' in url: continue
 
-        if url.startswith('/fembed.php?url='): url = url.replace('/fembed.php?url=', 'https://feurl.com/v/')
-        elif 'pelisplu.cc' in url: url = url.replace('pelisplus.cc', 'feurl.com')
-        elif 'pelisplus.cc/fembed.php' in url: url= url.replace('pelisplus.cc/fembed.php?url=', 'https://feurl.com/v/')
-        elif (host + 'fembed.php') in url: url = url.replace(host + 'fembed.php?url=', 'https://feurl.com/v/')
-        elif 'plusto.link' in url: url = url.replace('plusto.link', 'feurl.com')
+        if url.startswith('/fembed.php?url='): continue
+        elif 'pelisplu.cc' in url: continue
+        elif 'pelisplus.cc/fembed.php' in url: continue
+        elif (host + 'fembed.php') in url: continue
+        elif 'plusto.link' in url: continue
+
+        elif url == 'https://dood.to/e/': continue
 
         if url.startswith('/'): url = host[:-1] + url
 
@@ -359,8 +369,6 @@ def findvideos(item):
 
         if servidor == 'directo':
             link_other = scrapertools.find_single_match(data, '<a href="#option' + opt + '">(.*?)</a>')
-
-            if link_other == 'Netu' or link_other == 'NETU' or link_other == 'Waaw' or link_other == 'WAAW' or link_other == 'Hqq' or link_other == 'HQQ': continue
 
             link_other = normalize_other(link_other)
 
@@ -471,7 +479,7 @@ def list_search(item):
             if ' (' in title: title = title.replace(' (' + year + ')', '').strip()
             elif ' [' in title: title = title.replace(' [' + year + ']', '').strip()
 
-        tipo = 'movie' if '/pelicula/' in url else 'tvshow'
+        tipo = 'movie' if '/pelicula/' in url or '/anime/' in url else 'tvshow'
         sufijo = '' if item.search_type != 'all' else tipo
 
         if tipo == 'movie':

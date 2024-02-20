@@ -213,7 +213,9 @@ def temporadas(item):
         title = 'Temporada ' + num_tempo
 
         if len(matches) == 1:
-            platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+            if config.get_setting('channels_seasons', default=True):
+                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+
             item.page = 0
             item.contentType = 'season'
             item.contentSeason = 0
@@ -239,7 +241,8 @@ def episodios(item):
 
     data = httptools.downloadpage(item.url).data
 
-    matches = scrapertools.find_multiple_matches(data, "dt='ss-" + str(item.contentSeason) + "'>(.*?)</div>")
+    matches = scrapertools.find_multiple_matches(data, "dt='ss-" + str(item.contentSeason) + "'.*?>(.*?)</div>")
+    if not matches: matches = scrapertools.find_multiple_matches(data, 'dt="ss-' + str(item.contentSeason) + '".*?>(.*?)</div>')
 
     # ~ Temporada única
     if not matches: matches = [(0, data)]
@@ -252,7 +255,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('SeriesLan', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -293,6 +297,8 @@ def episodios(item):
 
         for episodio in episodios:
             url = scrapertools.find_single_match(episodio, 'href="(.*?)"')
+
+            if '#gs-' in url: continue
 
             epi = scrapertools.find_single_match(episodio, '</strong>(.*?)</span>')
             if '-' in epi: epi = scrapertools.find_single_match(epi, '(.*?)-').strip()

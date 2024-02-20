@@ -3,7 +3,7 @@
   "name": "PctMix1",
   "thumbnail": "pctmix1.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["movie"],
@@ -13,5 +13,5 @@
 
   "clusters": ["torrents", "years", "kids", "docs", "vos"],
 
-  "notes": "Canal con enlaces Torrent exclusivamente. Películas por géneros, año."
+  "notes": "Web CERRADA. Canal con enlaces Torrent exclusivamente. Películas por géneros, año."
 }

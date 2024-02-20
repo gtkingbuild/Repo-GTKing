@@ -190,6 +190,8 @@ def list_all(item):
 
         thumb = scrapertools.find_single_match(article, '<img src="([^"]+)"')
 
+        thumb = thumb + '|User-Agent=Mozilla/5.0'
+
         durada = scrapertools.htmlclean(scrapertools.find_single_match(article, '<span class="pm-label-duration">(.*?)</span>'))
 
         if durada: durada = '[COLOR tan]%s[/COLOR]' % durada
@@ -227,8 +229,10 @@ def findvideos(item):
     data = do_downloadpage(item.url, headers = headers)
 
     if len(data) == 0:
-        platformtools.dialog_notification('Re-Cargando vídeo', 'Espera requerida de %s segundos' % espera)
-        time.sleep(int(espera))
+        if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification(cnomv, '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+        else:
+            platformtools.dialog_notification(cnomv + ' Re-Cargando vídeo', 'Espera requerida de %s segundos' % espera)
+            time.sleep(int(espera))
 
         data = do_downloadpage(item.url, headers = headers)
 
@@ -255,17 +259,23 @@ def findvideos(item):
 
         if not url_embed:
             if '<iframe src="' in data: 
-                url_embed = scrapertools.find_single_match(data, '<iframe src="(//cnubis\.com/[^"]+)')
-                if not url_embed: url_embed = scrapertools.find_single_match(data, '<iframe src="(https://cnubis\.com/[^"]+)')
+                url_embed = scrapertools.find_single_match(data, '<iframe src="(.*?cnubis.com/[^"]+)')
+                if not url_embed: url_embed = scrapertools.find_single_match(data, '<iframe src="(https://.*?cnubis.com/[^"]+)')
 
         if not url_embed:
-            if '"Playerholder"' in data: url_embed = scrapertools.find_single_match(data, '"Playerholder".*?file:.*?"(.*?)"')
+            if '"Playerholder"' in data:
+                url_embed = scrapertools.find_single_match(data, '"Playerholder".*?playerInstance.setup.*?file:"(.*?)".*?</div>')
+                if not url_embed: url_embed = scrapertools.find_single_match(data, '"Playerholder".*?playerInstance.setup.*?file:' + "'(.*?)'.*?</div>")
 
         if not url_embed:
-            if '"VideoPlay"' in data: url_embed = scrapertools.find_single_match(str(data), '"VideoPlay".*?file:.*?"(.*?)"')
+            if '"VideoPlay"'in data:
+                url_embed = scrapertools.find_single_match(str(data), '"VideoPlay".*?playerInstance.setup.*?file:.*?"(.*?)".*?</div>')
+                if not url_embed: url_embed = scrapertools.find_single_match(data, '"VideoPlay".*?playerInstance.setup.*?file:.*?' + "'(.*?)'.*?</div>")
 
         if not url_embed:
-            if '"TheVid"' in data: url_embed = scrapertools.find_single_match(str(data), '"TheVid".*?file:.*?"(.*?)"')
+            if '"TheVid"' in data:
+                url_embed = scrapertools.find_single_match(str(data), '"TheVid".*?playerInstance.setup.*?file:.*?"(.*?)".*?</div>')
+                if not url_embed: url_embed = scrapertools.find_single_match(data, '"TheVid".*?playerInstance.setup.*?file:.*?' + "'(.*?)'.*?</div>")
 
         if not url_embed:
             if '/age-verification.js' in data:
@@ -275,8 +285,8 @@ def findvideos(item):
                     return
 
         if not url_embed:
-            url_embed = scrapertools.find_single_match(data, 'https://fs1.cnubis.com/(.*?)"')
-            if url_embed: url_embed = 'https://fs1.cnubis.com/' + url_embed
+            url_embed = scrapertools.find_single_match(data, '.cnubis.com/(.*?)"')
+            if url_embed: url_embed = 'https://fs2.cnubis.com/' + url_embed
 
     if url_embed:
         if url_embed.startswith('//'): url_embed = 'https:' + url_embed
@@ -322,11 +332,22 @@ def findvideos(item):
                 return
 
     if url_final:
-        url_final += "|Referer=" + host
-
-        itemlist.append(Item ( channel = item.channel, action = 'play', server = 'directo', title = '', url = url_final, language = 'Esp' ))
+        # ~ Failed: HTTP returned error 401
+        if 'http' in url_final:
+            itemlist.append(Item ( channel = item.channel, action = 'play', server = 'directo', title = '', url = url_final, language = 'Esp' ))
 
     return itemlist
+
+
+def play(item):
+    logger.info()
+    itemlist = []
+
+    video_urls = []
+
+    video_urls.append(['mp4', item.url])
+
+    return video_urls
 
 
 def search(item, texto):

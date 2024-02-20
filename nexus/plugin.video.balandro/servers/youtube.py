@@ -38,7 +38,7 @@ def get_video_url(page_url, url_referer=''):
     data = httptools.downloadpage(page_url).data
 
     if "File was deleted" in data or 'El vídeo no está disponible' in data:
-        return 'El archivo no existe o ha sido borrado'
+        return 'Archivo inexistente ó eliminado'
 
     video_id = scrapertools.find_single_match(page_url, '(?:v=|embed/)([A-z0-9_-]{11})')
 

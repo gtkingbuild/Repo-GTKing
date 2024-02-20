@@ -27,7 +27,7 @@ def get_video_url(page_url, url_referer=''):
     resp = httptools.downloadpage(page_url, headers = {'Referer': ref[0] + '//' + ref[1]})
 
     if resp.code == 404:
-        return 'El archivo no existe o ha sido borrado'
+        return 'Archivo inexistente ó eliminado'
 
     if resp.data: data = resp.data
     else:
@@ -47,9 +47,9 @@ def get_video_url(page_url, url_referer=''):
 
     headers = {'Referer': referer_url}
 
-    if "const source = '" in data: url = scrapertools.find_single_match(data, "const source = '([^']+)")
+    if "const source = '" in data: url = scrapertools.find_single_match(data, "const source = '(.*?)'")
 
-    if '"file": ' in data: url, v_type = scrapertools.find_single_match(data, '"file": "([^"]+)",\s+"type": "([^"]+)"')
+    elif '"file": ' in data: url, v_type = scrapertools.find_single_match(data, '"file": "(.*?)",\s+"type": "(.*?)"')
 
     if v_type == 'mp4':
         url = httptools.downloadpage(url, headers=headers, follow_redirects=False).headers.get('location', '')
@@ -62,7 +62,7 @@ def get_video_url(page_url, url_referer=''):
     elif v_type == 'hls':
         if '.hls' in data: hls_data = data
         else:
-            hls_data = httptools.downloadpage(url, headers=headers).data
+            hls_data = httptools.downloadpage(url, headers=headers, follow_redirects=False).data
 
             if PY3 and isinstance(hls_data, bytes):
                 hls_data = "".join(chr(x) for x in bytes(hls_data))
@@ -86,7 +86,7 @@ def get_video_url(page_url, url_referer=''):
 
                outfile = open(m3u8, 'wb')
                outfile.write(codecs.encode(hls_data, "utf-8"))
-               #outfile.close()
+               outfile.close()
 
                serverhls.start(base_url)
 

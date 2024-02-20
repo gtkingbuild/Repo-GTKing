@@ -101,9 +101,9 @@ class Downloader:
         return os.path.abspath(filetools.join(self._path, self._filename))
 
     # Funciones
-    def start_dialog(self, title="Descargando..."):
+    def start_dialog(self, title="Descargando ..."):
         from platformcode import platformtools
-        progreso = platformtools.dialog_progress(title, "Iniciando descarga...")
+        progreso = platformtools.dialog_progress(title, "Iniciando descarga ...")
         self.start()
 
         while self.state == self.states.downloading and not progreso.iscanceled():
@@ -497,7 +497,7 @@ class Downloader:
         self.download_parts.remove(id)
 
     def __set_part__downloading__(self, id):
-        logger.info("ID: %s Descargando datos..." % id)
+        logger.info("ID: %s Descargando datos ..." % id)
         self._download_info["parts"][id]["status"] = self.states.downloading
 
     def __set_part_completed__(self, id):

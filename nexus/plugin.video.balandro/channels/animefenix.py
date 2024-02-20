@@ -1,10 +1,47 @@
 # -*- coding: utf-8 -*-
 
+import sys
+
+PY3 = False
+if sys.version_info[0] >= 3: PY3 = True
+
 import re
 
 from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
+
+
+LINUX = False
+BR = False
+BR2 = False
+
+if PY3:
+    try:
+       import xbmc
+       if xbmc.getCondVisibility("system.platform.Linux.RaspberryPi") or xbmc.getCondVisibility("System.Platform.Linux"): LINUX = True
+    except: pass
+
+try:
+   if LINUX:
+       try:
+          from lib import balandroresolver2 as balandroresolver
+          BR2 = True
+       except: pass
+   else:
+       if PY3:
+           from lib import balandroresolver
+           BR = true
+       else:
+          try:
+             from lib import balandroresolver2 as balandroresolver
+             BR2 = True
+          except: pass
+except:
+   try:
+      from lib import balandroresolver2 as balandroresolver
+      BR2 = True
+   except: pass
 
 
 host = 'https://animefenix.tv/'
@@ -62,33 +99,48 @@ def do_downloadpage(url, post=None, headers=None):
     for ant in ant_hosts:
         url = url.replace(ant, host)
 
+    hay_proxies = False
+    if config.get_setting('channel_animefenix_proxies', default=''): hay_proxies = True
+
     timeout = None
     if host in url:
-        if config.get_setting('channel_animefenix_proxies', default=''): timeout = config.get_setting('channels_repeat', default=30)
+        if hay_proxies: timeout = config.get_setting('channels_repeat', default=30)
 
     if not url.startswith(host):
         data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
     else:
-        data = httptools.downloadpage_proxy('animefenix', url, post=post, headers=headers, timeout=timeout).data
+        if hay_proxies:
+            data = httptools.downloadpage_proxy('animefenix', url, post=post, headers=headers, timeout=timeout).data
+        else:
+            data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
 
         if not data:
             if not 'animes?q=' in url:
-                platformtools.dialog_notification('AnimeFenix', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
-                data = httptools.downloadpage_proxy('animefenix', url, post=post, headers=headers, timeout=timeout).data
+                if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('AnimeFenix', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+
+                timeout = config.get_setting('channels_repeat', default=30)
+
+                if hay_proxies:
+                    data = httptools.downloadpage_proxy('animefenix', url, post=post, headers=headers, timeout=timeout).data
+                else:
+                    data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
 
     if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
-        try:
-            from lib import balandroresolver
-            ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
-            if ck_name and ck_value:
-                httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
+        if BR or BR2:
+            try:
+                ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
+                if ck_name and ck_value:
+                    httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
 
                 if not url.startswith(host):
                     data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
                 else:
-                   data = httptools.downloadpage_proxy('animefenix', url, post=post, headers=headers, timeout=timeout).data
-        except:
-            pass
+                    if hay_proxies:
+                        data = httptools.downloadpage_proxy('animefenix', url, post=post, headers=headers, timeout=timeout).data
+                    else:
+                        data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+            except:
+                pass
 
     if '<title>Just a moment...</title>' in data:
         if not 'animes?q=' in url:
@@ -136,14 +188,11 @@ def mainlist_animes(item):
     logger.info()
     itemlist = []
 
-    descartar_anime = config.get_setting('descartar_anime', default=False)
-
-    if descartar_anime: return itemlist
+    if config.get_setting('descartar_anime', default=False): return
 
     if config.get_setting('adults_password'):
         from modules import actions
-        if actions.adults_password(item) == False:
-            return itemlist
+        if actions.adults_password(item) == False: return
 
     itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
@@ -151,9 +200,9 @@ def mainlist_animes(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'animes?page=1', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host, search_type = 'tvshow', text_color = 'olive' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host, search_type = 'tvshow', text_color = 'cyan' ))
 
-    itemlist.append(item.clone( title = 'Últimos animes', action = 'list_last', url = host, search_type = 'tvshow', text_color = 'olive' ))
+    itemlist.append(item.clone( title = 'Últimos animes', action = 'list_last', url = host, search_type = 'tvshow', text_color = 'moccasin' ))
 
     itemlist.append(item.clone( title = 'En emisión', action = 'list_all', url = host + 'animes?estado[]=1', search_type = 'tvshow' ))
 
@@ -278,9 +327,12 @@ def list_all(item):
 
     if itemlist:
         if '<a class="pagination-link" href="' in data:
-            next_url = scrapertools.find_single_match(data, '<a class="pagination-link" href="([^"]+)">Siguiente')
-            next_url = item.url.split("?")[0] + next_url
-            itemlist.append(item.clone( title = 'Siguientes ...', url = next_url, action = 'list_all', page = 0, text_color = 'coral' ))
+            next_page = scrapertools.find_single_match(data, '<a class="pagination-link" href="([^"]+)">Siguiente')
+
+            if next_page:
+                next_page = item.url.split("?")[0] + next_page
+
+                itemlist.append(item.clone( title = 'Siguientes ...', url = next_page, action = 'list_all', page = 0, text_color = 'coral' ))
 
     return itemlist
 
@@ -373,7 +425,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('AnimeFenix', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -445,8 +498,6 @@ def findvideos(item):
     for url in matches:
         ses += 1
 
-        if '/hqq.' in url or '/waaw.' in url or '/netu.' in url: continue
-
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 
@@ -460,9 +511,20 @@ def findvideos(item):
             serv = srv.lower()
             break
 
+        if serv == 'gamo': servidor = 'gamovideo'
+        elif serv == 'ru': servidor = 'okru'
+        elif serv == 'burst': servidor = 'burstcloud'
+        elif serv == 'yourupload': servidor = 'yourupload'
+        elif serv == 'mp4upload': servidor = 'mp4upload'
+
         if serv == 'stream2':
             servidor = 'various'
-            serv = 'Streamwish'
+            serv = 'streamwish'
+        elif serv == 'lion':
+            servidor = 'various'
+            serv = 'filelions'
+
+        if serv == servidor: serv = ''
 
         if not serv == 'fireload':
             itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language='Vose', other = serv ))
@@ -522,14 +584,9 @@ def play(item):
 
             url = scrapertools.find_single_match(data, '"file":"([^"]+)"')
 
-        elif 'terabox.' in url:
-            url = ''
+        elif 'terabox.' in url: url = ''
 
-        elif '.fireload.com' in url:
-            url = scrapertools.find_single_match(url, 'v=(.*?)$')
-
-    if '/hqq.' in url or '/waaw.' in url or '/netu.' in url:
-        return 'Requiere verificación [COLOR red]reCAPTCHA[/COLOR]'
+        elif '.fireload.' in url: url = scrapertools.find_single_match(url, 'v=(.*?)$')
 
     if url:
         if not url.startswith("http"): url = "https:" + url

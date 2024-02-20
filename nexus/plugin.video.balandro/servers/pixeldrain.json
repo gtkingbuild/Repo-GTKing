@@ -8,7 +8,11 @@
     "ignore_urls": [],
     "patterns": [
       {
-        "pattern": "https://pixeldrain.com/u/[(a-zA-Z0-9]",
+        "pattern": "(https://pixeldrain.com/u/[(a-zA-Z0-9]+)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://pixeldrain.com/l/[(a-zA-Z0-9]+)",
         "url": "\\1"
       }
     ]

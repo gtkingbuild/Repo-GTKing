@@ -11,7 +11,7 @@
   "categories": ["movie", "tvshow", "torrent"],
   "language": ["cast"],
 
-  "clusters": ["current", "torrents", "news", "lasts", "rankings", "qualityes", "years", "lasts", "kids", "docs", "4k"],
+  "clusters": ["onlyone", "current", "torrents", "news", "lasts", "rankings", "qualityes", "years", "lasts", "kids", "docs", "4k"],
 
   "notes": "Canal con enlaces Torrent exclusivamente. Películas y Series, por géneros, calidad y año. También documentales. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

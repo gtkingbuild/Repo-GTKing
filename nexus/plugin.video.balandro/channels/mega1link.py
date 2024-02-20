@@ -109,7 +109,7 @@ def list_all(item):
         if not year: year = scrapertools.find_single_match(article, '<span>.*?,(.*?)</span>').strip()
         if not year: year = scrapertools.find_single_match(article, '<span>(.*?)</span>').strip()
 
-        if year: title = title = title.replace(' ' + year, '').strip()
+        if year: title = title = title.replace(' ' + year, '').replace(' (' + year + ')', '').strip()
         else: year = '-'
 
         qlty = scrapertools.find_single_match(article, '<span class=quality>(.*?)</span>')
@@ -246,7 +246,7 @@ def list_search(item):
 
         plot = scrapertools.htmlclean(scrapertools.find_single_match(article, '<p>(.*?)</p>'))
 
-        if year: title = title = title.replace(' ' + year, '').strip()
+        if year: title = title = title.replace(' ' + year, '').replace(' (' + year + ')', '').strip()
         else: year = '-'
 
         itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, contentType='movie', contentTitle=title, infoLabels={'year': year, 'plot': plot} ))

@@ -2,8 +2,8 @@
   "id": "sbembed",
   "name": "Sbembed",
 
-  "active": true,
-  "notes": "Alternative vía: Script.Module.ResolveUrl",
+  "active": false,
+  "notes": "Cerrado en Agosto 2023",
 
   "find_videos": {
     "ignore_urls": [],

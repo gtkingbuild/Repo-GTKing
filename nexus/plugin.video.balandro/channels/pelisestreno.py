@@ -1,17 +1,29 @@
 # -*- coding: utf-8 -*-
 
+import sys
+
+PY3 = False
+if sys.version_info[0] >= 3: PY3 = True
+
+
 from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-host = 'https://ww1.pelisestreno.cc/'
+host = 'https://alldd.net/'
 
 
 # ~ Las series No se tratan solo hay 2 paginas  29/6/2022
 
 
 def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
+    # ~ por si viene de enlaces guardados
+    ant_hosts = ['https://ww1.pelisestreno.cc/']
+
+    for ant in ant_hosts:
+        url = url.replace(ant, host)
+
     if not headers: headers = {'Referer': host}
 
     if '/release/' in url: raise_weberror = False
@@ -31,12 +43,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
 
-    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'pelicula/', search_type = 'movie' ))
-
-    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'genero/estrenos/', search_type = 'movie' ))
-
-    itemlist.append(item.clone( title = 'Más vistas', action = 'list_all', url = host + 'tendencias/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'Más valoradas', action = 'list_all', url = host + 'ratings/', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'movies/', search_type = 'movie' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'movie' ))
@@ -50,12 +57,15 @@ def generos(item):
 
     data = do_downloadpage(host)
 
-    bloque = scrapertools.find_single_match(data, '>GÉNEROS<(.*?)</ul>')
+    bloque = scrapertools.find_single_match(data, '>Genero<(.*?)</ul>')
 
     matches = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)">(.*?)</a>')
 
     for url, title in matches:
-        if title == 'Estrenos': continue
+        if config.get_setting('descartar_anime', default=False):
+            if title == 'Anime': continue
+
+        title = title.replace('&amp;', '&')
 
         itemlist.append(item.clone( action = 'list_all', title = title, url = url, text_color = 'deepskyblue' ))
 
@@ -83,53 +93,44 @@ def list_all(item):
 
     data = do_downloadpage(item.url)
 
-    if '<h2>Añadido recientemente' in data:
-        bloque = scrapertools.find_single_match(data, '<h2>Añadido recientemente(.*?)© 2022 por Pelisestreno')
-    elif '<h1>Tendencias' in data:
-        bloque = scrapertools.find_single_match(data, '<h1>Tendencias(.*?)© 2022 por Pelisestreno')
-    elif '<h1>Ratings' in data:
-        bloque = scrapertools.find_single_match(data, '<h1>Ratings(.*?)© 2022 por Pelisestreno')
-    else:
-        bloque = data
+    bloque = scrapertools.find_single_match(data, '</h2>(.*?)>Titulos Aleatorios<')
 
     matches = scrapertools.find_multiple_matches(bloque, '<article(.*?)</article>')
 
     for match in matches:
         url = scrapertools.find_single_match(match, '<a href="(.*?)"')
 
-        title = scrapertools.find_single_match(match, 'alt="(.*?)"')
+        title = scrapertools.find_single_match(match, '<h2 class="Title">(.*?)</h2>')
 
         if not url or not title: continue
 
-        if not '/pelicula/' in url: continue
+        if not '/movies/' in url: continue
 
         if ('|') in title:
             title = title.split("|")[0]
             title = title.strip()
 
-        thumb = scrapertools.find_single_match(match, 'src="(.*?)"')
+        thumb = scrapertools.find_single_match(match, 'data-src="(.*?)"')
 
-        year = scrapertools.find_single_match(match, '<span class="imdb".*?</span>.*?<span>(.*?)</span>')
+        year = scrapertools.find_single_match(match, '<span class="Qlty Yr">(.*?)</span>')
         if year: title = title.replace('(' + year + ')', '').strip()
         else: year = '-'
 
         title = title.replace('&#8211;', '').replace('&#8217;', '').replace('&#038;', '&')
 
         langs = []
-        if 'title="Español"' in match: langs.append('Esp')
-        if 'title="Latino"' in match: langs.append('Lat')
-        if 'title="Subtitulado"' in match: langs.append('Vose')
+        if 'Castellano' in match: langs.append('Esp')
+        if 'Latino' in match: langs.append('Lat')
+        if 'Subtitulado' in match: langs.append('Vose')
+        if 'Inglés' in match: langs.append('Vo')
 
         itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, languages = ', '.join(langs), contentType = 'movie', contentTitle = title, infoLabels={'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
-        if '<span class="current">' in data:
-            patron = '<span class="current">.*?'
-            patron += "href='(.*?)'"
-
-            next_page = scrapertools.find_single_match(data, patron)
+        if '<a class="page-link current"' in data:
+            next_page = scrapertools.find_single_match(data, '<a class="page-link current".*?</a>.*?href="(.*?)"')
 
             if next_page:
                 if '/page/' in next_page:
@@ -142,66 +143,65 @@ def findvideos(item):
     logger.info()
     itemlist = []
 
-    logger.info()
-    itemlist = []
-
-    IDIOMAS = {'mx': 'Lat', 'es': 'Esp', 'en': 'Vose', 'jp': 'Vose'}
+    IDIOMAS = {'Latino': 'Lat', 'Castellano': 'Esp', 'Subtitulado': 'Vose', 'Inglés': 'Vo'}
 
     data = do_downloadpage(item.url)
 
-    # embeds
-    matches = scrapertools.find_multiple_matches(data, "<li id='player-option-(.*?)</li>")
+    matches = scrapertools.find_multiple_matches(data, '<div class="Optntl"(.*?)</li>')
 
     ses = 0
 
     for match in matches:
         ses += 1
 
-        servidor = scrapertools.find_single_match(match, "<span class='title'>(.*?)</span>").lower()
+        url = scrapertools.find_single_match(match, ' href="(.*?)"')
 
-        if not servidor: continue
+        if '/paste/p?' in url:
+            data1 = do_downloadpage(url)
 
-        if 'trailer' in servidor:
-            ses = ses - 1
+            if 'Castellano' in data1: lng = 'Esp'
+            elif 'Latino' in data1: lng = 'Lat'
+            elif 'Subtitulado' in data1: lng = 'Vose'
+            elif 'Inglés' in data1: lng = 'Vo'
+            else: lng = '?'
+
+            links = scrapertools.find_multiple_matches(data1, 'target="_blank">(.*?)</a>')
+
+            for link in links:
+                if 'doodrive' in link: continue
+
+                elif 'ul.to' in link: continue
+                elif 'katfile' in link: continue
+                elif 'rapidgator' in link: continue
+                elif 'rockfile' in link: continue
+                elif 'nitroflare' in link: continue
+                elif '1fichier' in link: continue
+
+                servidor = servertools.get_server_from_url(link)
+                servidor = servertools.corregir_servidor(servidor)
+
+                if 'magnet' in link: servidor = 'torrent'
+                elif link.endswith('.torrent'): servidor = 'torrent'
+
+                if servertools.is_server_available(servidor):
+                    if not servertools.is_server_enabled(servidor): continue
+                else:
+                    if not config.get_setting('developer_mode', default=False): continue
+
+                other = servidor
+
+                if servidor == 'various': other = servertools.corregir_other(link)
+
+                if servidor == other: other = ''
+
+                elif not servidor == 'directo':
+                 if not servidor == 'various': other = ''
+
+                itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = link, language = lng, other = other ))
+
             continue
 
-        elif 'hqq' in servidor or 'waaw' in servidor or 'netu' in servidor: continue
-
-        servidor = servertools.corregir_servidor(servidor)
-
-        if servertools.is_server_available(servidor):
-            if not servertools.is_server_enabled(servidor): continue
-        else:
-            if not config.get_setting('developer_mode', default=False): continue
-
-        lang = scrapertools.find_single_match(match, " src='.*?/flags/(.*?).png'")
-
-        dpost = scrapertools.find_single_match(match, " data-post='(.*?)'")
-        dnume = scrapertools.find_single_match(match, " data-nume='(.*?)'")
-
-        if not dpost or not dnume: continue
-
-        itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', dpost = dpost, dnume = dnume, other = servidor.capitalize(), language = IDIOMAS.get(lang, lang) ))
-
-    # enlaces
-    matches = scrapertools.find_multiple_matches(data, "<tr id='link-'(.*?)</tr>")
-
-    for match in matches:
-        ses += 1
-
-        url = scrapertools.find_single_match(match, "<a href='(.*?)'")
-
-        if not url: continue
-
-        if '/hqq.' in url or '/waaw.' in url or '/netu.' in url: continue
-
-        elif 'openload' in url: continue
-        elif 'powvideo' in url: continue
-        elif 'streamplay' in url: continue
-        elif 'rapidvideo' in url: continue
-        elif 'streamango' in url: continue
-        elif 'verystream' in url: continue
-        elif 'vidtodo' in url: continue
+        if '/doodrive.' in url: continue
 
         elif 'ul.to' in url: continue
         elif 'katfile' in url: continue
@@ -213,20 +213,26 @@ def findvideos(item):
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 
+        if 'magnet' in url: servidor = 'torrent'
+        elif url.endswith('.torrent'): servidor = 'torrent'
+
         if servertools.is_server_available(servidor):
             if not servertools.is_server_enabled(servidor): continue
         else:
             if not config.get_setting('developer_mode', default=False): continue
 
-        url = servertools.normalize_url(servidor, url)
+        lang = scrapertools.find_single_match(match, '<p class="AAIco-language">(.*?)</p>')
 
-        if url:
-            qlty = scrapertools.find_single_match(match, "<strong class='quality'>(.*?)</strong>")
+        other = servidor
 
-            lang = scrapertools.find_single_match(match, " src='.*?/flags/(.*?).png'")
+        if servidor == 'various': other = servertools.corregir_other(url)
 
-            if not servidor == 'directo':
-                itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = url, language = IDIOMAS.get(lang, lang), quality = qlty ))
+        if servidor == other: other = ''
+
+        elif not servidor == 'directo':
+           if not servidor == 'various': other = ''
+
+        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = url, language = IDIOMAS.get(lang, lang), other = other ))
 
     if not itemlist:
         if not ses == 0:
@@ -240,17 +246,23 @@ def play(item):
     logger.info()
     itemlist = []
 
+    if 'magnet' in item.url or item.url.endswith('.torrent'):
+        if PY3:
+            from core import requeststools
+            data = requeststools.read(item.url, 'pelisestreno')
+        else:
+            data = do_downloadpage(item.url)
+
+        import os
+
+        file_local = os.path.join(config.get_data_path(), "temp.torrent")
+        with open(file_local, 'wb') as f: f.write(data); f.close()
+
+        itemlist.append(item.clone( url = file_local, server = 'torrent' ))
+
+        return itemlist
+
     url = item.url
-
-    if not url:
-        post = {'action': 'doo_player_ajax', 'post': item.dpost, 'nume': item.dnume, 'type': 'movie'}
-        headers = {"Referer": item.url}
-
-        data = do_downloadpage(host + 'wp-admin/admin-ajax.php', post = post, headers = headers)
-
-        url = scrapertools.find_single_match(data, '"embed_url":"(.*?)"')
-
-        url = url.replace('\\/', '/')
 
     if url:
         servidor = servertools.get_server_from_url(url)
@@ -263,54 +275,11 @@ def play(item):
     return itemlist
 
 
-def list_search(item):
-    logger.info()
-    itemlist = []
-
-    data = do_downloadpage(item.url)
-
-    bloque = scrapertools.find_single_match(data, '<h1>Resultados encontrados(.*?)© 2022 por Pelisestreno')
-
-    matches = scrapertools.find_multiple_matches(bloque, '<article>(.*?)</article>')
-
-    for article in matches:
-        url = scrapertools.find_single_match(article, ' href="(.*?)"')
-
-        if not '/pelicula/' in url: continue
-
-        title = scrapertools.find_single_match(article, ' alt="(.*?)"')
-
-        if ('|') in title:
-            title = title.split("|")[0]
-            title = title.strip()
-
-        thumb = scrapertools.find_single_match(article, ' src="(.*?)"')
-
-        year = scrapertools.find_single_match(article, '<span class="year">(\d{4})</span>')
-        if year: title = title.replace('(' + year + ')', '').strip()
-        else: year = '-'
-
-        title = title.replace('&#8211;', '').replace('&#8217;', '').replace('&#038;', '&')
-
-        langs = []
-        if '/flags/es.png' in article: langs.append('Esp')
-        if '/flags/mx.png' in article: langs.append('Lat')
-        if '/flags/en.png' in article: langs.append('Vose')
-
-        plot = scrapertools.htmlclean(scrapertools.find_single_match(article, '<div class="contenido"><p>(.*?)</p>'))
-
-        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, languages = ', '.join(langs), contentType='movie', contentTitle=title, infoLabels={'year': year, 'plot': plot} ))
-
-    tmdb.set_infoLabels(itemlist)
-
-    return itemlist
-
-
 def search(item, texto):
     logger.info()
     try:
        item.url = host + '?s=' + texto.replace(" ", "+")
-       return list_search(item)
+       return list_all(item)
     except:
         import sys
         for line in sys.exc_info():

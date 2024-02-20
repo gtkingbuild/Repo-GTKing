@@ -1,0 +1,17 @@
+{
+  "id": "documentarystorm",
+  "name": "DocumentaryStorm",
+  "thumbnail": "documentarystorm.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["documentary"],
+
+  "categories": ["documentary"],
+  "language": ["vo"],
+
+  "clusters": ["categories"],
+
+  "notes": "Documentales en versión original."
+}

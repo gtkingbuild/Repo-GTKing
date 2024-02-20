@@ -378,18 +378,14 @@ def get_filename_from_url(url):
     return filename
 
 
-# def get_domain_from_url(url):
-#     parsed_url = urlparse.urlparse(url)
-#     try:
-#         filename = parsed_url.netloc
-#     except:
-#         # Si falla es porque la implementación de parsed_url no reconoce los atributos como "path"
-#         if len(parsed_url) >= 4:
-#             filename = parsed_url[1]
-#         else:
-#             filename = ""
-#
-#     return filename
+def get_domain_from_url(url):
+    parsed_url = urlparse.urlparse(url)
+    try:
+        domain = parsed_url[1]
+    except Exception:
+        domain = ""
+
+    return domain
 
 
 def get_season_and_episode(title):

@@ -11,7 +11,7 @@
   "categories": ["movie"],
   "language": ["vo"],
 
-  "clusters": ["trailers"],
+  "clusters": ["onlyone", "trailers"],
 
   "notes": "Web dedicada exclusivamente a los tráilers"
 }

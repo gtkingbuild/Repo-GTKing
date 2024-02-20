@@ -10,6 +10,9 @@ def get_video_url(page_url, url_referer=''):
 
     data = httptools.downloadpage(page_url).data
 
+    if 'File Not Found' in data:
+        return 'Archivo inexistente ó eliminado'
+
     url = scrapertools.find_single_match(data, '\{src:\s*"([^"]+)')
     if not url: url = scrapertools.find_single_match(data, '\{file:\s*"([^"]+)')
 

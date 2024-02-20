@@ -1,0 +1,17 @@
+{
+  "id": "asialive",
+  "name": "AsiaLive",
+  "thumbnail": "asialive.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose", "vo"],
+
+  "clusters": ["adults", "dorama", "anime", "lists", "years", "countries", "vos"],
+
+  "notes": "Películas por géneros y año. Series por Géneros."
+}

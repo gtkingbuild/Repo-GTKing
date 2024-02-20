@@ -1,0 +1,18 @@
+{
+  "id": "repelisre",
+  "name": "RePelisRe",
+  "thumbnail": "repelisre.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow", "torrent"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["suggested", "torrents", "news", "rankings", "languages", "kids", "docs", "vos"],
+
+  "notes": "Películas por géneros y año."
+
+}

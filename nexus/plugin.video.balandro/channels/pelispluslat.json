@@ -3,7 +3,7 @@
   "name": "PelisPlusLat",
   "thumbnail": "pelispluslat.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["all", "movie", "tvshow"],
@@ -13,5 +13,5 @@
 
   "clusters": ["current", "news", "rankings", "years", "lasts", "docs", "anime", "vos"],
 
-  "notes": "Películas por géneros y años. Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Web CERRADA. Películas por géneros y años. Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

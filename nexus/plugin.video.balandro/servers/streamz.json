@@ -10,6 +10,10 @@
       {
         "pattern": "streamz(?:z|).(?:cc|vg|ws|to|tv|)/([A-z0-9]+)",
         "url": "https://streamz.ws/\\1"
+      },
+      {
+        "pattern": "(https://streamz(?:z|).\\w{2,3}/[A-z0-9]+)",
+        "url": "\\1"
       }
     ]
   }

@@ -130,8 +130,6 @@ def findvideos(item):
     for url, lang_srv in matches:
         ses += 1
 
-        if '/netu.' in url or '/hqq.' in url or '/waaw.' in url: continue
-
         lang = ''
 
         if ' - ' in lang_srv: lang = scrapertools.find_single_match(lang_srv, '.*?-(.*?)-').strip()
@@ -144,21 +142,16 @@ def findvideos(item):
            matches2 = scrapertools.find_multiple_matches(data2, '<li class="linkserver".*?data-video="(.*?)"')
 
            for match in matches2:
-               if '/netu.' in match or '/hqq.' in match or '/waaw.' in match: continue
-
                servidor = servertools.get_server_from_url(match)
                servidor = servertools.corregir_servidor(servidor)
 
                other = ''
 
-               if servidor == 'various':
-                   if 'filemoon' in match: other = 'filemoon'
-                   elif 'streamwish' in match: other = 'streamwish'
-                   elif 'moonplayer' in match: other = 'moonplayer'
+               if servidor == 'various': other = servertools.corregir_other(match)
 
                if not servidor == 'directo':
-                   itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = match, server = servidor,
-                                                                 language = IDIOMAS.get(lang, lang), other = other.capitalize() ))
+                   itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = match, server = servidor, language = IDIOMAS.get(lang, lang), other = other ))
+
            continue
 
         servidor = servertools.get_server_from_url(url)
@@ -166,13 +159,10 @@ def findvideos(item):
 
         other = ''
 
-        if servidor == 'various':
-            if 'filemoon' in url: other = 'filemoon'
-            elif 'streamwish' in url: other = 'streamwish'
-            elif 'moonplayer' in match: other = 'moonplayer'
+        if servidor == 'various': other = servertools.corregir_other(url)
 
         if not servidor == 'directo':
-            itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = servidor, language = IDIOMAS.get(lang, lang), other = other.capitalize() ))
+            itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = servidor, language = IDIOMAS.get(lang, lang), other = other ))
 
     if not itemlist:
         if not ses == 0:

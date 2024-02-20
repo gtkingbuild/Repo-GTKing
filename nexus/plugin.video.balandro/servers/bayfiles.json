@@ -12,6 +12,14 @@
         "url": "\\1"
       },
       {
+        "pattern": "(https://bayfiles.cc/\\w+)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://bayfiles.io/\\w+)",
+        "url": "\\1"
+      },
+      {
         "pattern": "(https://bayfile.com/\\w+)",
         "url": "\\1"
       }

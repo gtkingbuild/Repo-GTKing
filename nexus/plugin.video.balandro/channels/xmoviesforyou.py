@@ -7,11 +7,24 @@ from core.item import Item
 from core import httptools, scrapertools, servertools
 
 
-host = 'https://xmoviesforyou.com'
+host = 'https://xmoviesforyou.com/'
 
 
 def do_downloadpage(url, post=None, headers=None):
-    data = httptools.downloadpage(url, post=post, headers=headers).data
+    timeout = None
+    if host in url: timeout = config.get_setting('channels_repeat', default=30)
+
+    data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+
+    if not data:
+        if url.startswith(host):
+            if not '?s=' in url:
+                if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('XmoviesForYou', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+
+                timeout = config.get_setting('channels_repeat', default=30)
+
+                httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+
     return data
 
 
@@ -23,14 +36,11 @@ def mainlist_pelis(item):
     logger.info()
     itemlist = []
 
-    descartar_xxx = config.get_setting('descartar_xxx', default=False)
-
-    if descartar_xxx: return itemlist
+    if config.get_setting('descartar_xxx', default=False): return
 
     if config.get_setting('adults_password'):
         from modules import actions
-        if actions.adults_password(item) == False:
-            return itemlist
+        if actions.adults_password(item) == False: return
 
     itemlist.append(item.clone( title = 'Buscar vídeo ...', action = 'search', search_type = 'movie', text_color = 'orange' ))
 
@@ -69,9 +79,10 @@ def findvideos(item):
     data = do_downloadpage(item.url)
     data = re.sub(r"\n|\r|\t|&nbsp;|<br>|<br/>", "", data)
 
-    data = scrapertools.find_single_match(data, '<div class="entry-content post_content">(.*?)</div>')
+    bloque = scrapertools.find_single_match(data, '<div class="entry-content post_content">(.*?)</span></strong>')
 
-    matches = re.compile('<(?:iframe src|IFRAME SRC|a href)="([^"]+)"', re.DOTALL).findall(data)
+    matches = re.compile('<(?:iframe src|IFRAME SRC|a href)="([^"]+)"', re.DOTALL).findall(bloque)
+    if not matches: matches = re.compile('<a href="(.*?)"', re.DOTALL).findall(bloque)
 
     ses = 0
 

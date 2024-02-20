@@ -13,5 +13,5 @@
 
   "clusters": ["rankings", "languages", "qualityes", "years", "countries", "kids", "docs", "vos"],
 
-  "notes": "Web CERADA. Películas por idioma, géneros, calidad, año, país. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Web CERRADA. Películas por idioma, géneros, calidad, año, país. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

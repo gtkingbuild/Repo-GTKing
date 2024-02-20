@@ -39,8 +39,9 @@ class HandleRequests(BaseHTTPRequestHandler):
 def run():
     server_address = ('', 8781)
     httpd = HTTPServer(server_address, HandleRequests)
+
     monitor = xbmc.Monitor()
-    httpd.timeout = 1
+    httpd.timeout = 15
 
     while not monitor.abortRequested():
         try:

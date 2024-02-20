@@ -10,7 +10,11 @@ def get_video_url(page_url, url_referer=''):
 
     data = httptools.downloadpage(page_url).data
 
+    if "File Not Found" in data:
+        return 'Archivo inexistente ó eliminado'
+
     vid = scrapertools.find_single_match(page_url, "/u/([^$]+)")
+    if not vid: vid = scrapertools.find_single_match(page_url, "/l/([^$]+)")
 
     if vid:
         url = "https://pixeldrain.com/api/file/%s?download" % vid

@@ -13,12 +13,12 @@ def get_video_url(page_url, url_referer=''):
     video_urls = []
 
     resp = httptools.downloadpage(page_url)
-    if resp.code == 404:
-        return "El fichero no existe o ha sido borrado"
+    if resp.code == 404 or 'Not Found' in resp.data:
+        return "Archivo inexistente ó eliminado"
 
     data = resp.data
 
-    jdata = scrapertools.find_single_match(data, "type='text/javascript'>(eval.*?)?\s+</script>")
+    jdata = scrapertools.find_single_match(data, "<script type=[\"']text/javascript[\"']>\s*;?(eval.*?)</script>")
 
     unpacked = jsunpack.unpack(jdata)
 

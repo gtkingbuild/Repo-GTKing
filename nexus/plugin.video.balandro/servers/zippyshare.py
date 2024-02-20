@@ -13,9 +13,9 @@ def get_video_url(page_url, url_referer=''):
     data = httptools.downloadpage(page_url).data
 
     if 'File does not exist on this server' in data:
-        return 'El archivo no existe'
+        return 'Archivo inexistente ó eliminado'
     elif 'File has expired and does not exist anymore on this server' in data:
-        return 'El archivo ha sido eliminado'
+        return 'Archivo inexistente ó eliminado'
 
     match = re.search('(.+)/v/(\w+)/file.html', page_url)
     if not match: return video_urls

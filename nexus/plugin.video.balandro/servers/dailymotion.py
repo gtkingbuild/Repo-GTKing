@@ -14,6 +14,9 @@ def get_video_url(page_url, url_referer=''):
 
     resp = httptools.downloadpage(page_url)
 
+    if 'restringido por el propietario' in resp.data:
+        return 'Archivo restringido por el propietario'
+
     data = jsontools.load(resp.data)
 
     try:

@@ -71,7 +71,6 @@ def mainlist(item):
 
         itemlist.append(it)
 
-
     if not itemlist:
         platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Aún no tiene Descargas[/COLOR][/B]' % color_exec)
 
@@ -89,7 +88,7 @@ def mainlist(item):
               pass
 
 
-    itemlist.append(item.clone( channel='actions', action = 'open_settings', title= '[COLOR chocolate][B]Ajustes[/B][/COLOR] configuración (categoría [COLOR seagreen][B]Descargas[/B][/COLOR])', thumbnail=config.get_thumb('settings') ))
+    itemlist.append(item.clone( channel='actions', action = 'open_settings', title= '[COLOR chocolate][B]Ajustes[/B][/COLOR] preferencias (categoría [COLOR seagreen][B]Descargas[/B][/COLOR])', thumbnail=config.get_thumb('settings') ))
 
     itemlist.append(item.clone( title = '[B]Ubicación actual de las[/B] [COLOR seagreen][B]Descargas[/B][/COLOR]', action = 'show_folder_downloads', thumbnail=config.get_thumb('downloads') ))
 
@@ -110,7 +109,11 @@ def show_folder_downloads(item):
     else:
         path = os.path.join(config.get_data_path(), 'downloads')
 
-    platformtools.dialog_textviewer('Ubicación de las Descargas', path)
+    txt = 'Carpeta de descargas (por defecto [COLOR chocolate][B].../addon_data.../downloads[/B][/COLOR])[CR][CR]'
+
+    txt += path
+
+    platformtools.dialog_textviewer('Ubicación de las Descargas', txt)
 
 
 def acciones_enlace(item):
@@ -293,8 +296,13 @@ def download_video(item, parent_item):
         url_referer = item.url_referer if item.url_referer else parent_item.url
         video_urls, puedes, motivo = servertools.resolve_video_urls_for_playing(item.server, item.url, url_referer=url_referer)
 
+    if len(video_urls) == 1:
+        if '.rar' in video_urls[0][0] or '.zip' in video_urls[0][0]:
+            puedes = False
+            motivo = '[COLOR crimson][B]Está en formato Comprimido[/B][/COLOR]'
+
     if not puedes:
-        platformtools.dialog_ok("No puedes descargar este vídeo porque...", motivo, item.url)
+        platformtools.dialog_ok("No puedes descargar este vídeo porque ...", motivo, item.url)
         return False
 
     opciones = []
@@ -377,7 +385,7 @@ def do_download(mediaurl, file_name, parent_item, server_item):
 
         show_folder_downloads(parent_item)
 
-        if not platformtools.dialog_yesno(config.__addon_name, '¿ Confirma la ubicación de la descarga ?', la_ubicacion + '[/COLOR][/B]'): 
+        if not platformtools.dialog_yesno(config.__addon_name, '¿ Confirma la ubicación de la [COLOR seagreen]Descarga[/COLOR] ?', la_ubicacion + '[/COLOR][/B]'): 
             from modules import actions
 
             actions.open_settings(parent_item)
@@ -389,7 +397,7 @@ def do_download(mediaurl, file_name, parent_item, server_item):
             if not filetools.exists(download_path):
                 filetools.mkdir(download_path)
 
-        if not platformtools.dialog_yesno(config.__addon_name, '[B][COLOR %s]¿ Desea que se le siga formulando la pregunta respecto a confirmar la ubicación?[/COLOR][/B]' % color_avis): 
+        if not platformtools.dialog_yesno(config.__addon_name, '[B][COLOR %s]¿ Desea que se le siga formulando la pregunta respecto a confirmar la ubicación?[/COLOR][/B]' % color_exec): 
             config.set_setting('conf_ubicacion', False)
 
     # Limpiar caracteres para nombre de fichero válido

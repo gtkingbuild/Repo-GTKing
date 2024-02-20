@@ -3,7 +3,7 @@
   "name": "PelisPedia",
   "thumbnail": "pelispedia.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["all", "movie", "tvshow"],
@@ -11,7 +11,7 @@
   "categories": ["movie", "tvshow"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["current", "problematic", "years", "kids", "docs", "vos"],
+  "clusters": ["current", "years", "kids", "docs", "vos"],
 
-  "notes": "Películas por géneros, año. Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Web ANULADA. Películas por géneros, año. Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

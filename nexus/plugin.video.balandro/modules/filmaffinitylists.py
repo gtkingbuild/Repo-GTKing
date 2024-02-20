@@ -26,7 +26,7 @@ def mainlist(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( action='show_help', title='[B]Información Filmaffinity[/B]', folder=False, thumbnail=config.get_thumb('help'), text_color='green' ))
+    itemlist.append(item.clone( action='show_help', title='[COLOR green][B]Información[/B][/COLOR] Filmaffinity', folder=False, thumbnail=config.get_thumb('help') ))
 
     itemlist.append(item.clone( action='', title= '[B]Búsquedas a través de [COLOR pink]Personas[/COLOR]:[/B]', text_color='yellowgreen' ))
 
@@ -102,10 +102,11 @@ def mainlist(item):
         if not por_tema:
             itemlist.append(item.clone( title = ' - Por tema', action = 'temas', url = host + 'topics.php' ))
 
-        if config.get_setting('mnu_documentales', default=True):
-            itemlist.append(item.clone( title = '[B]Documentales:[/B]', thumbnail=config.get_thumb('documentary'), action = '', text_color='cyan' ))
+        if not config.get_setting('mnu_simple', default=False):
+            if config.get_setting('mnu_documentales', default=True):
+                itemlist.append(item.clone( title = '[B]Documentales:[/B]', thumbnail=config.get_thumb('documentary'), action = '', text_color='cyan' ))
 
-            itemlist.append(item.clone( title = ' - Los mejores', action = 'list_sel', url = host + ruta_sel + '&notvse=1', cod_genre = 'DO', thumbnail=config.get_thumb('bestdocumentaries'), search_type = 'all' ))
+                itemlist.append(item.clone( title = ' - Los mejores', action = 'list_sel', url = host + ruta_sel + '&notvse=1', cod_genre = 'DO', thumbnail=config.get_thumb('bestdocumentaries'), search_type = 'all' ))
 
     if not item.search_type:
         if config.get_setting('channels_link_main', default=True):
@@ -668,7 +669,6 @@ def emmy_ediciones(item):
 
     data = httptools.downloadpage(item.url).data
 
-    matches = scrapertools.find_multiple_matches(data, '<td><a href="(.*?)".*?title="">(.*?)</a>')
     matches = scrapertools.find_multiple_matches(data, '<td><a href="(.*?)" title="(.*?)">(.*?)</a>')
 
     for url, title, anyo in matches:
@@ -915,6 +915,8 @@ def _emmys(item):
 
     if item.origen == 'mnu_esp':
         return emmy_ediciones(item)
+
+    item.url = host + 'award-edition.php?edition-id=emmy_'
 
     item.url = item.url + str(current_year)
 

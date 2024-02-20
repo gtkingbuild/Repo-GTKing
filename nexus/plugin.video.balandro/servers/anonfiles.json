@@ -12,6 +12,10 @@
         "url": "\\1"
       },
       {
+        "pattern": "(https://anonfiles.me/\\w+)",
+        "url": "\\1"
+      },
+      {
         "pattern": "(https://anonfile.com/\\w+)",
         "url": "\\1"
       }

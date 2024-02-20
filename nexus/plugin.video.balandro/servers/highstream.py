@@ -14,7 +14,7 @@ def get_video_url(page_url, url_referer=''):
     data = httptools.downloadpage(page_url).data
 
     if "File Not Found" in data or "File was deleted" in data:
-        return 'El archivo ya no está presente en el servidor'
+        return 'Archivo inexistente ó eliminado'
 
     if 'sources: [' in data:
         video_urls = extract_sources(data)
@@ -61,7 +61,7 @@ def extract_sources(data):
         else:
             lbl = scrapertools.find_single_match(vid, 'label:\s*"([^"]+)')
             if not lbl: lbl = scrapertools.find_single_match(vid, 'type:\s*"([^"]+)')
-            if not lbl: lbl = url[-4:] #'mp4'
+            if not lbl: lbl = url[-4:]
             video_urls.append([lbl, url])
 
     return video_urls

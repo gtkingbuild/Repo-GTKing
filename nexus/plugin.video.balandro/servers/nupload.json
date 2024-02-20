@@ -38,6 +38,10 @@
       {
         "pattern": "(https://nuuuppp.cloud/watch/[A-z0-9\\?=]+)",
         "url": "\\1"
+      },
+      {
+        "pattern": "(https://nuuuppp.pro/watch/[A-z0-9\\?=]+)",
+        "url": "\\1"
       }
     ]
   }

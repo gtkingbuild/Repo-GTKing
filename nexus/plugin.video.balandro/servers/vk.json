@@ -6,15 +6,15 @@
   "notes": "Alternative vía: Script.Module.ResolveUrl",
 
   "find_videos": {
-    "ignore_urls": [],
+    "ignore_urls": ["https://vk.com/video"],
     "patterns": [
       {
         "pattern": "/video_ext.php\\?oid=(\\d+)&id=(\\d+)",
-        "url": "https://vk.com/video\\1_\\2"
+        "url": "https://vk.com/video\\1\\2"
       },
       {
         "pattern": "vk\\.[a-z]+\\/video(?:-|)(\\d+)_(\\d+)",
-        "url": "https://vk.com/video\\1_\\2"
+        "url": "https://vk.com/video\\1\\2"
       }
     ]
   }

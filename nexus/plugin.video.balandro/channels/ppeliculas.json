@@ -3,7 +3,7 @@
   "name": "Ppeliculas",
   "thumbnail": "ppeliculas.png",
 
-  "active": false,
+  "active": true,
 
   "searchable": true,
   "search_types": ["all", "movie", "tvshow"],
@@ -11,7 +11,7 @@
   "categories": ["movie", "tvshow"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["notice", "problematic", "news", "rankings", "lasts", "kids", "docs", "vos"],
+  "clusters": ["onlyone", "notice", "news", "rankings", "lasts", "kids", "docs", "vos"],
 
-  "notes": "Web ANULADA. Películas y Series por géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Películas por géneros. También Series. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

@@ -1,16 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import sys
-
-PY3 = False
-if sys.version_info[0] >= 3: PY3 = True
-
-if PY3:
-    import urllib.parse as urlparse
-else:
-    import urlparse
-
-
 import re
 
 from platformcode import config, logger
@@ -37,19 +26,19 @@ def mainlist_pelis(item):
     logger.info()
     itemlist = []
 
-    descartar_xxx = config.get_setting('descartar_xxx', default=False)
-
-    if descartar_xxx: return itemlist
+    if config.get_setting('descartar_xxx', default=False): return
 
     if config.get_setting('adults_password'):
         from modules import actions
-        if actions.adults_password(item) == False:
-            return itemlist
+        if actions.adults_password(item) == False: return
+
+    # ~ itemlist.append(item.clone( title = 'Buscar vídeo ...', action = 'search', search_type = 'movie', text_color = 'orange' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = url_api + 'most-recent&page=1' ))
 
-    itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = url_api + 'long&page=1' ))
     itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = url_api + 'top-rated&page=1' ))
+
+    itemlist.append(item.clone( title = 'Long Play', action = 'list_all', url = url_api + 'long&page=1' ))
 
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url = host ))
 
@@ -68,12 +57,12 @@ def categorias(item):
     matches = re.compile('<a class="category-item" href="([^"]+)">([^"]+)</a>', re.DOTALL).findall(data)
 
     for url, title in matches:
-        url = urlparse.urljoin(item.url, url)
+        url = host[:-1] + url
         url = url + '?ajax=1&type=most-recent&page=1'
 
-        itemlist.append(item.clone (action='list_all', title=title, url=url, contentType = 'movie', text_color = 'orange' ))
+        itemlist.append(item.clone (action='list_all', title=title, url=url, text_color = 'orange' ))
 
-    return sorted(itemlist,key=lambda x: x.title)
+    return itemlist
 
 
 def list_all(item):
@@ -92,15 +81,15 @@ def list_all(item):
 
         title = video["videoTitle"]
 
-        titulo = "[COLOR tan]%s[/COLOR] %s" % (duration, title)
-
         src = video["src"]
-        thumb = src.get('domain', domain) + src.get('pathMedium', domain)+"1.jpg"
+        thumb = src.get('domain', domain) + src.get('pathMedium', domain) + "1.jpg"
 
         url = video["urls_CDN"]
         url = url.get('480', domain)
 
         url = url.replace("/\n/", "/")
+
+        titulo = "[COLOR tan]%s[/COLOR] %s" % (duration, title)
 
         itemlist.append(item.clone (action='findvideos', title=titulo, url=url, thumbnail=thumb, contentType = 'movie', contentTitle = title, contentExtra='adults') )
 

@@ -74,6 +74,8 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'ver-pelicula/', search_type = 'movie' ))
 
+    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'peliculas/estrenos/', search_type = 'movie', text_color = 'cyan' ))
+
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'movie' ))
 
@@ -84,18 +86,21 @@ def generos(item):
     logger.info()
     itemlist = []
 
-    data = do_downloadpage(host + 'ver-pelicula/')
+    data = do_downloadpage(host)
 
-    bloque = scrapertools.find_single_match(data, '>Géneros<(.*?)</ul>')
+    bloque = scrapertools.find_single_match(data, '>GÉNEROS<(.*?)</ul>')
 
     matches = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)".*?>(.*?)</a>')
 
     for url, title in matches:
         title = title.replace('&amp;', '&')
 
+        if config.get_setting('descartar_anime', default=False):
+            if title == 'Anime': continue
+
         itemlist.append(item.clone( action='list_all', title=title, url=url, text_color = 'deepskyblue' ))
 
-    return itemlist
+    return sorted(itemlist, key=lambda x: x.title)
 
 
 def anios(item):
@@ -157,7 +162,7 @@ def list_all(item):
         else:
            if '(' + year + ')' in title: title = title.replace('(' + year + ')', '').strip()
 
-        title = title.replace('&#8211;', '').replace('&#8217;', '')
+        title = title.replace('&#8211;', '').replace('&#8217;', '').replace('&#038;', '&')
 
         titulo = title
 
@@ -186,48 +191,74 @@ def findvideos(item):
     logger.info()
     itemlist = []
 
+    IDIOMAS = {'mx': 'Lat', 'es': 'Esp', 'en': 'Vose', 'jp': 'Vose'}
+
     data = do_downloadpage(item.url)
 
-    matches = scrapertools.find_multiple_matches(data, "<tr id='link-'.*?<a href='(.*?)'.*?<strong class='quality'>(.*?)</strong>.*?/flags/(.*?).png")
+    # embeds
+    matches = scrapertools.find_multiple_matches(data, "<li id='player-option-(.*?)</li>")
 
     ses = 0
 
-    for url, qlty, lang in matches:
+    for match in matches:
         ses += 1
 
-        if '/hqq.' in url or '/waaw.' in url or '/netu.' in url: continue
+        servidor = scrapertools.find_single_match(match, "<span class='title'>(.*?)</span>").lower()
 
-        elif '.mystream.' in url: continue
-        elif '/ul.' in url: continue
+        if not servidor: continue
 
-        if lang == 'es': lang = 'Esp'
-        elif lang == 'la': lang = 'Lat'
-        elif lang == 'mx': lang = 'Lat'
-        elif lang == 'en': lang = 'Vo'
-        elif lang == 'jp': lang = 'Vose'
-        else: lang = '?'
-
-        servidor = servertools.get_server_from_url(url, disabled_servers=True)
-
-        if servidor is None: continue
-
-        servidor = servertools.corregir_servidor(servidor)
+        if 'trailer' in servidor: continue
 
         if servertools.is_server_available(servidor):
             if not servertools.is_server_enabled(servidor): continue
         else:
             if not config.get_setting('developer_mode', default=False): continue
 
-        url = servertools.normalize_url(servidor, url)
+        lang = scrapertools.find_single_match(match, " src='.*?/flags/(.*?).png'")
 
-        itemlist.append(Item(channel = item.channel, action = 'play', title = '', server = servidor, url = url, language = lang, quality = qlty ))
+        dpost = scrapertools.find_single_match(match, " data-post='(.*?)'")
+        dnume = scrapertools.find_single_match(match, " data-nume='(.*?)'")
 
-    itemlist = servertools.get_servers_itemlist(itemlist)
+        if not dpost or not dnume: continue
+
+        if not servidor == 'directo': other = ''
+        else: other = servidor
+
+        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, dpost = dpost, dnume = dnume, other = other, language = IDIOMAS.get(lang, lang) ))
+
+    # downloads recatpcha
 
     if not itemlist:
         if not ses == 0:
             platformtools.dialog_notification(config.__addon_name, '[COLOR tan][B]Sin enlaces Soportados[/B][/COLOR]')
             return
+
+    return itemlist
+
+
+def play(item):
+    logger.info()
+    itemlist = []
+
+    url = item.url
+
+    if not url:
+        post = {'action': 'doo_player_ajax', 'post': item.dpost, 'nume': item.dnume, 'type': 'movie'}
+        headers = {"Referer": item.url}
+
+        data = do_downloadpage(host + 'wp-admin/admin-ajax.php', post = post, headers = headers)
+
+        url = scrapertools.find_single_match(data, '"embed_url":"(.*?)"')
+
+        url = url.replace('\\/', '/')
+
+    if url:
+        servidor = servertools.get_server_from_url(url)
+        servidor = servertools.corregir_servidor(servidor)
+
+        url = servertools.normalize_url(servidor, url)
+
+        itemlist.append(item.clone( url = url, server = servidor ))
 
     return itemlist
 

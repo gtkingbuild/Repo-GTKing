@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from core import httptools, scrapertools, jsontools
+from core import httptools, jsontools
 from platformcode import logger
 
 
@@ -11,12 +11,12 @@ def get_video_url(page_url, url_referer=''):
     resp = httptools.downloadpage(page_url)
 
     if resp.code == 404:
-        return 'El archivo no existe o ha sido borrado'
+        return 'Archivo inexistente ó eliminado'
 
     data = resp.data
 
     if 'ShareId does not exists' in data:
-        return 'El archivo no existe o ha sido borrado'
+        return 'Archivo inexistente ó eliminado'
 
     jdata = jsontools.load(data)
     folderid = jdata['nodeInfo']['id']

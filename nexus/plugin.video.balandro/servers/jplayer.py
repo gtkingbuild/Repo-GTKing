@@ -11,9 +11,9 @@ def get_video_url(page_url, url_referer=''):
     data = httptools.downloadpage(page_url).data
 
     if "no longer exists" in data:
-        return "El fichero ha sido borrado"
+        return "Archivo inexistente ó eliminado"
     elif "to copyright issues" in data:
-        return "Derechos copyright"
+        return "Violación por Derechos Copyright"
 
     post = {"r":"", "d":"www.jplayer.club"}
     data = httptools.downloadpage(page_url, post=post).data

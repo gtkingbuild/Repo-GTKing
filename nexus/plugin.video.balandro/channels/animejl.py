@@ -18,28 +18,27 @@ def mainlist_animes(item):
     logger.info()
     itemlist = []
 
-    descartar_anime = config.get_setting('descartar_anime', default=False)
-
-    if descartar_anime: return itemlist
+    if config.get_setting('descartar_anime', default=False): return
 
     if config.get_setting('adults_password'):
         from modules import actions
-        if actions.adults_password(item) == False:
-            return itemlist
+        if actions.adults_password(item) == False: return
 
     itemlist.append(item.clone( title = 'Buscar anime ...', action = 'search', search_type = 'tvshow', text_color='springgreen' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'animes', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host, search_type = 'tvshow', text_color = 'olive' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host, search_type = 'tvshow', text_color = 'cyan' ))
 
-    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'animes?estado%5B%5D=2&order=created', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'animes?estado%5B%5D=2&order=created', search_type = 'tvshow', text_color = 'moccasin' ))
     itemlist.append(item.clone( title = 'En emisión', action = 'list_all', url = host + 'animes?estado%5B%5D=0&order=created', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Finalizados', action = 'list_all', url = host + 'animes?estado%5B%5D=1&order=created', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'En Latino', action = 'list_all', url = host + 'animes?genre[]=46&order=created', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'En latino', action = 'list_all', url = host + 'animes?genre[]=46&order=created', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Por categorías', action = 'categorias', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host + 'animes?tipo%5B%5D=3&order=created', search_type = 'movie', text_color = 'deepskyblue' ))
+
+    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'tvshow' ))
 
@@ -50,10 +49,12 @@ def categorias(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title = 'Animes', action = 'list_all', url = host + 'animes?tipo%5B%5D=1&order=created', search_type = 'tvshow', text_color='springgreen' ))
-    itemlist.append(item.clone( title = 'Donghuas', action = 'list_all', url = host + 'animes?tipo%5B%5D=7&order=created', search_type = 'tvshow', text_color='springgreen' ))
-    itemlist.append(item.clone( title = 'Ovas', action = 'list_all', url = host + 'animes?tipo%5B%5D=2&order=created', search_type = 'tvshow', text_color='springgreen' ))
-    itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host + 'animes?tipo%5B%5D=3&order=created', search_type = 'tvshow', text_color = 'deepskyblue' ))
+    text_color = 'moccasin'
+
+    itemlist.append(item.clone( title = 'Animes', action = 'list_all', url = host + 'animes?tipo%5B%5D=1&order=created', search_type = 'tvshow', text_color=text_color ))
+    itemlist.append(item.clone( title = 'Donghuas', action = 'list_all', url = host + 'animes?tipo%5B%5D=7&order=created', search_type = 'tvshow', text_color=text_color ))
+    itemlist.append(item.clone( title = 'Ovas', action = 'list_all', url = host + 'animes?tipo%5B%5D=2&order=created', search_type = 'tvshow', text_color=text_color ))
+    itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host + 'animes?tipo%5B%5D=3&order=created', search_type = 'movie', text_color=text_color ))
 
     return itemlist
 
@@ -212,7 +213,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('AnimeJl', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -283,8 +285,6 @@ def findvideos(item):
         if url:
             if url.startswith('//'): url = 'https:' + url
 
-            if '/hqq.' in url or '/waaw.' in url or '/netu.' in url: continue
-
             if url.startswith('https://animejl.top/v/'): url = url.replace('https://animejl.top/v/', 'https://vanfem.com/v/')
 
             servidor = servertools.get_server_from_url(url)
@@ -294,8 +294,11 @@ def findvideos(item):
 
             if servidor == 'zplayer': url = url + '|' + host
 
+            other = ''
+            if servidor == 'various': other = servertools.corregir_other(url)
+
             if not servidor == 'directo':
-                itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language='Vose' ))
+                itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language='Vose', other = other ))
 
     # ~ descargas  no se tratan por anomizador
 

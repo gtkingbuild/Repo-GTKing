@@ -14,12 +14,13 @@ def get_video_url(page_url, url_referer=''):
     video_id = scrapertools.find_single_match(page_url, '/([A-z0-9]+)\.html')
 
     url = 'https://www.flashx.tv/playvideo-%s.html?playvid' % video_id
+
     data = httptools.downloadpage(url, headers={'Referer': 'https://www.flashx.tv/embed-%s.html' % video_id}).data
 
     if 'Too many views' in data:
-        return 'Vídeo no encontrado'
+        return 'Archivo no encontrado'
     elif 'NOT FOUND' in data or 'file was deleted or the link is expired' in data:
-        return 'El archivo no existe o ha sido borrado'
+        return 'Archivo inexistente ó eliminado'
 
     if 'normal.mp4' not in data:
         file_id = scrapertools.find_single_match(data, "'file_id', '([^']+)'")

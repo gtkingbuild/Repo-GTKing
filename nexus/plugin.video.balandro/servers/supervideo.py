@@ -30,7 +30,7 @@ def get_video_url_embed(page_url, url_referer=''):
     data = httptools.downloadpage(page_url).data
 
     if '<title>404 Not Found</title>' in data:
-        return 'El vídeo ya no está disponible'
+        return 'Archivo inexistente ó eliminado'
 
     packed = scrapertools.find_multiple_matches(data, "(?s)eval(.*?)\s*</script>")
     for pack in packed:
@@ -44,6 +44,7 @@ def get_video_url_embed(page_url, url_referer=''):
     bloque = scrapertools.find_single_match(data, 'sources:\s*\[(.*?)\]')
 
     matches = scrapertools.find_multiple_matches(bloque, '\{(.*?)\}')
+
     for vid in matches:
         url = scrapertools.find_single_match(vid, 'file:"([^"]+)')
         if not url: continue
@@ -68,7 +69,8 @@ def get_video_url_download(page_url, url_referer=''):
 
     data = httptools.downloadpage(page_url).data
 
-    if '<title>404 Not Found</title>' in data: return 'El vídeo ya no está disponible'
+    if '<title>404 Not Found</title>' in data:
+        return 'Archivo inexistente ó eliminado'
 
     if 'download_video(' not in data:
         post = {
@@ -84,6 +86,7 @@ def get_video_url_download(page_url, url_referer=''):
             data = httptools.downloadpage(page_url, post=post).data
 
     matches = scrapertools.find_multiple_matches(data, "download_video\('([^']+)','([^']+)','([^']+)'\)\">([^<]+)</a></td><td>([^<]+)")
+
     if not matches:
         matches = scrapertools.find_multiple_matches(data, "download_video\('([^']+)','([^']+)','([^']+)'\)\">.*? class=\"downloadbox__quality\">([^<]+)</b><span class=\"downloadbox__size\">([^<]+)")
 
@@ -94,6 +97,7 @@ def get_video_url_download(page_url, url_referer=''):
 
         url = scrapertools.find_single_match(data, ' href="([^"]+)">Direct Download Link</a>')
         if not url: url = scrapertools.find_single_match(data, 'btn_direct-download" href="([^"]+)')
+
         if not url:
             post = {'op': 'download_orig', 'id': a, 'mode': b, 'hash': c}
             data = httptools.downloadpage('https://supervideo.tv/dl', post=post).data

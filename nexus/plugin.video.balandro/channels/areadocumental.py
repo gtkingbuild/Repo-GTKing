@@ -21,7 +21,7 @@ def mainlist(item):
 
     itemlist.append(item.clone( title = 'En 3D', action = 'list_all', url = host + '3D.php' ))
 
-    itemlist.append(item.clone( title = 'Series', action = 'list_all', url = host + 'series.php' ))
+    itemlist.append(item.clone( title = 'Series', action = 'list_all', url = host + 'series.php', text_color = 'moccasin' ))
 
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias' ))
 

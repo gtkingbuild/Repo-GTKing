@@ -11,7 +11,7 @@
   "categories": ["movie"],
   "language": ["cast"],
 
-  "clusters": ["problematic", "rankings", "years", "kids", "docs", "vos"],
+  "clusters": ["rankings", "years", "kids", "docs", "vos"],
 
   "notes": "Web ANULADA. Películas por géneros y año."
 

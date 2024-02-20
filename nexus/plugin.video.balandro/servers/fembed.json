@@ -2,7 +2,8 @@
   "id": "fembed",
   "name": "Fembed",
 
-  "active": true,
+  "active": false,
+  "notes": "Cerrado en Mayo 2023",
 
   "find_videos": {
     "ignore_urls": [],

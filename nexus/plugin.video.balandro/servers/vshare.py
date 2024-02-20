@@ -12,7 +12,7 @@ def get_video_url(page_url, url_referer=''):
     data = httptools.downloadpage(page_url).data
 
     if 'No longer available!' in data:
-        return 'El archivo no existe o ha sido borrado'
+        return 'Archivo inexistente ó eliminado'
 
     video_urls = extraer_videos(data)
 
@@ -24,6 +24,7 @@ def get_video_url(page_url, url_referer=''):
         post = '&'.join([nombre + '=' + valor for nombre, valor in parms])
         post += '&method_free=Proceed+to+video'
         headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+
         data = httptools.downloadpage(page_url, post=post, headers=headers).data
 
         video_urls = extraer_videos(data)

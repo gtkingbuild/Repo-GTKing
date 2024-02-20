@@ -233,7 +233,7 @@ def render_items(itemlist, parent_item):
 
         xbmcplugin.addDirectoryItem(handle=handle, url=item_url, listitem=listitem, isFolder=item.folder)
 
-    # Fijar los tipos de vistas...
+    # Fijar los tipos de vistas
     if parent_item.channel == 'mainmenu' or (parent_item.channel == 'tracking' and parent_item.action in ['mainlist','mainlist_listas']):
         # vista con: Lista amplia, Muro de iconos
         xbmcplugin.setContent(handle, '')
@@ -292,7 +292,7 @@ def set_infolabels(listitem, item, player=False):
     poster_image = item.poster if item.poster != '' else item.thumbnail
     listitem.setArt({'icon': icon_image, 'thumb': item.thumbnail, 'poster': poster_image, 'fanart': item.fanart})
 
-    # Para evitar algunas acciones de kodi en menú contextual (Play, Mark as watched, ...)
+    # Para evitar algunas acciones de kodi en menú contextual (Play, Mark as watched, etc.)
     if not item.folder:
        if item.action == 'configurar_proxies': return
        elif item.action == 'configurar_dominio': return
@@ -411,18 +411,24 @@ def set_context_commands(item, parent_item, colores):
                     item.clone(channel="tracking", action="addFavourite", from_channel=item.channel, from_action=item.action))) )
 
     # Buscar misma peli/serie en otros canales
-    if item.contentType in ['movie', 'tvshow'] and parent_item.channel not in ['tmdblists', 'filmaffinitylists', 'search']:
-        buscando = item.contentTitle if item.contentType == 'movie' else item.contentSerieName
-        if not item.contentExtra in ['documentary', 'adults']:
-            infolabels = {'tmdb_id': item.infoLabels['tmdb_id']} if item.infoLabels['tmdb_id'] else {}
-            item_search = Item(channel='search', action='search', buscando=buscando, search_type=item.contentType, from_channel=item.channel, infoLabels=infolabels)
-            tipo_busqueda = 'en los canales' if item.channel == 'tracking' else 'en otros canales'
-            context_commands.append( ('[B][COLOR %s]Buscar Exacto %s[/COLOR][/B]' % (colores['search_exact'], tipo_busqueda), config.build_ContainerUpdate(item_search)) )
+    if item.contentType in ['movie', 'tvshow'] and parent_item.channel not in ['tmdblists', 'filmaffinitylists']:
+        presentar = True
+        if not config.get_setting('search_dialog', default=True):
+            if parent_item.channel in ['search']: presentar = False
 
-        if not item.contentExtra in ['adults']:
-            search_type = item.contentType if item.contentExtra != 'documentary' else 'documentary'
-            item_search = Item(channel='search', action='search', buscando=buscando, search_type=search_type, from_channel='')
-            context_commands.append( ('[B][COLOR %s]Buscar Parecido en los canales[/COLOR][/B]' % colores['search_similar'], config.build_ContainerUpdate(item_search)) )
+        if presentar:
+            buscando = item.contentTitle if item.contentType == 'movie' else item.contentSerieName
+
+            if not item.contentExtra in ['documentary', 'adults']:
+                infolabels = {'tmdb_id': item.infoLabels['tmdb_id']} if item.infoLabels['tmdb_id'] else {}
+                item_search = Item(channel='search', action='search', buscando=buscando, search_type=item.contentType, from_channel=item.channel, infoLabels=infolabels)
+                tipo_busqueda = 'en los canales' if item.channel == 'tracking' else 'en otros canales'
+                context_commands.append( ('[B][COLOR %s]Buscar Exacto %s[/COLOR][/B]' % (colores['search_exact'], tipo_busqueda), config.build_ContainerUpdate(item_search)) )
+
+            if not item.contentExtra in ['adults']:
+                search_type = item.contentType if item.contentExtra != 'documentary' else 'documentary'
+                item_search = Item(channel='search', action='search', buscando=buscando, search_type=search_type, from_channel='')
+                context_commands.append( ('[B][COLOR %s]Buscar Parecido en los canales[/COLOR][/B]' % colores['search_similar'], config.build_ContainerUpdate(item_search)) )
 
     # Descargar vídeo
     if not config.get_setting('mnu_simple', default=False):
@@ -557,15 +563,24 @@ def developer_mode_check_findvideos(itemlist, parent_item):
                 # para no repetir servers ya verificados
                 checkeds.append(it.server)
                 path = os.path.join(config.get_runtime_path(), 'servers', it.server + '.json')
-                if not os.path.isfile(path):
-                    apuntar = True
+                if not os.path.isfile(path): apuntar = True
 
-        # Server Various
-        if it.server in ['dropload', 'fastupload', 'filemoon', 'moonplayer', 'hexupload', 'krakenfiles', 'mvidoo', 'rutube', 'streamhub', 'streamwish', 'tubeload', 'uploadever', 'videowood', 'yandex', 'desiupload', 'filelions', 'youdbox', 'yodbox', 'youdboox', 'vudeo', 'embedgram']:
-            apuntar = False
+        # Server Various y anulados/controlados
+        if apuntar:
+            if it.server in ['dropload', 'fastupload', 'filemoon', 'moonplayer', 'hexupload', 'hexload', 'krakenfiles', 'mvidoo', 'rutube', 'streamhub', 'streamwish', 'tubeload', 'uploadever', 'videowood', 'yandex', 'desiupload', 'filelions', 'youdbox', 'yodbox', 'youdboox', 'vudeo', 'embedgram', 'embedrise', 'embedwish', 'wishembed', 'vidguard', 'vgfplay', 'v6embed', 'vgembed', 'vembed', 'vid-guard', 'strwish', 'azipcdn', 'awish', 'dwish', 'mwish', 'swish', 'lulustream', 'luluvdo', 'lion', 'alions', 'dlions', 'mlions', 'turboviplay', 'emturbovid', 'tuborstb', 'streamvid' 'upload.do', 'uploaddo', 'file-upload', 'wishfast', 'doodporn', 'vidello', 'vidspeed', 'sfastwish', 'fviplions', 'moonmov', 'flaswish', 'vkspeed', 'vkspeed7', 'obeywish', 'twitch', 'vidhidepro', 'hxfile', 'drop', 'embedv', 'vgplayer', 'userload', 'uploadraja']:
+                apuntar = False
 
-        elif it.server in ['ddownload', 'dfiles', 'dropapk', 'fileflares', 'filerice', 'fireload', 'katfile', 'megaupload', 'oload', 'pandafiles', 'rockfile', 'turbobit', 'uploadrive', 'uppit', 'userload']:
-            apuntar = False
+            elif it.server in ['fembed', 'fembed-hd', 'fembeder', 'divload', 'ilovefembed', 'myurlshort', 'jplayer', 'feurl', 'fembedisthebest', 'femax20', 'fcdn', 'fembad', 'pelispng', 'hlshd', 'embedsito', 'mrdhan', 'dutrag', 'fplayer', 'diasfem', 'suzihaza', 'vanfem', 'youtvgratis', 'oceanplay', 'gotovideo.kiev.ua', 'owodeuwu', 'sypl', 'fembed9hd', 'watchse', 'vcdn', 'femoload', 'cubeembed']:
+                apuntar = False
+
+            elif it.server in ['sbembed', 'sbembed1', 'sbembed2', 'sbvideo', 'japopav']:
+                apuntar = False
+
+            elif it.server in ['sbplay', 'sbplay1', 'sbplay2', 'pelistop', 'sbfast', 'sbfull', 'ssbstream', 'sbthe', 'sbspeed', 'cloudemb', 'tubesb', 'embedsb', 'playersb', 'sbcloud1', 'watchsb', 'viewsb', 'watchmo', 'streamsss', 'sblanh', 'sbanh', 'sblongvu', 'sbchill', 'sbrity', 'sbhight', 'sbbrisk', 'sbface', 'view345', 'sbone', 'sbasian', 'streaamss', 'lvturbo', 'sbnet', 'sbani', 'sbrapid', 'cinestart', 'vidmoviesb', 'sbsonic', 'sblona', 'likessb']:
+                apuntar = False
+
+            elif it.server in ['ddownload', 'dfiles', 'dropapk', 'fileflares', 'filerice', 'fireload', 'katfile', 'megaupload', 'oload', 'pandafiles', 'rockfile', 'turbobit', 'uploadrive', 'uppit', 'qiwi']:
+                apuntar = False
 
         if apuntar:
             txt_log_servers += 'Canal: %s Server: %s Url: %s' % (it.channel, it.server, it.url)
@@ -687,7 +702,7 @@ def play_from_itemlist(itemlist, parent_item):
     if autoplay:
         esperar_seleccion = False
         num_opciones = float(len(itemlist))
-        p_dialog = dialog_progress_bg('Reproducción con Auto Play', 'Espere por favor...')
+        p_dialog = dialog_progress_bg('Reproducción con Auto Play', 'Espere por favor ...')
         ok_play = False
 
         for i, it in enumerate(itemlist):
@@ -821,12 +836,13 @@ def play_video(item, parent_item, autoplay=False):
             else:
                 motivo = '[COLOR crimson][B]' + motivo + '[/B][/COLOR]'
 
-            dialog_ok("No puedes ver el vídeo porque ...", motivo, item.url)
+            dialog_ok("No se puede Reproducir porque ...", motivo, item.url)
         return False
 
-    if len(video_urls) == 1 and '.rar' in video_urls[0][0]:
-        if not autoplay: dialog_ok("No puedes ver el vídeo porque ...", '[COLOR crimson][B]Está comprimido en formato rar[/B][/COLOR]', item.url)
-        return False
+    if len(video_urls) == 1:
+        if '.rar' in video_urls[0][0] or '.zip' in video_urls[0][0]:
+            if not autoplay: dialog_ok("No se puede Reproducir porque ...", '[COLOR crimson][B]Está en formato Comprimido[/B][/COLOR]', item.url)
+            return False
 
     opciones = []
 
@@ -859,7 +875,7 @@ def play_video(item, parent_item, autoplay=False):
             return False
 
         if mpd and not is_mpd_enabled():
-            if not autoplay: dialog_ok(config.__addon_name, '[COLOR moccasin][B]Para ver el formato MPD se require el addon inputstream.adaptive[/B][/COLOR]')
+            if not autoplay: dialog_ok(config.__addon_name, '[COLOR moccasin][B]Para ver el formato MPD se require el AddOn inputstream.adaptive[/B][/COLOR]')
             return False
 
         if item.server == 'torrent':
@@ -921,7 +937,7 @@ def get_video_seleccionado(item, seleccion, video_urls):
 
     # Si hay un tiempo de espera (como en megaupload), lo impone ahora
     if wait_time > 0:
-        continuar = handle_wait(wait_time, item.server, "Cargando vídeo...")
+        continuar = handle_wait(wait_time, item.server, "Cargando vídeo ...")
         if not continuar: mediaurl = ''
 
     return mediaurl, view, mpd
@@ -939,7 +955,7 @@ def handle_wait(time_to_wait, title, text):
         secs += 1
         percent = increment * secs
         secs_left = str((time_to_wait - secs))
-        remaining_display = "Espera " + secs_left + " segundos para iniciar el vídeo..."
+        remaining_display = "Espera " + secs_left + " segundos para iniciar el vídeo ..."
         espera.update(percent, ' ' + text, remaining_display)
         xbmc.sleep(1000)
         if espera.iscanceled():
@@ -988,7 +1004,13 @@ def play_torrent(mediaurl, parent_item):
             if xbmc.getCondVisibility('System.HasAddon("%s")' % client['id']):
                 plugin_url = client['url_magnet'] if 'url_magnet' in client and mediaurl.startswith('magnet:') else client['url']
             else:
-                dialog_ok(config.__addon_name, '[COLOR moccasin][B]Falta instalar el Cliente/Motor Torrent:[/B][/COLOR][COLOR chartreuse][B] ' + client['name'].capitalize() + '[/B][/COLOR]', client['id'])
+                avis_tor = ''
+                if client['name'] == 'pulsar': avis_tor = '[COLOR red][B]Está Obsoleto[/B][/COLOR], '
+                elif client['name'] == 'quasar': avis_tor = '[COLOR red][B]Está Obsoleto[/B][/COLOR], '
+                elif client['name'] == 'stream': avis_tor = '[COLOR red][B]Está Obsoleto[/B][/COLOR], '
+                elif client['name'] == 'xbmctorrent': avis_tor = '[COLOR red][B]Está Obsoleto[/B][/COLOR], '
+
+                dialog_ok(config.__addon_name, avis_tor + '[COLOR moccasin][B]Falta instalar el Cliente/Motor Torrent:[/B][/COLOR][COLOR chartreuse][B] ' + client['name'].capitalize() + '[/B][/COLOR]', client['id'])
                 return False
 
     if plugin_url == '':

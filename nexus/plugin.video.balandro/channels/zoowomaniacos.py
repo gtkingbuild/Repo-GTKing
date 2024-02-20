@@ -2,7 +2,7 @@
 
 import re, string
 
-from platformcode import config, logger
+from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, jsontools, tmdb
 
@@ -97,7 +97,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host_opts ))
 
-    itemlist.append(item.clone( title = 'Las 1001 que hay que ver', action= 'list_all', url = host_opts,
+    itemlist.append(item.clone( title = 'Las 1001 que hay que ver', action= 'list_all', url = host_opts, text_color = 'moccasin',
                                 pane = 'Las 1001',
                                 post = {'start': 0, 'length': perpage, 'metodo': 'ObtenerListaTotal', 'searchPanes[a5][0]': 'Las 1001', 'search[value]': '', 'searchPanes[a3][0]': '', 'searchPanes[a4][0]': '', 'searchPanes[a6][0]': ''},
                                 ))
@@ -127,8 +127,6 @@ def mainlist_pelis(item):
 def generos(item):
     logger.info()
     itemlist = []
-
-    descartar_xxx = config.get_setting('descartar_xxx', default=False)
 
     genres = []
 
@@ -165,7 +163,7 @@ def generos(item):
         # ~ genre = x[0] PY3
         genre = title
 
-        if descartar_xxx:
+        if config.get_setting('descartar_xxx', default=False):
             if title == 'Animación para Adultos': continue
             elif title == 'Erótico': continue
             elif title == 'Pornografía': continue
@@ -453,23 +451,22 @@ def findvideos(item):
             'nl': 'NL'
             }
 
-    det_url = 'https://proyectox.yoyatengoabuela.com/testplayer.php?id=' + item._id
+    # ~ https://proyectox.yoyatengoabuela.com/playerex.php?id=
+    det_url = host + 'testplayer.php?id=' + item._id
 
     data = do_downloadpage(det_url)
 
     matches = scrapertools.find_multiple_matches(data, '<div id="option-(.*?)".*?src="(.*?)"')
 
-    i = 0
+    ses = 0
 
     for opt, lnk in matches:
-        if i > 0:
-             if not item._id == '19997': # the_puppet_masters
-                 if lnk == 'https://ok.ru/videoembed/1683045747235':
-                    i += 1
-                    continue
-                 elif lnk == 'https://ok.ru/videoembed/332656282246':
-                    i += 1
-                    continue
+        # ~ the puppet masters  y  masters del universo
+        if not item._id == '19997':
+            if lnk == 'https://ok.ru/videoembed/1683045747235': continue
+            elif lnk == 'https://ok.ru/videoembed/332656282246': continue
+
+        ses += 1
 
         servidor = servertools.get_server_from_url(lnk)
         servidor = servertools.corregir_servidor(servidor)
@@ -508,7 +505,10 @@ def findvideos(item):
 
             itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = lnk, language = lang, other = other ))
 
-        i += 1
+    if not itemlist:
+        if not ses == 0:
+            platformtools.dialog_notification(config.__addon_name, '[COLOR tan][B]Sin enlaces Soportados[/B][/COLOR]')
+            return
 
     return itemlist
 

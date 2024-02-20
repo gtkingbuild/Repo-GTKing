@@ -65,13 +65,13 @@ def get_video_url(page_url, url_referer=''):
             return "Servidor saturado, inténtelo más tarde"
 
         if "no+existe" in response.data:
-            return "El vídeo no existe o ha sido borrado"
+            return "Archivo inexistente ó eliminado"
         elif "Se+ha+excedido+el" in response.data:
-            return "Se ha excedido el número de reproducciones permitidas"
+            return "Excedido el número de reproducciones permitidas"
         elif "No+tienes+permiso" in response.data:
             return "No tiene permiso para acceder al vídeo"
         elif "Se ha producido un error" in response.data:
-            return "Se ha producido un error en el reproductor de google"
+            return "Error en el reproductor de google"
         elif "No+se+puede+procesar+este" in response.data:
             return "No se puede procesar el vídeo"
 

@@ -3,7 +3,7 @@
   "name": "CineClasico",
   "thumbnail": "cineclasico.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["movie"],
@@ -11,7 +11,7 @@
   "categories": ["movie"],
   "language": ["cast"],
 
-  "clusters": ["suggested", "classic", "adults", "kids"],
+  "clusters": ["classic", "adults", "kids"],
 
-  "notes": "Películas clásicas por géneros."
+  "notes": "Web ANULADA. Películas clásicas por géneros."
 }

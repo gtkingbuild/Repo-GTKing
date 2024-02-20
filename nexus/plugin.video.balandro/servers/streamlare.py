@@ -62,9 +62,6 @@ def get_video_url(page_url, url_referer=''):
         media_url = scrapertools.find_single_match(str(jdata), ".*?'file':.*?'(.*?)'")
 
     if not media_url:
-        platformtools.dialog_notification('Cargando [COLOR cyan][B]Streamlare[/B][/COLOR]', 'Espera requerida de %s segundos' % espera)
-        time.sleep(int(espera))
-
         data = httptools.downloadpage("https://streamlare.com/api/video/stream/get", post=post).data
 
         jdata = jsontools.load(data)
@@ -86,6 +83,10 @@ def get_video_url(page_url, url_referer=''):
 
     if not video_urls:
         if xbmc.getCondVisibility('System.HasAddon("script.module.resolveurl")'):
+            if config.get_setting('servers_time', default=True):
+                platformtools.dialog_notification('Cargando [COLOR cyan][B]Streamlare[/B][/COLOR]', 'Espera requerida de %s segundos' % espera)
+                time.sleep(int(espera))
+
             try:
                 import_libs('script.module.resolveurl')
 
@@ -107,9 +108,20 @@ def get_video_url(page_url, url_referer=''):
             except:
                 import traceback
                 logger.error(traceback.format_exc())
+
+                if 'resolveurl.resolver.ResolverError:' in traceback.format_exc():
+                    trace = traceback.format_exc()
+                    if 'File Not Found or' in trace or 'The requested video was not found' in trace or 'File deleted' in trace or 'No video found' in trace or 'No playable video found' in trace or 'Video cannot be located' in trace or 'file does not exist' in trace or 'Video not found' in trace:
+                        return 'Archivo inexistente ó eliminado'
+                    elif 'No se ha encontrado ningún link al' in trace or 'Unable to locate link' in trace or 'Video Link Not Found' in trace:
+                        return 'Fichero sin link al vídeo'
+
+                elif '<urlopen error' in traceback.format_exc():
+                    return 'No se puede establecer la conexión'
+
                 platformtools.dialog_notification(config.__addon_name, el_srv, time=3000)
 
         else:
-           return 'Acceso Denegado'
+           return 'Acceso Denegado, sin ResolveUrl'
 
     return video_urls

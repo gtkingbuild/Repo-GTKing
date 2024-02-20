@@ -23,9 +23,9 @@ def mainlist(item):
 
     itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = host + 'groups/documentales/videos/sort:likes/format:thumbnail', search_type = 'documentary' ))
 
-    itemlist.append(item.clone( title = 'Por orden de fecha', action = 'list_all', url = host + 'groups/documentales/videos/sort:date/format:thumbnail', search_type = 'documentary' ))
+    itemlist.append(item.clone( title = 'Por fecha', action = 'list_all', url = host + 'groups/documentales/videos/sort:date/format:thumbnail', search_type = 'documentary' ))
 
-    itemlist.append(item.clone( title = 'Por orden alfabético', action = 'list_all', url = host + 'groups/documentales/videos/sort:alphabetical/format:thumbnail', search_type = 'documentary' ))
+    itemlist.append(item.clone( title = 'Por alfabético', action = 'list_all', url = host + 'groups/documentales/videos/sort:alphabetical/format:thumbnail', search_type = 'documentary' ))
 
     itemlist.append(item.clone( title = 'Por duración', action = 'list_all', url = host + 'groups/documentales/videos/sort:duration/format:thumbnail', search_type = 'documentary' ))
 

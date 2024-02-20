@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import sys
+
+PY3 = False
+if sys.version_info[0] >= 3: PY3 = True
+
 import os, re, xbmcgui
 
 from platformcode import config, logger, platformtools
@@ -7,15 +12,74 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-host = 'https://nextdede.com'
+LINUX = False
+BR = False
+BR2 = False
+
+if PY3:
+    try:
+       import xbmc
+       if xbmc.getCondVisibility("system.platform.Linux.RaspberryPi") or xbmc.getCondVisibility("System.Platform.Linux"): LINUX = True
+    except: pass
+
+try:
+   if LINUX:
+       try:
+          from lib import balandroresolver2 as balandroresolver
+          BR2 = True
+       except: pass
+   else:
+       if PY3:
+           from lib import balandroresolver
+           BR = true
+       else:
+          try:
+             from lib import balandroresolver2 as balandroresolver
+             BR2 = True
+          except: pass
+except:
+   try:
+      from lib import balandroresolver2 as balandroresolver
+      BR2 = True
+   except: pass
 
 
-_auth = 'c320057b61ca0b28047dd5e1982c8162'
+useragent = httptools.get_user_agent()
+
+custom_headers = dict()
+custom_headers["User-Agent"] = useragent
+
+custom_headers["Accept"] = "application/json"
+custom_headers["Accept-Encoding"] = "gzip, deflate, br"
+custom_headers["Accept-Language"] = "es-ES,es;q=0.8,en-US;q=0.5,en;q=0.3"
+custom_headers["Connection"] = "keep-alive"
+custom_headers["Content-Type"] = "application/json"
+
+custom_headers["Sec-Fetch-Dest"] = "empty"
+custom_headers["Sec-Fetch-Mode"] = "cors"
+custom_headers["Sec-Fetch-Site"] = "same-origin"
+
+
+dominios = [
+         'https://nextdede.tv'
+         ]
+
+
+host = config.get_setting('dominio', 'nextdede', default=dominios[0])
+
+
+ant_hosts = ['https://nextdede.com', 'https://nextdede.top']
+
+
+if host in str(ant_hosts): config.set_setting('dominio', dominios[0], 'nextdede')
+
+useragent = httptools.get_user_agent()
 
 
 login_ok = '[COLOR chartreuse]NextDede Login correcto[/COLOR]'
 login_ko = '[COLOR red][B]NextDede Login incorrecto[/B][/COLOR]'
 no_login = '[COLOR orangered][B]NextDede Sin acceso Login[/B][/COLOR]'
+start_ses_ok = '[COLOR chartreuse][B]Sesión Iniciada[/B][/COLOR], Por favor [COLOR cyan][B]Retroceda Menús[/B][/COLOR] y acceda de Nuevo al Canal.'
 
 
 class login_dialog(xbmcgui.WindowDialog):
@@ -123,9 +187,47 @@ class login_dialog(xbmcgui.WindowDialog):
 
 
 def do_make_login_logout(url, post=None, headers=None):
-    httptools.save_cookie('Auth', _auth, host.replace('https://', ''))
+    domain = config.get_setting('dominio', 'nextdede', default=dominios[0])
 
-    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=False).data
+    if not headers:
+        headers = custom_headers
+        headers["Referer"] = domain + '/acceder'
+
+    hay_proxies = False
+    if config.get_setting('channel_nextdede_proxies', default=''): hay_proxies = True
+
+    if not url.startswith(domain):
+        data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=False).data
+    else:
+        if hay_proxies:
+            data = httptools.downloadpage_proxy('nextdede', url, post=post, headers=headers, raise_weberror=False).data
+        else:
+            data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=False).data
+
+    if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
+        if BR or BR2:
+            try:
+                ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
+                if ck_name and ck_value:
+                    httptools.save_cookie(ck_name, ck_value, domain.replace('https://', '')[:-1])
+
+                if not url.startswith(domain):
+                    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=False).data
+                else:
+                    if hay_proxies:
+                        data = httptools.downloadpage_proxy('nextdede', url, post=post, headers=headers, raise_weberror=False).data
+                    else:
+                        data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=False).data
+            except:
+                pass
+
+    if '<title>Just a moment...</title>' in data:
+        platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]CloudFlare[COLOR orangered] Protection[/B][/COLOR]')
+        return ''
+
+    elif '"Recaptcha v3 site key"' in data:
+        platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]ReCaptcha[COLOR orangered] Protection[/B][/COLOR]')
+        return ''
 
     return data
 
@@ -135,15 +237,41 @@ def login(item):
 
     status = config.get_setting('nextdede_login', 'nextdede', default=False)
 
+    domain = config.get_setting('dominio', 'nextdede', default=dominios[0])
+
     email = config.get_setting('nextdede_email', 'nextdede', default='')
     password = config.get_setting('nextdede_password', 'nextdede', default='')
     username = config.get_setting('nextdede_username', 'nextdede', default='')
+
+    data = ''
+
+    domain_unknow = False
+
+    if domain:
+        if domain in dominios:
+            if not config.get_setting('dominio', 'nextdede'): config.set_setting('dominio', domain, 'nextdede')
+
+            if username:
+                if password:
+                    post = {'email': email, 'password': password, 'remember': 'true'}
+
+                    headers = custom_headers
+                    headers["Referer"] = domain + '/acceder'
+
+                    data = do_make_login_logout(domain + '/auth/login', post=post, headers=headers)
+                    if not data: return False
+        else:
+            domain_unknow = True
 
     if not email or not password or not username:
         login = login_dialog()
         if not login.login_result: return False
 
         if not item:
+            if not domain: config.set_setting('dominio', dominios[0], 'nextdede')
+            else:
+               if not domain in dominios: config.set_setting('dominio', dominios[0], 'nextdede')
+
             platformtools.dialog_notification(config.__addon_name, '[COLOR yellow]NextDede Credenciales guardadas[/COLOR]')
             return False
 
@@ -152,12 +280,27 @@ def login(item):
     username = config.get_setting('nextdede_username', 'nextdede', default='')
 
     token = ''
+    data = ''
 
     try:
-       data = do_make_login_logout(host)
-       if not data: return False
+       headers = custom_headers
+       headers["Referer"] = ''
 
-       token = scrapertools.find_single_match(data, 'name="_TOKEN" value="(.*?)"')
+       data1 = do_make_login_logout(domain, headers = {})
+       if not data1:
+           if domain_unknow: platformtools.dialog_notification(config.__addon_name + ' - NextDede', 'Comprobar Dominio [COLOR moccasin]' + domain + '[/COLOR]')
+           return False
+
+       token = scrapertools.find_single_match(data1, '"csrf_token":"(.*?)"')
+
+       if username:
+           if password:
+               post = {'email': email, 'password': password, 'remember': 'true'}
+
+               headers = custom_headers
+               headers["Referer"] = domain + '/acceder'
+
+               data = do_make_login_logout(domain + '/auth/login', post=post, headers=headers)
 
        user = scrapertools.find_single_match(data, username).strip()
 
@@ -169,6 +312,9 @@ def login(item):
                    if not item: platformtools.dialog_notification(config.__addon_name, login_ok)
                    else:
                       if config.get_setting('notificar_login', default=False): platformtools.dialog_notification(config.__addon_name, login_ok)
+
+                   if item:
+                       if item.start_ses: platformtools.dialog_ok(config.__addon_name + ' NextDede', start_ses_ok)
                    return True
 
     except:
@@ -179,15 +325,21 @@ def login(item):
         platformtools.dialog_notification(config.__addon_name, no_login)
         return False
 
-    post = {'email': email, 'password': password, '_ACTION': 'login', '_TOKEN': token}
+    post = {'email': email, 'password': password, 'remember': 'true'}
 
-    data = do_make_login_logout(host + '/login', post=post, headers={'Referer': host + '/login', 'Connection': 'keep-alive'})
+    headers = custom_headers
+    headers["Referer"] = domain + '/acceder'
+
+    data = do_make_login_logout(domain + '/auth/login', post=post, headers=headers)
 
     if not data: return False
 
     if username in data:
         config.set_setting('nextdede_login', True, 'nextdede')
         if config.get_setting('notificar_login', default=False): platformtools.dialog_notification(config.__addon_name, login_ok)
+
+        if item:
+            if item.start_ses: platformtools.dialog_ok(config.__addon_name + ' NextDede', start_ses_ok)
         return True
 
     platformtools.dialog_notification(config.__addon_name, login_ko)
@@ -197,17 +349,82 @@ def login(item):
 def logout(item):
     logger.info()
 
+    domain = config.get_setting('dominio', 'nextdede', default=dominios[0])
+
     email = config.get_setting('nextdede_email', 'nextdede', default='')
 
     if email:
-        data = do_make_login_logout(host + '/logout')
+        headers = custom_headers
+        headers["Referer"] = domain + '/'
+
+        data = do_make_login_logout(domain + '/logout', headers = headers)
 
         config.set_setting('nextdede_login', False, 'nextdede')
         platformtools.dialog_notification(config.__addon_name, '[COLOR chartreuse]NextDede Sesión cerrada[/COLOR]')
+
+        if item:
+            if item.category: 
+                platformtools.dialog_ok(config.__addon_name + ' NextDede', '[COLOR yellow][B]Sesión Cerrada[/B][/COLOR].', 'Por favor [COLOR cyan][B]Retroceda Menús[/B][/COLOR] e [COLOR chartreuse][B]Inicie Sesión[/B][/COLOR] de nuevo.')
         return True
 
     platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]NextDede Sin cerrar la Sesión[/B][/COLOR]')
     return False
+
+
+def item_configurar_dominio(item):
+    plot = 'Este canal tiene varios posibles dominios. Si uno no te funciona puedes probar con los otros antes de intentarlo con proxies.'
+    return item.clone( title = '[B]Configurar dominio a usar ...[/B]', action = 'configurar_dominio', folder=False, plot=plot, text_color='yellowgreen' )
+
+def configurar_dominio(item):
+    dominio = config.get_setting('dominio', 'nextdede', default=dominios[0])
+    num_dominio = dominios.index(dominio) if dominio in dominios else 0
+    ret = platformtools.dialog_select('Dominio a usar NextDede', dominios, preselect=num_dominio)
+    if ret == -1: return False
+
+    if not dominio == dominios[ret]:
+        if config.get_setting('nextdede_login', 'nextdede', default=False):
+            logout(item)
+
+    config.set_setting('dominio', dominios[ret], 'nextdede')
+
+    platformtools.itemlist_refresh()
+    return True
+
+
+def item_configurar_proxies(item):
+    dominio = config.get_setting('dominio', 'nextdede', default=dominios[0])
+
+    color_list_proxies = config.get_setting('channels_list_proxies_color', default='red')
+
+    color_avis = config.get_setting('notification_avis_color', default='yellow')
+    color_exec = config.get_setting('notification_exec_color', default='cyan')
+
+    context = []
+
+    tit = '[COLOR %s]Información proxies[/COLOR]' % color_avis
+    context.append({'title': tit, 'channel': 'helper', 'action': 'show_help_proxies'})
+
+    if config.get_setting('channel_nextdede_proxies', default=''):
+        tit = '[COLOR %s][B]Quitar los proxies del canal[/B][/COLOR]' % color_list_proxies
+        context.append({'title': tit, 'channel': item.channel, 'action': 'quitar_proxies'})
+
+    tit = '[COLOR %s]Ajustes categoría proxies[/COLOR]' % color_exec
+    context.append({'title': tit, 'channel': 'actions', 'action': 'open_settings'})
+
+    plot = 'Es posible que para poder utilizar este canal necesites configurar algún proxy, ya que no es accesible desde algunos países/operadoras.'
+    plot += '[CR]Si desde un navegador web no te funciona el sitio ' + dominio + ' necesitarás un proxy.'
+    return item.clone( title = '[B]Configurar proxies a usar ...[/B]', action = 'configurar_proxies', folder=False, context=context, plot=plot, text_color='red' )
+
+def quitar_proxies(item):
+    from modules import submnuctext
+    submnuctext._quitar_proxies(item)
+    return True
+
+def configurar_proxies(item):
+    dominio = config.get_setting('dominio', 'nextdede', default=dominios[0])
+
+    from core import proxytools
+    return proxytools.configurar_proxies_canal(item.channel, dominio)
 
 
 def do_downloadpage(url, post=None, headers=None, referer=None):
@@ -217,11 +434,55 @@ def do_downloadpage(url, post=None, headers=None, referer=None):
         platformtools.dialog_notification('NextDede', '[COLOR red][B]Faltan[COLOR teal][I]Credenciales Cuenta[/I] [/B][/COLOR]')
         return ''
 
-    httptools.save_cookie('Auth', _auth, host.replace('https://', ''))
+    domain = config.get_setting('dominio', 'nextdede', default=dominios[0])
 
-    if not headers: headers= {'Referer': host}
+    # ~ por si viene de enlaces guardados posteriores
+    for ant in ant_hosts:
+        url = url.replace(ant, domain)
 
-    data = httptools.downloadpage(url, post=post, headers=headers).data
+    # ~ por si viene de opcion menu pral. Generos
+    if not domain in url:
+        for dom in dominios:
+            url = url.replace(dom, domain)
+
+    if not headers: headers= {'Referer': domain}
+
+    hay_proxies = False
+    if config.get_setting('channel_nextdede_proxies', default=''): hay_proxies = True
+
+    if not url.startswith(domain):
+        data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=False).data
+    else:
+        if hay_proxies:
+            data = httptools.downloadpage_proxy('nextdede', url, post=post, headers=headers, raise_weberror=False).data
+        else:
+            data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=False).data
+
+    if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
+        if BR or BR2:
+            try:
+                ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
+                if ck_name and ck_value:
+                    httptools.save_cookie(ck_name, ck_value, domain.replace('https://', '')[:-1])
+
+                if not url.startswith(domain):
+                    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=False).data
+                else:
+                    if hay_proxies:
+                        data = httptools.downloadpage_proxy('nextdede', url, post=post, headers=headers, raise_weberror=False).data
+                    else:
+                        data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=False).data
+            except:
+                pass
+
+    if not '/search/' in url:
+        if '<title>Just a moment...</title>' in data:
+            platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]CloudFlare[COLOR orangered] Protection[/B][/COLOR]')
+            return ''
+
+        elif '"Recaptcha v3 site key"' in data:
+            platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]ReCapctha[COLOR orangered] Protection[/B][/COLOR]')
+            return ''
 
     return data
 
@@ -230,14 +491,30 @@ def acciones(item):
     logger.info()
     itemlist = []
 
+    domain_memo = config.get_setting('dominio', 'nextdede', default='')
+
+    if domain_memo: url = domain_memo
+    else: url = host
+
     email = config.get_setting('nextdede_email', 'nextdede', default='')
 
-    itemlist.append(item.clone( channel='domains', action='test_domain_nextdede', title='Test Web del canal [COLOR yellow][B] ' + host + '[/B][/COLOR]',
+    itemlist.append(Item( channel='actions', action='show_latest_domains', title='[COLOR moccasin][B]Últimos Cambios de Dominios[/B][/COLOR]', thumbnail=config.get_thumb('pencil') ))
+
+    itemlist.append(Item( channel='helper', action='show_help_domains', title='[B]Información Dominios[/B]', thumbnail=config.get_thumb('help'), text_color='green' ))
+
+    itemlist.append(item.clone( channel='domains', action='test_domain_nextdede', title='Test Web del canal [COLOR yellow][B] ' + url + '[/B][/COLOR]',
                                 from_channel='nextdede', folder=False, text_color='chartreuse' ))
+
+    if domain_memo: title = '[B]Modificar/Eliminar el dominio memorizado[/B]'
+    else: title = '[B]Informar Nuevo Dominio manualmente[/B]'
+
+    itemlist.append(item.clone( channel='domains', action='manto_domain_nextdede', title=title, desde_el_canal = True, folder=False, thumbnail=config.get_thumb('keyboard'), text_color='darkorange' ))
 
     if not config.get_setting('nextdede_login', 'nextdede', default=False):
         if email:
-            itemlist.append(item.clone( title = '[COLOR chartreuse][B]Iniciar sesión[/B][/COLOR]', action = 'login' ))
+            itemlist.append(item.clone( title = '[COLOR chartreuse][B]Iniciar sesión[/B][/COLOR]', action = 'login', start_ses = True ))
+
+            itemlist.append(item.clone( title = '[COLOR springgreen][B]Ver las credenciales[/B][/COLOR]', action = 'shuw_credenciales', thumbnail=config.get_thumb('pencil') ))
             itemlist.append(Item( channel='domains', action='del_datos_nextdede', title='[B]Eliminar credenciales cuenta[/B]', thumbnail=config.get_thumb('folder'), text_color='crimson' ))
         else:
             itemlist.append(Item( channel='helper', action='show_help_register', title='[B]Información para registrarse[/B]', thumbnail=config.get_thumb('help'), text_color='green' ))
@@ -246,6 +523,15 @@ def acciones(item):
 
     if config.get_setting('nextdede_login', 'nextdede', default=False):
         itemlist.append(item.clone( title = '[COLOR chartreuse][B]Cerrar sesión[/B][/COLOR]', action = 'logout' ))
+
+        itemlist.append(item.clone( title = '[COLOR springgreen][B]Ver las credenciales[/B][/COLOR]', action = 'shuw_credenciales', thumbnail=config.get_thumb('pencil') ))
+        itemlist.append(Item( channel='domains', action='del_datos_nextdede', title='[B]Eliminar credenciales cuenta[/B]', thumbnail=config.get_thumb('folder'), text_color='crimson' ))
+
+    itemlist.append(item_configurar_dominio(item))
+
+    itemlist.append(item_configurar_proxies(item))
+
+    itemlist.append(Item( channel='helper', action='show_help_nextdede', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('help') ))
 
     platformtools.itemlist_refresh()
 
@@ -282,25 +568,29 @@ def mainlist_pelis(item):
     itemlist.append(item.clone( action='acciones', title=titulo, text_color='goldenrod' ))
 
     if config.get_setting('nextdede_login', 'nextdede', default=False):
+        dominio = config.get_setting('dominio', 'nextdede', default=dominios[0])
+
+        if not config.get_setting('dominio', 'nextdede'): config.set_setting('dominio', dominio, 'nextdede')
+
         itemlist.append(item.clone( title = '[COLOR moccasin][B]Listas colecciones[/B][/COLOR]', action = 'list_listas', search_type = 'all' ))
 
         itemlist.append(item.clone( title = 'Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
 
-        itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + '/discovery?filter={"type": "movie", "sorting": "newest"}', search_type = 'movie' ))
+        itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = dominio + '/discovery?filter={"type": "movie", "sorting": "newest"}', search_type = 'movie' ))
 
-        itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + '/movies', search_type = 'movie' ))
+        itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = dominio + '/movies', search_type = 'movie', text_color='cyan' ))
 
-        itemlist.append(item.clone( title = 'Últimas agregadas', action = 'list_last', url = host + '/trends', search_type = 'movie' ))
+        itemlist.append(item.clone( title = 'Últimas agregadas', action = 'list_last', url = dominio + '/trends', search_type = 'movie' ))
 
-        itemlist.append(item.clone( title = 'Recientes', action = 'list_all', url = host + '/movies?filter={"sorting":"newest"}', search_type = 'movie' ))
+        itemlist.append(item.clone( title = 'Recientes', action = 'list_all', url = dominio + '/movies?filter={"sorting":"newest"}', search_type = 'movie' ))
 
-        itemlist.append(item.clone( title = 'Destacadas', action = 'list_all', url = host + '/movies?filter={"sorting":"released"}', search_type = 'movie' ))
+        itemlist.append(item.clone( title = 'Destacadas', action = 'list_all', url = dominio + '/movies?filter={"sorting":"released"}', search_type = 'movie' ))
 
-        itemlist.append(item.clone( title = 'Más populares', action = 'list_all', url = host + '/movies?filter={"sorting":"popular"}', search_type = 'movie' ))
+        itemlist.append(item.clone( title = 'Más populares', action = 'list_all', url = dominio + '/movies?filter={"sorting":"popular"}', search_type = 'movie' ))
 
-        itemlist.append(item.clone( title = 'Más valoradas', action = 'list_all', url = host + '/movies?filter={"sorting":"imdb"}', search_type = 'movie' ))
+        itemlist.append(item.clone( title = 'Más valoradas', action = 'list_all', url = dominio + '/movies?filter={"sorting":"imdb"}', search_type = 'movie' ))
 
-        itemlist.append(item.clone( title = 'Sagas', action = 'list_listas', url = host + '/services', search_type = 'movie', text_color = 'moccasin' ))
+        itemlist.append(item.clone( title = 'Sagas', action = 'list_listas', url = dominio + '/services', search_type = 'movie', text_color = 'moccasin' ))
 
         itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
         itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'movie' ))
@@ -318,23 +608,27 @@ def mainlist_series(item):
     itemlist.append(item.clone( action='acciones', title=titulo, text_color='goldenrod' ))
 
     if config.get_setting('nextdede_login', 'nextdede', default=False):
+        dominio = config.get_setting('dominio', 'nextdede', default=dominios[0])
+
+        if not config.get_setting('dominio', 'nextdede'): config.set_setting('dominio', dominio, 'nextdede')
+
         itemlist.append(item.clone( title = '[COLOR moccasin][B]Listas colecciones[/B][/COLOR]', action = 'list_listas', search_type = 'all' ))
 
         itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
-        itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + '/discovery?filter={"type": "serie", "sorting": "newest"}', search_type = 'tvshow' ))
+        itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = dominio + '/discovery?filter={"type": "serie", "sorting": "newest"}', search_type = 'tvshow' ))
 
-        itemlist.append(item.clone( title = 'Nuevas', action = 'list_all', url = host + '/series', search_type = 'tvshow' ))
+        itemlist.append(item.clone( title = 'Nuevas', action = 'list_all', url = dominio + '/series', search_type = 'tvshow', text_color = 'moccasin' ))
 
-        itemlist.append(item.clone( title = 'Últimas agregadas', action = 'list_last', url = host + '/trends', search_type = 'tvshow', text_color = 'olive' ))
+        itemlist.append(item.clone( title = 'Últimas agregadas', action = 'list_last', url = dominio + '/trends', search_type = 'tvshow', text_color = 'cyan' ))
 
-        itemlist.append(item.clone( title = 'Recientes', action = 'list_all', url = host + '/series?filter={"sorting":"newest"}', search_type = 'tvshow' ))
+        itemlist.append(item.clone( title = 'Recientes', action = 'list_all', url = dominio + '/series?filter={"sorting":"newest"}', search_type = 'tvshow' ))
 
-        itemlist.append(item.clone( title = 'Destacadas', action = 'list_all', url = host + '/series?filter={"sorting":"released"}', search_type = 'tvshow' ))
+        itemlist.append(item.clone( title = 'Destacadas', action = 'list_all', url = dominio + '/series?filter={"sorting":"released"}', search_type = 'tvshow' ))
 
-        itemlist.append(item.clone( title = 'Más populares', action = 'list_all', url = host + '/series?filter={"sorting":"popular"}', search_type = 'tvshow' ))
+        itemlist.append(item.clone( title = 'Más populares', action = 'list_all', url = dominio + '/series?filter={"sorting":"popular"}', search_type = 'tvshow' ))
 
-        itemlist.append(item.clone( title = 'Más valoradas', action = 'list_all', url = host + '/series?filter={"sorting":"imdb"}', search_type = 'tvshow' ))
+        itemlist.append(item.clone( title = 'Más valoradas', action = 'list_all', url = dominio + '/series?filter={"sorting":"imdb"}', search_type = 'tvshow' ))
 
         itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
         itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'tvshow' ))
@@ -346,7 +640,11 @@ def list_listas(item):
     logger.info()
     itemlist = []
 
-    if not item.url: url = host + '/collections'
+    dominio = config.get_setting('dominio', 'nextdede', default=dominios[0])
+
+    if not config.get_setting('dominio', 'nextdede'): config.set_setting('dominio', dominio, 'nextdede')
+
+    if not item.url: url = dominio + '/collections'
     else: url = item.url
 
     data = do_downloadpage(url)
@@ -360,7 +658,7 @@ def list_listas(item):
 
         if not title: title = url.replace('collection/saga-', '').replace('collection/', '')
 
-        url = host + '/' + url
+        url = dominio + '/' + url
 
         itemlist.append(item.clone( action = 'list_all', title = title, url = url, text_color='moccasin' ))
 
@@ -374,7 +672,11 @@ def generos(item):
     if item.search_type == 'movie': text_color = 'deepskyblue'
     else: text_color = 'hotpink'
 
-    data = do_downloadpage(host + '/categories')
+    dominio = config.get_setting('dominio', 'nextdede', default=dominios[0])
+
+    if not config.get_setting('dominio', 'nextdede'): config.set_setting('dominio', dominio, 'nextdede')
+
+    data = do_downloadpage(dominio + '/categories')
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
     matches = re.compile('<div style="margin-.*?<a href="(.*?)".*?<b>(.*?)</b>').findall(data)
@@ -395,11 +697,15 @@ def anios(item):
     if item.search_type == 'movie': text_color = 'deepskyblue'
     else: text_color = 'hotpink'
 
+    dominio = config.get_setting('dominio', 'nextdede', default=dominios[0])
+
+    if not config.get_setting('dominio', 'nextdede'): config.set_setting('dominio', dominio, 'nextdede')
+
     from datetime import datetime
     current_year = int(datetime.today().year)
 
-    if item.search_type == 'movie': url = host + '/discovery?filter={"type": "movie", "sorting": "newest"}'
-    else: url = host + '/discovery?filter={"type": "serie", "sorting": "newest"}'
+    if item.search_type == 'movie': url = dominio + '/discovery?filter={"type": "movie", "sorting": "newest"}'
+    else: url = dominio + '/discovery?filter={"type": "serie", "sorting": "newest"}'
 
     itemlist.append(item.clone( title = '2020 - ' + str(current_year), url = url + '"released":"2020-"' + str(current_year) + ',"sorting":"newest"}', action = 'list_all', text_color = text_color ))
 
@@ -421,6 +727,10 @@ def anios(item):
 def list_all(item):
     logger.info()
     itemlist = []
+
+    dominio = config.get_setting('dominio', 'nextdede', default=dominios[0])
+
+    if not config.get_setting('dominio', 'nextdede'): config.set_setting('dominio', dominio, 'nextdede')
 
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
@@ -477,6 +787,10 @@ def list_last(item):
     logger.info()
     itemlist = []
 
+    dominio = config.get_setting('dominio', 'nextdede', default=dominios[0])
+
+    if not config.get_setting('dominio', 'nextdede'): config.set_setting('dominio', dominio, 'nextdede')
+
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
@@ -517,6 +831,10 @@ def temporadas(item):
     logger.info()
     itemlist = []
 
+    dominio = config.get_setting('dominio', 'nextdede', default=dominios[0])
+
+    if not config.get_setting('dominio', 'nextdede'): config.set_setting('dominio', dominio, 'nextdede')
+
     data = do_downloadpage(item.url)
 
     matches = re.compile('aria-controls="season-(.*?)"', re.DOTALL).findall(data)
@@ -527,7 +845,9 @@ def temporadas(item):
         title = 'Temporada ' + tempo
 
         if len(matches) == 1:
-            platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+            if config.get_setting('channels_seasons', default=True):
+                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+
             item.page = 0
             item.contentType = 'season'
             item.contentSeason = tempo
@@ -544,6 +864,10 @@ def temporadas(item):
 def episodios(item):
     logger.info()
     itemlist = []
+
+    dominio = config.get_setting('dominio', 'nextdede', default=dominios[0])
+
+    if not config.get_setting('dominio', 'nextdede'): config.set_setting('dominio', dominio, 'nextdede')
 
     if not item.page: item.page = 0
     if not item.perpage: item.perpage = 50
@@ -567,7 +891,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('NextDede', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -630,7 +955,11 @@ def findvideos(item):
     logger.info()
     itemlist = []
 
-    IDIOMAS = {'Español': 'Esp', 'Latino': 'Lat', 'Ingles': 'Ing', 'VOSE': 'Vose', 'VOS': 'VOS'}
+    IDIOMAS = {'Español': 'Esp', 'Latino': 'Lat', 'Ingles': 'Ing', 'VOSE': 'Vose', 'VOS': 'Vos'}
+
+    dominio = config.get_setting('dominio', 'nextdede', default=dominios[0])
+
+    if not config.get_setting('dominio', 'nextdede'): config.set_setting('dominio', dominio, 'nextdede')
 
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
@@ -645,9 +974,7 @@ def findvideos(item):
     for url, qlty, lang in matches:
         ses += 1
 
-        if '/hqq.' in url or '/waaw.' in url or '/netu.' in url: continue
-
-        elif '/powvideo.' in url or '/streamplay.' in url: continue
+        if '/powvideo.' in url or '/streamplay.' in url: continue
 
         lang = IDIOMAS.get(lang, lang)
 
@@ -662,9 +989,7 @@ def findvideos(item):
         if not servidor == 'directo':
             other = ''
 
-            if servidor == 'various':
-                if '/filemoon.' in url: other = 'Filemoon'
-                elif '/streamwish.' in url: other = 'Streamwish'
+            if servidor == 'various': other = servertools.corregir_other(url)
 
             itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = lang, quality = qlty, other = other ))
 
@@ -700,10 +1025,25 @@ def findvideos(item):
     return itemlist
 
 
+def shuw_credenciales(item):
+    logger.info()
+
+    email = config.get_setting('nextdede_email', 'nextdede', default='')
+    password = config.get_setting('nextdede_password', 'nextdede', default='')
+    username = config.get_setting('nextdede_username', 'nextdede', default='')
+
+    platformtools.dialog_ok(config.__addon_name + ' NextDede - Credenciales', 'Email:  [COLOR yellow][B]' + email, '[/B][/COLOR]Pass.:  [COLOR yellow][B]' + password, '[/B][/COLOR]User..:  [COLOR yellow][B]' + username + '[/B][/COLOR]')
+
+
 def search(item, texto):
     logger.info()
+
+    dominio = config.get_setting('dominio', 'nextdede', default=dominios[0])
+
+    if not config.get_setting('dominio', 'nextdede'): config.set_setting('dominio', dominio, 'nextdede')
+
     try:
-        item.url = host + '/search/' + texto.replace(" ", "+")
+        item.url = dominio + '/search/' + texto.replace(" ", "+")
         return list_all(item)
     except:
         import sys

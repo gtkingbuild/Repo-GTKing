@@ -13,7 +13,7 @@ def get_video_url(page_url, url_referer=''):
 
     data = httptools.downloadpage(page_url).data
     if data == 'File was deleted':
-        return 'El archivo no existe o ha sido eliminado'
+        return 'Archivo inexistente ó eliminado'
 
     js = scrapertools.find_single_match(data, "<script type='text/javascript'>\s*ﾟωﾟ(.*?)</script>")
     if js:

@@ -2,7 +2,7 @@
 
 import re
 
-from platformcode import config, logger
+from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools
 
@@ -14,8 +14,7 @@ perpage = 30
 
 
 def do_downloadpage(url, post=None, headers=None):
-    # ~ data = httptools.downloadpage(url, post=post, headers=headers).data
-    data = httptools.downloadpage_proxy('pornhub', url, post=post, headers=headers).data
+    data = httptools.downloadpage(url, post=post, headers=headers).data
 
     return data
 
@@ -28,18 +27,17 @@ def mainlist_pelis(item):
     logger.info()
     itemlist = []
 
-    descartar_xxx = config.get_setting('descartar_xxx', default=False)
-
-    if descartar_xxx: return itemlist
+    if config.get_setting('descartar_xxx', default=False): return
 
     if config.get_setting('adults_password'):
         from modules import actions
-        if actions.adults_password(item) == False:
-            return itemlist
+        if actions.adults_password(item) == False: return
 
     itemlist.append(item.clone( title = 'Buscar vídeo ...', action = 'search', search_type = 'movie', text_color = 'orange' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + "video/" ))
+
+    itemlist.append(item.clone( title = 'En castellano', action = 'list_all', url = host + "language/spanish" ))
 
     itemlist.append(item.clone( title = 'Novedades', action = 'list_all', url = host + "video?o=cm" ))
     itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = host + "video?o=mv" ))
@@ -52,36 +50,6 @@ def mainlist_pelis(item):
     itemlist.append(item.clone( title = 'Por canal', action = 'canales', url = host + 'channels?o=rk' ))
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url = host + 'categories/' ))
     itemlist.append(item.clone( title = 'Por estrella', action = 'pornstars', url = host + 'pornstars?o=t' ))
-
-    return itemlist
-
-
-def list_all(item):
-    logger.info()
-    itemlist = []
-
-    data = do_downloadpage(item.url)
-    data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
-
-    bloque = scrapertools.find_single_match(data, '<h1>(.*?)<div class="pagination')
-    if not bloque: bloque = scrapertools.find_single_match(data, 'id="videoSearchResult"(.*?)div class="pagination')
-
-    if '/video/search?search=' in item.url:
-        matches = re.compile('<div class="preloadLine">.*?href="(.*?)".*?title="(.*?)".*?src="(.*?)"').findall(bloque)
-    else:
-        matches = re.compile('<li class="pcVideoListItem.*?<a href="(.*?)".*?title="(.*?)".*?<imgsrc="(.*?)"').findall(bloque)
-
-    for url, title, thumb, in matches:
-        itemlist.append(item.clone( action = 'findvideos', url = url if url.startswith('http') else host[:-1] + url, title = title, thumbnail = thumb, contentType = 'movie', contentTitle = title, contentExtra='adults' ))
-
-    if itemlist:
-        next_url = scrapertools.find_single_match(data, '<li class="page_next"><a href="([^"]+)')
-
-        if next_url:
-            if '?page' in next_url or 'page=' in next_url:
-                next_url = next_url.replace('&amp;', '&')
-
-                itemlist.append(item.clone( action = 'list_all', title = 'Siguientes ...', url = next_url if next_url.startswith('http') else host[:-1] + next_url, text_color = 'coral' ))
 
     return itemlist
 
@@ -149,6 +117,41 @@ def pornstars(item):
                 next_url = next_url.replace('&amp;', '&')
 
                 itemlist.append(item.clone( action = 'pornstars', title = 'Siguientes ...', url = next_url if next_url.startswith('http') else host[:-1] + next_url, text_color = 'coral' ))
+
+    return itemlist
+
+
+def list_all(item):
+    logger.info()
+    itemlist = []
+
+    data = do_downloadpage(item.url)
+    data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
+
+    bloque = scrapertools.find_single_match(data, '<h1>(.*?)<div class="pagination')
+    if not bloque: bloque = scrapertools.find_single_match(data, 'id="videoSearchResult"(.*?)div class="pagination')
+
+    if '/video/search?search=' in item.url:
+        matches = re.compile('<div class="preloadLine">.*?href="(.*?)".*?title="(.*?)".*?src="(.*?)"').findall(bloque)
+    else:
+        matches = re.compile('<li class="pcVideoListItem.*?<a href="(.*?)".*?title="(.*?)".*?<imgsrc="(.*?)"').findall(bloque)
+
+    for url, title, thumb, in matches:
+        title = title.replace('&quot;', '').replace('&#039;', "'").strip()
+
+        title = title.replace('&ntilde;', 'ñ').replace('&Ntilde;', 'Ñ')
+
+        itemlist.append(item.clone( action = 'findvideos', url = url if url.startswith('http') else host[:-1] + url, title = title, thumbnail = thumb,
+                                    contentType = 'movie', contentTitle = title, contentExtra='adults' ))
+
+    if itemlist:
+        next_url = scrapertools.find_single_match(data, '<li class="page_next"><a href="([^"]+)')
+
+        if next_url:
+            if '?page' in next_url or 'page=' in next_url:
+                next_url = next_url.replace('&amp;', '&')
+
+                itemlist.append(item.clone( action = 'list_all', title = 'Siguientes ...', url = next_url if next_url.startswith('http') else host[:-1] + next_url, text_color = 'coral' ))
 
     return itemlist
 
@@ -233,7 +236,8 @@ def list_starvideos(item):
     matches = re.compile('<div class="phimage".*?<a href="(.*?)".*?title="(.*?)".*?src="(.*?)"').findall(data)
 
     for url, title, thumb in matches:
-        itemlist.append(item.clone( action = 'findvideos', url = url if url.startswith('http') else host[:-1] + url, title = title, thumbnail = thumb ))
+        itemlist.append(item.clone( action = 'findvideos', url = url if url.startswith('http') else host[:-1] + url, title = title, thumbnail = thumb,
+                                    contentType = 'movie', contentTitle = title, contentExtra='adults' ))
 
     if itemlist:
         next_url = scrapertools.find_single_match(data, '<li class="page_next"><a href="([^"]+)')
@@ -255,43 +259,48 @@ def findvideos(item):
 
     data = do_downloadpage(item.url, headers = headers)
 
-    videos = get_video_url(item.url, data)
+    videos = get_video_url(item.url)
 
     if not videos:
-        return 'El archivo no existe o ha sido borrado'
+        platformtools.dialog_notification('PornHub', '[COLOR red]El archivo no existe o ha sido borrado[/COLOR]')
+        return
 
-    for vid in videos:
-        qlty = vid[0]
-        url = vid[1]
-
+    for qlty, url in videos:
         itemlist.append(Item( channel = item.channel, action='play', title = '', url = url, quality = qlty, server='directo', language = 'Vo') )
 
     return itemlist
 
 
-def get_video_url(page_url, data, url_referer=''):
+def get_video_url(page_url):
     logger.info("(page_url='%s')" % page_url)
 
     video_urls = []
 
+    resp = httptools.downloadpage(page_url)
+
+    if not resp.sucess or "Not Found" in resp.data or "File was deleted" in resp.data or "This video has been removed" in resp.data or "Video has been flagged for verification" in resp.data or "is no longer available" in resp.data:
+        return video_urls
+
+    data = resp.data
+
     data = scrapertools.find_single_match(data, '<div id="player"(.*?)</script>')
-    data = data.replace('" + "', '' )
+
+    data = data.replace('" + "', '')
 
     matches = scrapertools.find_multiple_matches(data, 'var media_\d+=([^;]+)')
 
+    if not matches: matches = scrapertools.find_multiple_matches(data, '"videoUrl":"(.*?)"')
+
     for match in matches:
-        url = ''
+        match =  match.replace('\\/', '/')
 
-        ord = scrapertools.find_multiple_matches(match, '\*\/([A-z0-9]+)')
+        url = match
 
-        for i in ord:
-            url += scrapertools.find_single_match(data, '%s="([^"]+)"' % i)
+        if 'master.m3u8' in url or '/hls/' in url:
+            if not 'K,' in url and not "get_media" in url:
+                qlty = scrapertools.find_single_match(url, '/(\d+P)_')
 
-        if 'master.m3u8' in url and not 'K,' in url  and not "get_media" in url:
-            qlty = scrapertools.find_single_match(url, '/(\d+P)_')
-            url =  url.replace('\\/', '/')
-
-            video_urls.append([qlty, url])
+                video_urls.append([qlty, url])
 
     return video_urls
 

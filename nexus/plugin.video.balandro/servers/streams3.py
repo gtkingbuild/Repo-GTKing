@@ -10,7 +10,7 @@ def get_video_url(page_url, url_referer=''):
 
     resp = httptools.downloadpage(page_url)
     if not resp.sucess or "Not Found" in resp.data or "File was deleted" in resp.data or "is no longer available" in resp.data:
-        return 'El archivo ha sido eliminado o no existe'
+        return 'Archivo inexistente ó eliminado'
 
     post = scrapertools.find_single_match(page_url, '(data=\w+)')
     url = httptools.downloadpage("https://streams3.com/redirect_post.php", post=post, follow_redirects=False).headers.get("location", "")

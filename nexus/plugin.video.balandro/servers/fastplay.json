@@ -9,7 +9,7 @@
     "patterns": [
       {
         "pattern": "fastplay.(?:to|cc|sx)/(?:flash-|embed-|)([A-z0-9]+)",
-        "url": "https://fastplay.cc/embed-\\1.html"
+        "url": "https://fastplay.to/embed-\\1.html"
       }
     ]
   }

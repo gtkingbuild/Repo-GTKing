@@ -1,4 +1,4 @@
-BALANDRO TEAM  Agosto de 2023
+BALANDRO TEAM  Diciembre de 2023
 
 DESARROLLO NORMAS GENERALES
 ============================
@@ -37,7 +37,7 @@ DESARROLLO NORMAS GENERALES
 
 - Las descargas de peliculas/series no tienen autodownload, y se fuerza seleccionar algun servidor.
 
-- Todos los parámetros de configuracion en un solo fichero (incluyendo canales y servidores).
+- Todos los parámetros de Ajustes en un solo fichero (incluyendo canales y servidores).
   La gestion de valores propios de canales/servidores se hará en sus propios modulos si hace falta.
 
 - Filtrado de enlaces por idioma a nivel general para todos los canales.
@@ -61,7 +61,7 @@ DESARROLLO NORMAS GENERALES
   Tiene que haber mainlist_pelis y/o mainlist_series a parte del mainlist.
   Eliminadas referencias a autoplay, filtertools, thumbnails, newest, 
   Intentar ir clonando los items en lugar de crearlos nuevos, excepto en findvideos sin infolabels.
-  Eliminar configuraciones concretas, y de ser necesarias deberian formar parte de la configuracion general.
+  Eliminar configuraciones concretas, y de ser necesarias deberian formar parte de los Ajustes generales.
   En las funciones search, tener en cuenta search_type para buscar solamente peliculas, series o ambas a la vez.
   Generar el item.url para buscar en la propia rutina search para que funcione en las busquedas globales.
   Tener los thumbnails de los canales en local para no depender de webs externas.
@@ -95,7 +95,7 @@ DESARROLLO CANALES
 - Evitar items usados como etiquetas (sin action) y colores personalizados.
 - Los patrones con .*? son prácticos pero hay que ser cauto con ellos e intentar delimitarlos.
 - Minimizar los parámetros de configuracion propios del canal. Si se necesitan, gestionarlos en el propio canal
-- Llamar a tmdb.set_infoLabels(itemlist) en los listados para completar datos. (el usuario lo puede desactivar desde la configuracion)
+- Llamar a tmdb.set_infoLabels(itemlist) en los listados para completar datos. (el usuario lo puede desactivar desde los Ajustes)
 
 - Funcion search:
   - Capturar excepcion para no bloquear busquedas globales
@@ -112,7 +112,7 @@ DESARROLLO CANALES
 
 - Listados de peliculas, series, documentales
   - Habria que poder resolver llamando a tmdb (titulo+year, titulo+thumbnail_imdb, ...). A las malas con year='-'
-  - No hacer doble llamada a tmdb en una misma funcion para querer obtener más datos, pq es automático si el usuario lo habilita en la configuracion.
+  - No hacer doble llamada a tmdb en una misma funcion para querer obtener más datos, pq es automático si el usuario lo habilita en los Ajustes.
   - Para series:
     - mostrar listado con las diferentes temporadas
     - mostrar los capitulos de una temporada concreta. (para que no haya listados enormes con series con muchas temporadas/capitulos)
@@ -167,8 +167,7 @@ DESARROLLO CANALES
       from core import proxytools
       return proxytools.configurar_proxies_canal(item.channel, host)
 
-
-  En mainlist_pelis, mainlist_series la llamada para configurar los proxies:
+  En mainlist_pelis, mainlist_series, mainlist_animes, mainlist_documentales la llamada para configurar los proxies:
       plot = 'Es posible que para poder utilizar este canal necesites configurar algun proxy, ya que no es accesible desde algunos paises/operadoras.'
       plot += '[CR]Si desde un navegador web no te funciona el sitio por ejemplo "canalseries.com" necesitarás un proxy.'
       itemlist.append(item.clone( title = 'Configurar proxies a usar ...', action = 'configurar_proxies', folder=False, plot=plot, text_color='red' ))

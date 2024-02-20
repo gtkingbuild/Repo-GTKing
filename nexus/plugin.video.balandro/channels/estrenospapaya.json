@@ -11,7 +11,7 @@
   "categories": ["tvshow"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["suggested", "lasts", "rankings", "vos"],
+  "clusters": ["lasts", "rankings", "vos"],
 
-  "notes": "WEB CERRADA. Series, con capítulos de estreno en castellano, latino y Vose."
+  "notes": "Web CERRADA. Series, con capítulos de estreno en castellano, latino y Vose."
 }

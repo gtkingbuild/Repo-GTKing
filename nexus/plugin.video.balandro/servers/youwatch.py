@@ -10,7 +10,7 @@ def get_video_url(page_url, url_referer=''):
     data = httptools.downloadpage(page_url).data
 
     if "File Not Found" in data:
-        return 'El archivo no existe o ha sido borrado'
+        return 'Archivo inexistente ó eliminado'
 
     url_redirect = scrapertools.find_single_match(data, '<iframe src="([^"]+)"')
     if not url_redirect: return []
@@ -18,7 +18,7 @@ def get_video_url(page_url, url_referer=''):
     data = httptools.downloadpage(url_redirect).data
 
     if "We're sorry, this video is no longer available" in data:
-        return 'El archivo no existe o ha sido borrado'
+        return 'Archivo inexistente ó eliminado'
 
     url = scrapertools.get_match(data, '{file:"([^"]+)"')
     video_url = "%s|Referer=%s" % (url, url_redirect)

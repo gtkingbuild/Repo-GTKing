@@ -36,10 +36,8 @@ from threading import Lock
 from platformcode import config, logger, platformtools
 from platformcode.config import WebErrorException
 
-try:
-    from core.cloudflare import Cloudflare
-except:
-    pass
+try: from core.cloudflare import Cloudflare
+except: pass
 
 
 __addon_name = config.__addon_name
@@ -51,8 +49,8 @@ cj = MozillaCookieJar()
 ficherocookies = os.path.join(config.get_data_path(), "cookies.dat")
 
 
-# ~ useragent = "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.199 Safari/537.36"
-useragent = "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.5790.171 Safari/537.36"
+# ~ useragent = "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.217 Safari/537.36"
+useragent = "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.268 Safari/537.36"
 
 
 ver_stable_chrome = config.get_setting("ver_stable_chrome", default=True)
@@ -110,8 +108,7 @@ def load_cookies():
 
     if os.path.isfile(ficherocookies):
         logger.info("Leyendo cookies")
-        try:
-            cj.load(ficherocookies, ignore_discard=True)
+        try: cj.load(ficherocookies, ignore_discard=True)
         except:
             logger.info("Fichero cookies ilegible, se borra")
             os.remove(ficherocookies)
@@ -144,6 +141,8 @@ def downloadpage_proxy(canal,
                        url, post=None, headers=None, timeout=None, follow_redirects=True, cookies=True, replace_headers=False,
                        add_referer=False, only_headers=False, bypass_cloudflare=True, count_retries=0, raise_weberror=True, 
                        use_proxy=None, use_cache=False, cache_duration=36000):
+
+    del_proxies = []
 
     proxies = config.get_setting('proxies', canal, default='').replace(' ', '')
 
@@ -183,16 +182,23 @@ def downloadpage_proxy(canal,
                             config.set_setting('proxies', new_proxies, canal)
                         break
 
-                if (type(resp.code) == int and (resp.code == 404)):
+                elif (type(resp.code) == int and (resp.code == 404)):
                     if len(resp.data) > 1000:
                         logger.info('Proxy (error 404 y data > 1000) %s SI responde %s' % (proxy, resp.code))
                         proxy_ok = True
                         break
 
-                    if 'file not found' in resp.data.lower():
-                        logger.info('Proxy (error 404 y data = File not found) %s SI responde %s' % (proxy, resp.code))
+                    if ' not found' in str(resp.data).lower():
+                        logger.info('Proxy (error 404 y data = Not Found) %s SI responde %s' % (proxy, resp.code))
                         proxy_ok = True
                         break
+
+                elif (type(resp.code) == int and (resp.code == 401)) or (type(resp.code) == int and (resp.code == 403)) or ('<urlopen error' in str(resp.code)):
+                    if config.get_setting('proxies_erase', default=True):
+                        logger.info('Proxy (error 401 ó 403) ó error Urlopen %s se eliminara el proxy %s' % (proxy, resp.code))
+
+                        # ~ guardar el proxy para su eliminación del canal
+                        if len(resp.data) == 0: del_proxies.append(proxy)
 
             else:
                 if (type(resp.code) == int and (resp.code == 404)):
@@ -201,13 +207,13 @@ def downloadpage_proxy(canal,
                         proxy_ok = True
                         break
 
-                    if 'file not found' in resp.data.lower():
-                        logger.info('Sin proxies (error 404 y File not found) %s' % resp.code)
+                    if ' not found' in str(resp.data).lower():
+                        logger.info('Sin proxies (error 404 y Not Found) %s' % resp.code)
                         proxy_ok = True
                         break
 
         else:
-            if 'ERROR 404 - File not found' in str(resp.data) or 'HTTP Error 404: Not Found' in str(resp.data) or '<title>Site Blocked</title>' in str(resp.data) or 'HTTP/1.1 400 Bad Request' in str(resp.data):
+            if ' not found' in str(resp.data).lower() or ' bad request' in str(resp.data).lower() or '<title>Site Blocked</title>' in str(resp.data):
                 logger.info('Proxy respuesta insuficiente %s' % proxy)
             else:
                 proxy_ok = True
@@ -222,15 +228,47 @@ def downloadpage_proxy(canal,
 
     if not proxy_ok: 
         if use_proxy == None:
-            txt = '[B][COLOR %s]Configure los proxies del canal.[/B][/COLOR]' % color_adver
+            if del_proxies: txt = '[B][COLOR %s]Re-Intentando los proxies del canal.[/B][/COLOR]' % color_infor
+            else: txt = '[B][COLOR %s]Configure los proxies del canal.[/B][/COLOR]' % color_adver
         else:
            txt = 'Ningún proxy ha funcionado.' if len(proxies) > 1 else 'El proxy no ha funcionado.'
            col = '[B][COLOR %s]' % color_exec
            txt =  col + txt + '[/B][/COLOR]'
 
-        el_canal = ('Sin respuesta en [B][COLOR %s]') % color_alert
-        el_canal += ('%s[/B][/COLOR]') % canal.capitalize()
-        platformtools.dialog_notification(el_canal, txt)
+        avisar = True
+        if config.get_setting('sin_resp') == 'no': avisar = False
+
+        if avisar:
+           el_canal = ('Sin respuesta en [B][COLOR %s]') % color_alert
+           el_canal += ('%s[/B][/COLOR]') % canal.capitalize()
+           platformtools.dialog_notification(el_canal, txt)
+
+    if del_proxies:
+        proxies = config.get_setting('proxies', canal, default='')
+
+        for del_proxy in del_proxies:
+            if (' ' + del_proxy + ', ') in proxies: proxies = proxies.replace((' ' + del_proxy + ', '), '').strip()
+            if (del_proxy + ', ') in proxies: proxies = proxies.replace((del_proxy + ', '), '').strip()
+            if (', ' + del_proxy) in proxies: proxies = proxies.replace((', ' + del_proxy), '').strip()
+            if del_proxy in proxies: proxies = proxies.replace(del_proxy, '').strip()
+
+            if proxies:
+                if ',' in proxies:
+                    separators = proxies.count(',')
+                    if separators == 1:
+                       if proxies.startswith == ',': proxies = proxies.replace(',', '').strip()
+                       elif proxies.startswith == ', ': proxies = proxies.replace(', ', '').strip()
+
+                       elif proxies.endswith == ',': proxies = proxies.replace(',', '').strip()
+                       elif proxies.endswith == ', ': proxies = proxies.replace(', ', '').strip()
+
+                       else:
+                          if not ', ' in proxies: proxies = proxies.replace(',', ', ').strip()
+
+                if proxies:
+                   if ':' in proxies:
+                       logger.info('Proxies actualizados sin los eliminados %s' % canal)
+                       config.set_setting('proxies', proxies, canal)
 
     return resp
 
@@ -319,7 +357,8 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
         request_headers["Referer"] = "/".join(url.split("/")[:3])
 
     if not PY3:
-        url = quote(url.encode('utf-8'), safe="%/:=&?~#+!$,;'@()*[]")
+        try: url = quote(url.encode('utf-8'), safe="%/:=&?~#+!$,;'@()*[]")
+        except: url = quote(url, safe="%/:=&?~#+!$,;'@()*[]")
     else:
         url = quote(url, safe="%/:=&?~#+!$,;'@()*[]")
 
@@ -389,7 +428,7 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
 
     except HTTPError as handle:
         response["sucess"] = False
-        response["code"] = handle.code
+        response["code"] = str(handle.code)
         response["error"] = handle.__dict__.get("reason", str(handle))
         response["headers"] = dict(handle.headers.items())
 
@@ -412,12 +451,13 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
 
     else:
         response["sucess"] = True
-        response["code"] = handle.code
+        response["code"] = str(handle.code)
         response["error"] = None
         response["headers"] = dict(handle.headers.items())
 
         if not only_headers:
-            response["data"] = handle.read()
+            try: response["data"] = handle.read()
+            except: response["data"] = ""
         else:
             response["data"] = ""
 
@@ -572,8 +612,8 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
                     logger.info("Autorizado")
 
                     resp = downloadpage(url=response["url"], post=post, headers=headers, timeout=timeout,
-                                    follow_redirects=follow_redirects, cookies=cookies, replace_headers=replace_headers, add_referer=add_referer, 
-                                    use_proxy=use_proxy, use_cache=use_cache, cache_duration=cache_duration, count_retries=9)
+                                        follow_redirects=follow_redirects, cookies=cookies, replace_headers=replace_headers, add_referer=add_referer, 
+                                        use_proxy=use_proxy, use_cache=use_cache, cache_duration=cache_duration, count_retries=9)
 
                     response["sucess"] = resp.sucess
                     response["code"] = resp.code
@@ -608,10 +648,8 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
            logger.error(traceback.format_exc(1))
 
     # ~ Guardar en caché si la respuesta parece válida (no parece not found ni bloqueado, al menos un enlace o json, al menos 1000 bytes)
-    if use_cache and type(response['code']) == int and response['code'] >= 200 and response['code'] < 400 and response['data'] != '' \
-       and len(response['data']) > 1000 \
-       and 'ERROR 404 - File not found' not in str(response['data']) and 'HTTP Error 404: Not Found' not in str(response['data']) and '<title>Site Blocked</title>' not in str(response['data']) \
-       and 'HTTP/1.1 400 Bad Request' not in str(response['data']) \
+    if use_cache and type(response['code']) == int and response['code'] >= 200 and response['code'] < 400 and response['data'] != '' and len(response['data']) > 1000 \
+       and ' not found' not in str(response['data']).lower() and ' bad request' not in str(response['data']).lower() and '<title>Site Blocked</title>' not in str(response['data']) \
        and ('href=' in str(response['data']) or str(response['data']).startswith('{')):
             with open(cache_file, 'wb') as f: f.write(str(response['data'])); f.close()
             logger.info("Guardado caché %s url %s" % (cache_md5url, url))
@@ -629,10 +667,8 @@ def downloadpage(url, post=None, headers=None, timeout=None, follow_redirects=Tr
 
                 response['data'] = (response['data'])
             except:
-                try:
-                    response['data'] = str(response['data'])    
-                except:
-                    response['data'] = response['data'].decode('utf-8')
+                try: response['data'] = str(response['data'])    
+                except: response['data'] = response['data'].decode('utf-8')
     except:
         logger.error("Unable to convert data into str")
 

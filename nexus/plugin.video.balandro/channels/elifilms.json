@@ -6,12 +6,12 @@
   "active": true,
 
   "searchable": true,
-  "search_types": ["movie"],
+  "search_types": ["all", "movie", "tvshow"],
 
-  "categories": ["movie", "torrent"],
+  "categories": ["movie", "tvshow", "torrent"],
   "language": ["lat", "vose", "vo"],
 
-  "clusters": ["current", "torrents", "years", "vos", "4k"],
+  "clusters": ["current", "torrents", "years", "countries", "vos"],
 
-  "notes": "Canal con enlaces Streaming y Torrent. Películas por géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Canal con enlaces Streaming y Torrent. Películas por géneros. También Series. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

@@ -3,7 +3,7 @@
   "name": "CineAsiaOnline",
   "thumbnail": "cineasiaonline.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["movie"],
@@ -13,5 +13,5 @@
 
   "clusters": ["news", "countries", "years", "vos"],
 
-  "notes": "Películas Subtituladas y en versión original. Por géneros, paises y años"
+  "notes": "Web CERRADA. Películas Subtituladas y en versión original. Por géneros, paises y años"
 }

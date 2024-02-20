@@ -12,7 +12,7 @@ def get_video_url(page_url, url_referer=''):
     data = httptools.downloadpage(page_url).data
 
     if "Not Found" in data or "File was deleted" in data:
-        return "El fichero no existe o ha sido borrado"
+        return "Archivo inexistente ó eliminado"
 
     packed = scrapertools.find_single_match(data, "text/javascript'>(eval.*?)\s*</script>")
     unpacked = jsunpack.unpack(packed)

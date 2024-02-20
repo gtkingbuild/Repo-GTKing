@@ -35,7 +35,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'movies/', search_type = 'movie' ))
 
-    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'estrenos/', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'estrenos/', search_type = 'movie', text_color='cyan' ))
 
     itemlist.append(item.clone( title = 'Más valoradas', action = 'list_all', url = host + '?orderby=relevance', search_type = 'movie' ))
 
@@ -202,10 +202,6 @@ def play(item):
         if data:
             if 'Página no encontrada' in str(data) or 'no encontrada</title>' in str(data) or '<h1>403 Forbidden</h1>' in str(data):
                  return 'Archivo [COLOR red]No encontrado[/COLOR]'
-
-            url = data
-
-            if 'b' in str(url): scrapertools.find_single_match(str(url), "b'(.*?)'")
 
             file_local = os.path.join(config.get_data_path(), "temp.torrent")
             with open(file_local, 'wb') as f: f.write(data); f.close()

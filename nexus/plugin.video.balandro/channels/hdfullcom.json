@@ -11,7 +11,7 @@
   "categories": ["movie", "tvshow"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["mismatched", "news", "years", "lasts", "kids", "docs", "vos"],
+  "clusters": ["news", "years", "lasts", "kids", "docs", "vos"],
 
-  "notes": "WEB CERRADA. Películas por géneros y año. También Series. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Web CERRADA. Películas por géneros y año. También Series. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

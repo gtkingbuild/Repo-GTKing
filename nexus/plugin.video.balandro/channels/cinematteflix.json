@@ -5,13 +5,13 @@
 
   "active": true,
 
-  "searchable": true,
+  "searchable": false,
   "search_types": ["movie"],
 
   "categories": ["movie"],
   "language": ["cast", "vose"],
 
-  "clusters": ["problematic", "adults", "classic", "lists"],
+  "clusters": ["problematic", "classic", "lists"],
 
   "notes": "Películas clásicas, por géneros."
 }

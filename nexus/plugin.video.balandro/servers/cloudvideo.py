@@ -16,7 +16,7 @@ def get_video_url(page_url, url_referer=''):
 
     resp = httptools.downloadpage(page_url)
     if resp.code == 404:
-        return 'El archivo no existe o ha sido borrado'
+        return 'Archivo inexistente ó eliminado'
 
     data = resp.data
 

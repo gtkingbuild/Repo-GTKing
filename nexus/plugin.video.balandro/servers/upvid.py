@@ -35,7 +35,7 @@ def get_video_url(page_url, url_referer=''):
         resp = httptools.downloadpage(page_url, headers=headers)
 
         if resp.code == 404 or "<title>video is no longer available" in resp.data:
-            return 'El archivo no existe o ha sido borrado'
+            return 'Archivo inexistente ó eliminado'
 
         if 'Video embed restricted for this domain site2.net' in resp.data:
             headers['Referer'] = headers['Referer'].replace('upvid.host/', 'site2.net/')

@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import sys
+
+PY3 = False
+if sys.version_info[0] >= 3: PY3 = True
+
 import re
 
 from platformcode import config, logger, platformtools
@@ -7,7 +12,51 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-host = 'https://ww3.gnula2h.cc/'
+LINUX = False
+BR = False
+BR2 = False
+
+if PY3:
+    try:
+       import xbmc
+       if xbmc.getCondVisibility("system.platform.Linux.RaspberryPi") or xbmc.getCondVisibility("System.Platform.Linux"): LINUX = True
+    except: pass
+ 
+try:
+   if LINUX:
+       try:
+          from lib import balandroresolver2 as balandroresolver
+          BR2 = True
+       except: pass
+   else:
+       if PY3:
+           from lib import balandroresolver
+           BR = true
+       else:
+          try:
+             from lib import balandroresolver2 as balandroresolver
+             BR2 = True
+          except: pass
+except:
+   try:
+      from lib import balandroresolver2 as balandroresolver
+      BR2 = True
+   except: pass
+
+
+host = 'https://www11.gnula.cc/'
+
+
+# ~ por si viene de enlaces guardados
+ant_hosts = ['https://ww3.gnula2h.cc/']
+
+
+domain = config.get_setting('dominio', 'gnula2h', default='')
+
+if domain:
+    if domain == host: config.set_setting('dominio', '', 'gnula2h')
+    elif domain in str(ant_hosts): config.set_setting('dominio', '', 'gnula2h')
+    else: host = domain
 
 
 def item_configurar_proxies(item):
@@ -43,26 +92,50 @@ def configurar_proxies(item):
 
 
 def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
+    # ~ por si viene de enlaces guardados
+    for ant in ant_hosts:
+        url = url.replace(ant, host)
+
     if not headers: headers = {'Referer': host}
+
+    hay_proxies = False
+    if config.get_setting('channel_gnula24h_proxies', default=''): hay_proxies = True
 
     if not url.startswith(host):
         data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
     else:
-        data = httptools.downloadpage_proxy('gnula24h', url, post=post, headers=headers, raise_weberror=raise_weberror).data
+        if hay_proxies:
+            data = httptools.downloadpage_proxy('gnula24h', url, post=post, headers=headers, raise_weberror=raise_weberror).data
+        else:
+            data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
+
+        if not data:
+            if not '/?s=' in url:
+                if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('Gnula24H', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+
+                timeout = config.get_setting('channels_repeat', default=30)
+
+                if hay_proxies:
+                    data = httptools.downloadpage_proxy('gnula24h', url, post=post, headers=headers, raise_weberror=raise_weberror).data
+                else:
+                    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
 
     if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
-        try:
-            from lib import balandroresolver
-            ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
-            if ck_name and ck_value:
-                httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
+        if BR or BR2:
+            try:
+                ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
+                if ck_name and ck_value:
+                    httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
 
                 if not url.startswith(host):
                     data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
                 else:
-                    data = httptools.downloadpage_proxy('gnula24h', url, post=post, headers=headers, raise_weberror=raise_weberror).data
-        except:
-            pass
+                    if hay_proxies:
+                        data = httptools.downloadpage_proxy('gnula24h', url, post=post, headers=headers, raise_weberror=raise_weberror).data
+                    else:
+                        data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
+            except:
+                pass
 
     if '<title>Just a moment...</title>' in data:
         if not '?s=' in url:
@@ -76,8 +149,22 @@ def acciones(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( channel='submnuctext', action='_test_webs', title='Test Web del canal [COLOR yellow][B] ' + host + '[/B][/COLOR]',
-                                from_channel='gnula24h', folder=False, text_color='chartreuse' ))
+    domain_memo = config.get_setting('dominio', 'gnula2h', default='')
+
+    if domain_memo: url = domain_memo
+    else: url = host
+
+    itemlist.append(Item( channel='actions', action='show_latest_domains', title='[COLOR moccasin][B]Últimos Cambios de Dominios[/B][/COLOR]', thumbnail=config.get_thumb('pencil') ))
+
+    itemlist.append(Item( channel='helper', action='show_help_domains', title='[B]Información Dominios[/B]', thumbnail=config.get_thumb('help'), text_color='green' ))
+
+    itemlist.append(item.clone( channel='domains', action='test_domain_gnula2h', title='Test Web del canal [COLOR yellow][B] ' + url + '[/B][/COLOR]',
+                                from_channel='gnula2h', folder=False, text_color='chartreuse' ))
+
+    if domain_memo: title = '[B]Modificar/Eliminar el dominio memorizado[/B]'
+    else: title = '[B]Informar Nuevo Dominio manualmente[/B]'
+
+    itemlist.append(item.clone( channel='domains', action='manto_domain_gnula24h', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
 
     itemlist.append(item_configurar_proxies(item))
 
@@ -102,7 +189,7 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'ver-serie/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host + 'capitulo/', search_type = 'tvshow', text_color = 'olive' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host + 'ver-episode/', search_type = 'tvshow', text_color = 'cyan' ))
 
     itemlist.append(item.clone( title = 'Más vistas', action = 'list_all', url = host + 'tendencias/', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Más valoradas', action = 'list_all', url = host + 'ratings/', search_type = 'tvshow' ))
@@ -124,9 +211,14 @@ def generos(item):
 
     bloque = scrapertools.find_single_match(data, '>GÉNERO<(.*?)</ul>')
 
-    matches = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)">(.*?)</a>')
+    matches = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)".*?>(.*?)</a>')
 
     for url, title in matches:
+        if title == 'Novelas': continue
+
+        if config.get_setting('descartar_anime', default=False):
+            if title == 'Anime': continue
+
         itemlist.append(item.clone( action = 'list_all', title = title, url = url, text_color = 'hotpink' ))
 
     return sorted(itemlist, key=lambda it: it.title)
@@ -298,7 +390,9 @@ def temporadas(item):
         tempo = title.replace('Temporada ', '').strip()
 
         if len(seasons) == 1:
-            platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+            if config.get_setting('channels_seasons', default=True):
+                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+
             item.page = 0
             item.data_id = data_id
             item.contentType = 'season'
@@ -341,7 +435,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('Gnula24H', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -425,14 +520,7 @@ def findvideos(item):
 
         if 'trailer' in servidor: continue
 
-        elif 'hqq' in servidor or 'waaw' in servidor or 'netu' in servidor: continue
-
         servidor = servidor.replace('.tv', '').strip()
-
-        if servertools.is_server_available(servidor):
-            if not servertools.is_server_enabled(servidor): continue
-        else:
-            if not config.get_setting('developer_mode', default=False): continue
 
         lang = scrapertools.find_single_match(match, " src='.*?/flags/(.*?).png'")
 
@@ -441,8 +529,19 @@ def findvideos(item):
 
         if not dpost or not dnume: continue
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', dpost = dpost, dnume = dnume, other = servidor.capitalize(),
-                              language = IDIOMAS.get(lang, lang) ))
+        other = servertools.corregir_other(servidor)
+
+        servidor = servertools.corregir_servidor(servidor)
+
+        if servertools.is_server_available(servidor):
+            if not servertools.is_server_enabled(servidor): continue
+        else:
+            if not config.get_setting('developer_mode', default=False): continue
+
+        if not servidor == 'directo': 
+            if not servidor == 'various': other = ''
+
+        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, dpost = dpost, dnume = dnume, language = IDIOMAS.get(lang, lang), other = other ))
 
     # enlaces
     matches = scrapertools.find_multiple_matches(data, "<tr id='link-'(.*?)</tr>")
@@ -452,7 +551,8 @@ def findvideos(item):
 
         url = scrapertools.find_single_match(match, "<a href='(.*?)'")
 
-        if '/hqq.' in url or '/waaw.' in url or '/netu.' in url: continue
+        if 'ul.to' in url: continue
+        elif '.oboom.' in url: continue
 
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)

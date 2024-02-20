@@ -11,7 +11,7 @@
   "categories": ["movie", "tvshow"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["notice", "news", "kids", "docs", "vos"],
+  "clusters": ["current", "notice", "news", "kids", "docs", "vos"],
 
   "notes": "Películas por géneros. También Series. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

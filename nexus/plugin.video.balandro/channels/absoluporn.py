@@ -23,14 +23,11 @@ def mainlist_pelis(item):
     logger.info()
     itemlist = []
 
-    descartar_xxx = config.get_setting('descartar_xxx', default=False)
-
-    if descartar_xxx: return itemlist
+    if config.get_setting('descartar_xxx', default=False): return
 
     if config.get_setting('adults_password'):
         from modules import actions
-        if actions.adults_password(item) == False:
-            return itemlist
+        if actions.adults_password(item) == False: return
 
     itemlist.append(item.clone( title = 'Buscar vídeo ...', action = 'search', search_type = 'movie', text_color = 'orange' ))
 
@@ -64,7 +61,7 @@ def categorias(item):
 
         url = host + url
 
-        itemlist.append(item.clone (action='list_all', title=titulo, url=url, contentType = 'movie' ))
+        itemlist.append(item.clone (action='list_all', title=titulo, url=url, text_color = 'tan' ))
 
     return sorted(itemlist,key=lambda x: x.title)
 

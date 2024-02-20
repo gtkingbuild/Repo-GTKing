@@ -13,12 +13,13 @@ def get_video_url(page_url, url_referer=''):
     data = httptools.downloadpage(page_url).data
 
     if "Page not found" in data or "File was deleted" in data:
-        return 'El archivo no existe o ha sido borrado'
+        return 'Archivo inexistente ó eliminado'
     elif "processing" in data or 'Video encoding error' in data:
         return 'El archivo no está disponible'
 
     s = scrapertools.find_single_match(data, 'sourcesCode\s*:\s*(\[\{.*?\}\])')
     s = s.replace('src:', '"src":').replace('file:', '"file":').replace('type:', '"type":').replace('label:', '"label":').replace('res:', '"res":')
+
     try:
         data = jsontools.load(s)
 

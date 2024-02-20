@@ -11,7 +11,7 @@
   "categories": ["movie"],
   "language": ["cast"],
 
-  "clusters": ["suggested", "classic", "years", "stars", "directors", "lists"],
+  "clusters": ["problematic", "classic", "years", "stars", "directors", "lists"],
 
   "notes": "Películas clásicas. Por sagas, año, interpretes, directores, etc."
 }

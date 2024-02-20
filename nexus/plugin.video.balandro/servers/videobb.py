@@ -19,7 +19,7 @@ def get_video_url(page_url, url_referer=''):
 
         data = jsontools.load(resp.data)
         if 'data' not in data or 'success' not in data: return 'Vídeo no encontrado'
-        if not data['success']: return 'Vídeo no encontrado o eliminado'
+        if not data['success']: return 'Archivo inexistente ó eliminado'
 
         for videos in data['data']:
             if 'file' in videos and 'label' in videos:

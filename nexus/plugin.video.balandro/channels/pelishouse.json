@@ -3,7 +3,7 @@
   "name": "PelisHouse",
   "thumbnail": "pelishouse.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["all", "movie", "tvshow"],
@@ -13,5 +13,5 @@
 
   "clusters": ["current", "adults", "torrents", "news", "rankings", "languages", "years", "countries", "kids", "docs", "vos", "3d"],
 
-  "notes": "Canal con enlaces Streaming y Torrent. Películas por idioma, géneros, año. Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Web CERRADA. Canal con enlaces Streaming y Torrent. Películas por idioma, géneros, año. Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

@@ -10,6 +10,14 @@ def get_video_url(page_url, url_referer=''):
 
     data = httptools.downloadpage(page_url).data
 
+    if "The file you were looking for could not be found" in data or 'File not Found' in data or 'Page not found' in data or 'Not Found' in data:
+        return 'Archivo inexistente ó eliminado'
+
+    vid = scrapertools.find_single_match(data, '<meta property="og:video:secure_url" content="([^"]+)')
+    if vid:
+        video_urls.append(['mp4', vid])
+        return video_urls
+
     try:
         bloque = scrapertools.find_single_match(data, '"sources":\s*(\[.*?\])')
         if not bloque: return video_urls

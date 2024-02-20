@@ -166,6 +166,8 @@ def decode_url_base64(url, host_torrent):
         try:
             for x in range(20):
                 url_base64 = base64.b64decode(url_base64).decode('utf-8')
+
+            url_base64 = url
         except:
             if url_base64 and url_base64 != url: url_base64 = url_base64.replace(' ', '%20')
 
@@ -306,6 +308,7 @@ def sorted_urls(url, url_base64, host_torrent):
                 return url_base64
 
             logger.error('Error Result: %s' % url_base64_bis.result)
+            return url_base64
     except:
         import traceback
         logger.error('Error Key: %s' % key)

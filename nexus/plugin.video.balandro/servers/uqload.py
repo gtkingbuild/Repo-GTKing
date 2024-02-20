@@ -20,6 +20,7 @@ def get_video_url(page_url, url_referer=''):
 
     bloque = scrapertools.find_single_match(data, 'sources\s*:\s*\[(.*?)\]')
     matches = scrapertools.find_multiple_matches(bloque, '(http.*?)"')
+
     for url in matches:
         video_urls.append(['mp4', url+'|Referer=https://uqload.com/'])
 

@@ -15,7 +15,7 @@ def get_video_url(page_url, url_referer=''):
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
     if data == "File was deleted" or data == '':
-        return 'El archivo no existe o ha sido borrado'
+        return 'Archivo inexistente ó eliminado'
 
     match = scrapertools.find_single_match(data, "<script type='text/javascript'>(.*?)</script>")
 

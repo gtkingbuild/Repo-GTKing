@@ -10,7 +10,7 @@ else:
 
 import os
 
-from platformcode import config, platformtools, logger
+from platformcode import config, logger, platformtools, updater
 from core.item import Item
 
 from platformcode.config import WebErrorException
@@ -146,19 +146,35 @@ if tipo_channel != '':
                 platformtools.itemlist_update(item_search)
 
         else:
-            platformtools.dialog_ok('[COLOR red][B]Error en el canal [COLOR yellow]' + item.channel.capitalize() + '[/B][/COLOR]', 
+            try: last_ver = updater.check_addon_version()
+            except: last_ver = True
+
+            if not last_ver: last_ver = '[I](desfasada)[/I]'
+            else: last_ver = ''
+
+            release = '[COLOR goldenrod][B]' + config.get_addon_version().replace('.fix', '-Fix') + str(last_ver) + ' '
+
+            platformtools.dialog_ok(release + '[COLOR red][B]Error en el canal [COLOR yellow]' + item.channel.capitalize() + '[/B][/COLOR]', 
                                     '[COLOR yellowgreen][B]La web asociada a este canal, parece no estar disponible[/B][/COLOR], puede volver a intentarlo pasados unos minutos, y si el problema persiste compruebe mediante un navegador de internet la web: [COLOR cyan][B]%s[/B][/COLOR]' % (e) )
 
     except:
         import traceback
         logger.error(traceback.format_exc())
 
+        try: last_ver = updater.check_addon_version()
+        except: last_ver = True
+
+        if not last_ver: last_ver = '[I](desfasada)[/I]'
+        else: last_ver = ''
+
+        release = '[COLOR goldenrod][B]' + config.get_addon_version().replace('.fix', '-Fix') + str(last_ver) + ' '
+
         if not item.channel in ['mainmenu', 'actions', 'domains', 'downloads', 'favoritos', 'filmaffinitylists', 'filters', 'generos', 'groups', 'helper', 'proxysearch', 'search', 'submnuctext', 'submnuteam', 'tester', 'tmdblists', 'tracking']:
-            platformtools.dialog_ok('[COLOR red][B]Error inesperado en [COLOR yellow]' + item.channel.capitalize() + '[/B][/COLOR]',
+            platformtools.dialog_ok(release + ' [COLOR red]Error inesperado en [COLOR yellow]' + item.channel.capitalize() + '[/B][/COLOR]',
                                     '[COLOR moccasin][B]Quizás puede deberse a un fallo de conexión[/B][/COLOR], [COLOR cyan][B]ó que la web asociada a este canal ha variado su estructura[/B][/COLOR], ó bien ser un error interno del Add-On. [COLOR yellowgreen][B]Para saber más detalles, consulta el fichero Log de su Media Center.[/B][/COLOR]')
         else:
-            platformtools.dialog_ok('[COLOR red][B]Error inesperado en [COLOR gold]' + item.channel.capitalize() + '[/B][/COLOR]',
-                                    '[COLOR moccasin][B]Podría estar corrupto su fichero de Configuración de Balandro[/B][/COLOR], de ser así, [COLOR cyan][B]pruebe a Re-Instalar el Add-On[/B][/COLOR], ó bien ser un error interno del Add-On/Modulo. [COLOR yellowgreen][B]Para saber más detalles, consulta el fichero Log de su Media Center.[/B][/COLOR]')
+            platformtools.dialog_ok(release + '[COLOR red][B]Error inesperado en [COLOR gold]' + item.channel.capitalize() + '[/B][/COLOR]',
+                                    '[COLOR moccasin][B]Podría estar corrupto su fichero de Ajustes de Balandro[/B][/COLOR], de ser así, [COLOR cyan][B]pruebe a Re-Instalar el Add-On[/B][/COLOR], ó bien ser un error interno del Add-On/Modulo. [COLOR yellowgreen][B]Para saber más detalles, consulta el fichero Log de su Media Center.[/B][/COLOR]')
 
 
 logger.info('[COLOR blue]Ending with %s[/COLOR]' % sys.argv[1])

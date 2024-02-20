@@ -7,10 +7,22 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-host = 'https://dangotoons.net/'
+host = 'https://dangotoons.com/'
 
 
 perpage = 25
+
+
+def do_downloadpage(url, post=None, headers=None):
+    # ~ por si viene de enlaces guardados
+    ant_hosts = ['https://dangotoons.net/']
+
+    for ant in ant_hosts:
+        url = url.replace(ant, host)
+
+    data = httptools.downloadpage(url, post=post, headers=headers).data
+
+    return data
 
 
 def mainlist(item):
@@ -37,9 +49,9 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Especiales', action = 'list_all', url = host + 'catalogo.php?t=especiales', search_type = 'tvshow', text_color = 'thistle' ))
 
-    itemlist.append(item.clone( title = 'Por título (A - Z)', action = 'list_all', url = host +  'catalogo.php?t=todos&o=3', search_type = 'tvshow' ))
-
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
+
+    itemlist.append(item.clone( title = 'Por título (A - Z)', action = 'list_all', url = host +  'catalogo.php?t=todos&o=3', search_type = 'tvshow' ))
 
     return itemlist
 
@@ -48,7 +60,7 @@ def generos(item):
     logger.info()
     itemlist = []
 
-    data = httptools.downloadpage(host  + 'catalogo.php').data
+    data = do_downloadpage(host  + 'catalogo.php')
 
     bloque = scrapertools.find_single_match(data, '<select name="g">(.*?)<select name="o">')
 
@@ -68,7 +80,7 @@ def list_all(item):
 
     if not item.page: item.page = 0
 
-    data = httptools.downloadpage(item.url).data
+    data = do_downloadpage(item.url)
 
     bloque = scrapertools.find_single_match(data, '<div class="listados">(.*?)<footer>')
 
@@ -107,13 +119,15 @@ def temporadas(item):
     logger.info()
     itemlist = []
 
-    data = httptools.downloadpage(item.url).data
+    data = do_downloadpage(item.url)
 
     matches = scrapertools.find_multiple_matches(data, '<div class="titulo">Temporada(.*?)<br>')
 
     if not matches:
         if '>LISTA DE CAPITULOS<' in data:
-            platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan] sin Temporadas[/COLOR]')
+            if config.get_setting('channels_seasons', default=True):
+                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan] sin Temporadas[/COLOR]')
+
             item.page = 0
             item.contentType = 'season'
             item.contentSeason = 0
@@ -126,7 +140,9 @@ def temporadas(item):
         title = 'Temporada ' + temp
 
         if len(matches) == 1:
-            platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+            if config.get_setting('channels_seasons', default=True):
+                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+
             item.page = 0
             item.contentType = 'season'
             item.contentSeason = temp
@@ -147,7 +163,7 @@ def episodios(item):
     if not item.page: item.page = 0
     if not item.perpage: item.perpage = 50
 
-    data = httptools.downloadpage(item.url).data
+    data = do_downloadpage(item.url)
     data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;", "", data)
 
     if item.contentSeason == 0:
@@ -165,7 +181,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('DangoToons', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -235,7 +252,7 @@ def findvideos(item):
     logger.info()
     itemlist = []
 
-    data = httptools.downloadpage(item.url).data
+    data = do_downloadpage(item.url)
     data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;", "", data)
 
     url_videos = scrapertools.find_single_match(data, 'var q = \[ \[(.+?)\] \]')
@@ -249,22 +266,20 @@ def findvideos(item):
 
         url = url.replace('\/', '/')
 
-        if '/hqq.' in url or '/waaw.' in url or '/netu.' in url: continue
-
-        elif '/goo.' in url: continue
+        if '/goo.' in url: continue
 
         if url.startswith('//'): url = 'https:' + url
 
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 
-        if servidor:
-            if not servertools.is_server_available(servidor): servidor = ''
-            elif not servertools.is_server_enabled(servidor): continue 
+        if servertools.is_server_available(servidor):
+            if not servertools.is_server_enabled(servidor): continue
+        else:
+            if not config.get_setting('developer_mode', default=False): continue
 
-        if not servidor:  servidor = 'directo'
-
-        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, language = 'Lat', title = '', url = url ))
+        if not servidor == 'directo':
+            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, language = 'Lat', title = '', url = url ))
 
     if not itemlist:
         if not ses == 0:
@@ -280,7 +295,7 @@ def sub_search(item):
 
     post = 'b=' + item.tex
 
-    data = httptools.downloadpage(item.url, post=post).data
+    data = do_downloadpage(item.url, post=post)
 
     matches = scrapertools.find_multiple_matches(data, "<a href='(.*?)'>(.*?)</a>")
 

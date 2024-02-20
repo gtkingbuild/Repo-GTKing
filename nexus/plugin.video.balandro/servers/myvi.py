@@ -26,6 +26,7 @@ def get_video_url(page_url, url_referer=''):
             data = httptools.downloadpage(page_url).data
 
     bloque = scrapertools.find_single_match(data, 'CreatePlayer\("([^"]+)')
+
     if not bloque: bloque = scrapertools.find_single_match(data, 'createPlayer\("([^"]+)')
     if not bloque: return video_urls
 

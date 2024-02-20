@@ -47,8 +47,6 @@ def generos(item):
     logger.info()
     itemlist = []
 
-    descartar_xxx = config.get_setting('descartar_xxx', default=False)
-
     data = httptools.downloadpage(host).data
 
     bloque = scrapertools.find_single_match(data, '>Películas por género</div>(.*?)</ul>')
@@ -60,7 +58,7 @@ def generos(item):
 
         if title == 'PROXIMOS ESTRENOS': continue
 
-        if descartar_xxx:
+        if config.get_setting('descartar_xxx', default=False):
             if title == 'Adultos': continue
             elif title == 'Erotico': continue
 
@@ -103,8 +101,6 @@ def list_all(item):
     logger.info()
     itemlist = []
 
-    descartar_xxx = config.get_setting('descartar_xxx', default=False)
-
     data = httptools.downloadpage(item.url).data
 
     data = re.sub(r'\n|\r|\t|&nbsp;|<br>|\s{2,}', "", data)
@@ -117,7 +113,7 @@ def list_all(item):
     matches = re.compile(patron, re.DOTALL).findall(list_movies)
 
     for url, thumb, title, list_idiomas, year, genre in matches:
-        if descartar_xxx:
+        if config.get_setting('descartar_xxx', default=False):
             if genre == 'Adultos': continue
             elif genre == 'Erotico': continue
 
@@ -145,11 +141,9 @@ def findvideos(item):
     logger.info()
     itemlist = []
 
-    descartar_xxx = config.get_setting('descartar_xxx', default=False)
-
     data = httptools.downloadpage(item.url).data
 
-    if descartar_xxx:
+    if config.get_setting('descartar_xxx', default=False):
        genres = scrapertools.find_single_match(data, '&bull;(.*?)</span>')
 
        if 'Adultos' in genres or 'Erotico' in genres:
@@ -245,10 +239,7 @@ def play(item):
        if url:
            url = url.replace('\\', '/').replace('\\/', '/')
 		   
-           if '/hqq.' in url or '/waaw.' in url or '/netu.' in url:
-               return 'Requiere verificación [COLOR red]reCAPTCHA[/COLOR]'
-
-           elif 'openload' in url or 'powvideo' in url or 'streamplay' in url or 'rapidvideo' in url or 'streamango' in url or 'verystream' in url or 'vidtodo' in url:
+           if 'openload' in url or 'powvideo' in url or 'streamplay' in url or 'rapidvideo' in url or 'streamango' in url or 'verystream' in url or 'vidtodo' in url:
                return 'Servidor [COLOR yellow]NO soportado[/COLOR]'
 
            servidor = servertools.get_server_from_url(url)
@@ -295,7 +286,6 @@ def normalize_other(server):
             if server == 'gamohd': return 'gamovideo'
             elif server == 'goo': return 'gounlimited'
 
-            elif server == 'netutv': server = ''
             elif server == 'powvideo': server = ''
             elif server == 'streamplay': server = ''
             elif server == 'uploadedto': server = ''
@@ -304,7 +294,6 @@ def normalize_other(server):
             elif server == 'byter': server = ''
             elif server == 'powhd': server = ''
             elif server == 'stream': server = ''
-            elif server == 'hqqnew': server = ''
             elif server == 'rapidvideohd': server = ''
             elif server == 'openloadhd': server = ''
             elif server == 'streamangohq': server = ''
@@ -314,8 +303,7 @@ def normalize_other(server):
     else:
         server = servertools.corregir_servidor(server)
 
-        if server == 'netutv': server = ''
-        elif server == 'powvideo': server = ''
+        if server == 'powvideo': server = ''
         elif server == 'streamplay': server = ''
         elif server == 'uploadedto': server = ''
 

@@ -30,7 +30,7 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'lista-series/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimos episodios', action = 'list_epis', url = host + 'lista-series/episodios-agregados-actualizados/', search_type = 'tvshow', text_color='olive' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'list_epis', url = host + 'lista-series/episodios-agregados-actualizados/', search_type = 'tvshow', text_color='cyan' ))
 
     itemlist.append(item.clone( title = 'Animación', action = 'list_all', url = host + 'category/animacion/', search_type = 'tvshow', text_color='moccasin' ))
 
@@ -68,8 +68,6 @@ def anios(item):
 
     from datetime import datetime
     current_year = int(datetime.today().year)
-
-    current_year = current_year - 10
 
     for x in range(current_year, 1935, -1):
         itemlist.append(item.clone( title = str(x), url = host + '?s=trfilter&trfilter=1&years%5B%5D=' + str(x), action = 'list_all', text_color = 'hotpink' ))
@@ -114,14 +112,15 @@ def list_all(item):
         if thumb.startswith('//'): thumb = 'https:' + thumb
 
         year = scrapertools.find_single_match(match, '<span class="Year">(.*?)</span>')
-        if not year:
-            year = scrapertools.find_single_match(match, '<span class=Year>(.*?)</span>')
+        if not year: year = scrapertools.find_single_match(match, '<span class=Year>(.*?)</span>')
 
-        if not year: year = '-'
+        if year: title = title.replace('(' + year + ')', '').strip()
+        else: year = '-'
 
-        name = title.replace('&#038;', '&')
+        title = title.replace('&#038;', '&')
 
-        itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb, contentType = 'tvshow', contentSerieName = name, infoLabels = {'year': year} ))
+        itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb,
+                                    contentType = 'tvshow', contentSerieName = title, infoLabels = {'year': year} ))
 
         if len(itemlist) >= perpage: break
 
@@ -166,7 +165,9 @@ def list_alfa(item):
         thumb = scrapertools.find_single_match(match, ' data-src="([^"]+)')
 
         year = scrapertools.find_single_match(match, '<strong>.*?</td><td>Serie</td><td>(\d{4})</span>')
-        if not year: year = '-'
+
+        if year: title = title.replace('(' + year + ')', '').strip()
+        else: year = '-'
 
         itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb, contentType = 'tvshow', contentSerieName = title, infoLabels = {'year': year} ))
 
@@ -228,7 +229,9 @@ def temporadas(item):
         title = 'Temporada ' + tempo
 
         if len(matches) == 1:
-            platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+            if config.get_setting('channels_seasons', default=True):
+                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+
             item.page = 0
             item.contentType = 'season'
             item.contentSeason = tempo
@@ -265,7 +268,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('SeriesRetro', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -341,14 +345,15 @@ def findvideos(item):
         ses += 1
 
         servidor = servidor.replace('<strong>', '').replace('</strong>', '')
+
+        srv = servidor.lower().strip()
+
         servidor = servertools.corregir_servidor(servidor)
 
         url = scrapertools.find_single_match(data, ' id="Opt' + str(opt) + '.*?src="(.*?)"')
-        if not url:
-            url = scrapertools.find_single_match(data, ' id="Opt' + str(opt) + '.*?src=&quot;(.*?)&quot;')
+        if not url: url = scrapertools.find_single_match(data, ' id="Opt' + str(opt) + '.*?src=&quot;(.*?)&quot;')
 
-        if url.startswith('//') == True:
-            url = scrapertools.find_single_match(data, ' id="Opt' + str(opt) + '.*?src=&quot;(.*?)&quot;')
+        if url.startswith('//') == True: url = scrapertools.find_single_match(data, ' id="Opt' + str(opt) + '.*?src=&quot;(.*?)&quot;')
 
         if not servidor or not url: continue
 
@@ -363,6 +368,8 @@ def findvideos(item):
             servidor = 'directo'
         else: link_other = ''
 
+        if servidor == 'various': link_other = servertools.corregir_other(srv)
+
         itemlist.append(Item( channel = item.channel, action = 'play', url = url, server = servidor, title = '', language = 'Lat', other = link_other ))
 
     # ~ Descargas
@@ -376,13 +383,13 @@ def findvideos(item):
 
         if not servidor: continue
 
-        if servidor == 'mediafire': continue
-
         servidor = servertools.corregir_servidor(servidor)
 
         url = scrapertools.find_single_match(match, ' href="(.*?)"')
 
-        itemlist.append(Item( channel = item.channel, action = 'play', url = url, server = servidor, title = '', language = 'Lat', other = 'd' ))
+        other = 'D'
+
+        itemlist.append(Item( channel = item.channel, action = 'play', url = url, server = servidor, title = '', language = 'Lat', other = other ))
 
     if not itemlist:
         if not ses == 0:
@@ -399,7 +406,7 @@ def play(item):
     url = item.url.replace('&amp;#038;', '&').replace('&#038;', '&').replace('&amp;', '&')
 
     if url.startswith(host):
-        if item.other == 'd':
+        if item.other == 'D' or 'D ' in item.other :
             url = httptools.downloadpage(url, follow_redirects=False, only_headers=True).headers.get('location', '')
         else:
             data = do_downloadpage(url)
@@ -417,6 +424,8 @@ def play(item):
         if url.startswith('//') == True: url = 'https:' + url
 
         if '/www.analu.xyz/' in url:
+            return 'Servidor [COLOR plum]NO soportado[/COLOR]'
+        elif '/gdriveplayer.io/' in url:
             return 'Servidor [COLOR plum]NO soportado[/COLOR]'
 
         servidor = servertools.get_server_from_url(url)

@@ -11,7 +11,7 @@
   "categories": ["movie", "tvshow"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["temporary", "news", "rankings", "lists", "anime", "lasts", "vos", "tales"],
+  "clusters": ["news", "rankings", "lists", "anime", "lasts", "vos", "tales"],
 
-  "notes": "Películas y Series"
+  "notes": "Web ANULADA. Películas y Series"
 }

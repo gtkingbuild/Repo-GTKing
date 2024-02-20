@@ -80,7 +80,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'peliculas', search_type = 'movie' ))
 
-    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'peliculas/estrenos', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'peliculas/estrenos', search_type = 'movie', text_color='cyan' ))
 
     itemlist.append(item.clone( title = 'Más vistas', action = 'list_all', url = host + 'peliculas/tendencias/semana', search_type = 'movie' ))
 
@@ -101,7 +101,7 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'series', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host + 'episodios', search_type = 'tvshow', text_color = 'olive' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host + 'episodios', search_type = 'tvshow', text_color = 'cyan' ))
 
     itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'series/estrenos', search_type = 'tvshow' ))
 
@@ -265,7 +265,9 @@ def temporadas(item):
         title = 'Temporada ' + season
 
         if len(matches) == 1:
-            platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+            if config.get_setting('channels_seasons', default=True):
+                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+
             item.page = 0
             item.contentType = 'season'
             item.contentSeason = season
@@ -300,7 +302,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('PoseidonHd2', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -388,8 +391,6 @@ def findvideos(item):
                 srv = scrapertools.find_single_match(srv, '<!-- -->. <!-- -->(.*?)<!-- -->').strip()
 
                 if srv:
-                   if srv == 'hqq' or srv ==  'waaw' or srv ==  'netu': continue
-
                    other = ''
 
                    if srv == 'drive': srv ='gvideo'
@@ -398,6 +399,7 @@ def findvideos(item):
                    elif srv == 'videovard': other = srv
                    elif srv == 'filemoon': other = srv
                    elif srv == 'streamwish': other = srv
+                   elif srv == 'filelions': other = srv
                    elif srv == 'player' or srv == 'embed':
                       other = srv
                       srv = ''
@@ -421,8 +423,7 @@ def findvideos(item):
         srv = scrapertools.find_single_match(match, '</span>(.*?)</td>').strip()
         srv = srv.replace('<!-- -->', '').strip()
 
-        if srv == 'hqq' or srv ==  'waaw' or srv ==  'netu': continue
-        elif srv == '1fichier': continue
+        if srv == '1fichier': continue
 
         srv = servertools.corregir_servidor(srv)
 

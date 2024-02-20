@@ -18,19 +18,17 @@ def mainlist_animes(item):
     logger.info()
     itemlist = []
 
-    descartar_anime = config.get_setting('descartar_anime', default=False)
-
-    if descartar_anime: return itemlist
+    if config.get_setting('descartar_anime', default=False): return
 
     if config.get_setting('adults_password'):
         from modules import actions
-        if actions.adults_password(item) == False: return itemlist
+        if actions.adults_password(item) == False: return
 
     itemlist.append(item.clone( title = 'Buscar anime ...', action = 'search', search_type = 'tvshow', text_color='springgreen' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + '/animes/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host, search_type = 'tvshow', text_color = 'olive' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host, search_type = 'tvshow', text_color = 'cyan' ))
 
     itemlist.append(item.clone( title = 'En emisión', action = 'list_all', url = host + '/animes?genero=emision', search_type = 'tvshow' ))
 
@@ -38,6 +36,8 @@ def mainlist_animes(item):
     itemlist.append(item.clone( title = 'En latino', action = 'list_all', url = host + '/animes?categoria=false&genero=latino', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'En blu-ray', action = 'list_all', url = host + '/animes?categoria=false&genero=blu-ray', search_type = 'tvshow' ))
+
+    itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host + '/animes?categoria=pelicula', search_type = 'movie', text_color = 'deepskyblue' ))
 
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', search_type = 'tvshow' ))
 
@@ -132,7 +132,7 @@ def list_all(item):
 
         if not url or not title: continue
 
-        title = title.replace('&quot;', '')
+        title = title.replace('&quot;', '').replace('&#039;', "'")
 
         SerieName = title
 
@@ -186,7 +186,7 @@ def last_epis(item):
 
         if not epis: epis = 1
 
-        title = title.replace('&quot;', '')
+        title = title.replace('&quot;', '').replace('&#039;', "'")
 
         SerieName = title
 
@@ -228,7 +228,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('MonosChinos', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -302,9 +303,7 @@ def findvideos(item):
 
         other = ''
 
-        if 'hqq' in servidor or 'waaw' in servidor or 'netu' in servidor: continue
-
-        elif servidor == 'puj': continue
+        if servidor == 'puj': continue
 
         elif servidor == 'ok': servidor = 'okru'
         elif servidor == 'zeus': servidor = 'directo'
@@ -313,18 +312,10 @@ def findvideos(item):
         elif servidor == 'drive': servidor = 'gvideo'
         elif servidor == 'pixel': servidor = 'pixeldrain'
         elif servidor == 'senvid2': servidor = 'sendvid'
+        else:
+             if servidor == 'vgembedcom': servidor = 'vembed'
 
-        elif servidor == 'sbanh' or servidor == 'sblanh' or servidor == 'sbspeed' or servidor == 'sbchill' or servidor == 'sblongvu' or servidor == 'sbrity' or servidor == 'sbhight': servidor = 'streamsb'
-
-        elif 'fembed' in servidor: servidor = 'fembed'
-
-        elif 'filemoon' in servidor:
-             other = servidor
-             servidor = 'various'
-
-        elif 'streamwish' in servidor:
-             other = servidor
-             servidor = 'various'
+             other = servertools.corregir_other(servidor)
 
         servidor = servertools.corregir_servidor(servidor)
 
@@ -333,7 +324,10 @@ def findvideos(item):
         else:
             if not config.get_setting('developer_mode', default=False): continue
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', d_play = d_play, language = 'Vose', other = other.capitalize() ))
+        if not servidor == 'directo':
+            if not servidor == 'various': other = ''
+
+        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', d_play = d_play, language = 'Vose', other = other ))
 
     # download
     bloque = scrapertools.find_single_match(data, '<div class="downbtns">(.*?)</div>')
@@ -345,12 +339,15 @@ def findvideos(item):
 
         srv = srv.lower().strip()
 
+        if srv == '1fichier' or srv == '1ficher': continue
+
         if srv == 'anonfile': srv = 'anonfiles'
+        elif srv == 'bay': srv = 'bayfiles'
         elif srv == 'zippy': srv = 'zippyshare'
         elif srv == 'pixel': srv = 'pixeldrain'
 
         elif srv == 'ok':
-          if '/www.fireload.com/' in url: continue
+          if '.fireload.com/' in url: continue
 
           elif '/mega.nz/' in url: srv = 'mega'
 

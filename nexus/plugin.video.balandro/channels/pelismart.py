@@ -2,18 +2,29 @@
 
 import re, time
 
-from platformcode import logger, platformtools
+from platformcode import logger, config, platformtools
 from core.item import Item
 from core import httptools, scrapertools, tmdb, servertools
 
 
-host = 'https://smartpeli.tv/'
+host = 'https://smartpelis.tv/'
+
+
+# ~ por si viene de enlaces guardados
+ant_hosts = ['https://pelismart.tv/', 'https://smartpeli.com/', 'https://smartpeli.tv/']
+
+
+domain = config.get_setting('dominio', 'pelismart', default='')
+
+if domain:
+    if domain == host: config.set_setting('dominio', '', 'pelismart')
+    elif domain in str(ant_hosts): config.set_setting('dominio', '', 'pelismart')
+    else: host = domain
+
 
 
 def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
     # ~ por si viene de enlaces guardados
-    ant_hosts = ['https://pelismart.tv/', 'https://smartpeli.com/']
-
     for ant in ant_hosts:
         url = url.replace(ant, host)
 
@@ -22,9 +33,37 @@ def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
     return data
 
 
+def acciones(item):
+    logger.info()
+    itemlist = []
+
+    domain_memo = config.get_setting('dominio', 'pelismart', default='')
+
+    if domain_memo: url = domain_memo
+    else: url = host
+
+    itemlist.append(Item( channel='actions', action='show_latest_domains', title='[COLOR moccasin][B]Últimos Cambios de Dominios[/B][/COLOR]', thumbnail=config.get_thumb('pencil') ))
+
+    itemlist.append(Item( channel='helper', action='show_help_domains', title='[B]Información Dominios[/B]', thumbnail=config.get_thumb('help'), text_color='green' ))
+
+    itemlist.append(item.clone( channel='domains', action='test_domain_pelismart', title='Test Web del canal [COLOR yellow][B] ' + url + '[/B][/COLOR]',
+                                from_channel='pelismart', folder=False, text_color='chartreuse' ))
+
+    if domain_memo: title = '[B]Modificar/Eliminar el dominio memorizado[/B]'
+    else: title = '[B]Informar Nuevo Dominio manualmente[/B]'
+
+    itemlist.append(item.clone( channel='domains', action='manto_domain_pelismart', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
+
+    platformtools.itemlist_refresh()
+
+    return itemlist
+
+
 def mainlist(item):
     logger.info()
     itemlist = []
+
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone( title = 'Buscar ...', action = 'search', search_type = 'all', text_color = 'yellow' ))
 
@@ -38,6 +77,8 @@ def mainlist_pelis(item):
     logger.info()
     itemlist = []
 
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
+
     itemlist.append(item.clone( title = 'Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'cartelera-peliculas/', search_type = 'movie' ))
@@ -50,6 +91,8 @@ def mainlist_pelis(item):
 def mainlist_series(item):
     logger.info()
     itemlist = []
+
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
@@ -149,7 +192,9 @@ def temporadas(item):
         title = 'Temporada ' + tempo
 
         if len(temporadas) == 1:
-            platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+            if config.get_setting('channels_seasons', default=True):
+                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+
             item.page = 0
             item.contentType = 'season'
             item.contentSeason = tempo
@@ -192,7 +237,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('PelisMart', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -261,7 +307,7 @@ def findvideos(item):
         elif '-vose' in idioma: lang = 'Vose'
         else: lang = idioma
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', title = '', url = url, language = lang ))
+        itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', title = '', url = url, language = lang, other = 'Fastream' ))
 
     return itemlist
 
@@ -298,9 +344,6 @@ def play(item):
     if url:
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
-
-        if '/hqq.' in url or '/waaw.' in url or '/netu' in url:
-            return 'Requiere verificación [COLOR red]reCAPTCHA[/COLOR]'
 
         if '/damedamehoy.' in url or '//tomatomatela.' in url:
             url = resuelve_dame_toma(url)

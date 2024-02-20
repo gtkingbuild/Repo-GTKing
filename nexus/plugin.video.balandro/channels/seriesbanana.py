@@ -92,7 +92,9 @@ def temporadas(item):
         title = 'Temporada ' + season
 
         if len(matches) == 1:
-            platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+            if not config.get_setting('channels_seasons', default=True):
+                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+
             item.page = 0
             item.url = url
             item.contentType = 'season'
@@ -128,7 +130,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('SeriesBanana', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -222,7 +225,7 @@ def findvideos(item):
         url = scrapertools.find_single_match(data, '<iframe.*?src="(.*?)"')
 
         if url:
-           other = scrapertools.find_single_match(option, '<p class="AAIco-dns">(.*?)</p>')
+           other = scrapertools.find_single_match(option, '<p class="AAIco-dns">(.*?)</p>').strip()
 
            url = url.replace('&#038;', '&').replace('&amp;', '&')
 

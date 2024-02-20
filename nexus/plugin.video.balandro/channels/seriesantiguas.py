@@ -76,6 +76,9 @@ def mainlist_series(item):
     itemlist.append(item.clone( title = "Las de los 90's", action = 'list_all', url = host + 'media-category/90s/', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = "Las de los 2000's", action = 'list_all', url = host + 'media-category/00s/', search_type = 'tvshow' ))
 
+    itemlist.append(item.clone( title = "Halloween", action = 'episodios', url = host + 'ver/halloween/', special = 'special', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = "Navidad", action = 'episodios', url = host + 'ver/navidad/', special = 'special', search_type = 'tvshow' ))
+
     return itemlist
 
 
@@ -103,6 +106,15 @@ def list_all(item):
         title = scrapertools.find_single_match(match, '<h2 class="progression-video-title">(.*?)</h2>')
 
         if not url or not title: continue
+
+        if '/ver/mtv/' in url: continue
+        elif '/ver/tooncast/' in url: continue
+        elif '/ver/disney-channel/' in url: continue
+        elif '/ver/cartoon-network/' in url: continue
+        elif '/ver/nick/' in url: continue
+
+        elif 'ver/halloween/' in url: continue
+        elif 'ver/navidad/' in url: continue
 
         thumb = scrapertools.find_single_match(match, 'src="(.*?)"')
 
@@ -154,7 +166,9 @@ def temporadas(item):
             title = 'Temporada ' + numtempo
 
             if len(matches) == 1:
-                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+                if config.get_setting('channels_seasons', default=True):
+                    platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+
                 item.page = 0
                 item.url = url
                 item.old = 'old'
@@ -173,7 +187,9 @@ def temporadas(item):
             url = item.url + '/#aztec-tab-' + numtempo
 
             if len(matches) == 1:
-                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+                if config.get_setting('channels_seasons', default=True):
+                    platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
+
                 item.page = 0
                 item.url = url
                 item.contentType = 'season'
@@ -198,10 +214,13 @@ def episodios(item):
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
-    bloque = scrapertools.find_single_match(data, '<div id="progression-studios-season-video-list-' + str(item.contentSeason) + '(.*?)</div></div></div></div></div>')
-    if not bloque: bloque = scrapertools.find_single_match(data, '<div id="progression-studios-season-video-list-' + str(item.contentSeason) + '(.*?)<div class="clearfix-pro">')
+    if not item.special:
+        bloque = scrapertools.find_single_match(data, '<div id="progression-studios-season-video-list-' + str(item.contentSeason) + '(.*?)</div></div></div></div></div>')
+        if not bloque: bloque = scrapertools.find_single_match(data, '<div id="progression-studios-season-video-list-' + str(item.contentSeason) + '(.*?)<div class="clearfix-pro">')
+    else: bloque = data
 
     matches = scrapertools.find_multiple_matches(bloque, '<div class="progression-studios-season-item">(.*?)><div class="clearfix-pro">')
+    if not matches: matches = scrapertools.find_multiple_matches(bloque, '<div class="progression-studios-season-item">(.*?)<div class="clearfix-pro">')
 
     if not matches: matches = scrapertools.find_multiple_matches(data, "<div class='post hentry'>(.*?)</div></div>")
 
@@ -213,7 +232,8 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if tvdb_id:
+        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('SeriesAntiguas', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
@@ -249,8 +269,9 @@ def episodios(item):
         if item.old: item.perpage = sum_parts
 
     for epis in matches[item.page * item.perpage:]:
-        if not item.old:
-            if not '-temporada-' + str(item.contentSeason) in epis: continue
+        if not item.special:
+            if not item.old:
+                if not '-temporada-' + str(item.contentSeason) in epis: continue
 
         url = scrapertools.find_single_match(epis, '<a href="([^"]+)"')
 

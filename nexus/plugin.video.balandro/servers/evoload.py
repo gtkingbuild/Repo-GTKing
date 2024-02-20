@@ -11,7 +11,7 @@ def get_video_url(page_url, url_referer=''):
     resp = httptools.downloadpage(page_url, add_referer=True)
 
     if not resp.sucess:
-        return 'El fichero no existe o ha sido borrado'
+        return 'Archivo inexistente ó eliminado'
 
     data = resp.data
 

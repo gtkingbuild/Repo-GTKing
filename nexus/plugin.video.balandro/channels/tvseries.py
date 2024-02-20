@@ -1,6 +1,6 @@
 ﻿# -*- coding: utf-8 -*-
 
-from platformcode import logger, platformtools
+from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
@@ -23,21 +23,21 @@ def mainlist_series(item):
 
     # ~ itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
-    itemlist.append(item.clone( title = 'Series de Ciencia Ficción', action = 'menu_series', url = host + '-02.weebly.com', text_color = 'hotpink' ))
+    itemlist.append(item.clone( title = 'Series de [COLOR hotpink]Ciencia Ficción[/COLOR]', action = 'menu_series', url = host + '-02.weebly.com' ))
 
-    itemlist.append(item.clone( title = 'Series de Comedias', action = 'menu_series', url = host + '-05.weebly.com', text_color = 'hotpink' ))
+    itemlist.append(item.clone( title = 'Series de [COLOR hotpink]Comedias[/COLOR]', action = 'menu_series', url = host + '-05.weebly.com' ))
 
-    itemlist.append(item.clone( title = 'Series de Dibujos Animados', action = 'menu_series', url = host + '-06.weebly.com', text_color = 'hotpink' ))
+    itemlist.append(item.clone( title = 'Series de [COLOR hotpink]Dibujos Animados[/COLOR]', action = 'menu_series', url = host + '-06.weebly.com' ))
 
-    itemlist.append(item.clone( title = 'Series de Detectives-Espionaje', action = 'menu_series', url = host + '-04.weebly.com', text_color = 'hotpink' ))
+    itemlist.append(item.clone( title = 'Series de [COLOR hotpink]Detectives-Espionaje[/COLOR]', action = 'menu_series', url = host + '-04.weebly.com' ))
 
-    itemlist.append(item.clone( title = 'Series Policiacas', action = 'menu_series', url = host + '-03.weebly.com', text_color = 'hotpink'))
+    itemlist.append(item.clone( title = 'Series [COLOR hotpink]Policiacas[/COLOR]', action = 'menu_series', url = host + '-03.weebly.com' ))
 
-    itemlist.append(item.clone( title = 'Series de TVE, Mini Series y en Vose', action = 'menu_series', url = host + '-07.weebly.com', text_color = 'hotpink' ))
+    itemlist.append(item.clone( title = 'Series de [COLOR hotpink]TVE, Mini Series y en Vose[/COLOR]', action = 'menu_series', url = host + '-07.weebly.com' ))
 
-    itemlist.append(item.clone( title = 'Series Variadas', action = 'menu_series', url = host + '-08.weebly.com', text_color = 'hotpink' ))
+    itemlist.append(item.clone( title = 'Series [COLOR hotpink]Variadas[/COLOR]', action = 'menu_series', url = host + '-08.weebly.com' ))
 
-    itemlist.append(item.clone( title = 'Series de Westerns', action = 'menu_series', url = host + '-01.weebly.com' , text_color = 'hotpink'))
+    itemlist.append(item.clone( title = 'Series de [COLOR hotpink]Westerns[/COLOR]', action = 'menu_series', url = host + '-01.weebly.com' ))
 
     return itemlist
 
@@ -186,7 +186,9 @@ def list_all(item):
 
     order = 0
 
-    if matches: platformtools.dialog_notification('TvSeries', '[COLOR blue]Cargando episodios[/COLOR]')
+    if matches:
+        if config.get_setting('channels_charges', default=True):
+            platformtools.dialog_notification('TvSeries', '[COLOR blue]Cargando episodios[/COLOR]')
 
     for match in matches:
         if match.startswith('//') == True: url = 'https:' + match
@@ -256,7 +258,8 @@ def list_all(item):
                 temporada = scrapertools.find_single_match(titulo, '.*?".*?x(.*?)"')
                 capitulo = scrapertools.find_single_match(titulo, '.*?"(.*?)x')
 
-        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, language = lang, thumbnail = thumb, contentType='episode', contentSeason = temporada, contentEpisodeNumber = capitulo ))
+        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, language = lang, thumbnail = thumb,
+                                    contentType='episode', contentSeason = temporada, contentEpisodeNumber = capitulo ))
 
     return itemlist
 
