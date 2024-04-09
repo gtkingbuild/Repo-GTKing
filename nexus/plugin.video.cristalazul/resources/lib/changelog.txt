@@ -2,6 +2,8 @@
 
 
 
+-cristal azul 3.0.9:
+  - se hacen lo arreglos para que funcione con otra source.
 
 -cristal azul 3.0.8:
   - se hacen lo arreglos para que funcione el repositorio.
