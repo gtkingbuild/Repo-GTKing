@@ -100,7 +100,7 @@ adult="No"
 info="http://"
 description="[COLOR azure][B]GTKing [COLOR gold]Phoenix [COLOR limegreen]TEAM [COLOR darkmagenta]NEXUS[/B][/COLOR] para [COLOR teal][B]KODI 20.X Nexus.[/B][/COLOR]                                          [B][COLOR dodgerblue]Developer:[/COLOR] DavidZgZ[/B]                                   [B][COLOR orange]Colaboradores-Test:[/COLOR] [COLOR cyan]GTKing PHOENIX TEAM.[/B][/COLOR]"
 
-name="GTKing Artic Phoenix ABRIL"
+name="PRUEBA GTKing Artic Phoenix ABRIL"
 version="20.0"
 url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/20.0/Artic.Phoenix.TEST.zip"
 minor="http://"
