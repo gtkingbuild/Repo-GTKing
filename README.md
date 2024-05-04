@@ -1,6 +1,5 @@
-# Repo-GTKing Leia y Matrix
-# Es tu Repo de GTKing que no puede faltar para tu Kodi.
-# Leia
-![img](https://i.imgur.com/0oZFQlm.png)
+# Repo-GTKing PHOENIX TEAM
+# Repo del grupo GTKing PHOENIX que no puede faltar para tu Kodi.
+
 # Matrix
 ![img](https://i.imgur.com/ZyXs5H4.jpg)
