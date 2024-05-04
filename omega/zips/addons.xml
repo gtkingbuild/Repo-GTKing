@@ -365,7 +365,7 @@
     </extension>
 </addon>
 
-<addon id="plugin.program.GTKing-Phoenix-Nexus" name="[B][COLOR azure]GTKing [COLOR gold]PHOENIX [COLOR darkmagenta]NEXUS[/COLOR][/B]" version="20.1" provider-name="GTKing PHOENIX NEXUS">
+<addon id="plugin.program.GTKing-Phoenix" name="[B][COLOR azure]GTKing [COLOR gold]PHOENIX[/B]" version="21.0" provider-name="GTKing PHOENIX">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0"/>
 		<import addon="script.module.requests"/>
@@ -380,7 +380,7 @@
 	<extension point="xbmc.service" library="startup.py" start="startup"/>
 
 	<extension point="xbmc.addon.metadata">
-		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR gold]PHOENIX[/COLOR] [COLOR darkmagenta]NEXUS[/COLOR] tu Wizard para [COLOR teal]KODI 20.x[/COLOR]!!</summary>
+		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR gold]PHOENIX[/COLOR] tu Wizard para [COLOR teal]KODI[/COLOR]!!</summary>
 		<description>
 [B]• Developer:[/B] [COLOR gold]DavidZgZ[/COLOR]
 [B]• Testers:[/B]   [COLOR dodgerblue]GTKing PHOENIX TEAM[/COLOR]
@@ -389,13 +389,9 @@
 		<reuselanguageinvoker>false</reuselanguageinvoker>
 		<source>https://gtkingbuild.github.io/</source>
 		<news>
-• 05/03/2021
-- Instalador actualizado a la versión 3.0.4
-- Iniciada la compatibilidad con Kodi 19.0 Matrix
-
-• 25/07/2023
-- Instalador actualizado a la versión 3.3
-- Iniciada la compatibilidad con Kodi 20.x Nexus
+• 04/05/2024
+- Instalador actualizado a la versión 21.0
+- Compatibilible con Kodi 21 OMEGA
 		</news>
 		<assets>
 			<icon>icon.png</icon>
