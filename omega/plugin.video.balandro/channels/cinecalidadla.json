@@ -1,0 +1,17 @@
+{
+  "id": "cinecalidadla",
+  "name": "CineCalidadLa",
+  "thumbnail": "cinecalidadla.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow", "torrent"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["current", "torrents", "rankings", "years", "kids", "docs", "vos", "anime", "4k"],
+
+  "notes": "Canal con enlaces Streaming y Torrent. Películas por géneros y año. Series por Géneros."
+}

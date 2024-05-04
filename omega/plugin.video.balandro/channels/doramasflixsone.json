@@ -1,0 +1,17 @@
+{
+  "id": "doramasflixsone",
+  "name": "DoramasFlixsOne",
+  "thumbnail": "doramasflixsone.jpg",
+
+  "active": true,
+
+  "searchable": false,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["lat", "vose"],
+
+  "clusters": ["dorama"],
+
+  "notes": "Web dedicada exclusivamente al dorama"
+}

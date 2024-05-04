@@ -1,0 +1,17 @@
+{
+  "id": "ytstv",
+  "name": "YtsTv",
+  "thumbnail": "ytstv.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["torrent", "movie", "tvshow"],
+  "language": ["vo"],
+
+  "clusters": ["onlyone", "torrents", "rankings", "qualityes", "countries", "years", "kids", "docs", "3D", "4k"],
+
+  "notes": "Canal con enlaces Torrent exclusivamente. Películas por géneros y Series por Géneros."
+}

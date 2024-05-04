@@ -1,0 +1,25 @@
+{
+  "id": "jwp",
+  "name": "Jwp",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "https://jwplayer.com/([A-z0-9]+)",
+        "url": "https://cdn.jwplayer.com/players/\\1"
+      },
+      {
+        "pattern": "https://jwplayer.com/(?:s/|)([A-z0-9]+)",
+        "url": "https://cdn.jwplayer.com/players/\\1"
+      },
+      {
+        "pattern": "https://jwp.io/(?:s/|)([A-z0-9]+)",
+        "url": "https://cdn.jwplayer.com/players/\\1"
+      }
+    ]
+  }
+
+}

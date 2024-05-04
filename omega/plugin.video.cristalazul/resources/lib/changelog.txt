@@ -1,0 +1,35 @@
+
+
+
+
+-cristal azul 3.0.9:
+  - se hacen lo arreglos para que funcione con otra source.
+
+-cristal azul 3.0.8:
+  - se hacen lo arreglos para que funcione el repositorio.
+
+-cristal azul 3.0.7:
+  - se hacen lo arreglos para que funcione con otra source.
+
+-cristal azul 3.0.6:
+  - se hacen lo arreglos para que funcione correctamente con la version 20 de kodi
+
+-cristal azul 3.0.5:
+  - se añade tag cristal_azul para reproducir links, ajustes para poder quitar la musica, la source sale en primera posicion, si no existe el tag fanart el addon pone un fondo, si no existe el tag thumbnail el addon pone uno, quitado slproxy como dependencia.
+
+-cristal azul 3.0.4:
+  - reparado f4mtester interno
+
+-cristal azul 3.0.3:
+  - cristal Lsp + tools.
+
+-cristal azul 3.0.2:
+  - se añaden mejoras como el tag killregex para poder andar a traves de los regex siendo de distitnas webs.
+
+-cristal azul 3.0.1:
+  - se reparan errores de la version inicial.
+
+-cristal azul version 3.0.0
+
+
+  - version compatible con python2 y python3, para más detalles estamos en el grupo de telegram @addonfestaycristal

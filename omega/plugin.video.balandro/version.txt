@@ -1,0 +1,68 @@
+[COLOR coral][B]Balandro[/COLOR]  [COLOR yellow]Version 4.0.01[/COLOR] [COLOR chartreuse] 24 de Enero de 2024[/B][/COLOR]
+
+ [COLOR yellow][B]CONTACTO:[/B][/COLOR]
+    Foro  [COLOR dodgerblue][B][I]www.mimediacenter.info/foro/[/I][/B][/COLOR]  Instalaciones, Novedades, Sugerencias, etc.
+    Telegram  [COLOR aquamarine][B][I]t.me/balandro_asesor[/I][/B][/COLOR]  Asesoramiento, Dudas, Consultas, etc.
+
+ [COLOR yellow][B]FUENTE:[/B][/COLOR]
+    Fuente  [COLOR deepskyblue][B][I]https://repobal.github.io/base/[/I][/B][/COLOR]  Repositorio, Add-On, Scripts
+
+ [COLOR yellow][B]DESARROLLO:[/B][/COLOR]
+    Telegram [COLOR aqua][B][I] t.me/balandro_team [/I][/B][/COLOR]  Unirse al Equipo de Desarrollo
+    Fuentes  [COLOR olivedrab][B][I]https://github.com/repobal[/I][/B][/COLOR]  Mantenimiento Add-On
+    Incorporaciones [COLOR indianred][B]Solo con Enlace de Invitacion, solicitarlo en Foro o Telegram[/B][/COLOR]
+
+ [COLOR gold][B]MEDIA CENTERS:[/B][/COLOR]
+    [B][COLOR tan]Kodi Versiones Oficiales Soportadas:[/COLOR][/B]
+       [COLOR darkorange][B]21.x Omega,  20.x Nexus,  19.x Matrix,  18.x Leia  y  17.x Krypton[/B][/COLOR]
+
+ [COLOR gold][B]ADD-ONS EXTERNOS:[/B][/COLOR]
+    [B][COLOR mediumaquamarine]Motores Torrents Soportados:[/COLOR][/B]
+       plugin.video.elementum [COLOR greenyellow][I] Recomendado[/I][/COLOR]
+       plugin.video.torrenter
+       plugin.video.torrentin
+       plugin.video.torrest
+
+    [B][COLOR indianred]Otros Add-ons que pueden necesitarse:[/COLOR][/B]
+       plugin.video.youtube
+       script.module.resolveurl
+
+ [COLOR yellow][B]MODIFICACIONES:[/B][/COLOR]
+    [COLOR moccasin][B]Correcciones:[/B][/COLOR]
+       Errores detectados
+       Revision generalizada
+       Generos: Re-configurados
+       Canales: Anulados las webs cerradas o inoperativas
+       Servidores: Anulados las webs cerradas o inoperativas
+
+    [COLOR moccasin][B]Novedades:[/B][/COLOR]
+       Canales: Sin novedades
+       Servidores: Sin novedades
+
+ [COLOR yellowgreen][B]CANALES QUE REQUIEREN REGISTRARSE (Cuenta):[/B][/COLOR]
+    HdFull,  NextDede,  PlayDede
+
+ [COLOR slateblue][B]CANALES QUE PUEDEN SER INCOMPATIBLES:[/B][/COLOR]
+    [COLOR lime][B]Con Media Centers anteriores a 19.x, podrian NO resultar operativos[/B][/COLOR]
+    SeriesPapayaXyz
+
+ [COLOR greenyellow][B]CANALES PROBLEMATICOS:[/B][/COLOR]
+    [COLOR springgreen][B]Son en los que Predominan Sin enlaces Disponibles, Invalidos y/o Servidores No Soportados[/B][/COLOR]
+    CiberDocumentales,  CineDeAntes,  CinematteFlix,
+    RetroTv,  SeriesRetro,  SigloXX,  TuPeliculaTv
+
+ [COLOR cyan][B]CANALES INESTABLES:[/B][/COLOR]
+    [COLOR springgreen][B]Son los pendientes de su evolucion, para decidir su Situacion Definitiva[/B][/COLOR]
+    HenaOjara
+
+ [COLOR darkcyan][B]CANALES TEMPORALMENTE DES-ACTIVADOS:[/B][/COLOR]
+    [COLOR springgreen][B]Son los pendientes de su situacion, para decidir su Re-activacion o Anulacion[/B][/COLOR]
+    [B][COLOR moccasin] DocumaniaTv [COLOR lime] www.documaniatv.com [I][COLOR olivedrab] Player [/I][/B][/COLOR]
+    [B][COLOR moccasin] FrozenLayer [COLOR lime] www.frozen-layer.com [I][COLOR red] En Mantenimiento [/I][/B][/COLOR]
+    [B][COLOR moccasin] GranTorrents [COLOR lime] grantorrent.lat [I][COLOR red] Dominio Caducado [/I][/B][/COLOR]
+    [B][COLOR moccasin] NextDede [COLOR lime] nextdede.tv [I][COLOR greenyellow] Cambio Estructural [/I][/B][/COLOR]
+    [B][COLOR moccasin] TorrentPelis [COLOR lime] torrentpelis.org [I][COLOR red] Dominio Caducado [/I][/B][/COLOR]
+
+ [COLOR gold][B]SERVIDORES VIAS ALTERNATIVAS/ADICIONALES QUE PUEDEN NECESITARSE:[/B][/COLOR]
+    plugin.video.youtube
+    script.module.resolveurl

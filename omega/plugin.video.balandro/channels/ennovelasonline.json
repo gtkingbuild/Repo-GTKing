@@ -1,0 +1,17 @@
+{
+  "id": "ennovelasonline",
+  "name": "EnNovelasOnline",
+  "thumbnail": "ennovelasonline.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["current", "lasts", "years", "countries", "qualityes", "vos", "tales"],
+
+  "notes": "Web dedicada exclusivamente en Novelas. Series por Géneros."
+}

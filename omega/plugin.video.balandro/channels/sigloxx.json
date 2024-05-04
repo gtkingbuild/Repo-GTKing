@@ -1,0 +1,17 @@
+{
+  "id": "sigloxx",
+  "name": "SigloXX",
+  "thumbnail": "sigloxx.jpg",
+
+  "active": true,
+
+  "searchable": false,
+  "search_types": ["movie"],
+
+  "categories": ["movie"],
+  "language": ["cast"],
+
+  "clusters": ["problematic", "classic", "years", "stars", "directors", "lists"],
+
+  "notes": "Películas clásicas. Por sagas, año, interpretes, directores, etc."
+}

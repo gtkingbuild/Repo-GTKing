@@ -1,0 +1,18 @@
+{
+  "id": "cine24h",
+  "name": "Cine24h",
+  "thumbnail": "cine24h.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["onlyone", "rankings", "years", "kids", "docs", "vos"],
+
+  "notes": "Películas por géneros y año. También Series"
+
+}

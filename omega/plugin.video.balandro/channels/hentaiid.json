@@ -1,0 +1,17 @@
+{
+  "id": "hentaiid",
+  "name": "HentaiId",
+  "thumbnail": "hentaiid.jpg",
+
+  "active": true,
+
+  "searchable": false,
+  "search_types": ["movie"],
+
+  "categories": ["movie", "adults"],
+  "language": ["vo"],
+
+  "clusters": ["adults"],
+
+  "notes": "Vídeos de Animación en versión Original para Adultos +18"
+}

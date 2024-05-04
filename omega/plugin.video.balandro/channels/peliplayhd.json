@@ -1,0 +1,17 @@
+{
+  "id": "peliplayhd",
+  "name": "PeliPlayHd",
+  "thumbnail": "peliplayhd.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose", "vo"],
+
+  "clusters": ["notice", "years", "docs", "kids", "vos", "tales"],
+
+  "notes": "Películas por géneros y Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

@@ -1,0 +1,17 @@
+{
+  "id": "areadocumental",
+  "name": "AreaDocumental",
+  "thumbnail": "areadocumental.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["documentary"],
+
+  "categories": ["documentary"],
+  "language": ["vose"],
+
+  "clusters": ["onlyone", "rankings", "categories", "3d", "docs"],
+
+  "notes": "Documentales en versión original con subtítulos en castellano. Por categorías, series completas."
+}

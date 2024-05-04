@@ -1,0 +1,17 @@
+{
+  "id": "cuevana3video",
+  "name": "Cuevana3Video",
+  "thumbnail": "cuevana3video.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["lat", "cast", "vose"],
+
+  "clusters": ["notice", "current", "news", "rankings", "lasts", "kids", "docs", "vos"],
+
+  "notes": "Películas por géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

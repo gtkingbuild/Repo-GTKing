@@ -1,0 +1,18 @@
+{
+  "id": "repelis24",
+  "name": "RePelis24",
+  "thumbnail": "repelis24.png",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["current", "suggested", "notice", "news", "languages", "rankings", "years", "lists", "producers", "kids", "docs", "vos", "anime"],
+
+  "notes": "Web CERRADA. Películas por idioma, géneros y año. Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+
+}

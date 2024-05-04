@@ -1,0 +1,17 @@
+{
+  "id": "playview",
+  "name": "PlayView",
+  "thumbnail": "playview.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["lat", "cast", "vose"],
+
+  "clusters": ["news", "years", "lists", "kids", "docs", "vos", "anime"],
+
+  "notes": "Web CERRADA. Películas por géneros y año. También Series. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

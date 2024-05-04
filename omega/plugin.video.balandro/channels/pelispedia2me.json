@@ -1,0 +1,17 @@
+{
+  "id": "pelispedia2me",
+  "name": "PelisPedia2Me",
+  "thumbnail": "pelispedia2me.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie"],
+  "language": ["cast", "lat", "vose", "vo"],
+
+  "clusters": ["current", "news", "years", "kids", "docs", "anime", "vos"],
+
+  "notes": "Películas por géneros y año."
+}

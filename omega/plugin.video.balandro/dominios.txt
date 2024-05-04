@@ -1,0 +1,33 @@
+[COLOR coral][B]Balandro [/COLOR][COLOR goldenrod] Situacion Dominios [/COLOR][COLOR aqua]  24 de Enero de 2024 [/COLOR][COLOR limegreen]  Hora  8:00  [/COLOR][COLOR yellow]Version 4.0.01[/B][/COLOR]
+
+ [COLOR yellow][B]CONTACTO:[/B][/COLOR]
+   Foro  [COLOR dodgerblue][B][I]www.mimediacenter.info/foro/[/I][/B][/COLOR]  Instalaciones, Novedades, Sugerencias, etc.
+   Telegram  [COLOR aquamarine][B][I]t.me/balandro_asesor[/I][/B][/COLOR]  Asesoramiento, Dudas, Consultas, etc.
+
+ [COLOR gold][B]MEDIA CENTERS:[/B][/COLOR]
+    [B][COLOR tan]Kodi Versiones Oficiales Soportadas:[/COLOR][/B]
+       [COLOR darkorange][B]21.x Omega,  20.x Nexus,  19.x Matrix,  18.x Leia  y  17.x Krypton[/B][/COLOR]
+
+ [COLOR fuchsia][B]CUESTIONES PRELIMINARES:[/B][/COLOR]
+   Si algun canal no obtiene [COLOR coral][B]Resultados[/B][/COLOR] y tiene la opcion [COLOR red][B]Configurar proxies a usar ...[/B][/COLOR]:
+        [COLOR gold][B]Esos canales sufren bloqueos por parte de algunos paises/operadoras[/B][/COLOR],
+        y no permiten acceder a su contenido. Mediante el [COLOR red][B]Uso de proxies[/B][/COLOR] puede evitar la restriccion.
+        [COLOR violet][B]Tenga presente que unos proxies son mas rapidos que otros, o mas estables,
+        o menos saturados, o mas duraderos, ademas pueden ser gratuitos o de pago.[/B][/COLOR]
+
+ [COLOR red][B]PROXIES[COLOR deepskyblue] GESTION LISTAS PERSONALIZADAS:[/B][/COLOR] 
+   [B][COLOR moccasin] Lista-proxies.zip [COLOR dodgerblue] Descarga desde el Foro [COLOR limegreen][I] Revision 12/11/2023 [/I][/B][/COLOR]
+
+ [COLOR yellowgreen][B]SITUACION CANALES:[/B][/COLOR]
+   [B][COLOR moccasin] DoramasMp4Vin [COLOR lime] www1.doramasmp4.li [I][COLOR indianred] Redirecciona a Otra Web [/I][/B][/COLOR]
+   [B][COLOR moccasin] Pandrama [COLOR lime] pandrama.es [I][COLOR indianred] Cuenta Suspendida [/I][/B][/COLOR]
+
+ [COLOR darkcyan][B]CANALES TEMPORALMENTE DES-ACTIVADOS:[/B][/COLOR] [COLOR powderblue][B][I] Pdtes. Re-Activar o Anular [/I][/B][/COLOR]
+   [B][COLOR moccasin] DocumaniaTv [COLOR lime] www.documaniatv.com [I][COLOR olivedrab] Player [/I][/B][/COLOR]
+   [B][COLOR moccasin] FrozenLayer [COLOR lime] www.frozen-layer.com [I][COLOR red] En Mantenimiento [/I][/B][/COLOR]
+   [B][COLOR moccasin] GranTorrents [COLOR lime] grantorrent.lat [I][COLOR red] Dominio Caducado [/I][/B][/COLOR]
+   [B][COLOR moccasin] NextDede [COLOR lime] nextdede.tv [I][COLOR greenyellow] Cambio Estructural [/I][/B][/COLOR]
+   [B][COLOR moccasin] TorrentPelis [COLOR lime] torrentpelis.org [I][COLOR red] Dominio Caducado [/I][/B][/COLOR]
+
+ [COLOR slateblue][B]CANALES PROBABLEMENTE NO ACCESIBLES:[/B][/COLOR] [B][COLOR darkorange] Sin Novedades[/B][/COLOR]
+ [COLOR cyan][B]ULTIMOS CAMBIOS DE DOMINIOS:[/B][/COLOR] [B][COLOR darkorange] Sin Novedades[/B][/COLOR]

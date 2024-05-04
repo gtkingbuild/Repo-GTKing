@@ -1,0 +1,36 @@
+15
+|||
+
+[COLOR greenyellow][B]¡¡¡BIENVENIDOS A LAS BUILDS GTKing PHOENIX TEAM!!![B][/COLOR]
+[COLOR greenyellow][B]¡¡¡LAS UNICAS Y AUNTENTICAS BUILDS DE GTKing PHOENIX TEAM... RECHAZA LAS IMITACIONES!!![B][/COLOR]
+
+[COLOR aquamarine][B]INSTALACIÓN:[B][/COLOR]
+
+[COLOR deepskyblue]* Para realizar la instalación correctamente deberás pulsar en la opción [COLOR white][B]"Build Menu"[/B][/COLOR] en la ventana que aparece después de instalar el plugin instalador (Wizard).
+
+En ésta ventana de Notificación, damos a [COLOR white][B]"Cerrar"[/B][/COLOR]
+Seleccionamos la Build que deseas instalar de[COLOR yellowgreen][B]GTKing[/B][/COLOR] - [COLOR white][B]Instalar Build[/B][/COLOR]. 
+Cuando termine de instalar, nos saldrá una ventana [COLOR white][B]"Necesita Forzar el Cierre de Kodi"[/B][/COLOR]. Pulsaremos en [COLOR white][B]"OK"[/B][/COLOR].
+Se cerrará Kodi y ya sólo nos quedará iniciar de nuevo Kodi, darle unos minutos para que cargue el menú correctamente.
+
+[COLOR gold][B]09/04/2024 ¡¡¡PARCHE ACTUALIZADOR BUILDS GTKing PHOENIX TEAM!!![/B][/COLOR]
+
+[COLOR red][B]* REPARADO ACCESO JELLY[/B][/COLOR]
+
+[COLOR lime][B]NOTA:[COLOR magenta][B]*** PARA APROVECHAR TODAS LAS POSIBILIDADES DEL WIDGET DONTORRENT ES NECESARIO TENER INSTALADO ELEMENTUM E INSTALAR LA APK ALFA ASSISTANT (DÁNDOLE TODOS LOS PERMISOS) Y DEJARLA EN SEGUNDO PLANO CORRIENDO, DE ESTE MODO AL PINCHAR EN CUALQUIER CONTENIDO SE NOS MOSTRARÁN UNOS ENLACES LLAMADOS[/B][/COLOR] [COLOR gold][B][I]BT[COLOR red][B][I]Digg[/B][/I][/COLOR] [COLOR magenta][B]LOS CUALES NOS OFRECEN UNA MAYOR CALIDAD DE VISIONADO. AUNQUE A VECES ESTOS ENLACES PUEDEN NO APARECER PERO ESTO NO DEPENDE DE NOSOTROS, SINO DE LA APK DE ALFA ASSISTANT Y/O DEL CANAL DONTORRENT[/B][/COLOR]
+
+[COLOR aquamarine][B]INSTALACIÓN DE PARCHE:[/B][/COLOR]
+
+Para instalar un parche, deberemos seleccionar la build correspondiente que tengamos instalada y dentro nos saldrá el parche a instalar.
+
+Después de la instalacion del parche, una vez cargado KODI se tiene que ir a la sección MANTENIMIENTO en AJUSTES, una vez allí entrar en HERRAMIENTAS ADDON, pulsar HABILITAR/DESHABILITAR ADDONS y luego HABILITAR TODOS para la correcta activación de los Addons añadidos.
+
+
+[COLOR red]                   ****** DAVIDZGZ y GTKing TEAM ******                 [/COLOR]
+
+
+
+[COLOR white][B]GRACIAS POR UTILIZAR [COLOR dodgerblue]GTKING [COLOR red]PHOENIX[/COLOR] [COLOR lime]TEAM[/COLOR][/B]
+
+  
+

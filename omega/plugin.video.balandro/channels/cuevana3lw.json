@@ -1,0 +1,17 @@
+{
+  "id": "cuevana3lw",
+  "name": "Cuevana3Lw",
+  "thumbnail": "cuevana3lw.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["lat", "cast", "vose"],
+
+  "clusters": ["current", "news", "lasts", "kids", "docs", "vos"],
+
+  "notes": "Películas por géneros."
+}

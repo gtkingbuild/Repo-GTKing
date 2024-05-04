@@ -1,0 +1,17 @@
+{
+  "id": "vimeo",
+  "name": "Vimeo",
+  "thumbnail": "vimeo.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["documentary"],
+
+  "categories": ["documentary"],
+  "language": ["cast"],
+
+  "clusters": ["onlyone", "rankings", "docs"],
+
+  "notes": "Documentales en castellano."
+}

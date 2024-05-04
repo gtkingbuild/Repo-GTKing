@@ -1,0 +1,17 @@
+{
+  "id": "tekilaz",
+  "name": "Tekilaz",
+  "thumbnail": "tekilaz.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["suggested", "news", "rankings", "lasts", "kids", "docs", "vos"],
+
+  "notes": "Web CERRADA. Películas por géneros. También Series."
+}

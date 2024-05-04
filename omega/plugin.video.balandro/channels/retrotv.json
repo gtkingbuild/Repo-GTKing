@@ -1,0 +1,17 @@
+{
+  "id": "retrotv",
+  "name": "RetroTv",
+  "thumbnail": "retrotv.png",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["problematic", "infantil", "classic", "lists", "years", "lasts", "kids"],
+
+  "notes": "Películas por géneros. Series clásicas, por Géneros. En idioma orignal de emisión."
+}

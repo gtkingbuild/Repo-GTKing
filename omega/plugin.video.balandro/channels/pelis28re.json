@@ -1,0 +1,17 @@
+{
+  "id": "pelis28re",
+  "name": "Pelis28Re",
+  "thumbnail": "pelis28re.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose", "vo"],
+
+  "clusters": ["rankings", "languages", "years", "kids", "vos", "3D"],
+
+  "notes": "Películas por géneros y año. Series por Géneros."
+}

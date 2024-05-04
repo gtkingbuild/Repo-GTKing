@@ -1,0 +1,17 @@
+{
+  "id": "pelispanda",
+  "name": "PelisPanda",
+  "thumbnail": "pelispanda.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow", "torrent"],
+  "language": ["cast", "lat", "vose", "vo"],
+
+  "clusters": ["onlyone", "current", "torrents", "qualityes", "years", "kids", "docs", "4k"],
+
+  "notes": "Canal con enlaces Torrent exclusivamente. Películas y series, por géneros, calidad y año. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

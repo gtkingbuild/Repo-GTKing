@@ -1,0 +1,17 @@
+{
+  "id": "seriesbanana",
+  "name": "SeriesBanana",
+  "thumbnail": "seriesbanana.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["onlyone", "infantil", "classic", "kids", "vos"],
+
+  "notes": "Series por Géneros."
+}

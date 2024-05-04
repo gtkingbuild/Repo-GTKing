@@ -1,0 +1,17 @@
+{
+  "id": "ennovelas",
+  "name": "EnNovelas",
+  "thumbnail": "ennovelas.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["current", "notice", "suggested", "lasts", "years", "countries", "qualityes", "vos", "tales"],
+
+  "notes": "Web dedicada principalmente en Novelas. Películas por géneros y Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

@@ -1,0 +1,17 @@
+{
+  "id": "documaniatv",
+  "name": "DocumaniaTv",
+  "thumbnail": "documaniatv.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["documentary"],
+
+  "categories": ["documentary"],
+  "language": ["cast"],
+
+  "clusters": ["temporary", "onlyone", "suggested", "rankings", "categories", "adults", "docs"],
+
+  "notes": "Documentales en castellano por categorías, series."
+}

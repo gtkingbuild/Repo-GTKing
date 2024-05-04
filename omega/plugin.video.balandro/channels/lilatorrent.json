@@ -1,0 +1,17 @@
+{
+  "id": "lilatorrent",
+  "name": "LilaTorrent",
+  "thumbnail": "lilatorrent.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow", "torrent"],
+  "language": ["cast"],
+
+  "clusters": ["onlyone", "torrents", "news", "lasts",  "years", "qualityes", "kids", "docs", "4k"],
+
+  "notes": "Canal con enlaces Torrent exclusivamente. Películas, series y documentales, por géneros, calidad y año. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

@@ -1,0 +1,17 @@
+{
+  "id": "elifilms",
+  "name": "EliFilms",
+  "thumbnail": "elifilms.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow", "torrent"],
+  "language": ["lat", "vose", "vo"],
+
+  "clusters": ["current", "torrents", "years", "countries", "vos"],
+
+  "notes": "Canal con enlaces Streaming y Torrent. Películas por géneros. También Series. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

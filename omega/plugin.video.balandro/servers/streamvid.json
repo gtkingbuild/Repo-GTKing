@@ -1,0 +1,29 @@
+{
+  "id": "streamvid",
+  "name": "Streamvid",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "(https://streamvid.net/embed-[a-z0-9]+.html)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "https://streamvid.net/([0-9a-zA-Z]+)",
+        "url": "https://streamvid.net/\\1"
+      },
+      {
+        "pattern": "https://streamvid.cc/player/([0-9a-zA-Z]+)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "https://streamvid.co/player/([0-9a-zA-Z]+)",
+        "url": "\\1"
+      }
+    ]
+  }
+
+}

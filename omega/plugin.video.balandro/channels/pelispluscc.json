@@ -1,0 +1,17 @@
+{
+  "id": "pelispluscc",
+  "name": "PelisPlusCc",
+  "thumbnail": "pelispluscc.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["lat", "vose"],
+
+  "clusters": ["news", "rankings", "years", "lasts", "docs", "anime", "dorama", "vos"],
+
+  "notes": "Películas por géneros y años. Series por Géneros."
+}

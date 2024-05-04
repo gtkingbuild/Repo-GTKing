@@ -1,0 +1,17 @@
+{
+  "id": "pelismaraton",
+  "name": "PelisMaraton",
+  "thumbnail": "pelismaraton.png",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["notice", "current", "years", "kids", "docs", "vos", "anime"],
+
+  "notes": "Películas por géneros y año. También Series. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

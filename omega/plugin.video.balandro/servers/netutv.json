@@ -1,0 +1,67 @@
+{
+  "id": "netutv",
+  "more_ids": ["netu", "waaw", "hqq"],
+  "name": "Netutv",
+ 
+  "active": false,
+  "notes": "Requiere recaptcha (Hqq, Netu, Waaw y otros)",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "megavideo.cam/watch_video.php\\?v=([A-z0-9]+)",
+        "url": "https://netu.tv/watch_video.php?v=\\1"
+      },
+      {
+        "pattern": "/netu/tv/(embed_)(.*?$)",
+        "url": "https://netu.tv/watch_video.php?v=\\2"
+      },
+      {
+        "pattern": "(?:hqq|waaw|netu|waaw1)\\.(?:tv|watch|to)/(?:f/|e/)([A-z0-9]+)",
+        "url": "https://netu.tv/watch_video.php?v=\\1"
+      },
+      {
+        "pattern": "(?:hqq|waaw|netu|waaw1)\\.(?:tv|watch|to)/.*?(?:v=|vid=)([A-z0-9]+)",
+        "url": "https://netu.tv/watch_video.php?v=\\1"
+      },
+      {
+        "pattern": "https://waaws.tk/player/embed_player.php?vid=([A-z0-9]+)&autoplay=yes",
+        "url": "https://netu.tv/watch_video.php?v=\\2"
+      },
+      {
+        "pattern": "(?:hqq|waaw|netu|waaw1)(?:\\.tv\\/|\\.watch\\/|\\.php\\?).*?(?:v=|vid=)([A-z0-9]+)",
+        "url": "https://netu.tv/watch_video.php?v=\\1"
+      },
+      {
+        "pattern": "(?:hqq|waaw|netu|waaw1)(?:\\.tv\\/|\\.watch\\/|\\.php\\?).*hash=([A-z0-9]+)",
+        "url": "https://hqq.tv/player/hash.php?hash=\\1"
+      },
+      {
+        "pattern": "(?:hqq|waaw|netu|waaw1).(?:to|tv)",
+        "url": "https://hqq.tv/player/hash.php?hash=\\1"
+      },
+      {
+        "pattern": "https://vidxhot.(?:com|net)/e/([A-z0-9]+)",
+        "url": "https://hqq.tv/player/hash.php?hash=\\1"
+      },
+      {
+        "pattern": "(?:hqq|waaw|netu|waaw1)(?:\\.tv\\/|\\.watch\\/|.to\\/|\\.php\\?)(e/|f/)([A-z0-9]+)",
+        "url": "https://hqq.tv/player/hash.php?hash=\\1"
+      },
+      {
+        "pattern": "(?:hqq|megaplay|netu).(?:tv|cc|wiztube.xyz)/player/embed_player.php\\?vid=([A-z0-9]+)",
+        "url": "https://hqq.tv/player/hash.php?hash=\\1"
+      },
+      {
+        "pattern": "https://player.moovies.in/f/([A-z0-9]+)",
+        "url": "https://hqq.tv/player/hash.php?hash=\\1"
+      },
+      {
+        "pattern": "https://(?:richhioon|woffxxx|pornjustx).(?:eu|com)/e/([A-z0-9]+)",
+        "url": "https://hqq.tv/player/hash.php?hash=\\1"
+      }
+    ]
+  }
+
+}
