@@ -397,8 +397,6 @@ def platform():
 
 
 def kodi_version():
-    if 17.0 <= CONFIG.KODIV <= 17.9:
-        vername = 'Krypton'
     if 18.0 <= CONFIG.KODIV <= 18.9:
         vername = 'Leia'
     if 19.0 <= CONFIG.KODIV <= 19.9:
