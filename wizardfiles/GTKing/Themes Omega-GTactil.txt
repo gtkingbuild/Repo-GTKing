@@ -1,9 +1,9 @@
-name="[B][COLOR white]•• [COLOR red]Parche: [COLOR crimson]GTactil NEXUS [COLOR tan]09/04/2024[/COLOR][/B]"
+name="[B][COLOR white]•• [COLOR red]Parche: [COLOR crimson]GTactil OMEGA [COLOR tan]09/04/2024[/COLOR][/B]"
 url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/20.0.GTactil/Parche.GTKing.Phoenix.GTactil.NEXUS.zip"
 icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
 fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
 adult="no"
-description="Parche GTactil NEXUS"
+description="Parche GTactil OMEGA"
 
 name=""
 url="https://"
