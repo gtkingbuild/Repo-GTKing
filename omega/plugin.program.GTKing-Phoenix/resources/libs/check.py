@@ -405,7 +405,7 @@ def build_count():
                 continue
             kodi = int(float(kodi))
             total += 1
-            if kodi == 20:
+            if kodi == 21:
                 count21 += 1
     return total, count21, adultcount, hidden
 

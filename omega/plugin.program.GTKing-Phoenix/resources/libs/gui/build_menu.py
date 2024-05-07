@@ -118,8 +118,8 @@ class BuildMenu:
                     state = '[COLOR azure]+[/COLOR]' if CONFIG.SHOW20 == 'false' else '[COLOR azure]-[/COLOR]'
                     directory.add_file('[B][COLOR dodgerblue]{0} BUILDS [COLOR azure]- [COLOR dodgerblue]PARCHES:[/COLOR][/B] [B][COLOR azure]GTKING [COLOR gold]PHOENIX [COLOR lime]TEAM[/B][/COLOR]'.format(state, count21), {'mode': 'togglesetting',
                                        'name': 'show20'}, themeit=CONFIG.THEME3)
-                    if CONFIG.SHOW20 == 'true':
-                        self._list_all(match, kodiv=20)
+                    if CONFIG.SHOW21 == 'true':
+                        self._list_all(match, kodiv=21)
                         
         elif hidden > 0:
             if adultcount > 0:

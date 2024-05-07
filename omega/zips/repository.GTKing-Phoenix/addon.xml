@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="repository.GTKing-Phoenix" name="[B][COLOR steelblue]Repo [COLOR azure]GTKing [COLOR gold]PHOENIX [COLOR limegreen]TEAM[/COLOR][/B]" version="21.0.0" provider-name="GTKing PHOENIX TEAM">
+<addon id="repository.GTKing-Phoenix" name="[B][COLOR steelblue]Repo [COLOR azure]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR orangered]I[COLOR red]X [COLOR limegreen]TEAM[/COLOR][/B]" version="21.0.0" provider-name="GTKing PHOENIX TEAM">
     <extension point="xbmc.addon.repository" name="[B][COLOR dodgerblue]Repo [COLOR azure]GTKing [COLOR gold]PHOENIX [COLOR limegreen]TEAM[/COLOR][/B]">    
 		<dir minversion="19.9.9" maxversion="20.9.9">
             <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/nexus/zips/addons.xml</info>
