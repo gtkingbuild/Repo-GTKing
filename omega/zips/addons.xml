@@ -365,7 +365,7 @@
     </extension>
 </addon>
 
-<addon id="plugin.program.GTKing-Phoenix" name="[B][COLOR azure]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR orangered]I[COLOR red]X[/B][/COLOR]" version="21.0" provider-name="GTKing PHOENIX">
+<addon id="plugin.program.GTKing-Phoenix" name="[B][COLOR azure]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X[/B][/COLOR]" version="21.0" provider-name="GTKing PHOENIX">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0"/>
 		<import addon="script.module.requests"/>
