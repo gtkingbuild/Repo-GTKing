@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog" id="1118">
+    <defaultcontrol always="true">8001</defaultcontrol>
+    <controls>
+
+        <control type="group">
+            <include>Dimension_DialogSideMenu</include>
+            <include>Animation_Right_Delay</include>
+            <include content="Dialog_Dim_Side">
+                <param name="slide_animation">false</param>
+            </include>
+
+            <include content="Dialog_Foreground_Side">
+                <param name="dialog_size">Dimension_DialogSideMenu</param>
+                <param name="topline">true</param>
+                <param name="subline">true</param>
+
+                <!-- Header -->
+                <include content="Dialog_Head">
+                    <param name="id">7000</param>
+                    <param name="label">$INFO[Window(Home).Property(CustomDialogSettingsTitle)]</param>
+                </include>
+                <include>Dialog_Head_CloseButton</include>
+
+                <!-- Content -->
+                <include content="Dialog_Body">
+                    <include content="Dialog_Body_Grouplist">
+                        <param name="id">8000</param>
+                        <pagecontrol>61</pagecontrol>
+                        <onleft>Close</onleft>
+                        <onright>61</onright>
+                        <include>Items_Settings_CustomDialog</include>
+                    </include>
+
+                    <include content="Dialog_Scrollbar">
+                        <param name="id">61</param>
+                        <onleft>8000</onleft>
+                    </include>
+                </include>
+            </include>
+
+        </control>
+    </controls>
+</window>

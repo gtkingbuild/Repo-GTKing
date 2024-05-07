@@ -116,7 +116,7 @@ class BuildMenu:
             else:
                 if count21 > 0:
                     state = '[COLOR azure]+[/COLOR]' if CONFIG.SHOW20 == 'false' else '[COLOR azure]-[/COLOR]'
-                    directory.add_file('[B][COLOR dodgerblue]{0} BUILDS [COLOR azure]- [COLOR dodgerblue]PARCHES:[/COLOR][/B] [B][COLOR azure]GTKING [COLOR gold]PHOENIX [COLOR lime]TEAM[/B][/COLOR]'.format(state, count21), {'mode': 'togglesetting',
+                    directory.add_file('[B][COLOR dodgerblue]{0} BUILDS [COLOR azure]- [COLOR dodgerblue]PARCHES:[/COLOR][/B] [B][COLOR azure]GTKING [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR lime]TEAM[/B][/COLOR]'.format(state, count21), {'mode': 'togglesetting',
                                        'name': 'show20'}, themeit=CONFIG.THEME3)
                     if CONFIG.SHOW21 == 'true':
                         self._list_all(match, kodiv=21)
@@ -193,7 +193,7 @@ class BuildMenu:
                                    icon=icon, themeit=CONFIG.THEME1)
                                    
             if themecheck:
-                directory.add_separator('[B]PARCHES GTKING PHOENIX[/B]', fanart=fanart, icon=icon, themeit=CONFIG.THEME2 )
+                directory.add_separator('[B]PARCHES GTKING [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X[/COLOR][/B]', fanart=fanart, icon=icon, themeit=CONFIG.THEME2 )
 
                 response = tools.open_url(themefile)
                 theme = response.text

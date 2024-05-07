@@ -38,7 +38,7 @@ except ImportError:  # Python 2
     from urllib import FancyURLopener
 
 
-URL = 'https://t.me/GTKing PHOENIX'
+URL = 'https://t.me/+djDHP_Dk2PM1MmM0'
 EXPIRATION = 2592000
 REPLACES = (('//.+?:.+?@', '//USER:PASSWORD@'), ('<user>.+?</user>', '<user>USER</user>'), ('<pass>.+?</pass>',
                                                                                             '<pass>PASSWORD</pass>'),)

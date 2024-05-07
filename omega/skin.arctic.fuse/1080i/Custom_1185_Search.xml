@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="window" id="1185">
+    <defaultcontrol>9099</defaultcontrol>
+    <onload>ClearProperty(TMDbHelper.Image.Override,Home)</onload>
+    <onload>SetFocus(5001)</onload>
+    <onload>SetFocus(9099)</onload>
+    <onload condition="!String.IsEmpty(Window(Home).Property(CustomSearchTerm))">AlarmClock(refocus,RunScript(script.skinvariables,set_editcontrol=9099,window_id=1185,setfocus=9099,text=$INFO[Window(Home).Property(CustomSearchTerm)]),00:00,silent)</onload>
+    <onload condition="String.IsEmpty(Window(Home).Property(CustomSearchTerm))">RunScript(script.skinvariables,set_editcontrol=9099,window_id=1185,setfocus=9099)</onload>
+
+    <onload>ClearProperty(CustomSearchTerm,Home)</onload>
+    <include>Action_PreserveTransitionProp_Onload</include>
+    <controls>
+        <include>DialogInfo_Recommendations_BackgroundLoader</include>
+        <include>Background_Main</include>
+        <include>Background_Transition</include>
+        <include content="DialogInfo_Recommendations_Group">
+            <control type="group">
+                <include content="DialogInfo_Recommendations_InfoPanel">
+                    <visible>!$EXP[Exp_InfoDialogs]</visible>
+                    <include>Animation_Transition_InfoPanel_Hide</include>
+                </include>
+                <include content="DialogInfo_Recommendations_Widgets_Grouplist">
+                    <param name="onup">4002</param>
+                    <param name="ondown">SetFocus(330)</param>
+                    <include>skinvariables-searchmenu-widgets</include>
+                    <control type="group" id="5099">
+                        <height>0</height>
+                        <control type="group">
+                            <visible>!Integer.IsEqual(Container(5000).NumItems,0)</visible>
+                            <visible>!Integer.IsEqual(Container(5000).NumItems,1) | !Control.HasFocus(5098) | ControlGroup(5000).HasFocus()</visible>
+                            <visible>!$EXP[Exp_InfoDialogs]</visible>
+                            <include content="Furniture_Bottom_WidgetGroups">
+                                <param name="label">$VAR[Label_NextBump]</param>
+                                <param name="icon">special://skin/extras/icons/kodi.png</param>
+                                <param name="dim">[False]</param>
+                            </include>
+                        </control>
+                    </control>
+                </include>
+                <include>Widget_Transitions</include>
+                <visible>!String.IsEmpty(Control.GetLabel(9099).index(1))</visible>
+                <include content="Animation_ConditionalFade">
+                    <param name="condition">[String.IsEmpty(Control.GetLabel(9099).index(1)) | Integer.IsEqual(Container(5000).NumItems,0)]</param>
+                </include>
+            </control>
+            <control type="group">
+                <include content="Animation_Half_WindowChange">
+                    <param name="windowopen_up">!$EXP[Exp_SettingsDialogs_Prev] + !String.IsEmpty(Window(Home).Property(ReverseTransition))</param>
+                    <param name="windowopen_down">!$EXP[Exp_SettingsDialogs_Prev] + String.IsEmpty(Window(Home).Property(ReverseTransition))</param>
+                    <param name="windowclose_up">!$EXP[Exp_SettingsDialogs_Next] + !String.IsEmpty(Window(Home).Property(ReverseTransition))</param>
+                    <param name="windowclose_down">!$EXP[Exp_SettingsDialogs_Next] + String.IsEmpty(Window(Home).Property(ReverseTransition))</param>
+                </include>
+                <visible>String.IsEmpty(Control.GetLabel(9099).index(1)) | Integer.IsEqual(Container(5000).NumItems,0)</visible>
+                <control type="grouplist">
+                    <left>view_side</left>
+                    <right>view_side</right>
+                    <top>view_top</top>
+                    <bottom>view_pad</bottom>
+                    <orientation>vertical</orientation>
+                    <control type="group">
+                        <height>120</height>
+                        <include content="Info_Title_LogoLabel">
+                            <param name="label">$LOCALIZE[31046]</param>
+                            <param name="wrapmultiline">false</param>
+                            <param name="visible">true</param>
+                            <param name="width">info_plot_w</param>
+                            <param name="height">132</param>
+                            <param name="colordiffuse">main_fg</param>
+                        </include>
+                    </control>
+                    <control type="textbox">
+                        <top>17</top>
+                        <font>font_main_plot</font>
+                        <label>$LOCALIZE[31500] "[CAPITALIZE]$INFO[Control.GetLabel(9099).index(1), , ][/CAPITALIZE]".[CR]$LOCALIZE[31501].</label>
+                        <align>left</align>
+                        <height>90</height>
+                        <textcolor>main_fg_30</textcolor>
+                    </control>
+                </control>
+                <include content="Furniture_Bottom_WidgetGroups">
+                    <param name="label">$VAR[Label_NextBump]</param>
+                    <param name="icon">special://skin/extras/icons/kodi.png</param>
+                    <param name="dim">[False]</param>
+                </include>
+            </control>
+        </include>
+        <control type="group">
+            <visible>!$EXP[Exp_InfoDialogs]</visible>
+            <include content="DialogInfo_ButtonGroup_Basic">
+                <param name="id">303</param>
+                <param name="include">Items_SearchWindow_MenuBar</param>
+                <include content="Action_HomeMenu_OnRightLeft">
+                    <param name="onlist">5000</param>
+                </include>
+                <ondown condition="![String.IsEmpty(Control.GetLabel(9099).index(1)) | Integer.IsEqual(Container(5000).NumItems,0)]">5000</ondown>
+                <ondown condition="[String.IsEmpty(Control.GetLabel(9099).index(1)) | Integer.IsEqual(Container(5000).NumItems,0)]">SetProperty(List.ViewContainer,4002)</ondown>
+                <ondown condition="[String.IsEmpty(Control.GetLabel(9099).index(1)) | Integer.IsEqual(Container(5000).NumItems,0)]">SetFocus(330)</ondown>
+                <onup>9099</onup>
+            </include>
+            <include content="DialogInfo_Recommendations_Furniture">
+                <param name="header">$LOCALIZE[137]$INFO[Control.GetLabel(9099).index(1), [COLOR=main_fg_30]›[/COLOR] [CAPITALIZE],[/CAPITALIZE]]</param>
+                <param name="include_homemenu">false</param>
+            </include>
+            <control type="group">
+                <include>Animation_Group_Bumper</include>
+                <centertop>100</centertop>
+                <width>560</width>
+                <left>view_side</left>
+                <height>80</height>
+                <control type="image">
+                    <left>-40</left>
+                    <right>-40</right>
+                    <texture colordiffuse="main_fg_12" border="40,0,40,0">common/menu.png</texture>
+                    <visible>Window.IsVisible(1171)</visible>
+                </control>
+                <control type="edit" id="9099">
+                    <height>256</height>
+                    <centertop>50%</centertop>
+                    <include>Texture_MainMenu_Highlight_ToggleButton_FakeFocus</include>
+                    <description>Search</description>
+                    <font>font_main_black</font>
+                    <textcolor>dialog_fg_90</textcolor>
+                    <focusedcolor>$VAR[ColorSelected]</focusedcolor>
+                    <left>-80</left>
+                    <right>-80</right>
+                    <textoffsetx>80</textoffsetx>
+                    <align>left</align>
+                    <onup condition="Window.Previous(1105)">SetProperty(CustomSearchTerm,$ESCINFO[Control.GetLabel(9099).index(1)],Home)</onup>
+                    <onup>Action(PreviousMenu)</onup>
+                    <ondown>SetFocus(4001)</ondown>
+                    <visible allowhiddenfocus="true">Control.HasFocus(9099) + !Window.IsVisible(1171) + !Window.IsVisible(1170)</visible>
+                </control>
+            </control>
+        </control>
+
+    </controls>
+</window>

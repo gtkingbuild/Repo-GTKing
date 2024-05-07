@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog">
+    <include content="Object_DefaultControl">
+        <param name="always">true</param>
+        <param name="defaultcontrol">4001</param>
+    </include>
+    <menucontrol>4000</menucontrol>
+    <include>DialogInfo_Onload</include>
+
+    <onload condition="!Player.HasVideo + !String.IsEmpty(ListItem.Trailer) + !Skin.HasSetting(Background.DisableVideo) + Skin.HasSetting(Trailers.EnableAutoPlayback.Info)">PlayMedia($ESCINFO[ListItem.Trailer],False,1)</onload>
+    <onload condition="!Player.HasVideo + !String.IsEmpty(ListItem.Trailer) + !Skin.HasSetting(Background.DisableVideo) + Skin.HasSetting(Trailers.EnableAutoPlayback.Info)">SetProperty(Trailer,$ESCINFO[ListItem.Trailer],1123)</onload>
+    <onunload condition="Player.HasVideo + String.IsEqual(Window(1123).Property(Trailer),Player.FileNameAndPath)">Stop</onunload>
+
+
+    <controls>
+
+
+        <include>Defs_TMDbHelper_Loader</include>
+
+        <control type="group">
+            <include>DialogInfo_Main_Group</include>
+            <control type="group">
+                <include>DialogInfo_Body_Group</include>
+                <control type="group">
+                    <include>DialogInfo_InfoPanel_Group</include>
+                    <control type="group">
+                        <include>DialogInfo_InfoDetails_Group</include>
+                        <include>DialogInfo_VideoInfo</include>
+                    </control>
+                </control>
+                <include>DialogInfo_ArtworkGallery</include>
+            </control>
+
+            <include content="DialogInfo_ButtonGroup">
+                <param name="include">Items_DialogVideoInfo_MenuBar</param>
+            </include>
+            <include>DialogInfo_Furniture</include>
+        </control>
+
+        <include>TouchMode_Info_Zones</include>
+        <include>DialogInfo_PlotBox</include>
+
+    </controls>
+</window>

@@ -161,7 +161,7 @@
 
     <category label="Instalar Configuración">
         <setting type="lsep" label="APKs" />
-        <setting type="action" label="Abra la Configuración del Actualizador de Android Kodi" action="RunPlugin(plugin://plugin.program.GTKing-Phoenix-Nexus/?mode=fmchoose)" option="close" />
+        <setting type="action" label="Abra la Configuración del Actualizador de Android Kodi" action="RunPlugin(plugin://plugin.program.GTKing-Phoenix/?mode=fmchoose)" option="close" />
         <setting id="apk_path" type="folder" label="Elija la Ubicación de Descarga" default="/storage/emulated/0/Download/"/>
         <setting type="lsep" label="Guardar Datos al Instalar Build:"/>
         <setting id="keeptrakt" type="bool" label="Conservar Mis Datos de Trakt" default="true"/>

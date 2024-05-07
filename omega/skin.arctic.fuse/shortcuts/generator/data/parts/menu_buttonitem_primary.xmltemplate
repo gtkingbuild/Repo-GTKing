@@ -1,0 +1,70 @@
+<!-- Exit: Custom -->
+<item>
+    <label>$INFO[Skin.String(SideMenu.CustomShortcut.Label)]</label>
+    <icon>$INFO[Skin.String(SideMenu.CustomShortcut.Icon)]</icon>
+    <property name="showlabel">True</property>
+    <property name="path">$INFO[Skin.String(SideMenu.CustomShortcut.Path)]</property>
+    <property name="guid">{item_guid}</property>
+    {parts_additional}
+    <onclick condition="String.IsEmpty(Skin.String(SideMenu.CustomShortcut.Target))">$INFO[Skin.String(SideMenu.CustomShortcut.Path)]</onclick>
+    <onclick condition="!String.IsEmpty(Skin.String(SideMenu.CustomShortcut.Target)) + Window.IsVisible(MyVideoNav.xml) + Skin.String(SideMenu.CustomShortcut.Target,videos)">Container.Update($INFO[Skin.String(SideMenu.CustomShortcut.Path)])</onclick>
+    <onclick condition="!String.IsEmpty(Skin.String(SideMenu.CustomShortcut.Target)) + Window.IsVisible(MyMusicNav.xml) + Skin.String(SideMenu.CustomShortcut.Target,music)">Container.Update($INFO[Skin.String(SideMenu.CustomShortcut.Path)])</onclick>
+    <onclick condition="!String.IsEmpty(Skin.String(SideMenu.CustomShortcut.Target))">ActivateWindow($INFO[Skin.String(SideMenu.CustomShortcut.Target)],$INFO[Skin.String(SideMenu.CustomShortcut.Path)],return)</onclick>
+    <visible>![String.IsEmpty(Skin.String(SideMenu.CustomShortcut.Path)) | Skin.String(SideMenu.CustomShortcut.Path,noop)]</visible>
+</item>
+
+
+<!-- Exit: Close -->
+<item>
+    <label>$LOCALIZE[15067]</label>
+    <icon>special://skin/extras/icons/circle-xmark.png</icon>
+    <property name="showlabel">True</property>
+    <property name="path">PreviousMenu</property>
+    <property name="guid">{item_guid}</property>
+    {parts_additional}
+    <onclick>PreviousMenu</onclick>
+    <visible>!Window.IsVisible(Home)</visible>
+    <visible>[String.IsEmpty(Skin.String(SideMenu.CustomShortcut.Path)) | Skin.String(SideMenu.CustomShortcut.Path,noop)]</visible>
+</item>
+
+<!-- Exit: Home Pseudo Logout -->
+<item>
+    <label>$LOCALIZE[31053]</label>
+    <icon>special://skin/extras/icons/address-card.png</icon>
+    <property name="showlabel">True</property>
+    <property name="path" />
+    <property name="guid">{item_guid}</property>
+    {parts_additional}
+    <onclick>ActivateWindow(1195)</onclick>
+    <visible>Window.IsVisible(Home)</visible>
+    <visible>!Skin.HasSetting(SkinUserLogin.Disabled)</visible>
+    <visible>[String.IsEmpty(Skin.String(SideMenu.CustomShortcut.Path)) | Skin.String(SideMenu.CustomShortcut.Path,noop)]</visible>
+</item>
+
+<!-- Exit: Home Actual Logout -->
+<item>
+    <label>$LOCALIZE[20126]</label>
+    <icon>special://skin/extras/icons/address-card.png</icon>
+    <property name="showlabel">True</property>
+    <property name="path" />
+    <property name="guid">{item_guid}</property>
+    {parts_additional}
+    <onclick>System.LogOff</onclick>
+    <visible>Window.IsVisible(Home)</visible>
+    <visible>System.HasLoginScreen + Skin.HasSetting(SkinUserLogin.Disabled)</visible>
+    <visible>[String.IsEmpty(Skin.String(SideMenu.CustomShortcut.Path)) | Skin.String(SideMenu.CustomShortcut.Path,noop)]</visible>
+</item>
+
+<!-- Exit: Home Quit -->
+<item>
+    <label>$LOCALIZE[13009]</label>
+    <icon>special://skin/extras/icons/power.png</icon>
+    <property name="showlabel">True</property>
+    <property name="path" />
+    <property name="guid">{item_guid}</property>
+    {parts_additional}
+    <onclick>Quit()</onclick>
+    <visible>Window.IsVisible(Home)</visible>
+    <visible>![System.HasLoginScreen | !Skin.HasSetting(SkinUserLogin.Disabled)]</visible>
+    <visible>[String.IsEmpty(Skin.String(SideMenu.CustomShortcut.Path)) | Skin.String(SideMenu.CustomShortcut.Path,noop)]</visible>
+</item>

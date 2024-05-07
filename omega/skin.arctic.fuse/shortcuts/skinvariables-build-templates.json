@@ -1,0 +1,19 @@
+{
+    "infolabels": {
+        "skinstring_sidemenucollapse": "Skin.String(Home.SideMenuCollapse)",
+        "skinstring_lastbuildtime": "Skin.String(Shortcuts.RebuildDateTime)",
+        "skinstring_furniturebottomleft": "Skin.String(Furniture.BottomLeft.Enable)"
+    },
+    "values": {
+        "skinsetting_movebetweengroups": [
+            {
+                "rules": ["Skin.HasSetting(Hub.Home.DisableMoveBetweenGroups)"],
+                "value": "DisableMoveBetweenGroups"
+            },
+            "EnableMoveBetweenGroups"
+        ]
+    },
+    "actions": [
+        "route=action=buildtemplate&background=false&sidemenucollapse={skinstring_sidemenucollapse}&lastbuildtime={skinstring_lastbuildtime}&skinstring_furniturebottomleft={skinstring_furniturebottomleft}&skinsetting_movebetweengroups={skinsetting_movebetweengroups}"
+    ]
+}

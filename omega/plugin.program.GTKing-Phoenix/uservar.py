@@ -13,7 +13,7 @@ ART = os.path.join(PATH, 'resources', 'media')
 #########################################################
 #        User Edit Variables                            #
 #########################################################
-ADDONTITLE = '[B][COLOR azure]GTKing[/COLOR] [COLOR gold]PHOENIX[/COLOR][/B]'
+ADDONTITLE = '[B][COLOR azure]GTKing[/COLOR] [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X[/COLOR][/B]'
 BUILDERNAME = 'DavidZgZ'
 EXCLUDES = [ADDON_ID, 'repository.GTKing-Phoenix']
 # Text File with build info in it.
@@ -25,7 +25,7 @@ UPDATECHECK = 0
 # Text File with apk info in it.  Leave as 'http://' to ignore
 APKFILE = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardfiles/apks.txt'
 # Text File with Youtube Videos urls.  Leave as 'http://' to ignore
-YOUTUBETITLE = 'VIDEOS CORTESIA de GTKing PHOENIX TEAM'
+YOUTUBETITLE = 'VIDEOS CORTESIA de [B][COLOR azure]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR lime]TEAM[/COLOR]'
 YOUTUBEFILE = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardfiles/youtube.txt'
 # Text File for addon installer.  Leave as 'http://' to ignore
 ADDONFILE = 'http://'
@@ -83,7 +83,7 @@ THEME6 = u'[COLOR {color1}]{{}}[/COLOR]'.format(color1=COLOR4)
 # Enable 'Contact' menu item 'Yes' hide or 'No' dont hide
 HIDECONTACT = 'No'
 # You can add \n to do line breaks
-CONTACT = 'Gracias por elegir [COLOR azure]GTKingBuild.[/COLOR]\n\nContacto en Telegram [COLOR white]@DavidZg[/COLOR]'
+CONTACT = 'Gracias por elegir nuestras Builds [COLOR azure]GTKing.[/COLOR]\n\nContacto en Telegram [COLOR white]@DavidZg[/COLOR]'
 # Images used for the contact window.  http:// for default icon and fanart
 CONTACTICON = os.path.join(ART, 'qricon.png')
 CONTACTFANART = 'http://'
@@ -122,7 +122,7 @@ NOTIFICATION = 'https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master
 HEADERTYPE = 'Image'
 # Font size of header
 FONTHEADER = ''
-HEADERMESSAGE = '[B][COLOR azure]GTKing[/COLOR] [COLOR gold]PHOENIX[/COLOR][/B]'
+HEADERMESSAGE = '[B][COLOR azure]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X[/COLOR][/B]'
 # url to image if using Image 424x180
 HEADERIMAGE = 'https://i.imgur.com/QR3Xsee.png'
 # Font for Notification Window
