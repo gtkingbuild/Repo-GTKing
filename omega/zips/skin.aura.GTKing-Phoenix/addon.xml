@@ -2,7 +2,7 @@
 <addon
     id="skin.aura.GTKing-Phoenix"
     version="21.0"
-    name="[COLOR azure]Aura [B][COLOR steelblue]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X[/COLOR][/B]"
+    name="[COLOR white]Aura [B][COLOR steelblue]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X[/COLOR][/B]"
     provider-name="[COLOR lime]Aura[/COLOR][COLOR FF1e90ff]GTKing PHOENIX[/COLOR]">
     <requires>
         <import addon="xbmc.gui" version="5.17.0" />
