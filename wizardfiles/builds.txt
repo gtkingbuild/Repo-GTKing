@@ -99,7 +99,7 @@ description="[COLOR azure][B]GTKing [COLOR gold]Phoenix [COLOR limegreen]TEAM [C
 
 name="PRUEBA GTKing Artic Phoenix OMEGA"
 version="21.0"
-url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/21.0.Artic/Artic.Phoenix.OMEGA.TEST.zip"
+url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/21.0.Artic/Artic.Phoenix.OMEGA.zip"
 minor="http://"
 gui="http://"
 kodi="18"
