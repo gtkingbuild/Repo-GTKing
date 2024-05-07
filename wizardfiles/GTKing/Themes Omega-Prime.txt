@@ -1,5 +1,5 @@
-name="[B][COLOR white]•• [COLOR red]Parche: [COLOR crimson]GTKing Prime OMEGA [COLOR tan]09/04/2024[/COLOR][/B]"
-url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/20.0.Prime/Parche.GTKing.Phoenix.Prime.NEXUS.zip"
+name="TEST [B][COLOR white]•• [COLOR red]Parche: [COLOR crimson]GTKing Prime OMEGA [COLOR tan]2024[/COLOR][/B]"
+url=""
 icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
 fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
 adult="no"
