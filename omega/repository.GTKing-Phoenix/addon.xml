@@ -15,8 +15,8 @@
     
     <extension point="xbmc.addon.metadata">
         <summary>[COLOR steelblue]Repo [COLOR azure]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM</summary>
-        <description>Repositorio de addons [COLOR dodgerblue]GTKING [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM[/COLOR].
-[COLOR gold]Developers:[/COLOR] DavidZgZ y [COLOR azure]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM[/COLOR] [COLOR lime]TEAM[/COLOR]</description> 		             
+        <description>Repositorio de addons [COLOR azure]GTKING [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM[/COLOR].
+[COLOR gold]Developers:[/COLOR] [COLOR cyan]DavidZgZ [COLOR white]y [COLOR azure]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM[/COLOR]</description> 		             
         <disclaimer>Este repositorio sólo recoge addons creados por terceras personas.</disclaimer>
         <platform>all</platform>
         <assets>
