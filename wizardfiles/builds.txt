@@ -28,7 +28,7 @@ description="[COLOR azure][B]GTKing [COLOR gold]Phoenix [COLOR limegreen]TEAM [C
 
 name="GTKing Phoenix Prime OMEGA"
 version="21.0"
-url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/21.0.Prime/Phoenix.OMEGA.Prime.zip"
+url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/21.0.Prime/Phoenix.Prime.OMEGA.zip"
 minor="http://"
 gui="http://"
 kodi="21"
@@ -42,7 +42,7 @@ description="[COLOR azure][B]GTKing [COLOR gold]Phoenix [COLOR limegreen]TEAM [C
 
 name="GTKing Phoenix GTactil OMEGA"
 version="21.0"
-url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/21.0.GTactil/Phoenix.OMEGA.GTactil.zip"
+url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/21.0.GTactil/Phoenix.GTactil.OMEGAzip"
 minor="http://"
 gui="http://"
 kodi="21"
@@ -56,7 +56,7 @@ description="[COLOR azure][B]GTKing [COLOR gold]Phoenix [COLOR limegreen]TEAM [C
 
 name="GTKing Artic Phoenix OMEGA"
 version="21.0"
-url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/21.0.Artic/Artic.Phoenix.zip"
+url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/21.0.Artic/Artic.Phoenix.OMEGA.zip"
 minor="http://"
 gui="http://"
 kodi="21"
@@ -71,7 +71,7 @@ description="[COLOR azure][B]GTKing [COLOR gold]Phoenix [COLOR limegreen]TEAM [C
 
 name="PRUEBA GTKing Phoenix GTKing Prime OMEGA"
 version="20.0"
-url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/20.0.Prime/Phoenix.NEXUS.Prime.TEST.zip"
+url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/20.0.Prime/Phoenix.Prime.OMEGA.TEST.zip"
 minor="http://"
 gui="http://"
 kodi="18"
@@ -85,7 +85,7 @@ description="[COLOR azure][B]GTKing [COLOR gold]Phoenix [COLOR limegreen]TEAM [C
 
 name="PRUEBA GTKing Phoenix GTactil OMEGA"
 version="20.0"
-url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/20.0.GTactil/Phoenix.NEXUS.GTactil.TEST.zip"
+url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/20.0.GTactil/Phoenix.GTactil.OMEGA.TEST.zip"
 minor="http://"
 gui="http://"
 kodi="18"
@@ -99,7 +99,7 @@ description="[COLOR azure][B]GTKing [COLOR gold]Phoenix [COLOR limegreen]TEAM [C
 
 name="PRUEBA GTKing Artic Phoenix OMEGA"
 version="21.0"
-url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/21.0.Artic/Artic.Phoenix.TEST.zip"
+url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/21.0.Artic/Artic.Phoenix.OMEGA.TEST.zip"
 minor="http://"
 gui="http://"
 kodi="18"
