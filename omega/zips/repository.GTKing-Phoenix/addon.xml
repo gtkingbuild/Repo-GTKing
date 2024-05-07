@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="repository.GTKing-Phoenix" name="[B][COLOR steelblue]Repo [COLOR azure]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM[/COLOR][/B]" version="21.0.0" provider-name="GTKing PHOENIX TEAM">
+    <extension point="xbmc.addon.repository" name="[B][COLOR dodgerblue]Repo [COLOR azure]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM[/COLOR][/B]">    
+		<dir minversion="19.9.9" maxversion="20.9.9">
+            <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/nexus/zips/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/nexus/zips/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/nexus/zips/</datadir>
+        </dir>
+        <dir minversion="20.9.9" maxversion="21.9.9">
+            <info compressed="false">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/omega/zips/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/omega/zips/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/omega/zips/</datadir>
+        </dir>
+    </extension>
+    
+    <extension point="xbmc.addon.metadata">
+        <summary>[COLOR steelblue]Repo [COLOR azure]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM[/COLOR]</summary>
+        <description>Repositorio de addons [COLOR azure]GTKING [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM[/COLOR].
+Developers: [COLOR lavender]DavidZgZ [COLOR white]y [COLOR azure]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM[/COLOR]</description> 		             
+        <disclaimer>Este repositorio sólo recoge addons creados por terceras personas.</disclaimer>
+        <platform>all</platform>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+		<source>https://grkingbuild.github.io</source>
+    </extension>
+</addon>
