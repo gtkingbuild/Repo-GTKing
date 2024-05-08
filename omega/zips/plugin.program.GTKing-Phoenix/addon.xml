@@ -14,10 +14,10 @@
 	<extension point="xbmc.service" library="startup.py" start="startup"/>
   
 	<extension point="xbmc.addon.metadata">
-		<summary lang="es">[COLOR azure]GTKing[/COLOR] [COLOR gold]PHOENIX[/COLOR] tu Wizard para [COLOR teal]KODI[/COLOR]!!</summary>
+		<summary lang="es">[COLOR azure]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X tu Wizard para [COLOR teal]KODI[/COLOR]!!</summary>
 		<description>
 [B]• Developer:[/B] [COLOR gold]DavidZgZ[/COLOR]
-[B]• Testers:[/B]   [COLOR dodgerblue]GTKing PHOENIX TEAM[/COLOR]
+[B]• Testers:[/B]  [COLOR azure]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR lime]TEAM[/COLOR]
 		</description>
 		<platform>all</platform>
 		<reuselanguageinvoker>false</reuselanguageinvoker>

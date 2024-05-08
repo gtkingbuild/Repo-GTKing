@@ -52,14 +52,14 @@
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/QO5MWaJ.jpg)</onfocus>
                         </control>
 
-						<control type="radiobutton" id="9004" description="Instalar Palantir 2">
+						<!--<control type="radiobutton" id="9004" description="Instalar Palantir 2">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
                             <label>[COLOR gold]Palantir 2[/COLOR] (Necesario)</label>
 							<selected>System.HasAddon(plugin.video.palantir2)</selected>							
                             <onclick>InstallAddon(plugin.video.palantir2)</onclick>	
 							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/WlWLdLl.png)</onfocus>
-                        </control>
+                        </control>-->
 						
 						<control type="radiobutton" id="9005" description="Instalar Alfa">
                             <include>Dialog_Standard_ListButton</include>
