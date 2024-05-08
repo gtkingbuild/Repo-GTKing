@@ -38,7 +38,7 @@ fanart="https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardf
 preview="http://"
 adult="No"
 info="http://"
-description="[COLOR azure][B]GTKing [COLOR gold]Phoenix [COLOR limegreen]TEAM [COLOR darkmagenta]OMEGA[/B][/COLOR] para [COLOR teal][B]KODI 21.X Omega.[/B][/COLOR]                                          [B][COLOR dodgerblue]Developer:[/COLOR] DavidZgZ[/B]                                   [B][COLOR orange]Colaboradores-Test:[/COLOR] [COLOR cyan]GTKing PHOENIX TEAM.[/B][/COLOR]"
+description="[COLOR azure][B]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM [B][COLOR darkorchid]OMEGA[/B] para [COLOR darkturquoise][B]KODI 21.X Omega.[/B][/COLOR]                                          [B][COLOR dodgerblue]Developer:[/COLOR] DavidZgZ[/B]                                   [B][COLOR orange]Colaboradores-Test:[/COLOR] [COLOR cyan]GTKing PHOENIX TEAM.[/B][/COLOR]"
 
 name="GTKing Phoenix GTactil OMEGA"
 version="21.0"
@@ -52,7 +52,7 @@ fanart="https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardf
 preview="http://"
 adult="No"
 info="http://"
-description="[COLOR azure][B]GTKing [COLOR gold]Phoenix [COLOR limegreen]TEAM [COLOR darkmagenta]OMEGA[/B][/COLOR] para [COLOR teal][B]KODI 21.X Omega.[/B][/COLOR]                                          [B][COLOR dodgerblue]Developer:[/COLOR] DavidZgZ[/B]                                   [B][COLOR orange]Colaboradores-Test:[/COLOR] [COLOR cyan]GTKing PHOENIX TEAM.[/B][/COLOR]"
+description="[COLOR azure][B]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM [B][COLOR darkorchid]OMEGA[/B] para [COLOR darkturquoise][B]KODI 21.X Omega.[/B][/COLOR]                                          [B][COLOR dodgerblue]Developer:[/COLOR] DavidZgZ[/B]                                   [B][COLOR orange]Colaboradores-Test:[/COLOR] [COLOR cyan]GTKing PHOENIX TEAM.[/B][/COLOR]"
 
 name="GTKing Artic Phoenix OMEGA"
 version="21.0"
@@ -66,8 +66,7 @@ fanart="https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardf
 preview="http://"
 adult="No"
 info="http://"
-description="[COLOR azure][B]GTKing [COLOR gold]Phoenix [COLOR limegreen]TEAM [COLOR darkmagenta]OMEGA[/B][/COLOR] para [COLOR teal][B]KODI 21.X Omega.[/B][/COLOR]                                          [B][COLOR dodgerblue]Developer:[/COLOR] DavidZgZ[/B]                                   [B][COLOR orange]Colaboradores-Test:[/COLOR] [COLOR cyan]GTKing PHOENIX TEAM.[/B][/COLOR]"
-
+description="[COLOR azure][B]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM [B][COLOR darkorchid]OMEGA[/B] para [COLOR darkturquoise][B]KODI 21.X Omega.[/B][/COLOR]                                          [B][COLOR dodgerblue]Developer:[/COLOR] DavidZgZ[/B]                                   [B][COLOR orange]Colaboradores-Test:[/COLOR] [COLOR cyan]GTKing PHOENIX TEAM.[/B][/COLOR]"
 
 name="PRUEBA GTKing Phoenix GTKing Prime OMEGA"
 version="20.0"
@@ -81,7 +80,7 @@ fanart="https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardf
 preview="http://"
 adult="No"
 info="http://"
-description="[COLOR azure][B]GTKing [COLOR gold]Phoenix [COLOR limegreen]TEAM [COLOR darkmagenta]NEXUS[/B][/COLOR] para [COLOR teal][B]KODI 20.X Omega.[/B][/COLOR]                                          [B][COLOR dodgerblue]Developer:[/COLOR] DavidZgZ[/B]                                   [B][COLOR orange]Colaboradores-Test:[/COLOR] [COLOR cyan]GTKing PHOENIX TEAM.[/B][/COLOR]"
+description="[COLOR azure][B]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM [B][COLOR darkorchid]OMEGA[/B] para [COLOR darkturquoise][B]KODI 21.X Omega.[/B][/COLOR]                                          [B][COLOR dodgerblue]Developer:[/COLOR] DavidZgZ[/B]                                   [B][COLOR orange]Colaboradores-Test:[/COLOR] [COLOR cyan]GTKing PHOENIX TEAM.[/B][/COLOR]"
 
 name="PRUEBA GTKing Phoenix GTactil OMEGA"
 version="20.0"
@@ -95,7 +94,7 @@ fanart="https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardf
 preview="http://"
 adult="No"
 info="http://"
-description="[COLOR azure][B]GTKing [COLOR gold]Phoenix [COLOR limegreen]TEAM [COLOR darkmagenta]NEXUS[/B][/COLOR] para [COLOR teal][B]KODI 20.X Omega.[/B][/COLOR]                                          [B][COLOR dodgerblue]Developer:[/COLOR] DavidZgZ[/B]                                   [B][COLOR orange]Colaboradores-Test:[/COLOR] [COLOR cyan]GTKing PHOENIX TEAM.[/B][/COLOR]"
+description="[COLOR azure][B]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM [B][COLOR darkorchid]OMEGA[/B] para [COLOR darkturquoise][B]KODI 21.X Omega.[/B][/COLOR]                                          [B][COLOR dodgerblue]Developer:[/COLOR] DavidZgZ[/B]                                   [B][COLOR orange]Colaboradores-Test:[/COLOR] [COLOR cyan]GTKing PHOENIX TEAM.[/B][/COLOR]"
 
 name="PRUEBA GTKing Artic Phoenix OMEGA"
 version="21.0"
@@ -109,4 +108,4 @@ fanart="https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardf
 preview="http://"
 adult="No"
 info="http://"
-description="[COLOR azure][B]GTKing [COLOR gold]Phoenix [COLOR limegreen]TEAM [COLOR darkmagenta]OMEGA[/B][/COLOR] para [COLOR teal][B]KODI 21.X Omega.[/B][/COLOR]                                          [B][COLOR dodgerblue]Developer:[/COLOR] DavidZgZ[/B]                                   [B][COLOR orange]Colaboradores-Test:[/COLOR] [COLOR cyan]GTKing PHOENIX TEAM.[/B][/COLOR]"
+description="[COLOR azure][B]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM [B][COLOR darkorchid]OMEGA[/B] para [COLOR darkturquoise][B]KODI 21.X Omega.[/B][/COLOR]                                          [B][COLOR dodgerblue]Developer:[/COLOR] DavidZgZ[/B]                                   [B][COLOR orange]Colaboradores-Test:[/COLOR] [COLOR cyan]GTKing PHOENIX TEAM.[/B][/COLOR]"
