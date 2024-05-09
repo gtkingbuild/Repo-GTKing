@@ -98,7 +98,7 @@ description="[COLOR azure][B]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod
 
 name="PRUEBA GTKing Artic Phoenix OMEGA"
 version="21.0"
-url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/21.0.Artic/Artic.Phoenix.OMEGA.zip"
+url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/21.0.Artic/Artic.Phoenix.OMEGA.TEST.zip"
 minor="http://"
 gui="http://"
 kodi="18"
