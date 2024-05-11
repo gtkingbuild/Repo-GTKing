@@ -38,7 +38,7 @@ fanart="https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardf
 preview="http://"
 adult="No"
 info="http://"
-description="[COLOR azure][B]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM [COLOR darkorchid]OMEGA para [COLOR darkturquoise]KODI 21.X Omega.[/COLOR]                                          [COLOR dodgerblue]Developers:[/COLOR] DavidZgZ                                   [COLOR orange]Testers:[/COLOR] [COLOR cyan]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR lime]TEAM.[/COLOR]"
+description="[COLOR azure]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM [COLOR darkorchid]OMEGA para [COLOR darkturquoise]KODI 21.X Omega.[/COLOR]                                          [COLOR dodgerblue]Developers:[/COLOR] DavidZgZ                                   [COLOR orange]Testers:[/COLOR] [COLOR cyan]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR lime]TEAM.[/COLOR]"
 
 name="GTKing Phoenix GTactil OMEGA"
 version="21.0"
@@ -52,7 +52,7 @@ fanart="https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardf
 preview="http://"
 adult="No"
 info="http://"
-description="[COLOR azure][B]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM [COLOR darkorchid]OMEGA para [COLOR darkturquoise]KODI 21.X Omega.[/COLOR]                                          [COLOR dodgerblue]Developers:[/COLOR] DavidZgZ                                   [COLOR orange]Testers:[/COLOR] [COLOR cyan]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR lime]TEAM.[/COLOR]"
+description="[COLOR azure]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM [COLOR darkorchid]OMEGA para [COLOR darkturquoise]KODI 21.X Omega.[/COLOR]                                          [COLOR dodgerblue]Developers:[/COLOR] DavidZgZ                                   [COLOR orange]Testers:[/COLOR] [COLOR cyan]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR lime]TEAM.[/COLOR]"
 
 name="GTKing Artic Phoenix OMEGA"
 version="21.0"
@@ -66,7 +66,7 @@ fanart="https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardf
 preview="http://"
 adult="No"
 info="http://"
-description="[COLOR azure][B]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM [COLOR darkorchid]OMEGA para [COLOR darkturquoise]KODI 21.X Omega.[/COLOR]                                          [COLOR dodgerblue]Developers:[/COLOR] Gregorio Cuad & DavidZgZ[/COLOR]                                   [COLOR orange]Testers:[/COLOR] [COLOR cyan]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR lime]TEAM.[/COLOR]"
+description="[COLOR azure]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM [COLOR darkorchid]OMEGA para [COLOR darkturquoise]KODI 21.X Omega.[/COLOR]                                          [COLOR dodgerblue]Developers: [COLOR azure]Gregorio Cuad & DavidZgZ[/COLOR]                                   [COLOR orange]Testers:[/COLOR] [COLOR cyan]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR lime]TEAM.[/COLOR]"
 
 name="PRUEBA GTKing Phoenix GTKing Prime OMEGA"
 version="20.0"
