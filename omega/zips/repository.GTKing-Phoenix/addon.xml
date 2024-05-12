@@ -23,6 +23,6 @@
             <icon>icon.png</icon>
             <fanart>fanart.jpg</fanart>
         </assets>
-		<source>https://grkingbuild.github.io</source>
+		<source>https://gtkingbuild.github.io</source>
     </extension>
 </addon>
