@@ -10,6 +10,9 @@ if __name__ == "__main__":
 			xbmc.executebuiltin('InstallAddon(script.module.futures)')
 			xbmc.executebuiltin('SendClick(11)')
 	else:
+		if not xbmc.getCondVisibility("System.HasAddon(script.module.infotagger)"):
+			xbmc.executebuiltin('InstallAddon(script.module.infotagger)')
+			xbmc.executebuiltin('SendClick(11)')
 		if not xbmc.getCondVisibility("System.HasAddon(inputstream.ffmpegdirect)"):
 			xbmc.executebuiltin('InstallAddon(inputstream.ffmpegdirect)')
 			xbmc.executebuiltin('SendClick(11)')
@@ -23,6 +26,8 @@ if __name__ == "__main__":
 		else: vjlive.livePlay(tv)
 	elif action == None: vjackson._index(params)
 	elif action == "choose": vjlive.choose()
+	elif action == "clear": utils.clear()
+	elif action == "delete_search": utils.delete_search(params)
 	elif action == "delallTvFavorit":
 		utils.addon.setSetting("favs", "[]")
 		xbmc.executebuiltin('Container.Refresh')

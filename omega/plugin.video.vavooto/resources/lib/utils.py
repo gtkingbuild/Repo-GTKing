@@ -22,6 +22,38 @@ addonprofile = translatePath(addonInfo('profile'))
 addonpath = translatePath(addonInfo('path'))
 cachepath = os.path.join(addonprofile, "cache")
 if not exists(cachepath): os.makedirs(cachepath)
+		
+def clear(auto=False):
+	for a in os.listdir(cachepath):
+		file = os.path.join(cachepath, a)
+		if os.path.isfile(file):
+			if auto:
+				with open(file) as k: r = json.load(k)
+				sigValidUntil = r.get('sigValidUntil', 0)
+				if sigValidUntil != False and sigValidUntil < int(time.time()): os.remove(file)
+			else: os.remove(file)
+		
+clear(auto=True)
+
+def append_headers(headers):
+	return '|%s' % '&'.join(['%s=%s' % (key, quote_plus(headers[key])) for key in headers])
+    
+def delete_search(params):
+	if params["id"] == "all":
+		set_cache("seriesearch", {}, False)
+		set_cache("moviesearch", {}, False)
+		xbmc.executebuiltin("Container.Refresh")
+	else:
+		type = "SERIEN" if params["id"].startswith("serie") else "FILM"
+		history = get_cache("seriesearch" if type == "SERIEN" else "moviesearch") or {}
+		if params.get("single"):
+			history.pop(params.get("single"))
+			set_cache("seriesearch" if type == "SERIEN" else "moviesearch", history, False)
+			if not history: xbmc.executebuiltin("Action(ParentDir)")
+			else: xbmc.executebuiltin("Container.Refresh")
+		else:
+			set_cache("seriesearch" if type == "SERIEN" else "moviesearch", {}, False)
+			xbmc.executebuiltin("Action(ParentDir)")
 
 def selectDialog(list, heading=None, multiselect = False):
 	if heading == 'default' or heading is None: heading = addonInfo('name')
@@ -32,7 +64,7 @@ home = xbmcgui.Window(10000)
 
 def set_cache(key, value, timeout=604800):
 	path = convertPluginParams(key)
-	data={"sigValidUntil": int(time.time()) +timeout,"value": value}
+	data={"sigValidUntil": False if timeout == False else int(time.time()) +timeout,"value": value}
 	home.setProperty(path, json.dumps(data))
 	file = os.path.join(cachepath, path)
 	k = open(file+".json", "w") if PY2 else xbmcvfs.File(file+".json", "w")
@@ -44,7 +76,8 @@ def get_cache(key):
 	keyfile = home.getProperty(path)
 	if keyfile:
 		r = json.loads(keyfile)
-		if r.get('sigValidUntil', 0) > int(time.time()):
+		sigValidUntil = r.get('sigValidUntil', 0)
+		if sigValidUntil == False or sigValidUntil > int(time.time()):
 			log("from cache")
 			return r.get('value')
 		home.clearProperty(path)
@@ -52,7 +85,7 @@ def get_cache(key):
 		file = os.path.join(cachepath, path)
 		with open(file+".json") as k: r = json.load(k)
 		sigValidUntil = r.get('sigValidUntil', 0) 
-		if sigValidUntil > int(time.time()):
+		if sigValidUntil == False or sigValidUntil > int(time.time()):
 			value = r.get('value')
 			data={"sigValidUntil": sigValidUntil,"value": value}
 			home.setProperty(path, json.dumps(data))
@@ -202,13 +235,16 @@ def get_meta(param):
 			_cast.append(cast)
 	return {"infos":_meta, "art":_art, "properties":_property, "cast":_cast, "ids":_ids, "seasons":_seasons, "episodes":_episodes}
 
-def log(*args):
-	msg = "####VAVOOTO####\n"
-	msg += " ".join(repr(args))
+def log(msg, header=""):
+	try: msg = json.dumps(msg, indent=4)
+	except: pass
+	#msg += " ".join(repr(args))
+	if header: header+="\n"
+	out = "\n####VAVOOTO####\n%s%s\n########" % (header, msg)
 	mode = xbmc.LOGDEBUG
 	if addon.getSetting("debug") == "true":
 		mode = xbmc.LOGNOTICE if PY2 else xbmc.LOGINFO
-	xbmc.log(msg, mode)
+	xbmc.log(out, mode)
 
 def yesno(heading, line1, line2='', line3='', nolabel='', yeslabel=''):
 	if PY2: return xbmcgui.Dialog().yesno(heading, line1,line2,line3, nolabel, yeslabel)

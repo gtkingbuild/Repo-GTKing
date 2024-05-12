@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 import sys, re, requests, time, xbmcgui, xbmc, json, vavoosigner
 from resources.lib import utils
+try: 
+	from infotagger.listitem import ListItemInfoTag
+	tagger = True
+except: tagger = False
 
 vavoourl="https://www2.vavoo.to/live2/index"
 
@@ -230,14 +234,18 @@ def livePlay(name):
 		o.setMimeType("application/vnd.apple.mpegurl")
 		o.setProperty("inputstreamaddon" if utils.PY2 else "inputstream" , "inputstream.adaptive")
 		o.setProperty("inputstream.adaptive.manifest_type", "hls")
-	elif xbmc.getCondVisibility("System.HasAddon(inputstream.ffmpegdirect)"):
+	elif utils.addon.getSetting("ffmpeg") == "true" and xbmc.getCondVisibility("System.HasAddon(inputstream.ffmpegdirect)"):
 		o.setMimeType("video/mp2t")
 		o.setProperty("inputstream", "inputstream.ffmpegdirect")
 		o.setProperty("inputstream.ffmpegdirect.is_realtime_stream", "true")
 		o.setProperty("inputstream.ffmpegdirect.stream_mode", "timeshift")
 	o.setProperty("IsPlayable", "true")
 	title = title if title else name
-	o.setInfo(type="Video", infoLabels={"Title": title, "Plot": "[B]%s[/B] - Stream %s von %s" % (name, i+1, len(m))}) # so kann man die Stream Auswahl auch sehen (Info)
+	infoLabels={"title": title, "plot": "[B]%s[/B] - Stream %s von %s" % (name, i+1, len(m))}
+	if tagger:
+		info_tag = ListItemInfoTag(o, 'video')
+		info_tag.set_info(infoLabels)
+	else: o.setInfo("Video", infoLabels) # so kann man die Stream Auswahl auch sehen (Info)
 	utils.set_resolved(o)
 	utils.end()
 			
@@ -259,7 +267,11 @@ def channels():
 			cm.append(("von TV Favoriten entfernen", "RunPlugin(%s?action=delTvFavorit&name=%s)" % (sys.argv[0], name.replace("&", "%26").replace("+", "%2b"))))
 		cm.append(("Einstellungen", "RunPlugin(%s?action=settings)" % sys.argv[0]))
 		o.addContextMenuItems(cm)
-		o.setInfo(type="Video", infoLabels={"Title": title, "Plot": plot})
+		infoLabels={"title": title, "plot": plot}
+		if tagger:
+			info_tag = ListItemInfoTag(o, 'video')
+			info_tag.set_info(infoLabels)
+		else: o.setInfo("Video", infoLabels)
 		o.setProperty("IsPlayable", "true")
 		utils.add({"name":name}, o)
 	utils.sort_method()
@@ -275,7 +287,11 @@ def favchannels():
 		cm.append(("von TV Favoriten entfernen", "RunPlugin(%s?action=delTvFavorit&name=%s)" % (sys.argv[0], name.replace("&", "%26").replace("+", "%2b"))))
 		cm.append(("Einstellungen", "RunPlugin(%s?action=settings)" % sys.argv[0]))
 		o.addContextMenuItems(cm)
-		o.setInfo(type="Video", infoLabels={"Title": name, "Plot": "[COLOR gold]Liste der eigene Live Favoriten[/COLOR]"})
+		infoLabels={"title": name, "plot": "[COLOR gold]Liste der eigene Live Favoriten[/COLOR]"}
+		if tagger:
+			info_tag = ListItemInfoTag(o, 'video')
+			info_tag.set_info(infoLabels)
+		else: o.setInfo("Video", infoLabels)
 		o.setProperty("IsPlayable", "true")
 		utils.add({"name":name}, o)
 	utils.sort_method()
