@@ -9,8 +9,22 @@ if not os.path.exists(cachepath):
 
 home = xbmcgui.Window(10000)
 
+def get_external_ip():
+	try: return os.popen('curl -s ifconfig.me').readline()
+	except: pass
+	try: return requests.get('https://v4.ident.me').text
+	except: pass
+	try: return requests.get('https://www.wikipedia.org').headers['X-Client-IP']
+	except: pass
+	try: return requests.get('https://api.ipify.org').text
+	except: pass
+	try: return requests.get('https://api.myip.com/').json()["ip"]
+	except: pass
+	try: return requests.get('https://checkip.amazonaws.com').text.strip()
+	except: pass
+
 def set_cache(key, value, timeout=300):
-	data={"sigValidUntil": int(time.time()) +timeout,"value": value}
+	data={"sigValidUntil": int(time.time()) +timeout, "ip": get_external_ip(), "value": value}
 	home.setProperty(key, json.dumps(data))
 	file = os.path.join(cachepath, key)
 	with open(file+".json", "w") as k:
@@ -21,7 +35,8 @@ def get_cache(key):
 	if keyfile:
 		r = json.loads(keyfile)
 		if r.get('sigValidUntil', 0) > int(time.time()):
-			return r.get('value')
+			if r.get('ip', "") == get_external_ip():
+				return r.get('value')
 		home.clearProperty(key)
 	try:
 		file = os.path.join(cachepath, key)
@@ -29,10 +44,11 @@ def get_cache(key):
 			r = json.load(k)
 		sigValidUntil = r.get('sigValidUntil', 0) 
 		if sigValidUntil > int(time.time()):
-			value = r.get('value')
-			data={"sigValidUntil": sigValidUntil,"value": value}
-			home.setProperty(key, json.dumps(data))
-			return value
+			if r.get('ip', "") == get_external_ip():
+				value = r.get('value')
+				data={"sigValidUntil": sigValidUntil,"value": value}
+				home.setProperty(key, json.dumps(data))
+				return value
 		os.remove(file)
 	except:
 		return
@@ -57,6 +73,14 @@ def getAuthSignature():
 		elif req.get('response', {}).get('signed'):
 			sig = req['response']['signed']
 	set_cache('signfile', sig)
+	return sig
+
+def getDezorSig():
+	dezorsignfile = get_cache('dezorsignfile')
+	if dezorsignfile: return dezorsignfile
+	_data={"token":"26fY7-FIvyz_UA5t9T_ndXB02KgaCT-jDx0uA9CE7iRAO_V2lCSGkAzzTXOpjHZHBvOoKcuq1OVCnbYX035d8698U0OYDaLo-7p8BJJIJNj7d1z-7byaQDuDFdEHPbnZAKAxG_fskVIrE0XkBV7_HbBnlIBDQ_EgxA","reason":"app-focus","locale":"de","theme":"light","metadata":{"device":{"type":"Handset","brand":"Xiaomi","model":"21081111RG","name":"21081111RG","uniqueId":"33267ca74bec24c7"},"os":{"name":"android","version":"7.1.2","abis":["arm64-v8a","armeabi-v7a","armeabi"],"host":"non-pangu-pod-sbcp6"},"app":{"platform":"android","version":"1.1.2","buildId":"97245000","engine":"jsc","signatures":["7c8c6b5030a8fa447078231e0f2c0d9ee4f24bb91f1bf9599790a1fafbeef7e0"],"installer":"com.android.secex"},"version":{"package":"net.dezor.browser","binary":"1.1.2","js":"1.2.9"}},"appFocusTime":1589,"playerActive":False,"playDuration":0,"devMode":False,"hasMhub":False,"castConnected":False,"package":"net.dezor.browser","version":"1.2.9","process":"app","firstAppStart":1681125328576,"lastAppStart":1681125328576,"ipLocation":None,"adblockEnabled":True,"proxy":{"supported":True,"enabled":True}}
+	sig = requests.post("https://www.dezor.net/api/app/ping", json=_data).json()["mhub"]
+	set_cache('dezorsignfile', sig)
 	return sig
 
 def getWatchedSig():
