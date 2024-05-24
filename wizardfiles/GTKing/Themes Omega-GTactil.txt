@@ -1,5 +1,5 @@
-name="TEST [B][COLOR white]•• [COLOR red]Parche: [COLOR crimson]GTactil OMEGA [COLOR tan]2024[/COLOR][/B]"
-url=""
+name="[B][COLOR white]•• [COLOR red]Parche: [COLOR crimson]GTactil OMEGA [COLOR tan]24/05/2024[/COLOR][/B]"
+url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/21.0.GTactil/Parche.GTKing.Phoenix.GTactil.OMEGA.zip"
 icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
 fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
 adult="no"
