@@ -1,7 +1,7 @@
 name="[B][COLOR white]•• [COLOR red]Parche: [COLOR crimson]GTactil OMEGA [COLOR tan]24/05/2024[/COLOR][/B]"
 url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/21.0.GTactil/Parche.GTKing.Phoenix.GTactil.OMEGA.zip"
-icon="https://gtkingbuild.github.io/wizard/imagenes/bgtki.png"
-fanart="https://gtkingbuild.github.io/wizard/imagenes/fanart.png"
+icon="https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardfiles/wizard_icons_builds/icon_gtactil.jpg"
+fanart="https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardfiles/wizard_fanarts_builds/fanart_gtactil.jpg"
 adult="no"
 description="Parche GTactil OMEGA"
 
