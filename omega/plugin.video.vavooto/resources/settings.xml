@@ -1,0 +1,25 @@
+<settings> 
+  <category label="TV">
+    <setting default="0" id="auto" label="IPTV Autoplay" type="enum" values="Auto|Countdown|Manuell" />
+    <setting type="sep"/>
+    <setting default="5" id="count" label="Countdown Zeit" type="number" option="int" visible="eq(-2,1))" />
+    <setting default="false" id="stream_count" type="bool" label="Anzahl Streams in Title anzeigen"/>
+    <setting default="false" id="hls" type="bool" label="HLS-Streams benutzen"/>
+    <setting default="true" id="ffmpeg" type="bool" subsetting="true" visible="eq(-1,false)" label="Inputstream FFmpeg benutzen"/>
+    <setting type="sep"/>
+    <setting label="Kanalgruppen Auswahl" type="action" action="RunPlugin(plugin://plugin.video.vavooto/?action=choose)"/>
+    <setting label="Alle Favoriten entfernen" type="action" action="RunPlugin(plugin://plugin.video.vavooto/?action=delallTvFavorit)"/>
+  </category>
+  <category label="VIDEO">
+    <setting default="1" id="stream_select" label="Stream Auswahl" type="enum" values="Hoster|Automatisch" />
+    <setting default="true" id="auto_try_next_stream" type="bool" subsetting="true" visible="eq(-1,0)" label="Automatisch nächsten ähnlichen Stream versuchen"/>
+    <setting default="0" id="stream_quali" label="Max Stream Qualität" type="enum" values="1080p|720p|480p" />
+    <setting default="false" id="site" type="bool" label="Streams via Dezor"/>
+    <setting default="true" id="stream_check" type="bool" label="Streams Testen"/>
+    <setting label="Cache löschen" type="action" action="RunPlugin(plugin://plugin.video.vavooto/?action=clear)"/>
+    <setting label="Suchverlauf löschen" type="action" action="RunPlugin(plugin://plugin.video.vavooto/?action=delete_search&id=all)"/>
+  </category>
+  <category label="DEBUG">
+    <setting default="false" id="debug" type="bool" label="Debug Logging"/>
+  </category>
+</settings>
