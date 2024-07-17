@@ -15,9 +15,10 @@
                 <param name="slide_condition">True</param>
                 <param name="dialog_size">Dimension_DialogFullMenu</param>
                 <!-- Side Buttons -->
-                <include content="Dialog_Body">
-                    <include content="Dialog_Side_Grouplist">
-                        <param name="id">9000</param>
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
+                    <control type="grouplist" id="9000">
+                        <include>Dialog_Side_Grouplist_Def</include>
                         <onright>150</onright>
                         <onleft>Close</onleft>
                         <include content="DialogInfo_Button">
@@ -33,8 +34,8 @@
                                 <param name="label">$LOCALIZE[413]</param>
                             </include>
                         </include>
-                    </include>
-                </include>
+                    </control>
+                </control>
             </include>
 
             <include content="Dialog_Foreground_Side">
@@ -51,13 +52,15 @@
                 <include>Dialog_Head_CloseButton</include>
 
                 <!-- Content -->
-                <include content="Dialog_Body">
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
                     <control type="group">
                         <left>settings_category_w</left>
                         <include content="Dialog_Outline_InnerBox">
                             <left>40</left>
                             <right>40</right>
-                            <include content="Dialog_Body_Group">
+                            <control type="group">
+                                <include>Dimension_Dialog_Body_Group</include>
                                 <include content="List_DialogSelect">
                                     <param name="id">120</param>
                                     <param name="itemlayout_include">Layout_DialogSubtitles</param>
@@ -67,11 +70,12 @@
                                     <onright>61</onright>
                                     <pagecontrol>61</pagecontrol>
                                 </include>
-                            </include>
+                            </control>
                         </include>
                     </control>
 
-                    <include content="Dialog_Body_Group">
+                    <control type="group">
+                        <include>Dimension_Dialog_Body_Group</include>
 
                         <control type="group">
                             <width>settings_category_w</width>
@@ -116,7 +120,7 @@
                                 <textcolor>dialog_fg_70</textcolor>
                             </control>
                         </control>
-                    </include>
+                    </control>
 
                     <control type="group">
 
@@ -143,7 +147,7 @@
                         <param name="id">61</param>
                         <onleft>120</onleft>
                     </include>
-                </include>
+                </control>
             </include>
 
         </control>

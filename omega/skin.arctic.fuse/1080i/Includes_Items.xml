@@ -751,26 +751,121 @@
         </include>
     </include>
 
+    <include name="Items_MusicPlaylistEditor_MenuBar">
+        <param name="vertical">true</param>
+        <param name="itemgap">10</param>
+        <definition>
+            <include content="Dialog_Side_Button">
+                <param name="id">01</param>
+                <param name="label">$LOCALIZE[15067]</param>
+                <param name="icon">special://skin/extras/icons/circle-xmark.png</param>
+                <param name="vertical">$PARAM[vertical]</param>
+                <param name="itemgap">$PARAM[itemgap]</param>
+                <onclick>PreviousMenu</onclick>
+            </include>
+            <include content="DialogInfo_Button">
+                <param name="id">6</param>
+                <param name="groupid">9106</param>
+                <param name="sliceid">9206</param>
+                <param name="label">$LOCALIZE[502]</param>
+                <param name="icon">special://skin/extras/icons/folder.png</param>
+                <param name="vertical">$PARAM[vertical]</param>
+                <param name="itemgap">$PARAM[itemgap]</param>
+                <include content="DialogInfo_Button_HintLabel">
+                    <param name="label">$LOCALIZE[502]</param>
+                </include>
+            </include>
+            <include content="DialogInfo_Button">
+                <param name="id">7</param>
+                <param name="groupid">9107</param>
+                <param name="sliceid">9207</param>
+                <param name="label">$LOCALIZE[190]</param>
+                <param name="icon">special://skin/extras/icons/floppy-disk.png</param>
+                <param name="vertical">$PARAM[vertical]</param>
+                <param name="itemgap">$PARAM[itemgap]</param>
+                <include content="DialogInfo_Button_HintLabel">
+                    <param name="label">$LOCALIZE[190]</param>
+                </include>
+            </include>
+            <include content="DialogInfo_Button">
+                <param name="id">8</param>
+                <param name="groupid">9108</param>
+                <param name="sliceid">9208</param>
+                <param name="label">$LOCALIZE[192]</param>
+                <param name="icon">special://skin/extras/icons/triangle-exclamation.png</param>
+                <param name="vertical">$PARAM[vertical]</param>
+                <param name="itemgap">$PARAM[itemgap]</param>
+                <include content="DialogInfo_Button_HintLabel">
+                    <param name="label">$LOCALIZE[192]</param>
+                </include>
+            </include>
+        </definition>
+    </include>
+
     <include name="Items_PersonCredits_MenuBar">
-        <include content="Dialog_Side_Button">
-            <param name="id">01</param>
-            <param name="baseid">4</param>
-            <param name="label">$LOCALIZE[15067]</param>
-            <param name="icon">special://skin/extras/icons/circle-xmark.png</param>
-            <param name="visible">true</param>
-            <onclick>Action(Close)</onclick>
-        </include>
-        <include content="Dialog_Side_Button">
-            <param name="id">02</param>
-            <param name="baseid">4</param>
-            <param name="label">[CAPITALIZE]$INFO[Skin.String(VideoInfo.PersonCredits.SortKey)][/CAPITALIZE]</param>
-            <param name="icon">special://skin/extras/icons/arrow-updown-short-wide.png</param>
-            <param name="visible">true</param>
-            <onclick condition="Skin.String(VideoInfo.PersonCredits.SortKey,popular)">Skin.SetString(VideoInfo.PersonCredits.SortKey,date)</onclick>
-            <onclick condition="Skin.String(VideoInfo.PersonCredits.SortKey,date)">Skin.SetString(VideoInfo.PersonCredits.SortKey,rating)</onclick>
-            <onclick condition="Skin.String(VideoInfo.PersonCredits.SortKey,rating)">Skin.SetString(VideoInfo.PersonCredits.SortKey,votes)</onclick>
-            <onclick condition="Skin.String(VideoInfo.PersonCredits.SortKey,votes)">Skin.SetString(VideoInfo.PersonCredits.SortKey,popular)</onclick>
-        </include>
+        <param name="vertical">true</param>
+        <param name="itemgap">10</param>
+        <definition>
+            <include content="Dialog_Side_Button">
+                <param name="id">01</param>
+                <param name="baseid">4</param>
+                <param name="label">$LOCALIZE[15067]</param>
+                <param name="icon">special://skin/extras/icons/circle-xmark.png</param>
+                <param name="visible">true</param>
+                <param name="include_slide">true</param>
+                <param name="vertical">$PARAM[vertical]</param>
+                <param name="itemgap">$PARAM[itemgap]</param>
+                <onclick>Action(Close)</onclick>
+            </include>
+            <include content="Dialog_Side_Button">
+                <param name="id">02</param>
+                <param name="baseid">4</param>
+                <param name="label">$LOCALIZE[29915]</param>
+                <param name="icon">special://skin/extras/icons/quote.png</param>
+                <param name="visible">true</param>
+                <param name="include_slide">true</param>
+                <param name="vertical">$PARAM[vertical]</param>
+                <param name="itemgap">$PARAM[itemgap]</param>
+                <onclick>SetFocus(61)</onclick>
+            </include>
+            <include content="Dialog_Side_Button">
+                <param name="id">03</param>
+                <param name="baseid">4</param>
+                <param name="label">[CAPITALIZE]$INFO[Skin.String(VideoInfo.PersonCredits.SortKey)][/CAPITALIZE]</param>
+                <param name="icon">special://skin/extras/icons/arrow-updown-short-wide.png</param>
+                <param name="visible">true</param>
+                <param name="include_slide">true</param>
+                <param name="vertical">$PARAM[vertical]</param>
+                <param name="itemgap">$PARAM[itemgap]</param>
+                <onclick condition="Skin.String(VideoInfo.PersonCredits.SortKey,popular)">Skin.SetString(VideoInfo.PersonCredits.SortKey,date)</onclick>
+                <onclick condition="Skin.String(VideoInfo.PersonCredits.SortKey,date)">Skin.SetString(VideoInfo.PersonCredits.SortKey,rating)</onclick>
+                <onclick condition="Skin.String(VideoInfo.PersonCredits.SortKey,rating)">Skin.SetString(VideoInfo.PersonCredits.SortKey,votes)</onclick>
+                <onclick condition="Skin.String(VideoInfo.PersonCredits.SortKey,votes)">Skin.SetString(VideoInfo.PersonCredits.SortKey,popular)</onclick>
+            </include>
+            <include content="Dialog_Side_Button">
+                <param name="id">04</param>
+                <param name="baseid">4</param>
+                <param name="label">Wiki</param>
+                <param name="icon">special://skin/extras/icons/globe.png</param>
+                <param name="visible">true</param>
+                <param name="include_slide">true</param>
+                <param name="vertical">$PARAM[vertical]</param>
+                <param name="itemgap">$PARAM[itemgap]</param>
+                <onclick>runscript(script.wikipedia,wikipedia=$INFO[Window.Property(Item_Title)],tmdb_type=$INFO[Window.Property(Item_Type)])</onclick>
+            </include>
+            <include content="Dialog_Side_Button">
+                <param name="id">05</param>
+                <param name="baseid">4</param>
+                <param name="label">$LOCALIZE[108]</param>
+                <param name="icon">special://skin/extras/icons/images.png</param>
+                <param name="visible">true</param>
+                <param name="include_slide">true</param>
+                <param name="vertical">$PARAM[vertical]</param>
+                <param name="itemgap">$PARAM[itemgap]</param>
+                <onclick condition="String.IsEmpty(Window.Property(Item_Type))">SlideShow(plugin://plugin.video.themoviedb.helper/?info=images&amp;type=person$INFO[Window.Property(Item_Query)]$VAR[Path_Param_Widget])</onclick>
+                <onclick condition="!String.IsEmpty(Window.Property(Item_Type))">SlideShow(plugin://plugin.video.themoviedb.helper/?info=fanart$INFO[Window.Property(Item_Type),&amp;,]$INFO[Window.Property(Item_Query)]$VAR[Path_Param_Widget])</onclick>
+            </include>
+        </definition>
     </include>
 
     <include name="Items_SearchWindow_MenuBar">
@@ -795,9 +890,11 @@
 
     <include name="Items_DialogVideoInfo_MenuBar">
         <param name="zoom_in_include">!Window.IsVisible(1120)</param>
+        <param name="vertical">true</param>
+        <param name="itemgap">10</param>
         <definition>
             <include content="DialogInfo_Button">
-                <param name="vertical">true</param>
+                <param name="vertical">$PARAM[vertical]</param>
                 <param name="id">4001</param>
                 <param name="groupid">4101</param>
                 <param name="sliceid">4201</param>
@@ -805,6 +902,8 @@
                 <param name="icon">$VAR[Image_DialogInfo_PlayButton]</param>
                 <param name="zoom_in_delay">0</param>
                 <param name="zoom_in_include">$PARAM[zoom_in_include]</param>
+                <param name="include_slide">true</param>
+                <param name="itemgap">$PARAM[itemgap]</param>
                 <onclick condition="!Window.ISVisible(1190)">SendClick(8)</onclick>
                 <onclick condition="Window.ISVisible(1190) + !$EXP[Exp_IsFolder]">RunScript(plugin.video.themoviedb.helper,close_dialog=1190,"playmedia=$INFO[ListItem.FilenameAndPath]")</onclick>
                 <onclick condition="Window.ISVisible(1190) + $EXP[Exp_IsFolder]">RunScript(plugin.video.themoviedb.helper,close_dialog=1190,"call_path=$INFO[ListItem.FilenameAndPath]")</onclick>
@@ -815,7 +914,7 @@
                 </include>
             </include>
             <include content="DialogInfo_Button">
-                <param name="vertical">true</param>
+                <param name="vertical">$PARAM[vertical]</param>
                 <param name="id">4002</param>
                 <param name="groupid">4102</param>
                 <param name="sliceid">4202</param>
@@ -823,12 +922,12 @@
                 <param name="icon">special://skin/extras/icons/videoplay.png</param>
                 <param name="zoom_in_delay">60</param>
                 <param name="zoom_in_include">$PARAM[zoom_in_include]</param>
-
+                <param name="include_slide">true</param>
+                <param name="itemgap">$PARAM[itemgap]</param>
                 <include content="Action_PlayTrailer_OnClick">
                     <param name="trailer">ListItem.Trailer</param>
                     <param name="trailer_fallback">Container(99950).ListItem.Trailer</param>
                 </include>
-
                 <onfocus>SetProperty(DetailsView,Trailer)</onfocus>
                 <onfocus>ClearProperty(ReviewsActive)</onfocus>
                 <include content="DialogInfo_Button_HintLabel">
@@ -836,7 +935,7 @@
                 </include>
             </include>
             <include content="DialogInfo_Button">
-                <param name="vertical">true</param>
+                <param name="vertical">$PARAM[vertical]</param>
                 <param name="id">4003</param>
                 <param name="groupid">4103</param>
                 <param name="sliceid">4203</param>
@@ -844,6 +943,8 @@
                 <param name="icon">special://skin/extras/icons/table-list.png</param>
                 <param name="zoom_in_delay">120</param>
                 <param name="zoom_in_include">$PARAM[zoom_in_include]</param>
+                <param name="include_slide">true</param>
+                <param name="itemgap">$PARAM[itemgap]</param>
                 <onfocus>SetProperty(DetailsView,Cast)</onfocus>
                 <onfocus>ClearProperty(ReviewsActive)</onfocus>
                 <include>Action_Info_Recommendations_OnClick</include>
@@ -852,7 +953,7 @@
                 </include>
             </include>
             <include content="DialogInfo_Button">
-                <param name="vertical">true</param>
+                <param name="vertical">$PARAM[vertical]</param>
                 <param name="id">4004</param>
                 <param name="groupid">4104</param>
                 <param name="sliceid">4204</param>
@@ -860,11 +961,12 @@
                 <param name="icon">$VAR[Image_DialogInfo_TraktRating]</param>
                 <param name="zoom_in_delay">180</param>
                 <param name="zoom_in_include">$PARAM[zoom_in_include]</param>
+                <param name="include_slide">true</param>
+                <param name="itemgap">$PARAM[itemgap]</param>
                 <onclick condition="!String.IsEmpty(Window(Home).Property(TMDbHelper.TraktIsAuth)) + !String.IsEmpty(ListItem.Property(tmdb_id)) + [String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)]">RunScript(plugin.video.themoviedb.helper,sync_trakt,tmdb_id=$INFO[ListItem.Property(tmdb_id)],$VAR[Path_Param_Type],cache_refresh)</onclick>
                 <onclick condition="!String.IsEmpty(Window(Home).Property(TMDbHelper.TraktIsAuth)) + String.IsEmpty(ListItem.Property(tmdb_id)) + !String.IsEmpty(Container(99950).ListItem.Property(tmdb_id)) + [String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)]">RunScript(plugin.video.themoviedb.helper,sync_trakt,tmdb_id=$INFO[Container(99950).ListItem.Property(tmdb_id)],$VAR[Path_Param_Type],cache_refresh)</onclick>
                 <onclick condition="!String.IsEmpty(Window(Home).Property(TMDbHelper.TraktIsAuth)) + !String.IsEmpty(ListItem.Property(tmdb_id)) + String.IsEqual(ListItem.DBType,episode)">RunScript(plugin.video.themoviedb.helper,sync_trakt,tmdb_id=$INFO[ListItem.Property(tmdb_id)],$VAR[Path_Param_Type],season=$INFO[ListItem.Season],episode=$INFO[ListItem.Episode],cache_refresh)</onclick>
                 <onclick condition="!String.IsEmpty(Window(Home).Property(TMDbHelper.TraktIsAuth)) + String.IsEmpty(ListItem.Property(tmdb_id)) + !String.IsEmpty(Container(99950).ListItem.Property(tmdb_id)) + String.IsEqual(ListItem.DBType,episode)">RunScript(plugin.video.themoviedb.helper,sync_trakt,tmdb_id=$INFO[Container(99950).ListItem.Property(tmdb_id)],$VAR[Path_Param_Type],season=$INFO[ListItem.Season],episode=$INFO[ListItem.Episode],cache_refresh)</onclick>
-                <!-- <onclick condition="String.IsEmpty(Window(Home).Property(TMDbHelper.TraktIsAuth))">SendClick(12003,7)</onclick> -->
                 <onclick condition="String.IsEmpty(Window(Home).Property(TMDbHelper.TraktIsAuth))">runscript(script.wikipedia,wikipedia=$VAR[Path_Wikipedia_Title],tmdb_type=$VAR[Path_Wikipedia_Type])</onclick>
                 <onfocus>SetProperty(DetailsView,Reviews)</onfocus>
                 <onfocus>ClearProperty(ReviewsActive)</onfocus>
@@ -875,26 +977,24 @@
 
             <!-- Artwork -->
             <include content="DialogInfo_Button">
-                <param name="vertical">true</param>
+                <param name="vertical">$PARAM[vertical]</param>
                 <param name="id">4005</param>
                 <param name="groupid">4105</param>
                 <param name="sliceid">4205</param>
                 <param name="label">$LOCALIZE[39123]</param>
                 <param name="icon">special://skin/extras/icons/image.png</param>
-                <!-- <param name="label">Wiki</param>
-                <param name="icon">special://skin/extras/icons/globe.png</param> -->
                 <param name="zoom_in_delay">240</param>
                 <param name="zoom_in_include">$PARAM[zoom_in_include]</param>
-                <!-- <onclick>runscript(script.wikipedia,wikipedia=$VAR[Path_Wikipedia_Title],tmdb_type=$VAR[Path_Wikipedia_Type])</onclick> -->
-                <!-- <onfocus>SetProperty(DetailsView,Critics)</onfocus> -->
-                <onleft>Control.Move(7003,-1)</onleft>
-                <onright>Control.Move(7003,1)</onright>
+                <param name="include_slide">true</param>
+                <param name="itemgap">$PARAM[itemgap]</param>
+                <onleft condition="!$EXP[Exp_HomeMenu_IsTopBar]">Control.Move(7003,-1)</onleft>
+                <onright condition="!$EXP[Exp_HomeMenu_IsTopBar]">Control.Move(7003,1)</onright>
+                <onup condition="$EXP[Exp_HomeMenu_IsTopBar]">5009</onup>
                 <onclick condition="Window.IsVisible(DialogVideoInfo.xml) | Window.IsVisible(DialogMusicInfo.xml)">SendClick(10)</onclick>
                 <onfocus>SetProperty(DetailsView,Artwork)</onfocus>
                 <onfocus>ClearProperty(ReviewsActive)</onfocus>
                 <include content="DialogInfo_Button_HintLabel">
                     <param name="label">$LOCALIZE[39123]</param>
-                    <!-- <param name="label">Wiki</param> -->
                 </include>
             </include>
         </definition>
@@ -902,9 +1002,11 @@
 
     <include name="Items_DialogMusicInfo_MenuBar">
         <param name="zoom_in_include">!Window.IsVisible(1120)</param>
+        <param name="vertical">true</param>
+        <param name="itemgap">10</param>
         <definition>
             <include content="DialogInfo_Button">
-                <param name="vertical">true</param>
+                <param name="vertical">$PARAM[vertical]</param>
                 <param name="id">4001</param>
                 <param name="groupid">4101</param>
                 <param name="sliceid">4201</param>
@@ -912,7 +1014,8 @@
                 <param name="icon">$VAR[Image_DialogInfo_PlayButton]</param>
                 <param name="zoom_in_delay">0</param>
                 <param name="zoom_in_include">$PARAM[zoom_in_include]</param>
-
+                <param name="include_slide">true</param>
+                <param name="itemgap">$PARAM[itemgap]</param>
                 <!-- Addon Not Installed -->
                 <onclick condition="!String.IsEqual(ListItem.DBType,artist) + !System.AddonIsEnabled(script.playalbum) + System.HasAddon(script.playalbum)">EnableAddon(script.playalbum)</onclick>
                 <onclick condition="!String.IsEqual(ListItem.DBType,artist) + !System.HasAddon(script.playalbum)">InstallAddon(script.playalbum)</onclick>
@@ -937,7 +1040,7 @@
                 <onfocus>ClearProperty(DetailsView)</onfocus>
             </include>
             <include content="DialogInfo_Button">
-                <param name="vertical">true</param>
+                <param name="vertical">$PARAM[vertical]</param>
                 <param name="id">4003</param>
                 <param name="groupid">4103</param>
                 <param name="sliceid">4203</param>
@@ -945,7 +1048,8 @@
                 <param name="icon">special://skin/extras/icons/song.png</param>
                 <param name="zoom_in_delay">60</param>
                 <param name="zoom_in_include">$PARAM[zoom_in_include]</param>
-
+                <param name="include_slide">true</param>
+                <param name="itemgap">$PARAM[itemgap]</param>
                 <onclick>Dialog.Close(musicinformation)</onclick>
                 <onclick>Dialog.Close(songinformation)</onclick>
 
@@ -958,7 +1062,7 @@
                 <onfocus>SetProperty(DetailsView,Songs)</onfocus>
             </include>
             <include content="DialogInfo_Button">
-                <param name="vertical">true</param>
+                <param name="vertical">$PARAM[vertical]</param>
                 <param name="id">4002</param>
                 <param name="groupid">4102</param>
                 <param name="sliceid">4202</param>
@@ -966,7 +1070,8 @@
                 <param name="icon">special://skin/extras/icons/songs.png</param>
                 <param name="zoom_in_delay">120</param>
                 <param name="zoom_in_include">$PARAM[zoom_in_include]</param>
-
+                <param name="include_slide">true</param>
+                <param name="itemgap">$PARAM[itemgap]</param>
                 <onclick>Dialog.Close(musicinformation)</onclick>
                 <onclick>Dialog.Close(songinformation)</onclick>
 
@@ -979,7 +1084,7 @@
                 <onfocus>SetProperty(DetailsView,Albums)</onfocus>
             </include>
             <include content="DialogInfo_Button">
-                <param name="vertical">true</param>
+                <param name="vertical">$PARAM[vertical]</param>
                 <param name="id">4007</param>
                 <param name="groupid">4107</param>
                 <param name="sliceid">4207</param>
@@ -987,6 +1092,8 @@
                 <param name="icon">special://skin/extras/icons/youtube.png</param>
                 <param name="zoom_in_delay">180</param>
                 <param name="zoom_in_include">$PARAM[zoom_in_include]</param>
+                <param name="include_slide">true</param>
+                <param name="itemgap">$PARAM[itemgap]</param>
                 <onclick>Dialog.Close(musicinformation)</onclick>
                 <onclick>Dialog.Close(songinformation)</onclick>
                 <onclick>ActivateWindow(videos,$VAR[Path_Youtube_Query,plugin://plugin.video.youtube/kodion/search/query/?q=,],return)</onclick>
@@ -996,7 +1103,7 @@
                 <onfocus>SetProperty(DetailsView,Trailer)</onfocus>
             </include>
             <include content="DialogInfo_Button">
-                <param name="vertical">true</param>
+                <param name="vertical">$PARAM[vertical]</param>
                 <param name="id">4005</param>
                 <param name="groupid">4105</param>
                 <param name="sliceid">4205</param>
@@ -1004,11 +1111,14 @@
                 <param name="icon">special://skin/extras/icons/image.png</param>
                 <param name="zoom_in_delay">240</param>
                 <param name="zoom_in_include">$PARAM[zoom_in_include]</param>
+                <param name="include_slide">true</param>
+                <param name="itemgap">$PARAM[itemgap]</param>
                 <include content="DialogInfo_Button_HintLabel">
                     <param name="label">$LOCALIZE[39123]</param>
                 </include>
-                <onleft>Control.Move(7003,-1)</onleft>
-                <onright>Control.Move(7003,1)</onright>
+                <onleft condition="!$EXP[Exp_HomeMenu_IsTopBar]">Control.Move(7003,-1)</onleft>
+                <onright condition="!$EXP[Exp_HomeMenu_IsTopBar]">Control.Move(7003,1)</onright>
+                <ondown condition="$EXP[Exp_HomeMenu_IsTopBar]">5009</ondown>
                 <onclick condition="Window.IsVisible(DialogVideoInfo.xml) | Window.IsVisible(DialogMusicInfo.xml)">SendClick(10)</onclick>
                 <onfocus>SetProperty(DetailsView,Artwork)</onfocus>
             </include>

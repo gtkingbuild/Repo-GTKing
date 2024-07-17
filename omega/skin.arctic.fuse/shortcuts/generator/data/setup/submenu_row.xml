@@ -1,12 +1,6 @@
 <contents>
-    <rules name="submenu_item_x">
-        <rule>
-            <condition>True</condition>
-            <value>{item_x}</value>
-        </rule>
-    </rules>
-    <value name="submenu_ondown">400</value>
-    <!-- <value name="submenu_ondown">$MATH[{submenu_item_x} * 1000 + 601]</value> -->
+    <value name="submenu_item_x">{item_x}</value>
+    <value name="submenu_widget_id">$MATH[{submenu_item_x} * 1000 + 601]</value>
     <value name="submenu_path">{item_submenulist_path}</value>
     <value name="submenu_target">{item_submenulist_target}</value>
     <value name="submenu_limit">{item_submenulist_limit}</value>

@@ -1,6 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
 
+    <include name="Animation_View_SlideOver_Invert">
+        <param name="time">0</param>
+        <definition>
+            <animation effect="slide" start="0" end="-120" time="$PARAM[time]" tween="cubic" easing="out" condition="!String.IsEmpty(Window(Home).Property(SideMenu.HasFocus))" reversible="false">Conditional</animation>
+            <animation effect="slide" start="-120" end="0" time="$PARAM[time]" tween="cubic" easing="out" condition="String.IsEmpty(Window(Home).Property(SideMenu.HasFocus))" reversible="false">Conditional</animation>
+        </definition>
+    </include>
+
+    <include name="Animation_View_SlideOver">
+        <animation effect="slide" start="120" end="0" time="400" tween="cubic" easing="out" condition="String.IsEmpty(Window(Home).Property(SideMenu.HasFocus))" reversible="false">Conditional</animation>
+        <animation effect="slide" start="0" end="120" time="400" tween="cubic" easing="out" condition="!String.IsEmpty(Window(Home).Property(SideMenu.HasFocus))" reversible="false">Conditional</animation>
+        <left>-120</left>
+    </include>
+
+    <include name="Animation_Home_SlideOver">
+        <animation type="Conditional" reversible="false" condition="!String.IsEmpty(Window(Home).Property(SideMenu.HasFocus))">
+            <effect type="fade" start="0" end="100" delay="0" time="300" tween="sine" easing="in" />
+        </animation>
+        <animation type="Conditional" reversible="false" condition="String.IsEmpty(Window(Home).Property(SideMenu.HasFocus))">
+            <effect type="fade" start="100" end="0" delay="0" time="150" tween="sine" easing="in" />
+        </animation>
+    </include>
+
+    <include name="Animation_View_Topbar">
+        <animation type="Conditional" reversible="false" condition="![Control.HasFocus(303) | ControlGroup(4000).HasFocus() | ControlGroup(303).HasFocus() | Control.HasFocus(308) | Control.HasFocus(309)]">
+            <effect type="fade" start="0" end="100" delay="0" time="300" tween="sine" easing="in" />
+        </animation>
+        <animation type="Conditional" reversible="false" condition="[Control.HasFocus(303) | ControlGroup(4000).HasFocus() | ControlGroup(303).HasFocus() | Control.HasFocus(308) | Control.HasFocus(309)]">
+            <effect type="fade" start="100" end="0" delay="0" time="150" tween="sine" easing="in" />
+        </animation>
+    </include>
+    <include name="Animation_Home_Topbar">
+        <animation type="Conditional" reversible="false" condition="[Control.HasFocus(303) | ControlGroup(4000).HasFocus() | ControlGroup(303).HasFocus() | Control.HasFocus(308) | Control.HasFocus(309)]">
+            <effect type="fade" start="0" end="100" delay="0" time="300" tween="sine" easing="in" />
+        </animation>
+        <animation type="Conditional" reversible="false" condition="![Control.HasFocus(303) | ControlGroup(4000).HasFocus() | ControlGroup(303).HasFocus() | Control.HasFocus(308) | Control.HasFocus(309)]">
+            <effect type="fade" start="100" end="0" delay="0" time="150" tween="sine" easing="in" />
+        </animation>
+    </include>
+
     <!-- ============== -->
     <!-- OSD Animations -->
     <!-- ============== -->
@@ -44,20 +84,18 @@
     <!-- Transitions -->
     <!-- =========== -->
     <include name="Animation_Transition_InfoPanel_Hide">
-        <animation effect="fade" start="100" end="0" delay="400" time="1" reversible="false">Hidden</animation>
-    </include>
-    <include name="Animation_Transition_InfoPanel_Show">
-        <animation effect="fade" start="0" end="100" delay="400" time="1" reversible="false">Visible</animation>
-    </include>
-    <include name="Animation_Transition_InfoPanel_Shut">
-        <animation effect="fade" start="100" end="0" delay="400" time="1" reversible="false">WindowClose</animation>
+        <animation effect="fade" start="100" end="0" delay="600" time="1" reversible="false">Hidden</animation>
     </include>
     <include name="Animation_Transition_InfoPanel_Open">
-        <animation effect="fade" start="0" end="100" delay="400" time="1" reversible="false">WindowOpen</animation>
+        <animation effect="fade" start="0" end="100" delay="600" time="1" reversible="false">WindowOpen</animation>
     </include>
     <include name="Animation_Transition_InfoPanel_Cond">
-        <animation effect="fade" start="100" end="0" delay="400" time="1" reversible="false" condition="$EXP[Exp_InfoDialogs]">Conditional</animation>
+        <animation effect="fade" start="100" end="0" delay="600" time="1" reversible="false" condition="$EXP[Exp_InfoDialogs]">Conditional</animation>
     </include>
+    <include name="Animation_Transition_InfoPanel_Open_Fade">
+        <animation effect="fade" start="0" end="100" delay="600" time="400" reversible="false" tween="sine" easing="in" >WindowOpen</animation>
+    </include>
+
 
     <!-- ==== -->
     <!-- Busy -->
@@ -302,13 +340,15 @@
 
     <!-- Window Transition For Views -->
     <include name="Animation_View_WindowChange">
+        <param name="windowclose_condition">[!$EXP[Exp_InfoPanelWindows] | !$EXP[Exp_InfoPanelWindows_Next]]</param>
+        <param name="windowopen_condition">[!$EXP[Exp_InfoPanelWindows] | !$EXP[Exp_InfoPanelWindows_Prev]]</param>
         <definition>
             <include content="Animation_Fade_Out">
-                <param name="condition">[!$EXP[Exp_InfoPanelWindows] | !$EXP[Exp_InfoPanelWindows_Next]]</param>
+                <param name="condition">[$PARAM[windowclose_condition]]</param>
                 <param name="type">WindowClose</param>
             </include>
             <include content="Animation_Slide_In">
-                <param name="condition">[!$EXP[Exp_InfoPanelWindows] | !$EXP[Exp_InfoPanelWindows_Prev]]</param>
+                <param name="condition">[$PARAM[windowopen_condition]]</param>
                 <param name="type">WindowOpen</param>
                 <param name="posx">320</param>
                 <param name="delay">0</param>
@@ -370,10 +410,10 @@
 
     <include name="Animation_Half_WindowChange_UpDown">
         <include content="Animation_Half_WindowChange">
-            <param name="windowopen_up">[$EXP[Exp_InfoPanelWindows_Prev_03] + String.IsEmpty(Window(Home).Property(ReverseTransition))]</param>
-            <param name="windowopen_down">[$EXP[Exp_InfoPanelWindows_Prev_01] | [$EXP[Exp_InfoPanelWindows_Prev_03] + !String.IsEmpty(Window(Home).Property(ReverseTransition))]]</param>
-            <param name="windowclose_up">[$EXP[Exp_InfoPanelWindows_Next_03] + String.IsEmpty(Window(Home).Property(ReverseTransition))]</param>
-            <param name="windowclose_down">[$EXP[Exp_InfoPanelWindows_Next_01] | [$EXP[Exp_InfoPanelWindows_Next_03] + !String.IsEmpty(Window(Home).Property(ReverseTransition))]]</param>
+            <param name="windowopen_up">[$EXP[Exp_InfoPanelWindows_Prev_03] + !$EXP[Exp_ReverseTransition]]</param>
+            <param name="windowopen_down">[$EXP[Exp_InfoPanelWindows_Prev_01] | [$EXP[Exp_InfoPanelWindows_Prev_03] + $EXP[Exp_ReverseTransition]]]</param>
+            <param name="windowclose_up">[$EXP[Exp_InfoPanelWindows_Next_03] + !$EXP[Exp_ReverseTransition]]</param>
+            <param name="windowclose_down">[$EXP[Exp_InfoPanelWindows_Next_01] | [$EXP[Exp_InfoPanelWindows_Next_03] + $EXP[Exp_ReverseTransition]]]</param>
         </include>
     </include>
 
@@ -494,11 +534,10 @@
     </include>
 
     <include name="Animation_Settings_WindowChange">
-
         <definition>
             <include content="Animation_View_WindowChange">
-                <param name="windowopen_condition">!$EXP[Exp_SettingsDialogs_Prev]</param>
-                <param name="windowclose_condition">!$EXP[Exp_SettingsDialogs_Next]</param>
+                <param name="windowopen_condition">[!$EXP[Exp_SettingsDialogs_Prev] | Window.Previous(settings)]</param>
+                <param name="windowclose_condition">[!$EXP[Exp_SettingsDialogs_Next] | Window.Next(settings)]</param>
             </include>
         </definition>
     </include>

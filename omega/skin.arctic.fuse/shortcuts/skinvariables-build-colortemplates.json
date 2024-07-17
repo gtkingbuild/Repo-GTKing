@@ -43,7 +43,6 @@
                 "skinstring_watchedprogresscolor_name": "Skin.String({skinuser_prefix}watchedprogresscolor.name)",
                 "skinstring_background_dialogimage": "Skin.String({skinuser_prefix}Background.DialogImage)",
                 "skinstring_background_image": "Skin.String({skinuser_prefix}Background.Image)",
-                "skinstring_sidemenucollapse": "Skin.String(Home.SideMenuCollapse)",
                 "skinstring_lastbuildtime": "Skin.String(Shortcuts.RebuildDateTime)"
             },
             "values": {

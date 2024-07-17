@@ -16,46 +16,8 @@
             <include content="DialogInfo_ButtonGroup_Basic">
                 <param name="id">9000</param>
                 <param name="dim_visible">false</param>
-                <onright>50</onright>
-                <include content="Dialog_Side_Button">
-                    <param name="id">01</param>
-                    <param name="label">$LOCALIZE[15067]</param>
-                    <param name="icon">special://skin/extras/icons/circle-xmark.png</param>
-                    <onclick>PreviousMenu</onclick>
-                </include>
-                <include content="DialogInfo_Button">
-                    <param name="vertical">true</param>
-                    <param name="id">6</param>
-                    <param name="groupid">9106</param>
-                    <param name="sliceid">9206</param>
-                    <param name="label">$LOCALIZE[502]</param>
-                    <param name="icon">special://skin/extras/icons/folder.png</param>
-                    <include content="DialogInfo_Button_HintLabel">
-                        <param name="label">$LOCALIZE[502]</param>
-                    </include>
-                </include>
-                <include content="DialogInfo_Button">
-                    <param name="vertical">true</param>
-                    <param name="id">7</param>
-                    <param name="groupid">9107</param>
-                    <param name="sliceid">9207</param>
-                    <param name="label">$LOCALIZE[190]</param>
-                    <param name="icon">special://skin/extras/icons/floppy-disk.png</param>
-                    <include content="DialogInfo_Button_HintLabel">
-                        <param name="label">$LOCALIZE[190]</param>
-                    </include>
-                </include>
-                <include content="DialogInfo_Button">
-                    <param name="vertical">true</param>
-                    <param name="id">8</param>
-                    <param name="groupid">9108</param>
-                    <param name="sliceid">9208</param>
-                    <param name="label">$LOCALIZE[192]</param>
-                    <param name="icon">special://skin/extras/icons/triangle-exclamation.png</param>
-                    <include content="DialogInfo_Button_HintLabel">
-                        <param name="label">$LOCALIZE[192]</param>
-                    </include>
-                </include>
+                <param name="include">Items_MusicPlaylistEditor_MenuBar</param>
+                <param name="include_def">DialogInfo_ButtonGroup_Basic__Def_MyMusicPlaylistEdit</param>
             </include>
             <include content="Settings_Main_Group">
                 <include content="Settings_Left_Group">
@@ -86,7 +48,6 @@
                     <include content="Settings_InfoText">
                         <param name="id">9930</param>
                         <param name="label">$INFO[Container.FolderName,,[CR]]$INFO[Control.GetLabel(12)]</param>
-                        <left>0</left>
                     </include>
                 </include>
                 <include content="Settings_Right_Group">
@@ -117,7 +78,6 @@
                     <include content="Settings_InfoText">
                         <param name="id">9931</param>
                         <param name="label">$LOCALIZE[559]$INFO[Control.GetLabel(101),[CR],]</param>
-                        <left>0</left>
                     </include>
                 </include>
             </include>

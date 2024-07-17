@@ -43,7 +43,7 @@
 
     <include name="Background_Fanart">
         <param name="fadetime">background_fadetime</param>
-        <param name="texture">$VAR[Image_Foreground_Cheater_Parent_Divert]</param>
+        <param name="texture">$VAR[Image_Foreground]</param>
         <definition>
             <control type="image">
                 <fadetime>$PARAM[fadetime]</fadetime>
@@ -80,14 +80,14 @@
                 <control type="image">
                     <fadetime>$PARAM[fadetime]</fadetime>
                     <height>$PARAM[flixart_size_h]</height>
-                    <texture background="true" flipx="true" flipy="false">$VAR[Image_Background_Blur]</texture>
+                    <texture background="true" flipx="true" flipy="false">$VAR[Image_Background]</texture>
                 </control>
                 <!-- Bottom -->
                 <control type="image">
                     <fadetime>$PARAM[fadetime]</fadetime>
                     <height>$PARAM[flixart_size_h]</height>
                     <top>$PARAM[flixart_size_h]</top>
-                    <texture background="true" flipx="true" flipy="true">$VAR[Image_Background_Blur]</texture>
+                    <texture background="true" flipx="true" flipy="true">$VAR[Image_Background]</texture>
                 </control>
             </control>
 
@@ -99,14 +99,14 @@
                 <control type="image">
                     <fadetime>$PARAM[fadetime]</fadetime>
                     <height>$PARAM[flixart_size_h]</height>
-                    <texture background="true" flipx="false" flipy="false">$VAR[Image_Background_Blur]</texture>
+                    <texture background="true" flipx="false" flipy="false">$VAR[Image_Background]</texture>
                 </control>
                 <!-- Bottom -->
                 <control type="image">
                     <fadetime>$PARAM[fadetime]</fadetime>
                     <height>$PARAM[flixart_size_h]</height>
                     <top>$PARAM[flixart_size_h]</top>
-                    <texture background="true" flipx="false" flipy="true">$VAR[Image_Background_Blur]</texture>
+                    <texture background="true" flipx="false" flipy="true">$VAR[Image_Background]</texture>
                 </control>
             </control>
 
@@ -122,7 +122,7 @@
                 <width>192000</width>
                 <height>108000</height>
                 <centertop>64%</centertop>
-                <texture background="true">$VAR[Image_Background_Cheater_Parent_Divert]</texture>
+                <texture background="true">$VAR[Image_Background]</texture>
             </control>
         </control>
     </include>

@@ -18,6 +18,11 @@
                 <centertop>100</centertop>
                 <control type="button" id="6030">
                     <include>Defs_OSD_Button</include>
+
+                    <!-- Need to double tap play to pause if FF/RW -->
+                    <onclick condition="Player.Forwarding | Player.Rewinding">PlayerControl(Play)</onclick>
+                    <onclick condition="!Player.Paused">PlayerControl(Play)</onclick>
+
                     <onclick>CancelAlarm(osd_timeout,true)</onclick>
                     <onclick>Dialog.Close(videoosd,true)</onclick>
                     <onclick>Action(FullScreen)</onclick>
@@ -265,7 +270,9 @@
                 </include>
 
                 <!-- Settings -->
-                <include content="Dialog_Background_Blur">
+                <control type="group">
+                    <include content="Dialog_Background_Blur">
+                    </include>
                     <visible>!Window.IsVisible(DialogSlider.xml)</visible>
                     <visible>!Window.IsVisible(videobookmarks)</visible>
                     <visible>!Window.IsVisible(pvrchannelguide)</visible>
@@ -366,7 +373,7 @@
                             </control>
                         </control>
                     </control>
-                </include>
+                </control>
             </control>
 
         </control>

@@ -27,8 +27,7 @@
                     <value name="parts_two">
                         <template>
                             <![CDATA[
-                            <onclick>SetProperty(Home.MenuFocus,$INFO[Container(303).Position],Home)</onclick>
-                            <onclick condition="Window.IsVisible(1172)">Dialog.Close(1172,force)</onclick>
+                            <onclick condition="Window.IsVisible(1172)">Dialog.Close(1172,true)</onclick>
                             <onclick condition="Window.IsVisible(1172) + Window.IsMedia">ReplaceWindow(Home)</onclick>
                             ]]>
                         </template>

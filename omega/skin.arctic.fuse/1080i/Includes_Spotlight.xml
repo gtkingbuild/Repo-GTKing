@@ -75,7 +75,7 @@
                 <left>-1920</left>
 
                 <include content="Defs_AutoScroll">
-                    <param name="condition">[[!ControlGroup(310).HasFocus() | System.IdleTime(3)] + !System.HasAlarm(playtrailer) + !Player.HasMedia + !Window.IsVisible(DialogVideoInfo.xml) + !Window.IsVisible(DialogMusicInfo.xml)]</param>
+                    <param name="condition">[[!ControlGroup(310).HasFocus() | System.IdleTime(3)] + ![Skin.TimerIsRunning(idle_spotlight_trailer) + !String.IsEmpty(Container(99950).ListItem.Trailer) + !String.IsEqual(Window(Home).Property(PlayTrailer),Container(99950).ListItem.Trailer)] + ![Player.HasVideo + String.IsEqual(Window(Home).Property(PlayTrailer),Player.FileNameAndPath)] + !Window.IsVisible(DialogVideoInfo.xml) + !Window.IsVisible(DialogMusicInfo.xml) + !Window.IsVisible(DialogContextMenu.xml) + !Window.IsVisible(1113) + !Window.IsVisible(1123) + !Window.IsVisible(script-wikipedia.xml) + !Window.IsVisible(DialogSelect.xml) + !Window.IsVisible(DialogBusy.xml)]</param>
                 </include>
 
                 <itemlayout />
@@ -116,10 +116,6 @@
         <oninfo>SetFocus(301)</oninfo>
         <oninfo>Action(Info)</oninfo>
         <oninfo>SetFocus($PARAM[id])</oninfo>
-
-        <include content="Action_AutoTrailer_OnFocus" condition="Skin.HasSetting(Trailers.EnableAutoPlayback)">
-            <param name="id">301</param>
-        </include>
     </include>
 
     <include name="Spotlight_Main">
@@ -150,14 +146,14 @@
                 <control type="grouplist" id="310">
                     <orientation>horizontal</orientation>
 
-                    <include content="Action_Widget_Top" condition="!Skin.String(Home.SideMenuCollapse,Topbar)">
+                    <include content="Action_Widget_Top" condition="!$EXP[Exp_HomeMenu_IsTopBar]">
                         <param name="id">311</param>
                     </include>
-                    <onup condition="Skin.String(Home.SideMenuCollapse,Topbar)">SetFocus(303,1,absolute)</onup>
+                    <onup condition="$EXP[Exp_HomeMenu_IsTopBar]">SetFocus(303)</onup>
 
                     <include content="Action_View_Movement_OnLeftRight">
                         <param name="id">311</param>
-                        <param name="onleft">314</param>
+                        <param name="onleft">315</param>
                         <param name="backid">311</param>
                         <param name="onback">Control.HasFocus(311)</param>
                     </include>
@@ -282,31 +278,6 @@
                         <param name="icon_colordiffuse">main_fg_90</param>
                     </include>
 
-                    <!-- <control type="button" id="314">
-                        <left>20</left>
-                        <include>Defs_OSD_Button</include>
-                        <centertop>50%</centertop>
-                        <onclick condition="$EXP[Exp_Hubs_Spotlight_HasItems]">Control.Move(301,1)</onclick>
-                        <onup condition="$EXP[Exp_Hubs_Spotlight_HasItems]">Control.Move(301,-1)</onup>
-                        <ondown condition="$EXP[Exp_Hubs_Spotlight_HasItems]">Control.Move(301,1)</ondown>
-                        <onclick condition="!$EXP[Exp_Hubs_Spotlight_HasItems]">Control.Move(99971,1)</onclick>
-                        <onup condition="!$EXP[Exp_Hubs_Spotlight_HasItems]">Control.Move(99971,-1)</onup>
-                        <ondown condition="!$EXP[Exp_Hubs_Spotlight_HasItems]">Control.Move(99971,1)</ondown>
-                        <include content="Spotlight_Main_Button_Standard">
-                            <param name="id">314</param>
-                            <param name="window_id">$PARAM[window_id]</param>
-                        </include>
-                    </control>
-                    <include content="OSD_Button_Icon_Overlay">
-                        <param name="icon">special://skin/extras/icons/arrow-up-arrow-down.png</param>
-                        <param name="id">314</param>
-                        <param name="groupid">324</param>
-                        <param name="vertical">false</param>
-                        <param name="itemgap">0</param>
-                        <param name="center">true</param>
-                        <param name="icon_colordiffuse">main_fg_90</param>
-                    </include> -->
-
                     <control type="button" id="314">
                         <left>20</left>
                         <include>Defs_OSD_Button</include>
@@ -328,8 +299,6 @@
                         <param name="center">true</param>
                         <param name="icon_colordiffuse">main_fg_90</param>
                     </include>
-
-
 
                     <control type="button" id="315">
                         <left>20</left>

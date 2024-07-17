@@ -17,14 +17,15 @@
                 <param name="slide_condition">True</param>
                 <param name="dialog_size">Dimension_DialogMainMenu</param>
                 <!-- Side Buttons -->
-                <include content="Dialog_Body">
-                    <include content="Dialog_Side_Grouplist">
-                        <param name="id">9000</param>
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
+                    <control type="grouplist" id="9000">
+                        <include>Dialog_Side_Grouplist_Def</include>
                         <onleft>Close</onleft>
                         <onright>9902</onright>
                         <include>Items_Wikipedia_MenuBar</include>
-                    </include>
-                </include>
+                    </control>
+                </control>
             </include>
 
             <include content="Dialog_Foreground_Side">
@@ -43,9 +44,11 @@
                 <include>Dialog_Head_CloseButton</include>
 
                 <!-- Content -->
-                <include content="Dialog_Body">
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
 
-                    <include content="Dialog_Body_Group">
+                    <control type="group">
+                        <include>Dimension_Dialog_Body_Group</include>
                         <include content="List_DialogSelect">
                             <param name="id">9902</param>
                             <onleft>9000</onleft>
@@ -134,16 +137,13 @@
                                 </control>
                             </include>
                         </control>
-                    </include>
-
-
-
+                    </control>
 
                     <include content="Dialog_Scrollbar">
                         <param name="id">61</param>
                         <onleft>9902</onleft>
                     </include>
-                </include>
+                </control>
             </include>
         </control>
 

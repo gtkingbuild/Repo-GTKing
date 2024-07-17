@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window type="dialog" id="1170">
     <defaultcontrol>7000</defaultcontrol>
+    <onload>Dialog.Close(1171)</onload>
+    <onload>Dialog.Close(1172)</onload>
     <onload>AlarmClock(refocus,SetFocus(7021),00:00,silent)</onload>
     <include>Action_ButtonMenu_Onload</include>
     <controls>
@@ -24,10 +26,11 @@
                 <include>Dialog_Head_CloseButton</include>
 
                 <!-- Content -->
-                <include content="Dialog_Body">
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
 
-                    <include content="Dialog_Body_Group">
-                        <param name="id">7000</param>
+                    <control type="group" id="7000">
+                        <include>Dimension_Dialog_Body_Group</include>
 
                         <include content="ButtonMenu_Layout" condition="Skin.String(OptionsTiles.Layout,$NUMBER[2])">
                             <param name="layout_include">ButtonMenu_Layout_Two</param>
@@ -45,7 +48,6 @@
                             <right>20</right>
                             <height>1</height>
                             <texture colordiffuse="dialog_fg_12">common/white.png</texture>
-                            <!-- <visible>String.IsEmpty(Window(Home).Property(Options.Menu.GUID))</visible> -->
                         </control>
 
                         <include content="List_DialogSelect">
@@ -74,13 +76,10 @@
                             <include>ButtonMenu_OptionsTray</include>
                         </control>
 
-                    </include>
-                </include>
+                    </control>
+                </control>
 
             </include>
-
-
-
         </control>
 
 

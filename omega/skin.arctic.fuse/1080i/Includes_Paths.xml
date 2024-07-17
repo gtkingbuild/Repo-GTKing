@@ -21,11 +21,6 @@
         <value>noop</value>
     </variable>
 
-    <variable name="Path_Search_ReverseInhibit">
-        <value condition="[Window.Previous(Home) + !Skin.HasSetting(Hub.Home.DisableSubmenu)] | [Window.Previous(1101) + !Skin.HasSetting(Hub.1101.DisableSubmenu)] | [Window.Previous(1102) + !Skin.HasSetting(Hub.1102.DisableSubmenu)] | [Window.Previous(1103) + !Skin.HasSetting(Hub.1103.DisableSubmenu)] | [Window.Previous(1104) + !Skin.HasSetting(Hub.1104.DisableSubmenu)] | [Window.Previous(1106) + !Skin.HasSetting(Hub.1106.DisableSubmenu)] | [Window.Previous(1107) + !Skin.HasSetting(Hub.1107.DisableSubmenu)] | [Window.Previous(1108) + !Skin.HasSetting(Hub.1108.DisableSubmenu)] | [Window.Previous(1109) + !Skin.HasSetting(Hub.1109.DisableSubmenu)]">InhibitTransition</value>
-        <value>ReverseTransition</value>
-    </variable>
-
     <variable name="Path_SkinVariables_1304_EditMode">
         <value condition="!String.EndsWith(Container(304).ListItem.Property(menu),-widgetsonly) + !String.EndsWith(Container(304).ListItem.Property(menu),-globalwidgets)">$INFO[Container(304).ListItem.Property(mode),mode=,]</value>
     </variable>
@@ -61,11 +56,9 @@
 
     <variable name="Path_PreSelect_Nav_OnDown">
         <value condition="Skin.String(Navigation.Global.OnDown,Options)">0</value>
-        <value condition="Skin.String(Navigation.Global.OnDown,Search)">1</value>
-        <value condition="Skin.String(Navigation.Global.OnDown,Explore)">2</value>
-        <value condition="Skin.String(Navigation.Global.OnDown,Filter)">3</value>
-        <value condition="Skin.String(Navigation.Global.OnDown,Discover)">4</value>
-        <value condition="Skin.String(Navigation.Global.OnDown,Bump)">5</value>
+        <value condition="Skin.String(Navigation.Global.OnDown,Explore)">1</value>
+        <value condition="Skin.String(Navigation.Global.OnDown,Filter)">2</value>
+        <value condition="Skin.String(Navigation.Global.OnDown,Bump)">3</value>
     </variable>
 
     <variable name="Path_Shortcut_Hub_Prefix">
@@ -166,7 +159,7 @@
     </variable>
 
     <variable name="Path_DiscoverWidgets_Base">
-        <value>plugin://plugin.video.themoviedb.helper/?info=discover&amp;with_separator=AND&amp;with_id=True$VAR[Path_Param_Widget]$INFO[Control.GetLabel(9099).index(1),&amp;with_text_query=,]$INFO[Window.Property(SearchDiscover.ProviderID),&amp;with_watch_providers=,]$INFO[Window.Property(SearchDiscover.CastID),&amp;with_cast=,]$INFO[Window.Property(SearchDiscover.CrewID),&amp;with_crew=,]$INFO[Window.Property(SearchDiscover.PeopleID),&amp;with_people=,]$INFO[Window.Property(SearchDiscover.KeywordID),&amp;with_keywords=,]$VAR[Path_DiscoverWidgets_VoteLow,&amp;vote_count.gte=,]$VAR[Path_DiscoverWidgets_VoteHigh,&amp;vote_count.lte=,]$VAR[Path_DiscoverWidgets_RatingLow,&amp;vote_average.gte=,]$VAR[Path_DiscoverWidgets_RatingHigh,&amp;vote_average.lte=,]</value>
+        <value>plugin://plugin.video.themoviedb.helper/?info=discover&amp;with_separator=AND&amp;with_id=True$VAR[Path_Param_Widget]$VAR[Path_SearchTerm,&amp;with_text_query=,]$INFO[Window.Property(SearchDiscover.ProviderID),&amp;with_watch_providers=,]$INFO[Window.Property(SearchDiscover.CastID),&amp;with_cast=,]$INFO[Window.Property(SearchDiscover.CrewID),&amp;with_crew=,]$INFO[Window.Property(SearchDiscover.PeopleID),&amp;with_people=,]$INFO[Window.Property(SearchDiscover.KeywordID),&amp;with_keywords=,]$VAR[Path_DiscoverWidgets_VoteLow,&amp;vote_count.gte=,]$VAR[Path_DiscoverWidgets_VoteHigh,&amp;vote_count.lte=,]$VAR[Path_DiscoverWidgets_RatingLow,&amp;vote_average.gte=,]$VAR[Path_DiscoverWidgets_RatingHigh,&amp;vote_average.lte=,]</value>
     </variable>
 
     <variable name="Path_DiscoverWidgets_YearLow">
@@ -223,7 +216,7 @@
 
     <variable name="Path_DiscoverWidgets_Join">
         <value condition="!String.IsEmpty(Container(5099).ListItem.Property(discover))">plugin://script.skinvariables/?info=get_filter_dir&amp;library=video$VAR[Path_DiscoverWidgets_JoinSort,&amp;sort_by=,&amp;sort_how=desc]</value>
-        <value>plugin://script.skinvariables/?info=get_filter_dir&amp;library=video$INFO[Control.GetLabel(9099).index(1),&amp;filter_key__title=title&amp;filter_value__title=,]$INFO[Window.Property(SearchDiscover.GenreLabel),&amp;filter_key__genre=genre&amp;filter_value__genre=,]$INFO[Window.Property(SearchDiscover.StudioLabel),&amp;filter_key__studio=studio&amp;filter_value__studio=,]$INFO[Window.Property(SearchDiscover.DirectorLabel),&amp;filter_key__director=director&amp;filter_value__director=,]$INFO[Window.Property(SearchDiscover.WriterLabel),&amp;filter_key__writer=writer&amp;filter_value__writer=,]$INFO[Window.Property(SearchDiscover.CountryLabel),&amp;filter_key__country=country&amp;filter_value__country=,]$INFO[Window.Property(SearchDiscover.YearLow),&amp;filter_key__yearlow=year&amp;filter_operator__yearlow=ge&amp;filter_value__yearlow=,]$INFO[Window.Property(SearchDiscover.YearHigh),&amp;filter_key__yearhigh=year&amp;filter_operator__yearhigh=le&amp;filter_value__yearhigh=,]$INFO[Window.Property(SearchDiscover.RatingLow),&amp;filter_key__ratinglow=rating&amp;filter_operator__ratinglow=ge&amp;filter_value__ratinglow=,]$INFO[Window.Property(SearchDiscover.RatingHigh),&amp;filter_key__ratinghigh=rating&amp;filter_operator__ratinghigh=le&amp;filter_value__ratinghigh=,]</value>
+        <value>plugin://script.skinvariables/?info=get_filter_dir&amp;library=video$VAR[Path_SearchTerm,&amp;filter_key__title=title&amp;filter_value__title=,]$INFO[Window.Property(SearchDiscover.GenreLabel),&amp;filter_key__genre=genre&amp;filter_value__genre=,]$INFO[Window.Property(SearchDiscover.StudioLabel),&amp;filter_key__studio=studio&amp;filter_value__studio=,]$INFO[Window.Property(SearchDiscover.DirectorLabel),&amp;filter_key__director=director&amp;filter_value__director=,]$INFO[Window.Property(SearchDiscover.WriterLabel),&amp;filter_key__writer=writer&amp;filter_value__writer=,]$INFO[Window.Property(SearchDiscover.CountryLabel),&amp;filter_key__country=country&amp;filter_value__country=,]$INFO[Window.Property(SearchDiscover.YearLow),&amp;filter_key__yearlow=year&amp;filter_operator__yearlow=ge&amp;filter_value__yearlow=,]$INFO[Window.Property(SearchDiscover.YearHigh),&amp;filter_key__yearhigh=year&amp;filter_operator__yearhigh=le&amp;filter_value__yearhigh=,]$INFO[Window.Property(SearchDiscover.RatingLow),&amp;filter_key__ratinglow=rating&amp;filter_operator__ratinglow=ge&amp;filter_value__ratinglow=,]$INFO[Window.Property(SearchDiscover.RatingHigh),&amp;filter_key__ratinghigh=rating&amp;filter_operator__ratinghigh=le&amp;filter_value__ratinghigh=,]</value>
     </variable>
 
     <variable name="Path_DiscoverWidgets_Film">
@@ -247,12 +240,10 @@
     </variable>
 
     <variable name="Path_SearchTerm">
-        <!-- <value condition="Control.HasFocus(9099)">$INFO[Control.GetLabel(9099).index(1)]</value>
-        <value condition="!String.IsEmpty(Window.Property(SearchTerm))">$INFO[Window.Property(SearchTerm)]</value>
-        <value condition="!String.IsEmpty(Control.GetLabel(9099).index(1))">$INFO[Control.GetLabel(9099).index(1)]</value> -->
-        <!-- <value>•••</value> -->
-        <value condition="!String.IsEmpty(Control.GetLabel(9099).index(1))">$INFO[Control.GetLabel(9099).index(1)]</value>
+        <value condition="Window.IsVisible(1105) | Window.IsVisible(1185)">$INFO[Control.GetLabel(9099).index(1)]</value>
+        <value>$INFO[Control.GetLabel(19).index(1)]</value>
     </variable>
+    <expression name="Path_SearchTerm_Exp">[[[Window.IsVisible(1105) | Window.IsVisible(1185)] + !String.IsEmpty(Control.GetLabel(9099).index(1))] | [Window.IsMedia + !String.IsEmpty(Control.GetLabel(19).index(1))]]</expression>
 
     <variable name="Path_Search_Filter">
         <value condition="!String.IsEmpty(Control.GetLabel(9003).index(1))">$INFO[Control.GetLabel(9003).index(1),&amp;filter_key=year&amp;filter_value=,]</value>

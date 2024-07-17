@@ -1,51 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window type="dialog" id="1122">
 
-    <defaultcontrol always="true">5001</defaultcontrol>
-    <onload condition="String.IsEmpty(Skin.String(VideoInfo.PersonCredits.SortKey))">Skin.SetString(VideoInfo.PersonCredits.SortKey,popular)</onload>
+    <defaultcontrol always="true">5098</defaultcontrol>
+    <onload>SetFocus(5098)</onload>
     <include>Action_PreserveTransitionProp_Onload</include>
+    <menucontrol>303</menucontrol>
+
+    <onload condition="String.IsEmpty(Skin.String(VideoInfo.PersonCredits.SortKey))">Skin.SetString(VideoInfo.PersonCredits.SortKey,popular)</onload>
 
     <controls>
 
-        <include content="View_Bumper">
-            <param name="groupid">5000</param>
-        </include>
+        <include>DialogInfo_Recommendations_BackgroundLoader</include>
+        <include>DialogInfo_Recommendations_BackgroundFake</include>
+        <include content="DialogInfo_Recommendations_Group">
 
-        <include content="Object_Hidden_Button">
-            <param name="id">7000</param>
-            <onfocus>SetFocus(4000)</onfocus>
-        </include>
+            <include content="Object_Hidden_List">
+                <param name="id">5203</param>
+                <content sortby="year" sortorder="descending">$INFO[Window.Property(Item_Query),plugin://plugin.video.themoviedb.helper/?info=details&amp;tmdb_type=person,]</content>
+            </include>
 
-        <include>Defs_TMDbHelper_Loader</include>
+            <include>DialogInfo_Recommendations_InfoPanel</include>
+            <include content="DialogInfo_Recommendations_Widgets_Grouplist">
+                <param name="onup">333</param>
+                <param name="ondown">noop</param>
+                <onleft condition="!$EXP[Exp_HomeMenu_IsTopBar]">303</onleft>
+                <onright condition="!$EXP[Exp_HomeMenu_IsTopBar]">332</onright>
+                <ondown condition="!$EXP[Exp_HomeMenu_IsTopBar]">330</ondown>
+                <ondown condition="$EXP[Exp_HomeMenu_IsTopBar]">303</ondown>
 
-        <control type="image">
-            <texture colordiffuse="$VAR[ColorBackground]">common/white.png</texture>
-        </control>
-        <include>Background_Main</include>
-
-
-        <control type="group">
-            <include>Animation_Group_Bumper</include>
-            <control type="group">
-                <include>Dimension_Info</include>
-
-                <include content="Info_Panel">
-                    <param name="titlelabel">$VAR[Label_Title_Container]</param>
-                    <param name="container">Container.</param>
-                    <param name="plotlabel">$VAR[Label_Plot_Container]</param>
-                    <width>info_panel_w</width>
-                </include>
-            </control>
-
-            <control type="grouplist" id="5000">
-                <top>hub_recommendations_widgets_grouplist_t</top>
-                <bottom>hub_recommendations_widgets_grouplist_b</bottom>
-                <onup>4002</onup>
-                <ondown>330</ondown>
-                <include>Animation_Down_Delay</include>
-                <orientation>vertical</orientation>
-                <control type="group" id="5999">
-                    <height>widget_tbump_h</height>
+                <control type="button" id="5098">
+                    <height>0</height>
+                    <texturefocus />
+                    <texturenofocus />
+                    <onfocus>Action(Down)</onfocus>
+                    <animation effect="fade" time="400" start="0" end="0">Focus</animation>
+                    <visible>!ControlGroup(5000).HasFocus() | Control.HasFocus(5098)</visible>
                 </control>
 
                 <include content="Widget_Info_Row">
@@ -54,7 +43,10 @@
                     <param name="include">List_Poster_Row</param>
                     <param name="detailed">true</param>
                     <param name="visible">!String.IsEmpty(Window.Property(Item_Query))</param>
-                    <param name="menuid">4000</param>
+                    <param name="transition_include">false</param>
+                    <param name="transition_hidden">Control.HasFocus(5001)</param>
+                    <param name="widgetfade_include">true</param>
+                    <param name="include_movement">false</param>
                     <content>$INFO[Window.Property(Item_Query),plugin://plugin.video.themoviedb.helper/?info=stars_in_movies&amp;tmdb_type=person,]$VAR[Path_Param_SortKey_MovieCredits]$VAR[Path_Param_Widget]&amp;limit=100</content>
                     <include content="Action_Recommendations_OnClick">
                         <param name="id">5001</param>
@@ -67,7 +59,10 @@
                     <param name="include">List_Poster_Row</param>
                     <param name="detailed">true</param>
                     <param name="visible">!String.IsEmpty(Window.Property(Item_Query))</param>
-                    <param name="menuid">4000</param>
+                    <param name="transition_include">false</param>
+                    <param name="transition_hidden">Control.HasFocus(5002)</param>
+                    <param name="widgetfade_include">true</param>
+                    <param name="include_movement">false</param>
                     <content>$INFO[Window.Property(Item_Query),plugin://plugin.video.themoviedb.helper/?info=stars_in_tvshows&amp;tmdb_type=person,]$VAR[Path_Param_SortKey_TVShowCredits]$VAR[Path_Param_Widget]&amp;limit=100</content>
                     <include content="Action_Recommendations_OnClick">
                         <param name="id">5002</param>
@@ -80,37 +75,33 @@
                     <param name="include">List_Poster_Row</param>
                     <param name="detailed">true</param>
                     <param name="visible">!String.IsEmpty(Window.Property(Item_Query))</param>
-                    <param name="menuid">4000</param>
+                    <param name="transition_include">false</param>
+                    <param name="transition_hidden">Control.HasFocus(5003)</param>
+                    <param name="widgetfade_include">true</param>
+                    <param name="include_movement">false</param>
                     <content>$INFO[Window.Property(Item_Query),plugin://plugin.video.themoviedb.helper/?info=crew_in_both&amp;tmdb_type=person,]$VAR[Path_Param_SortKey_MovieCredits]$VAR[Path_Param_Widget]</content>
                     <include content="Action_Recommendations_OnClick">
                         <param name="id">5003</param>
                     </include>
                 </include>
-
-            </control>
-        </control>
-
-        <include content="DialogInfo_ButtonGroup_Basic">
-            <param name="include">Items_PersonCredits_MenuBar</param>
-            <onup>Close</onup>
-            <ondown>5000</ondown>
-            <onleft condition="!String.IsEmpty(Window.Property(TMDbHelper.WidgetContainer))">SetFocus($INFO[Window.Property(TMDbHelper.WidgetContainer)],99999,absolute)</onleft>
-            <onright condition="!String.IsEmpty(Window.Property(TMDbHelper.WidgetContainer))">SetFocus($INFO[Window.Property(TMDbHelper.WidgetContainer)],0,absolute)</onright>
+            </include>
         </include>
 
-        <control type="group">
-            <include>Animation_Group_Bumper</include>
-            <include>Animation_View_WindowChange</include>
-            <control type="group">
-                <include content="Furniture_Top">
-                    <param name="label">$INFO[Window.Property(Item_Title)]</param>
-                </include>
-            </control>
-            <include content="Hub_Widgets_Group_Furniture">
-                <param name="visible">true</param>
-                <param name="include_conditionalfade">false</param>
-            </include>
-        </control>
+        <include>DialogInfo_ButtonGroup_Recommendations</include>
+
+        <include content="DialogInfo_Recommendations_Furniture">
+            <param name="include_homemenu">false</param>
+            <param name="header">$INFO[Window.Property(Item_Title)]</param>
+        </include>
+
+        <include content="DialogInfo_PlotBox">
+            <param name="include_movement">DialogInfo_PlotBox_Details_OnMove</param>
+            <param name="poster_icon">$INFO[Container(5203).ListItem.Icon]</param>
+            <param name="poster_visible">true</param>
+            <param name="landscape_visible">false</param>
+            <param name="textbox">$INFO[Container(5203).ListItem.Plot]</param>
+            <param name="header">$INFO[Window.Property(Item_Title)]$INFO[Container(5203).ListItem.Property(Age),  , $LOCALIZE[31057]]$INFO[Container(5203).ListItem.Property(Deathday),  † ,]</param>
+        </include>
 
 
 

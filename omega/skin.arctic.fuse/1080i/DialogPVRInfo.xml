@@ -21,14 +21,15 @@
                 <param name="dialog_size">Dimension_DialogHugeMenu</param>
 
                 <!-- Side Buttons -->
-                <include content="Dialog_Body">
-                    <include content="Dialog_Side_Grouplist">
-                        <param name="id">9000</param>
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
+                    <control type="grouplist" id="9000">
+                        <include>Dialog_Side_Grouplist_Def</include>
                         <onleft>Close</onleft>
                         <onright>61</onright>
                         <include>Items_DialogPVRInfo_MenuBar</include>
-                    </include>
-                </include>
+                    </control>
+                </control>
             </include>
 
             <include content="Dialog_Foreground_Side">
@@ -44,8 +45,10 @@
                 <include>Dialog_Head_CloseButton</include>
 
                 <!-- Content -->
-                <include content="Dialog_Body">
-                    <include content="Dialog_Body_Group">
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
+                    <control type="group">
+                        <include>Dimension_Dialog_Body_Group</include>
                         <include content="DialogInfo_PlotBox_Artwork">
                             <param name="square_icon">$INFO[ListItem.Icon]</param>
                             <param name="landscape_icon">$VAR[Image_PVREpgLandscapeArt]</param>
@@ -62,12 +65,12 @@
                                 <pagecontrol>61</pagecontrol>
                             </control>
                         </control>
-                    </include>
+                    </control>
                     <include content="Dialog_Scrollbar">
                         <param name="id">61</param>
                         <onleft>9000</onleft>
                     </include>
-                </include>
+                </control>
             </include>
 
         </control>

@@ -14,13 +14,6 @@
         </include>
 
         <include content="Settings_Dialog">
-            <include content="DialogInfo_ButtonGroup_Basic">
-                <param name="id">30000</param>
-                <param name="dim_visible">false</param>
-                <onright>3</onright>
-                <onleft>SetFocus(30040)</onleft>
-                <include>Settings_Standard_Buttons</include>
-            </include>
             <include content="Settings_Main_Group">
                 <include content="Settings_Left_Group">
                     <include content="Settings_Left_Grouplist">
@@ -30,6 +23,7 @@
                         
                         <!-- <ondown>-</ondown> -->
                         <include content="Settings_Button">
+                            <param name="dialog">true</param>
                             <param name="id">94</param>
                             <param name="control">button</param>
                             <include>Texture_Highlight_ToggleButton_Settings</include>
@@ -39,6 +33,7 @@
                             <description>Storage</description>
                         </include>
                         <include content="Settings_Button">
+                            <param name="dialog">true</param>
                             <param name="id">95</param>
                             <param name="control">button</param>
                             <include>Texture_Highlight_ToggleButton_Settings</include>
@@ -48,6 +43,7 @@
                             <description>Summary</description>
                         </include>
                         <include content="Settings_Button">
+                            <param name="dialog">true</param>
                             <param name="id">96</param>
                             <param name="control">button</param>
                             <include>Texture_Highlight_ToggleButton_Settings</include>
@@ -57,6 +53,7 @@
                             <description>Network</description>
                         </include>
                         <include content="Settings_Button">
+                            <param name="dialog">true</param>
                             <param name="id">97</param>
                             <param name="control">button</param>
                             <include>Texture_Highlight_ToggleButton_Settings</include>
@@ -66,6 +63,7 @@
                             <description>Video</description>
                         </include>
                         <include content="Settings_Button">
+                            <param name="dialog">true</param>
                             <param name="id">98</param>
                             <param name="control">button</param>
                             <include>Texture_Highlight_ToggleButton_Settings</include>
@@ -75,6 +73,7 @@
                             <description>Hardware</description>
                         </include>
                         <include content="Settings_Button">
+                            <param name="dialog">true</param>
                             <param name="id">99</param>
                             <param name="control">button</param>
                             <include>Texture_Highlight_ToggleButton_Settings</include>
@@ -84,6 +83,7 @@
                             <description>Live TV / PVR</description>
                         </include>
                         <include content="Settings_Button">
+                            <param name="dialog">true</param>
                             <param name="id">100</param>
                             <param name="control">button</param>
                             <include>Texture_Highlight_ToggleButton_Settings</include>
@@ -98,9 +98,10 @@
                 <include content="Settings_Right_Group">
 
                     <control type="group">
-                        <top>-20</top>
-                        <bottom>100</bottom>
+                        <top>20</top>
+                        <bottom>20</bottom>
                         <include content="Settings_Label">
+                            <param name="dialog">true</param>
                             <param name="control">label</param>
                             <param name="id">40</param>
                         </include>
@@ -109,6 +110,7 @@
                                 <top>100</top>
                                 <left>40</left>
                                 <right>40</right>
+                                <textcolor>dialog_fg_70</textcolor>
                                 <font>font_main_plot</font>
                                 <bottom>0</bottom>
                                 <pagecontrol>61</pagecontrol>
@@ -133,6 +135,7 @@
                                         <right>20</right>
                                         <control type="label">
                                             <height>40</height>
+                                            <textcolor>dialog_fg_70</textcolor>
                                             <label fallback="19055">$INFO[system.memory(used.percent),Used memory: ,]</label>
                                         </control>
                                         <control type="group">
@@ -140,7 +143,7 @@
                                             <top>60</top>
                                             <control type="progress" id="9201">
                                                 <info>system.memory(used)</info>
-                                                <texturebg colordiffuse="main_bg_12" border="6">progress/progress-bg.png</texturebg>
+                                                <texturebg colordiffuse="dialog_bg_12" border="6">progress/progress-bg.png</texturebg>
                                                 <lefttexture colordiffuse="$VAR[ColorHighlight]" border="6">progress/progress-left.png</lefttexture>
                                                 <midtexture colordiffuse="$VAR[ColorHighlight]" border="6">progress/progress-end.png</midtexture>
                                                 <righttexture colordiffuse="$VAR[ColorHighlight]" border="6">progress/progress-right.png</righttexture>
@@ -165,6 +168,7 @@
                                         <left>20</left>
                                         <control type="label">
                                             <height>40</height>
+                                            <textcolor>dialog_fg_70</textcolor>
                                             <label fallback="19055">$INFO[System.CPUUsage,$LOCALIZE[13271] ,]</label>
                                         </control>
                                         <control type="group">
@@ -172,7 +176,7 @@
                                             <top>60</top>
                                             <control type="progress" id="9202">
                                                 <info>System.CPUUsage</info>
-                                                <texturebg colordiffuse="main_bg_12" border="6">progress/progress-bg.png</texturebg>
+                                                <texturebg colordiffuse="dialog_bg_12" border="6">progress/progress-bg.png</texturebg>
                                                 <lefttexture colordiffuse="$VAR[ColorHighlight]" border="6">progress/progress-left.png</lefttexture>
                                                 <midtexture colordiffuse="$VAR[ColorHighlight]" border="6">progress/progress-end.png</midtexture>
                                                 <righttexture colordiffuse="$VAR[ColorHighlight]" border="6">progress/progress-right.png</righttexture>
@@ -192,56 +196,66 @@
                                 </control>
                             </control>
                             <control type="label" id="2">
+                                <textcolor>dialog_fg_70</textcolor>
                                 <textoffsetx>40</textoffsetx>
                                 <height>40</height>
                             </control>
                             <control type="label" id="3">
+                                <textcolor>dialog_fg_70</textcolor>
                                 <textoffsetx>40</textoffsetx>
                                 <height>40</height>
                             </control>
                             <control type="label" id="4">
+                                <textcolor>dialog_fg_70</textcolor>
                                 <textoffsetx>40</textoffsetx>
                                 <height>40</height>
                             </control>
                             <control type="label" id="5">
+                                <textcolor>dialog_fg_70</textcolor>
                                 <textoffsetx>40</textoffsetx>
                                 <height>40</height>
                             </control>
                             <control type="label" id="6">
+                                <textcolor>dialog_fg_70</textcolor>
                                 <textoffsetx>40</textoffsetx>
                                 <height>40</height>
                             </control>
                             <control type="label" id="7">
+                                <textcolor>dialog_fg_70</textcolor>
                                 <textoffsetx>40</textoffsetx>
                                 <height>40</height>
                             </control>
                             <control type="label" id="8">
+                                <textcolor>dialog_fg_70</textcolor>
                                 <textoffsetx>40</textoffsetx>
                                 <height>40</height>
                             </control>
                             <control type="label" id="9">
+                                <textcolor>dialog_fg_70</textcolor>
                                 <textoffsetx>40</textoffsetx>
                                 <height>40</height>
                             </control>
                             <control type="label" id="10">
+                                <textcolor>dialog_fg_70</textcolor>
                                 <textoffsetx>40</textoffsetx>
                                 <height>40</height>
                             </control>
                             <control type="label" id="11">
+                                <textcolor>dialog_fg_70</textcolor>
                                 <textoffsetx>40</textoffsetx>
                                 <height>40</height>
                             </control>
-
                         </control>
                     </control>
-
-                    <include content="Settings_InfoText">
-                        <param name="id">9931</param>
-                        <param name="label">$INFO[Control.GetLabel(52),, ]$INFO[Control.GetLabel(53)]</param>
-                        <param name="override">true</param>
-                    </include>
                 </include>
-                <include>Settings_KodiVersion</include>
+                <include content="Settings_InfoText">
+                    <param name="id">9931</param>
+                    <param name="label">$INFO[Control.GetLabel(52),, ]$INFO[Control.GetLabel(53)]</param>
+                    <param name="override">true</param>
+                    <param name="dialog">true</param>
+                    <param name="left">80</param>
+                    <param name="bottom">60</param>
+                </include>
             </include>
 
             <include content="Settings_Changer">

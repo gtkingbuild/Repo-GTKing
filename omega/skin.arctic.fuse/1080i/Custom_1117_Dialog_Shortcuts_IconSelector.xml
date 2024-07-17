@@ -24,9 +24,10 @@
                 <param name="dialog_size">Dimension_DialogHugeMenu</param>
 
                 <!-- Side Buttons -->
-                <include content="Dialog_Body">
-                    <include content="Dialog_Side_Grouplist">
-                        <param name="id">9000</param>
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
+                    <control type="grouplist" id="9000">
+                        <include>Dialog_Side_Grouplist_Def</include>
                         <onleft>Close</onleft>
                         <onright>8000</onright>
                         <include content="Dialog_Side_Button">
@@ -42,8 +43,8 @@
                             <onclick>Close</onclick>
                             <onclick>RunPlugin($INFO[Window.Property(url),,&amp;func=do_icon&amp;&amp;icon_dir::])</onclick>
                         </include>
-                    </include>
-                </include>
+                    </control>
+                </control>
             </include>
 
             <include content="Dialog_Foreground_Side">
@@ -61,8 +62,10 @@
                 <include>Dialog_Head_CloseButton</include>
 
                 <!-- Content -->
-                <include content="Dialog_Body">
-                    <include content="Dialog_Body_Group">
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
+                    <control type="group">
+                        <include>Dimension_Dialog_Body_Group</include>
                         <control type="group" id="8000">
                             <control type="grouplist" id="8200">
                                 <width>400</width>
@@ -180,30 +183,28 @@
                                 <onclick>Close</onclick>
                             </include>
                         </include>
-                    </include>
+                    </control>
 
                     <include content="Dialog_Scrollbar">
                         <param name="id">61</param>
                         <onleft>450</onleft>
                     </include>
-                </include>
+                </control>
             </include>
 
         </control>
-        <control type="group">
-            <right>90</right>
-            <centertop>100</centertop>
-            <height>40</height>
-            <width>40</width>
-            <visible>Container(450).IsUpdating</visible>
-            <include content="Animation_Fade_In">
-                <param name="type">visible</param>
-                <param name="delay">400</param>
-            </include>
-            <include content="Furniture_Busy_Icon">
-                <param name="hasspinner">true</param>
-                <param name="spinspinner">true</param>
-            </include>
-        </control>
+
+        <include content="Furniture_Busy">
+            <param name="hasspinner">true</param>
+            <param name="spinspinner">true</param>
+            <param name="icon">special://skin/extras/icons/kodi.png</param>
+            <param name="hasbackground">Skin.HasSetting(ToastNotifications.Tabbed)</param>
+            <param name="haslabel">Skin.HasSetting(ToastNotifications.Tabbed)</param>
+            <param name="spinnervisible">Skin.HasSetting(ToastNotifications.Tabbed) | [!Window.IsActive(DialogVolumeBar.xml) | Player.Muted]</param>
+            <param name="visible_delay">400</param>
+            <param name="windowopen_condition">False</param>
+            <param name="visible">[Container(450).IsUpdating]</param>
+        </include>
+
     </controls>
 </window>

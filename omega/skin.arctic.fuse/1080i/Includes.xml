@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
 
+    <include file="Includes_Font.xml" />
+
     <include file="Includes_Home.xml" />
     <include file="Includes_MediaWall.xml" />
     <include file="Includes_MediaFilter.xml" />
@@ -28,6 +30,7 @@
     <include file="Includes_Defaults.xml" />
     <include file="Includes_Dimensions.xml" />
     <include file="Includes_Labels.xml" />
+    <include file="Includes_Images_Background_FakeBlur.xml" condition="!Skin.HasSetting(TMDbHelper.EnableBlur)" />
     <include file="Includes_Images.xml" />
     <include file="Includes_MPAA.xml" />
     <include file="Includes_Dialogs.xml" />
@@ -38,6 +41,7 @@
     <include file="Includes_DialogInfo.xml" />
     <include file="Includes_DialogSelect.xml" />
     <include file="Includes_DialogContextMenu.xml" />
+    <include file="Includes_DialogCustom1162.xml" />
     <include file="Includes_Furniture.xml" />
     <include file="Includes_Items.xml" />
     <include file="Includes_Textures.xml" />

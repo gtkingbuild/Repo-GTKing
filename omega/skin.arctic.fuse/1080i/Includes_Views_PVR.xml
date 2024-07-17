@@ -174,14 +174,13 @@
                 <param name="include_programs">$PARAM[include_programs]</param>
                 <onup>$PARAM[id]</onup>
                 <ondown>$PARAM[id]</ondown>
-                <onback>303</onback>
+                <onback>9001</onback>
                 <viewtype label="$PARAM[viewtype_label]">list</viewtype>
                 <progresstexture border="0,160,20,20" colordiffuse="main_fg_30">$PARAM[progresstexture]</progresstexture>
                 <pagecontrol>8060</pagecontrol>
                 <top>-100</top>
                 <bottom>100</bottom>
                 <left>-40</left>
-                <!-- <right>40</right> -->
             </include>
         </definition>
     </include>
@@ -189,9 +188,9 @@
 
     <include name="View_PVRGuide">
         <control type="group">
-            <visible>Control.IsVisible(50)</visible>
+            <visible>Control.IsVisible(500)</visible>
             <include content="View_PVRGuide_Standard">
-                <param name="id">50</param>
+                <param name="id">500</param>
                 <param name="progresstexture">pvr/progressline-full.png</param>
                 <param name="epg_bottom">0</param>
                 <param name="viewtype_label">$LOCALIZE[571]</param>
@@ -201,14 +200,16 @@
 
     <include name="View_PVR_Full">
         <control type="image">
-            <visible>!Window.IsVisible(pvrchannelguide)</visible>
             <texture colordiffuse="$VAR[ColorBackground]">background/combined_overlay.png</texture>
             <include>Animation_FadeIn</include>
             <include>Animation_FadeOut</include>
         </control>
         <control type="group">
-            <visible>!Window.IsVisible(pvrchannelguide)</visible>
             <control type="group">
+                <include content="Object_Right" condition="$EXP[Exp_HomeMenu_IsExpanded]">
+                    <param name="right">100</param>
+                </include>
+                <include>Animation_View_SlideOver</include>
                 <include>Animation_View_WindowChange</include>
                 <control type="group">
                     <include>Animation_Group_Bumper</include>
@@ -217,7 +218,9 @@
                     <right>view_pad</right>
                     <left>view_side</left>
                     <include content="Settings_Left_Group">
-                        <top>80</top>
+                        <top>-120</top>
+                        <bottom>-80</bottom>
+                        <left>-80</left>
                     </include>
                     <control type="group">
                         <include>Settings_Box</include>
@@ -227,82 +230,88 @@
                     </control>
                     <include>$PARAM[include]</include>
                 </control>
-                <include>Furniture_Bottom</include>
+                <include>Furniture_Bottom_Left</include>
                 <include>View_PVR_GroupSwitcher</include>
                 <include>View_Row_Header</include>
             </control>
+            <include>Furniture_Bottom_Right</include>
         </control>
     </include>
 
     <include name="View_PVR_Half">
         <control type="group">
-            <visible>!Window.IsVisible(pvrchannelguide)</visible>
+            <include>Animation_View_WindowChange</include>
             <control type="group">
-                <include>Animation_Half_WindowChange</include>
-                <include content="Animation_Zoom_Out">
-                    <param name="type">Hidden</param>
+                <include>Animation_View_SlideOver</include>
+                <include content="Object_Right" condition="$EXP[Exp_HomeMenu_IsExpanded]">
+                    <param name="right">100</param>
                 </include>
-                <include>Animation_View_WindowChange</include>
-                <animation type="Visible" reversible="false">
-                    <effect type="fade" start="0" end="100" time="300" delay="0" tween="sine" easing="out"/>
-                    <effect type="slide" start="320" end="0" time="400" delay="0" tween="cubic" easing="out" />
-                </animation>
+                <control type="group">
+                    <include>Animation_Half_WindowChange</include>
+                    <include content="Animation_Zoom_Out">
+                        <param name="type">Hidden</param>
+                    </include>
+                    <animation type="Visible" reversible="false">
+                        <effect type="fade" start="0" end="100" time="300" delay="0" tween="sine" easing="out"/>
+                        <effect type="slide" start="320" end="0" time="400" delay="0" tween="cubic" easing="out" />
+                    </animation>
+                    <control type="group">
+                        <include>Animation_Group_Bumper</include>
+                        <height>480</height>
+                        <bottom>86</bottom>
+                        <right>view_pad</right>
+                        <left>view_side</left>
+                        <control type="group">
+                            <include>Settings_Box</include>
+                            <bottom>80</bottom>
+                            <top>40</top>
+                            <left>480</left>
+                        </control>
+                        <include>$PARAM[include]</include>
+                    </control>
+                    <include>Furniture_Bottom_Left</include>
+                    <include>View_PVR_GroupSwitcher</include>
+                </control>
                 <control type="group">
                     <include>Animation_Group_Bumper</include>
-                    <height>480</height>
-                    <bottom>86</bottom>
-                    <right>view_pad</right>
-                    <left>view_side</left>
-                    <control type="group">
-                        <include>Settings_Box</include>
-                        <bottom>80</bottom>
-                        <top>40</top>
-                        <left>480</left>
-                    </control>
-                    <include>$PARAM[include]</include>
+                    <include>Animation_Transition_InfoPanel_Hide</include>
+                    <include content="Info_Panel">
+                        <param name="titlelabel">$VAR[Label_Title]</param>
+                        <param name="plotlabel">$VAR[Label_Plot]</param>
+                        <top>view_top</top>
+                        <width>info_panel_w</width>
+                        <left>view_side</left>
+                    </include>
+                    <include content="Info_Viewline">
+                        <param name="item_condition">true</param>
+                        <param name="label">$INFO[Container.NumItems,, $LOCALIZE[19019]]</param>
+                    </include>
+                    <include>View_Row_Header</include>
                 </control>
-                <include>Furniture_Bottom</include>
-                <include>View_PVR_GroupSwitcher</include>
             </control>
-            <control type="group">
-                <include>Animation_Group_Bumper</include>
-                <include>Animation_Transition_InfoPanel_Hide</include>
-                <include>Animation_View_WindowChange</include>
-                <include content="Info_Panel">
-                    <param name="titlelabel">$VAR[Label_Title]</param>
-                    <param name="plotlabel">$VAR[Label_Plot]</param>
-                    <top>view_top</top>
-                    <width>info_panel_w</width>
-                    <left>view_side</left>
-                </include>
-                <include content="Info_Viewline">
-                    <param name="item_condition">true</param>
-                    <param name="label">$INFO[Container.NumItems,, $LOCALIZE[19019]]</param>
-                </include>
-                <include>View_Row_Header</include>
-            </control>
+            <include>Furniture_Bottom_Right</include>
         </control>
     </include>
 
     <include name="View_PVR_Main">
-        <include content="View_Bumper">
-            <param name="groupid">50</param>
-        </include>
-        <include>Home_Fade</include>
-        <include content="View_PVR_Half" condition="Skin.HasSetting(Views.UseHalfPVRGuide)">
-            <param name="include">$PARAM[include]</param>
-        </include>
-        <include content="View_PVR_Full" condition="!Skin.HasSetting(Views.UseHalfPVRGuide)">
-            <param name="include">$PARAM[include]</param>
-        </include>
-        <include content="Home_Menu">
-            <param name="onlist">50</param>
-        </include>
-        <include>View_Dialog_VideoPIP</include>
-        <include>View_Dialog_Plot</include>
-
-        <include>View_PVR_Menu</include>
-
+        <control type="group">
+            <visible>!Window.IsVisible(pvrchannelguide)</visible>
+            <include content="View_Bumper">
+                <param name="groupid">50</param>
+            </include>
+            <include content="View_PVR_Half" condition="Skin.HasSetting(Views.UseHalfPVRGuide)">
+                <param name="include">$PARAM[include]</param>
+            </include>
+            <include content="View_PVR_Full" condition="!Skin.HasSetting(Views.UseHalfPVRGuide)">
+                <param name="include">$PARAM[include]</param>
+            </include>
+            <include content="Home_Menu_Media">
+                <param name="onlist">50</param>
+            </include>
+            <include>View_Dialog_VideoPIP</include>
+            <include>View_Dialog_Plot</include>
+            <include>View_PVR_Menu</include>
+        </control>
     </include>
 
     <include name="View_PVR_Menu">
@@ -310,7 +319,7 @@
             <include>Dimension_DialogSideMenu</include>
             <include>Animation_Right</include>
 
-            <visible>ControlGroup(9000).HasFocus() | Control.HasFocus(6000)</visible>
+            <visible allowhiddenfocus="true">ControlGroup(9000).HasFocus() | Control.HasFocus(6000)</visible>
 
             <include content="Dialog_Dim_Side">
                 <param name="slide_animation">False</param>
@@ -328,17 +337,14 @@
                     <param name="onclick">SetFocus(50)</param>
                 </include>
 
-                <include content="Dialog_Body">
-                    <include content="Dialog_Body_Grouplist">
-                        <param name="id">9000</param>
-
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
+                    <control type="grouplist" id="9000">
                         <bottom>100</bottom>
-
+                        <include>Dimension_Dialog_Body_Group</include>
                         <onup>SetFocus(6000,2)</onup>
                         <ondown>SetFocus(6000,2)</ondown>
-
                         <onleft>50</onleft>
-                        <onback>50</onback>
 
                         <include content="Settings_Button">
                             <param name="id">9001</param>
@@ -434,9 +440,10 @@
                             <onclick>Container.SetSortDirection</onclick>
                         </include>
 
-                    </include>
+                    </control>
 
-                    <include content="Dialog_Body_Group">
+                    <control type="group">
+                        <include>Dimension_Dialog_Body_Group</include>
                         <control type="group">
                             <visible>Player.HasMedia</visible>
                             <include>ButtonMenu_PlayerControls</include>
@@ -446,8 +453,8 @@
                             <visible>!Player.HasMedia</visible>
                             <include>ButtonMenu_OptionsTray</include>
                         </control>
-                    </include>
-                </include>
+                    </control>
+                </control>
             </include>
         </control>
     </include>
@@ -531,7 +538,7 @@
             </control>
 
             <control type="fixedlist" id="$PARAM[id]">
-                <onback>303</onback>
+                <onback>9001</onback>
                 <include content="Action_View_Movement_OnLeft"><param name="id">$PARAM[id]</param></include>
                 <onright>332</onright>
                 <top>60</top>
@@ -541,6 +548,7 @@
                 <focusposition>$PARAM[focusposition]</focusposition>
                 <movement>$PARAM[movement]</movement>
                 <viewtype label="$PARAM[viewtype_label]">list</viewtype>
+                <include>Action_View_SlideOver_OnFocus</include>
                 <itemlayout height="$PARAM[channelheight]">
                     <include content="Layout_PVRChannel">
                         <param name="channelwidth">$PARAM[channelwidth]</param>
@@ -689,7 +697,7 @@
                 </control>
                 <control type="label">
                     <height>40</height>
-                    <label>$INFO[ListItem.Season,S]$INFO[ListItem.Episode,E, ]$INFO[ListItem.EpisodeName]</label>
+                    <label>$VAR[Label_OSD_Plot_Episode_Number,,. ]$INFO[ListItem.EpisodeName]</label>
                     <visible>!String.IsEmpty(ListItem.EpisodeName)</visible>
                     <textcolor>main_fg_70</textcolor>
                 </control>

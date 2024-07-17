@@ -13,7 +13,7 @@
         ]
     },
     "actions": [
-        "SetProperty(Trailer,\"{trailer}\",1123)",
+        "SetProperty(PlayTrailer,\"{trailer}\",Home)",
         "ActivateWindow(1123)"
     ]
 }

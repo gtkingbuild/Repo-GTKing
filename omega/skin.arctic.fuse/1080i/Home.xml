@@ -10,9 +10,6 @@
         <param name="window_id">Home</param>
     </include>
 
-    <onload>ClearProperty(BlurImage,Home)</onload>
-    <onload>ClearProperty(BlurImage.Original,Home)</onload>
-
     <onload condition="!Skin.HasSetting(Wizard.FirstRun)">ActivateWindow(1180)</onload>
 
     <controls>

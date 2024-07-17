@@ -1,28 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
 
-    <include name="Info_Title_Label">
-        <param name="label">$VAR[Label_Title_Container]</param>
-        <param name="wrapmultiline">false</param>
-        <param name="visible">true</param>
-        <param name="width">info_plot_w</param>
-        <param name="height">100%</param>
-        <definition>
+    <include name="Info_Title_LogoLabel_LargeText">
+        <control type="label">
+            <wrapmultiline>$PARAM[wrapmultiline]</wrapmultiline>
+            <aligny>center</aligny>
+            <label>$PARAM[label]</label>
+            <textcolor>$PARAM[colordiffuse]_100</textcolor>
+            <font>font_title_huge</font>
+        </control>
+    </include>
+
+    <include name="Info_Title_LogoLabel_SmallText_KodiLogo">
+        <control type="group">
+            <centertop>20</centertop>
+            <height>40</height>
             <control type="group">
-                <nested />
-                <width>$PARAM[width]</width>
-                <height>$PARAM[height]</height>
-                <control type="label">
-                    <wrapmultiline>$PARAM[wrapmultiline]</wrapmultiline>
-                    <top>5</top>
-                    <bottom>5</bottom>
-                    <label>$PARAM[label]</label>
-                    <textcolor>$PARAM[colordiffuse]_100</textcolor>
-                    <font>font_title_black</font>
-                    <right>-40</right>
+                <left>-8</left>
+                <height>40</height>
+                <width>40</width>
+                <control type="image">
+                    <bordersize>-4</bordersize>
+                    <texture colordiffuse="$VAR[ColorHighlight]">special://skin/extras/icons/kodi.png</texture>
+                </control>
+                <control type="image">
+                    <bordersize>-4</bordersize>
+                    <texture colordiffuse="$VAR[ColorGradient]">special://skin/extras/icons/kodi.png</texture>
+                    <animation effect="fade" end="33" condition="true">Conditional</animation>
                 </control>
             </control>
-        </definition>
+            <control type="label">
+                <top>1</top>
+                <left>36</left>
+                <height>40</height>
+                <textcolor>$PARAM[colordiffuse]_100</textcolor>
+                <font>font_logo</font>
+                <label>KODI</label>
+            </control>
+        </control>
+    </include>
+
+    <include name="Info_Title_LogoLabel_SmallText_ArcticFuseLogo">
+        <control type="group">
+            <centertop>20</centertop>
+            <height>40</height>
+            <control type="group">
+                <height>40</height>
+                <width>40</width>
+                <control type="label">
+                    <label>&#xe52f;</label>
+                    <font>font_tiny_iconic</font>
+                    <textcolor>$VAR[ColorHighlight]</textcolor>
+                </control>
+                <control type="label">
+                    <label>&#xe52f;</label>
+                    <font>font_tiny_iconic</font>
+                    <textcolor>$VAR[ColorGradient]</textcolor>
+                    <animation effect="fade" end="33" condition="true">Conditional</animation>
+                </control>
+            </control>
+            <control type="label">
+                <bottom>11</bottom>
+                <left>36</left>
+                <height>10</height>
+                <textcolor>$PARAM[colordiffuse]_100</textcolor>
+                <font>font_logo</font>
+                <label>arctic fuse</label>
+            </control>
+        </control>
+    </include>
+
+    <include name="Info_Title_LogoLabel_SmallText">
+        <include content="Info_Title_LogoLabel_SmallText_KodiLogo">
+            <param name="colordiffuse">$PARAM[colordiffuse]</param>
+        </include>
+        <control type="label">
+            <wrapmultiline>$PARAM[wrapmultiline]</wrapmultiline>
+            <height>84</height>
+            <bottom>5</bottom>
+            <aligny>center</aligny>
+            <label>$PARAM[label]</label>
+            <textcolor>$PARAM[colordiffuse]_100</textcolor>
+            <font>font_title_main</font>
+        </control>
     </include>
 
     <include name="Info_Title_LogoLabel">
@@ -36,47 +96,19 @@
                 <visible>$PARAM[visible]</visible>
                 <width>$PARAM[width]</width>
                 <height>$PARAM[height]</height>
-                <control type="group">
-                    <centertop>20</centertop>
-                    <height>40</height>
-                    <!-- <control type="image">
-                        <height>40</height>
-                        <width>40</width>
-                        <bordersize>2</bordersize>
-                        <texture colordiffuse="main_fg_100">common/circle.png</texture>
-                    </control> -->
-                    <!-- <control type="image">
-                        <height>40</height>
-                        <width>40</width>
-                        <bordersize>-10</bordersize>
-                        <texture colordiffuse="$VAR[ColorHighlight]">special://skin/extras/icons/kodi.png</texture>
-                    </control>
-                    <control type="image">
-                        <height>40</height>
-                        <width>40</width>
-                        <bordersize>-10</bordersize>
-                        <texture colordiffuse="$VAR[ColorGradient]">special://skin/extras/icons/kodi.png</texture>
-                        <animation effect="fade" end="33" condition="true">Conditional</animation>
-                    </control> -->
-                    <control type="label">
-                        <!-- <top>1</top> -->
-                        <!-- <left>50</left> -->
-                        <height>40</height>
-                        <textcolor>$PARAM[colordiffuse]_100</textcolor>
-                        <font>font_logo</font>
-                        <label>KODI</label>
-                    </control>
-                </control>
-                <control type="label">
-                    <wrapmultiline>$PARAM[wrapmultiline]</wrapmultiline>
-                    <height>84</height>
-                    <bottom>5</bottom>
-                    <aligny>center</aligny>
-                    <label>$PARAM[label]</label>
-                    <textcolor>$PARAM[colordiffuse]_100</textcolor>
-                    <font>font_title_black</font>
-                    <right>-40</right>
-                </control>
+
+                <include content="Info_Title_LogoLabel_LargeText" condition="!Skin.HasSetting(Info.EnableSmallerTitle)">
+                    <param name="label">$PARAM[label]</param>
+                    <param name="colordiffuse">$PARAM[colordiffuse]</param>
+                    <param name="wrapmultiline">$PARAM[wrapmultiline]</param>
+                </include>
+
+                <include content="Info_Title_LogoLabel_SmallText" condition="Skin.HasSetting(Info.EnableSmallerTitle)">
+                    <param name="label">$PARAM[label]</param>
+                    <param name="colordiffuse">$PARAM[colordiffuse]</param>
+                    <param name="wrapmultiline">$PARAM[wrapmultiline]</param>
+                </include>
+
             </control>
         </definition>
     </include>
@@ -103,7 +135,7 @@
         <param name="colordiffuse">main_fg</param>
         <param name="container" />
         <param name="width">info_plot_w</param>
-        <param name="mainlogo_visible">[!String.IsEmpty(Window(Home).Property(TMDBHelper.ListItem.CropImage)) | [!String.IsEmpty(Window(Home).Property(CropImage)) + String.IsEmpty(Window(Home).Property(TMDBHelper.Image.Override))]]</param>
+        <param name="mainlogo_visible">[!String.IsEmpty(Window(Home).Property(TMDBHelper.ListItem.CropImage)) | [!String.IsEmpty(Window(Home).Property(CropImage)) + !String.IsEmpty(Window(Home).Property(TMDBHelper.Image.Override))]]</param>
         <param name="mainlogo_texture">$VAR[Image_CropLogo]</param>
         <definition>
             <control type="group">
@@ -122,12 +154,6 @@
                         <param name="height">132</param>
                         <param name="visible">True</param>
                     </include>
-                    <!-- <include content="Info_Title_Label" condition="!Skin.HasSetting(TMDbHelper.EnableCrop)">
-                        <param name="label">$PARAM[label]</param>
-                        <param name="colordiffuse">$PARAM[colordiffuse]</param>
-                        <param name="wrapmultiline">false</param>
-                        <param name="height">42</param>
-                    </include> -->
                     <!-- Other -->
                     <include content="Info_Title_Logo" condition="Skin.HasSetting(TMDbHelper.EnableCrop)">
                         <param name="label">$PARAM[label]</param>
@@ -519,6 +545,11 @@
     <include name="Info_Line_Rating_User">
         <param name="is_player">false</param>
         <definition>
+            <include content="Info_Line_Rating" condition="![$PARAM[is_player]]">
+                <param name="icon">flags/$VAR[Info_Line_Rating_Style]/ratings/user.png</param>
+                <param name="label">$INFO[Container(99950).ListItem.UserRating,,.0]</param>
+                <param name="visible">[$PARAM[visible]] + !String.IsEmpty(Container(99950).ListItem.UserRating) + String.IsEmpty($PARAM[container]ListItem.UserRating) + !String.IsEmpty(Window.Property(TMDBHelper.WidgetContainer))</param>
+            </include>
             <include content="Info_Line_Rating" condition="![$PARAM[is_player]]">
                 <param name="icon">flags/$VAR[Info_Line_Rating_Style]/ratings/user.png</param>
                 <param name="label">$INFO[$PARAM[container]ListItem.UserRating,,.0]</param>
@@ -1170,24 +1201,6 @@
                     </include>
                     <param name="label">$INFO[$PARAM[container]ListItem.Album]</param>
                     <param name="visible">!String.IsEmpty($PARAM[container]ListItem.Album)</param>
-                    <param name="textcolor">$PARAM[colordiffuse]_70</param>
-                </include>
-
-                <!-- Season / Episode -->
-                <include content="Info_Line_Items">
-                    <include content="Info_Line_Visible_01">
-                        <param name="container">$PARAM[container]</param>
-                        <param name="dbtype_01">episode</param>
-                    </include>
-                    <param name="items_04">true</param>
-                    <param name="label_01">$INFO[$PARAM[container]ListItem.Season,,x]$INFO[$PARAM[container]ListItem.Episode,0,]</param>
-                    <param name="label_02">$INFO[$PARAM[container]ListItem.Season,,x]$INFO[$PARAM[container]ListItem.Episode,,]</param>
-                    <param name="label_03">$INFO[Container(99950).ListItem.Season,,x]$INFO[Container(99950).ListItem.Episode,0,]</param>
-                    <param name="label_04">$INFO[Container(99950).ListItem.Season,,x]$INFO[Container(99950).ListItem.Episode,,]</param>
-                    <param name="visible_01">!String.IsEmpty($PARAM[container]ListItem.Episode) + Integer.IsLess($PARAM[container]ListItem.Episode,10)</param>
-                    <param name="visible_02">!String.IsEmpty($PARAM[container]ListItem.Episode)</param>
-                    <param name="visible_03">!String.IsEmpty(Container(99950).ListItem.Episode) + Integer.IsLess(Container(99950).ListItem.Episode,10)</param>
-                    <param name="visible_04">!String.IsEmpty(Container(99950).ListItem.Episode)</param>
                     <param name="textcolor">$PARAM[colordiffuse]_70</param>
                 </include>
 

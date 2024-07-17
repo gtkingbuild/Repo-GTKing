@@ -17,12 +17,9 @@
         </control>
         <include>Background_Transition</include>
 
-        <include>Home_Fade</include>
-
-
         <control type="group">
             <include>Animation_View_WindowChange</include>
-
+            <include>Animation_View_SlideOver</include>
             <control type="list" id="8000">
                 <orientation>vertical</orientation>
                 <autoscroll delay="0" time="20000" repeat="0">true</autoscroll>
@@ -32,6 +29,7 @@
                 <itemlayout />
                 <focusedlayout />
                 <include>Items_Weather_Screenshots</include>
+                <include>Action_View_SlideOver_OnFocus</include>
             </control>
 
             <include content="Info_Viewline">
@@ -51,11 +49,31 @@
                 <include>Weather_Fanart_HighLow</include>
             </control>
 
-            <include content="Dialog_Outline_Box">
+            <control type="group">
                 <left>760</left>
                 <top>160</top>
                 <bottom>160</bottom>
                 <right>view_pad</right>
+
+                <!-- <control type="group">
+                    <animation effect="zoom" start="90,100" end="100" time="400" tween="cubic" easing="out" condition="String.IsEmpty(Window(Home).Property(SideMenu.HasFocus))" reversible="false">Conditional</animation>
+                    <animation effect="zoom" start="100" end="90,100" time="400" tween="cubic" easing="out" condition="!String.IsEmpty(Window(Home).Property(SideMenu.HasFocus))" reversible="false">Conditional</animation>
+                    <include content="Dialog_Outline_Box">
+                    </include>
+                </control> -->
+
+                <control type="group">
+                    <animation effect="fade" start="0" end="100" time="400" tween="cubic" easing="out" condition="String.IsEmpty(Window(Home).Property(SideMenu.HasFocus))" reversible="false">Conditional</animation>
+                    <animation effect="fade" start="100" end="0" time="400" tween="cubic" easing="out" condition="!String.IsEmpty(Window(Home).Property(SideMenu.HasFocus))" reversible="false">Conditional</animation>
+                    <include>Dialog_Outline_Box</include>
+                </control>
+                <control type="group">
+                    <right>120</right>
+                    <animation effect="fade" start="0" end="100" time="400" tween="cubic" easing="out" condition="!String.IsEmpty(Window(Home).Property(SideMenu.HasFocus))" reversible="false">Conditional</animation>
+                    <animation effect="fade" start="100" end="0" time="400" tween="cubic" easing="out" condition="String.IsEmpty(Window(Home).Property(SideMenu.HasFocus))" reversible="false">Conditional</animation>
+                    <include>Dialog_Outline_Box</include>
+                </control>
+
                 <control type="group">
                     <include content="Dimension_Padding">
                         <param name="pad">20</param>
@@ -128,12 +146,23 @@
                     </control>
                     <control type="group">
                         <left>640</left>
+                        <animation effect="fade" start="0" end="100" time="400" tween="cubic" easing="out" condition="String.IsEmpty(Window(Home).Property(SideMenu.HasFocus))" reversible="false">Conditional</animation>
+                        <animation effect="fade" start="100" end="0" time="400" tween="cubic" easing="out" condition="!String.IsEmpty(Window(Home).Property(SideMenu.HasFocus))" reversible="false">Conditional</animation>
+                        <include content="Weather_Detail_Weekly_Simple">
+                            <param name="height">120</param>
+                        </include>
+                    </control>
+                    <control type="group">
+                        <left>640</left>
+                        <right>120</right>
+                        <animation effect="fade" start="0" end="100" time="400" tween="cubic" easing="out" condition="!String.IsEmpty(Window(Home).Property(SideMenu.HasFocus))" reversible="false">Conditional</animation>
+                        <animation effect="fade" start="100" end="0" time="400" tween="cubic" easing="out" condition="String.IsEmpty(Window(Home).Property(SideMenu.HasFocus))" reversible="false">Conditional</animation>
                         <include content="Weather_Detail_Weekly_Simple">
                             <param name="height">120</param>
                         </include>
                     </control>
                 </control>
-            </include>
+            </control>
 
             <control type="grouplist">
                 <hitrect x="0" y="0" w="0" h="0" />
@@ -164,14 +193,10 @@
                 </control>
             </control>
             <include>Furniture_Bottom_Right</include>
-
+            <include>Furniture_Top</include>
         </control>
 
-        <include>Home_Menu</include>
-        <include content="Furniture_Top">
-            <include>Animation_View_WindowChange</include>
-        </include>
-
+        <include>Home_Menu_Media</include>
 
         <include content="Furniture_Busy">
             <param name="hasspinner">true</param>
@@ -180,8 +205,7 @@
             <param name="hasbackground">Skin.HasSetting(ToastNotifications.Tabbed)</param>
             <param name="haslabel">Skin.HasSetting(ToastNotifications.Tabbed)</param>
             <param name="spinnervisible">Skin.HasSetting(ToastNotifications.Tabbed) | [!Window.IsActive(DialogVolumeBar.xml) | Player.Muted]</param>
-            <visible>!Skin.HasSetting(ToastNotifications.Tabbed) | [!Window.IsActive(DialogVolumeBar.xml) | Player.Muted]</visible>
-            <visible>!Weather.IsFetched</visible>
+            <param name="visible">[!Skin.HasSetting(ToastNotifications.Tabbed) | [!Window.IsActive(DialogVolumeBar.xml) | Player.Muted]] + !Weather.IsFetched</param>
         </include>
 
     </controls>

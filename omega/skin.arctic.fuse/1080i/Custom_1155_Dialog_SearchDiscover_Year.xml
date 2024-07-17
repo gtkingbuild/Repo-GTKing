@@ -41,7 +41,8 @@
                 <include>Dialog_Head_CloseButton</include>
 
                 <!-- Content -->
-                <include content="Dialog_Body">
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
                     <control type="group">
                         <include>Dimension_Dialog_Body_Group</include>
                         <control type="group">
@@ -104,7 +105,7 @@
                         <param name="id">61</param>
                         <onleft>8001</onleft>
                     </include>
-                </include>
+                </control>
             </include>
 
         </control>

@@ -15,9 +15,10 @@
                 <param name="slide_condition">true</param>
                 <param name="dialog_size">Dimension_DialogSideMenu</param>
                 <!-- Side Buttons -->
-                <include content="Dialog_Body">
-                    <include content="Dialog_Side_Grouplist">
-                        <param name="id">9000</param>
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
+                    <control type="grouplist" id="9000">
+                        <include>Dialog_Side_Grouplist_Def</include>
                         <onright>8000</onright>
                         <onleft>Close</onleft>
                         <include content="Dialog_Side_Button">
@@ -30,9 +31,8 @@
                             <onclick condition="!String.IsEmpty(Window(1105).Property(SearchDiscover.CrewSearch))">ClearProperty(SearchDiscover.CrewID,1105)</onclick>
                             <onclick>Close</onclick>
                         </include>
-
-                    </include>
-                </include>
+                    </control>
+                </control>
             </include>
 
             <include content="Dialog_Foreground_Side">
@@ -48,7 +48,8 @@
                 <include>Dialog_Head_CloseButton</include>
 
                 <!-- Content -->
-                <include content="Dialog_Body">
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
                     <include content="List_DialogSelect">
                         <param name="id">8000</param>
                         <param name="misc">[String.IsEqual(Window(1105).Property(SearchDiscover.SortLabel),ListItem.Label)]</param>
@@ -92,7 +93,7 @@
                         <onleft>8000</onleft>
                         <onright>9000</onright>
                     </include>
-                </include>
+                </control>
             </include>
 
         </control>

@@ -9,6 +9,7 @@
                 <datafile>generator/data/setup/widgets_spotlight.xml</datafile>
                 <value name="spotlight_visible">String.IsEqual(Container({sidemenu_id}).ListItem.Property(guid),{item_guid}) + String.IsEmpty(Container(300).ListItem.Property(spotlight_path))</value>
                 <condition>{item_spotlight_path}!=</condition>
+                <condition>{item_disabled}!=True</condition>
                 <condition>!Skin.HasSetting(Hub.Home.DisableSubmenu)</condition>
             </item>
         </items>

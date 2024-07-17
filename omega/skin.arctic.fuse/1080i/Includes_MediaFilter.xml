@@ -27,7 +27,8 @@
         <control type="group">
             <include>Dimension_DialogSideMenu</include>
             <include>Animation_Right</include>
-            <visible>!String.IsEmpty(Window.Property(MediaFilterBase)) | $EXP[Exp_FilterWall_IsActive]</visible>
+            <visible>ControlGroup(9000).HasFocus() | ControlGroup(6000).HasFocus() | Control.HasFocus(6000) | Contorl.HasFocus(60) | Control.HasFocus(6099)</visible>
+            <!-- <visible>!String.IsEmpty(Window.Property(MediaFilterBase)) | $EXP[Exp_FilterWall_IsActive]</visible> -->
             <include content="Dialog_Dim_Side">
                 <param name="slide_animation">False</param>
             </include>
@@ -44,39 +45,28 @@
                     <param name="onclick">SetFocus(68)</param>
                 </include>
 
-                <include content="Dialog_Body">
-                    <include content="Dialog_Body_Grouplist">
-                        <param name="id">9000</param>
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
+                    <control type="grouplist" id="9000">
                         <bottom>-40</bottom>
-
+                        <include>Dimension_Dialog_Body_Group</include>
                         <onleft>68</onleft>
                         <onback>68</onback>
                         <onup>SetFocus(6000,2)</onup>
                         <ondown>SetFocus(6000,2)</ondown>
 
-                        <control type="group" id="9019">
-                            <height>80</height>
-                            <include content="Search_Filter_Edit">
-                                <param name="id">19</param>
-                                <param name="onleft">19</param>
-                                <param name="onright">19</param>
-                                <param name="ondown">9018</param>
-                                <param name="onup">SetFocus(6000,2)</param>
-                                <param name="label">$LOCALIZE[587] $LOCALIZE[369]</param>
-                            </include>
-                        </control>
-
-                        <!-- <control type="edit" id="19">
-                            <description>Filter</description>
-                            <font>font_main</font>
-                            <textcolor>dialog_fg_70</textcolor>
-                            <selectedcolor>dialog_fg_70</selectedcolor>
-                            <disabledcolor>dialog_fg_30</disabledcolor>
-                            <focusedcolor>$VAR[ColorSelected]</focusedcolor>
-                            <height>view_pad</height>
-                            <textoffsetx>40</textoffsetx>
-                            <align>left</align>
-                        </control> -->
+                        <include content="Settings_Button">
+                            <param name="id">9019</param>
+                            <param name="control">button</param>
+                            <param name="dialog">true</param>
+                            <label>$LOCALIZE[369]</label>
+                            <label2>$INFO[Control.GetLabel(19).index(1)]</label2>
+                            <onclick>SetFocus(19)</onclick>
+                            <onclick>Action(Select)</onclick>
+                            <onclick>SetFocus(9019)</onclick>
+                            <ondown>9018</ondown>
+                            <onup>SetFocus(6000,2)</onup>
+                        </include>
 
                         <control type="group" id="9029">
                             <height>40</height>
@@ -89,12 +79,27 @@
                             </control>
                         </control>
 
+                        <control type="group" id="9118">
+                            <height>80</height>
+                            <left>40</left>
+                            <right>40</right>
+                            <visible>!$EXP[Exp_IsAlphabetStrip]</visible>
+                            <control type="label">
+                                <textcolor>dialog_fg_70</textcolor>
+                                <align>left</align>
+                                <label>$INFO[Container.SortMethod]</label>
+                            </control>
+                            <control type="label">
+                                <textcolor>dialog_fg_70</textcolor>
+                                <align>right</align>
+                                <label fallback="231">$VAR[Label_SortLetter]</label>
+                            </control>
+                        </control>
+
                         <include content="Settings_Button">
                             <param name="id">9018</param>
                             <param name="control">button</param>
                             <param name="dialog">true</param>
-                            <!-- <onleft condition="Integer.IsEqual(Container.CurrentPage,1)">68</onleft> -->
-                            <!-- <texturefocus /> -->
                             <onclick>SetFocus(68)</onclick>
                             <onleft>SetFocus(50)</onleft>
                             <onleft>Action(prevletter)</onleft>
@@ -104,14 +109,13 @@
                             <onright>Action(nextletter)</onright>
                             <onright>SetFocus(9020,$VAR[Action_Letter_Position],absolute)</onright>
                             <onright>SetFocus(9018)</onright>
+                            <visible>$EXP[Exp_IsAlphabetStrip]</visible>
                         </include>
 
                         <include content="Settings_Button">
                             <param name="id">9012</param>
                             <param name="control">button</param>
                             <param name="dialog">true</param>
-                            <!-- <label>$LOCALIZE[31135]</label>
-                            <label2>$INFO[Container.CurrentPage]$INFO[Container.NumPages, $LOCALIZE[1443] ,]</label2> -->
                             <onclick>SetFocus(68)</onclick>
                             <onleft>pageup(60)</onleft>
                             <onleft>SetFocus(9020,$VAR[Action_Letter_Position],absolute)</onleft>
@@ -216,9 +220,10 @@
                         </include>
 
 
-                    </include>
+                    </control>
 
-                    <include content="Dialog_Body_Group">
+                    <control type="group">
+                        <include>Dimension_Dialog_Body_Group</include>
                         <control type="group">
                             <visible>Player.HasMedia</visible>
                             <include>ButtonMenu_PlayerControls</include>
@@ -228,7 +233,7 @@
                             <visible>!Player.HasMedia</visible>
                             <include>ButtonMenu_OptionsTray</include>
                         </control>
-                    </include>
+                    </control>
 
                     <control type="group">
                         <height>40</height>
@@ -252,7 +257,7 @@
                         <control type="scrollbar" id="60">
                             <orientation>horizontal</orientation>
                             <height>64</height>
-                            <onback>68</onback>
+                            <onback>9094</onback>
                             <centertop>50%</centertop>
                             <!-- <left>40</left>
                             <right>40</right> -->
@@ -268,7 +273,7 @@
 
                     <include>MediaFilter_Alphabet_Scroll</include>
 
-                </include>
+                </control>
 
 
             </include>
@@ -288,6 +293,8 @@
             <width>462</width>
             <centerleft>50%</centerleft>
 
+            <visible>$EXP[Exp_IsAlphabetStrip]</visible>
+
             <itemlayout width="42">
                 <control type="label">
                     <font>font_main</font>
@@ -298,30 +305,6 @@
             </itemlayout>
 
             <focusedlayout width="42">
-                <!-- <control type="group">
-                    <visible>Control.HasFocus(9018)</visible>
-                    <control type="label">
-                        <font>font_main_black</font>
-                        <label>$INFO[ListItem.Label]</label>
-                        <textcolor>$VAR[ColorSelected]</textcolor>
-                        <align>center</align>
-                    </control>
-                    <control type="image">
-                        <include>Texture_Highlight_Scrollbar_H</include>
-                        <height>scrollbar_w</height>
-                        <centerbottom>12</centerbottom>
-                        <width>75%</width>
-                        <centerleft>50%</centerleft>
-                    </control>
-                </control>
-                <control type="label">
-                    <font>font_main</font>
-                    <label>$INFO[ListItem.Label]</label>
-                    <textcolor>dialog_fg_70</textcolor>
-                    <align>center</align>
-                    <visible>![Control.HasFocus(9018)]</visible>
-                </control> -->
-
                 <control type="label">
                     <font>font_main_black</font>
                     <label>$INFO[ListItem.Label]</label>
@@ -441,9 +424,10 @@
                 <param name="slide_condition">ControlGroup(550).HasFocus()</param>
                 <param name="dialog_size">Dimension_DialogSideMenu</param>
                 <!-- Side Buttons -->
-                <include content="Dialog_Body">
-                    <include content="Dialog_Side_Grouplist">
-                        <param name="id">550</param>
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
+                    <control type="grouplist" id="550">
+                        <include>Dialog_Side_Grouplist_Def</include>
                         <onright>55</onright>
                         <include content="Dialog_Side_Button">
                             <param name="baseid">55</param>
@@ -506,8 +490,8 @@
                             <param name="visible">true</param>
                             <onclick>Container.Update(plugin://plugin.video.themoviedb.helper/?info=user_discover&amp;method=save&amp;tmdb_type=movie)</onclick>
                         </include>
-                    </include>
-                </include>
+                    </control>
+                </control>
             </include>
 
             <include content="Dialog_Foreground_Side">
@@ -523,18 +507,20 @@
                 </include>
 
                 <!-- Content -->
-                <include content="Dialog_Body">
-                    <include content="Dialog_Body_Group">
-                    <include content="List_DialogSelect">
-                        <param name="id">55</param>
-                        <param name="textcolor">dialog_fg</param>
-                        <movement>8</movement>
-                        <onleft>550</onleft>
-                        <visible>$EXP[Exp_View_55]</visible>
-                        <onfocus>SetProperty(TMDbHelper.WidgetContainer,553)</onfocus>
-                    </include>
-                </include>
-                </include>
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
+                    <control type="group">
+                        <include>Dimension_Dialog_Body_Group</include>
+                        <include content="List_DialogSelect">
+                            <param name="id">55</param>
+                            <param name="textcolor">dialog_fg</param>
+                            <movement>8</movement>
+                            <onleft>550</onleft>
+                            <visible>$EXP[Exp_View_55]</visible>
+                            <onfocus>SetProperty(TMDbHelper.WidgetContainer,553)</onfocus>
+                        </include>
+                    </control>
+                </control>
             </include>
 
         </control>

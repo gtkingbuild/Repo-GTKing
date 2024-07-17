@@ -23,8 +23,10 @@
                 <include>Dialog_Head_CloseButton</include>
 
                 <!-- Content -->
-                <include content="Dialog_Body">
-                    <include content="Dialog_Body_Group">
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
+                    <control type="group">
+                        <include>Dimension_Dialog_Body_Group</include>
                         <include content="Settings_Label">
                             <top>-20</top>
                             <label>$LOCALIZE[137]</label>
@@ -102,14 +104,12 @@
                                 <visible>Container(8000).IsUpdating</visible>
                             </include>
                         </control>
-                    </include>
-
-
+                    </control>
                     <include content="Dialog_Scrollbar">
                         <param name="id">61</param>
                         <onleft>8000</onleft>
                     </include>
-                </include>
+                </control>
             </include>
 
         </control>

@@ -11,11 +11,11 @@
     <rules name="widget_altvisible">
         <rule>
             <condition>Skin.HasSetting(Hub.{window_id}.WidgetSelector)</condition>
-            <value>String.IsEqual(Container({widget_selector_id}).ListItem.Property(guid),{item_guid}) + [!String.IsEmpty(Window.Property(Item.{grouplist_item_x}302.SpecialFolderPath)) | Control.HasFocus(302) | Control.HasFocus(300)]</value>
+            <value>String.IsEqual(Container({widget_selector_id}).ListItem.Property(guid),{item_guid}) + [!String.IsEmpty(Window.Property(Item.{grouplist_item_x}302.SpecialFolderPath)) | ControlGroup(3002).HasFocus() | Control.HasFocus(300)]</value>
         </rule>
         <rule>
             <condition>True</condition>
-            <value>[!String.IsEmpty(Window.Property(Item.{grouplist_item_x}302.SpecialFolderPath)) | Control.HasFocus(302) | Control.HasFocus(300)]</value>
+            <value>[!String.IsEmpty(Window.Property(Item.{grouplist_item_x}302.SpecialFolderPath)) | ControlGroup(3002).HasFocus() | Control.HasFocus(300)]</value>
         </rule>
     </rules>
 

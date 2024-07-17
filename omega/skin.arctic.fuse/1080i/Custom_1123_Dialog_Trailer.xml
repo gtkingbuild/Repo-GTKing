@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window type="dialog" id="1123">
     <defaultcontrol always="true">9000</defaultcontrol>
-    <onload condition="String.IsEmpty(Window.Property(Trailer))">Close</onload>
-    <onload condition="!String.IsEmpty(Window.Property(Trailer)) + Player.HasVideo + !String.IsEqual(Window.Property(Trailer),Player.FileNameAndPath)">Action(Stop)</onload>
-    <onload condition="!String.IsEmpty(Window.Property(Trailer)) + [!Player.HasVideo | !String.IsEqual(Window.Property(Trailer),Player.FileNameAndPath)]">PlayMedia($ESCINFO[Window.Property(Trailer)],False,1)</onload>
+    <onload condition="String.IsEmpty(Window(Home).Property(PlayTrailer))">Close</onload>
+    <onload condition="!String.IsEmpty(Window(Home).Property(PlayTrailer)) + Player.HasVideo + !String.IsEqual(Window(Home).Property(PlayTrailer),Player.FileNameAndPath)">Action(Stop)</onload>
+    <onload condition="!String.IsEmpty(Window(Home).Property(PlayTrailer)) + [!Player.HasVideo | !String.IsEqual(Window(Home).Property(PlayTrailer),Player.FileNameAndPath)]">PlayMedia($ESCINFO[Window(Home).Property(PlayTrailer)],False,1)</onload>
     <onunload>ClearProperty(TrailerFullscreen,1123)</onunload>
     <onunload condition="Player.HasVideo + [Skin.HasSetting(Background.DisableVideo) | !Skin.HasSetting(Trailers.EnableAutoPlayback.Info) | !Window.IsVisible(DialogVideoInfo.xml)]">Action(Stop)</onunload>
     <controls>
@@ -20,9 +20,10 @@
                 <param name="slide_condition">True</param>
                 <param name="dialog_size">Dimension_DialogFullMenu</param>
                 <!-- Side Buttons -->
-                <include content="Dialog_Body">
-                    <include content="Dialog_Side_Grouplist">
-                        <param name="id">9000</param>
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
+                    <control type="grouplist" id="9000">
+                        <include>Dialog_Side_Grouplist_Def</include>
                         <onleft condition="!Player.HasVideo">Close</onleft>
                         <onleft condition="Player.HasVideo">Seek(-10)</onleft>
                         <onright condition="Player.HasVideo">Seek(10)</onright>
@@ -45,8 +46,8 @@
                             <param name="id">04</param>
                             <param name="label">$LOCALIZE[31483]</param>
                             <param name="icon">special://skin/extras/icons/repeat2.png</param>
-                            <param name="visible">!String.IsEmpty(Window.Property(Trailer))</param>
-                            <onclick>PlayMedia($ESCINFO[Window.Property(Trailer)],False,1)</onclick>
+                            <param name="visible">!String.IsEmpty(Window(Home).Property(PlayTrailer))</param>
+                            <onclick>PlayMedia($ESCINFO[Window(Home).Property(PlayTrailer)],False,1)</onclick>
                         </include>
                         <include content="Dialog_Side_Button">
                             <param name="id">05</param>
@@ -59,8 +60,8 @@
                             <onclick condition="!String.IsEmpty(Window.Property(TrailerFullscreen))">ClearProperty(TrailerFullscreen,1123)</onclick>
                             <onunfocus>ClearProperty(TrailerFullscreen,1123)</onunfocus>
                         </include>
-                    </include>
-                </include>
+                    </control>
+                </control>
             </include>
 
             <include content="Dialog_Foreground_Side">
@@ -77,8 +78,10 @@
                 <include>Dialog_Head_CloseButton</include>
 
                 <!-- Content -->
-                <include content="Dialog_Body">
-                    <include content="Dialog_Body_Group">
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
+                    <control type="group">
+                        <include>Dimension_Dialog_Body_Group</include>
                         <control type="group">
                             <include content="Dimension_Padding">
                                 <param name="pad">20</param>
@@ -115,8 +118,8 @@
                                 </control>
                             </control>
                         </control>
-                    </include>
-                </include>
+                    </control>
+                </control>
             </include>
 
         </control>

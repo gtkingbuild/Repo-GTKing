@@ -99,9 +99,10 @@
                 <param name="slide_condition">True</param>
                 <param name="dialog_size">Dimension_DialogWideMenu</param>
                 <!-- Side Buttons -->
-                <include content="Dialog_Body">
-                    <include content="Dialog_Side_Grouplist">
-                        <param name="id">9000</param>
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
+                    <control type="grouplist" id="9000">
+                        <include>Dialog_Side_Grouplist_Def</include>
                         <onleft>Close</onleft>
                         <onright>5</onright>
                         <include content="Dialog_Side_Button">
@@ -125,8 +126,8 @@
                             <param name="visible">Control.IsEnabled(30) + Control.IsVisible(30)</param>
                             <onclick>SendClick(30)</onclick>
                         </include>
-                    </include>
-                </include>
+                    </control>
+                </control>
             </include>
 
             <include content="Dialog_Foreground_Side">
@@ -143,19 +144,20 @@
                 <include>Dialog_Head_CloseButton</include>
 
                 <!-- Content -->
-                <include content="Dialog_Body">
-                    <include content="Dialog_Body_Grouplist">
-                        <param name="id">5</param>
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
+                    <control type="grouplist" id="5">
+                        <include>Dimension_Dialog_Body_Group</include>
                         <onleft>9000</onleft>
                         <onright>61</onright>
                         <pagecontrol>61</pagecontrol>
-                    </include>
+                    </control>
 
                     <include content="Dialog_Scrollbar">
                         <param name="id">61</param>
                         <onleft>5</onleft>
                     </include>
-                </include>
+                </control>
             </include>
 
         </control>

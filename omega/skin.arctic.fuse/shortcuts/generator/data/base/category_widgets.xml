@@ -11,11 +11,15 @@
             <rules name="grouplist_refocus">
                 <rule>
                     <condition>!Skin.HasSetting(Hub.{window_id}.DisableSubmenu)</condition>
-                    <value>SetFocus(300)</value>
+                    <value>$VAR[Action_Hubs_Complex_SetFocus]</value>
                 </rule>
                 <rule>
-                    <condition>True</condition>
+                    <condition>{window_id}==Home</condition>
                     <value>$VAR[Action_Hubs_Menu_SetFocus]</value>
+                </rule>
+                <rule>
+                    <condition>true</condition>
+                    <value>$VAR[Action_Hubs_Classic_SetFocus]</value>
                 </rule>
             </rules>
             <value name="grouplist_widgets_only">Skin.HasSetting(Hub.{window_id}.DisableSubmenu)</value>
@@ -25,7 +29,7 @@
             <value name="grouplist_widgets_bump_id">401</value>
             <value name="grouplist_endrow_selector">Skin.HasSetting(Hub.{window_id}.WidgetSelector)</value>
             <value name="grouplist_endrow_selector_id">419</value>
-            <value name="all_adaptive_widgets">
+            <value name="all_standard_widgets">
                 <condition>!Skin.HasSetting(Hub.{window_id}.DisableSubmenu)</condition>
                 <items menu="{item}">
                     <item>
@@ -40,20 +44,20 @@
                             <condition>{item_use_as_widget}==True</condition>
                             <enumitem name="enum_x">widget_{item_menu}_{item_x}</enumitem>
                         </value>
+                        <condition>{item_disabled}!=True</condition>
+                        <condition>$LOOKUP[disabled?menu=sidemenu&amp;filter_guid={item_sidemenu_guid}]!=True</condition>
+                        <condition>{window_id}!=Home||{item_sidemenu_guid}==||$LOOKUP[guid?menu=sidemenu&amp;filter_guid={item_sidemenu_guid}]!=</condition>
                     </item>
-                </items>
-            </value>
-
-            <value name="all_submenus_widgets">
-                <condition>!Skin.HasSetting(Hub.{window_id}.DisableSubmenu)</condition>
-                <items menu="{item}">
                     <item>
+                        <condition>{item_disabled}!=True</condition>
+                        <condition>$LOOKUP[disabled?menu=sidemenu&amp;filter_guid={item_sidemenu_guid}]!=True</condition>
+                        <condition>{window_id}!=Home||{item_sidemenu_guid}==||$LOOKUP[guid?menu=sidemenu&amp;filter_guid={item_sidemenu_guid}]!=</condition>
                         <items menu="{item_menu}" item="{item_x}" mode="submenu">
                             <item>
                                 <template>generator/data/parts/basic_template.xmltemplate</template>
                                 <value name="comments">Submenu Widgets for Category {item_menu} {parent_item_x}.{item_x} {parent_item_label} {item_label}</value>
                                 <value name="grouplist_item_x">{parent_item_x}</value>
-                                <value name="widget_category_visible">String.IsEqual(Container(300).ListItem.Property(guid),{parent_item_guid}) + String.IsEqual(Container(302).ListItem.Property(guid),{item_guid})</value>
+                                <value name="widget_category_visible">String.IsEqual(Container(300).ListItem.Property(guid),{parent_item_guid}) + String.IsEqual(Container({parent_item_x}302).ListItem.Property(guid),{item_guid})</value>
                                 <value name="includes_part">
                                     <items menu="{parent_item_menu}" item="{parent_item_x}.{item_x}" mode="widgets">
                                         <item>
@@ -68,13 +72,10 @@
                             </item>
                         </items>
                     </item>
-                </items>
-            </value>
-
-            <value name="all_standard_widgets">
-                <condition>!Skin.HasSetting(Hub.{window_id}.DisableSubmenu)</condition>
-                <items menu="{item}">
                     <item>
+                        <condition>{item_disabled}!=True</condition>
+                        <condition>$LOOKUP[disabled?menu=sidemenu&amp;filter_guid={item_sidemenu_guid}]!=True</condition>
+                        <condition>{window_id}!=Home||{item_sidemenu_guid}==||$LOOKUP[guid?menu=sidemenu&amp;filter_guid={item_sidemenu_guid}]!=</condition>
                         <template>generator/data/parts/basic_template.xmltemplate</template>
                         <value name="comments">Standard Widgets for Category {item_menu} {item_x} {item_label}</value>
                         <value name="grouplist_item_x">{item_x}</value>

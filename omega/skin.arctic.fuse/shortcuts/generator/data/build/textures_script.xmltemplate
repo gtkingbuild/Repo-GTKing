@@ -96,7 +96,7 @@
     <texture border="20">special://profile/addon_data/script.texturemaker/{skindir}/selectbox_thin_v.png</texture>
 </include>
 <include name="Texture_KeyboardButton">
-    <texturefocus>special://profile/addon_data/script.texturemaker/{skindir}/circle_h.png</texturefocus>
+    <texturefocus flipy="true">special://profile/addon_data/script.texturemaker/{skindir}/circle_v.png</texturefocus>
 </include>
 
 <include name="Texture_Button">

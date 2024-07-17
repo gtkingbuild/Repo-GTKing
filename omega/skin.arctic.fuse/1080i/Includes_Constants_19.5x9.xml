@@ -9,10 +9,10 @@
     <constant name="keyboard_shadow_x">-480</constant>
 
 
-    <constant name="view_settings_itemlayout_w">525</constant>
-    <constant name="-view_settings_itemlayout_w">-525</constant>
-    <constant name="view_settings_item_w">485</constant>
-    <constant name="-view_settings_item_w">-485</constant>
+    <constant name="view_settings_itemlayout_w">555</constant>
+    <constant name="-view_settings_itemlayout_w">-555</constant>
+    <constant name="view_settings_item_w">515</constant>
+    <constant name="-view_settings_item_w">-515</constant>
 
     <!-- 4 columns in wall due to extra width -->
     <constant name="view_listwall_itemlayout_w">535</constant>

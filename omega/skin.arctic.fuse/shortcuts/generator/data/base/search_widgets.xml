@@ -8,8 +8,6 @@
                 <template>generator/data/parts/search_row.xmltemplate</template>
                 <datafile>generator/data/setup/search_row.xml</datafile>
                 <datafile>generator/data/setup/search_path.xml</datafile>
-                <value name="widget_visible">True</value>
-                <value name="widget_altvisible">[Control.HasFocus(9099) + !String.IsEmpty(Control.GetLabel(9099).index(1)) + System.IdleTime(1) + !System.IdleTime(2)]</value>
                 <condition>{item_path}!=</condition>
                 <condition>{item_disabled}!=True</condition>
             </item>

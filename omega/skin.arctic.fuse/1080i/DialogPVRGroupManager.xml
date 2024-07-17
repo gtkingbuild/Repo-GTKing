@@ -29,9 +29,10 @@
                 <param name="dialog_size">Dimension_DialogFullMenu</param>
 
                 <!-- Side Buttons -->
-                <include content="Dialog_Body">
-                    <include content="Dialog_Side_Grouplist">
-                        <param name="id">9000</param>
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
+                    <control type="grouplist" id="9000">
+                        <include>Dialog_Side_Grouplist_Def</include>
                         <onright>13</onright>
                         <onleft>Close</onleft>
                         <include content="DialogInfo_Button">
@@ -114,8 +115,8 @@
                                 <param name="label">$VAR[Label_PVRChannelMgrToggle]</param>
                             </include>
                         </include>
-                    </include>
-                </include>
+                    </control>
+                </control>
             </include>
 
             <include content="Dialog_Foreground_Side">
@@ -132,8 +133,10 @@
                 <include>Dialog_Head_CloseButton</include>
 
                 <!-- Content -->
-                <include content="Dialog_Body">
-                    <include content="Dialog_Body_Group">
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
+                    <control type="group">
+                        <include>Dimension_Dialog_Body_Group</include>
 
                         <!-- Left Group -->
                         <control type="group">
@@ -268,8 +271,8 @@
                                 <texturesliderbackground colordiffuse="dialog_fg_12" border="4">scrollbar/scrollv_line.png</texturesliderbackground>
                             </include>
                         </control>
-                    </include>
-                </include>
+                    </control>
+                </control>
             </include>
 
         </control>

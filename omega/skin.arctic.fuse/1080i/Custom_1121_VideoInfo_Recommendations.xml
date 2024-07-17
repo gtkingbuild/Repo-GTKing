@@ -2,8 +2,10 @@
 <window type="dialog" id="1121">
     <defaultcontrol always="true">5098</defaultcontrol>
     <onload>SetFocus(5098)</onload>
+    <menucontrol>303</menucontrol>
 
     <include>Action_PreserveTransitionProp_Onload</include>
+    <onload condition="String.IsEmpty(Skin.String(VideoInfo.PersonCredits.SortKey))">Skin.SetString(VideoInfo.PersonCredits.SortKey,popular)</onload>
 
     <controls>
         <include>DialogInfo_Recommendations_BackgroundLoader</include>
@@ -11,7 +13,12 @@
         <include content="DialogInfo_Recommendations_Group">
             <include>DialogInfo_Recommendations_InfoPanel</include>
             <include content="DialogInfo_Recommendations_Widgets_Grouplist">
-                <param name="onup">4002</param>
+                <param name="onup">333</param>
+                <param name="ondown">noop</param>
+                <onleft condition="!$EXP[Exp_HomeMenu_IsTopBar]">303</onleft>
+                <onright condition="!$EXP[Exp_HomeMenu_IsTopBar]">332</onright>
+                <ondown condition="!$EXP[Exp_HomeMenu_IsTopBar]">330</ondown>
+                <ondown condition="$EXP[Exp_HomeMenu_IsTopBar]">303</ondown>
                 <control type="button" id="5098">
                     <height>0</height>
                     <texturefocus />
@@ -23,17 +30,21 @@
                 <include>DialogInfo_Recommendations_Widgets</include>
             </include>
         </include>
-        <include content="DialogInfo_ButtonGroup_Basic">
-            <param name="id">303</param>
-            <param name="include">Items_PersonCredits_MenuBar</param>
-            <include content="Action_HomeMenu_OnRightLeft">
-                <param name="onlist">5000</param>
-            </include>
-            <ondown>5000</ondown>
-            <onup>PreviousMenu</onup>
-        </include>
+
+        <include>DialogInfo_ButtonGroup_Recommendations</include>
+
         <include content="DialogInfo_Recommendations_Furniture">
             <param name="include_homemenu">false</param>
+            <param name="header">$INFO[Window.Property(Item_Title)]</param>
+        </include>
+        <include content="DialogInfo_PlotBox">
+            <param name="include_movement">DialogInfo_PlotBox_Details_OnMove</param>
+            <param name="header">$INFO[Window.Property(PlotBox_Header)]</param>
+            <param name="textbox">$INFO[Window.Property(PlotBox_Textbox)]</param>
+            <param name="poster_visible">true</param>
+            <param name="poster_icon">$INFO[Window.Property(PlotBox_Poster)]</param>
+            <param name="landscape_visible">true</param>
+            <param name="landscape_icon">$INFO[Window.Property(PlotBox_Landscape)]</param>
         </include>
 
     </controls>

@@ -16,19 +16,6 @@
         </include>
 
         <include content="Settings_Dialog">
-            <include content="DialogInfo_ButtonGroup_Basic">
-                <param name="id">30000</param>
-                <param name="dim_visible">false</param>
-                <onright>3</onright>
-                <onleft>SetFocus(30040)</onleft>
-                <include>Settings_Standard_Buttons</include>
-                <include content="Settings_Side_Button">
-                    <param name="id">03</param>
-                    <param name="label">$INFO[Control.GEtLabel(20)]</param>
-                    <param name="icon">$VAR[Image_Settings_Level]</param>
-                    <onclick>settingslevelchange</onclick>
-                </include>
-            </include>
             <include content="Settings_Main_Group">
                 <include content="Settings_Left_Group">
                     <include content="Settings_Left_Content">
@@ -46,9 +33,9 @@
                     <param name="arrow_next_visible">Container(5).HasNext</param>
 
                     <control type="scrollbar" id="60">
-                        <centerright>-20</centerright>
-                        <bottom>100</bottom>
-                        <top>-20</top>
+                        <centerright>-60</centerright>
+                        <bottom>0</bottom>
+                        <top>0</top>
                         <width>scrollbar_w</width>
                         <orientation>vertical</orientation>
                         <texturesliderbackground colordiffuse="main_fg_12" border="4">scrollbar/scrollv_line.png</texturesliderbackground>
@@ -61,13 +48,15 @@
                     <include content="Settings_Right_Grouplist">
                         <param name="id">5</param>
                         <onleft>3</onleft>
-                        
                     </include>
-                    <include content="Settings_InfoText">
-                        <param name="id">6</param>
-                    </include>
+
                 </include>
-                <include>Settings_KodiVersion</include>
+                <include content="Settings_InfoText">
+                    <param name="id">6</param>
+                    <param name="dialog">true</param>
+                    <param name="left">80</param>
+                    <param name="bottom">60</param>
+                </include>
             </include>
             <include content="Settings_Changer">
                 <onup>3</onup>
@@ -77,6 +66,7 @@
         <include content="Settings_Button">
             <param name="id">10</param>
             <param name="control">togglebutton</param>
+            <param name="dialog">true</param>
             <include>Texture_Highlight_ToggleButton_Settings</include>
             <focusedcolor>$VAR[ColorSettingsToggleButtonText]</focusedcolor>
             <altfocusedcolor>$VAR[ColorSettingsToggleButtonText]</altfocusedcolor>
@@ -87,12 +77,14 @@
         <include content="Settings_Button">
             <param name="id">7</param>
             <param name="control">button</param>
+            <param name="dialog">true</param>
             <description>Default Setting Button</description>
         </include>
 
         <include content="Settings_Button">
             <param name="id">8</param>
             <param name="control">radiobutton</param>
+            <param name="dialog">true</param>
             <description>Default Setting Button</description>
             <textwidth>settings_radiobutton_text_w</textwidth>
         </include>
@@ -100,6 +92,7 @@
         <include content="Settings_Button">
             <param name="id">9</param>
             <param name="control">spincontrolex</param>
+            <param name="dialog">true</param>
             <description>Default Setting Button</description>
             <textwidth>settings_radiobutton_text_w</textwidth>
         </include>
@@ -107,12 +100,14 @@
         <include content="Settings_Button">
             <param name="id">12</param>
             <param name="control">edit</param>
+            <param name="dialog">true</param>
             <description>Default Setting Button</description>
         </include>
 
         <include content="Settings_Button">
             <param name="id">13</param>
             <param name="control">sliderex</param>
+            <param name="dialog">true</param>
             <description>Default Setting Button</description>
             <textwidth>settings_slider_text_w</textwidth>
         </include>
@@ -120,12 +115,14 @@
         <include content="Settings_Label">
             <param name="id">14</param>
             <param name="control">label</param>
+            <param name="dialog">true</param>
             <description>Default Setting Label</description>
         </include>
 
         <include content="Settings_Button">
             <param name="id">15</param>
             <param name="control">colorbutton</param>
+            <param name="dialog">true</param>
             <description>Default Setting Button</description>
         </include>
 

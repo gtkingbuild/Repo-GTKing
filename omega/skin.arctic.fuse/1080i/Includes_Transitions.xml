@@ -233,6 +233,7 @@
                 <param name="selected">$PARAM[selected]</param>
                 <param name="visible">$PARAM[visible]</param>
                 <param name="include_animation">$PARAM[include_animation]</param>
+                <param name="alt_slide">$PARAM[alt_slide]</param>
                 <param name="use_alternate">$PARAM[use_alternate]</param>
                 <param name="use_alternate_condition_prefix">!</param>
             </include>
@@ -316,7 +317,7 @@
                     <param name="alt_slide">$PARAM[alt_slide]</param>
                     <param name="visible">$PARAM[visible]</param>
                 </include>
-                <include content="Transitions_List_Row_Item" condition="[!Integer.IsGreater(Skin.String(SkinConstant.Numeric.01),$PARAM[item_count]) + [!Skin.HasSetting(Views.DisableItemPeek) | !Integer.IsEqual(Skin.String(SkinConstant.Numeric.01),$PARAM[item_count])]] | !String.IsEqual(Skin.AspectRatio,16:9)">
+                <include content="Transitions_List_Row_Item" condition="[!Integer.IsGreater(Skin.String(SkinConstant.Numeric.01),$PARAM[item_count])] | !String.IsEqual(Skin.AspectRatio,16:9)">
                     <param name="detailed">$PARAM[detailed]</param>
                     <param name="misc">$PARAM[misc]</param>
                     <param name="variation">$PARAM[variation]</param>
@@ -339,7 +340,7 @@
                     <param name="alt_slide">$PARAM[alt_slide]</param>
                     <param name="visible">$PARAM[visible]</param>
                 </include>
-                <include content="Transitions_List_Row_Item" condition="[!Integer.IsGreater(Skin.String(SkinConstant.Numeric.02),$PARAM[item_count]) + [!Skin.HasSetting(Views.DisableItemPeek) | !Integer.IsEqual(Skin.String(SkinConstant.Numeric.02),$PARAM[item_count])]] | !String.IsEqual(Skin.AspectRatio,16:9)">
+                <include content="Transitions_List_Row_Item" condition="[!Integer.IsGreater(Skin.String(SkinConstant.Numeric.02),$PARAM[item_count])] | !String.IsEqual(Skin.AspectRatio,16:9)">
                     <param name="detailed">$PARAM[detailed]</param>
                     <param name="misc">$PARAM[misc]</param>
                     <param name="variation">$PARAM[variation]</param>
@@ -362,7 +363,7 @@
                     <param name="alt_slide">$PARAM[alt_slide]</param>
                     <param name="visible">$PARAM[visible]</param>
                 </include>
-                <include content="Transitions_List_Row_Item" condition="[!Integer.IsGreater(Skin.String(SkinConstant.Numeric.03),$PARAM[item_count]) + [!Skin.HasSetting(Views.DisableItemPeek) | !Integer.IsEqual(Skin.String(SkinConstant.Numeric.03),$PARAM[item_count])]] | !String.IsEqual(Skin.AspectRatio,16:9)">
+                <include content="Transitions_List_Row_Item" condition="[!Integer.IsGreater(Skin.String(SkinConstant.Numeric.03),$PARAM[item_count])] | !String.IsEqual(Skin.AspectRatio,16:9)">
                     <param name="detailed">$PARAM[detailed]</param>
                     <param name="misc">$PARAM[misc]</param>
                     <param name="variation">$PARAM[variation]</param>
@@ -385,7 +386,7 @@
                     <param name="alt_slide">$PARAM[alt_slide]</param>
                     <param name="visible">$PARAM[visible]</param>
                 </include>
-                <include content="Transitions_List_Row_Item" condition="[!Integer.IsGreater(Skin.String(SkinConstant.Numeric.04),$PARAM[item_count]) + [!Skin.HasSetting(Views.DisableItemPeek) | !Integer.IsEqual(Skin.String(SkinConstant.Numeric.04),$PARAM[item_count])]] | !String.IsEqual(Skin.AspectRatio,16:9)">
+                <include content="Transitions_List_Row_Item" condition="[!Integer.IsGreater(Skin.String(SkinConstant.Numeric.04),$PARAM[item_count])] | !String.IsEqual(Skin.AspectRatio,16:9)">
                     <param name="detailed">$PARAM[detailed]</param>
                     <param name="misc">$PARAM[misc]</param>
                     <param name="variation">$PARAM[variation]</param>
@@ -408,7 +409,7 @@
                     <param name="alt_slide">$PARAM[alt_slide]</param>
                     <param name="visible">$PARAM[visible]</param>
                 </include>
-                <include content="Transitions_List_Row_Item" condition="[!Integer.IsGreater(Skin.String(SkinConstant.Numeric.05),$PARAM[item_count]) + [!Skin.HasSetting(Views.DisableItemPeek) | !Integer.IsEqual(Skin.String(SkinConstant.Numeric.05),$PARAM[item_count])]] | !String.IsEqual(Skin.AspectRatio,16:9)">
+                <include content="Transitions_List_Row_Item" condition="[!Integer.IsGreater(Skin.String(SkinConstant.Numeric.05),$PARAM[item_count])] | !String.IsEqual(Skin.AspectRatio,16:9)">
                     <param name="detailed">$PARAM[detailed]</param>
                     <param name="misc">$PARAM[misc]</param>
                     <param name="variation">$PARAM[variation]</param>
@@ -431,7 +432,7 @@
                     <param name="alt_slide">$PARAM[alt_slide]</param>
                     <param name="visible">$PARAM[visible]</param>
                 </include>
-                <include content="Transitions_List_Row_Item" condition="[!Integer.IsGreater(Skin.String(SkinConstant.Numeric.06),$PARAM[item_count]) + [!Skin.HasSetting(Views.DisableItemPeek) | !Integer.IsEqual(Skin.String(SkinConstant.Numeric.06),$PARAM[item_count])]] | !String.IsEqual(Skin.AspectRatio,16:9)">
+                <include content="Transitions_List_Row_Item" condition="[!Integer.IsGreater(Skin.String(SkinConstant.Numeric.06),$PARAM[item_count])] | !String.IsEqual(Skin.AspectRatio,16:9)">
                     <param name="detailed">$PARAM[detailed]</param>
                     <param name="misc">$PARAM[misc]</param>
                     <param name="variation">$PARAM[variation]</param>
@@ -455,7 +456,7 @@
                     <param name="visible">$PARAM[visible]</param>
                 </include>
 
-                <include content="Transitions_List_Row_Item" condition="[!Integer.IsGreater(Skin.String(SkinConstant.Numeric.07),$PARAM[item_count]) + [!Skin.HasSetting(Views.DisableItemPeek) | !Integer.IsEqual(Skin.String(SkinConstant.Numeric.07),$PARAM[item_count])]] | !String.IsEqual(Skin.AspectRatio,16:9)">
+                <include content="Transitions_List_Row_Item" condition="[!Integer.IsGreater(Skin.String(SkinConstant.Numeric.07),$PARAM[item_count])] | !String.IsEqual(Skin.AspectRatio,16:9)">
                     <param name="detailed">$PARAM[detailed]</param>
                     <param name="misc">$PARAM[misc]</param>
                     <param name="variation">$PARAM[variation]</param>
@@ -479,7 +480,7 @@
                     <param name="visible">$PARAM[visible]</param>
                 </include>
 
-                <include content="Transitions_List_Row_Item" condition="[!Integer.IsGreater(Skin.String(SkinConstant.Numeric.08),$PARAM[item_count]) + [!Skin.HasSetting(Views.DisableItemPeek) | !Integer.IsEqual(Skin.String(SkinConstant.Numeric.08),$PARAM[item_count])]] | !String.IsEqual(Skin.AspectRatio,16:9)">
+                <include content="Transitions_List_Row_Item" condition="[!Integer.IsGreater(Skin.String(SkinConstant.Numeric.08),$PARAM[item_count])] | !String.IsEqual(Skin.AspectRatio,16:9)">
                     <param name="detailed">$PARAM[detailed]</param>
                     <param name="misc">$PARAM[misc]</param>
                     <param name="variation">$PARAM[variation]</param>
@@ -503,7 +504,7 @@
                     <param name="visible">$PARAM[visible]</param>
                 </include>
 
-                <include content="Transitions_List_Row_Item" condition="[!Integer.IsGreater(Skin.String(SkinConstant.Numeric.09),$PARAM[item_count]) + [!Skin.HasSetting(Views.DisableItemPeek) | !Integer.IsEqual(Skin.String(SkinConstant.Numeric.09),$PARAM[item_count])]] | !String.IsEqual(Skin.AspectRatio,16:9)">
+                <include content="Transitions_List_Row_Item" condition="[!Integer.IsGreater(Skin.String(SkinConstant.Numeric.09),$PARAM[item_count])] | !String.IsEqual(Skin.AspectRatio,16:9)">
                     <param name="detailed">$PARAM[detailed]</param>
                     <param name="misc">$PARAM[misc]</param>
                     <param name="variation">$PARAM[variation]</param>
@@ -820,12 +821,10 @@
             <include content="Animation_Fade_Out">
                 <param name="condition">![$PARAM[visible]] + $PARAM[hidden]</param>
                 <param name="delay">200</param>
-                <!-- <param name="posy">120</param> -->
             </include>
             <include content="Animation_Fade_In">
                 <param name="condition">$PARAM[visible] | ![$PARAM[hidden]]</param>
-                <!-- <param name="posy">320</param> -->
-                <param name="delay">200</param>
+                <param name="delay">0</param>
             </include>
         </definition>
     </include>

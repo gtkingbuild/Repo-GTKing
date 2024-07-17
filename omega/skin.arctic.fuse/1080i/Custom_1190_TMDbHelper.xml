@@ -7,9 +7,6 @@
         <control type="group">
             <visible>!$EXP[Exp_InfoDialogs]</visible>
 
-            <!-- <include>Home_Fade</include>
-            <include>Home_Menu</include> -->
-
             <include content="DialogInfo_ButtonGroup">
                 <param name="include">Items_DialogVideoInfo_MenuBar</param>
             </include>
@@ -21,8 +18,7 @@
                 <param name="hasbackground">Skin.HasSetting(ToastNotifications.Tabbed)</param>
                 <param name="haslabel">Skin.HasSetting(ToastNotifications.Tabbed)</param>
                 <param name="spinnervisible">Skin.HasSetting(ToastNotifications.Tabbed) | [!Window.IsActive(DialogVolumeBar.xml) | Player.Muted]</param>
-                <visible>!Skin.HasSetting(ToastNotifications.Tabbed) | [!Window.IsActive(DialogVolumeBar.xml) | Player.Muted]</visible>
-                <visible>!Window.IsVisible(DialogBusy.xml)</visible>
+                <param name="visible">[!Skin.HasSetting(ToastNotifications.Tabbed) | [!Window.IsActive(DialogVolumeBar.xml) | Player.Muted]] + !Window.IsVisible(DialogBusy.xml)</param>
             </include>
 
             <include>Furniture_Top</include>

@@ -27,52 +27,6 @@
 
         <include content="Settings_Dialog">
 
-            <include content="DialogInfo_ButtonGroup_Basic">
-                <param name="id">30000</param>
-                <param name="dim_visible">false</param>
-                <onright>6000</onright>
-                <onleft>SetFocus(30040)</onleft>
-
-                <include>Settings_Standard_Buttons</include>
-
-                <include content="Settings_Side_Button">
-                    <param name="id">03</param>
-                    <param name="label">$LOCALIZE[31375]</param>
-                    <param name="icon">special://skin/extras/icons/file-zipper.png</param>
-                    <onclick>InstallFromZip</onclick>
-                    <param name="visible">![Control.IsEnabled(7) + Control.IsEnabled(8)]</param>
-                </include>
-
-                <include content="Settings_Side_Button_BuiltIn">
-                    <param name="id">9</param>
-                    <param name="groupid">9009</param>
-                    <param name="label">$LOCALIZE[14303]</param>
-                    <param name="icon">special://skin/extras/icons/update.png</param>
-                </include>
-
-                <include content="Settings_Side_Button_BuiltIn">
-                    <param name="id">7</param>
-                    <param name="groupid">9007</param>
-                    <param name="control">radiobutton</param>
-                    <param name="radiocross">true</param>
-                    <param name="radiocheck">true</param>
-                    <param name="label">$LOCALIZE[31378]</param>
-                    <param name="icon">special://skin/extras/icons/language.png</param>
-                    <visible>Control.IsEnabled(7)</visible>
-                </include>
-
-                <include content="Settings_Side_Button_BuiltIn">
-                    <param name="id">8</param>
-                    <param name="groupid">9008</param>
-                    <param name="control">radiobutton</param>
-                    <param name="radiocross">true</param>
-                    <param name="radiocheck">true</param>
-                    <param name="label">$LOCALIZE[24171]</param>
-                    <param name="icon">special://skin/extras/icons/link.png</param>
-                    <visible>Control.IsEnabled(8)</visible>
-                </include>
-            </include>
-
             <include content="Settings_Main_Group">
                 <include content="Settings_Left_Group">
 
@@ -90,10 +44,10 @@
                         <onright condition="String.IsEmpty(Container(6000).ListItem.Property(folderpath))">Container.Update($INFO[Container(6000).ListItem.FolderPath],replace)</onright>
                         <onright condition="!String.IsEmpty(Container(6000).ListItem.Property(folderpath))">Container.Update($INFO[Container(6000).ListItem.Property(folderpath)],replace)</onright>
                         <onright>50</onright>
-                        <left>-40</left>
-                        <right>-40</right>
-                        <top>-20</top>
-                        <bottom>100</bottom>
+                        <left>60</left>
+                        <right>-100</right>
+                        <top>180</top>
+                        <bottom>180</bottom>
                         <content>
                             <item>
                                 <label>$LOCALIZE[24998]</label>
@@ -148,19 +102,18 @@
                         <onright>60</onright>
                         
                         <pagecontrol>60</pagecontrol>
-                        <top>-20</top>
-                        <right>20</right>
-                        <bottom>100</bottom>
+                        <top>20</top>
+                        <left>20</left>
+                        <right>0</right>
+                        <bottom>20</bottom>
                     </include>
 
-                    <include content="Settings_InfoText">
-                        <param name="id">9091</param>
-                    </include>
+
 
                     <control type="scrollbar" id="60">
-                        <centerright>-20</centerright>
-                        <bottom>100</bottom>
-                        <top>-20</top>
+                        <centerright>-60</centerright>
+                        <bottom>0</bottom>
+                        <top>0</top>
                         <width>scrollbar_w</width>
                         <orientation>vertical</orientation>
                         <texturesliderbackground colordiffuse="main_fg_12" border="4">scrollbar/scrollv_line.png</texturesliderbackground>
@@ -169,7 +122,12 @@
                         <onleft>50</onleft>
                     </control>
                 </include>
-                <include>Settings_KodiVersion</include>
+                <include content="Settings_InfoText">
+                    <param name="id">9091</param>
+                    <param name="dialog">true</param>
+                    <param name="left">80</param>
+                    <param name="bottom">60</param>
+                </include>
             </include>
 
             <include content="Settings_Changer">

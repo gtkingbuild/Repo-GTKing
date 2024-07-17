@@ -9,10 +9,10 @@
     <constant name="view_poster_movement">5</constant>
     <constant name="view_apps_movement">4</constant>
 
-    <constant name="view_settings_itemlayout_w">372</constant>
-    <constant name="-view_settings_itemlayout_w">-372</constant>
-    <constant name="view_settings_item_w">332</constant>
-    <constant name="-view_settings_item_w">-332</constant>
+    <constant name="view_settings_itemlayout_w">402</constant>
+    <constant name="-view_settings_itemlayout_w">-402</constant>
+    <constant name="view_settings_item_w">362</constant>
+    <constant name="-view_settings_item_w">-362</constant>
 
     <constant name="view_listwall_itemlayout_w">509.33</constant>
     <constant name="-view_listwall_itemlayout_w">-509.33</constant>

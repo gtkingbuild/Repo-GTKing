@@ -776,13 +776,14 @@
             <include content="Action_Widgets_ResetPosition_OnFocus">
                 <param name="condition">[Control.IsVisible(419) + !Integer.IsEqual(Container(419).CurrentItem,1)] | Container(400).HasPrevious</param>
             </include>
-            <onfocus>AlarmClock(SwitchAdaptiveWidget,RunScript(script.skinvariables,run_executebuiltin=special://skin/shortcuts/builtins/skinvariables-specialfolderpath.json,use_rules,condition=$PARAM[condition],prefix=$PARAM[prefix]),00:01,silent)</onfocus>
+            <onfocus>AlarmClock(SwitchAdaptiveWidget,RunScript(script.skinvariables,run_executebuiltin=special://skin/shortcuts/builtins/skinvariables-specialfolderpath.json,use_rules,condition=$PARAM[condition],prefix=$PARAM[prefix]),00:00,silent)</onfocus>
         </definition>
     </include>
 
     <include name="List_ButtonMenu_Row_HiddenButton_Home_Categories">
         <control type="button">
             <visible allowhiddenfocus="true">false</visible>
+            <animation effect="fade" start="0" end="0" time="400" reversible="false">Focus</animation>
             <include content="List_ButtonMenu_Row_HiddenButton_Home_Categories_OnFocus">
                 <param name="prefix">$PARAM[prefix]</param>
             </include>
@@ -822,21 +823,6 @@
             <visible allowhiddenfocus="true">false</visible>
             <animation effect="fade" start="0" end="0" time="200" reversible="false">Focus</animation>
             <include>List_ButtonMenu_Row_HiddenButton_ERow_OnFocus</include>
-        </control>
-    </include>
-
-    <include name="List_ButtonMenu_Row_HiddenButton_Search_OnFocus">
-        <param name="condition">true</param>
-        <param name="prefix" />
-        <definition>
-            <onfocus condition="$PARAM[condition]">SetProperty(TMDBHelper.WidgetContainer,$INFO[$PARAM[container]ListItem.Property(listid)])</onfocus>
-        </definition>
-    </include>
-    <include name="List_ButtonMenu_Row_HiddenButton_Search">
-        <control type="button">
-            <visible allowhiddenfocus="true">false</visible>
-            <animation effect="fade" start="0" end="0" time="200" reversible="false">Focus</animation>
-            <include>List_ButtonMenu_Row_HiddenButton_Search_OnFocus</include>
         </control>
     </include>
 
@@ -1031,14 +1017,14 @@
                             <control type="image">
                                 <centertop>50%</centertop>
                                 <height>256</height>
-                                <include content="Object_Left" condition="$PARAM[iconic]">
+                                <!-- <include content="Object_Left" condition="$PARAM[iconic]">
                                     <param name="left">-60</param>
                                 </include>
                                 <include content="Object_Right" condition="$PARAM[iconic]">
                                     <param name="right">-60</param>
-                                </include>
-                                <left>-50</left>
-                                <right>-50</right>
+                                </include> -->
+                                <left>-60</left>
+                                <right>-60</right>
                                 <include>Texture_MainMenu_Highlight_V</include>
                             </control>
                             <include content="List_ButtonMenu_Row_Icon" condition="$PARAM[iconic]">

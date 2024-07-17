@@ -7,10 +7,10 @@
             <bottom>hub_recommendations_widgets_grouplist_b</bottom>
             <orientation>vertical</orientation>
             <include content="Animation_Half_WindowChange">
-                <param name="windowopen_up">!$EXP[Exp_SettingsDialogs_Prev] + !String.IsEmpty(Window(Home).Property(ReverseTransition))</param>
-                <param name="windowopen_down">!$EXP[Exp_SettingsDialogs_Prev] + String.IsEmpty(Window(Home).Property(ReverseTransition))</param>
-                <param name="windowclose_up">!$EXP[Exp_SettingsDialogs_Next] + !String.IsEmpty(Window(Home).Property(ReverseTransition))</param>
-                <param name="windowclose_down">!$EXP[Exp_SettingsDialogs_Next] + String.IsEmpty(Window(Home).Property(ReverseTransition))</param>
+                <param name="windowopen_up">!$EXP[Exp_SettingsDialogs_Prev] + $EXP[Exp_ReverseTransition]</param>
+                <param name="windowopen_down">!$EXP[Exp_SettingsDialogs_Prev] + !$EXP[Exp_ReverseTransition]</param>
+                <param name="windowclose_up">!$EXP[Exp_SettingsDialogs_Next] + $EXP[Exp_ReverseTransition]</param>
+                <param name="windowclose_down">!$EXP[Exp_SettingsDialogs_Next] + !$EXP[Exp_ReverseTransition]</param>
             </include>
             <onup>PreviousMenu</onup>
             <!-- <ondown>ActivateWindow(1171)</ondown> -->
@@ -24,7 +24,6 @@
                 <control type="group">
                     <visible>!Integer.IsEqual(Container(5000).NumItems,0)</visible>
                     <visible>!Integer.IsEqual(Container(5000).NumItems,1) | !Control.HasFocus(5098) | ControlGroup(5000).HasFocus()</visible>
-                    <visible>!$EXP[Exp_InfoDialogs]</visible>
                     <include content="Furniture_Bottom_WidgetGroups">
                         <param name="label">$VAR[Label_NextBump]</param>
                         <param name="icon">special://skin/extras/icons/kodi.png</param>
@@ -60,7 +59,6 @@
         </control>
         <include>View_Bumper</include>
         <include>Widget_Transitions</include>
-        <include>Home_Fade</include>
         <include>Home_Menu</include>
 
         <control type="group">

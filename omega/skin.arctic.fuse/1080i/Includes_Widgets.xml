@@ -111,6 +111,7 @@
                 <animation effect="fade" start="100" end="0" time="0" condition="[Container($PARAM[id]).IsUpdating | $PARAM[busy_isupdating]] + $PARAM[busy_visible]">Conditional</animation>
                 <visible>$PARAM[visible] + [Container($PARAM[id]).IsUpdating | !Integer.IsEqual(Container($PARAM[id]).NumItems,0) | $PARAM[altvisible]]</visible>
                 <onfocus>SetProperty(Slide.WidgetContainer,$PARAM[id])</onfocus>
+                <include>Action_View_SlideOver_OnFocus</include>
 
                 <include content="Animation_Widget_FadeOut" condition="$PARAM[widgetfade_include]">
                     <param name="condition">!Control.HasFocus($PARAM[id]) + !Integer.IsEqual(Window.Property(TMDBHelper.WidgetContainer),$PARAM[id])</param>
@@ -583,11 +584,11 @@
 
     <include name="Widget_Info_Row">
         <param name="set_widgetcontainer">true</param>
-        <param name="set_imageoverride">true</param>
         <param name="set_transitionstyle">true</param>
         <param name="baseid">50</param>
         <param name="basegroupid">51</param>
         <param name="backid">5000</param>
+        <param name="include_movement">true</param>
         <definition>
             <include content="_Widget_Row">
                 <param name="id">$PARAM[baseid]$PARAM[id]</param>
@@ -608,17 +609,13 @@
                 <param name="shortstack_enabled">$PARAM[shortstack_enabled]</param>
                 <param name="widgetfade_include">$PARAM[widgetfade_include]</param>
 
-                <include content="Action_View_Movement_OnLeftRight">
+                <include content="Action_View_Movement_OnLeftRight" condition="$PARAM[include_movement]">
                     <param name="id">$PARAM[baseid]$PARAM[id]</param>
                     <param name="backid">$PARAM[backid]</param>
                     <param name="menuid">$PARAM[menuid]</param>
                     <param name="onback">[Integer.IsEqual(Container($PARAM[baseid]$PARAM[id]).CurrentItem,1)]</param>
                 </include>
-
-                <onfocus condition="$PARAM[set_imageoverride]">SetProperty(TMDbHelper.Image.Override,1,Home)</onfocus>
-                <onunfocus condition="$PARAM[set_imageoverride]">ClearProperty(TMDbHelper.Image.Override,Home)</onunfocus>
                 <onfocus condition="$PARAM[set_widgetcontainer]">SetProperty(TMDbHelper.WidgetContainer,$PARAM[baseid]$PARAM[id])</onfocus>
-
                 <onfocus condition="$PARAM[set_transitionstyle]">SetProperty(Transition.WidgetStyle,$PARAM[include],Home)</onfocus>
                 <onunfocus condition="$PARAM[set_transitionstyle]">ClearProperty(Transition.WidgetStyle,Home)</onunfocus>
 
@@ -699,7 +696,7 @@
             <param name="grouplistid">$PARAM[grouplistid]</param>
             <param name="refocus">$PARAM[refocus]</param>
             <param name="onprevious">[False]</param>
-            <param name="onparent">[Skin.String(Navigation.OnBack,Previous) | Skin.String(Navigation.OnBack,Parent)]</param>
+            <param name="onparent">[$EXP[Exp_Navigation_OnPrevious] | $EXP[Exp_Navigation_OnParent]]</param>
         </include>
 
         <include content="Action_Widget_End">
@@ -735,6 +732,7 @@
                 <param name="offset_x">view_button_offset_x</param>
                 <param name="control">fixedlist</param>
                 <param name="slide">true</param>
+                <param name="slide_id">$PARAM[id]</param>
                 <param name="backing">true</param>
                 <param name="font">font_mini</param>
                 <param name="color_fo">main_fg_30</param>
@@ -764,6 +762,7 @@
                 <param name="offset_x">view_button_offset_x</param>
                 <param name="control">fixedlist</param>
                 <param name="slide">true</param>
+                <param name="slide_id">$PARAM[id]</param>
                 <param name="backing">true</param>
                 <param name="font">font_mini</param>
                 <param name="color_fo">main_fg_30</param>

@@ -75,6 +75,7 @@
                         <onclick condition="!Container($PARAM[id]3).ListItem.IsFolder">PlayMedia($ESCINFO[Container($PARAM[id]3).ListItem.FileNameAndPath])</onclick>
                         <content target="$VAR[Path_CollectionNode_Target]" sortby="$VAR[View_Combined_SortBy]" sortorder="ascending">$VAR[View_$PARAM[id]3_Content]</content>
                         <onfocus>SetProperty(TMDbHelper.WidgetContainer,$PARAM[id]3)</onfocus>
+                        <include>Action_View_SlideOver_OnFocus</include>
                     </include>
 
                     <include content="Widget_Busy">
@@ -94,16 +95,11 @@
     </include>
 
     <include name="View_Combined_List_Horz_Selector_Content">
-        <include content="Action_View_Movement_OnBack" condition="$EXP[Exp_HomeMenu_IsExpanded]">
+        <include content="Action_View_Movement_OnBack">
             <param name="id">$PARAM[id]2</param>
             <param name="onback">[Integer.IsEqual(Container($PARAM[id]2).CurrentItem,1)]</param>
             <param name="backid">63</param>
-            <param name="menuid">309</param>
-        </include>
-        <include content="Action_View_Movement_OnBack" condition="![$EXP[Exp_HomeMenu_IsExpanded]]">
-            <param name="id">$PARAM[id]2</param>
-            <param name="onback">[Integer.IsEqual(Container($PARAM[id]2).CurrentItem,1)]</param>
-            <param name="backid">63</param>
+            <param name="menuid">303</param>
         </include>
         <onleft>$PARAM[id]2</onleft>
         <onright>$PARAM[id]2</onright>
@@ -115,6 +111,7 @@
             <param name="to_scrollbar">false</param>
             <param name="id">$PARAM[id]2</param>
         </include>
+        <include>Action_View_SlideOver_OnFocus</include>
         <onfocus>SetProperty(TMDbHelper.WidgetContainer,$PARAM[id]3)</onfocus>
         <onfocus>ClearProperty(SpecialFolderPath)</onfocus>
         <visible>$PARAM[visible]</visible>

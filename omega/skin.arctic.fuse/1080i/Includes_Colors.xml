@@ -91,14 +91,9 @@
         <value>4dffffff</value>
     </variable>
 
-    <variable name="ColorSelected_50">
-        <value condition="Skin.HasSetting(InvertSelectedText)">80333333</value>
-        <value>80ffffff</value>
-    </variable>
-
     <variable name="ColorSelected">
         <value condition="Skin.HasSetting(InvertSelectedText)">ff333333</value>
-        <value>white</value>
+        <value>ffffffff</value>
     </variable>
 
     <!-- Tricks for Settings Changer -->
@@ -110,9 +105,8 @@
         <value condition="ControlGroup(30030).HasFocus() | ControlGroup(30000).HasFocus() | ControlGroup(30040).HasFocus() | ControlGroup(30700).HasFocus()">00ffffff</value>
         <value>$VAR[ColorHighlight]</value>
     </variable>
-
     <variable name="ColorSettingsToggleButtonText">
-        <value condition="ControlGroup(30030).HasFocus() | ControlGroup(30000).HasFocus() | ControlGroup(30040).HasFocus() | ControlGroup(30700).HasFocus()">main_fg_70</value>
+        <value condition="ControlGroup(30030).HasFocus() | ControlGroup(30000).HasFocus() | ControlGroup(30040).HasFocus() | ControlGroup(30700).HasFocus()">dialog_fg_70</value>
         <value>$VAR[ColorSelected]</value>
     </variable>
 

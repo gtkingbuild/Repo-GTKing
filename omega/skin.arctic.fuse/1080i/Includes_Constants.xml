@@ -18,7 +18,7 @@
 
     <!-- View Touch Mode Offsets -->
     <constant name="view_touchmode_edge_l">160</constant>
-    <constant name="view_touchmode_edge_r">60</constant>
+    <constant name="view_touchmode_edge_r">0</constant>  <!-- was 60 -->
 
     <!-- Settings Dialogs -->
     <constant name="settings_category_w">500</constant>
@@ -51,6 +51,7 @@
     <constant name="icon_kodi_bordersize">-12</constant>
     <constant name="icon_home_bordersize">-8</constant>
     <constant name="icon_menu_bordersize">-8</constant>
+    <constant name="icon_item_bordersize">-4</constant>
 
     <!-- FlixArt -->
     <constant name="flixart_size_w">1280</constant>
@@ -138,20 +139,20 @@
     <constant name="view_weatherdetails_itemlayout_w">560</constant>
     <constant name="-view_weatherdetails_itemlayout_w">-560</constant>
 
-    <constant name="view_settings_itemlayout_w">420</constant>
-    <constant name="-view_settings_itemlayout_w">-420</constant>
-    <constant name="view_settings_item_w">380</constant>
-    <constant name="-view_settings_item_w">-380</constant>
+    <constant name="view_settings_itemlayout_w">450</constant>
+    <constant name="-view_settings_itemlayout_w">-450</constant>
+    <constant name="view_settings_item_w">410</constant>
+    <constant name="-view_settings_item_w">-410</constant>
 
-    <constant name="view_addonbrowser_itemlayout_w">560</constant>
-    <constant name="-view_addonbrowser_itemlayout_w">-560</constant>
-    <constant name="view_addonbrowser_item_w">520</constant>
-    <constant name="-view_addonbrowser_item_w">-520</constant>
+    <constant name="view_addonbrowser_itemlayout_w">550</constant>
+    <constant name="-view_addonbrowser_itemlayout_w">-550</constant>
+    <constant name="view_addonbrowser_item_w">510</constant>
+    <constant name="-view_addonbrowser_item_w">-510</constant>
 
     <!-- View Info -->
     <constant name="info_poster_w">475</constant>
     <constant name="info_poster_h">680</constant>
-    <constant name="info_plot_w">640</constant>
+    <constant name="info_plot_w">680</constant>
     <constant name="info_panel_w">1120</constant>
     <constant name="info_landscape_w">731.42</constant>
     <constant name="info_landscape_h">411.42375</constant>

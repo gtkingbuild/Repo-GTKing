@@ -24,7 +24,8 @@
                 <include>Dialog_Head_CloseButton</include>
 
                 <!-- Content -->
-                <include content="Dialog_Body">
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
                     <include content="List_DialogSelect">
                         <param name="id">450</param>
                         <param name="detailed">True</param>
@@ -42,7 +43,7 @@
                         <onleft>450</onleft>
                         <right>0</right>
                     </include>
-                </include>
+                </control>
             </include>
 
         </control>

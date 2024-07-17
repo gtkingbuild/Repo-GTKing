@@ -55,7 +55,7 @@
                     <top>-2</top>
                     <left>500</left>
                     <right>0</right>
-                    <label>$INFO[Container(11).ListItem.Title,, ~ ]$INFO[Container(11).ListItem.Season,S,]$INFO[Container(11).ListItem.Episode,E, ]$INFO[Container(11).ListItem.Plot]</label>
+                    <label>$VAR[Label_Plot_C11]</label>
                     <font>font_mini_cond</font>
                     <textcolor>panel_fg_70</textcolor>
                 </control>

@@ -7,9 +7,10 @@
             <param name="dialog_size">$PARAM[dialog_size]</param>
 
             <!-- Side Buttons -->
-            <include content="Dialog_Body">
-                <include content="Dialog_Side_Grouplist">
-                    <param name="id">9000</param>
+            <control type="group">
+                <include>Dimension_Dialog_Body</include>
+                <control type="grouplist" id="9000">
+                    <include>Dialog_Side_Grouplist_Def</include>
                     <onleft>Close</onleft>
                     <onright>996</onright>
                     <include content="Dialog_Side_Button" condition="!$EXP[Exp_InfoDialogs]">
@@ -17,7 +18,6 @@
                         <param name="label">$LOCALIZE[207]</param>
                         <param name="icon">special://skin/extras/icons/quote.png</param>
                         <param name="visible">[!String.IsEmpty(Container(99950).ListItem.Property(base_plot))]</param>
-                        <onclick>Close</onclick>
                         <onclick>ActivateWindow(1113)</onclick>
                     </include>
                     <include content="Dialog_Side_Button" condition="!$EXP[Exp_InfoDialogs]">
@@ -25,6 +25,7 @@
                         <param name="label">$LOCALIZE[31066]</param>
                         <param name="icon">special://skin/extras/icons/binoculars.png</param>
                         <param name="visible">[!String.IsEmpty(Container(99950).ListItem.Property(base_title))]</param>
+                        <onclick>Dialog.Close(contextmenu,true)</onclick>
                         <onclick>SetProperty(CustomSearchTerm,$ESCINFO[Container(99950).ListItem.Property(base_title)],Home)</onclick>
                         <onclick>SetProperty(ReplaceWindow,1105,Home)</onclick>
                         <onclick condition="!Window.IsActive(1105)">ActivateWindow(1105)</onclick>
@@ -35,6 +36,7 @@
                         <param name="label">Wiki</param>
                         <param name="icon">special://skin/extras/icons/globe.png</param>
                         <param name="visible">[!String.IsEmpty(Container(99950).ListItem.Property(base_title))]</param>
+                        <onclick>Dialog.Close(contextmenu,true)</onclick>
                         <onclick>runscript(script.wikipedia,wikipedia=$INFO[Container(99950).ListItem.Property(base_title)])</onclick>
                     </include>
                     <include content="Dialog_Side_Button" condition="!$EXP[Exp_InfoDialogs]">
@@ -42,14 +44,15 @@
                         <param name="label">$LOCALIZE[31041]</param>
                         <param name="icon">special://skin/extras/icons/fire2.png</param>
                         <param name="visible">[String.IsEqual(Container(99950).ListItem.Property(base_dbtype),tvshow) | String.IsEqual(Container(99950).ListItem.Property(base_dbtype),season) | String.IsEqual(Container(99950).ListItem.Property(base_dbtype),episode) | String.IsEqual(Container(99950).ListItem.Property(base_dbtype),movie)]</param>
-                        <onclick>SetFocus(50)</onclick>
-                        <onclick>AlarmClock(DelayCommand,RunScript(plugin.video.themoviedb.helper,related_lists,query=$VAR[Path_ContextParams_Query],tmdb_type=$VAR[Path_ContextParams_TMDbType]),00:01,silent)</onclick>
+                        <onclick>Dialog.Close(contextmenu,true)</onclick>
+                        <onclick>RunScript(plugin.video.themoviedb.helper,related_lists,query=$VAR[Path_ContextParams_Query],tmdb_type=$VAR[Path_ContextParams_TMDbType])</onclick>
                     </include>
                     <include content="Dialog_Side_Button" condition="!$EXP[Exp_InfoDialogs]">
                         <param name="id">06</param>
                         <param name="label">$LOCALIZE[20410]</param>
                         <param name="icon">special://skin/extras/icons/video.png</param>
                         <param name="visible">[!String.IsEmpty(Container(99950).ListItem.Trailer)]</param>
+                        <onclick>Dialog.Close(contextmenu,true)</onclick>
                         <onclick>RunScript(script.skinvariables,run_executebuiltin=special://skin/shortcuts/builtins/skinvariables-playtrailer.json,use_rules)</onclick>
                     </include>
                     <include content="Dialog_Side_Button" condition="!$EXP[Exp_InfoDialogs] + Window.IsMedia">
@@ -57,24 +60,25 @@
                         <param name="label">$LOCALIZE[33061]</param>
                         <param name="icon">special://skin/extras/icons/circle-plus.png</param>
                         <param name="visible">ListItem.IsFolder</param>
-                        <onclick>SetFocus(50)</onclick>
-                        <onclick>AlarmClock(DelayCommand,RunScript(script.skinvariables,set_listitem_to_menunode=sidemenu||homemenu||1101menu||1102menu||1103menu||1104menu,skin=$VAR[Path_SkinVariables_SkinFolder]),00:01,silent)</onclick>
+                        <onclick>Dialog.Close(contextmenu,true)</onclick>
+                        <onclick>RunScript(script.skinvariables,set_listitem_to_menunode=sidemenu||homemenu||1101menu||1102menu||1103menu||1104menu,skin=$VAR[Path_SkinVariables_SkinFolder])</onclick>
                     </include>
                     <include content="Dialog_Side_Button" condition="!$EXP[Exp_InfoDialogs] + Window.IsMedia">
                         <param name="id">08</param>
                         <param name="label">$LOCALIZE[5]</param>
                         <param name="icon">special://skin/extras/icons/settings.png</param>
                         <param name="visible">!String.IsEmpty(Container.PluginName)</param>
-                        <onclick>SetFocus(50)</onclick>
+                        <onclick>Dialog.Close(contextmenu,true)</onclick>
                         <onclick>Addon.OpenSettings($INFO[Container.PluginName])</onclick>
                     </include>
-                </include>
-            </include>
+                </control>
+            </control>
         </include>
     </include>
 
     <include name="Dialog_ContextMenu_BodyContent_Artwork">
-        <include content="Dialog_Body_Group">
+        <control type="group">
+            <include>Dimension_Dialog_Body_Group</include>
             <include content="DialogInfo_PlotBox_Artwork">
                 <param name="poster_visible">[!String.IsEmpty(ListItem.Art(poster)) | !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.base_poster))]</param>
                 <param name="poster_icon">$VAR[Image_ContextPoster]</param>
@@ -83,30 +87,31 @@
                 <param name="clearlogo_icon">$VAR[Image_ContextClearLogo]</param>
                 <param name="landscape_visible">[!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.base_fanart)) | !String.IsEmpty(ListItem.Art(fanart))]</param>
             </include>
-        </include>
+        </control>
     </include>
 
     <include name="Dialog_ContextMenu_BodyContent">
         <param name="include_artwork">true</param>
         <definition>
-            <include content="Dialog_Body">
+            <control type="group">
+                <include>Dimension_Dialog_Body</include>
 
                 <include condition="$PARAM[include_artwork]">Dialog_ContextMenu_BodyContent_Artwork</include>
 
-                <include content="Dialog_Body_Grouplist">
-                    <param name="id">996</param>
+                <control type="grouplist" id="996">
+                    <include>Dimension_Dialog_Body_Group</include>
                     <onleft condition="!Integer.IsEqual(Container(9000).NumItems,0)">9000</onleft>
                     <onleft condition="Integer.IsEqual(Container(9000).NumItems,0)">Close</onleft>
                     <right>$PARAM[lines_right]</right>
                     <onright>61</onright>
                     <pagecontrol>61</pagecontrol>
-                </include>
+                </control>
 
                 <include content="Dialog_Scrollbar">
                     <param name="id">61</param>
                     <onleft>996</onleft>
                 </include>
-            </include>
+            </control>
         </definition>
     </include>
 

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window type="dialog" id="1171">
     <defaultcontrol>9000</defaultcontrol>
+    <onload>Dialog.Close(1172)</onload>
+    <onload>Dialog.Close(1170)</onload>
     <onload>SetFocus(9000,0,absolute)</onload>
     <onunload>ClearProperty(Bumpers.OnDown,Home)</onunload>
     <controls>
@@ -17,9 +19,9 @@
 
         <control type="group">
             <include>Animation_Group_Bumper</include>
-
+            <include>Animation_View_SlideOver</include>
             <control type="group">
-                <left>200</left>
+                <left>180</left>
                 <height>80</height>
                 <centerbottom>100</centerbottom>
                 <width>700</width>
@@ -51,14 +53,14 @@
                             <onclick>Dialog.Close(1171,true)</onclick>
                             <onclick>ActivateWindow(shutdownmenu)</onclick>
                             <visible>!Window.IsMedia</visible>
-                            <visible>![Window.IsVisible(1105) + [Skin.String(SideMenu.SecondaryButton,Menu) | Skin.String(SideMenu.SecondaryButton,Options) | $EXP[Exp_HomeMenu_IsExpanded]]]</visible>
+                            <visible>!Window.IsVisible(1105)</visible>
                         </item>
                         <item>
                             <icon>special://skin/extras/icons/filter.png</icon>
                             <label>$LOCALIZE[587]</label>
                             <onclick>Dialog.Close(1171,true)</onclick>
                             <onclick>AlarmClock(refocus,SetFocus(64),00:00,silent)</onclick>
-                            <visible>Window.IsMedia | [Window.IsVisible(1105) + [Skin.String(SideMenu.SecondaryButton,Menu) | Skin.String(SideMenu.SecondaryButton,Options) | $EXP[Exp_HomeMenu_IsExpanded]]]</visible>
+                            <visible>Window.IsMedia | Window.IsVisible(1105)</visible>
                         </item>
                     </content>
 

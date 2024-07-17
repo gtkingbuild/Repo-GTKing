@@ -11,7 +11,7 @@
     </include>
     <include name="Categories_Selector_Movement_LargeMenu">
         <focusposition>0</focusposition>
-        <movement>3</movement>
+        <movement>2</movement>
         <!-- <width>1480</width> -->
         <width>1000</width>
     </include>
@@ -29,7 +29,7 @@
     </include>
     <include name="Categories_Selector_Movement_Iconic_LargeMenu">
         <focusposition>0</focusposition>
-        <movement>3</movement>
+        <movement>2</movement>
         <!-- <width>1384</width> -->
         <width>1048</width>
     </include>
@@ -43,6 +43,7 @@
 
     <include name="Categories_Iconic_Selector">
         <param name="id">300</param>
+        <param name="slide_id">300</param>
         <param name="window_id" />
         <param name="hidden_button">List_ButtonMenu_Row_HiddenButton_Home</param>
         <param name="slide">false</param>
@@ -68,7 +69,8 @@
                 <nested />
                 <width>1364</width>
                 <movement>3</movement>
-                <onfocus condition="$PARAM[slide]">SetProperty(Slide.WidgetContainer,$PARAM[id],$PARAM[window_id])</onfocus>
+                <include>Action_View_SlideOver_OnFocus</include>
+                <onfocus condition="$PARAM[slide]">SetProperty(Slide.WidgetContainer,$PARAM[slide_id],$PARAM[window_id])</onfocus>
                 <onfocus condition="![$PARAM[slide]]">ClearProperty(Slide.WidgetContainer,$PARAM[window_id])</onfocus>
                 <hitrect x="$PARAM[hitrect_x]" y="$PARAM[hitrect_y]" w="$PARAM[hitrect_w]" h="$PARAM[hitrect_h]" />
                 <height>240</height>
@@ -78,6 +80,7 @@
 
     <include name="Categories_Selector">
         <param name="id">300</param>
+        <param name="slide_id">300</param>
         <param name="window_id" />
         <param name="slide">False</param>
         <param name="font">font_main_black</param>
@@ -116,8 +119,8 @@
                 <include>Categories_Selector_Movement_Iconic_BasicMenu</include>
 
                 <nested />
-
-                <onfocus condition="$PARAM[slide]">SetProperty(Slide.WidgetContainer,$PARAM[id],$PARAM[window_id])</onfocus>
+                <include>Action_View_SlideOver_OnFocus</include>
+                <onfocus condition="$PARAM[slide]">SetProperty(Slide.WidgetContainer,$PARAM[slide_id],$PARAM[window_id])</onfocus>
                 <onfocus condition="![$PARAM[slide]]">ClearProperty(Slide.WidgetContainer,$PARAM[window_id])</onfocus>
             </include>
             <include content="List_ButtonMenu_Row" condition="!Skin.HasSetting(Views.UseAltCombined)">
@@ -141,8 +144,8 @@
                 <include>Categories_Selector_Movement_BasicMenu</include>
 
                 <nested />
-
-                <onfocus condition="$PARAM[slide]">SetProperty(Slide.WidgetContainer,$PARAM[id],$PARAM[window_id])</onfocus>
+                <include>Action_View_SlideOver_OnFocus</include>
+                <onfocus condition="$PARAM[slide]">SetProperty(Slide.WidgetContainer,$PARAM[slide_id],$PARAM[window_id])</onfocus>
                 <onfocus condition="![$PARAM[slide]]">ClearProperty(Slide.WidgetContainer,$PARAM[window_id])</onfocus>
             </include>
 

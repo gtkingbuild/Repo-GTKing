@@ -13,14 +13,17 @@
                 <content sortby="year" sortorder="descending">$INFO[Window.Property(Item_Query),plugin://plugin.video.themoviedb.helper/?info=details&amp;tmdb_type=person,]</content>
             </include>
             <control type="group">
-                <top>200</top>
-                <include content="DialogInfo_VideoInfo_CastSpotlight">
-                    <param name="icon">$INFO[Container(5203).ListItem.Icon]</param>
-                    <param name="plot">$VAR[Label_VideoInfo_CastBio]</param>
-                    <param name="label">$INFO[Window.Property(Item_Title)]</param>
-                    <param name="label2">$VAR[Label_VideoInfo_CastAge,   ,]</param>
-                </include>
-                <include>Animation_Right</include>
+                <include>Animation_View_SlideOver_Invert</include>
+                <control type="group">
+                    <top>200</top>
+                    <include content="DialogInfo_VideoInfo_CastSpotlight">
+                        <param name="icon">$INFO[Container(5203).ListItem.Icon]</param>
+                        <param name="plot">$VAR[Label_VideoInfo_CastBio]</param>
+                        <param name="label">$INFO[Window.Property(Item_Title)]</param>
+                        <param name="label2">$VAR[Label_VideoInfo_CastAge,   ,]</param>
+                    </include>
+                    <include>Animation_Right</include>
+                </control>
             </control>
             <include content="DialogInfo_Recommendations_InfoPanel">
                 <visible>!$EXP[Exp_InfoDialogs]</visible>
@@ -69,7 +72,6 @@
                     <control type="group">
                         <visible>!Integer.IsEqual(Container(5000).NumItems,0)</visible>
                         <visible>!Integer.IsEqual(Container(5000).NumItems,1) | !Control.HasFocus(5098) | ControlGroup(5000).HasFocus()</visible>
-                        <visible>!$EXP[Exp_InfoDialogs]</visible>
                         <include content="Furniture_Bottom_WidgetGroups">
                             <param name="label">$VAR[Label_NextBump]</param>
                             <param name="icon">special://skin/extras/icons/kodi.png</param>
@@ -80,16 +82,15 @@
             <include>Widget_Transitions</include>
         </include>
 
-        <include content="DialogInfo_ButtonGroup_Basic">
-            <param name="id">303</param>
-            <param name="include">Items_PersonCredits_MenuBar</param>
-            <include content="Action_HomeMenu_OnRightLeft">
-                <param name="onlist">5000</param>
+        <control type="group">
+            <include>Animation_Home_SlideOver</include>
+            <include content="DialogInfo_ButtonGroup_Basic">
+                <param name="id">303</param>
+                <param name="include">Items_PersonCredits_MenuBar</param>
+                <param name="include_def">DialogInfo_ButtonGroup_Basic__Def_1183_Person</param>
+                <param name="visible">!$EXP[Exp_InfoDialogs]</param>
             </include>
-            <ondown>5000</ondown>
-            <onup>PreviousMenu</onup>
-            <visible>!$EXP[Exp_InfoDialogs]</visible>
-        </include>
+        </control>
 
         <control type="group">
             <visible>!$EXP[Exp_InfoDialogs]</visible>

@@ -18,22 +18,25 @@
             <control type="group">
                 <left>60</left>
                 <right>-60</right>
-                <include content="Dialog_Background_Blur" condition="$EXP[Exp_AutoCompletion_IsEnabled]">
-                    <param name="shadow">false</param>
-                    <param name="diffuse">diffuse/dialog_w1120_h400.png</param>
-                    <!-- <animation effect="slide" start="0" end="0,80" time="400" condition="$EXP[Exp_AutoCompletion_IsEnabled] + !Integer.IsEqual(Container(8000).NumItems,0)" tween="cubic" easing="out" reversible="false">Conditional</animation>
-                    <animation effect="slide" start="0,80" end="0" time="400" condition="![$EXP[Exp_AutoCompletion_IsEnabled] + !Integer.IsEqual(Container(8000).NumItems,0)]" tween="cubic" easing="out" reversible="false">Conditional</animation> -->
+                <control type="group">
+                    <visible>$EXP[Exp_AutoCompletion_IsEnabled]</visible>
+                    <include content="Dialog_Background_Blur">
+                        <param name="shadow">false</param>
+                        <param name="diffuse">diffuse/dialog_w1120_h400.png</param>
+                    </include>
+                    <animation effect="slide" start="0" end="0,-80" time="400" condition="$EXP[Exp_AutoCompletion_IsEnabled] + !Integer.IsEqual(Container(8000).NumItems,0)" tween="cubic" easing="out" reversible="false">Conditional</animation>
+                    <animation effect="slide" start="0,-80" end="0" time="400" condition="![$EXP[Exp_AutoCompletion_IsEnabled] + !Integer.IsEqual(Container(8000).NumItems,0)]" tween="cubic" easing="out" reversible="false">Conditional</animation>
                     <control type="fixedlist" id="8000">
                         <height>160</height>
-                        <bottom>-40</bottom>
-                        <width>1610</width>
+                        <top>-40</top>
+                        <width>1600</width>
                         <centerleft>50%</centerleft>
                         <orientation>horizontal</orientation>
                         <focusposition>3</focusposition>
-                        <movement>3</movement>
+                        <movement>2</movement>
                         <onup>8004</onup>
                         <ondown>312</ondown>
-                        <itemlayout width="230" height="160">
+                        <itemlayout width="265" height="160">
                             <control type="label">
                                 <font>font_mini</font>
                                 <align>center</align>
@@ -41,7 +44,7 @@
                                 <label>$INFO[ListItem.Label]</label>
                             </control>
                         </itemlayout>
-                        <focusedlayout width="230" height="160" condition="!Control.HasFocus(8000)">
+                        <focusedlayout width="265" height="160" condition="!Control.HasFocus(8000)">
                             <control type="label">
                                 <font>font_mini</font>
                                 <align>center</align>
@@ -49,11 +52,11 @@
                                 <label>$INFO[ListItem.Label]</label>
                             </control>
                         </focusedlayout>
-                        <focusedlayout width="230" height="160" condition="Control.HasFocus(8000)">
+                        <focusedlayout width="265" height="160" condition="Control.HasFocus(8000)">
                             <control type="image">
                                 <include>Texture_Highlight_Scrollbar_H</include>
                                 <height>scrollbar_w</height>
-                                <centerbottom>40</centerbottom>
+                                <bottom>40</bottom>
                                 <width>75%</width>
                                 <centerleft>50%</centerleft>
                             </control>
@@ -66,12 +69,12 @@
                         </focusedlayout>
                         <content>plugin://plugin.program.autocompletion?info=autocomplete&amp;&amp;id=$INFO[Control.GetLabel(312).index(1)]</content>
                     </control>
-                </include>
-                <include content="Dialog_Background_Blur">
-                    <param name="shadow">false</param>
-                    <param name="diffuse">diffuse/dialog_w1120_h400.png</param>
-                    <animation effect="slide" start="0" end="0,-80" time="400" condition="$EXP[Exp_AutoCompletion_IsEnabled] + !Integer.IsEqual(Container(8000).NumItems,0)" tween="cubic" easing="out" reversible="false">Conditional</animation>
-                    <animation effect="slide" start="0,-80" end="0" time="400" condition="![$EXP[Exp_AutoCompletion_IsEnabled] + !Integer.IsEqual(Container(8000).NumItems,0)]" tween="cubic" easing="out" reversible="false">Conditional</animation>
+                </control>
+                <control type="group">
+                    <include content="Dialog_Background_Blur">
+                        <param name="shadow">false</param>
+                        <param name="diffuse">diffuse/dialog_w1120_h400.png</param>
+                    </include>
                     <control type="image">
                         <texture colordiffuse="dialog_fg_12" border="20">common/dialog.png</texture>
                     </control>
@@ -538,7 +541,7 @@
                                     <param name="id">301</param>
                                     <include>Texture_KeyboardButton</include>
                                     <font>font_main_iconic</font>
-                                    <label>&#xe08d;</label>
+                                    <label>&#xf05c;</label>
                                     <onup>304</onup>
                                     <ondown>8000</ondown>
                                 </include>
@@ -560,7 +563,7 @@
                                     <param name="id">305</param>
                                     <include>Texture_KeyboardButton</include>
                                     <font>font_main_iconic</font>
-                                    <label>&#xe006;</label>
+                                    <label>&#xf0a8;</label>
                                     <onup>170</onup>
                                     <ondown>8000</ondown>
                                 </include>
@@ -568,7 +571,7 @@
                                     <param name="id">306</param>
                                     <include>Texture_KeyboardButton</include>
                                     <font>font_main_iconic</font>
-                                    <label>&#xe005;</label>
+                                    <label>&#xf0a9;</label>
                                     <onup>171</onup>
                                     <ondown>8000</ondown>
                                 </include>
@@ -601,7 +604,7 @@
                             </control>
                         </control>
                     </control>
-                </include>
+                </control>
             </control>
         </control>
     </include>
@@ -616,7 +619,9 @@
             <include>Animation_SlideIn_Dialog</include>
             <control type="group">
                 <include>Dimension_DialogNumeric</include>
-                <include content="Dialog_Background_Blur">
+                <control type="group">
+                    <include content="Dialog_Background_Blur">
+                    </include>
                     <include content="Dialog_Head">
                         <param name="textcolor">main_fg_100</param>
                         <param name="top">40</param>
@@ -693,8 +698,8 @@
                                             <include content="Object_Keyboard_Button" description="Back">
                                                 <param name="id">23</param>
                                                 <width>170</width>
-                                                <include>Texture_KeyboardButton</include>
-                                                <label>&#xe00a;</label>
+                                                <!-- <include>Texture_KeyboardButton</include> -->
+                                                <label>&#xf55a;</label>
                                                 <font>font_main_iconic</font>
                                                 <ondown>21</ondown>
                                             </include>
@@ -729,7 +734,7 @@
                                             <include content="Object_Keyboard_Button" description="Number">
                                                 <param name="id">10</param>
                                                 <width>170</width>
-                                                <include>Texture_KeyboardButton</include>
+                                                <!-- <include>Texture_KeyboardButton</include> -->
                                                 <label>$NUMBER[0]</label>
                                                 <onup>18</onup>
                                             </include>
@@ -765,7 +770,7 @@
                                                 <param name="id">20</param>
                                                 <include>Texture_KeyboardButton</include>
                                                 <font>font_main_iconic</font>
-                                                <label>&#xe006;</label>
+                                                <label>&#xf0a8;</label>
                                                 <onup>19</onup>
                                                 <ondown>9000</ondown>
                                             </include>
@@ -773,7 +778,7 @@
                                                 <param name="id">22</param>
                                                 <include>Texture_KeyboardButton</include>
                                                 <font>font_main_iconic</font>
-                                                <label>&#xe005;</label>
+                                                <label>&#xf0a9;</label>
                                                 <onup>21</onup>
                                                 <ondown>9000</ondown>
                                             </include>
@@ -805,7 +810,7 @@
                             <include>defs_dialog_button</include>
                         </control>
                     </control>
-                </include>
+                </control>
             </control>
         </control>
     </include>

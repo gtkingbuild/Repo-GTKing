@@ -11,8 +11,10 @@
             <include>Animation_SlideIn_Dialog</include>
             <control type="group">
                 <include>Dimension_DialogConfirm</include>
-                <include content="Dialog_Background_Blur">
-                    <param name="diffuse">diffuse/dialog_w1120_h400.png</param>
+                <control type="group">
+                    <include content="Dialog_Background_Blur">
+                        <param name="diffuse">diffuse/dialog_w1120_h400.png</param>
+                    </include>
                     <include content="Dialog_Head">
                         <param name="top">40</param>
                         <param name="left">40</param>
@@ -33,10 +35,12 @@
                                 <param name="top">160</param>
                                 <param name="bottom">160</param>
                             </include>
-                            <include content="Dialog_Textbox">
+                            <control type="textbox" id="9">
                                 <top>-8</top>
                                 <bottom>8</bottom>
-                            </include>
+                                <font>font_main_plot</font>
+                                <textcolor>dialog_fg_70</textcolor>
+                            </control>
                             <control type="group">
                                 <bottom>0</bottom>
                                 <height>12</height>
@@ -92,7 +96,7 @@
                             <include>defs_dialog_button</include>
                         </control>
                     </control>
-                </include>
+                </control>
             </control>
         </control>
     </controls>

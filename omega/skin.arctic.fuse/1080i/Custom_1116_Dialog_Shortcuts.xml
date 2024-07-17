@@ -63,9 +63,10 @@
                 <param name="slide_condition">True</param>
                 <param name="dialog_size">Dimension_DialogMainMenu</param>
                 <!-- Side Buttons -->
-                <include content="Dialog_Body">
-                    <include content="Dialog_Side_Grouplist">
-                        <param name="id">9000</param>
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
+                    <control type="grouplist" id="9000">
+                        <include>Dialog_Side_Grouplist_Def</include>
                         <onright>22001</onright>
                         <onback>29999</onback>
                         <!-- <onup>9005</onup>
@@ -131,8 +132,8 @@
                             <onclick>RunPlugin($INFO[Container(22001).ListItem.Property(url),,&amp;func=do_list_del]$VAR[Path_Shortcut_UseRawPath])</onclick>
                             <onback>29999</onback>
                         </include>
-                    </include>
-                </include>
+                    </control>
+                </control>
             </include>
 
             <include content="Dialog_Foreground_Side">
@@ -209,8 +210,10 @@
 
 
                 <!-- Content -->
-                <include content="Dialog_Body">
-                    <include content="Dialog_Body_Group">
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
+                    <control type="group">
+                        <include>Dimension_Dialog_Body_Group</include>
                         <control type="group">
                             <right>640</right>
 
@@ -452,6 +455,43 @@
                                             <visible>!String.IsEqual(Container(22001).ListItem.Property(blank),True)</visible>
                                         </include>
 
+                                        <!-- Open In Dialog Item -->
+                                        <include content="Settings_Button">
+                                            <param name="dialog">true</param>
+                                            <param name="id">23002</param>
+                                            <param name="control">radiobutton</param>
+                                            <label>$LOCALIZE[31443]</label>
+
+                                            <selected>!String.IsEmpty(Container(22001).ListItem.Property(path_opendialog))</selected>
+                                            <onclick>RunPlugin($INFO[Container(22001).ListItem.Property(url),,&amp;func=do_toggle&amp;&amp;path_opendialog])</onclick>
+
+                                            <onback>29999</onback>
+
+                                            <visible>!String.IsEqual(Container(22001).ListItem.Property(blank),True)</visible>
+                                            <visible>!String.IsEmpty(Container(22001).ListItem.Property(path))</visible>
+                                            <visible>!String.IsEmpty(Container(22001).ListItem.Property(target))</visible>
+                                            <visible>!$EXP[Shortcuts_Dialog_Exp_IsWidgetMode]</visible>
+                                        </include>
+
+                                        <!-- Open In Expanded Dialog Item -->
+                                        <include content="Settings_Button">
+                                            <param name="dialog">true</param>
+                                            <param name="id">23004</param>
+                                            <param name="control">radiobutton</param>
+                                            <label> -- $LOCALIZE[39123]</label>
+
+                                            <selected>!String.IsEmpty(Container(22001).ListItem.Property(path_opendialog_expanded))</selected>
+                                            <onclick>RunPlugin($INFO[Container(22001).ListItem.Property(url),,&amp;func=do_toggle&amp;&amp;path_opendialog_expanded])</onclick>
+
+                                            <onback>29999</onback>
+
+                                            <visible>!String.IsEqual(Container(22001).ListItem.Property(blank),True)</visible>
+                                            <visible>!String.IsEmpty(Container(22001).ListItem.Property(path))</visible>
+                                            <visible>!String.IsEmpty(Container(22001).ListItem.Property(target))</visible>
+                                            <visible>!String.IsEmpty(Container(22001).ListItem.Property(path_opendialog))</visible>
+                                            <visible>!$EXP[Shortcuts_Dialog_Exp_IsWidgetMode]</visible>
+                                        </include>
+
                                         <!-- ================ -->
                                         <!-- SideMenu Options -->
                                         <!-- ================ -->
@@ -462,24 +502,6 @@
 
                                             <visible>[String.IsEqual(Window(Home).Property(Shortcuts.EditMenu),menu=sidemenu) + String.IsEmpty(Window(Home).Property(Shortcuts.EditMode)) + String.IsEmpty(Window(Home).Property(Shortcuts.EditGUID))]</visible>
                                             <visible>[!String.IsEqual(Container(22001).ListItem.Property(disabled),True) + !String.IsEqual(Container(22001).ListItem.Property(blank),True)]</visible>
-
-                                            <onback>29999</onback>
-                                        </include>
-
-                                        <!-- Default Item -->
-                                        <include content="Settings_Button">
-                                            <param name="dialog">true</param>
-                                            <param name="id">23091</param>
-                                            <param name="control">radiobutton</param>
-                                            <label>$LOCALIZE[571]</label>
-
-                                            <selected>[[!String.IsEmpty(Skin.String(Home.DefaultFocus)) + Integer.IsEqual(Container(22001).Position,Skin.String(Home.DefaultFocus))] | [String.IsEmpty(Skin.String(Home.DefaultFocus)) + Integer.IsEqual(Container(22001).Position,1)]]</selected>
-
-                                            <visible>[!String.IsEqual(Container(22001).ListItem.Property(disabled),True) + !String.IsEqual(Container(22001).ListItem.Property(blank),True)]</visible>
-                                            <visible>[String.IsEqual(Window(Home).Property(Shortcuts.EditMenu),menu=sidemenu) + String.IsEmpty(Window(Home).Property(Shortcuts.EditMode)) + String.IsEmpty(Window(Home).Property(Shortcuts.EditGUID))]</visible>
-
-                                            <onclick condition="![[!String.IsEmpty(Skin.String(Home.DefaultFocus)) + Integer.IsEqual(Container(22001).Position,Skin.String(Home.DefaultFocus))] | [String.IsEmpty(Skin.String(Home.DefaultFocus)) + Integer.IsEqual(Container(22001).Position,1)]]">Skin.SetString(Home.DefaultFocus,$INFO[Container(22001).Position])</onclick>
-                                            <onclick condition="[[!String.IsEmpty(Skin.String(Home.DefaultFocus)) + Integer.IsEqual(Container(22001).Position,Skin.String(Home.DefaultFocus))] | [String.IsEmpty(Skin.String(Home.DefaultFocus)) + Integer.IsEqual(Container(22001).Position,1)]]">Skin.SetString(Home.DefaultFocus,1)</onclick>
 
                                             <onback>29999</onback>
                                         </include>
@@ -1005,12 +1027,12 @@
                                 </control>
                             </include>
                         </control>
-                    </include>
+                    </control>
                     <include content="Dialog_Scrollbar">
                         <param name="id">61</param>
                         <onleft>23001</onleft>
                     </include>
-                </include>
+                </control>
             </include>
         </control>
 
@@ -1036,8 +1058,10 @@
                 </include>
                 <include>Dialog_Head_CloseButton</include>
                 <!-- Content -->
-                <include content="Dialog_Body">
-                    <include content="Dialog_Body_Group">
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
+                    <control type="group">
+                        <include>Dimension_Dialog_Body_Group</include>
                         <include content="List_DialogSelect">
                             <param name="id">25001</param>
                             <!-- <param name="item_height">100</param> -->
@@ -1077,26 +1101,22 @@
                             <onclick condition="String.IsEqual(Window.Property(SideOptions.List),Filter)">SetFocus(25998)</onclick>
                             <onclick condition="String.IsEmpty(Window.Property(SideOptions.List))">SetFocus(25999)</onclick>
                         </include>
-                    </include>
-                </include>
+                    </control>
+                </control>
             </include>
         </control>
 
+        <include content="Furniture_Busy">
+            <param name="hasspinner">true</param>
+            <param name="spinspinner">true</param>
+            <param name="icon">special://skin/extras/icons/kodi.png</param>
+            <param name="hasbackground">Skin.HasSetting(ToastNotifications.Tabbed)</param>
+            <param name="haslabel">Skin.HasSetting(ToastNotifications.Tabbed)</param>
+            <param name="spinnervisible">Skin.HasSetting(ToastNotifications.Tabbed) | [!Window.IsActive(DialogVolumeBar.xml) | Player.Muted]</param>
+            <param name="visible_delay">1200</param>
+            <param name="windowopen_condition">False</param>
+            <param name="visible">Container(22001).IsUpdating</param>
+        </include>
 
-        <control type="group">
-            <right>90</right>
-            <centertop>100</centertop>
-            <height>40</height>
-            <width>40</width>
-            <visible>Container(22001).IsUpdating</visible>
-            <include content="Animation_Fade_In">
-                <param name="type">visible</param>
-                <param name="delay">400</param>
-            </include>
-            <include content="Furniture_Busy_Icon">
-                <param name="hasspinner">true</param>
-                <param name="spinspinner">true</param>
-            </include>
-        </control>
     </controls>
 </window>

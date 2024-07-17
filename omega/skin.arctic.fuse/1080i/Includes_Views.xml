@@ -8,13 +8,23 @@
         <definition>
             <control type="group">
                 <visible>!$EXP[Exp_InfoDialogs]</visible>
+                <include>Animation_Transition_InfoPanel_Hide</include>
                 <visible>!Window.IsVisible(DialogAddonSettings.xml)</visible>
                 <visible>!Window.IsVisible(DialogGameControllers.xml)</visible>
                 <visible>!Window.IsVisible(DialogPVRChannelManager.xml)</visible>
                 <visible>!Window.IsVisible(DialogPVRGroupManager.xml)</visible>
-                <include content="Furniture_Top">
-                    <param name="label">$PARAM[label]</param>
-                </include>
+                <control type="group">
+                    <visible allowhiddenfocus="true">![Control.HasFocus(19) | ControlGroup(9090).HasFocus() | Control.HasFocus(9992) | Control.HasFocus(9993) | !String.IsEmpty(Window.Property(MediaFilterBase)) | $EXP[Exp_FilterWall_IsActive]]</visible>
+                    <include content="Furniture_Top">
+                        <param name="label">$PARAM[label]</param>
+                    </include>
+                </control>
+                <control type="group">
+                    <visible allowhiddenfocus="true">Control.HasFocus(19) | ControlGroup(9090).HasFocus() | Control.HasFocus(9992) | Control.HasFocus(9993) | !String.IsEmpty(Window.Property(MediaFilterBase)) | $EXP[Exp_FilterWall_IsActive]</visible>
+                    <include content="Search_View_Edit">
+                        <param name="editid">19</param>
+                    </include>
+                </control>
             </control>
         </definition>
     </include>
@@ -200,27 +210,22 @@
 
     <include name="View_Furniture_Bottom_Group_NextLabel">
         <control type="group">
+            <include>Dimension_Bottombar</include>
             <visible>$EXP[Exp_FurnitureFooter_Left_IsVisible]</visible>
-            <visible>![Skin.String(Furniture.BottomLeft.Enable,Library) | Skin.String(Furniture.BottomLeft.Enable,Always)]</visible>
-            <include content="Furniture_Bottombar_Group">
-                <include content="Furniture_Gutters">
-                    <control type="group">
-                        <animation effect="fade" start="100" end="30" condition="true">Conditional</animation>
-                        <control type="group">
-                            <top>10</top>
-                            <height>35</height>
-                            <include content="Info_Viewline">
-                                <param name="library_condition">false</param>
-                                <param name="label">$VAR[Label_NextMedia]</param>
-                                <param name="custom_icon_condition">Skin.HasSetting(Furniture.EnableViewLineIcons)</param>
-                                <param name="custom_icon">$VAR[Image_NextMedia]</param>
-                                <top>0</top>
-                                <left>0</left>
-                            </include>
-                        </control>
-                    </control>
+            <visible>!Skin.String(Furniture.BottomLeft.Enable,Library)</visible>
+            <visible>!Skin.String(Furniture.BottomLeft.Enable,Always)</visible>
+            <animation effect="fade" start="100" end="30" condition="true">Conditional</animation>
+            <control type="group">
+                <height>35</height>
+                <include content="Info_Viewline">
+                    <param name="library_condition">false</param>
+                    <param name="label">$VAR[Label_NextMedia]</param>
+                    <param name="custom_icon_condition">Skin.HasSetting(Furniture.EnableViewLineIcons)</param>
+                    <param name="custom_icon">$VAR[Image_NextMedia]</param>
+                    <top>0</top>
+                    <left>0</left>
                 </include>
-            </include>
+            </control>
         </control>
     </include>
 
@@ -233,8 +238,9 @@
 
     <include name="View_Furniture_Bottom_Group">
         <control type="group">
-            <visible>!$EXP[Exp_InfoDialogs]</visible>
-            <include condition="![Skin.String(Furniture.BottomLeft.Enable,Library) | Skin.String(Furniture.BottomLeft.Enable,Always)]">Animation_Transition_InfoPanel_Hide</include>
+            <visible>!$EXP[Exp_InfoDialogs] | !$EXP[Exp_Footer_BottomLeft_IsVisible]</visible>
+            <include condition="!$EXP[Exp_Footer_BottomLeft_IsVisible]">Transitions_Lower_Visibility</include>
+            <include condition="$EXP[Exp_Footer_BottomLeft_IsVisible]">Animation_Transition_InfoPanel_Hide</include>
             <control type="group">
                 <visible>!Window.IsVisible(1171)</visible>
                 <control type="group">
@@ -319,7 +325,6 @@
                 <param name="include">View_Furniture_Bottom_Group_Content</param>
             </include>
             <control type="group">
-                <include condition="![Skin.String(Furniture.BottomLeft.Enable,Library) | Skin.String(Furniture.BottomLeft.Enable,Always)]">Animation_Transition_InfoPanel_Hide</include>
                 <visible>!Window.IsVisible(1171)</visible>
                 <control type="group">
                     <visible>[[Container.Scrolling + $EXP[Exp_FurnitureFooter_Left_IsVisible]] | !String.IsEmpty(Window.Property(MediaFilterBase)) | !String.IsEmpty(Window.Property(MediaFilterWall))]</visible>
@@ -334,10 +339,6 @@
                 </control>
                 <include>View_Combined_Row_Horz_Selector</include>
             </control>
-        </control>
-        <control type="group">
-            <include>Furniture_Bottom_Right</include>
-            <visible>!$EXP[Exp_InfoDialogs]</visible>
         </control>
     </include>
 
@@ -391,9 +392,9 @@
     </include>
 
     <include name="View_Furniture_Edges">
-        <include>Home_Fade</include>
         <control type="group">
             <include>Animation_Group_Bumper</include>
+            <include>Animation_View_SlideOver</include>
             <include>Animation_View_WindowChange</include>
             <control type="group">
                 <include>Animation_Half_WindowChange_UpDown</include>
@@ -407,7 +408,12 @@
             <include>View_Furniture_Bottom</include>
             <include>View_Hidden_Buttons</include>
         </control>
-        <include content="Home_Menu">
+        <control type="group">
+            <include>Furniture_Bottom_Right</include>
+            <visible>!$EXP[Exp_InfoDialogs]</visible>
+            <include>Animation_Transition_InfoPanel_Hide</include>
+        </control>
+        <include content="Home_Menu_Media">
             <param name="onlist">50</param>
         </include>
         <include condition="Window.IsVisible(MyVideoNav.xml)">MediaFilter_Discover_Node</include>
@@ -438,11 +444,13 @@
 
             <control type="group">
                 <include>Animation_Group_Bumper</include>
+                <include>Animation_View_SlideOver</include>
                 <include>Animation_View_WindowChange</include>
                 <include>View_MediaWall</include>
                 <include>View_Row_Items</include>
                 <include>View_Row_Info</include>
             </control>
+
             <include>View_Furniture_Edges</include>
             <include>View_Dialog_VideoPIP</include>
             <include>View_Dialog_Plot</include>

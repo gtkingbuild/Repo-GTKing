@@ -24,8 +24,10 @@
                 <include>Dialog_Head_CloseButton</include>
 
                 <!-- Content -->
-                <include content="Dialog_Body">
-                    <include content="Dialog_Body_Group">
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
+                    <control type="group">
+                        <include>Dimension_Dialog_Body_Group</include>
                         <include content="List_DialogSelect">
                             <param name="id">8000</param>
                             <param name="textcolor">dialog_fg</param>
@@ -69,8 +71,8 @@
                                 </item>
                             </content>
                         </include>
-                    </include>
-                </include>
+                    </control>
+                </control>
             </include>
 
         </control>

@@ -61,7 +61,7 @@
                         <align>bottom</align>
                         <height>280</height>
                         <control type="textbox">
-                            <font>font_title_black</font>
+                            <font>font_title_midi</font>
                             <textcolor>main_fg_100</textcolor>
                             <label>$INFO[Container(1297).ListItem.Title]</label>
                             <height max="270">auto</height>
@@ -112,7 +112,7 @@
                         <align>bottom</align>
                         <height>280</height>
                         <control type="textbox">
-                            <font>font_title_black</font>
+                            <font>font_title_midi</font>
                             <textcolor>main_fg_100</textcolor>
                             <label>$INFO[Container(1297).ListItem.Title]</label>
                             <height max="270">auto</height>

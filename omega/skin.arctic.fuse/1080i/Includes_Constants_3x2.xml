@@ -15,10 +15,10 @@
     <constant name="view_poster_movement">4</constant>
     <constant name="view_apps_movement">3</constant>
 
-    <constant name="view_settings_itemlayout_w">345</constant>
-    <constant name="-view_settings_itemlayout_w">-345</constant>
-    <constant name="view_settings_item_w">305</constant>
-    <constant name="-view_settings_item_w">-305</constant>
+    <constant name="view_settings_itemlayout_w">375</constant>
+    <constant name="-view_settings_itemlayout_w">-375</constant>
+    <constant name="view_settings_item_w">335</constant>
+    <constant name="-view_settings_item_w">-335</constant>
 
     <constant name="view_listwall_itemlayout_w">710</constant>
     <constant name="-view_listwall_itemlayout_w">-710</constant>

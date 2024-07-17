@@ -14,10 +14,11 @@
                 <param name="slide_condition">True</param>
                 <param name="dialog_size">Dimension_DialogWideMenu</param>
                 <!-- Side Buttons -->
-                <include content="Dialog_Body">
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
                     <include condition="[Window.IsActive(gamevideofilter) | Window.IsActive(gamestretchmode) | Window.IsActive(gamesaves) | Window.IsActive(gamevideorotation) | Window.IsActive(ingamesaves)]">DialogSelect_SideButtons_Games</include>
                     <include condition="![Window.IsActive(gamevideofilter) | Window.IsActive(gamestretchmode) | Window.IsActive(gamesaves) | Window.IsActive(gamevideorotation) | Window.IsActive(ingamesaves)]">DialogSelect_SideButtons_Standard</include>
-                </include>
+                </control>
             </include>
 
             <include content="Dialog_Foreground_Side">
@@ -40,8 +41,10 @@
                 <include>Dialog_Head_CloseButton</include>
 
                 <!-- Content -->
-                <include content="Dialog_Body">
-                    <include content="Dialog_Body_Group">
+                <control type="group">
+                    <include>Dimension_Dialog_Body</include>
+                    <control type="group">
+                        <include>Dimension_Dialog_Body_Group</include>
                         <include content="List_DialogSelect">
                             <param name="id">3</param>
                             <param name="textcolor">dialog_fg</param>
@@ -88,7 +91,7 @@
                                 <visible>Control.IsVisible(6)</visible>
                             </control>
                         </control>
-                    </include>
+                    </control>
 
                     <include content="Dialog_Scrollbar">
                         <param name="id">61</param>
@@ -107,7 +110,7 @@
                         <visible>Control.IsVisible(10811)</visible>
                         <onleft>10811</onleft>
                     </include>
-                </include>
+                </control>
             </include>
 
         </control>
@@ -120,19 +123,20 @@
             <include content="Animation_SlideIn_Dialog_Side">
                 <param name="slide_condition">True</param>
             </include>
-            <include content="Dialog_Preview">
-                <param name="icon">$INFO[Container(6).ListItem.Icon]</param>
+            <control type="group">
+                <include content="Dialog_Preview_Def">
+                    <param name="icon">$INFO[Container(6).ListItem.Icon]</param>
+                </include>
                 <visible>Control.IsVisible(6)</visible>
-                <!-- <visible>Control.HasFocus(6)</visible> -->
                 <visible>String.IsEqual(Control.GetLabel(1),$LOCALIZE[13511]) | String.IsEqual(Control.GetLabel(1),$LOCALIZE[20437])</visible>
                 <animation effect="slide" end="0,200" condition="Container(6).Position(4) | Container(6).Position(5) | Container(6).Position(6) | Container(6).Position(7)">Conditional</animation>
-            </include>
+            </control>
         </control>
     </include>
 
     <include name="DialogSelect_SideButtons_Games">
-        <include content="Dialog_Side_Grouplist">
-            <param name="id">9000</param>
+        <control type="grouplist" id="9000">
+            <include>Dialog_Side_Grouplist_Def</include>
             <onright>10811</onright>
             <include content="Dialog_Side_Button">
                 <param name="id">01</param>
@@ -140,7 +144,7 @@
                 <param name="icon">special://skin/extras/icons/circle-xmark.png</param>
                 <onclick>Close</onclick>
             </include>
-        </include>
+        </control>
     </include>
 
     <variable name="DialogSelect_SideButtons_Label_5">
@@ -167,13 +171,13 @@
 
 
     <include name="DialogSelect_SideButtons_Standard">
-        <include content="Dialog_Side_Grouplist">
-            <param name="id">9000</param>
+        <control type="grouplist" id="9000">
+            <include>Dialog_Side_Grouplist_Def</include>
             <onleft>Close</onleft>
             <onright condition="Control.IsVisible(3)">3</onright>
             <onright condition="Control.IsVisible(6)">6</onright>
             <include>Items_DialogSelect_Standard</include>
-        </include>
+        </control>
     </include>
 
     <include name="DialogSelect_SideButtons_Artwork">
@@ -219,14 +223,15 @@
                     <param name="slide_condition">ControlGroup(9000).HasFocus()</param>
                     <param name="dialog_size">Dimension_DialogFullMenu</param>
                     <!-- Side Buttons -->
-                    <include content="Dialog_Body">
-                        <include content="Dialog_Side_Grouplist">
-                            <param name="id">9000</param>
+                    <control type="group">
+                        <include>Dimension_Dialog_Body</include>
+                        <control type="grouplist" id="9000">
+                            <include>Dialog_Side_Grouplist_Def</include>
                             <onleft>Close</onleft>
                             <onright>7000</onright>
                             <include>$PARAM[include_sidegrouplist_items]</include>
-                        </include>
-                    </include>
+                        </control>
+                    </control>
                 </include>
 
                 <include content="Dialog_Foreground_Side">
@@ -243,8 +248,10 @@
                     </include>
 
                     <!-- Content -->
-                    <include content="Dialog_Body">
-                        <include content="Dialog_Body_Group">
+                    <control type="group">
+                        <include>Dimension_Dialog_Body</include>
+                        <control type="group">
+                            <include>Dimension_Dialog_Body_Group</include>
 
                             <include content="DialogInfo_PlotBox_Artwork">
                                 <param name="poster_icon">$PARAM[poster_icon]</param>
@@ -290,12 +297,12 @@
                                     </control>
                                 </control>
                             </control>
-                        </include>
+                        </control>
                         <include content="Dialog_Scrollbar">
                             <param name="id">62</param>
                             <onleft>7000</onleft>
                         </include>
-                    </include>
+                    </control>
                 </include>
 
             </control>

@@ -13,13 +13,6 @@
 
 
         <include content="Settings_Dialog">
-            <include content="DialogInfo_ButtonGroup_Basic">
-                <param name="id">30000</param>
-                <param name="dim_visible">false</param>
-                <onright>8000</onright>
-                <onleft>SetFocus(30040)</onleft>
-                <include>Settings_Standard_Buttons</include>
-            </include>
             <include content="Settings_Main_Group">
                 <include content="Settings_Left_Group">
                     <include content="Settings_Left_Grouplist">
@@ -30,6 +23,7 @@
                         <include content="Settings_Button">
                             <param name="id">21</param>
                             <param name="control">button</param>
+                            <param name="dialog">true</param>
                             <width>settings_category_w</width>
                             <description>Level</description>
                         </include>
@@ -37,6 +31,7 @@
                         <include content="Settings_Button">
                             <param name="id">4</param>
                             <param name="control">togglebutton</param>
+                            <param name="dialog">true</param>
                             <width>settings_category_w</width>
                             <label>$LOCALIZE[31015]: $LOCALIZE[584]</label>
                             <altlabel>$LOCALIZE[31015]: $LOCALIZE[585]</altlabel>
@@ -46,6 +41,7 @@
                         <include content="Settings_Button">
                             <param name="id">22</param>
                             <param name="control">radiobutton</param>
+                            <param name="dialog">true</param>
                             <radiowidth>104</radiowidth>
                             <width>settings_category_w</width>
                             <description>Higher Levels</description>
@@ -54,6 +50,7 @@
                         <include content="Settings_Button">
                             <param name="id">20</param>
                             <param name="control">togglebutton</param>
+                            <param name="dialog">true</param>
                             <width>settings_category_w</width>
                             <label>$LOCALIZE[192]</label>
                             <description>Clear</description>
@@ -62,9 +59,7 @@
                 </include>
                 <include content="Settings_Right_Group">
                     <control type="scrollbar" id="60">
-                        <centerright>-20</centerright>
-                        <bottom>100</bottom>
-                        <top>-20</top>
+                        <centerright>-60</centerright>
                         <width>scrollbar_w</width>
                         <orientation>vertical</orientation>
                         <texturesliderbackground colordiffuse="main_fg_12" border="4">scrollbar/scrollv_line.png</texturesliderbackground>
@@ -77,18 +72,21 @@
                         <param name="id">50</param>
                         <param name="detailed">True</param>
                         <param name="item_height">120</param>
-                        <top>-20</top>
-                        <left>0</left>
+                        <top>20</top>
+                        <left>20</left>
                         <right>20</right>
+                        <bottom>20</bottom>
                         <pagecontrol>60</pagecontrol>
                         <onleft>8000</onleft>
                         <onright>60</onright>
-                        
                         <height>720</height>
                     </include>
-                    <include>Settings_InfoText</include>
                 </include>
-                <include>Settings_KodiVersion</include>
+                <include content="Settings_InfoText">
+                    <param name="dialog">true</param>
+                    <param name="left">80</param>
+                    <param name="bottom">60</param>
+                </include>
             </include>
             <include content="Settings_Changer">
                 <onup>8000</onup>
