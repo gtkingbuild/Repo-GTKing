@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # ----------------------------------------------------------------------
-# Copyright (c) 2021-2023 Shani, Gujal
+# Copyright (c) 2021-2024 Shani, Gujal
 # Extra modifications by Someone Like You
 #
 # This program is free software; you can redistribute it and/or modify
@@ -62,9 +62,7 @@ history = os.path.join(profile, 'history')
 REV = os.path.join(profile, 'list_revision')
 icon = os.path.join(home, 'icon.png')
 FANART = os.path.join(home, 'fanart.jpg')
-source_file = os.path.join(home, 'source_file')
-if not os.path.exists(profile):
-    os.makedirs(profile)
+source_file = os.path.join(profile, 'source_file')
 functions_dir = profile
 debug = addon.getSetting('debug')
 perpage = int(addon.getSetting('pagination'))
@@ -77,13 +75,26 @@ if os.path.exists(source_file):
 else:
     SOURCES = []
 
+if not os.path.exists(profile):
+    os.makedirs(profile)
+
 
 def addon_log(string, level=xbmc.LOGDEBUG):
     xbmc.log("[{0}-{1}]: {2}".format(addon_id, addon_version, string),
              LOGINFO if debug else level)
 
 
-def makeRequest(url, headers=None):
+def makeRequest(url, headers=None, enckey=None, encType=None):
+    if '$$LSProEncKey=' in url:
+        encType = "LSProEncKey"
+        enckey = url.split('$$LSProEncKey=')[1].split('$$')[0]
+        rp = '$$LSProEncKey={0}$$'.format(enckey)
+        url = url.replace(rp, "")
+    if '$$KonectasEncKey=' in url:
+        encType = "KonectasEncKey"
+        enckey = url.split('$$KonectasEncKey=')[1].split('$$')[0]
+        rp = '$$KonectasEncKey={0}$$'.format(enckey)
+        url = url.replace(rp, "")
     try:
         if headers is None:
             headers = {
@@ -135,14 +146,36 @@ def makeRequest(url, headers=None):
     except urllib_error.URLError as e:
         addon_log('URL: {0}'.format(url))
         if hasattr(e, 'code'):
-            msg = 'Fallo con código de error - {0}'.format(e.code)
+            msg = 'We failed with error code - {0}'.format(e.code)
             addon_log(msg)
             xbmcgui.Dialog().notification(addon_name, msg, icon, 10000, False)
         elif hasattr(e, 'reason'):
-            addon_log('No se ha podido acceder al servidor.')
-            addon_log('Motivo: {0}'.format(e.reason))
-            msg = 'No se ha podido acceder al servidor. - {0}'.format(e.reason)
+            addon_log('We failed to reach a server.')
+            addon_log('Reason: {0}'.format(e.reason))
+            msg = 'We failed to reach a server. - {0}'.format(e.reason)
             xbmcgui.Dialog().notification(addon_name, msg, icon, 10000, False)
+
+    if enckey:
+        if encType == "LSProEncKey":
+            from Cryptodome.Cipher import AES
+            from Cryptodome.Util.Padding import unpad
+            missingbytes = 16 - len(enckey)
+            enckey = enckey + (chr(0) * (missingbytes))
+            result = base64.b64decode(result)
+            cipher = AES.new(enckey.encode(), AES.MODE_ECB)
+            result = unpad(cipher.decrypt(result), AES.block_size).decode()
+        elif encType == "KonectasEncKey":
+            from Cryptodome.Cipher import AES
+            from Cryptodome.Util.Padding import unpad
+            iv = result[:16]
+            key = result[16:48]
+            clean_data = result[48:]
+            encrypted_text = base64.b64decode(clean_data)
+            cipher = AES.new(key.encode('utf-8'),
+                             AES.MODE_CBC, iv.encode('utf-8'))
+            decrypted_bytes = unpad(cipher.decrypt(
+                encrypted_text), AES.block_size)
+            result = decrypted_bytes.decode('utf-8')
 
     return result
 
@@ -150,7 +183,7 @@ def makeRequest(url, headers=None):
 def getSources():
     try:
         if os.path.exists(favorites):
-            addDir('Favoritos', 'url', 4, os.path.join(
+            addDir('Favorites', 'url', 4, os.path.join(
                 home, 'resources', 'favorite.png'), FANART, '', '', '', '')
         if addon.getSetting("browse_community") == "true":
             addDir('Community Files', 'community_files',
@@ -158,8 +191,10 @@ def getSources():
         if addon.getSetting("searchotherplugins") == "true":
             addDir('Search Other Plugins', 'Search Plugins',
                    25, icon, FANART, '', '', '', '')
-        if os.path.exists(source_file):
-            sources = json.loads(open(source_file, "r").read())
+
+        sources = json.loads(open(os.path.join(home, 'source_file')).read())
+
+        if sources:
             if len(sources) > 1:
                 for i in sources:
                     try:
@@ -210,15 +245,15 @@ def addSource(url=None):
         source_url = url
     if source_url == '' or source_url is None:
         return
-    addon_log('Añadiendo nueva fuente: {0}'.format(source_url))
+    addon_log('Adding New Source: {0}'.format(source_url))
 
     media_info = None
     data = getSoup(source_url)
     if isinstance(data, ElementTree.ElementTree) or isinstance(data, ElementTree.Element):
         if data.find('channels_info') is not None:
             media_info = data.find('channels_info')
-        elif data.find('menus_info') is not None:
-            media_info = data.find('menus_info')
+        elif data.find('items_info') is not None:
+            media_info = data.find('items_info')
 
     if media_info:
         source_media = {}
@@ -284,7 +319,7 @@ def addSource(url=None):
         b.close()
     addon.setSetting('new_url_source', "")
     addon.setSetting('new_file_source', "")
-    xbmcgui.Dialog().notification(addon_name, 'Nueva Fuente Añadida', icon, 5000, False)
+    xbmcgui.Dialog().notification(addon_name, 'New source added', icon, 5000, False)
 
     if url is not None:
         if 'community-links' in url:
@@ -319,28 +354,13 @@ def getSoup(url, data=None):
     tsdownloader = False
     hlsretry = False
     if url.startswith('http://') or url.startswith('https://'):
-        enckey = False
         if '$$TSDOWNLOADER$$' in url:
             tsdownloader = True
             url = url.replace("$$TSDOWNLOADER$$", "")
         if '$$HLSRETRY$$' in url:
             hlsretry = True
             url = url.replace("$$HLSRETRY$$", "")
-        if '$$LSProEncKey=' in url:
-            enckey = url.split('$$LSProEncKey=')[1].split('$$')[0]
-            rp = '$$LSProEncKey={0}$$'.format(enckey)
-            url = url.replace(rp, "")
-
         data = makeRequest(url)
-        if enckey:
-            from Cryptodome.Cipher import AES
-            from Cryptodome.Util.Padding import unpad
-            missingbytes = 16 - len(enckey)
-            enckey = enckey + (chr(0) * (missingbytes))
-            data = base64.b64decode(data)
-            cipher = AES.new(enckey.encode(), AES.MODE_ECB)
-            data = unpad(cipher.decrypt(data), AES.block_size).decode()
-
         if re.search("#EXTM3U", data) or 'm3u' in url:
             return data
     elif data is None:
@@ -358,7 +378,7 @@ def getSoup(url, data=None):
                     xbmcvfs.delete(os.path.join(
                         profile, 'temp', 'source_temp.txt'))
                 else:
-                    addon_log("Error al copiar desde smb:")
+                    addon_log("failed to copy from smb:")
             else:
                 if six.PY2:
                     data = open(url, 'r').read()
@@ -367,7 +387,7 @@ def getSoup(url, data=None):
                 if re.match("#EXTM3U", data) or 'm3u' in url:
                     return data
         else:
-            addon_log("No se han encontrado datos.")
+            addon_log("Soup Data not found!")
             return
     if '<SetViewMode>' in data:
         try:
@@ -382,10 +402,10 @@ def getSoup(url, data=None):
         xml = ElementTree.fromstring(data)
     except ElementTree.ParseError as err:
         xbmcgui.Dialog().notification(
-            addon_name, 'Fallo al analizar xml: {0}'.format(err.msg), icon, 10000, False)
+            addon_name, 'Failed to parse xml: {0}'.format(err.msg), icon, 10000, False)
     except Exception as err:
         xbmcgui.Dialog().notification(
-            addon_name, 'Se produjo un error: {0}'.format(err), icon, 10000, False)
+            addon_name, 'An error occurred: {0}'.format(err), icon, 10000, False)
 
     return xml
 
@@ -404,14 +424,14 @@ def getData(url, fanart, data=None):
     soup = getSoup(url, data)
     channels = None
     if isinstance(soup, ElementTree.Element):
-        if (soup.tag == 'channels' and len(soup) > 0 and addon.getSetting('donotshowbychannels') == 'false') or (soup.tag == 'menus' and len(soup) > 0):
+        if (soup.tag == 'channels' and len(soup) > 0 and addon.getSetting('donotshowbychannels') == 'false') or (soup.tag == 'items' and len(soup) > 0):
             channels = soup.findall('channel')
             tepg = None
             media_info = None
             if soup.find('channels_info') is not None:
                 media_info = soup.find('channels_info')
-            elif soup.find('menus_info') is not None:
-                media_info = soup.find('menus_info')
+            elif soup.find('items_info') is not None:
+                media_info = soup.find('items_info')
 
             if media_info:
                 try:
@@ -440,7 +460,7 @@ def getData(url, fanart, data=None):
                                 f.close()
                 except BaseException as err:
                     addon_log(
-                        'error al obtener datos de la página EPG: {0}'.format(str(err)))
+                        'error getting EPG page data: {0}'.format(str(err)))
 
             for channel in channels:
                 linkedUrl = ''
@@ -501,11 +521,11 @@ def getData(url, fanart, data=None):
                                desc, genre, date, None, 'source')
                 except:
                     addon_log(
-                        'Hubo un problema al añadir el directorio desde getData(): {0}'.format(name))
+                        'There was a problem adding directory from getData(): {0}'.format(name))
 
         if channels is None or len(channels) == 0:
-            addon_log('No hay Channels: getItems')
-            getItems(soup.findall('menu'), fanart)
+            addon_log('No Channels: getItems')
+            getItems(soup.findall('item'), fanart)
 
     else:
         parse_m3u(soup)
@@ -556,10 +576,10 @@ def parse_m3u(data):
 def getChannelItems(name, url, fanart):
     soup = getSoup(url)
     channel_list = soup.find('./channel/[name="{0}"]'.format(name))
-    if channel_list.find('menus') is not None:
-        items = channel_list.find('menus').findall('menu')
+    if channel_list.find('items') is not None:
+        items = channel_list.find('items').findall('item')
     else:
-        items = channel_list.findall('menu')
+        items = channel_list.findall('item')
     if channel_list.find('fanart') is not None:
         fanArt = channel_list.find('fanart').text
     else:
@@ -608,14 +628,14 @@ def getChannelItems(name, url, fanart):
             addDir(name, url, 3, thumbnail, fanArt, desc, genre, credits, date)
         except:
             addon_log(
-                'Hubo un problema al añadir el directorio - {0}'.format(name))
+                'There was a problem adding directory - {0}'.format(name))
     getItems(items, fanArt)
 
 
 def getSubChannelItems(name, url, fanart):
     soup = getSoup(url)
     channel_list = soup.find('./channel/subchannel/[name="{0}"]'.format(name))
-    items = channel_list.find('submenus').findall('submenu')
+    items = channel_list.find('subitems').findall('subitem')
     getItems(items, fanart)
 
 
@@ -645,13 +665,12 @@ def getItems(items, fanart, dontLink=False):
                 name = 'unknown?'
             name = processPyFunction(name)
         else:
-            addon_log('Error de nombre')
+            addon_log('Name Error')
             name = ''
 
         regexs = None
         if isinstance(item.find('regex'), ElementTree.Element):
             regexs = parse_regex(item.findall('regex'))
-
         iepg = None
         try:
             if isinstance(item.find('epg'), ElementTree.Element):
@@ -693,7 +712,7 @@ def getItems(items, fanart, dontLink=False):
                 pass
 
         except BaseException as err:
-            addon_log('Error al obtener el elemento EPG:{0}'.format(str(err)))
+            addon_log('Error getting item EPG: {0}'.format(str(err)))
 
         try:
             url = []
@@ -770,7 +789,7 @@ def getItems(items, fanart, dontLink=False):
                 # continue
                 raise Exception()
         except:
-            addon_log('Error <link> elemento, Pasando: {0}'.format(
+            addon_log('Error <link> element, Passing: {0}'.format(
                 name.encode('utf-8') if six.PY2 else name))
             traceback.print_exc()
             continue
@@ -844,7 +863,7 @@ def getItems(items, fanart, dontLink=False):
                         extraInfo['tmdb_id'] = str(tmdbId.text)
             except Exception as tmdbError:
                 traceback.print_exc()
-                addon_log("Error al recuperar datos en TMDB: %s, %s" %
+                addon_log("Error retrieving data in TMDB: %s, %s" %
                           (str(tmdbError), traceback.print_exc()))
         try:
             if len(url) > 1:
@@ -907,7 +926,7 @@ def getItems(items, fanart, dontLink=False):
         except:
             traceback.print_exc()
             addon_log(
-                'Hubo un problema al añadir el elemento - {0}'.format(repr(name)))
+                'There was a problem adding item - {0}'.format(repr(name)))
 
 
 def parse_regex(reg_items):
@@ -928,7 +947,7 @@ def parse_regex(reg_items):
             if i.tag in reg_tags:
                 sregexs.update({i.tag: i.text})
             else:
-                addon_log('Etiqueta no admitida: {0}'.format(i.tag), LOGINFO)
+                addon_log('Unsupported tag: {0}'.format(i.tag), LOGINFO)
         if not sregexs.get('expres'):
             sregexs.update({'expres': ''})
         if not sregexs.get('cookiejar'):
@@ -1416,7 +1435,7 @@ def playmediawithproxy(media_url, name, iconImage, proxyip, port, proxyuser=None
 
     if media_url is None or media_url == '':
         xbmcgui.Dialog().notification(
-            addon_name, 'No se puede reproducir una Url vacía', icon, 5000, False)
+            addon_name, 'Unable to play empty Url', icon, 5000, False)
         return
     progress = xbmcgui.DialogProgress()
     progress.create('Progress', 'Playing with custom proxy')
@@ -1450,7 +1469,7 @@ def playmediawithproxy(media_url, name, iconImage, proxyip, port, proxyuser=None
                 xbmc.sleep(1000)
                 if player.urlplayed is False and time.time() - beforestart > 12:
                     xbmcgui.Dialog().notification(
-                        addon_name, 'No se puede reproducir, compruebe el proxy', icon, 5000, False)
+                        addon_name, 'Unable to play, check proxy', icon, 5000, False)
                     break
         except:
             pass
@@ -1756,16 +1775,27 @@ def doEvalFunction(fun_call, page_data, Cookie_Jar, m):
         except:
             return ret_val
     except:
-        pass
-        # traceback.print_exc()
+        traceback.print_exc()
     return ""
 
 
 def import_by_string(full_name, filenamewithpath):
     try:
-        import importlib
-        return importlib.import_module(full_name, package=None)
-    except:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            full_name, filenamewithpath)
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[full_name] = module
+        spec.loader.exec_module(module)
+
+        # Inject global variables
+        module.__dict__.update(globals())
+
+        return module
+    except Exception as e:
+        xbmc.log("---------------> ERROR IMPORT <------------------", xbmc.LOGERROR)
+        xbmc.log(str(e), xbmc.LOGERROR)
+        xbmc.log("---------------> ERROR IMPORT <------------------", xbmc.LOGERROR)
         import imp
         return imp.load_source(full_name, filenamewithpath)
 
@@ -2109,13 +2139,13 @@ def addFavorite(name, url, iconimage, fanart, mode, playlist=None, regexs=None):
     except:
         pass
     if os.path.exists(favorites) is False:
-        addon_log('Creando un archivo de favoritos')
+        addon_log('Making Favorites File')
         favList.append((name, url, iconimage, fanart, mode, playlist, regexs))
         a = open(favorites, "w")
         a.write(json.dumps(favList))
         a.close()
     else:
-        addon_log('Añadiendo Favoritos')
+        addon_log('Appending Favorites')
         a = open(favorites).read()
         data = json.loads(a)
         data.append((name, url, iconimage, fanart, mode))
@@ -2146,7 +2176,7 @@ def urlsolver(url):
         resolved = resolveurl.resolve(url)
     else:
         xbmcgui.Dialog().notification(
-            addon_name, 'ResolveUrl no es compatible con este dominio.', icon, 5000, False)
+            addon_name, 'ResolveUrl does not support this domain.', icon, 5000, False)
         resolved = url
     return resolved
 
@@ -2334,7 +2364,7 @@ def play_playlist(name, mu_playlist, queueVideo=None):
 
 def download_file(name, url):
     xbmcgui.Dialog().notification(
-        addon_name, 'Función no implementada todavía.', icon, 15000, False)
+        addon_name, 'Function not implemented yet.', icon, 15000, False)
     # if addon.getSetting('save_location') == "":
     #     xbmcgui.Dialog().notification(addon_name, 'Choose a location to save files.', icon, 15000, False)
     #     addon.openSettings()
@@ -2392,28 +2422,28 @@ def addDir(name, url, mode, iconimage, fanart, description, genre, date, credits
 
     liz.setProperty('IsPlayable', 'false')
 
-    if showcontext:     # Traslate by @joheos11
+    if showcontext:
         contextMenu = []
         parentalblock = addon.getSetting('parentalblocked')
         parentalblock = parentalblock == "true"
         parentalblockedpin = addon.getSetting('parentalblockedpin')
         if len(parentalblockedpin) > 0:
             if parentalblock:
-                contextMenu.append(('Desactivar Bloqueo Parental', 'RunPlugin(%s?mode=55&name=%s)' % (
+                contextMenu.append(('Disable Parental Block', 'RunPlugin(%s?mode=55&name=%s)' % (
                     sys.argv[0], urllib_parse.quote_plus(name))))
             else:
-                contextMenu.append(('Activar Bloqueo Parental', 'RunPlugin(%s?mode=56&name=%s)' % (
+                contextMenu.append(('Enable Parental Block', 'RunPlugin(%s?mode=56&name=%s)' % (
                     sys.argv[0], urllib_parse.quote_plus(name))))
 
         if showcontext == 'source':
             if name in str(SOURCES):
-                contextMenu.append(('Eliminar de las fuentes', 'RunPlugin(%s?mode=8&name=%s)' % (
+                contextMenu.append(('Remove from Sources', 'RunPlugin(%s?mode=8&name=%s)' % (
                     sys.argv[0], urllib_parse.quote_plus(name))))
         elif showcontext == 'download':
-            contextMenu.append(('Descargar', 'RunPlugin(%s?url=%s&mode=9&name=%s)'
+            contextMenu.append(('Download', 'RunPlugin(%s?url=%s&mode=9&name=%s)'
                                 % (sys.argv[0], urllib_parse.quote_plus(url), urllib_parse.quote_plus(name))))
         elif showcontext == 'fav':
-            contextMenu.append(('Eliminar de Favoritos Tacones', 'RunPlugin(%s?mode=6&name=%s)'
+            contextMenu.append(('Remove from LiveStreamsPro Favorites', 'RunPlugin(%s?mode=6&name=%s)'
                                 % (sys.argv[0], urllib_parse.quote_plus(name))))
         if showcontext == '!!update':
             fav_params2 = (
@@ -2421,9 +2451,9 @@ def addDir(name, url, mode, iconimage, fanart, description, genre, date, credits
                 % (sys.argv[0], urllib_parse.quote_plus(reg_url), regexs)
             )
             contextMenu.append(
-                ('[COLOR yellow]!!actualizar[/COLOR]', 'RunPlugin(%s)' % fav_params2))
+                ('[COLOR yellow]!!update[/COLOR]', 'RunPlugin(%s)' % fav_params2))
         if name not in FAV:
-            contextMenu.append(('Añadir a Favoritos Tacones', 'RunPlugin(%s?mode=5&name=%s&url=%s&iconimage=%s&fanart=%s&fav_mode=%s)'
+            contextMenu.append(('Add to LiveStreamsPro Favorites', 'RunPlugin(%s?mode=5&name=%s&url=%s&iconimage=%s&fanart=%s&fav_mode=%s)'
                                % (sys.argv[0], urllib_parse.quote_plus(name), urllib_parse.quote_plus(url), urllib_parse.quote_plus(iconimage), urllib_parse.quote_plus(fanart), mode)))
         liz.addContextMenuItems(contextMenu)
     ok = xbmcplugin.addDirectoryItem(handle=int(
@@ -2452,7 +2482,7 @@ def ytdl_download(url, title, media_type='video'):
             youtubedl.single_YD('', download=True, dl_info=info)
     else:
         xbmcgui.Dialog().notification(addon_name,
-                                      'Primero reproduce [COLOR yellow]MIENTRAS se descarga el video[/COLOR]', icon, 10000, False)  # Traslate by @joheos11
+                                      'First Play, [COLOR yellow]WHILE playing download[/COLOR]', icon, 10000, False)
 
 
 # Lunatixz PseudoTV feature
@@ -2537,12 +2567,12 @@ def addLink(url, name, iconimage, fanart, description, genre, date, showcontext,
             sys.argv[0], urllib_parse.quote_plus(base64.b64encode(kwargs.get('trailer').encode('utf-8')).decode('utf-8'))))
         )
 
-    if len(parentalblockedpin) > 0:     # Traslate by @joheos11
+    if len(parentalblockedpin) > 0:
         if parentalblock:
-            contextMenu.append(('Desactivar Bloqueo Parental', 'RunPlugin(%s?mode=55&name=%s)' % (
+            contextMenu.append(('Disable Parental Block', 'RunPlugin(%s?mode=55&name=%s)' % (
                 sys.argv[0], urllib_parse.quote_plus(name))))
         else:
-            contextMenu.append(('Activar Bloqueo Parental', 'RunPlugin(%s?mode=56&name=%s)' % (
+            contextMenu.append(('Enable Parental Block', 'RunPlugin(%s?mode=56&name=%s)' % (
                 sys.argv[0], urllib_parse.quote_plus(name))))
     try:
         name = name.encode('utf-8') if six.PY2 else name
@@ -2597,7 +2627,7 @@ def addLink(url, name, iconimage, fanart, description, genre, date, showcontext,
             u += "mode=13&name=%s&playlist=%s" % (urllib_parse.quote_plus(
                 name), urllib_parse.quote_plus(str(playlist).replace(',', '||')))
             name = name + \
-                '[COLOR magenta] (' + str(len(playlist)) + ' menus )[/COLOR]'
+                '[COLOR magenta] (' + str(len(playlist)) + ' items )[/COLOR]'
             play_list = True
     elif mode == '22' or (mode == '17' and url.endswith('&mode=22')):
         u += "url=" + \
@@ -2649,12 +2679,12 @@ def addLink(url, name, iconimage, fanart, description, genre, date, showcontext,
             liz.setProperty('IsPlayable', 'true')
 
     else:
-        addon_log('NO establecer isplayable para url   ' + url) # Traslate by @joheos11
+        addon_log('NOT setting isplayable for url   ' + url)
 
-    if showcontext: #Traslate by @joheos11
+    if showcontext:
         if showcontext == 'fav':
             contextMenu.append(
-                ('Eliminar de Favoritos Tacones', 'RunPlugin(%s?mode=6&name=%s)'    # Traslate by @joheos11
+                ('Remove from LiveStreamsPro Favorites', 'RunPlugin(%s?mode=6&name=%s)'
                  % (sys.argv[0], urllib_parse.quote_plus(name)))
             )
         elif name not in FAV:
@@ -2679,7 +2709,7 @@ def addLink(url, name, iconimage, fanart, description, genre, date, showcontext,
             if regexs:
                 fav_params += "&regexs=" + regexs
             contextMenu.append(
-                ('Añadir a Favoritos Tacones', 'RunPlugin(%s)' % fav_params))
+                ('Add to LiveStreamsPro Favorites', 'RunPlugin(%s)' % fav_params))
         liz.addContextMenuItems(contextMenu)
     try:
         if playlist is not None:
@@ -2809,7 +2839,7 @@ def get_epg(url, regex):
         item = re.findall(regex, data)[0]
         return item
     except:
-        addon_log('error regex')
+        addon_log('regex failed')
         addon_log(regex)
         return
 
@@ -2926,11 +2956,11 @@ try:
 except:
     tmdbId = None
 
-addon_log("Modo: {0}".format(mode))
+addon_log("Mode: {0}".format(mode))
 
 if url is not None:
     addon_log("URL: {0}".format(url))
-addon_log("Nombre: {0}".format(name))
+addon_log("Name: {0}".format(name))
 
 if playitem != '':
     s = getSoup('', data=playitem)
@@ -2939,6 +2969,14 @@ if playitem != '':
 
 if mode is None:
     addon_log("getSources")
+    from resources.lib.updater import Updater
+    try:
+        Updater().checkAvailableVersion(silent=False)
+    except Exception as e:
+        traceback.print_exc()
+        addon_log(
+            f"Ha ocurrido un error leyendo la última versión de {addon_name}")
+        addon_log(f"ERROR: {e}")
     getSources()
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
@@ -3155,21 +3193,21 @@ elif mode == 17 or mode == 117:
                     regex_xml = regex_xml.split('<lsproroot>')[
                         1].split('</lsproroot')[0]
                 try:
-                    ln += '\n<menu>%s\n%s</menu>' % (listrepeatT, regex_xml)
+                    ln += '\n<item>%s\n%s</item>' % (listrepeatT, regex_xml)
                 except:
-                    ln += '\n<menu>%s\n%s</menu>' % (
+                    ln += '\n<item>%s\n%s</item>' % (
                         listrepeatT.encode("utf-8"), regex_xml)
             except:
                 traceback.print_exc(file=sys.stdout)
         if regexcopy is not None and isinstance(regexcopy, dict) and len(regexcopy) > 0:
             if pagination is not None and (len(original_ret) > perpage + perpage * int(pagination)):
                 nextPageRegex = regexcopy[regexname]
-                itemNextPage = ElementTree.Element("menu")
+                itemNextPage = ElementTree.Element("item")
                 titleNpElem = ElementTree.Element("title")
                 linkNpElem = ElementTree.Element("link")
                 linkNpElem.text = "$doregex[{}]".format(
                     nextPageRegex.get('name'))
-                titleNpElem.text = "[COLOR yellow][B]Página {0} de {1} | Siguiente >>[/B][/COLOR]".format(  # Traslate by @joheos11
+                titleNpElem.text = "Page {0} of {1} | Next >>".format(
                     pagination + 1, math.ceil(len(original_ret) / perpage))
                 itemNextPage.append(titleNpElem)
                 itemNextPage.append(linkNpElem)
@@ -3195,18 +3233,21 @@ elif mode == 17 or mode == 117:
                 itemNextPage.append(titleNpElem)
                 itemNextPage.append(linkNpElem)
                 regexNpElem = ElementTree.Element("regex")
-                for k, v in nextPageRegex.items():
-                    if k == "page":
-                        v = nextPageUrl
-                    rElement = ElementTree.Element(k)
-                    rElement.text = v
-                    regexNpElem.append(rElement)
-                itemNextPage.append(regexNpElem)
+                for regexKey in regexcopy.keys():
+                    regexNpElem = ElementTree.Element("regex")
+                    regex = regexcopy[regexKey]
+                    for k, v in regex.items():
+                        if k == "page":
+                            v = nextPageUrl
+                        rElement = ElementTree.Element(k)
+                        rElement.text = v
+                        regexNpElem.append(rElement)
+                    itemNextPage.append(regexNpElem)
 
                 ln += ElementTree.tostring(itemNextPage).decode('utf-8')
         # addon_log(ln)
 
-        getData('', '', '<menus>\n{0}\n</menus>\n'.format(ln))
+        getData('', '', '<items>\n{0}\n</items>\n'.format(ln))
         xbmcplugin.endOfDirectory(int(sys.argv[1]))
     else:
         url, setresolved = getRegexParsed(regexs, url)
@@ -3240,7 +3281,7 @@ elif mode == 18:
         import youtubedl
     except Exception:
         xbmcgui.Dialog().notification(addon_name,
-                                      'Por favor, instala el Módulo[COLOR yellow] Youtube-dl[/COLOR]', icon, 10000, False)  # Traslate by @joheos11
+                                      'Please [COLOR yellow]install Youtube-dl[/COLOR] module', icon, 10000, False)
     stream_url = youtubedl.single_YD(url)
     playsetresolved(stream_url, name, iconimage)
 
@@ -3293,7 +3334,7 @@ elif mode == 20:
     xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
 
 elif mode == 21:
-    addon_log("descargar el archivo actual mediante el servicio youtube-dl")    # Traslate by @joheos11
+    addon_log("download current file using youtube-dl service")
     mtype = 'video'
     if '[mp3]' in name:
         mtype = 'audio'
@@ -3350,7 +3391,7 @@ elif mode == 22:
         pass
 
 elif mode == 23:
-    addon_log("obtener información y descargar")    # Traslate by @joheos11
+    addon_log("get info then download")
     mtype = 'video'
     if '[mp3]' in name:
         mtype = 'audio'
@@ -3358,37 +3399,37 @@ elif mode == 23:
     ytdl_download(url, name, mtype)
 
 elif mode == 24:
-    addon_log("Solo audio youtube download")    # Traslate by @joheos11
+    addon_log("Audio only youtube download")
     ytdl_download(url, name, 'audio')
 
 elif mode == 25:
-    addon_log("Buscar otros plugins")   # Traslate by @joheos11
+    addon_log("Searchin Other plugins")
     _search(url, name)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
-elif mode == 55:    # Traslate by @joheos11
-    addon_log("bloqueo activado") 
+elif mode == 55:
+    addon_log("enabled lock")
     parentalblockedpin = addon.getSetting('parentalblockedpin')
-    keyboard = xbmc.Keyboard('', 'Introduce Pin')
+    keyboard = xbmc.Keyboard('', 'Enter Pin')
     keyboard.doModal()
     if keyboard.isConfirmed():
         newStr = keyboard.getText()
         if newStr == parentalblockedpin:
             addon.setSetting('parentalblocked', "false")
             xbmcgui.Dialog().notification(
-                addon_name, 'Bloqueo Parental Desactivado', icon, 5000, False)
+                addon_name, 'Parental Block Disabled', icon, 5000, False)
         else:
-            xbmcgui.Dialog().notification(addon_name, 'Pin equivocado??', icon, 5000, False)
+            xbmcgui.Dialog().notification(addon_name, 'Wrong Pin??', icon, 5000, False)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
-elif mode == 56:    # Traslate by @joheos11
-    addon_log("bloqueo desactivado")
+elif mode == 56:
+    addon_log("disable lock")
     addon.setSetting('parentalblocked', "true")
-    xbmcgui.Dialog().notification(addon_name, 'Bloqueo Parental Activado', icon, 5000, False)
+    xbmcgui.Dialog().notification(addon_name, 'Parental block enabled', icon, 5000, False)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
-elif mode == 53:    # Traslate by @joheos11
-    addon_log("Solicitud de elementos JSON-RPC")
+elif mode == 53:
+    addon_log("Requesting JSON-RPC Items")
     pluginquerybyJSON(url)
 
 elif mode == 54:

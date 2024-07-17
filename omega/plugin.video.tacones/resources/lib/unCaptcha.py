@@ -4,8 +4,7 @@ import re
 from six.moves import urllib_parse, urllib_request
 from kodi_six import xbmcaddon, xbmcgui
 import os
-__scriptID__ = 'plugin.video.live.streamspro'
-__addon__ = xbmcaddon.Addon(__scriptID__)
+__addon__ = xbmcaddon.Addon()
 
 
 class cInputWindow(xbmcgui.WindowDialog):
