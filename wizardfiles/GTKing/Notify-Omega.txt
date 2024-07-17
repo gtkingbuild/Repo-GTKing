@@ -13,7 +13,7 @@ Seleccionamos la Build que deseas instalar de[COLOR yellowgreen][B]GTKing[/B][/C
 Cuando termine de instalar, nos saldrá una ventana [COLOR white][B]"Necesita Forzar el Cierre de Kodi"[/B][/COLOR]. Pulsaremos en [COLOR white][B]"OK"[/B][/COLOR].
 Se cerrará Kodi y ya sólo nos quedará iniciar de nuevo Kodi, darle unos minutos para que cargue el menú correctamente.
 
-[COLOR gold][B]17/07/2024 ¡¡¡PARCHE ACTUALIZADOR BUILDS GTKing PHOENIX TEAM!!![/B][/COLOR]
+[COLOR gold][B]18/07/2024 ¡¡¡PARCHE ACTUALIZADOR BUILDS GTKing PHOENIX TEAM!!![/B][/COLOR]
 
 [COLOR red][B]* SUBIDA LA NUEVA VERSIÓN DEL ADDON TACONES AL REPOSITORIO Y REPARADOS SUS ATAJOS EN TODAS LAS BUILDS[/B][/COLOR]
 
