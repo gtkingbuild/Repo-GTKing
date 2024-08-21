@@ -1,1 +1,0 @@
-see skin.adonic for current usage!
