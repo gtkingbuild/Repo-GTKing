@@ -1,7 +1,7 @@
 ﻿<settings>
 
   <category label="Color y Registro"> 
-    <setting type="lsep" label="                                               [COLOR white]Compatible k18, k19 y k20 telegram: @addonfestaycristal[/COLOR]" />
+    <setting type="lsep" label="                                               [COLOR white]Compatible k18, k19 y k20 telegram: @NovedadesCristalAzul[/COLOR]" />
 	<setting id="Musica" type="labelenum" label="[COLOR white]Musica[/COLOR]" values="Si|No" default="Si"/>
 	<setting id="Multi_enlace_YouTube" type="labelenum" label="[COLOR white]Multi_enlace_YouTube[/COLOR]" values="Si|No" default="Si"/>
 
