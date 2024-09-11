@@ -9,7 +9,7 @@
             <top>30</top>
             <onup condition="!Skin.HasSetting(DisablePressingUp)">9601</onup>
             <ondown>9601</ondown>
-            <include>Topbar_Menu_Layout</include>
+            <include>Topbar_Menu_Layout_AddonsInfo</include>
             <include>Items_AddonsInfo</include>
         </control>
         <include>Topbar_Info</include>
