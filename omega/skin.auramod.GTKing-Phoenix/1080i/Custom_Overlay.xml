@@ -67,6 +67,17 @@
                 
                 <font>font13</font>
                 <align>left</align>
+                <label>MyFavourites.xml</label>
+                <visible>Window.IsVisible(MyFavourites.xml)</visible>
+            </control>
+
+            <control type="label">
+                <width>780</width>
+                <height>21</height>
+                <textcolor>FF0000FF</textcolor>
+                
+                <font>font13</font>
+                <align>left</align>
                 <label>MyMusicNav.xml</label>
                 <visible>Window.IsVisible(MyMusicNav.xml)</visible>
             </control>
