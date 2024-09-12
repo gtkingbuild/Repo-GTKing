@@ -489,7 +489,7 @@
                 <left>240</left>
                 <width>6</width>
                 <control type="image">
-                    <texture colordiffuse="green">common/white.png</texture>
+                    <texture colordiffuse="red">common/white.png</texture>
                 </control>
             </control>
         </focusedlayout>
@@ -704,7 +704,7 @@
         </control>
     </include>
 
-    <expression name="Home_SwitchFocusButton_Expression">!Window.Next(programs) + !Window.Next(pictures) + !Window.Next(filemanager) + !Window.Next(settings) + !Window.Next(systeminfo) + !Window.Next(testpattern) + !Window.Next(screencalibration) + !Window.Next(SettingsCategory.xml) + !Window.Next(MyVideoNav.xml) + !Window.Next(MyMusicNav.xml) + !Window.Next(MyPlaylist.xml) + !Window.Next(loginscreen) + !Window.Next(profiles) + !Window.Next(skinsetting) + !Window.Next(addonbrowser) + !Window.Next(eventlog) + !Window.Next(favourites) + !Window.Next(MyPVRChannels.xml) + !Window.Next(MyPVRRecordings.xml) + !Window.Next(MyPVRTimers.xml) + !Window.Next(MyPVRSearch.xml) + !Window.Next(MyPVRGuide.xml) + !Window.Next(MyGames.xml) + !Window.Next(VideoFullScreen.xml) + !Window.Next(MyWeather.xml) + !Window.Next(SlideShow.xml) + !Window.Next(Startup.xml) + !Window.Next(MusicVisualisation.xml)</expression>
+    <expression name="Home_SwitchFocusButton_Expression">!Window.Next(programs) + !Window.Next(pictures) + !Window.Next(filemanager) + !Window.Next(settings) + !Window.Next(systeminfo) + !Window.Next(testpattern) + !Window.Next(screencalibration) + !Window.Next(SettingsCategory.xml) + !Window.Next(MyVideoNav.xml) + !Window.Next(MyMusicNav.xml) + !Window.Next(MyPlaylist.xml) + !Window.Next(loginscreen) + !Window.Next(profiles) + !Window.Next(skinsetting) + !Window.Next(addonbrowser) + !Window.Next(eventlog) + !Window.Next(favouritesbrowser) + !Window.Next(MyPVRChannels.xml) + !Window.Next(MyPVRRecordings.xml) + !Window.Next(MyPVRTimers.xml) + !Window.Next(MyPVRSearch.xml) + !Window.Next(MyPVRGuide.xml) + !Window.Next(MyGames.xml) + !Window.Next(VideoFullScreen.xml) + !Window.Next(MyWeather.xml) + !Window.Next(SlideShow.xml) + !Window.Next(Startup.xml) + !Window.Next(MusicVisualisation.xml)</expression>
 
     <include name="Home_TVHubMenu_Layout">
       <control type="group">
@@ -902,7 +902,7 @@
                 <width>6</width>
                 <visible>[![Control.HasFocus(3901) | Control.HasFocus(3902) | Control.HasFocus(3903) | Control.HasFocus(3904) | Control.HasFocus(300)] + [Window.IsVisible(Home) | [!Window.IsVisible(Home) + String.IsEqual(ListItem.Property(path),Window(Home).Property(MenuIconFocus))]] + Skin.HasSetting(IconOnlyMode)] | [[Control.HasFocus(300) | Control.HasFocus(302)] + !Skin.HasSetting(IconOnlyMode)]</visible>
                 <control type="image"> <!--Hightlight right focus icon-->
-                    <texture colordiffuse="green">common/white.png</texture>
+                    <texture colordiffuse="red">common/white.png</texture>
                 </control>
                 <control type="group">
                     <include>Home_Separator</include>
@@ -920,7 +920,7 @@
            <control type="image">
                   <visible>!Skin.HasSetting(DisableNetflixHomeSidemenuHide) + ![Control.HasFocus(3901) | Control.HasFocus(3902) | Control.HasFocus(3903) | Control.HasFocus(3904) | Control.HasFocus(300)] + [Window.IsVisible(Home) | [!Window.IsVisible(Home) + String.IsEqual(ListItem.Property(path),Window(Home).Property(MenuIconFocus))]]</visible>
                 <width>6</width>
-                <texture colordiffuse="green">common/white.png</texture>
+                <texture colordiffuse="red">common/white.png</texture>
            </control>
 
             <control type="image">
