@@ -2432,7 +2432,7 @@ msgstr "Abrir Widget de Categoría en Enfoque"
 #: /1080i/SkinSettings.xml
 msgctxt "#31507"
 msgid "Disable onleft Menu Focus"
-msgstr "Desactivar el Enfoque del Menú Izquierdo"
+msgstr "Descativar el Enfoque del Menú Izquierdo"
 
 #: /1080i/SkinSettings.xml
 msgctxt "#31508"
@@ -4439,64 +4439,114 @@ msgstr "Mis Listas 3"
 #: /shortcuts/overrides.xml
 msgctxt "#31909"
 msgid "Video-Addons"
-msgstr ""
+msgstr "Addons de Vídeo"
 
 #: /shortcuts/overrides.xml
 msgctxt "#31910"
 msgid "My Movie List 1"
-msgstr ""
+msgstr "Mi Lista de Películas 1"
 
 #: /shortcuts/overrides.xml
 msgctxt "#31911"
 msgid "My TV List 1"
-msgstr ""
+msgstr "Mi Lista de Series 1"
 
 #: /shortcuts/overrides.xml
 msgctxt "#31912"
 msgid "My List 1"
-msgstr ""
+msgstr "Mi Lista 1"
 
 #: /shortcuts/overrides.xml
 msgctxt "#31913"
 msgid "My List 2"
-msgstr ""
+msgstr "Mi Lista 2"
 
 #: /shortcuts/overrides.xml
 msgctxt "#31914"
 msgid "My List 3"
-msgstr ""
+msgstr "Mi Lista 3"
 
 #: /shortcuts/overrides.xml
 msgctxt "#31915"
 msgid "My Addons List 1"
-msgstr ""
+msgstr "Mi Lista de Addons 1"
 
 #: /shortcuts/overrides.xml
 msgctxt "#31916"
 msgid "My Addons List 2"
-msgstr ""
+msgstr "Mi Lista de Addons 2"
 
 #: /shortcuts/overrides.xml
 msgctxt "#31917"
 msgid "My LiveTV List 1"
-msgstr ""
+msgstr "Mi Lista LiveTV 1"
 
 #: /shortcuts/overrides.xml
 msgctxt "#31918"
 msgid "My LiveTV List 2"
-msgstr ""
+msgstr "Mi Lista LiveTV 2"
 
 #: /shortcuts/overrides.xml
 msgctxt "#31919"
 msgid "Because you watched"
-msgstr ""
+msgstr "Porque viste"
 
 #: /shortcuts/overrides.xml
 msgctxt "#31920"
 msgid "Spotlight Movies"
-msgstr ""
+msgstr "Destacados de Películas"
 
 #: /shortcuts/overrides.xml
 msgctxt "#31921"
 msgid "Spotlight TV"
+msgstr "Destacados de Series"
+
+#: /1080i/Custom_1158_VideoInfo.xml
+msgctxt "#31922"
+msgid "Enable Previous/Next page buttons in Lists"
+msgstr ""
+
+#: /1080i/Includes_Object.xml
+msgctxt "#31923"
+msgid "Previous page"
+msgstr ""
+
+#: /1080i/Includes_Object.xml
+msgctxt "#31924"
+msgid "Next page"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31925"
+msgid "Enable notification shadow outside player"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31926"
+msgid "Disable Time header in Library Views"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31927"
+msgid "Enable notification icon for addons"
+msgstr ""
+
+#: /1080i/Custom_1158_VideoInfo.xml
+msgctxt "#31928"
+msgid "Configure Cast & More Details"
+msgstr ""
+
+#: /1080i/Custom_1159_CastAndMoreDetails.xml
+msgctxt "#31929"
+msgid "Cast & More Details"
+msgstr ""
+
+#: /1080i/Custom_1159_CastAndMoreDetails.xml
+msgctxt "#31930"
+msgid "Season flags"
+msgstr ""
+
+#: /1080i/Custom_1159_CastAndMoreDetails.xml
+msgctxt "#31931"
+msgid "Episode flags"
 msgstr ""
