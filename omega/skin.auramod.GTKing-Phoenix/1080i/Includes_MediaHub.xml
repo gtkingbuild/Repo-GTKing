@@ -1139,15 +1139,6 @@
 -->
         <visible>Skin.String($PARAM[skinsetting].path)</visible>
         <content limit="25" target="$INFO[Skin.String($PARAM[skinsetting].target)]" sortby="year" sortorder="descending">$INFO[Skin.String($PARAM[skinsetting].path)]</content>
-        <content>
-            <item>
-                <label>$LOCALIZE[31373]...</label>
-                <icon>DefaultFolder.png</icon>
-                <onclick>ActivateWindow(Videos,$PARAM[skinsetting].path,return)</onclick>
-                <visible>Integer.IsGreater(Container($PARAM[id]).NumItems,9)</visible>
-                <visible>!Skin.HasSetting(HideShowMoreItem)</visible>
-            </item>
-        </content>
       </control>
     </definition>
   </include>
