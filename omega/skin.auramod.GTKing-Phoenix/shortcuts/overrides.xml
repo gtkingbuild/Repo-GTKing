@@ -474,11 +474,6 @@
     <propertydefault labelID="tvshows" property="widgetSpotlighttype">TVShows</propertydefault>
     <propertydefault labelID="tvshows" property="widgetspotlight">true</propertydefault>
 
-    <!-- Favourites -->
-    <override action="ActivateWindow(Favourites)">
-        <action>ActivateWindow(favouritesbrowser)</action>
-    </override>
-
     <!-- Music -->
 
     <!-- PVR -->
@@ -649,8 +644,8 @@
             </node>
 
             <node label="$LOCALIZE[342]">
-                <shortcut widget="NewMovies" label="$LOCALIZE[31185]" icon="DefaultRecentlyAddedMovies.png" widgetTarget="video">special://skin/extras/playlists/RecentlyAddedMovies.xsp</shortcut>
-                <shortcut widget="RecentMovies" label="$LOCALIZE[31190]" icon="DefaultMusicRecentlyPlayed.png" widgetTarget="video">special://skin/extras/playlists/RecentlyWatchedMovies.xsp</shortcut>
+                <shortcut widget="NewMovies" label="$LOCALIZE[31185]" icon="DefaultRecentlyAddedMovies.png" widgetTarget="video">special://skin/extras/playlists/NewMovies.xsp</shortcut>
+                <shortcut widget="RecentMovies" label="$LOCALIZE[31190]" icon="DefaultMusicRecentlyPlayed.png" widgetTarget="video">special://skin/extras/playlists/RecentMovies.xsp</shortcut>
                 <shortcut widget="RandomMovies" label="$LOCALIZE[31200]" icon="DefaultMovies.png" widgetTarget="video">special://skin/extras/playlists/RandomMovies.xsp</shortcut>
                 <shortcut widget="InProgressMovies" label="$LOCALIZE[31216]" icon="special://skin/extras/icons/timer.png" widgetTarget="video">special://skin/extras/playlists/InProgressMovies.xsp</shortcut>
                 <shortcut widget="TopRatedMovies" label="$LOCALIZE[31225]" icon="DefaultMusicTop100Albums.png" widgetTarget="video">special://skin/extras/playlists/TopRatedMovies.xsp</shortcut>
@@ -665,8 +660,8 @@
 
             </node>
             <node label="$LOCALIZE[31301]">
-                <shortcut widget="NewTvShows" label="$LOCALIZE[31367]" icon="DefaultRecentlyAddedMovies.png" widgetTarget="video">special://skin/extras/playlists/RecentlyAddedTVShows.xsp</shortcut>
-                <shortcut widget="RecentTvShows" label="$LOCALIZE[31194]" icon="DefaultMusicRecentlyPlayed.png" widgetTarget="video">special://skin/extras/playlists/RecentlyWatchedTvShows.xsp</shortcut>
+                <shortcut widget="NewTvShows" label="$LOCALIZE[31367]" icon="DefaultRecentlyAddedMovies.png" widgetTarget="video">special://skin/extras/playlists/NewShows.xsp</shortcut>
+                <shortcut widget="RecentTvShows" label="$LOCALIZE[31194]" icon="DefaultMusicRecentlyPlayed.png" widgetTarget="video">special://skin/extras/playlists/RecentTvShows.xsp</shortcut>
                 <shortcut widget="InProgress" label="$LOCALIZE[31196]" icon="special://skin/extras/icons/timer.png" widgetTarget="video">library://video/tvshows/inprogressshows.xml</shortcut>
                 <shortcut widget="RandomTvShows" label="$LOCALIZE[31233]" icon="DefaultTVShows.png" widgetTarget="video">special://skin/extras/playlists/RandomTvShows.xsp</shortcut>
                 <shortcut widget="TopRatedTvShows" label="$LOCALIZE[31222]" icon="DefaultMusicTop100Albums.png" widgetTarget="video">special://skin/extras/playlists/TopRatedTvShows.xsp</shortcut>
@@ -677,8 +672,8 @@
                 <shortcut widget="RandomSerenTV" label="$LOCALIZE[31921]" icon="DefaultGenre.png" widgetTarget="video">videodb://tv</shortcut>
             </node>
             <node label="$LOCALIZE[20360]">
-                <shortcut widget="NewEpisodes" label="$LOCALIZE[31214]" icon="DefaultRecentlyAddedMovies.png" widgetTarget="video">special://skin/extras/playlists/RecentlyAddedEpisodes.xsp</shortcut>
-                <shortcut widget="Recent Episodes" label="$LOCALIZE[31198]" icon="DefaultMusicRecentlyPlayed.png" widgetTarget="video">special://skin/extras/playlists/RecentlyWatchedEpisodes.xsp</shortcut>
+                <shortcut widget="NewEpisodes" label="$LOCALIZE[31214]" icon="DefaultRecentlyAddedMovies.png" widgetTarget="video">special://skin/extras/playlists/NewEpisodes.xsp</shortcut>
+                <shortcut widget="Recent Episodes" label="$LOCALIZE[31198]" icon="DefaultMusicRecentlyPlayed.png" widgetTarget="video">special://skin/extras/playlists/RecentEpisodes.xsp</shortcut>
                 <shortcut widget="RandomEpisodes" label="$LOCALIZE[31202]" icon="DefaultTVShows.png" widgetTarget="video">special://skin/extras/playlists/RandomEpisodes.xsp</shortcut>
                 <shortcut widget="UnwatchedEpisodes" label="$LOCALIZE[31283]" icon="DefaultTVShows.png" widgetTarget="video">special://skin/extras/playlists/UnwatchedEpisodes.xsp</shortcut>
                 <shortcut widget="InProgressEpisodes" label="$LOCALIZE[31218]" icon="special://skin/extras/icons/timer.png" widgetTarget="video">special://skin/extras/playlists/InProgressEpisodes.xsp</shortcut>

@@ -4207,7 +4207,7 @@ msgstr "Beëindigd"
 #: /1080i/Includes_Labels.xml
 msgctxt "#31865"
 msgid "Canceled"
-msgstr "Geannuleerd"
+msgstr ""
 
 #: /1080i/Includes_Labels.xml
 msgctxt "#31866"
@@ -4330,112 +4330,112 @@ msgstr ""
 #: /shortcuts/overrides.xml
 msgctxt "#31887"
 msgid "Movie Categories Hub"
-msgstr "Hub voor filmcategorieën"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31888"
 msgid "Movie Genres Hub"
-msgstr "Hub voor filmgenres"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31889"
 msgid "TV Categories Hub"
-msgstr "Hub voor TV categorieën"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31890"
 msgid "TV Genres Hub"
-msgstr "Hub voor TV genres"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31891"
 msgid "TV Networks Hub"
-msgstr "Hub voor TV netwerken"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31892"
 msgid "Movie Lists Hub 1"
-msgstr "Hub met filmlijsten 1"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31893"
 msgid "TV Lists Hub 1"
-msgstr "Hub voor TV lijsten 1"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31894"
 msgid "My Lists Hub 1"
-msgstr "Mijn Lijsten Hub 1"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31895"
 msgid "My Lists Hub 2"
-msgstr "Mijn Lijsten Hub 2"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31896"
 msgid "My Lists Hub 3"
-msgstr "Mijn Lijsten Hub 3"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31897"
 msgid "My Addons List 1"
-msgstr "Mijn lijst met addons 1"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31898"
 msgid "My Addons List 2"
-msgstr "Mijn lijst met addons 2"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31899"
 msgid "My LiveTV List 1"
-msgstr "Mijn LiveTV lijst 1"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31900"
 msgid "My LiveTV List 2"
-msgstr "Mijn LiveTV lijst 2"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31901"
 msgid "My List Dialogs"
-msgstr "Mijn lijst dialogen"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31902"
 msgid "Movie Lists 1"
-msgstr "Filmlijsten 1"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31903"
 msgid "Movie Categories List"
-msgstr "Lijst met filmcategorieën"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31904"
 msgid "TV Lists 1"
-msgstr "Tv lijsten 1"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31905"
 msgid "TV Categories List"
-msgstr "Lijst met TV categorieën"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31906"
 msgid "My Lists 1"
-msgstr "Mijn lijsten 1"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31907"
 msgid "My Lists 2"
-msgstr "Mijn lijsten 2"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31908"
 msgid "My Lists 3"
-msgstr "Mijn lijsten 3"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31909"
@@ -4445,109 +4445,59 @@ msgstr ""
 #: /shortcuts/overrides.xml
 msgctxt "#31910"
 msgid "My Movie List 1"
-msgstr "Mijn filmlijst 1"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31911"
 msgid "My TV List 1"
-msgstr "Mijn TV lijst 1"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31912"
 msgid "My List 1"
-msgstr "Mijn lijst 1"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31913"
 msgid "My List 2"
-msgstr "Mijn lijst 2"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31914"
 msgid "My List 3"
-msgstr "Mijn lijst 3"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31915"
 msgid "My Addons List 1"
-msgstr "Mijn lijst met addons 1"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31916"
 msgid "My Addons List 2"
-msgstr "Mijn lijst met addons 2"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31917"
 msgid "My LiveTV List 1"
-msgstr "Mijn LiveTV lijst 1"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31918"
 msgid "My LiveTV List 2"
-msgstr "Mijn LiveTV lijst 2"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31919"
 msgid "Because you watched"
-msgstr "Omdat je keek"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31920"
 msgid "Spotlight Movies"
-msgstr "Spotlight Films"
+msgstr ""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31921"
 msgid "Spotlight TV"
-msgstr ""
-
-#: /1080i/Custom_1158_VideoInfo.xml
-msgctxt "#31922"
-msgid "Enable Previous/Next page buttons in Lists"
-msgstr ""
-
-#: /1080i/Includes_Object.xml
-msgctxt "#31923"
-msgid "Previous page"
-msgstr ""
-
-#: /1080i/Includes_Object.xml
-msgctxt "#31924"
-msgid "Next page"
-msgstr ""
-
-#: /1080i/SkinSettings.xml
-msgctxt "#31925"
-msgid "Enable notification shadow outside player"
-msgstr ""
-
-#: /1080i/SkinSettings.xml
-msgctxt "#31926"
-msgid "Disable Time header in Library Views"
-msgstr ""
-
-#: /1080i/SkinSettings.xml
-msgctxt "#31927"
-msgid "Enable notification icon for addons"
-msgstr ""
-
-#: /1080i/Custom_1158_VideoInfo.xml
-msgctxt "#31928"
-msgid "Configure Cast & More Details"
-msgstr ""
-
-#: /1080i/Custom_1159_CastAndMoreDetails.xml
-msgctxt "#31929"
-msgid "Cast & More Details"
-msgstr ""
-
-#: /1080i/Custom_1159_CastAndMoreDetails.xml
-msgctxt "#31930"
-msgid "Season flags"
-msgstr ""
-
-#: /1080i/Custom_1159_CastAndMoreDetails.xml
-msgctxt "#31931"
-msgid "Episode flags"
 msgstr ""
