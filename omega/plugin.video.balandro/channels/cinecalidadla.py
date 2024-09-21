@@ -111,6 +111,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'En castellano:', folder=False, text_color='moccasin' ))
     itemlist.append(item.clone( title = ' - Catálogo', action = 'list_all', url = host + 'espana/', search_type = 'movie' ))
+    itemlist.append(item.clone( title = ' - Por año', action='anios', search_type = 'movie', group = '?ref=es' ))
 
     itemlist.append(item.clone( title = 'En latino:', folder=False, text_color='moccasin' ))
 
@@ -135,7 +136,7 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'serie/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimas', action = 'destacadas', url = host + 'serie/', search_type = 'tvshow', text_color = 'cyan' ))
+    itemlist.append(item.clone( title = 'Últimas', action = 'destacadas', url = host + 'serie/', search_type = 'tvshow', text_color = 'moccasin' ))
 
     if not config.get_setting('descartar_anime', default=False):
         itemlist.append(item.clone( title = 'Animes', action = 'list_all', url = host + 'anime/', search_type = 'tvshow', text_color='springgreen' ))
@@ -180,7 +181,10 @@ def anios(item):
     from datetime import datetime
     current_year = int(datetime.today().year)
 
-    for x in range(current_year, 1969, -1):
+    top_year = 1939
+    if item.group == '?ref=es': top_year = 1999
+
+    for x in range(current_year, top_year, -1):
         url = host + 'fecha/' + str(x) + '/'
 
         itemlist.append(item.clone( title = str(x), url = url, action = 'list_all', text_color='deepskyblue' ))
@@ -195,6 +199,8 @@ def list_all(item):
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
+    _promos = 0
+
     matches = scrapertools.find_multiple_matches(data, '<div class="home_post_cont post_box">(.*?)</a></div>')
 
     for match in matches:
@@ -204,8 +210,12 @@ def list_all(item):
 
         url = scrapertools.find_single_match(match, ' href="(.*?)"')
 
-        if '-1-ano' in url: continue
-        elif '-premium-12-meses' in url: continue
+        if '-premium-12-meses' in url or '-premium-1-ano' in url or '-12-meses' in url or '/netflix/o/' in url or '/product/' in url:
+            _promos += 1
+            continue
+        elif 'Netflix Premium' in match or 'Suscripción Disney Plus' in match or 'Suscripción HBO' in match:
+            _promos += 1
+            continue
 
         if not url or not title: continue
 
@@ -218,8 +228,6 @@ def list_all(item):
             year = m.group(2)
         else:
             year = '-'
-
-        if not year: year = '-'
 
         title = title.replace('&#8211;', '').replace('&#8217;', '').replace('&#038;', '&')
 
@@ -234,6 +242,10 @@ def list_all(item):
         if '/espana/' in item.url:
             if not '?castellano=sp' in item.url: url = url + '?castellano=sp'
 
+        if '/fecha/' in item.url: year = scrapertools.find_single_match(item.url, "/fecha/(.*?)/")
+
+        if not year: year = '-'
+
         if tipo == 'movie':
             if not item.search_type == "all":
                 if item.search_type == "tvshow": continue
@@ -246,7 +258,7 @@ def list_all(item):
                 if item.search_type == "movie": continue
 
             itemlist.append(item.clone( action='temporadas', url = url, title = title, thumbnail = thumb, fmt_sufijo=sufijo,
-                                        contentType = 'tvshow', contentSerieName = title,  infoLabels = {'year': '-'} ))
+                                        contentType = 'tvshow', contentSerieName = title,  infoLabels = {'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -256,6 +268,13 @@ def list_all(item):
         if next_page:
             if '/page/' in next_page:
                 itemlist.append(item.clone( title='Siguientes ...', url = next_page, action = 'list_all', text_color='coral' ))
+    else:
+        if not _promos == 0:
+            next_page = scrapertools.find_single_match(data, '<span class="pages">.*?class="current">.*?href="(.*?)"')
+
+            if next_page:
+                if '/page/' in next_page:
+                    itemlist.append(item.clone( title='Siguientes ...', url = next_page, action = 'list_all', text_color='coral' ))
 
     return itemlist
 
@@ -340,7 +359,7 @@ def episodios(item):
 
     data = do_downloadpage(item.url)
 
-    bloque = scrapertools.find_single_match(data, 'data-season="' + str(item.contentSeason) + '"(.*?)</script>')
+    bloque = scrapertools.find_single_match(data, 'data-season="' + str(item.contentSeason) + '.*?id="script-season-' + str(item.contentSeason) + '.*?"(.*?)</script>')
 
     matches = scrapertools.find_multiple_matches(bloque, 'src="(.*?)".*?<div class="numerando">EP(.*?)</div>.*?<a href="(.*?)"')
 
@@ -441,6 +460,8 @@ def findvideos(item):
             elif servidor == 'google': servidor = 'gvideo'
             elif servidor == 'drive': servidor = 'gvideo'
             elif servidor == 'google drive': servidor = 'gvideo'
+            elif servidor == 'netu' or servidor == 'hqq': servidor = 'waaw'
+            elif servidor == 'd0o0d' or servidor == 'do0od' or servidor == 'd0000d' or servidor == 'd000d': servidor = 'doodstream'
 
             if servertools.is_server_available(servidor):
                 if not servertools.is_server_enabled(servidor): continue
@@ -634,6 +655,14 @@ def play(item):
         servidor = servertools.corregir_servidor(servidor)
 
         url = servertools.normalize_url(servidor, url)
+
+        if servidor == 'directo':
+            if not url.startswith('http'): return itemlist
+
+            if '/okru.' in url: servidor = 'okru'
+
+            new_server = servertools.corregir_other(url).lower()
+            if not new_server.startswith("http"): servidor = new_server
 
         if servidor == 'zplayer':  url = url + '|' + host_player
 

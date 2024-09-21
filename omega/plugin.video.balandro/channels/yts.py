@@ -36,11 +36,8 @@ def mainlist_pelis(item):
     itemlist.append(item.clone( title = 'Más destacadas', action = 'list_all', url = url_browser + '/0/all/all/0/featured/0/all', search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Más valoradas', action = 'list_all', url = url_browser + '/0/all/all/0/rating/0/all', search_type = 'movie' ))
 
-    itemlist.append(item.clone( title = 'En castellano', action = 'list_all', url = url_browser + '/0/all/all/0/latest/0/es', lang='Esp', search_type = 'movie', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'En inglés', action = 'list_all', url = url_browser + '/0/all/all/0/latest/0/en', lang='Ing', search_type = 'movie', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Versión original (subtitulada)', action = 'list_all', url = url_browser + '/0/all/all/0/latest/0/foreign', lang='Vos', search_type = 'movie', text_color='moccasin' ))
-
     itemlist.append(item.clone( title = 'Por idioma', action = 'idiomas', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Por país', action = 'paises', search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Por calidad', action = 'calidades', search_type = 'movie' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
@@ -50,6 +47,17 @@ def mainlist_pelis(item):
 
 
 def idiomas(item):
+    logger.info()
+    itemlist = []
+
+    itemlist.append(item.clone( title = 'En castellano', action = 'list_all', url = url_browser + '/0/all/all/0/latest/0/es', lang='Esp', search_type = 'movie', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En inglés', action = 'list_all', url = url_browser + '/0/all/all/0/latest/0/en', lang='Ing', search_type = 'movie', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'Versión original (subtitulada)', action = 'list_all', url = url_browser + '/0/all/all/0/latest/0/foreign', lang='Vos', search_type = 'movie', text_color='moccasin' ))
+
+    return itemlist
+
+
+def paises(item):
     logger.info()
     itemlist = []
 
@@ -69,7 +77,7 @@ def idiomas(item):
         elif tit == 'Extranjero': lang= 'Vos'
         elif tit == 'Inglés': lang= 'Ing'
 
-        itemlist.append(item.clone( title = tit.capitalize(), url = url, action = 'list_all', lang=lang, text_color = 'deepskyblue' ))
+        itemlist.append(item.clone( title = tit.capitalize(), url = url, action = 'list_all', lang=lang, text_color = 'moccasin' ))
 
     return sorted(itemlist, key=lambda it: it.title)
 
@@ -91,10 +99,10 @@ def calidades(item):
 
         url = url_browser + '/0/' + qltys + '/all/0/latest/0/all'
 
-        itemlist.append(item.clone( title = tit, url = url, action = 'list_all', text_color = 'deepskyblue' ))
+        itemlist.append(item.clone( title = tit, url = url, action = 'list_all', text_color = 'moccasin' ))
 
     if itemlist:
-        itemlist.append(item.clone( action = 'list_all', title = '480p', url = url_browser + '/0/480p/all/0/latest/0/all', text_color = 'deepskyblue' ))
+        itemlist.append(item.clone( action = 'list_all', title = '480p', url = url_browser + '/0/480p/all/0/latest/0/all', text_color = 'moccasin' ))
 
     return sorted(itemlist, key=lambda it: it.title)
 

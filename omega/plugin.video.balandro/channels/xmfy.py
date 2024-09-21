@@ -37,8 +37,8 @@ def mainlist_pelis(item):
     itemlist.append(item.clone( title = 'Más populares', action = 'list_all', url = host + 'page/1/?filter=popular' ))
     itemlist.append(item.clone( title = 'Long Play', action = 'list_all', url = host + 'page/1/?filter=longest' ))
 
-    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url= host + 'tags/' ))
     itemlist.append(item.clone( title = 'Por canal', action = 'canales', url= host + 'categories/page/1/' ))
+    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url= host + 'tags/' ))
     itemlist.append(item.clone( title = 'Por estrella', action = 'pornstars', url = host + 'actors/page/1/' ))
 
     return itemlist
@@ -143,7 +143,7 @@ def list_all(item):
 
         if not url or not title: continue
 
-        title = title.replace('[', '').replace(']', '').strip()
+        title = title.replace('[', '').replace(']', '').replace('&#8217;', "'").strip()
 
         thumb = scrapertools.find_single_match(match, 'data-src="(.*?)"')
 

@@ -1,0 +1,17 @@
+{
+  "id": "pelisgratishd",
+  "name": "PelisGratisHd",
+  "thumbnail": "pelisgratishd.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": [ "movie", "tvshow" ],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["rankings", "years", "kids", "docs", "vos"],
+
+  "notes": "Películas por géneros y año. Series por Géneros y año."
+}

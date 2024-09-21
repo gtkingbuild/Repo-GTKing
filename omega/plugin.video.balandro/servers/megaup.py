@@ -43,14 +43,15 @@ def get_video_url(page_url, url_referer=''):
 
     ini_page_url = page_url
 
+    if ini_page_url.endswith('.rar'):
+        return "El archivo está en formato comprimido"
+
     data = httptools.downloadpage(page_url).data
 
     msg_error = scrapertools.find_single_match(data, "<li class='no-side-margin'>([^<]+)</li>")
 
     if "no longer available!" in msg_error:
         return "Archivo inexistente ó eliminado"
-    elif '.rar' in data:
-            return "El archivo está en formato comprimido"
     elif msg_error:
         return msg_error
 

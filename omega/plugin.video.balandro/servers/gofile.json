@@ -13,7 +13,7 @@
         "url": "https://api.gofile.io/\\1"
       },
       {
-        "pattern": "https://gofile.io?c=.*?/d/([0-9a-zA-Z]+)",
+        "pattern": "https://gofile.io/(?:c=)([0-9a-zA-Z]+)",
         "url": "https://api.gofile.io/\\1"
       }
     ]

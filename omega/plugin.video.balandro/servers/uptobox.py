@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import xbmc, time
+import os, xbmc, time
 
 from platformcode import logger, config, platformtools
-from core import httptools, scrapertools
+from core import httptools, scrapertools, filetools, jsontools
 
 
 BR2 = False
@@ -57,6 +57,18 @@ def get_video_url(page_url, url_referer=''):
     ini_page_url = page_url
 
     page_url = page_url.replace('/uptobox/', '/uptobox.com/').replace('/uptostream/', '/uptostream.com/')
+
+    path_server = os.path.join(config.get_runtime_path(), 'servers', 'uptobox.json')
+    data = filetools.read(path_server)
+    dict_server = jsontools.load(data)
+
+    try:
+       notes = dict_server['notes']
+    except: 
+       notes = ''
+
+    if "out of service" in notes.lower(): return 'Fuera de Servicio'
+
 
     vid = scrapertools.find_single_match(page_url, "(?:uptobox.com/|uptostream.com/)(?:iframe/|)([A-z0-9]+)")
     if not vid: return video_urls

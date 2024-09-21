@@ -47,7 +47,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = ' - Tendencias', action = 'list_all', url = host + 'xxxporn/trending/page/1/' ))
 
-    itemlist.append(item.clone( title = ' - Más valorados', action = 'list_all', url = host + 'xxxporn/ratings/page/1/' ))
+    itemlist.append(item.clone( title = ' - Más valorados', action = 'list_all', url = host + 'ratings/page/1/' ))
 
     itemlist.append(item.clone( title = 'Por canal', action = 'categorias', url = host, group = 'canales' ))
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url = host, group = 'categorias'))
@@ -141,6 +141,8 @@ def findvideos(item):
     logger.info()
     itemlist = []
 
+    item.url = item.url.replace('http://', 'https://')
+
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|&nbsp;|<br>|\s{2,}', '', data)
 
@@ -155,6 +157,8 @@ def findvideos(item):
 
         if url:
             if url == '#': continue
+
+            url = url.replace('/netu.wiztube.xyz/player/embed_player.php?', '/waaw.to/watch_video.php?v=').replace('&autoplay=yes', '').strip()
 
             servidor = servertools.get_server_from_url(url)
             servidor = servertools.corregir_servidor(servidor)
@@ -184,6 +188,7 @@ def findvideos(item):
                 elif '/turbobit.' in url: continue
                 elif '/fikper.' in url: continue
                 elif '/hitfile.' in url: continue
+                elif '/frdl.' in url: continue
 
                 url = url.replace('//filemoon.sx/download/', '//filemoon.sx/d/')
 
@@ -195,7 +200,6 @@ def findvideos(item):
                 if servidor == 'various': other = servertools.corregir_other(url) + ' ' + other
 
                 itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = 'Vo', other = other ))
-
 
     if not itemlist:
         if not ses == 0:

@@ -110,6 +110,17 @@ def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
         else:
             data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
 
+        if not data:
+            if not '?s=' in url:
+                if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('PelisMaraton', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+
+                timeout = config.get_setting('channels_repeat', default=30)
+
+                if hay_proxies:
+                    data = httptools.downloadpage_proxy('pelismaraton', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+                else:
+                    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+
     if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
         if BR or BR2:
             try:
@@ -158,7 +169,7 @@ def acciones(item):
 
     itemlist.append(item_configurar_proxies(item))
 
-    itemlist.append(Item( channel='helper', action='show_help_pelismaraton', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('help') ))
+    itemlist.append(Item( channel='helper', action='show_help_pelismaraton', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('pelismaraton') ))
 
     platformtools.itemlist_refresh()
 
@@ -273,6 +284,8 @@ def list_all(item):
         year = scrapertools.find_single_match(match, '<span class="year">(.*?)</span>')
         if not year: year = '-'
 
+        if '/pelicula-año/' in item.url: year = scrapertools.find_single_match(item.url, "/pelicula-año/(.*?)/")
+
         qlty = scrapertools.find_single_match(match, '<span class="quality">(.*?)</span>')
 
         tipo = 'tvshow' if '/serie/' in url or '/anime/' in url else 'movie'
@@ -295,11 +308,13 @@ def list_all(item):
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
-        next_page = scrapertools.find_single_match(data, '<nav class="navigation pagination">.*?' + "class='current'.*?" + 'href="(.*?)"')
+        if '<nav class="navigation pagination">' in data:
+            next_page = scrapertools.find_single_match(data, '<nav class="navigation pagination">.*?' + "class='current'.*?" + 'href="(.*?)"')
+            if not next_page: next_page = scrapertools.find_single_match(data, '<nav class="navigation pagination">.*?class="current".*?href="(.*?)"')
 
-        if next_page:
-            if '/page/' in next_page:
-                itemlist.append(item.clone( title = 'Siguientes ...', action='list_all', url = next_page, text_color='coral' ))
+            if next_page:
+                if '/page/' in next_page:
+                    itemlist.append(item.clone( title = 'Siguientes ...', action='list_all', url = next_page, text_color='coral' ))
 
     return itemlist
 
@@ -434,9 +449,13 @@ def findvideos(item):
 
         servidor = servidor.strip().lower()
 
-        if servidor == 'filemooon':
+        if servidor == 'powvideo': continue
+
+        elif servidor == 'filemooon':
             servidor = 'filemoon'
             url = url.replace('filemooon', 'filemoon')
+
+        elif servidor == 'netu': servidor = 'waaw'
 
         if servidor:
             lang = srv_lang.split('-')[1]
@@ -503,10 +522,14 @@ def play(item):
         url = httptools.downloadpage(item.url, follow_redirects=False).headers['location']
 
     if url:
-       servidor = servertools.get_server_from_url(url)
-       servidor = servertools.corregir_servidor(servidor)
+        servidor = servertools.get_server_from_url(url)
+        servidor = servertools.corregir_servidor(servidor)
 
-       itemlist.append(item.clone(url = url, server = servidor))
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(url).lower()
+            if not new_server.startswith("http"): servidor = new_server
+
+        itemlist.append(item.clone(url = url, server = servidor))
 
     else:
         itemlist.append(item.clone(server = item.server, url = item.url))

@@ -3,7 +3,7 @@
   "name": "Novelas24",
   "thumbnail": "novelas24.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["tvshow"],
@@ -13,5 +13,5 @@
 
   "clusters": ["lasts", "producers", "vos", "tales", "docs"],
 
-  "notes": "Web dedicada exclusivamente en Novelas. Series por Géneros."
+  "notes": "Web CERRADA. Web dedicada exclusivamente en Novelas. Series por Géneros."
 }

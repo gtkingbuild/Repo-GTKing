@@ -98,7 +98,7 @@ def do_downloadpage(url, post=None, headers=None):
 
         if not data:
             if not '?s=' in url:
-                if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('Ppeliculas', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+                if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('PPeliculas', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
 
                 timeout = config.get_setting('channels_repeat', default=30)
 
@@ -107,7 +107,7 @@ def do_downloadpage(url, post=None, headers=None):
                 else:
                     data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
 
-    if '<title>You are being redirected...</title>' in data:
+    if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
         if BR or BR2:
             try:
                 ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
@@ -141,7 +141,7 @@ def acciones(item):
 
     itemlist.append(item_configurar_proxies(item))
 
-    itemlist.append(Item( channel='helper', action='show_help_ppeliculas', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('help') ))
+    itemlist.append(Item( channel='helper', action='show_help_ppeliculas', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('ppeliculas') ))
 
     platformtools.itemlist_refresh()
 
@@ -172,9 +172,9 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'pelicula/', search_type = 'movie' ))
 
-    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'genre/estreno/', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'genre/estreno/', search_type = 'movie', text_color='cyan' ))
 
-    itemlist.append(item.clone( title = 'Más destacadas', action = 'list_all', url = host + 'pelicula/', group = 'destacadas', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Más vistas', action = 'list_all', url = host + 'pelicula/', group = 'destacadas', search_type = 'movie' ))
 
     itemlist.append(item.clone( title = 'Más valoradas', action = 'list_top', url = host, search_type = 'movie' ))
 
@@ -193,9 +193,9 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'series/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host + 'episodios/', search_type = 'tvshow', text_color = 'olive' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host + 'episodios/', search_type = 'tvshow', text_color = 'cyan' ))
 
-    itemlist.append(item.clone( title = 'Más destacadas', action = 'list_all', url = host + 'series/', group = 'destacadas', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Más vistas', action = 'list_all', url = host + 'series/', group = 'destacadas', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Más valoradas', action = 'list_top', url = host, search_type = 'tvshow' ))
 
@@ -287,14 +287,13 @@ def list_all(item):
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
-        if not item.group == 'destacadas':
-            next_page = scrapertools.find_single_match(data, "<div class='resppages'>" + '.*?</a><a href="(.*?)".*?><span')
-            if not next_page: next_page = scrapertools.find_single_match(data, "<div class='resppages'>" + '<a href="(.*?)".*?><span')
-            if not next_page: next_page = scrapertools.find_single_match(data, '<div class="resppages">.*?<a href="(.*?)".*?><span')
+        if '<div class="pagination">' in data:
+            if not item.group == 'destacadas':
+                next_page = scrapertools.find_single_match(data, '<div class="pagination">.*?<span class="current">.*?<a href="(.*?)"')
 
-            if next_page:
-                if '/page/' in next_page:
-                    itemlist.append(item.clone(title = 'Siguientes ...', url = next_page, action = 'list_all', text_color = 'coral'))
+                if next_page:
+                    if '/page/' in next_page:
+                        itemlist.append(item.clone(title = 'Siguientes ...', url = next_page, action = 'list_all', text_color = 'coral'))
 
     return itemlist
 
@@ -381,13 +380,12 @@ def last_epis(item):
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
-        next_page = scrapertools.find_single_match(data, "<div class='resppages'>" + '.*?</a><a href="(.*?)".*?><span')
-        if not next_page: next_page = scrapertools.find_single_match(data, "<div class='resppages'>" + '<a href="(.*?)".*?><span')
-        if not next_page: next_page = scrapertools.find_single_match(data, '<div class="resppages">.*?<a href="(.*?)".*?><span')
+        if '<div class="pagination">' in data:
+            next_page = scrapertools.find_single_match(data, '<div class="pagination">.*?<span class="current">.*?<a href="(.*?)"')
 
-        if next_page:
-            if '/page/' in next_page:
-                itemlist.append(item.clone(title = 'Siguientes ...', url = next_page, action = 'last_epis', text_color = 'coral'))
+            if next_page:
+                if '/page/' in next_page:
+                    itemlist.append(item.clone(title = 'Siguientes ...', url = next_page, action = 'last_epis', text_color = 'coral'))
 
     return itemlist
 
@@ -452,34 +450,34 @@ def episodios(item):
         if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
         elif tvdb_id:
             if sum_parts > 50:
-                platformtools.dialog_notification('Ppeliculas', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
+                platformtools.dialog_notification('PPeliculas', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
                 item.perpage = sum_parts
         else:
             item.perpage = sum_parts
 
             if sum_parts >= 1000:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]500[/B][/COLOR] elementos ?'):
-                    platformtools.dialog_notification('Ppeliculas', '[COLOR cyan]Cargando 500 elementos[/COLOR]')
+                    platformtools.dialog_notification('PPeliculas', '[COLOR cyan]Cargando 500 elementos[/COLOR]')
                     item.perpage = 500
 
             elif sum_parts >= 500:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]250[/B][/COLOR] elementos ?'):
-                    platformtools.dialog_notification('Ppeliculas', '[COLOR cyan]Cargando 250 elementos[/COLOR]')
+                    platformtools.dialog_notification('PPeliculas', '[COLOR cyan]Cargando 250 elementos[/COLOR]')
                     item.perpage = 250
 
             elif sum_parts >= 250:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]125[/B][/COLOR] elementos ?'):
-                    platformtools.dialog_notification('Ppeliculas', '[COLOR cyan]Cargando 125 elementos[/COLOR]')
+                    platformtools.dialog_notification('PPeliculas', '[COLOR cyan]Cargando 125 elementos[/COLOR]')
                     item.perpage = 125
 
             elif sum_parts >= 125:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos en bloques de [COLOR cyan][B]75[/B][/COLOR] elementos ?'):
-                    platformtools.dialog_notification('Ppeliculas', '[COLOR cyan]Cargando 75 elementos[/COLOR]')
+                    platformtools.dialog_notification('PPeliculas', '[COLOR cyan]Cargando 75 elementos[/COLOR]')
                     item.perpage = 75
 
             elif sum_parts > 50:
                 if platformtools.dialog_yesno(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '¿ Hay [COLOR yellow][B]' + str(sum_parts) + '[/B][/COLOR] elementos disponibles, desea cargarlos [COLOR cyan][B]Todos[/B][/COLOR] de una sola vez ?'):
-                    platformtools.dialog_notification('Ppeliculas', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
+                    platformtools.dialog_notification('PPeliculas', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
                     item.perpage = sum_parts
                 else: item.perpage = 50
 
@@ -506,9 +504,11 @@ def corregir_servidor(servidor):
 
      servidor = servidor.lower()
 
-     servidor = servidor.replace('.com', '').replace('.org', '').replace('.co', '').replace('.cc', '').replace('.net', '').replace('.to', '')
-     servidor = servidor.replace('.ru', '').replace('.tv', '').replace('my.', '').replace('.info', '').replace('.re', '').replace('.xx', '')
-     servidor = servidor.replace('v2.', '').replace('.veoh', '').replace('.sh', '').replace('.nz', '').replace('.site', '').strip()
+     servidor = servidor.replace('.com', '').replace('.org', '').replace('.co', '').replace('.cc', '').replace('.net', '').replace('.to', '').replace('.sx', '')
+     servidor = servidor.replace('.ru', '').replace('.tv', '').replace('my.', '').replace('.info', '').replace('.re', '').replace('.xx', '').replace('.click', '')
+     servidor = servidor.replace('v2.', '').replace('.veoh', '').replace('.sh', '').replace('.nz', '').replace('.site', '').replace('.uno', '').replace('.io', '')
+     servidor = servidor.replace('.link', '').replace('.club', '').replace('.red', '').replace('.download', '').replace('.vip', '').replace('.space', '').strip()
+     servidor = servidor.replace('.xyz', '').replace('.me', '')
 
      return servidor
 
@@ -519,108 +519,134 @@ def findvideos(item):
 
     data = do_downloadpage(item.url)
 
-    patron = '<li id="player-option-.*?'
-    patron += 'data-post="(.*?)".*?data-type="(.*?)".*?data-nume="(.*?)".*?<span class="title">(.*?)</span>.*?<span class="server">(.*?)</span>'
-
-    matches = scrapertools.find_multiple_matches(data, patron)
-
     ses = 0
 
     # ~ orden post
-    for _post, _type, _nume, qlty_lang, _server in matches:
-        ses += 1
+    if 'class="dooplay_player_option" data-post="' in data:
+        patron = '<li id="player-option-.*?'
+        patron += 'data-post="(.*?)".*?data-type="(.*?)".*?data-nume="(.*?)".*?<span class="title">(.*?)</span>.*?<span class="server">(.*?)</span>'
 
-        url = host + 'wp-json/dooplayer/v2/%s/%s/%s'  %  (_post, _type, _nume)
+        matches = scrapertools.find_multiple_matches(data, patron)
 
-        if 'Latino' in qlty_lang:
-            qlty = qlty_lang.replace('Latino', '').strip()
-            lang = 'Lat'
-        elif 'Castellano' in qlty_lang or 'Español' in qlty_lang:
-            qlty = qlty_lang.replace('Castellano', '').strip()
-            lang = 'Esp'
-        elif 'Subtitulado' in qlty_lang or 'VOSE' in qlty_lang:
-            qlty = qlty_lang.replace('Subtitulado', '').strip()
-            lang = 'Vose'
-        else:
-            qlty = qlty_lang
-            lang = '?'
+        for _post, _type, _nume, qlty_lang, _server in matches:
+            ses += 1
 
-        if 'hqq' in _server or 'netu' in _server or 'waaw' in _server: _server = 'waaw'
+            if 'youtube' in _server: continue
 
-        other = corregir_servidor(_server)
+            elif 'earn4files' in _server: continue
+            elif 'uploadbuzz' in _server: continue
+            elif 'powvibeo' in _server: continue
+            elif 'slreamplay' in _server: continue
+            elif 'fastclick' in _server: continue
+            elif 'streamix' in _server: continue
+            elif 'streamcloud' in _server: continue
+            elif 'kingvid' in _server: continue
+            elif 'stormo' in _server: continue
+            elif 'uploadz' in _server: continue
+            elif 'rockfile' in _server: continue
+            elif 'openload' in _server: continue
 
-        if 'youtube' in other: continue
+            url = host + 'wp-json/dooplayer/v2/%s/%s/%s'  %  (_post, _type, _nume)
 
-        if 'earn4files' in other: continue
-        elif 'uploadbuzz' in other: continue
+            if 'Latino' in qlty_lang:
+                qlty = qlty_lang.replace('Latino', '').strip()
+                lang = 'Lat'
+            elif 'Castellano' in qlty_lang or 'Español' in qlty_lang:
+                qlty = qlty_lang.replace('Castellano', '').strip()
+                lang = 'Esp'
+            elif 'Subtitulado' in qlty_lang or 'VOSE' in qlty_lang:
+                qlty = qlty_lang.replace('Subtitulado', '').strip()
+                lang = 'Vose'
+            else:
+                qlty = qlty_lang
+                lang = '?'
 
-        if other == qlty: qlty = ''
+            if 'hqq' in _server or 'netu' in _server or 'waaw' in _server: _server = 'waaw'
+            elif 'dood' in _server: _server = 'doodstream'
+            elif 'google' in _server or 'Google' in _server: _server = 'gvideo'
 
-        if url.startswith('https://player.pepeliculas.org/'):
-            url = url.replace('/player.pepeliculas.org/', '/waaw.to/')
-            other == 'waaw'
+            other = corregir_servidor(_server)
 
-        servidor = servertools.corregir_servidor(other)
+            if other == qlty: qlty = ''
 
-        if servertools.is_server_available(other):
-            if not servertools.is_server_enabled(other): continue
-        else:
-            if not config.get_setting('developer_mode', default=False): continue
+            if url.startswith('https://player.pepeliculas.org/'):
+                url = url.replace('/player.pepeliculas.org/', '/waaw.to/')
+                other == 'waaw'
 
-        itemlist.append(Item( channel = item.channel, action = 'play', title = '', server = 'directo', url = url, ref = item.url,
-                              other = other.capitalize(), language = lang, quality = qlty ))
+            servidor = servertools.corregir_servidor(other)
+
+            if servertools.is_server_available(other):
+                if not servertools.is_server_enabled(other): continue
+            else:
+                if not config.get_setting('developer_mode', default=False): continue
+
+            itemlist.append(Item( channel = item.channel, action = 'play', title = '', server = 'directo', url = url, ref = item.url,
+                                  other = other.capitalize(), language = lang, quality = qlty ))
 
     # ~ orden type
-    patron = '<li id="player-option-.*?'
-    patron += 'data-type="(.*?)".*?data-post="(.*?)".*?data-nume="(.*?)".*?<span class="title">(.*?)</span>.*?<span class="server">(.*?)</span>'
+    if 'class="dooplay_player_option" data-type="' in data:
+        patron = '<li id="player-option-.*?'
+        patron += 'data-type="(.*?)".*?data-post="(.*?)".*?data-nume="(.*?)".*?<span class="title">(.*?)</span>.*?<span class="server">(.*?)</span>'
 
-    matches = scrapertools.find_multiple_matches(data, patron)
+        matches = scrapertools.find_multiple_matches(data, patron)
 
-    for _type, _post, _nume, qlty_lang, _server in matches:
-        ses += 1
+        for _type, _post, _nume, qlty_lang, _server in matches:
+            ses += 1
 
-        url = host + 'wp-json/dooplayer/v2/%s/%s/%s'  %  (_post, _type, _nume)
+            if 'youtube' in _server: continue
 
-        if 'Latino' in qlty_lang:
-            qlty = qlty_lang.replace('Latino', '').strip()
-            lang = 'Lat'
-        elif 'Castellano' in qlty_lang or 'Español' in qlty_lang:
-            qlty = qlty_lang.replace('Castellano', '').strip()
-            lang = 'Esp'
-        elif 'Subtitulado' in qlty_lang or 'VOSE' in qlty_lang:
-            qlty = qlty_lang.replace('Subtitulado', '').strip()
-            lang = 'Vose'
-        else:
-            qlty = qlty_lang
-            lang = '?'
+            elif 'earn4files' in _server: continue
+            elif 'uploadbuzz' in _server: continue
+            elif 'powvibeo' in _server: continue
+            elif 'slreamplay' in _server: continue
+            elif 'fastclick' in _server: continue
+            elif 'streamix' in _server: continue
+            elif 'streamcloud' in _server: continue
+            elif 'kingvid' in _server: continue
+            elif 'stormo' in _server: continue
+            elif 'uploadz' in _server: continue
+            elif 'rockfile' in _server: continue
+            elif 'openload' in _server: continue
 
-        if 'hqq' in _server or 'netu' in _server or 'waaw' in _server: _server = 'waaw'
-		
-        other = corregir_servidor(_server)
+            url = host + 'wp-json/dooplayer/v2/%s/%s/%s'  %  (_post, _type, _nume)
 
-        if 'youtube' in other: continue
+            if 'Latino' in qlty_lang:
+                qlty = qlty_lang.replace('Latino', '').strip()
+                lang = 'Lat'
+            elif 'Castellano' in qlty_lang or 'Español' in qlty_lang:
+                qlty = qlty_lang.replace('Castellano', '').strip()
+                lang = 'Esp'
+            elif 'Subtitulado' in qlty_lang or 'VOSE' in qlty_lang:
+                qlty = qlty_lang.replace('Subtitulado', '').strip()
+                lang = 'Vose'
+            else:
+                qlty = qlty_lang
+                lang = '?'
 
-        if 'earn4files' in other: continue
-        elif 'uploadbuzz' in other: continue
+            if 'hqq' in _server or 'netu' in _server or 'waaw' in _server: _server = 'waaw'
+            elif 'dood' in _server: _server = 'doodstream'
+            elif 'google' in _server or 'Google' in _server: _server = 'gvideo'
 
-        if other == qlty: qlty = ''
+            other = corregir_servidor(_server)
 
-        if url.startswith('https://player.pepeliculas.org/'):
-            url = url.replace('/player.pepeliculas.org/', '/waaw.to/')
-            other == 'waaw'
+            if other == qlty: qlty = ''
 
-        servidor = servertools.corregir_servidor(other)
+            if url.startswith('https://player.pepeliculas.org/'):
+                url = url.replace('/player.pepeliculas.org/', '/waaw.to/')
+                other == 'waaw'
 
-        if servertools.is_server_available(other):
-            if not servertools.is_server_enabled(other): continue
-        else:
-            if not config.get_setting('developer_mode', default=False): continue
+            servidor = servertools.corregir_servidor(other)
 
-        itemlist.append(Item( channel = item.channel, action = 'play', title = '', server = 'directo', url = url, ref = item.url,
-                              other = other.capitalize(), language = lang, quality = qlty ))
+            if servertools.is_server_available(other):
+                if not servertools.is_server_enabled(other): continue
+            else:
+                if not config.get_setting('developer_mode', default=False): continue
+
+            itemlist.append(Item( channel = item.channel, action = 'play', title = '', server = 'directo', url = url, ref = item.url,
+                                  other = other.capitalize(), language = lang, quality = qlty ))
 
     # ~ Ver
-    if 'Ver en línea' in data: 
+    if 'Ver en línea' in data:
         patron = '<tr id="link-.*?<img src=.*?'
         patron += 'domain=(.*?)">.*?<a href="(.*?)".*?target="_blank">(.*?)</a>.*?<strong class="quality">(.*?)</strong>.*?</td><td>(.*?)</td>'
 
@@ -635,6 +661,20 @@ def findvideos(item):
 
             if 'earn4files' in servidor: continue
             elif 'uploadbuzz' in servidor: continue
+            elif 'powvibeo' in servidor: continue
+            elif 'slreamplay' in servidor: continue
+            elif 'fastclick' in servidor: continue
+            elif 'streamix' in servidor: continue
+            elif 'streamcloud' in servidor: continue
+            elif 'kingvid' in servidor: continue
+            elif 'stormo' in servidor: continue
+            elif 'uploadz' in servidor: continue
+            elif 'rockfile' in servidor: continue
+            elif 'openload' in servidor: continue
+
+            if 'gofile' in servidor: servidor = 'gofile'
+            elif 'dood' in servidor: servidor = 'doodstream'
+            elif 'google' in servidor or 'Google' in servidor: servidor = 'gvideo'
 
             if url.startswith('https://player.pepeliculas.org/'): url = url.replace('/player.pepeliculas.org/', '/waaw.to/')
 
@@ -667,18 +707,37 @@ def findvideos(item):
         for domain, url, tipo, qlty, lang in matches:
             ses += 1
 
-            if not tipo == 'Descarga': continue
+            if not tipo: continue
 
             servidor = corregir_servidor(domain)
 
             if 'earn4files' in servidor: continue
             elif 'uploadbuzz' in servidor: continue
-
-            elif 'nitro.' in servidor: continue
-            elif '1fichier.' in servidor: continue
             elif 'multiup' in servidor: continue
+            elif 'ddownload' in servidor: continue
+            elif 'fikper' in servidor: continue
+            elif 'powvibeo' in servidor: continue
+            elif 'slreamplay' in servidor: continue
+            elif 'buzzheavier' in servidor: continue
+            elif 'fastclick' in servidor: continue
+            elif 'streamix' in servidor: continue
+            elif 'streamcloud' in servidor: continue
+            elif 'kingvid' in servidor: continue
+            elif 'stormo' in servidor: continue
+            elif 'uploadz' in servidor: continue
+            elif 'rockfile' in servidor: continue
+            elif 'openload' in servidor: continue
+
+            elif 'nitro' in servidor: continue
+            elif '1fichier' in servidor: continue
+            elif 'turbobit' in servidor: continue
+
+            if 'gofile' in servidor: servidor = 'gofile'
+            elif 'dood' in servidor: servidor = 'doodstream'
+            elif 'google' in servidor or 'Google' in servidor: servidor = 'gvideo'
 
             elif servidor == 'filemoon': servidor = 'various'
+            elif servidor == 'utorrent': servidor = 'torrent'
 
             if url.startswith('https://player.pepeliculas.org/'): url = url.replace('/player.pepeliculas.org/', '/waaw.to/')
 
@@ -686,10 +745,6 @@ def findvideos(item):
             elif lang == 'Castellano' or lang == 'Español': lang = 'Esp'
             elif lang == 'Subtitulado' or lang == 'VOSE': lang = 'Vose'
             else: lang = '?'
-
-            servidor = servertools.get_server_from_url(url, disabled_servers=True)
-
-            if servidor is None: continue
 
             servidor = servertools.corregir_servidor(servidor)
 
@@ -735,13 +790,34 @@ def play(item):
 
         if url.startswith('//'): url = 'https:' + url
 
+        if '/?source=' in url:
+            data = do_downloadpage(url)
+
+            url = scrapertools.find_single_match(data, 'id="player".*?<source src="(.*?)"')
+
         if url.startswith('https://player.pepeliculas.org/'): url = url.replace('/player.pepeliculas.org/', '/waaw.to/')
+        elif url.startswith('https://hqq.tv/player/embed_player.php?'): url = url.replace('https://hqq.tv/player/embed_player.php?', 'https://waaw.to/watch_video.php?v=')
 
     if url:
+        if item.other.startswith("Sb"):
+            return 'Servidor [COLOR goldenrod]Obsoleto[/COLOR]'
+
+        elif 'fembed' in url or  'streamsb' in url or 'playersb' in url or 'fcom' in url:
+            return 'Servidor [COLOR goldenrod]Obsoleto[/COLOR]'
+
+        elif '.pepeliculas.' in url: url = ''
+
+    if url:
+        if 'http://' in url: url = url.replace('http://', 'https://')
+
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 
         if servidor == 'zplayer': url = url + '|' + host
+
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(url).lower()
+            if not new_server.startswith("http"): servidor = new_server
 
         itemlist.append(item.clone( url=url, server=servidor))
 
@@ -790,6 +866,14 @@ def list_search(item):
                                         contentType='tvshow', contentSerieName=title, infoLabels={'year': year, 'plot': plot} ))
 
     tmdb.set_infoLabels(itemlist)
+
+    if itemlist:
+        if '<div class="pagination">' in data:
+            next_page = scrapertools.find_single_match(data, '<div class="pagination">.*?<span class="current">.*?<a href="(.*?)"')
+
+            if next_page:
+                if '/page/' in next_page:
+                    itemlist.append(item.clone(title = 'Siguientes ...', url = next_page, action = 'list_search', text_color = 'coral'))
 
     return itemlist
 

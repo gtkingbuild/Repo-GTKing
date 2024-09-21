@@ -1,20 +1,23 @@
 # -*- coding: utf-8 -*-
 
-import re, os
+import re
 
 from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, tmdb
 
 
-host = 'https://www10.mejortorrent.rip'
+host = 'https://www20.mejortorrent.zip'
 
 
 # ~ por si viene de enlaces guardados
 ant_hosts = ['https://mejortorrent.app', 'https://mejortorrent.wtf', 'https://www1.mejortorrent.rip',
              'https://www2.mejortorrent.rip', 'https://www3.mejortorrent.rip', 'https://www4.mejortorrent.rip',
              'https://www5.mejortorrent.rip', 'https://www6.mejortorrent.rip', 'https://www7.mejortorrent.rip',
-             'https://www8.mejortorrent.rip', 'https://www9.mejortorrent.rip']
+             'https://www8.mejortorrent.rip', 'https://www9.mejortorrent.rip', 'https://www10.mejortorrent.rip',
+             'https://www11.mejortorrent.rip', 'https://www12.mejortorrent.rip', 'https://www13.mejortorrent.rip',
+             'https://www14.mejortorrent.rip', 'https://www15.mejortorrent.rip', 'https://www16.mejortorrent.rip',
+             'https://www17.mejortorrent.zip', 'https://www18.mejortorrent.zip', 'https://www19.mejortorrent.zip']
 
 
 domain = config.get_setting('dominio', 'mejortorrentapp', default='')
@@ -65,16 +68,19 @@ def do_downloadpage(url, post=None, headers=None):
     for ant in ant_hosts:
         url = url.replace(ant, host)
 
+    raise_weberror = True
+    if '/peliculas/year/' in url: raise_weberror = False
+
     hay_proxies = False
     if config.get_setting('channel_mejortorrentapp_proxies', default=''): hay_proxies = True
 
     if not url.startswith(host):
-        data = httptools.downloadpage(url, post=post, headers=headers).data
+        data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
     else:
         if hay_proxies:
-            data = httptools.downloadpage_proxy('mejortorrentapp', url, post=post, headers=headers).data
+            data = httptools.downloadpage_proxy('mejortorrentapp', url, post=post, headers=headers, raise_weberror=raise_weberror).data
         else:
-            data = httptools.downloadpage(url, post=post, headers=headers).data
+            data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
 
         if not data:
             if not '/busqueda?q=' in url:
@@ -83,9 +89,9 @@ def do_downloadpage(url, post=None, headers=None):
                 timeout = config.get_setting('channels_repeat', default=30)
 
                 if hay_proxies:
-                    data = httptools.downloadpage_proxy('mejortorrentapp', url, post=post, headers=headers, timeout=timeout).data
+                    data = httptools.downloadpage_proxy('mejortorrentapp', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
                 else:
-                    data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+                    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
 
     return data
 
@@ -187,7 +193,7 @@ def mainlist_documentales(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + '/documentales/', search_type = 'documentary' ))
 
-    itemlist.append(item.clone( title = 'Últimos', action = 'list_list', url = host + '/public/torrents/', search_type = 'documentary', text_color='darkcyan' ))
+    itemlist.append(item.clone( title = 'Últimos', action = 'list_list', url = host + '/public/torrents/', search_type = 'documentary', text_color='cyan' ))
 
     itemlist.append(item.clone( title = 'Más vistos', action = 'list_list', url = host + '/busqueda/', search_type = 'documentary' ))
 
@@ -312,6 +318,9 @@ def list_all(item):
 
         title = title.replace('-', ' ').strip()
 
+        year = '-'
+        if '/peliculas/year/' in item.url: year = scrapertools.find_single_match(item.url, "/peliculas/year/(.*?)/")
+
         if item.search_type == 'movie':
             titulo = title
 
@@ -319,18 +328,15 @@ def list_all(item):
             elif '3D' in titulo: titulo = title.replace('[3D]', '').replace('3D', '').strip()
 
             itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, qualities=qlty,
-                                        contentType='movie', contentTitle=titulo, infoLabels={'year': '-'} ))
+                                        contentType='movie', contentTitle=titulo, infoLabels={'year': year} ))
 
-            continue
-
-        if item.search_type == 'tvshow':
+        elif item.search_type == 'tvshow':
             if " Temporada" in title: SerieName = title.split(" Temporada")[0]
             else: SerieName = title
 
-            itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb, qualities=qlty,
-                                        contentType='tvshow', contentSerieName=SerieName, infoLabels={'year': '-'} ))
-
-            continue
+            if SerieName:
+                itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb, qualities=qlty,
+                                            contentType='tvshow', contentSerieName=SerieName, infoLabels={'year': year} ))
 
         else:
             if "(" in title: titulo = title.split("(")[0]
@@ -338,8 +344,8 @@ def list_all(item):
 
             titulo = titulo.strip()
 
-            itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail=thumb, qualities=qlty,
-                                        contentType = 'movie', contentTitle = titulo, contentExtra = 'documentary', infoLabels={'year': "-"} ))
+            itemlist.append(item.clone( action = 'episodios', url = url, title = title, thumbnail=thumb, qualities=qlty,
+                                        contentType = 'movie', contentTitle = titulo, contentExtra = 'documentary', infoLabels={'year': year} ))
 
         if len(itemlist) >= perpage: break
 
@@ -428,7 +434,7 @@ def list_list(item):
             itemlist.append(item.clone( action = 'findvideos', url = url, title = title, qualities = qlty, fmt_sufijo = sufijo,
                                         contentType = 'movie', contentTitle = titulo, infoLabels = {'year': year} ))
 
-        if item.search_type == 'tvshow':
+        elif item.search_type == 'tvshow':
             if not item.search_type == "all":
                 if item.search_type == "movie": continue
 
@@ -444,7 +450,7 @@ def list_list(item):
             itemlist.append(item.clone( action='episodios', url = url, title = title, fmt_sufijo = sufijo,
                                         contentType = 'tvshow', contentSerieName = SerieName, infoLabels = {'year': year} ))
 
-        if item.search_type == 'documentary':
+        else:
             if not item.search_type == "all":
                 if item.search_type == "tvshow": continue
 
@@ -453,7 +459,7 @@ def list_list(item):
             if '4K' in titulo: titulo = title.replace('[4K]', '').replace('4K', '').strip()
             elif '3D' in titulo: titulo = title.replace('[3D]', '').replace('3D', '').strip()
 
-            itemlist.append(item.clone( action = 'findvideos', url = url, title = title, qualities = qlty, fmt_sufijo = sufijo,
+            itemlist.append(item.clone( action = 'episodios', url = url, title = title, qualities = qlty, fmt_sufijo = sufijo,
                                         contentType = 'movie', contentTitle = titulo, infoLabels = {'year': year} ))
 
         if len(itemlist) >= perpage: break
@@ -483,23 +489,29 @@ def episodios(item):
     itemlist = []
 
     data = do_downloadpage(item.url)
+    data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
     bloque = scrapertools.find_single_match(data, '>Episodios:(.*?)</tbody>')
 
-    matches = scrapertools.find_multiple_matches(bloque, '<tr wire:key="episode-(.*?)".*?<a href="(.*?)"')
+    matches = scrapertools.find_multiple_matches(bloque, '<tr wire:(.*?)</tr>')
 
     tempo = 0
 
-    for nro_epis, link in matches:
+    for match in matches:
+        link = scrapertools.find_single_match(match, '<a href="(.*?)"')
+
         s_e = scrapertools.get_season_and_episode(link)
 
         try:
-           tempo = int(s_e.split("x")[0])
+           tempo = scrapertools.find_single_match(match, '<td class="px-2 py-1 whitespace-nowrap text-xs text-neutral-800">(.*?)</td>').strip()
+           if tempo: tempo = scrapertools.find_single_match(tempo, '(.*?)x')
+
+           if not tempo: tempo = int(s_e.split("x")[0])
         except:
            pass
 
         if not tempo == 0:
-           break
+            break
 
     i = 0
 
@@ -557,9 +569,13 @@ def findvideos(item):
 
         url = scrapertools.find_single_match(data, '>Torrent:<.*?<a href="(.*?)"')
 
+        if not url.startswith(host): url = host + url
+
         itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = 'torrent', language = lang, quality = item.qualities ))
 
         return itemlist
+
+    if not item.url.startswith(host): item.url = host + item.url
 
     itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = item.url, server = 'torrent', language = lang ))
 

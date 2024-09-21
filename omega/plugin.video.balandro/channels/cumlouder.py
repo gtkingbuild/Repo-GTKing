@@ -60,7 +60,7 @@ def repertorios(item):
 
         titulo = '[COLOR orange]%s[/COLOR] (%s)' % (title, vid)
 
-        itemlist.append(item.clone( action = 'list_all', url = url, thumbnail = thumb, title = titulo, page = 1, text_color='orange' ))
+        itemlist.append(item.clone( action = 'list_all', url = url, thumbnail = thumb, title = titulo, page = 1 ))
 
     if itemlist:
         next_url = scrapertools.find_single_match(data, '<a class="btn-pagination" itemprop="name" href="(.*?)"')

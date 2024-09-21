@@ -1,0 +1,17 @@
+{
+  "id": "seriesplus",
+  "name": "SeriesPlus",
+  "thumbnail": "seriesplus.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["suggested", "lasts", "rankings", "years", "producers", "docs", "kids", "vos", "anime", "tales"],
+
+  "notes": "Series por Géneros. Categoría Novelas. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

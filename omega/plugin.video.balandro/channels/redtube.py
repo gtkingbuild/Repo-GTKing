@@ -40,6 +40,8 @@ def mainlist_pelis(item):
     itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = host + 'mostviewed/' ))
     itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = host + 'top/' ))
 
+    itemlist.append(item.clone( title = 'En HD', action = 'list_all', url = host + 'redtube/hd/' ))
+
     itemlist.append(item.clone( title = 'Long Play', action = 'list_all', url = host + 'longest?period=alltime' ))
 
     itemlist.append(item.clone( title = 'Por canal', action = 'canales', url= host + 'channel/top-rated/' ))
@@ -89,6 +91,8 @@ def categorias(item):
     matches = re.compile(patron, re.DOTALL).findall(data)
 
     for url, thumb, title in matches:
+         if title == 'Alta Definición': continue
+
          if title == 'Árabe': title = 'Arabe'
 
          url = host[:-1] + url

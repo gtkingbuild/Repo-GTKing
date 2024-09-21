@@ -36,25 +36,37 @@ def mainlist_animes(item):
         from modules import actions
         if actions.adults_password(item) == False: return
 
-    itemlist.append(item.clone( title = 'Buscar anime ...', action = 'search', search_type = 'tvshow', text_color='springgreen' ))
+    itemlist.append(item.clone( title = 'Buscar anime ...', action = 'search', search_type = 'all', text_color='springgreen' ))
 
-    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'ver/?status=&type=&order=', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'ver/?status=&type=&order=update&page=1', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimos animes', action = 'list_all', url = host + 'ver/?status=&type=&order=update', search_type = 'tvshow', text_color = 'cyan' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'list_all', url = host + 'ver/?sub=&order=latest&page=1' , search_type = 'tvshow', text_color = 'cyan' ))
 
-    itemlist.append(item.clone( title = 'Actualizados', action = 'list_all', url = host + 'ver/?status=&type=&order=latest', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Últimos animes', action = 'list_all', url = host + 'ver/?status=&type=&order=update&page=1', search_type = 'tvshow', text_color = 'moccasin' ))
 
-    itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = host + 'ver/?sub=&order=popular', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Actualizados', action = 'list_all', url = host + 'ver/?status=&type=&order=latest&page=1', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'En castellano', action = 'list_all', url = host + '?s=castellano', search_type = 'tvshow', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'En latino', action = 'list_all', url = host + '?s=latino', search_type = 'tvshow', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = host + 'ver/?sub=&order=popular&page=1', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = host + 'ver/?status=&type=&order=rating&page=1', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Series', action = 'list_all', url = host + 'ver/?status=&type=tv&order=', search_type = 'tvshow', text_color = 'hotpink' ))
-    itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host + 'ver/?status=&type=movie&order=', search_type = 'tvshow', text_color='deepskyblue' ))
-    itemlist.append(item.clone( title = 'Ovas', action = 'list_all', url = host + 'ver/?type=ova&sub=', search_type = 'tvshow' ))
-    itemlist.append(item.clone( title = 'Onas', action = 'list_all', url = host + 'ver/?status=&type=ona&order=', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Series', action = 'list_all', url = host + 'ver/?status=&type=tv&order=update&page=1', search_type = 'tvshow', text_color = 'hotpink' ))
+    itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host + 'ver/?status=&type=movie&order=update&page=1', search_type = 'movie', text_color='deepskyblue' ))
+    itemlist.append(item.clone( title = 'Ovas', action = 'list_all', url = host + 'ver/?type=ova&sub=&order=update&page=1', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Onas', action = 'list_all', url = host + 'ver/?status=&type=ona&order=update&page=1', search_type = 'tvshow' ))
+
+    itemlist.append(item.clone( title = 'Por idioma', action = 'idiomas', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
+
+    return itemlist
+
+
+def idiomas(item):
+    logger.info()
+    itemlist = []
+
+    itemlist.append(item.clone( title = 'En castellano', action = 'list_all', url = host + '?s=castellano&order=update&page=1', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En latino', action = 'list_all', url = host + '?s=latino&order=update&page=1', text_color='moccasin' ))
 
     return itemlist
 
@@ -103,29 +115,56 @@ def list_all(item):
 
         title = title.replace('&#8217;', "'").replace('&#8211;', '').replace('&#215;', 'x')
 
-        if '>Movie<' in match:
+        tipo = 'movie' if '>Movie<' in match else 'tvshow'
+        sufijo = '' if item.search_type != 'all' else tipo
+
+        lang = ''
+
+        if tipo == 'movie':
+            if item.search_type != 'all':
+                if item.search_type == 'tvshow': continue
+
             PeliName = title
 
             if '[Película' in PeliName: PeliName = PeliName.split("[Película")[0]
-            elif '[Latino' in PeliName: PeliName = PeliName.split("[Latino")[0]
+
+            if '[Latino' in PeliName: PeliName = PeliName.split("[Latino")[0]
+            elif 'Latino]' in PeliName: PeliName = PeliName.split("Latino]")[0]
             elif '[Castellano' in PeliName: PeliName = PeliName.split("[Castellano")[0]
+            elif 'Castellano]' in PeliName: PeliName = PeliName.split("[Castellano")[0]
+            elif '[Subtitulado' in PeliName: PeliName = PeliName.split("[Subtitulado")[0]
+            elif 'Subtitulado]' in PeliName: PeliName = PeliName.split("Subtitulado]")[0]
 
             PeliName = PeliName.strip()
 
-            itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb, contentType = 'movie', contentTitle = PeliName, infoLabels={'year': year} ))
+            if '[Latino' in title or 'Latino]' in title: lang = 'Lat'
+            elif '[Castellano' in title or 'Castellano]' in title: lang = 'Esp'
 
-        else:
+            itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb, lang=lang, fmt_sufijo=sufijo,
+                                        contentType = 'movie', contentTitle = PeliName, infoLabels={'year': year} ))
+
+        if tipo == 'tvshow':
+            if item.search_type != 'all':
+                if item.search_type == 'movie': continue
+
             SerieName = title
 
             if '[Temporada' in SerieName: SerieName = SerieName.split("[Temporada")[0]
 
             if '[Latino' in SerieName: SerieName = SerieName.split("[Latino")[0]
+            elif 'Latino]' in SerieName: SerieName = SerieName.split("Latino]")[0]
             elif '[Castellano' in SerieName: SerieName = SerieName.split("[Castellano")[0]
+            elif 'Castellano]' in SerieName: SerieName = SerieName.split("Castellano]")[0]
             elif '[Subtitulado' in SerieName: SerieName = SerieName.split("[Subtitulado")[0]
+            elif 'Subtitulado]' in SerieName: SerieName = SerieName.split("Subtitulado]")[0]
 
             SerieName = SerieName.strip()
 
-            itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb, contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': year} ))
+            if '[Latino' in title or 'Latino]' in title: lang = 'Lat'
+            elif '[Castellano' in title or 'Castellano]' in title: lang = 'Esp'
+
+            itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb, lang=lang, fmt_sufijo=sufijo,
+                                        contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -234,6 +273,8 @@ def findvideos(item):
 
     lang = 'Vose'
 
+    if item.lang: lang = item.lang
+
     ses = 0
 
     matches = re.compile('<iframe src="(.*?)".*?<option value=(.*?)</option>', re.DOTALL).findall(data)
@@ -255,7 +296,9 @@ def findvideos(item):
             if not url.startswith("http"):
                 b64_decode = base64.b64decode(url)
 
-                if b64_decode: url = scrapertools.find_single_match(str(b64_decode), '<iframe src="(.*?)"')
+                if b64_decode:
+                    url = scrapertools.find_single_match(str(b64_decode), '<iframe src="(.*?)"')
+                    if not url: url = scrapertools.find_single_match(str(b64_decode), '<IFRAME SRC="(.*?)"')
 
             if url.startswith('//'): url = 'https:' + url
 
@@ -265,9 +308,13 @@ def findvideos(item):
             elif 'jetload.' in url: continue
             elif '.tioanime.' in url: continue
             elif '.fembed.' in url: continue
+            elif 'petardas.online' in url: continue
 
             url = url.replace('/altamina.online/', '/filemoon.sx/')
+            url = url.replace('/conlafuerzademilsalchipapas.site/', '/filemoon.sx/')
+
             url = url.replace('/elbailedeltroleo.site/', '/vgembed.com/')
+            url = url.replace('/yosisubogordas.site/', '/vgembed.com/')
 
             servidor = servertools.get_server_from_url(url)
             servidor = servertools.corregir_servidor(servidor)
@@ -319,6 +366,10 @@ def play(item):
         servidor = servertools.corregir_servidor(servidor)
 
         url = servertools.normalize_url(servidor, url)
+
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(url).lower()
+            if not new_server.startswith("http"): servidor = new_server
 
         itemlist.append(item.clone(url = url, server = servidor))
 

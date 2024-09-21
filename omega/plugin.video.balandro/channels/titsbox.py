@@ -1,16 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import sys
-
-PY3 = False
-if sys.version_info[0] >= 3: PY3 = True
-
-if PY3:
-    import urllib.parse as urlparse
-else:
-    import urlparse
-
-
 import re
 
 from platformcode import config, logger
@@ -43,12 +32,15 @@ def mainlist_pelis(item):
         from modules import actions
         if actions.adults_password(item) == False: return
 
+    # ~ itemlist.append(item.clone( title = 'Buscar vídeo ...', action = 'search', search_type = 'movie', text_color = 'orange' ))
+
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = url_api + 'most-recent&page=1' ))
 
-    itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = url_api + 'long&page=1' ))
     itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = url_api + 'top-rated&page=1' ))
 
-    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url = host ))
+    itemlist.append(item.clone( title = 'Long Play', action = 'list_all', url = url_api + 'long&page=1' ))
+
+    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias' ))
 
     return itemlist
 
@@ -57,7 +49,7 @@ def categorias(item):
     logger.info()
     itemlist = []
 
-    data = do_downloadpage(item.url)
+    data = do_downloadpage(host)
 
     data = scrapertools.find_single_match(data, '<ul class="sidebar-nav">(.*?)</ul>')
     data = re.sub(r"\n|\r|\t|&nbsp;|<br>|<br/>", "", data)
@@ -65,8 +57,7 @@ def categorias(item):
     matches = re.compile('<a class="category-item" href="([^"]+)">([^"]+)</a>', re.DOTALL).findall(data)
 
     for url, title in matches:
-        url = urlparse.urljoin(item.url, url)
-        url = url + '?ajax=1&type=most-recent&page=1'
+        url = host[:-1] + url + '?ajax=1&type=most-recent&page=1'
 
         itemlist.append(item.clone (action='list_all', title=title, url=url, text_color = 'orange' ))
 
@@ -82,24 +73,26 @@ def list_all(item):
 
     jdata = jsontools.load(data)
 
-    for video in jdata["data"]:
-        domain = ''
+    try:
+        for video in jdata["data"]:
+            domain = ''
 
-        duration = video["duration"]
+            duration = video["duration"]
 
-        title = video["videoTitle"]
+            title = video["videoTitle"]
 
-        titulo = "[COLOR tan]%s[/COLOR] %s" % (duration, title)
+            src = video["src"]
 
-        src = video["src"]
-        thumb = src.get('domain', domain) + src.get('pathMedium', domain)+"1.jpg"
+            thumb = src.get('domain', domain) + src.get('pathMedium', domain) + "1.jpg"
 
-        url = video["urls_CDN"]
-        url = url.get('480', domain)
+            url = video["urls_CDN"]
+ 
+            titulo = "[COLOR tan]%s[/COLOR] %s" % (duration, title)
 
-        url = url.replace("/\n/", "/")
-
-        itemlist.append(item.clone (action='findvideos', title=titulo, url=url, thumbnail=thumb, contentType = 'movie', contentTitle = title, contentExtra='adults') )
+            itemlist.append(item.clone (action='findvideos', title=titulo, url=url, domain=domain, thumbnail=thumb,
+                                        contentType = 'movie', contentTitle = title, contentExtra='adults') )
+    except:
+        pass
 
     if itemlist:
         actual = int(scrapertools.find_single_match(item.url, '&page=([0-9]+)'))
@@ -116,7 +109,15 @@ def findvideos(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(Item( channel = item.channel, action='play', title='', url=item.url, server = 'directo', language = 'Vo') )
+    if '480' in str(item.url):
+        url = item.url.get('480', item.domain)
+
+        itemlist.append(Item( channel = item.channel, action='play', title='', url=url, server = 'directo', language = 'Vo', other = '480') )
+
+    if '360' in str(item.url):
+        url = item.url.get('360', item.domain)
+
+        itemlist.append(Item( channel = item.channel, action='play', title='', url=url, server = 'directo', language = 'Vo', other = '360') )
 
     return itemlist
 
@@ -124,7 +125,7 @@ def findvideos(item):
 def search(item, texto):
     logger.info()
     try:
-        item.url =  host + texto.replace(" ", "+")
+        item.url = host + texto.replace(" ", "+")
         return list_all(item)
     except:
         import sys

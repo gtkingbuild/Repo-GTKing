@@ -11,7 +11,7 @@
   "categories": ["tvshow"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["anime"],
+  "clusters": ["notice", "anime"],
 
-  "notes": "Web dedicada exclusivamente al anime"
+  "notes": "Web dedicada exclusivamente al anime. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

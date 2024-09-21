@@ -11,7 +11,7 @@
   "categories": ["movie", "tvshow"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["current", "notice", "news", "rankings", "languages", "years", "lasts", "producers", "kids", "docs", "vos", "anime"],
+  "clusters": ["news", "rankings", "languages", "years", "lasts", "producers", "kids", "docs", "vos", "anime"],
 
-  "notes": "Web ANULADA. Películas por géneros, año, idioma. Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Web ANULADA. Películas por géneros. Series por Géneros."
 }

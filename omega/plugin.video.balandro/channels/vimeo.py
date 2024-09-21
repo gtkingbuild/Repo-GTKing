@@ -100,6 +100,8 @@ def list_search(item):
 
         itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, contentType='movie', contentTitle=title, contentExtra='documentary' ))
 
+    # ~ solo tomamos una pagina 
+
     return itemlist
 
 

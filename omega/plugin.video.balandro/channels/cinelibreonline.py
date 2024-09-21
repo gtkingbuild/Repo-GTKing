@@ -360,11 +360,21 @@ def play(item):
 
     if item.server == 'directo':
         data = do_downloadpage(url)
+
         url = scrapertools.find_single_match(data, '<source src="(.*?)"')
         if url.startswith('//'): url = 'https:' + url
 
     if url:
-        itemlist.append(item.clone(url = url, server = item.server))
+        servidor = servertools.get_server_from_url(url)
+        servidor = servertools.corregir_servidor(servidor)
+
+        url = servertools.normalize_url(servidor, url)
+
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(url).lower()
+            if not new_server.startswith("http"): servidor = new_server
+
+        itemlist.append(item.clone(url = url, server = servidor))
 
     return itemlist
 

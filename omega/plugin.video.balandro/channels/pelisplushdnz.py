@@ -7,12 +7,12 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-host = 'https://pelisplushd.run/'
+host = 'https://pelisplushd.bz/'
 
 
 # ~ por si viene de enlaces guardados
-ant_hosts = ['https://pelisplushd.cx/', 'https://pelisplushd.nz/', 'https://ww3.pelisplushd.nz/',
-             'https://pelisplushd.top/', 'https://pelisplushd.rip/']
+ant_hosts = ['https://pelisplushd.cx/', 'https://ww3.pelisplushd.nz/', 'https://pelisplushd.top/',
+             'https://pelisplushd.rip/', 'https://pelisplushd.run/', 'https://pelisplushd.nz/']
 
 
 domain = config.get_setting('dominio', 'pelisplushdnz', default='')
@@ -134,7 +134,8 @@ def mainlist(item):
     if not config.get_setting('descartar_anime', default=False):
        itemlist.append(item.clone( title = 'Animes', action = 'mainlist_animes', text_color = 'springgreen' ))
 
-    itemlist.append(item.clone( title = 'Doramas', action = 'mainlist_series', text_color = 'firebrick' ))
+    if config.get_setting('mnu_doramas', default=False):
+        itemlist.append(item.clone( title = 'Doramas', action = 'mainlist_series', text_color = 'firebrick' ))
 
     return itemlist
 
@@ -168,7 +169,8 @@ def mainlist_series(item):
     if not config.get_setting('descartar_anime', default=False):
         itemlist.append(item.clone( title = 'Animes', action = 'mainlist_animes', search_type = 'tvshow', text_color = 'springgreen' ))
 
-    itemlist.append(item.clone( title = 'Doramas', action = 'list_all', url = host + 'generos/dorama/series?page=', search_type = 'tvshow', text_color = 'firebrick' ))
+    if config.get_setting('mnu_doramas', default=False):
+        itemlist.append(item.clone( title = 'Doramas', action = 'list_all', url = host + 'generos/dorama/series?page=', search_type = 'tvshow', text_color = 'firebrick' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'tvshow' ))
@@ -288,25 +290,39 @@ def list_all(item):
             if ' (' in title: title = title.replace(' (' + year + ')', '').strip()
             elif ' [' in title: title = title.replace(' [' + year + ']', '').strip()
 
+        if '/year/' in item.url:
+            year = scrapertools.find_single_match(item.url, "/year/(.*?)$")
+            if year: year = scrapertools.find_single_match(year, "(.*?)page=")
+
+            year = year.replace('?', '')
+
+        if not year: year = '-'
+
         title = title.replace("&#039;", "'")
 
         if '/pelicula/' in url:
             if item.search_type == 'tvshow': continue
 
-            itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, contentType = 'movie', contentTitle = title, infoLabels = {'year': year} ))
+            itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb,
+                                        contentType = 'movie', contentTitle = title, infoLabels = {'year': year} ))
         else:
             if item.search_type == 'movie': continue
 
             if item.group == 'animes':
                 if not '/anime/' in url: continue
 
-            itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb, contentType = 'tvshow', contentSerieName = title, infoLabels={'year': year} ))
+            itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb,
+                                        contentType = 'tvshow', contentSerieName = title, infoLabels={'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
-        if len(itemlist) == 24:
-            itemlist.append(item.clone (url = item.url, page = item.page + 1, title = 'Siguientes ...', action = 'list_all', text_color='coral' ))
+        if '<ul class="pagination' in data:
+            next_page = scrapertools.find_single_match(data, '<ul class="pagination.*?<li class="page-item active".*?<a class="page-link" href="(.*?)"')
+
+            if next_page:
+                if 'page=' in next_page:
+                    itemlist.append(item.clone( title = 'Siguientes ...', url = next_page, action = 'list_all', text_color='coral' ))
 
     return itemlist
 
@@ -484,9 +500,9 @@ def findvideos(item):
         if srv == 'moe':
             data2 = do_downloadpage(url)
 
-            matches2 = scrapertools.find_multiple_matches(data2, '<li onclick="' + "go_to_player.*?'(.*?)'.*?<span>(.*?)</span>")
+            matches2 = scrapertools.find_multiple_matches(data2, '<li onclick="' + "go_to_player.*?'(.*?)'.*?" + 'data-lang="(.*?)".*?<span>(.*?)</span>')
 
-            for link, srv2 in matches2:
+            for link, lng, srv2 in matches2:
                 srv2 = srv2.lower()
 
                 if srv2 == '1fichier': continue
@@ -503,6 +519,9 @@ def findvideos(item):
                     link = 'https://uptobox.com/' + link
 
                 servidor = servertools.get_server_from_url(link)
+
+                if lng == '1': lang = 'Esp'
+                elif lng == '2': lang = 'Vose'
 
                 other = ''
 
@@ -530,9 +549,12 @@ def findvideos(item):
                     servidor = 'directo'
                     other = 'plusvip'
 
+                if 'plustream' in link: other = 'plustream'
+
                 if servidor == 'various': other = servertools.corregir_other(link)
 
-                itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = link, language = IDIOMAS.get(lang, lang), other = other.capitalize() ))
+                itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = link,
+                                      language = IDIOMAS.get(lang, lang), other = other.capitalize() ))
 
             continue
 
@@ -556,7 +578,10 @@ def findvideos(item):
 
             if link_other == '1fichier': continue
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = url, language = IDIOMAS.get(lang, lang), other = link_other ))
+            if 'plustream' in url: link_other = 'plustream'
+
+        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = url,
+	                          language = IDIOMAS.get(lang, lang), other = link_other.capitalize() ))
 
     if not itemlist:
         if not ses == 0:
@@ -572,12 +597,21 @@ def play(item):
 
     url = item.url
 
+    if '/streamsito.com/uqlink.php?id=' in url: url = url.replace('/streamsito.com/uqlink.php?id=', '/uqload.com/embed-')
+
     servidor = servertools.get_server_from_url(url)
     servidor = servertools.corregir_servidor(servidor)
 
     url = servertools.normalize_url(servidor, url)
 
+    if '/plustream.' in url:
+        return 'Servidor [COLOR goldenrod]No Soportado[/COLOR]'
+
     if servidor == 'zplayer': url = url + '|Referer=' + host
+
+    if servidor == 'directo':
+        new_server = servertools.corregir_other(url).lower()
+        if not new_server.startswith("http"): servidor = new_server
 
     itemlist.append(item.clone( url = url, server = servidor ))
 
@@ -635,6 +669,18 @@ def list_search(item):
             itemlist.append(item.clone( action='temporadas', url=url, title=title, thumbnail=thumb, fmt_sufijo=sufijo, contentType = 'tvshow', contentSerieName = title, infoLabels={'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
+
+    if itemlist:
+        if '<ul class="pagination' in data:
+            next_page = scrapertools.find_single_match(data, '<ul class="pagination.*?<li class="page-item active".*?<a class="page-link" href="(.*?)"')
+
+            if next_page:
+                if 'page=' in next_page:
+                    next_page = next_page.replace('&amp;', '&')
+
+                    next_page = host[:-1] + '/' + next_page
+
+                    itemlist.append(item.clone( title = 'Siguientes ...', url = next_page, action = 'list_search', text_color='coral' ))
 
     return itemlist
 

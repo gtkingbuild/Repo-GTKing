@@ -7,10 +7,12 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-host = 'https://gnula.nu/'
+host = 'https://gnulahd.nu/'
 
 
-url_estrenos = host + 'peliculas-de-estreno/lista-de-peliculas-online-parte-1/'
+_player = '.gnulahd.'
+
+url_recientes = host + 'peliculas-de-estreno/lista-de-peliculas-online-parte-1/'
 
 url_recomendadas = host + 'peliculas/lista-de-peliculas-recomendadas/'
 
@@ -53,19 +55,21 @@ def configurar_proxies(item):
 
 def do_downloadpage(url, post=None):
     # ~ por si viene de enlaces guardados
-    ant_hosts = ['http://gnula.nu/']
+    ant_hosts = ['http://gnula.nu/', 'https://gnula.nu/']
 
     for ant in ant_hosts:
         url = url.replace(ant, host)
+
+    url = url.replace('http://', 'https://')
 
     hay_proxies = False
     if config.get_setting('channel_gnula_proxies', default=''): hay_proxies = True
 
     timeout = None
-    if host in url:
+    if host in url or _player in url:
         if hay_proxies: timeout = config.get_setting('channels_repeat', default=30)
 
-    if not url.startswith(host):
+    if not url.startswith(host) and not _player in url:
         data = httptools.downloadpage(url, post=post, timeout=timeout).data
     else:
         if hay_proxies:
@@ -73,8 +77,8 @@ def do_downloadpage(url, post=None):
         else:
             data = httptools.downloadpage(url, post=post, timeout=timeout).data
 
-        if not data:
-            if '/lista-' in url or '/ver-' in url or '/generos/' in url:
+        if data:
+            if not host in data and not _player in data:
                 if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('Gnula', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
 
                 timeout = config.get_setting('channels_repeat', default=30)
@@ -83,6 +87,32 @@ def do_downloadpage(url, post=None):
                     data = httptools.downloadpage_proxy('gnula', url, post=post, timeout=timeout).data
                 else:
                     data = httptools.downloadpage(url, post=post, timeout=timeout).data
+
+            if not host in data and not _player in data: data = ''
+
+        if not data:
+            if '/lista-' in url or '/ver-' in url or '/generos/' in url or '/peliculas-de-estreno/' in url or '/lista-de-peliculas-recomendadas/' in url or _player in url:
+                if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('Gnula', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+
+                timeout = config.get_setting('channels_repeat', default=30)
+
+                if hay_proxies:
+                    data = httptools.downloadpage_proxy('gnula', url, post=post, timeout=timeout).data
+                else:
+                    data = httptools.downloadpage(url, post=post, timeout=timeout).data
+
+    if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data or '<title>Just a moment please...</title>' in data:
+        if not url.startswith(host) and not _player in url:
+            data = httptools.downloadpage(url, post=post, timeout=timeout).data
+        else:
+            if hay_proxies:
+                data = httptools.downloadpage_proxy('gnula', url, post=post, timeout=timeout).data
+            else:
+                data = httptools.downloadpage(url, post=post, timeout=timeout).data
+
+    if '<title>Just a moment...</title>' in data or '<title>Just a moment please...</title>' in data:
+        platformtools.dialog_notification(config.__addon_name, '[COLOR cyan][B]Gnula [COLOR red]CloudFlare[COLOR orangered] Protection[/B][/COLOR]')
+        return ''
 
     return data
 
@@ -95,6 +125,8 @@ def acciones(item):
                                 from_channel='gnula', folder=False, text_color='chartreuse' ))
 
     itemlist.append(item_configurar_proxies(item))
+
+    itemlist.append(Item( channel='helper', action='show_help_gnula', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('gnula') ))
 
     platformtools.itemlist_refresh()
 
@@ -112,12 +144,11 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
 
-    itemlist.append(item.clone( title = 'Últimas', action = 'list_last', url = host, group = 'estrenos', text_color = 'moccasin' ))
+    itemlist.append(item.clone( title = 'Estrenos', action = 'list_last', url = host, group = 'estrenos', text_color = 'cyan' ))
     itemlist.append(item.clone( title = 'Novedades', action = 'list_last', url = host, group = 'novedades' ))
     itemlist.append(item.clone( title = 'Más vistas', action = 'list_last', url = host, group = 'recomendadas' ))
 
-    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = url_estrenos, text_color='cyan' ))
-
+    itemlist.append(item.clone( title = 'Recientes', action = 'list_all', url = url_recientes ))
     itemlist.append(item.clone( title = 'Recomendadas', action = 'list_all', url = url_recomendadas ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
@@ -162,7 +193,7 @@ def idiomas(item):
     for lg, num in prefs:
         if num == 0: continue
 
-        itemlist.append(item.clone( title = '%s estrenos' % idio[lg][0], action = 'list_all', url = url_estrenos, filtro_lang = idio[lg][1], text_color='moccasin' ))
+        itemlist.append(item.clone( title = '%s recientes' % idio[lg][0], action = 'list_all', url = url_recientes, filtro_lang = idio[lg][1], text_color='moccasin' ))
         itemlist.append(item.clone( title = '%s recomendadas' % idio[lg][0], action = 'list_all', url = url_recomendadas, filtro_lang = idio[lg][1], text_color='moccasin' ))
 
     return itemlist
@@ -177,7 +208,8 @@ def list_all(item):
     data = do_downloadpage(item.url)
 
     patron  = '<a class="Ntooltip" href="([^"]+)">([^<]+)<span><br[^<]+'
-    patron += '<img src="([^"]+)"></span></a>(.*?)<br'
+    patron += '<img.*?src="([^"]+)"></span></a>(.*?)<br'
+
     matches = re.compile(patron, re.DOTALL).findall(data)
 
     # ~ reducir lista según idioma
@@ -208,22 +240,23 @@ def list_all(item):
 
     for url, title, thumb, resto in list(matches)[item.page * perpage:]:
         year = scrapertools.find_single_match(url, '-(\d+)-online/$')
+
         spans = scrapertools.find_multiple_matches(resto, '<span style="[^"]+">([^<]+)</span>')
 
         langs = []
-        quality = ''
+        qltys = ''
 
         for span in spans:
             if span.startswith('(') and span.endswith(')'):
                 lg = span[1:-1]
                 langs.append(IDIOMAS.get(lg, lg))
             elif len(langs) > 0:
-                quality = span
+                qltys = span
                 break
 
         title = title.replace('&#8217;', "'")
 
-        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, languages=', '.join(langs), qualities=quality,
+        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, languages=', '.join(langs), qualities=qltys,
                                     contentType='movie', contentTitle=title, infoLabels={'year': year} ))
 
         if len(itemlist) >= perpage: break
@@ -288,19 +321,24 @@ def findvideos(item):
     matches = re.compile('<em>([^<]+)</em></p>(.*?)<table[^>]*>(.*?)</table>', re.DOTALL).findall(data)
 
     if len(matches) == 0:
-        patron = '<strong>Ver película online</strong> \[<span style="[^"]*">([^<]+)</span>\](.*?)<table[^>]*>(.*?)</table>'
-        matches = re.compile(patron, re.DOTALL).findall(data)
+        matches = re.compile('<strong>Ver película online</strong> \[<span style="[^"]*">([^<]+)</span>\](.*?)<table[^>]*>(.*?)</table>', re.DOTALL).findall(data)
 
+    ses = 0
+
+    # ~ players
     for opcion, iframes, tabla in matches:
+        ses += 1
+
         opcs = opcion.split(',')
+
         lang = opcs[1].strip().lower()
-        quality = opcs[2].strip().upper()
+        qlty = opcs[2].strip().upper()
 
         links = re.compile('<iframe width="[^"]+" height="[^"]+" src="([^"]+)', re.DOTALL).findall(iframes)
         if not links: links = re.compile('<iframe src="([^"]+)', re.DOTALL).findall(iframes)
 
         for url in links:
-            if url.endswith('/soon') or url.startswith('http://soon.'): continue
+            if url.endswith('/soon') or url.startswith('//soon.'): continue
 
             servidor = servertools.get_server_from_url(url)
             servidor = servertools.corregir_servidor(servidor)
@@ -310,17 +348,42 @@ def findvideos(item):
             else:
                 if not config.get_setting('developer_mode', default=False): continue
 
-            itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = servidor, language = IDIOMAS.get(lang, lang), quality = quality ))
+            other = servidor
 
-        links = re.compile('<a href="([^"]+)', re.DOTALL).findall(tabla)
+            if other == 'powvideo': continue
+            elif other == 'streamplay': continue
+            elif other == 'streamango': continue
+            elif other == 'streamcloud': continue
+            elif other == 'openload': continue
+            elif other == 'rapidvideo': continue
 
-        for url in links:
-            if url.endswith('/soon') or url.startswith('http://soon.'): continue
+            if servidor == 'various': other = servertools.corregir_other(url)
 
-            servidor = servertools.get_server_from_url(url, disabled_servers=True)
+            if servidor == other: other = ''
 
-            if servidor is None: continue
+            lng = IDIOMAS.get(lang, lang)
 
+            itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = servidor,
+                                  language = lng, quality = qlty, quality_num = puntuar_calidad(qlty), other = other ))
+
+        links = re.compile('<a href="(.*?)".*?<span class="(.*?)"', re.DOTALL).findall(tabla)
+
+        for url, srv in links:
+            if url.endswith('/soon') or url.startswith('//soon.'): continue
+
+            srv = srv.strip().lower()
+
+            if srv == 'powvideo': continue
+            elif srv == 'streamplay': continue
+            elif srv == 'streamango': continue
+            elif srv == 'streamcloud': continue
+            elif srv == 'openload': continue
+            elif srv == 'rapidvideo': continue
+
+            elif srv == 'uploaded': continue
+            elif srv == 'tele': continue
+
+            servidor = servertools.get_server_from_url(url)
             servidor = servertools.corregir_servidor(servidor)
 
             if servertools.is_server_available(servidor):
@@ -328,52 +391,272 @@ def findvideos(item):
             else:
                 if not config.get_setting('developer_mode', default=False): continue
 
+            other = servidor
+
+            if srv: other = srv
+
+            if servidor == 'various': other = servertools.corregir_other(url)
+
+            if servidor == other: other = ''
+
+            lng = IDIOMAS.get(lang, lang)
+
             itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = servidor,
-                                  language = IDIOMAS.get(lang, lang), quality = quality, quality_num = puntuar_calidad(quality) ))
+                                  language = lng, quality = qlty, quality_num = puntuar_calidad(qlty), other = other ))
+
+    # ~ downloads
+        bloque = scrapertools.find_single_match(data, '>Online/Descarga<(.*?)</table>')
+
+        links = re.compile('<a href="(.*?)"', re.DOTALL).findall(bloque)
+
+        for url in links:
+            if url.endswith('/soon') or url.startswith('//soon.'): continue
+
+            elif '/powvideo.' in url: continue
+            elif '/streamplay' in url: continue
+            elif '/streamango.' in url: continue
+            elif '/streamcloud.' in url: continue
+            elif '/openload.'in url: continue
+            elif '/rapidvideo.' in url: continue
+
+            elif '/1fichier.' in url: continue
+            elif '/ul.' in url: continue
+
+            servidor = servertools.get_server_from_url(url)
+            servidor = servertools.corregir_servidor(servidor)
+
+            if servertools.is_server_available(servidor):
+                if not servertools.is_server_enabled(servidor): continue
+            else:
+                if not config.get_setting('developer_mode', default=False): continue
+
+            other = servidor
+
+            if servidor == 'various': other = servertools.corregir_other(url)
+
+            if servidor == other: other = ''
+
+            if servidor == 'directo':
+                if not '/enlace.php?u=' in url: continue
+
+                urls = re.compile('<a href="(.*?)"', re.DOTALL).findall(bloque)
+                others = re.compile('<span class="(.*?)"', re.DOTALL).findall(bloque)
+
+                if not others: continue
+
+                other = ''
+
+                i = 0
+
+                for enlace in urls:
+                    if not url in enlace:
+                        i += 1
+                        continue
+
+                    try: other = others[i]
+                    except: pass
+                    break
+
+                if not other: continue
+
+                elif other == 'powvideo': continue
+                elif other == 'streamplay': continue
+                elif other == 'streamango': continue
+                elif other == 'streamcloud': continue
+                elif other == 'openload': continue
+                elif other == 'rapidvideo': continue
+
+                elif other == 'uploaded': continue
+
+            itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = servidor, other = other ))
+
+    # ~ others
+        bloque = scrapertools.find_single_match(data, '>Online/Descarga<(.*?)</table>')
+
+        links = re.compile('src="(.*?)"', re.DOTALL).findall(bloque)
+
+        for url in links:
+            if not '/player/?id=' in url: continue
+
+            itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = '' ))
+
+    # ~ embeds
+    if not matches:
+        bloque = scrapertools.find_single_match(data, '<strong>Ver película online</strong>(.*?)<strong>Reportar<')
+
+        matches = re.compile('<iframe.*?src="(.*?)"', re.DOTALL).findall(bloque)
+
+        for embed in matches:
+            ses += 1
+
+            data = do_downloadpage(embed)
+
+            lang = ''
+            if 'vose' in data: lang = 'Vose'
+            elif 'latino' in data: lang = 'Lat'
+            elif 'castellano' in data: lang = 'Esp'
+
+            block = scrapertools.find_single_match(data, 'var videos =(.*?)</script>')
+
+            matches = scrapertools.find_multiple_matches(str(block), '".*?","(.*?)"')
+
+            for url in matches:
+                url = url.replace('\\/', '/')
+
+                servidor = servertools.get_server_from_url(url)
+                servidor = servertools.corregir_servidor(servidor)
+
+                if servertools.is_server_available(servidor):
+                    if not servertools.is_server_enabled(servidor): continue
+                else:
+                    if not config.get_setting('developer_mode', default=False): continue
+
+                other = servidor
+
+                if servidor == 'various': other = servertools.corregir_other(url)
+
+                if servidor == other: other = ''
+
+                itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = servidor, language = lang, other = other ))
+
+            matches = scrapertools.find_multiple_matches(data, '<a rel="nofollow".*?href="(.*?)"')
+
+            for url in matches:
+                if '/powvideo.' in url: continue
+                elif '/streamplay' in url: continue
+                elif '/streamango.' in url: continue
+                elif '/streamcloud.' in url: continue
+                elif '/openload.'in url: continue
+                elif '/rapidvideo.' in url: continue
+
+                elif '/1fichier.' in url: continue
+                elif '/ul.' in url: continue
+
+                servidor = servertools.get_server_from_url(url)
+                servidor = servertools.corregir_servidor(servidor)
+
+                if servertools.is_server_available(servidor):
+                    if not servertools.is_server_enabled(servidor): continue
+                else:
+                    if not config.get_setting('developer_mode', default=False): continue
+
+                other = servidor
+
+                if servidor == 'various': other = servertools.corregir_other(url)
+
+                if servidor == other: other = ''
+
+                itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = servidor, language = lang, other = other ))
+
+    if not itemlist:
+        if not ses == 0:
+            platformtools.dialog_notification(config.__addon_name, '[COLOR tan][B]Sin enlaces Soportados[/B][/COLOR]')
+            return
+
+    return itemlist
+
+
+def play(item):
+    logger.info()
+    itemlist = []
+
+    url = item.url
+
+    url = url.replace('http://', 'https://')
+
+    if '/soon' in url: url = ''
+    elif '/powvideo.' in url: url = ''
+    elif '/1fichier.' in url: url = ''
+    elif '/ul.' in url: url = ''
+    elif '/bembed.' in url: url = ''
+
+    if item.server == 'directo':
+        if url:
+            try:
+                if config.get_setting('channel_gnula_proxies', default=''):
+                    url = httptools.downloadpage_proxy('gnula', url, follow_redirects=False).headers['location']
+                else:
+                    url = httptools.downloadpage(url, follow_redirects=False).headers['location']
+            except:
+                url = ''
+
+    elif not item.server:
+        data = do_downloadpage(url)
+
+        url = scrapertools.find_single_match(data, "var url = '(.*?)'")
+
+    if url:
+        if '/soon' in url: url = ''
+        elif '/powvideo.' in url: url = ''
+        elif '/1fichier.' in url: url = ''
+        elif '/ul.' in url: url = ''
+        elif '/bembed.' in url: url = ''
+
+    if url:
+        servidor = servertools.get_server_from_url(url)
+        servidor = servertools.corregir_servidor(servidor)
+
+        url = servertools.normalize_url(servidor, url)
+
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(url).lower()
+            if not new_server.startswith("http"): servidor = new_server
+
+        itemlist.append(item.clone(server = servidor, url = url))
 
     return itemlist
 
 
 def search(item, texto):
-    # ~ No hay buscador propio en la web, usan el buscador genérico de google en su site.
+    # ~ No hay buscador propio en la web, usan el buscador genérico de google.
 
     logger.info()
     itemlist2 = []
     itemlist3 = []
     itemlist4 = []
+    itemlist5 = []
 
     try:
         item.filtro_search = texto
 
-        item.url = url_estrenos
-        itemlist = list_all(item)
+        item.url = host
+        item.group = 'estrenos'
+        itemlist = list_last(item)
 
         if not itemlist:
             if not config.get_setting('channel_gnula_proxies', default=''):
-               item.url = host
-               item.group = 'estrenos'
-               itemlist2 = list_last(item)
+                item.url = host
+                item.group = 'novedades'
+                itemlist2 = list_last(item)
 
-               for it2 in itemlist2:
-                   if it2.url not in [it.url for it in itemlist]:
-                       itemlist.append(it2)
+                for it2 in itemlist2:
+                    if it2.url not in [it.url for it in itemlist]:
+                        itemlist.append(it2)
 
-               if not itemlist2:
-                   item.url = host
-                   item.group = 'novedades'
-                   itemlist3 = list_last(item)
+                if not itemlist2:
+                    item.url = host
+                    item.group = 'recomendadas'
+                    itemlist3 = list_last(item)
 
-                   for it3 in itemlist3:
-                       if it3.url not in [it.url for it in itemlist]:
-                           itemlist.append(it3)
+                    for it3 in itemlist3:
+                        if it3.url not in [it.url for it in itemlist]:
+                            itemlist.append(it3)
 
-               if not itemlist2 and not itemlist3:
-                   item.url = url_recomendadas
-                   itemlist4 = list_all(item)
+                    if not itemlist3:
+                        item.url = url_recomendadas
+                        itemlist4 = list_all(item)
 
-                   for it4 in itemlist4:
-                       if it4.url not in [it.url for it in itemlist]:
-                           itemlist.append(it4)
+                        for it4 in itemlist4:
+                            if it4.url not in [it.url for it in itemlist]:
+                                itemlist.append(it4)
+
+                        if not itemlist4:
+                            item.url = url_recientes
+                            itemlist5 = list_all(item)
+
+                            for it5 in itemlist5:
+                                if it5.url not in [it.url for it in itemlist]:
+                                    itemlist.append(it5)
 
         return itemlist
 

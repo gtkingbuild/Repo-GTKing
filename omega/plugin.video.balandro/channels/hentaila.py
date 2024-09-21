@@ -37,12 +37,12 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Sin censura', action = 'list_all', url = host + 'directorio?uncensored=on' ))
 
-    itemlist.append(item.clone( title = 'Por género', action = 'generos' ))
+    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias' ))
 
     return itemlist
 
 
-def generos(item):
+def categorias(item):
     logger.info()
     itemlist = []
 

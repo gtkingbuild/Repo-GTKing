@@ -41,6 +41,7 @@ def get_video_url(page_url, url_referer=''):
             if platformtools.is_mpd_enabled():
                 video_urls.append([lbl, url + '|Referer=https://upstream.to/', 0, '', True])
         else:
+            if not 'http' in url: url = 'https://upstream.to' + url
             video_urls.append([lbl, url + '|Referer=https://upstream.to/'])
 
     if len(video_urls) == 0:

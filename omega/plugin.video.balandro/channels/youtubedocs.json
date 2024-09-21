@@ -1,0 +1,17 @@
+{
+  "id": "youtubedocs",
+  "name": "YouTubeDocs",
+  "thumbnail": "youtubedocs.jpg",
+
+  "active": true,
+
+  "searchable": false,
+  "search_types": ["documentary"],
+
+  "categories": ["documentary"],
+  "language": ["cast"],
+
+  "clusters": ["onlyone", "docs"],
+
+  "notes": "Documentales en castellano."
+}

@@ -28,7 +28,10 @@ def do_downloadpage(url, post=None, headers=None):
     for ant in ant_hosts:
         url = url.replace(ant, host)
 
-    data = httptools.downloadpage(url, post=post).data
+    raise_weberror = True
+    if '/estreno/' in url: raise_weberror = False
+
+    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
 
     return data
 
@@ -162,7 +165,7 @@ def anios(item):
     current_year = int(datetime.today().year)
 
     for x in range(current_year, 1959, -1):
-        itemlist.append(item.clone( title=str(x), url= host + 'estreno/' + str(x) + '/', action='list_all', any = str(x), text_color = 'deepskyblue' ))
+        itemlist.append(item.clone( title=str(x), url=host + 'estreno/' + str(x) + '/', action='list_all', any = str(x), text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -213,6 +216,9 @@ def list_all(item):
                    if lng == 'Voi': lng = 'Vo'
                    lngs.append(lng)
 
+        year = '-'
+        if '/estreno/' in item.url: year = scrapertools.find_single_match(item.url, "/estreno/(.*?)/")
+
         tipo = 'movie' if '/peliculas/' in url else 'tvshow'
         sufijo = '' if item.search_type != 'all' else tipo
 
@@ -224,7 +230,7 @@ def list_all(item):
 
             itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb,
                                         qualities=qlty, languages = ', '.join(lngs), fmt_sufijo=sufijo,
-                                        contentType='movie', contentTitle=title, infoLabels={'year': "-"} ))
+                                        contentType='movie', contentTitle=title, infoLabels={'year': year} ))
 
         if tipo == 'tvshow':
             if not item.search_type == 'all':
@@ -239,7 +245,7 @@ def list_all(item):
 
             itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb,
                                         qualities=qlty, languages = ', '.join(lngs), fmt_sufijo=sufijo,
-                                        contentSerieName = SerieName, contentType = 'tvshow', infoLabels={'year': "-"} ))
+                                        contentSerieName = SerieName, contentType = 'tvshow', infoLabels={'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 

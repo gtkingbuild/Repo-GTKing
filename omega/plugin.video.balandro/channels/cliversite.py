@@ -99,16 +99,19 @@ def do_downloadpage(url, post=None, headers=None):
     for ant in ant_hosts:
         url = url.replace(ant, host)
 
+    raise_weberror = True
+    if '/anio/' in url: raise_weberror = False
+
     hay_proxies = False
     if config.get_setting('channel_cliversite_proxies', default=''): hay_proxies = True
 
     if not url.startswith(host):
-        data = httptools.downloadpage(url, post=post, headers=headers).data
+        data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
     else:
         if hay_proxies:
-            data = httptools.downloadpage_proxy('cliversite', url, post=post, headers=headers).data
+            data = httptools.downloadpage_proxy('cliversite', url, post=post, headers=headers, raise_weberror=raise_weberror).data
         else:
-            data = httptools.downloadpage(url, post=post, headers=headers).data
+            data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
 
     if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
         if BR or BR2:
@@ -121,9 +124,9 @@ def do_downloadpage(url, post=None, headers=None):
                     data = httptools.downloadpage(url, post=post, headers=headers).data
                 else:
                     if hay_proxies:
-                        data = httptools.downloadpage_proxy('cliversite', url, post=post, headers=headers).data
+                        data = httptools.downloadpage_proxy('cliversite', url, post=post, headers=headers, raise_weberror=raise_weberror).data
                     else:
-                        data = httptools.downloadpage(url, post=post, headers=headers).data
+                        data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
             except:
                 pass
 
@@ -300,8 +303,17 @@ def list_all(item):
         url = host + url
 
         thumb = scrapertools.find_single_match(article, ' src="([^"]+)"')
+
         year = scrapertools.find_single_match(article, '<span>(\d{4})')
         if not year: year = '-'
+
+        if '/anio/' in item.url:
+            year = scrapertools.find_single_match(item.url, "/anio/(.*?)tipo=")
+            if not year: year = scrapertools.find_single_match(item.url, "/anio/(.*?)page=")
+            if not year: year = scrapertools.find_single_match(item.url, "/anio/(.*?)$")
+
+            year = year.replace('?', '').replace('&', '')
+            if not year: year = '-'
 
         tipo = 'movie' if '/pelicula/' in url else 'tvshow'
         sufijo = '' if item.search_type != 'all' else tipo
@@ -761,6 +773,18 @@ def play(item):
     if url:
         if '/clonamesta' in url:
             return 'Requiere verificación [COLOR red]reCAPTCHA[/COLOR]'
+
+        elif '/plustream.' in url:
+            return 'Servidor [COLOR goldenrod]No Soportado[/COLOR]'
+
+        servidor = servertools.get_server_from_url(url)
+        servidor = servertools.corregir_servidor(servidor)
+
+        url = servertools.normalize_url(servidor, url)
+
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(url).lower()
+            if not new_server.startswith("http"): servidor = new_server
 
         itemlist.append(item.clone(url = url, server = servidor))
 

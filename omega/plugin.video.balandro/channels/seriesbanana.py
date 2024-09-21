@@ -5,10 +5,16 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-host = 'https://seriesbanana.com/'
+host = 'https://www3.seriesbanana.com/'
 
 
 def do_downloadpage(url, post=None, headers=None):
+    # ~ por si viene de enlaces guardados
+    ant_hosts = ['https://seriesbanana.com/']
+
+    for ant in ant_hosts:
+        url = url.replace(ant, host)
+
     headers = {'Referer': host}
 
     data = httptools.downloadpage(url, post=post, headers=headers).data
@@ -92,7 +98,7 @@ def temporadas(item):
         title = 'Temporada ' + season
 
         if len(matches) == 1:
-            if not config.get_setting('channels_seasons', default=True):
+            if config.get_setting('channels_seasons', default=True):
                 platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
 
             item.page = 0
@@ -258,12 +264,20 @@ def play(item):
             servidor = servertools.get_server_from_url(new_url)
             servidor = servertools.corregir_servidor(servidor)
 
+            if servidor == 'directo':
+                new_server = servertools.corregir_other(new_url).lower()
+                if not new_server.startswith("http"): servidor = new_server
+
             itemlist.append(item.clone(url = new_url, server = servidor))
 
             return itemlist
 
     servidor = servertools.get_server_from_url(url)
     servidor = servertools.corregir_servidor(servidor)
+
+    if servidor == 'directo':
+        new_server = servertools.corregir_other(url).lower()
+        if not new_server.startswith("http"): servidor = new_server
 
     itemlist.append(item.clone(url = url, server = servidor))
 

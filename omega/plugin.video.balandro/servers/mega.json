@@ -32,7 +32,15 @@
         "url": "https://mega.nz/#!\\1!\\2"
       },
       {
+        "pattern": "(mega.nz/embed/\\![A-Za-z0-9\\-\\_]+\\![A-Za-z0-9\\-\\_]+)",
+        "url": "https://\\1"
+      },
+      {
         "pattern": "mega.nz/file/\\#([A-Za-z0-9-_!]+)",
+        "url": "https://mega.nz/#\\1"
+      },
+      {
+        "pattern": "mega.nz/embed/\\#([A-Za-z0-9-_!]+)",
         "url": "https://mega.nz/#\\1"
       }
     ]

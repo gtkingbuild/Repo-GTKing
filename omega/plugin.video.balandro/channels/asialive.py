@@ -10,8 +10,10 @@ from core import httptools, scrapertools, servertools, tmdb
 host = 'https://asialiveaction.com/'
 
 
-def do_downloadpage(url, post=None, headers=None):
-    data = httptools.downloadpage(url, post=post, headers=headers).data
+def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
+    if '/estrenos/' in url: raise_weberror = False
+
+    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
 
     return data
 
@@ -36,17 +38,17 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'peliculas/', search_type = 'movie' ))
 
-    itemlist.append(item.clone( title = 'En castellano', action = 'list_all', url = host + 'audio-espanol/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'En latino', action = 'list_all', url = host + 'audio-latino/', search_type = 'movie' ))
+    if not config.get_setting('descartar_anime', default=False):
+       itemlist.append(item.clone( title = 'Animes', action = 'list_all', url = host + 'anime/', search_type = 'movie', text_color='springgreen' ))
 
-    itemlist.append(item.clone( title = 'Animes', action = 'list_all', url = host + 'anime/', search_type = 'movie', text_color='springgreen' ))
+    itemlist.append(item.clone( title = 'Por idioma', action = 'idiomas', search_type = 'movie' ))
+
+    itemlist.append(item.clone( title = 'Por país', action = 'paises', search_type = 'movie' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'movie' ))
 
     itemlist.append(item.clone( title = 'Por calidad', action = 'calidades', search_type = 'movie' ))
-
-    itemlist.append(item.clone( title = 'Por país', action = 'paises', search_type = 'movie' ))
 
     return itemlist
 
@@ -59,16 +61,58 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'series-tv/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'En castellano', action = 'list_all', url = host + 'audio-espanol/', search_type = 'tvshow' ))
-    itemlist.append(item.clone( title = 'En latino', action = 'list_all', url = host + 'audio-latino/', search_type = 'tvshow' ))
+    if not config.get_setting('descartar_anime', default=False):
+        itemlist.append(item.clone( title = 'Animes', action = 'list_all', url = host + 'anime/', search_type = 'tvshow', text_color='springgreen' ))
 
-    itemlist.append(item.clone( title = 'Animes', action = 'list_all', url = host + 'anime/', search_type = 'tvshow', text_color='springgreen' ))
-
-    itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Por idioma', action = 'idiomas', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Por país', action = 'paises', search_type = 'tvshow' ))
 
+    itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
+
     return itemlist
+
+
+def idiomas(item):
+    logger.info()
+    itemlist = []
+
+    itemlist.append(item.clone( title = 'En castellano', action = 'list_all', url = host + 'audio-espanol/', text_color = 'moccasin' ))
+    itemlist.append(item.clone( title = 'En latino', action = 'list_all', url = host + 'audio-latino/', text_color = 'moccasin' ))
+
+    return itemlist
+
+
+def paises(item):
+    logger.info()
+    itemlist = []
+
+    if item.search_type == 'movie': text_color = 'deepskyblue'
+    else: text_color = 'hotpink'
+
+    data = do_downloadpage(host + 'peliculas/')
+    data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
+
+    data = scrapertools.find_single_match(data, '>Tipo<(.*?)</ul>')
+
+    matches = re.compile('<li.*?>([^<]+)<a href="([^"]+)"', re.DOTALL).findall(data)
+
+    for title , url in matches:
+        if title == 'Películas': continue
+        elif title == 'Series': continue
+        elif title == 'Animación': continue
+        elif 'Audio' in title: continue
+
+        if item.search_type == 'movie': 
+            if not 'Movie' in title: continue
+        else:
+            if not 'Drama' in title: continue
+
+        if not url.startswith("http"): url = host + url
+
+        itemlist.append(item.clone( title = title, action = 'list_all', url = url, text_color = text_color ))
+
+    return sorted(itemlist, key=lambda x: x.title)
 
 
 def generos(item):
@@ -130,38 +174,6 @@ def calidades(item):
     return sorted(itemlist, key=lambda x: x.title)
 
 
-def paises(item):
-    logger.info()
-    itemlist = []
-
-    if item.search_type == 'movie': text_color = 'deepskyblue'
-    else: text_color = 'hotpink'
-
-    data = do_downloadpage(host + 'peliculas/')
-    data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
-
-    data = scrapertools.find_single_match(data, '>Tipo<(.*?)</ul>')
-
-    matches = re.compile('<li.*?>([^<]+)<a href="([^"]+)"', re.DOTALL).findall(data)
-
-    for title , url in matches:
-        if title == 'Películas': continue
-        elif title == 'Series': continue
-        elif title == 'Animación': continue
-        elif 'Audio' in title: continue
-
-        if item.search_type == 'movie': 
-            if not 'Movie' in title: continue
-        else:
-            if not 'Drama' in title: continue
-
-        if not url.startswith("http"): url = host + url
-
-        itemlist.append(item.clone( title = title, action = 'list_all', url = url, text_color = text_color ))
-
-    return sorted(itemlist, key=lambda x: x.title)
-
-
 def list_all(item):
     logger.info()
     itemlist = []
@@ -187,6 +199,8 @@ def list_all(item):
         tipo = 'movie' if 'Movie' in type else 'tvshow'
 
         sufijo = '' if item.search_type != 'all' else tipo
+
+        if '/estrenos/' in item.url: year = scrapertools.find_single_match(item.url, "/estrenos/(.*?)/")
 
         if tipo == 'movie':
             if not item.search_type == 'all':
@@ -388,7 +402,7 @@ def findvideos(item):
 
             if servidor == 'various': other = servertools.corregir_other(url)
             elif servidor == 'directo':
-               if '/bestomanga/' in url: other = 'Mailru'
+               if '/bestomanga/' in url: servidor = 'mailru'
 
             itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = lang, other = other ))
 
@@ -423,6 +437,10 @@ def play(item):
         servidor = servertools.corregir_servidor(servidor)
 
         url = servertools.normalize_url(servidor, url)
+
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(url).lower()
+            if not new_server.startswith("http"): servidor = new_server
 
         itemlist.append(item.clone(url = url, server = servidor))
 

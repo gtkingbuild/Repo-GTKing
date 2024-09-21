@@ -11,7 +11,7 @@
   "categories": ["movie", "tvshow"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["dorama"],
+  "clusters": ["notice", "dorama"],
 
-  "notes": "Web dedicada exclusivamente al dorama"
+  "notes": "Web dedicada exclusivamente al dorama. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

@@ -13,8 +13,8 @@ host = 'https://areliux.com/'
 def do_downloadpage(url, post=None, headers=None):
     data = httptools.downloadpage(url, post=post, headers=headers).data
 
-    if not 'index.php?do=' in url:
-        if '<title>Bot Verification</title>' in data:
+    if '<title>Bot Verification</title>' in data:
+        if not 'index.php?do=' in url:
             platformtools.dialog_notification('SeoDiv', '[COLOR indianred][B]CloudFlare[/B][/COLOR] [COLOR orangered][B]reCAPTCHA[/B][/COLOR]')
 
     return data

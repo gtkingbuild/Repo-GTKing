@@ -6,19 +6,19 @@ from platformcode import config, logger, platformtools
 from core import httptools, jsontools, filetools, downloadtools, scrapertools
 
 
-ant_repos = ['3.0.0', '2.0.0', '1.0.5', '1.0.3'] 
+ant_repos = ['4.0.0', '3.0.0', '2.0.0', '1.0.5', '1.0.3'] 
 
-ver_repo_balandro = 'repository.balandro-4.0.0.zip'
+ver_repo_balandro = 'repository.balandro-4.0.1.zip'
 
 REPO_ID = 'repository.balandro'
 
 REPO_BALANDRO = 'https://raw.githubusercontent.com/repobal/base/main/' + ver_repo_balandro
 
 
-ADDON_UPDATES_JSON = 'https://pastebin.com/raw/zW6MYy4C'
+ADDON_UPDATES_JSON = 'https://raw.githubusercontent.com/repobal/fix/main/updates.json'
 ADDON_UPDATES_ZIP  = 'https://raw.githubusercontent.com/repobal/fix/main/updates.zip'
 
-ADDON_VERSION = 'https://pastebin.com/raw/Lktm2YS0'
+ADDON_VERSION = 'https://raw.githubusercontent.com/repobal/base/main/addons.xml'
 
 
 addon_update_verbose = config.get_setting('addon_update_verbose', default=False)
@@ -273,17 +273,18 @@ def get_last_chrome_list():
 
     if ver_stable_chrome:
         try:
-            data = httptools.downloadpage('https://versionhistory.googleapis.com/v1/chrome/platforms/win64/channels/extended/versions/all/releases?filter=endtime=none').data
+            data = httptools.downloadpage('https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Windows').data
 
-            matches = scrapertools.find_multiple_matches(data, '"version": "(.*?)"')
+            matches = scrapertools.find_multiple_matches(str(data), '"version":.*?"(.*?)"')
 
             for last_version in matches:
-                if not last_version: continue
-
-                if last_version > web_last_ver_chrome: web_last_ver_chrome = last_version
+                if last_version:
+                    if not web_last_ver_chrome:
+                        web_last_ver_chrome = last_version
+                        break
         except: pass
 
-        if not web_last_ver_chrome == '': config.set_setting('chrome_last_version', web_last_ver_chrome)
+        if web_last_ver_chrome: config.set_setting('chrome_last_version', web_last_ver_chrome)
 
 
 def check_addon_version():

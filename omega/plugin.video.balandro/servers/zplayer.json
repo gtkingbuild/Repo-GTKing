@@ -3,6 +3,7 @@
   "name": "Zplayer",
 
   "active": true,
+  "notes": "Out of Service",
 
   "find_videos": {
     "ignore_urls": [],

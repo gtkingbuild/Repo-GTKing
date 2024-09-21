@@ -11,7 +11,7 @@
   "categories": ["movie", "tvshow", "torrent"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["current", "years", "torrents", "news", "languages", "qualityes", "kids", "docs", "vos", "4k"],
+  "clusters": ["years", "torrents", "news", "languages", "qualityes", "kids", "docs", "vos", "4k"],
 
-  "notes": "Web CERRADA. Canal con enlaces Torrent exclusivamente. Películas por géneros, idioma, calidad y año. También Series. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Web CERRADA. Canal con enlaces Torrent exclusivamente. Películas por géneros. También Series."
 }

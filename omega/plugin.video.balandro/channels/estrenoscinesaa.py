@@ -83,9 +83,9 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'movies/', search_type = 'movie' ))
 
+    itemlist.append(item.clone( title = 'DC Comics', action = 'list_all', url = host + 'genre/d-c/', search_type = 'movie', text_color='moccasin' ))
     itemlist.append(item.clone( title = 'Netflix', action = 'list_all', url = host + 'genre/netflix/', search_type = 'movie', text_color='moccasin' ))
     itemlist.append(item.clone( title = 'Marvel', action = 'list_all', url = host + 'genre/marvel/', search_type = 'movie', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'D.C.', action = 'list_all', url = host + 'genre/d-c/', search_type = 'movie', text_color='moccasin' ))
     itemlist.append(item.clone( title = 'Star wars', action = 'list_all', url = host + 'genre/starwars/', search_type = 'movie', text_color='moccasin' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
@@ -184,10 +184,12 @@ def findvideos(item):
 
         servidor = servertools.get_server_from_url(url)
 
-        if servidor and servidor != 'directo':
-            url = servertools.normalize_url(servidor, url)
+        if servidor:
+            other = ''
+            if servidor == 'various': other = servertools.corregir_other(url)
 
-            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = 'Esp' ))
+            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url,
+                                  language = 'Esp', other = other ))
 
     # Descarga
     bloque = scrapertools.find_single_match(data, "<div id='download'(.*?)</table></div></div></div>")
@@ -200,16 +202,19 @@ def findvideos(item):
         url = scrapertools.find_single_match(enlace, " href='([^']+)")
 
         servidor = scrapertools.find_single_match(enlace, "domain=(?:www.|dl.|)([^'.]+)")
+
+        other = ''
+        if servidor == 'qiwi': other = 'Qiwi'
+
         servidor = servertools.corregir_servidor(servidor)
 
         if not url or not servidor: continue
 
-        if servidor == 'qiwi': continue
-
         quality = 'HD'
         lang = 'Esp'
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = lang, quality = quality , other = 'd' ))
+        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url,
+                              language = lang, quality = quality , other = 'd' + ' ' + other ))
 
     if not itemlist:
         if not ses == 0:
@@ -225,20 +230,38 @@ def play(item):
 
     if host in item.url:
         data = do_downloadpage(item.url)
+
         url = scrapertools.find_single_match(data, '<a id="link".*?href="([^"]+)')
+        if not url:
+            data = str(data).replace('=\\', '=').replace('\\"', '/"')
+
+            url = scrapertools.find_single_match(data, '<IFRAME SRC="(.*?)"')
+            if not url: url = scrapertools.find_single_match(data, '<iframe src="(.*?)"')
 
         if url:
             servidor = servertools.get_server_from_url(url)
+
+            if servidor == 'directo':
+                new_server = servertools.corregir_other(url).lower()
+                if not new_server.startswith("http"): servidor = new_server
+
             if servidor and servidor != 'directo':
                 servidor = servertools.corregir_servidor(servidor)
+
                 url = servertools.normalize_url(servidor, url)
 
                 itemlist.append(item.clone( url=url, server=servidor ))
 
     else:
         servidor = servertools.get_server_from_url(item.url)
+
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(item.url).lower()
+            if not new_server.startswith("http"): servidor = new_server
+
         if servidor and servidor != 'directo':
             servidor = servertools.corregir_servidor(servidor)
+
             url = servertools.normalize_url(servidor, item.url)
 
             itemlist.append(item.clone( url=url, server=servidor ))

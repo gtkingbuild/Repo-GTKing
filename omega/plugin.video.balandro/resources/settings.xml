@@ -19,12 +19,15 @@
         <setting id="show_help_faq" type="action" label="[COLOR gold][B]FAQS[/B][/COLOR]" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_faq)"/>
         <setting id="show_not_contemplated" type="action" label="[COLOR red][B]No Contemplado[/B][/COLOR]" visible="eq(-4,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_not_contemplated)"/>
         <setting id="show_latest_domains" type="action" label="[COLOR cyan][B]Últimos Cambios Dominios[/B][/COLOR]" visible="eq(-5,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=show_latest_domains)"/>
-        <setting id="resumen_canales" type="action" label="[COLOR gold][B]Canales[/B][/COLOR]" visible="eq(-6,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=resumen_canales)"/>
-        <setting id="resumen_servidores" type="action" label="[COLOR fuchsia][B]Servidores[/B][/COLOR]" visible="eq(-7,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=resumen_servidores)"/>
-        <setting id="show_version" type="action" label="[COLOR violet][B]Versión[/B][/COLOR]" visible="eq(-8,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_version)"/>
-        <setting id="show_last_fix" type="action" label="[COLOR lime][B]Último Fix[/B][/COLOR]" visible="eq(-9,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_last_fix)"/>
-        <setting id="show_test" type="action" label="[COLOR yellow][B]Test[/B][/COLOR]" visible="eq(-10,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_test)"/>
-        <setting id="show_legalidad" type="action" label="[COLOR goldenrod][B]Legalidad[/B][/COLOR]" visible="eq(-11,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_legalidad)"/>
+        <setting id="resumen_canales" type="action" label="[COLOR gold][B]Resumen Canales[/B][/COLOR]" visible="eq(-6,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=resumen_canales)"/>
+        <setting id="resumen_incidencias" type="action" label="[COLOR gold][B]Canales [/COLOR]con [COLOR tan]Incidencias[/B][/COLOR]" visible="eq(-7,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=resumen_incidencias)"/>
+        <setting id="resumen_no_accesibles" type="action" label="[COLOR gold][B]Canales [COLOR indianred]No Accesibles[/B][/COLOR]" visible="eq(-8,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=resumen_no_accesibles)"/>
+        <setting id="resumen_servidores" type="action" label="[COLOR fuchsia][B]Resumen Servidores[/B][/COLOR]" visible="eq(-9,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=resumen_servidores)"/>
+        <setting id="resumen_pending" type="action" label="[COLOR fuchsia][B]Servidores [COLOR tan]Incidencias[/B][/COLOR]" visible="eq(-10,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=resumen_pending)"/>
+        <setting id="show_version" type="action" label="[COLOR violet][B]Versión[/B][/COLOR]" visible="eq(-11,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_version)"/>
+        <setting id="show_last_fix" type="action" label="[COLOR lime][B]Último Fix[/B][/COLOR]" visible="eq(-12,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_last_fix)"/>
+        <setting id="show_test" type="action" label="[COLOR yellow][B]Test[/B][/COLOR]" visible="eq(-13,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_test)"/>
+        <setting id="show_legalidad" type="action" label="[COLOR goldenrod][B]Legalidad[/B][/COLOR]" visible="eq(-14,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_legalidad)"/>
 
         <setting label="Contacto:" type="lsep"/>
 
@@ -39,7 +42,7 @@
         <setting id="show_mnu_parameters" type="action" label="Preferencias [COLOR tan][B]Menús[/B][/COLOR]" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_menu_parameters)"/>
         <setting id="show_mnu_specials" type="action" label="Preferencias [COLOR plum][B]Otros Accesos en Principal, Menús y Sub-Menús[/B][/COLOR]" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_mnu_specials)"/>
         <setting id="show_channels_parameters" type="action" label="Preferencias [COLOR gold][B]Canales[/B][/COLOR]" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_channels_parameters)"/>
-        <setting id="show_help_audios" type="action" label="Preferencias [COLOR yellowgreen][B]Idiomas[/COLOR] [COLOR cyan](Audios)[/B][/COLOR]" visible="eq(-4,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_audios)"/>
+        <setting id="show_help_audios" type="action" label="Información  [COLOR yellowgreen][B]Idiomas[/COLOR] [COLOR cyan](Audios)[/B][/COLOR]" visible="eq(-4,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_audios)"/>
         <setting id="show_parental_parameters" type="action" label="Preferencias [COLOR orange][B]Adultos [COLOR red](+18)[/B][/COLOR]" visible="eq(-5,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_parental_parameters)"/>
         <setting id="show_play_parameters" type="action" label="Preferencias [COLOR fuchsia][B]Play[/B][/COLOR]" visible="eq(-6,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_play_parameters)"/>
         <setting id="show_prx_parameters" type="action" label="Preferencias [COLOR red][B]Proxies[/B][/COLOR]" visible="eq(-7,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_prx_parameters)"/>
@@ -47,14 +50,16 @@
         <setting id="show_help_parameters" type="action" label="Preferencias [COLOR yellow][B]Buscar[/B][/COLOR]" visible="eq(-9,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=search&action=show_help_parameters)"/>
         <setting id="show_mnu_preferidos" type="action" label="Preferencias [COLOR wheat][B]Preferidos[/B][/COLOR]" visible="eq(-10,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_menu_parameters)"/>
         <setting id="show_mnu_descargas" type="action" label="Preferencias [COLOR seagreen][B]Descargas[/B][/COLOR]" visible="eq(-11,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=show_ubicacion)"/>
+        <setting id="show_sistema" type="action" label="Preferencias [COLOR teal][B]Sistema[/B][/COLOR]" visible="eq(-12,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=show_sistema)"/>
 
         <setting label="Notificaciones en los Canales:" type="lsep"/>
 
         <setting id="inf_channels_opc" type="bool" label="Opciones" default="false"/>
-        <setting id="channels_re_charges" type="bool" label="Notificar los [COLOR slateblue][B]Re-Intentos[/B][/COLOR] de acceso en los Canales" default="true" visible="eq(-1,true)"/>
-        <setting id="channels_charges_movies" type="bool" label="Presentar Sin Notificar Todas las [COLOR deepskyblue][B]Películas[/B][/COLOR] en las listas especiales" default="true" visible="eq(-2,true)"/>
-        <setting id="channels_seasons" type="bool" label="Notificar cuando [COLOR tan][B]No existan Temporadas ó tan solo haya Una[/B][/COLOR]" default="true" visible="eq(-3,true)"/>
-        <setting id="channels_charges" type="bool" label="Presentar Sin Notificar Todos los [COLOR darkcyan][B]Episodios[/B][/COLOR] en cada Temporada" default="true" visible="eq(-4,true)"/>
+        <setting id="show_help_resto" type="action" label="Aviso [COLOR red][B]CloudFlare[/COLOR][COLOR orangered] Protection[/B][/COLOR]" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_resto)"/>
+        <setting id="channels_re_charges" type="bool" label="Notificar los [COLOR slateblue][B]Re-Intentos[/B][/COLOR] de acceso en los Canales" default="true" visible="eq(-2,true)"/>
+        <setting id="channels_charges_movies" type="bool" label="Presentar Sin Notificar Todas las [COLOR deepskyblue][B]Películas[/B][/COLOR] en las listas especiales" default="true" visible="eq(-3,true)"/>
+        <setting id="channels_seasons" type="bool" label="Notificar cuando [COLOR tan][B]No existan Temporadas ó tan solo haya Una[/B][/COLOR]" default="true" visible="eq(-4,true)"/>
+        <setting id="channels_charges" type="bool" label="Presentar Sin Notificar Todos los [COLOR darkcyan][B]Episodios[/B][/COLOR] en cada Temporada" default="true" visible="eq(-5,true)"/>
 
         <setting label="Notificaciones al Reproducir:" type="lsep"/>
 
@@ -73,7 +78,7 @@
         <setting id="show_mnu_parameters1" type="action" label="Información sobre sus [COLOR aqua][B]Preferencias[/B][/COLOR] Actuales" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_menu_parameters)"/>
         <setting id="mnu_simple" type="bool" label="Activar [COLOR tan][B][I]Menú [COLOR yellow]Simplificado[/I][/B][/COLOR]" default="false"/>
 
-        <setting label="Opciones Menú:" type="lsep"/>
+        <setting label="Selecciones Menú:" type="lsep"/>
 
         <setting id="mnu_opciones" type="bool" label="Opciones" default="false"/>
         <setting id="mnu_sugeridos" type="bool" label="Añadir opción [COLOR aquamarine][B]Sugeridos[/B][/COLOR] ([COLOR tan][B][I]Menús[/B][/COLOR] [COLOR yellow]Simplificado[/COLOR] y [COLOR tan]Predeterminado[/I][/COLOR])" default="true" visible="eq(-1,true)"/>
@@ -96,7 +101,7 @@
         <setting id="mnu_problematicos" type="bool" label="Añadir opción [COLOR darkgoldenrod][B]Problemáticos[/B][/COLOR] (solo canales que Predominan Sin enlaces Disponibles/Válidos/Soportados)" default="false" visible="eq(-18,true)"/>
         <setting id="mnu_desactivados" type="bool" label="Añadir opción [COLOR gray][B]Desactivados[/B][/COLOR] (solo canales que tenga Desactivados)" default="false" visible="eq(-19,true)"/>
 
-        <setting label="Opciones Preferidos y Descargas en el Principal:" type="lsep"/>
+        <setting label="Preferidos y Descargas en el Principal:" type="lsep"/>
 
         <setting id="ord_opciones" type="bool" label="Opciones" default="false"/>
         <setting id="mnu_preferidos" type="bool" label="Añadir la opción [COLOR wheat][B]Preferidos[/B][/COLOR] ([COLOR tan][B][I]Menú[/B] Predeterminado[/I][/COLOR])" default="true" visible="eq(-1,true)"/>
@@ -109,7 +114,7 @@
         <setting id="oams_opc" type="bool" label="Opciones" default="false"/>
         <setting id="mnu_search_proxy_channels" type="bool" label="Añadir acceso al detalle de Buscar [COLOR red][B]Nuevos Proxies[/B][/COLOR] ([COLOR tan][B][I]Principal y Sub-Menús[/B][/I][/COLOR])" default="false" visible="eq(-1,true)"/>
         <setting id="search_extra_proxies" type="bool" label="Añadir acceso al detalle de Búsquedas en Canales [COLOR red][B]Con Proxies[/B][/COLOR]" default="true" visible="eq(-2,true)"/>
-        <setting id="sub_mnu_favoritos" type="bool" label="Añadir acceso al detalle de [COLOR plum][B]Favoritos[/B][/COLOR] de su Media Center ([COLOR tan][B][I]Solo en Principal[/B][/I][/COLOR])" default="false" visible="eq(-3,true)"/>
+        <setting id="sub_mnu_favoritos" type="bool" label="Añadir acceso al detalle de [COLOR plum][B]Favoritos[/B][/COLOR] de su Media Center" default="false" visible="eq(-3,true)"/>
         <setting id="search_extra_trailers" type="bool" label="Añadir acceso al detalle de [COLOR darkgoldenrod][B]Búsquedas de Tráilers[/B][/COLOR]" default="false" visible="eq(-4,true)"/>
         <setting id="sub_mnu_news" type="bool" label="Añadir acceso al detalle de [COLOR darksalmon][B]Novedades[/B][/COLOR]" default="true" visible="eq(-5,true)"/>
         <setting id="search_extra_main" type="bool" label="Añadir acceso al detalle de [COLOR violet][B]Búsquedas Especiales[/B][/COLOR] (Listas TMDB, etc.)" default="false" visible="eq(-6,true)"/>
@@ -127,15 +132,18 @@
 
         <setting id="pchv_opc" type="bool" label="Opciones" default="false"/>
         <setting id="resumen_canales1" type="action" label="Resumen y distribución Canales" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=resumen_canales)"/>
-        <setting id="show_channels_list" type="action" label="Qué canales están [COLOR gold][B]Disponibles[/B][/COLOR] (Activos)" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_channels_list)"/>
-        <setting id="channels_suggesteds" type="action" label="Qué canales están [COLOR aquamarine][B]Sugeridos[/B][/COLOR]" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=channels_suggesteds)"/>
-        <setting id="show_help_notices" type="action" label="Qué canales tienen [COLOR green][B]Aviso[/COLOR][COLOR red] CloudFlare [COLOR orangered]Protection[/B][/COLOR]" visible="eq(-4,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=channels_with_notice)"/>
-        <setting id="channels_with_proxies" type="action" label="Qué [COLOR gold][B]canales[/B][/COLOR] pueden usar [COLOR red][B]Proxies[/B][/COLOR]" visible="eq(-5,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=channels_with_proxies)"/>
-        <setting id="channels_with_proxies_memorized" type="action" label="Qué canales tiene con [COLOR red][B]Proxies Memorizados[/B][/COLOR]" visible="eq(-6,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=channels_with_proxies_memorized)"/>
-        <setting id="show_help_hdfull" type="action" label="Aviso canal [COLOR yellow]HdFull[/COLOR]" visible="eq(-7,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_hdfull)"/>
-        <setting id="show_help_nextdede" type="action" label="Aviso canal [COLOR yellow]NextDede[/COLOR]" visible="eq(-8,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_nextdede)"/>
-        <setting id="show_help_playdede" type="action" label="Aviso canal [COLOR yellow]PlayDede[/COLOR]" visible="eq(-9,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_playdede)"/>
-        <setting id="show_help_resto" type="action" label="Posible Aviso en el resto de [COLOR darkorange][B]Canales[/B][/COLOR]" visible="eq(-10,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_resto)"/>
+        <setting id="resumen_incidencias1" type="action" label="Canales con [COLOR tan][B]Incidencias[/B][/COLOR]" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=resumen_incidencias)"/>
+        <setting id="resumen_no_accesibles1" type="action" label="Canales [COLOR indianred][B]No Accesibles[/B][/COLOR]" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=resumen_no_accesibles)"/>
+        <setting id="show_channels_list" type="action" label="Qué canales están [COLOR gold][B]Disponibles[/B][/COLOR] (Activos)" visible="eq(-4,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_channels_list)"/>
+        <setting id="channels_suggesteds" type="action" label="Qué canales están [COLOR aquamarine][B]Sugeridos[/B][/COLOR]" visible="eq(-5,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=channels_suggesteds)"/>
+        <setting id="show_help_resto1" type="action" label="¿ Qué significa el Aviso [COLOR red][B]CloudFlare[/COLOR][COLOR orangered] Protection[/B][/COLOR] ?" visible="eq(-6,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_resto)"/>
+        <setting id="show_help_notices" type="action" label="Qué canales tienen [COLOR green][B]Aviso[/COLOR][COLOR red] CloudFlare [COLOR orangered]Protection[/B][/COLOR]" visible="eq(-7,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=channels_with_notice)"/>
+        <setting id="channels_with_proxies" type="action" label="Qué [COLOR gold][B]canales[/B][/COLOR] pueden usar [COLOR red][B]Proxies[/B][/COLOR]" visible="eq(-8,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=channels_with_proxies)"/>
+        <setting id="channels_with_proxies_memorized" type="action" label="Qué canales tiene con [COLOR red][B]Proxies Memorizados[/B][/COLOR]" visible="eq(-9,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=channels_with_proxies_memorized)"/>
+        <setting id="show_help_hdfull" type="action" label="Aviso canal [COLOR yellow]HdFull[/COLOR]" visible="eq(-10,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_hdfull)"/>
+        <setting id="show_help_nextdede" type="action" label="Aviso canal [COLOR yellow]NextDede[/COLOR]" visible="eq(-11,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_nextdede)"/>
+        <setting id="show_help_playdede" type="action" label="Aviso canal [COLOR yellow]PlayDede[/COLOR]" visible="eq(-12,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_playdede)"/>
+        <setting id="show_help_resto2" type="action" label="Posible Aviso en el resto de [COLOR darkorange][B]Canales[/B][/COLOR]" visible="eq(-13,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_resto)"/>
 
         <setting label="Presentación Canales:" type="lsep"/>
 
@@ -185,9 +193,10 @@
         <setting label="Control Pin Parental:" type="lsep"/>
 
         <setting id="cpar_opc" type="bool" label="Opciones" default="false"/>
-        <setting id="xxx_password" type="action" label="Establecer PIN parental" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=adults_password)"/>
-        <setting id="xxx_password_del" type="action" label="Eliminar PIN parental" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=adults_password_del)"/>
-		<setting id="adults_password" type="text" label="Clave pin parental" default="" option="hidden" enable="eq(-3,false)" visible="eq(-3,true)"/>
+        <setting id="xxx_password" type="action" label="[COLOR yellow][B]Establecer[/B][/COLOR] PIN parental" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=adults_password)"/>
+        <setting id="show_pin" type="action" label="[COLOR springgreen][B]Ver[/B][/COLOR] PIN Parental" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_pin_parental)"/>
+        <setting id="xxx_password_del" type="action" label="[COLOR red][B]Eliminar[/B][/COLOR] PIN parental" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=adults_password_del)"/>
+		<setting id="adults_password" type="text" label="Clave pin parental" default="" option="hidden" enable="eq(-4,false)" visible="eq(-4,true)"/>
 
         <setting label="Presentar Canales de Animes:" type="lsep"/>
 
@@ -212,7 +221,7 @@
         <setting id="show_help_domains" type="action" label="Información gestión [COLOR bisque][B]Dominios[/B][/COLOR]" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_domains)"/>
         <setting id="show_latest_domains1" type="action" label="[COLOR cyan][B]Últimos Cambios Dominios[/B][/COLOR]" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=show_latest_domains)"/>
         <setting id="channels_only_last_domain" type="action" label="Qué canales tiene informados con [COLOR yellowgreen][B]Último dominio Vigente[/B][/COLOR]" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=channels_only_last_domain)"/>
-        <setting id="manto_domains" type="action" label="Pulsar para [COLOR red][B]Eliminar[/B][/COLOR] los Dominios memorizados en Todos los canales" visible="eq(-4,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=manto_domains)"/>
+        <setting id="manto_domains" type="action" label="Pulsar para [COLOR red][B]Eliminar[/B][/COLOR] los Dominios Memorizados en Todos los canales" visible="eq(-4,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=manto_domains)"/>
 
         <setting label="Canales con Gestión de Dominios:" type="lsep"/>
 
@@ -227,24 +236,22 @@
         <setting id="opc_cliversite" type="action" label="[COLOR gold]CliverSite[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_cliversite)"/>
         <setting id="opc_cuevana2" type="action" label="[COLOR gold]Cuevana2[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_cuevana2)"/>
         <setting id="opc_cuevana2esp" type="action" label="[COLOR gold]Cuevana2Esp[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_cuevana2esp)"/>
-        <setting id="opc_cuevana3lw" type="action" label="[COLOR gold]Cuevana3Lw[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_cuevana3lw)"/>
+        <setting id="opc_cuevana3pro" type="action" label="[COLOR gold]Cuevana3Pro[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_cuevana3pro)"/>
         <setting id="opc_cuevana3video" type="action" label="[COLOR gold]Cuevana3Video[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_cuevana3video)"/>
 
         <setting id="opc_divxtotal" type="action" label="[COLOR gold]DixTotal[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_divxtotal)"/>
 
 		<setting id="ac_dontorrents" type="bool" label="[COLOR gold][B]DonTorrents[/B][/COLOR]" default="false"/>
         <setting id="last_domain_dontorrents" type="action" label="DonTorrents pulsar para comprobar el [COLOR yellowgreen][B]Último Dominio Vigente[/B][/COLOR]" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=last_domain_dontorrents)"/>
-		<setting id="ch_dontorrents_test" type="action" label="DonTorrents pulsar para efectuar test del dominio" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=test_domain_dontorrents)"/>
+		<setting id="ch_dontorrents_test" type="action" label="DonTorrents pulsar para efectuar [COLOR yellow][B]Test[/B][/COLOR] del dominio" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=test_domain_dontorrents)"/>
 		<setting id="ch_dontorrents_dominio" type="action" label="DonTorrents [COLOR darkorange][B]Informar ó Modificar[/B][/COLOR] el dominio" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=manto_domain_dontorrents)"/>
 
         <setting id="opc_dontorrentsin" type="action" label="[COLOR gold]DonTorrentsIn[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_dontorrentsin)"/>
-        <setting id="opc_doramedplay" type="action" label="[COLOR gold]DoramedPlay[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_doramedplay)"/>
 
         <setting id="opc_elifilms" type="action" label="[COLOR gold]EliFilms[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_elifilms)"/>
         <setting id="opc_elitetorrent" type="action" label="[COLOR gold]EliteTorrent[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_elitetorrent)"/>
         <setting id="opc_elitetorrentnz" type="action" label="[COLOR gold]EliteTorrentNz[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_elitetorrentnz)"/>
         <setting id="opc_ennovelas" type="action" label="[COLOR gold]EnNovelas[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_ennovelas)"/>
-        <setting id="opc_ennovelas_online" type="action" label="[COLOR gold]EnNovelasOnline[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_ennovelasonline)"/>
         <setting id="opc_ennovelas_tv" type="action" label="[COLOR gold]EnNovelasTv[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_ennovelastv)"/>
         <setting id="opc_entrepeliculasyseries" type="action" label="[COLOR gold]EntrePeliculasySeries[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_entrepeliculasyseries)"/>
         <setting id="opc_estrenosdoramas" type="action" label="[COLOR gold]EstrenosDoramas[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_estrenosdoramas)"/>
@@ -252,16 +259,15 @@
         <setting id="opc_gnula24" type="action" label="[COLOR gold]Gnula24[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_gnula24)"/>
         <setting id="opc_gnula24h" type="action" label="[COLOR gold]Gnula24H[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_gnula24h)"/>
         <setting id="opc_grantorrent" type="action" label="[COLOR gold]GranTorrent[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_grantorrent)"/>
-        <setting id="opc_grantorrents" type="action" label="[COLOR gold]GranTorrents[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_grantorrents)"/>
 
 		<setting id="ac_hdfull" type="bool" label="[COLOR gold][B]HdFull[/B][/COLOR]" default="false"/>
         <setting id="last_domain_hdfull" type="action" label="HdFull pulsar para comprobar el [COLOR yellowgreen][B]Último Dominio Vigente[/B][/COLOR]" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=last_domain_hdfull)"/>
-		<setting id="ch_hdfull_test1" type="action" label="HdFull pulsar para efectuar test del dominio" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=test_domain_hdfull)"/>
+		<setting id="ch_hdfull_test1" type="action" label="HdFull pulsar para efectuar [COLOR yellow][B]Test[/B][/COLOR] del dominio" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=test_domain_hdfull)"/>
 		<setting id="ch_hdfull_dominio" type="action" label="HdFull [COLOR darkorange][B]Informar ó Modificar[/B][/COLOR] el dominio" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=manto_domain_hdfull)"/>
 
 		<setting id="ac_hdfullse" type="bool" label="[COLOR gold][B]HdFullSe[/B][/COLOR]" default="false"/>
         <setting id="last_domain_hdfullse" type="action" label="HdFullSe pulsar para comprobar el [COLOR yellowgreen][B]Último Dominio Vigente[/B][/COLOR]" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=last_domain_hdfullse)"/>
-		<setting id="ch_hdfullse_test" type="action" label="HdFullSe pulsar para efectuar test del dominio" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=test_domain_hdfullse)"/>
+		<setting id="ch_hdfullse_test" type="action" label="HdFullSe pulsar para efectuar [COLOR yellow][B]Test[/B][/COLOR] del dominio" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=test_domain_hdfullse)"/>
 		<setting id="ch_hdfullse_dominio" type="action" label="HdFullSe [COLOR darkorange][B]Informar ó modificar[/B][/COLOR] el dominio" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=manto_domain_hdfullse)"/>
 
         <setting id="opc_henaojara" type="action" label="[COLOR gold]HenaOjara[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_henaojara)"/>
@@ -270,8 +276,9 @@
         <setting id="opc_mitorrent" type="action" label="[COLOR gold]MiTorrent[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_mitorrent)"/>
 
 		<setting id="ac_nextdede" type="bool" label="[COLOR gold][B]NextDede[/B][/COLOR]" default="false"/>
-		<setting id="ch_nextdede_test" type="action" label="NextDede pulsar para efectuar test del dominio" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=test_domain_nextdede)"/>
-		<setting id="ch_nextdede_dominio" type="action" label="NextDede [COLOR darkorange][B]Informar ó Modificar[/B][/COLOR] el dominio" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=manto_domain_nextdede)"/>
+        <setting id="last_domain_nextdede" type="action" label="NextDede pulsar para comprobar el [COLOR yellowgreen][B]Último Dominio Vigente[/B][/COLOR]" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=last_domain_nextdede)"/>
+		<setting id="ch_nextdede_test" type="action" label="NextDede pulsar para efectuar [COLOR yellow][B]Test[/B][/COLOR] del dominio" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=test_domain_nextdede)"/>
+		<setting id="ch_nextdede_dominio" type="action" label="NextDede [COLOR darkorange][B]Informar ó Modificar[/B][/COLOR] el dominio" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=manto_domain_nextdede)"/>
 
         <setting id="opc_peliculaspro" type="action" label="[COLOR gold]PeliculasPro[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_peliculaspro)"/>
         <setting id="opc_pelisforte" type="action" label="[COLOR gold]PelisForte[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_pelisforte)"/>
@@ -288,7 +295,7 @@
 
 		<setting id="ac_playdede" type="bool" label="[COLOR gold][B]PlayDede[/B][/COLOR]" default="false"/>
         <setting id="last_domain_playdede" type="action" label="PlayDede pulsar para comprobar el [COLOR yellowgreen][B]Último Dominio Vigente[/B][/COLOR]" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=last_domain_playdede)"/>
-		<setting id="ch_playdede_test1" type="action" label="PlayDede pulsar para efectuar test del dominio" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=test_domain_playdede)"/>
+		<setting id="ch_playdede_test1" type="action" label="PlayDede pulsar para efectuar [COLOR yellow][B]Test[/B][/COLOR] del dominio" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=test_domain_playdede)"/>
 		<setting id="ch_playdede_dominio" type="action" label="PlayDede [COLOR darkorange][B]Informar ó Modificar[/B][/COLOR] el dominio" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=manto_domain_playdede)"/>
 
         <setting id="opc_poseidonhd2" type="action" label="[COLOR gold]PoseidonHd2[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_poseidonhd2)"/>
@@ -297,15 +304,13 @@
         <setting id="opc_seriesantiguas" type="action" label="[COLOR gold]SeriesAntiguas[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_seriesantiguas)"/>
         <setting id="opc_serieskao" type="action" label="[COLOR gold]SeriesKao[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_serieskao)"/>
         <setting id="opc_seriesmetro" type="action" label="[COLOR gold]SeriesMetro[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_seriesmetro)"/>
-        <setting id="opc_seriesyonkis" type="action" label="[COLOR gold]SeriesYonkis[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_seriesyonkis)"/>
         <setting id="opc_srnovelas" type="action" label="[COLOR gold]SrNovelas[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_srnovelas)"/>
         <setting id="opc_subtorrents" type="action" label="[COLOR gold]SubTorrents[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_subtorrents)"/>
 
         <setting id="opc_todotorrents" type="action" label="[COLOR gold]TodoTorrents[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_todotorrents)"/>
-        <setting id="opc_torrentpelis" type="action" label="[COLOR gold]TorrentPelis[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_torrentpelis)"/>
         <setting id="opc_tupelihd" type="action" label="[COLOR gold]TuPeliHd[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_tupelihd)"/>
 
-        <setting id="opc_yestorrent" type="action" label="[COLOR gold]YesTorrent[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_yestorrent)"/>
+        <setting id="opc_veronline" type="action" label="[COLOR gold]VerOnline[/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=opciones_veronline)"/>
     </category>
 
     <category label="Cuentas">
@@ -319,10 +324,10 @@
 
 		<setting id="ac2_hdfull" type="bool" label="Acciones" default="false"/>
         <setting id="show_help2_hdfull" type="action" label="HdFull aviso" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_hdfull)"/>
-		<setting id="ch_hdfull_test2" type="action" label="HdFull pulsar para efectuar test del canal" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=test_domain_hdfull)"/>
+		<setting id="ch_hdfull_test2" type="action" label="HdFull pulsar para efectuar [COLOR yellow][B]Test[/B][/COLOR] del canal" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=test_domain_hdfull)"/>
         <setting id="operative_domains_hdfull" type="action" label="HdFull pulsar para ver los [COLOR mediumaquamarine][B]Dominios Operativos Vigentes[/B][/COLOR]" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=operative_domains_hdfull)"/>
         <setting id="latest_domains_hdfull" type="action" label="HdFull pulsar para saber el [COLOR yellowgreen][B]Último Dominio Vigente[/B][/COLOR]" visible="eq(-4,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=latest_domains_hdfull)"/>
-        <setting id="show_credenciales_hdfull" type="action" label="HdFull credenciales Cuenta" visible="eq(-5,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuctext&action=_credenciales_hdfull)"/>
+        <setting id="show_credenciales_hdfull" type="action" label="HdFull [COLOR chartreuse][B]Credenciales[/B][/COLOR] cuenta" visible="eq(-5,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuctext&action=_credenciales_hdfull)"/>
         <setting id="del_credenciales_hdfull" type="action" label="HdFull pulsar para [COLOR red][B]Eliminar[/B][/COLOR] las credenciales" visible="eq(-6,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=del_datos_hdfull)"/>
 		<setting id="channel_hdfull_hdfull_username" type="text" label="HdFull [COLOR cyan][B] Usuario[/B][/COLOR]" enable="eq(-7,false)" visible="eq(-7,true)" default=""/>
 		<setting id="channel_hdfull_hdfull_password" type="text" label="HdFull [COLOR cyan][B] Contraseña[/B][/COLOR]" option="hidden" enable="eq(-8,false)" visible="eq(-8,true)" default=""/>
@@ -330,20 +335,22 @@
         <setting label="Cuenta Canal NextDede:" type="lsep"/>
 
 		<setting id="ac_nextdede" type="bool" label="Acciones" default="false"/>
-		<setting id="ch_nextdede_test" type="action" label="NextDede pulsar para efectuar test del canal" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=test_domain_nextdede)"/>
-        <setting id="show_credenciales_nextdede" type="action" label="NextDede credenciales Cuenta" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuctext&action=_credenciales_nextdede)"/>
-        <setting id="del_credenciales_nextdede" type="action" label="NextDede pulsar para [COLOR red][B]Eliminar[/B][/COLOR] las credenciales" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=del_datos_nextdede)"/>
-		<setting id="channel_nextdede_nextdede_email" type="text" label="NextDede [COLOR cyan][B] E-mail[/B][/COLOR]" enable="eq(-4,false)" visible="eq(-4,true)" default=""/>
-		<setting id="channel_nextdede_nextdede_password" type="text" label="NextDede [COLOR cyan][B] Contraseña[/B][/COLOR]" option="hidden" enable="eq(-5,false)" visible="eq(-5,true)" default=""/>
-		<setting id="channel_nextdede_nextdede_username" type="text" label="NextDede [COLOR cyan][B] Usuario[/B][/COLOR]" enable="eq(-6,false)" visible="eq(-6,true)" default=""/>
+		<setting id="ch_nextdede_test" type="action" label="NextDede pulsar para efectuar [COLOR yellow][B]Test[/B][/COLOR] del canal" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=test_domain_nextdede)"/>
+        <setting id="operative_domains_nextdede" type="action" label="NextDede pulsar para ver los [COLOR mediumaquamarine][B]Dominios Operativos Vigentes[/B][/COLOR]" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=operative_domains_nextdede)"/>
+        <setting id="latest_domains_nextdede" type="action" label="Nextdede pulsar para saber el [COLOR yellowgreen][B]Último Dominio Vigente[/B][/COLOR]" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=latest_domains_nextdede)"/>
+        <setting id="show_credenciales_nextdede" type="action" label="NextDede [COLOR chartreuse][B]Credenciales[/B][/COLOR] cuenta" visible="eq(-4,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuctext&action=_credenciales_nextdede)"/>
+        <setting id="del_credenciales_nextdede" type="action" label="NextDede pulsar para [COLOR red][B]Eliminar[/B][/COLOR] las credenciales" visible="eq(-5,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=del_datos_nextdede)"/>
+		<setting id="channel_nextdede_nextdede_email" type="text" label="NextDede [COLOR cyan][B] E-mail[/B][/COLOR]" enable="eq(-6,false)" visible="eq(-6,true)" default=""/>
+		<setting id="channel_nextdede_nextdede_password" type="text" label="NextDede [COLOR cyan][B] Contraseña[/B][/COLOR]" option="hidden" enable="eq(-7,false)" visible="eq(-7,true)" default=""/>
+		<setting id="channel_nextdede_nextdede_username" type="text" label="NextDede [COLOR cyan][B] Usuario[/B][/COLOR]" enable="eq(-8,false)" visible="eq(-8,true)" default=""/>
 
         <setting label="Cuenta Canal PlayDede:" type="lsep"/>
 
 		<setting id="ac2_playdede" type="bool" label="Acciones" default="false"/>
         <setting id="show_help2_playdede" type="action" label="PlayDede aviso" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_playdede)"/>
-		<setting id="ch_playdede_test2" type="action" label="PlayDede pulsar para efectuar test del canal" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=test_domain_playdede)"/>
+		<setting id="ch_playdede_test2" type="action" label="PlayDede pulsar para efectuar [COLOR yellow][B]Test[/B][/COLOR] del canal" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=test_domain_playdede)"/>
         <setting id="last_domain2_playdede" type="action" label="PlayDede pulsar para saber el [COLOR yellowgreen][B]Último Dominio Vigente[/B][/COLOR]" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=last_domain_playdede)"/>
-        <setting id="show_credenciales_playdede" type="action" label="PlayDede Credenciales cuenta" visible="eq(-4,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuctext&action=_credenciales_playdede)"/>
+        <setting id="show_credenciales_playdede" type="action" label="PlayDede [COLOR chartreuse][B]Credenciales[/B][/COLOR] cuenta" visible="eq(-4,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuctext&action=_credenciales_playdede)"/>
         <setting id="del_credenciales_playdede" type="action" label="PlayDede pulsar para [COLOR red][B]Eliminar[/B][/COLOR] las credenciales" visible="eq(-5,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=domains&action=del_datos_playdede)"/>
 		<setting id="channel_playdede_playdede_username" type="text" label="PlayDede [COLOR cyan][B] Usuario[/B][/COLOR]" enable="eq(-6,false)" visible="eq(-6,true)" default=""/>
 		<setting id="channel_playdede_playdede_password" type="text" label="PlayDede [COLOR cyan][B] Contraseña[/B][/COLOR]" option="hidden" enable="eq(-7,false)" visible="eq(-7,true)" default=""/>
@@ -367,10 +374,11 @@
 
         <setting id="psrv_opc" type="bool" label="Opciones" default="false"/>
         <setting id="resumen_servidores1" type="action" label="Resumen y distribución Servidores" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=resumen_servidores)"/>
-        <setting id="show_servers_unsoported1" type="action" label="Qué servidores se detectan pero [COLOR fuchsia][B]No están Soportados[/B][/COLOR]" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_servers_unsoported)"/>
-        <setting id="show_help_gamovideo" type="action" label="Aviso [COLOR darkorange][B]Gamovideo[/B][/COLOR]" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_gamovideo)"/>
-        <setting id="show_help_mega" type="action" label="Aviso [COLOR darkorange][B]Mega[/B][/COLOR]" visible="eq(-4,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_mega)"/>
-        <setting id="show_help_vias" type="action" label="Aviso [COLOR darkorange][B]Youtube[/B][/COLOR]" visible="eq(-5,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_vias)"/>
+        <setting id="resumen_pending1" type="action" label="Servidores con [COLOR tan][B]Incidencias[/B][/COLOR]" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=resumen_pending)"/>
+        <setting id="show_servers_unsoported1" type="action" label="Qué servidores se detectan pero [COLOR fuchsia][B]No están Soportados[/B][/COLOR]" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_servers_unsoported)"/>
+        <setting id="show_help_gamovideo" type="action" label="Aviso [COLOR darkorange][B]Gamovideo[/B][/COLOR]" visible="eq(-4,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_gamovideo)"/>
+        <setting id="show_help_mega" type="action" label="Aviso [COLOR darkorange][B]Mega[/B][/COLOR]" visible="eq(-5,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_mega)"/>
+        <setting id="show_help_vias" type="action" label="Aviso [COLOR darkorange][B]Youtube[/B][/COLOR]" visible="eq(-6,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_vias)"/>
 
         <setting label="Servidores con Vías Alternativas y Adicionales:" type="lsep"/>
 
@@ -448,13 +456,13 @@
         <setting id="prvf_opc" type="bool" label="Opciones" default="false"/>
         <setting id="show_help_metodos" type="action" label="Información Métodos para [COLOR red][B]Quitar los Proxies[/B][/COLOR] de un canal" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_metodos)"/>
         <setting id="manto_proxies" type="action" label="Pulsar para [COLOR red][B]Eliminar[/B][/COLOR] los proxies en Todos los canales" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=manto_proxies)"/>
-        <setting id="global_proxies" type="action" label="Pulsar para Obtener [COLOR red][B]Proxies[/B][/COLOR] (en los canales que los necesiten)" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=global_proxies)"/>
-        <setting id="memorize_channels_proxies" type="bool" label="[COLOR aqua][B]Memorizar[/B][/COLOR] para Próximas busquedas (los canales que necesiten proxies)" default="true"visible="eq(-4,true)"/>
+        <setting id="global_proxies" type="action" label="Pulsar para Obtener [COLOR red][B]Proxies[/B][/COLOR] (en los canales que los Necesiten)" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=global_proxies)"/>
+        <setting id="memorize_channels_proxies" type="bool" label="[COLOR aqua][B]Memorizar[/B][/COLOR] para Próximas busquedas (los canales que Necesiten proxies)" default="true"visible="eq(-4,true)"/>
 
         <setting label="Proceso:" type="lsep"/>
 
         <setting id="proxp_opc" type="bool" label="Opciones" default="false"/>
-        <setting id="proxies_totales_limit" type="labelenum" label="Límite Máximo Total de proxies para Analizar" values="100|200|300|400|500|600|700|800|900" default="500" visible="eq(-1,true)"/>
+        <setting id="proxies_totales_limit" type="labelenum" label="Límite Máximo Total de proxies para Analizar" values="100|200|300|400|500|600|700|800|900|999" default="500" visible="eq(-1,true)"/>
         <setting id="proxies_totales" type="bool" label="Obtener el [COLOR gold][B]Máximo[/B][/COLOR] de proxies para analizar en cada Proveedor" default="false" visible="eq(-2,true)"/>
         <setting id="proxies_limit" type="bool" label="Si se encontraron [COLOR goldenrod][B]Suficientes[/B][/COLOR] proxies válidos dejar de buscar más" default="false" visible="eq(-3,true)"/>
         <setting id="proxies_validos" type="bool" label="Limitar la [COLOR gold][B]Cantidad[/B][/COLOR] de proxies válidos" default="true" visible="eq(-4,true)"/>
@@ -466,13 +474,13 @@
 
         <setting id="proxp_vias" type="bool" label="Opciones" default="false"/>
         <setting id="proxies_vias" type="bool" label="Gestionar [COLOR yellow][B]Vías alternativas[/B][/COLOR] si no se obtubieron suficientes proxies a analizar" default="false" visible="eq(-1,true)"/>
-        <setting id="proxies_tplus" type="labelenum" label="Seleccionar código de la Via Alternativa (requiere acivar la gestión)" values="0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37" default="32" visible="eq(-2,true)"/>
+        <setting id="proxies_tplus" type="labelenum" label="Seleccionar código de la Via Alternativa (requiere activar la [COLOR yellow][B]Gestión[/B][/COLOR])" values="0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37" default="32" visible="eq(-2,true)"/>
         <setting id="proxies_show_vias" type="action" label="Información Lista [COLOR aqua][B]Vías alternativas[/B][/COLOR] de Proveedores de proxies" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=proxies_show_vias)"/>
 
         <setting label="Solicitudes al Procesar:" type="lsep"/>
 
         <setting id="prvxs_opc" type="bool" label="Opciones" default="false"/>
-        <setting id="proxies_proces" type="bool" label="Confirmar [COLOR gold][B]Proceso[/B][/COLOR] si existen proxies memorizados" default="true" visible="eq(-1,true)"/>
+        <setting id="proxies_proces" type="bool" label="Confirmar [COLOR gold][B]Proceso[/B][/COLOR] si existen proxies Memorizados" default="true" visible="eq(-1,true)"/>
         <setting id="proxies_tipos" type="bool" label="Solicitar el tipo de Anonimidad" default="false" visible="eq(-2,true)"/>
         <setting id="proxies_paises" type="bool" label="Solicitar el País" default="false" visible="eq(-3,true)"/>
         <setting id="proxies_maximo" type="bool" label="No solicitar y forzar el Valor máximo de los proxies a analizar" default="true" visible="eq(-4,true)"/>
@@ -518,18 +526,21 @@
         <setting id="ibl_opc" type="bool" label="Opciones" default="false"/>
         <setting id="show_help_parameters1" type="action" label="Información sobre sus [COLOR aqua][B]Preferencias[/B][/COLOR] Actuales" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=search&action=show_help_parameters)"/>
         <setting id="show_help_search" type="action" label="Información sobre [COLOR yellow][B]búsquedas[/B][/COLOR]" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=search&action=show_help)"/>
-        <setting id="show_help_tmbdblist" type="action" label="Información [COLOR violet][B]búsquedas y Listas en TMDB[/B][/COLOR]" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=tmdblists&action=show_help)"/>
-        <setting id="show_help_filmaffinitylists" type="action" label="Información [COLOR violet][B]búsquedas y Listas en Filmaffinity[/B][/COLOR]" visible="eq(-4,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=filmaffinitylists&action=show_help)"/>
+        <setting id="show_help_audios2" type="action" label="Información [COLOR yellowgreen][B]Idiomas[/COLOR] [COLOR mediumaquamarine](Audios en los Vídeos)[/B][/COLOR]" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_audios)"/>
+        <setting id="show_help_tmbdblist" type="action" label="Información [COLOR violet][B]búsquedas y Listas en TMDB[/B][/COLOR]" visible="eq(-4,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=tmdblists&action=show_help)"/>
+        <setting id="show_help_filmaffinitylists" type="action" label="Información [COLOR violet][B]búsquedas y Listas en Filmaffinity[/B][/COLOR]" visible="eq(-5,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=filmaffinitylists&action=show_help)"/>
 
         <setting label="Proceso:" type="lsep"/>
 
         <setting id="bus_opc" type="bool" label="Opciones" default="false"/>
         <setting id="resumen_canales2" type="action" label="Resumen y distribución [COLOR gold][B]Canales[/B][/COLOR]" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=resumen_canales)"/>
-        <setting id="search_no_searchables" type="action" label="Qué canales [COLOR yellow][B]Nunca[/B][/COLOR] intervendrán en las búsquedas" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=channels_no_searchables)"/>
-        <setting id="search_no_channels_actives" type="action" label="Qué canales No intervienen en las búsquedas (marcados como [COLOR gray][B]Desactivados[/B][/COLOR])" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=channels_no_actives)"/>
-        <setting id="search_show_last" type="bool" label="Recordar Último Texto buscado" default="true" visible="eq(-4,true)"/>
-        <setting id="manto_textos" type="action" label="Pulsar para [COLOR red][B]Eliminar[/B][/COLOR] los Textos Memorizados" visible="eq(-5,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=manto_textos)"/>
-        <setting id="search_limit_by_channel" type="labelenum" label="Cuantos Resultados se previsualizarán por canal" values="1|2|3|4|5|6|7|8|9|10" default="2" visible="eq(-6,true)"/>
+        <setting id="resumen_incidencias2" type="action" label="Canales con [COLOR tan][B]Incidencias[/B][/COLOR]" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=resumen_incidencias)"/>
+        <setting id="resumen_no_accesibles2" type="action" label="Canales [COLOR indianred][B]No Accesibles[/B][/COLOR]" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=resumen_no_accesibles)"/>
+        <setting id="search_no_searchables" type="action" label="Qué canales [COLOR yellow][B]Nunca[/B][/COLOR] intervendrán en las búsquedas" visible="eq(-4,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=channels_no_searchables)"/>
+        <setting id="search_no_channels_actives" type="action" label="Qué canales No intervienen en las búsquedas (marcados como [COLOR gray][B]Desactivados[/B][/COLOR])" visible="eq(-5,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=channels_no_actives)"/>
+        <setting id="search_show_last" type="bool" label="Recordar Último Texto buscado" default="true" visible="eq(-6,true)"/>
+        <setting id="manto_textos" type="action" label="Pulsar para [COLOR red][B]Eliminar[/B][/COLOR] los Textos Memorizados" visible="eq(-7,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=manto_textos)"/>
+        <setting id="search_limit_by_channel" type="labelenum" label="Cuantos Resultados se previsualizarán por canal" values="1|2|3|4|5|6|7|8|9|10" default="2" visible="eq(-8,true)"/>
 
         <setting label="Filtrar Canales:" type="lsep"/>
 
@@ -808,14 +819,19 @@
         <setting id="tmdb_clean_db_cache" type="action" label="Pulsar para [COLOR gold][B]Limpiar[/B][/COLOR] la Caché TMDB actual" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=clean_db_cache)"/>
         <setting id="tmdb_drop_db_cache" type="action" label="Pulsar para [COLOR red][B]Eliminar[/B][/COLOR] la Caché TMDB actual" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=drop_db_cache)"/>
 
+        <setting label="Uso Caché de Tmdb" type="lsep"/>
+
+        <setting id="tmdbm_uso" type="bool" label="Opciones" default="false"/>
+        <setting id="tmdb_cache" type="bool" label="Usar la Caché TMDB (Mejora las búsquedas Recurrentes)" default="true" visible="eq(-1,true)"/>
+        <setting id="tmdb_cache_expire" type="enum" label="Cuando Renovar la Caché de TMDB" values="cada 1 día|cada 7 días|cada 15 días|cada 30 días|No" default="4" visible="eq(-2,true)"/>
+
         <setting label="Obtención Datos de Películas/Series en TheMovieDB" type="lsep"/>
 
         <setting id="tmdb_opc" type="bool" label="Opciones" default="false"/>
-        <setting id="tmdb_disabled" type="bool" label="Desactivar Accesos a TMDB en las Listas" default="false" visible="eq(-1,true)"/>
-        <setting id="tmdb_threads" type="labelenum" label="Número de Búsquedas Simultáneas (puede causar Inestabilidad)" values="5|10|15|20|25|30" default="20" visible="eq(-2,true)"/>
-        <setting id="tmdb_plus_info" type="bool" label="Localizar información Extendida (Duración, Actores, etc.)" default="false" visible="eq(-3,true)"/>
-        <setting id="tmdb_cache" type="bool" label="Usar la Caché TMDB (incide/mejora en las búsquedas Recurrentes)" default="true" visible="eq(-4,true)"/>
-        <setting id="tmdb_cache_expire" type="enum" label="Preferencias para Renovar la Caché TMDB" values="cada 1 día|cada 7 días|cada 15 días|cada 30 días|No" default="4" visible="eq(-5,true)"/>
+        <setting id="tmdb_disabled" type="bool" label="Desactivar Accesos en las Listas a TMDB" default="false" visible="eq(-1,true)"/>
+        <setting id="tmdb_langs" type="enum" label="Idioma de búsqueda en TMDB" values="Español|Latino|Inglés|Italiano|Portugués|Francés|Alemán" default="0" visible="eq(-2,true)"/>
+        <setting id="tmdb_threads" type="labelenum" label="Número de Búsquedas Simultáneas (puede causar Inestabilidad)" values="5|10|15|20|25|30" default="20" visible="eq(-3,true)"/>
+        <setting id="tmdb_plus_info" type="bool" label="Localizar información Extendida (Duración, Actores, etc.) Aumenta el tiempo de búsqueda" default="false" visible="eq(-4,true)"/>
     </category>
 
     <category label="Sistema">
@@ -824,8 +840,9 @@
         <setting id="info_sis" type="bool" label="Opciones" default="false"/>
         <setting id="show_help_miscelanea1" type="action" label="[COLOR moccasin][B]Miscelanéa[/B][/COLOR]" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_miscelanea)"/>
         <setting id="show_latest_domains2" type="action" label="[COLOR cyan][B]Últimos Cambios Dominios[/B][/COLOR]" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=actions&action=show_latest_domains)"/>
-        <setting id="show_help_clean1" type="action" label="[COLOR olivedrab][B]Limpiezas[/B][/COLOR]" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_clean)"/>
-        <setting id="show_help_addons1" type="action" label="[COLOR yellowgreen][B]Add-Ons Externos[/B][/COLOR]" visible="eq(-4,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=show_help_addons)"/>
+        <setting id="show_sistema1" type="action" label="Información [COLOR teal][B]Ajustes del Sistema[/B][/COLOR]" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=show_sistema)"/>
+        <setting id="show_help_clean1" type="action" label="[COLOR olivedrab][B]Limpiezas[/B][/COLOR]" visible="eq(-4,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_clean)"/>
+        <setting id="show_help_addons1" type="action" label="[COLOR yellowgreen][B]Add-Ons Externos[/B][/COLOR]" visible="eq(-5,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=show_help_addons)"/>
 
         <setting label="Mantenimiento Media Center:" type="lsep"/>
 
@@ -864,7 +881,7 @@
 
         <setting id="manto_pro" type="bool" label="Opciones" default="false"/>
         <setting id="erase_cookies" type="bool" label="[COLOR red][B]Eliminar[/B][/COLOR] su fichero de [COLOR yellowgreen][B]Cookies[/B][/COLOR] al [COLOR goldenrod][B]Iniciar[/B][/COLOR] su Media Center" default="false" visible="eq(-1,true)"/>
-        <setting id="ver_stable_chrome" type="bool" label="[COLOR darkorange][B]Obtener[/B][/COLOR] y Utilizar la versión más Reciente/Estable de Google Chrome" default="true" visible="eq(-2,true)"/>
+        <setting id="ver_stable_chrome" type="bool" label="[COLOR darkorange][B]Obtener y Usar[/B][/COLOR] la versión más Reciente/Estable de Chrome/Chromium" default="true" visible="eq(-2,true)"/>
         <setting id="httptools_timeout" type="labelenum" label="Valores para el [COLOR yellow][B]Timeout[/B][/COLOR] (tiempo máximo de espera en accesos)" values="0|5|10|15|20|25|30" default="15" visible="eq(-3,true)"/>
         <setting id="notification_d_ok" type="bool" label="Confirmar con el Botón pulsar 'OK' en ciertas [COLOR violet][B]Notificaciones[/B][/COLOR]" default="false" visible="eq(-4,true)"/>
         <setting id="notification_beep" type="bool" label="Emitir un [COLOR springgreen][B]Sonido[/B][/COLOR] al mostrar Avisos/Notificaciones" default="false" visible="eq(-5,true)"/>
@@ -885,7 +902,7 @@
 
         <setting id="show_help_miscelanea2" type="action" label="[COLOR moccasin][B]Miscelanéa[/B][/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_miscelanea)"/>
 
-        <setting label="Informaciones Generales:" type="lsep"/>
+        <setting label="Temas Generales:" type="lsep"/>
 
         <setting id="show_not_contemplated1" type="action" label="[COLOR yellow][B]¿ Qué NO está contemplado/garantizado en Balandro ?[/B][/COLOR]" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_not_contemplated)"/>
         <setting id="show_help_faq1" type="action" label="[COLOR tomato][B]Preguntas[/B][/COLOR] Frecuentes" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_faq)"/>
@@ -895,7 +912,7 @@
     </category>
 
     <category label="Versión">
-        <setting label="Información Version:" type="lsep"/>
+        <setting label="Información Versión:" type="lsep"/>
 
         <setting id="opc_ver" type="bool" label="Opciones" default="false"/>
         <setting id="show_help_miscelanea3" type="action" label="[COLOR moccasin][B]Miscelanéa[/B][/COLOR]" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_miscelanea)"/>
@@ -903,11 +920,14 @@
         <setting id="show_version1" type="action" label="Información [COLOR aqua][B]Versión[/B][/COLOR]" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_version)"/>
         <setting id="show_changelog" type="action" label="[COLOR goldenrod][B]Historial[/B][/COLOR] de versiones" visible="eq(-4,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_changelog)"/>
 
-        <setting label="Resumenes:" type="lsep"/>
+        <setting label="Resúmenes:" type="lsep"/>
 
         <setting id="opc_res" type="bool" label="Opciones" default="false"/>
         <setting id="resumen_canales3" type="action" label="Resumen y distribución [COLOR gold][B]Canales[/B][/COLOR]" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=resumen_canales)"/>
-        <setting id="resumen_servidores2" type="action" label="Resumen y distribución [COLOR fuchsia][B]Servidores[/B][/COLOR]" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=resumen_servidores)"/>
+        <setting id="resumen_incidencias3" type="action" label="Canales con [COLOR tan][B]Incidencias[/B][/COLOR]" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=resumen_incidencias)"/>
+        <setting id="resumen_no_accesibles3" type="action" label="Canales [COLOR indianred][B]No Accesibles[/B][/COLOR]" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=resumen_no_accesibles)"/>
+        <setting id="resumen_servidores2" type="action" label="Resumen y distribución [COLOR fuchsia][B]Servidores[/B][/COLOR]" visible="eq(-4,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=resumen_servidores)"/>
+        <setting id="resumen_pending2" type="action" label="Servidores con [COLOR tan][B]Incidencias[/B][/COLOR]" visible="eq(-5,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=submnuteam&action=resumen_pending)"/>
 
         <setting label="Legalidad:" type="lsep"/>
 
@@ -933,11 +953,11 @@
         <setting id="team_opc" type="bool" label="Opciones" default="false"/>
         <setting id="show_help_miscelanea5" type="action" label="[COLOR moccasin][B]Miscelanéa[/B][/COLOR]" visible="eq(-1,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_miscelanea)"/>
         <setting id="show_help_notice" type="action" label="[COLOR aqua][B]Comunicado[/B][/COLOR] Oficial de Balandro" visible="eq(-2,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_help_notice)"/>
-        <setting id="show_dev_notes" type="action" label="Notas para [COLOR goldenrod][B]Developers[/B][/COLOR] (Desarrolladores)" visible="eq(-3,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_dev_notes)"/>
-        <setting id="developer_mode" type="bool" label="Activar el Modo de ejecución en [COLOR darkorange][B]Desarrollo[/B][/COLOR]" visible="eq(-4,true)" default="false"/>
+        <setting id="developer_mode" type="bool" label="Activar el Modo de ejecución en [COLOR darkorange][B]Desarrollo[/B][/COLOR]" visible="eq(-3,true)" default="false"/>
+        <setting id="show_dev_notes" type="action" label="Notas para [COLOR goldenrod][B]Developers[/B][/COLOR] (Desarrolladores)" visible="eq(-4,true)" action="RunPlugin(plugin://plugin.video.balandro/?channel=helper&action=show_dev_notes)"/>
 
         <setting label="Fuente:" type="lsep"/>
-        <setting id="_dfon" type="text" label="[B]Código Fuente Desarrollo [I]https://github.com/repobal[/I][/B]" enable="false"/>
+        <setting id="_dfon" type="text" label="[B]Código Fuente Desarrollo [I]https://github.com/repobal[/I][/B]" enable="false" visible="true"/>
 
         <setting label="Balandro Team (Equipo de Desarrollo):" type="lsep"/>
         <setting id="_team1" type="text" label="[B]Equipo Desarrollo Telegram [I]t.me/balandro_team[/I][/B]" enable="false" visible="true"/>

@@ -35,13 +35,13 @@ def mainlist_pelis(item):
     itemlist.append(item.clone( title = 'Hentai', action = 'list_all', url = host + 'directorio-hentai?tipo[]=1&tipo[]=7&order=updated' ))
     itemlist.append(item.clone( title = 'Jav', action = 'list_all', url = host + 'directorio-hentai?tipo[]=2&order=updated' ))
 
-    itemlist.append(item.clone( title = 'Por género', action = 'generos' ))
+    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios' ))
 
     return itemlist
 
 
-def generos(item):
+def categorias(item):
     logger.info()
     itemlist = []
 

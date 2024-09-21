@@ -1,6 +1,6 @@
 {
   "id": "cliver",
-  "name": "Cliver",
+  "name": "CliVer",
   "thumbnail": "cliver.jpg",
 
   "active": false,
@@ -13,5 +13,5 @@
 
   "clusters": ["news", "rankings", "years", "kids", "docs", "vos"],
 
-  "notes": "Web CERRADA. Películas por géneros, año. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Web CERRADA. Películas por géneros."
 }

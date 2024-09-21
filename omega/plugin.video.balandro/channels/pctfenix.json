@@ -13,5 +13,5 @@
 
   "clusters": ["torrents", "news", "lasts", "lists", "rankings", "qualityes", "3d"],
 
-  "notes": "Web CERRADA. Películas y Series con enlaces torrent exclusivamente. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Web CERRADA. Películas y Series con enlaces torrent exclusivamente."
 }

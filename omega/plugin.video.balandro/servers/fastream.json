@@ -16,7 +16,7 @@
         "url": "https://fastream.to/embed-\\1.html?auto=1&referer="
       },
       {
-        "pattern": "https://fastream.to/embed-\\w+.html",
+        "pattern": "(https://fastream.to/embed-\\w+([A-z0-9]).html)",
         "url": "\\1"
       }
     ]

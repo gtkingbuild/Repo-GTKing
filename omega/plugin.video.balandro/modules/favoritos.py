@@ -52,14 +52,16 @@ def mainlist(item):
 
     if not matches:
         platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Aún no tiene Favoritos[/COLOR][/B]' % color_exec)
-        return itemlist
+        return
+
+    itemlist.append(item.clone( action='', title='[B]FAVORITOS:[/B]', folder=False, text_color='plum' ))
 
     ses = 0
 
     for title, thumb, data in matches:
-        ses += 1
-
         if plugin_addon in data:
+            ses += 1
+
             url = scrapertools.find_single_match(data, plugin_addon + '\?([^;]*)').replace('&quot', '')
 
             item = Item().fromurl(url)
@@ -79,8 +81,8 @@ def mainlist(item):
 
             itemlist.append(item)
 
-    if not itemlist:
-        if not ses == 0:
+    if itemlist:
+        if ses == 0:
             platformtools.dialog_notification(config.__addon_name, '[COLOR %s][B]Sin Favoritos de Balandro[/B][/COLOR]' % color_adver)
 
     return itemlist
@@ -94,7 +96,9 @@ def readFavourites():
     if filetools.exists(favourites_path):
         data = filetools.read(favourites_path)
 
-        matches = scrapertools.find_multiple_matches(data, '<favourite([^<]*)</favourite>')
+        bloque = scrapertools.find_single_match(data, '<favourites>(.*?)</favourites>')
+
+        matches = scrapertools.find_multiple_matches(bloque, '<favourite([^<]*)</favourite>')
 
         if len(matches) > 99: platformtools.dialog_notification(config.__addon_name, '[COLOR %s][B]Cargando Favoritos[/B][/COLOR]' % color_avis)
 
@@ -153,7 +157,7 @@ def delFavourite(item):
     for fav in favourites_list:
         if plugin_addon in str(fav):
             if fav[0] == item.title or fav[0] == item.titulo:
-                if platformtools.dialog_yesno(config.__addon_name, '[COLOR cyan][B]¿ Confirma eliminar de Favoritos ?[/B][/COLOR]', '[COLOR yellow][B]' + item.titulo + '[/B][/COLOR]'):
+                if platformtools.dialog_yesno(config.__addon_name, '[COLOR red][B]¿ Confirma eliminar de Favoritos ?[/B][/COLOR]', '[COLOR yellow][B]' + item.titulo + '[/B][/COLOR]'):
                     favourites_list.remove(fav)
 
                     if saveFavourites(favourites_list):

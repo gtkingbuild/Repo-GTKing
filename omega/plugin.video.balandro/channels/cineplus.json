@@ -1,0 +1,17 @@
+{
+  "id": "cineplus",
+  "name": "CinePlus",
+  "thumbnail": "cineplus.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["rankings", "languages", "kids", "anime", "vos"],
+
+  "notes": "Películas por géneros."
+}

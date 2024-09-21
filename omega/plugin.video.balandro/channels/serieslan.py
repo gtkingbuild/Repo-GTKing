@@ -358,8 +358,11 @@ def findvideos(item):
         servidor = servertools.corregir_servidor(srv)
 
         if servidor:
-            if not servertools.is_server_available(servidor): servidor = ''
-            elif not servertools.is_server_enabled(servidor): continue 
+            if servertools.is_server_available(servidor):
+                if not servertools.is_server_enabled(servidor): continue
+            else:
+                if not config.get_setting('developer_mode', default=False): continue
+                else: servidor = ''
 
         other = ''
         if not servidor:
@@ -412,6 +415,10 @@ def play(item):
     if url:
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
+
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(url).lower()
+            if not new_server.startswith("http"): servidor = new_server
 
         if servidor and (servidor != 'directo' or 'googleusercontent' in url):
             url = servertools.normalize_url(servidor, url)

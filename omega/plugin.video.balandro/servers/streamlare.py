@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import xbmc, time
+import os, xbmc, time
 
 from platformcode import config, logger, platformtools
-from core import httptools, scrapertools, jsontools
+from core import httptools, scrapertools, filetools, jsontools
 
 
 espera = config.get_setting('servers_waiting', default=6)
@@ -40,6 +40,17 @@ def import_libs(module):
 def get_video_url(page_url, url_referer=''):
     logger.info("(page_url='%s')" % page_url)
     video_urls = []
+
+    path_server = os.path.join(config.get_runtime_path(), 'servers', 'zplayer.json')
+    data = filetools.read(path_server)
+    dict_server = jsontools.load(data)
+
+    try:
+       notes = dict_server['notes']
+    except: 
+       notes = ''
+
+    if "out of service" in notes.lower(): return 'Fuera de Servicio'
 
     ini_page_url = page_url
 

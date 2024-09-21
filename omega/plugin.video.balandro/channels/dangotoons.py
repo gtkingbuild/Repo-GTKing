@@ -39,7 +39,8 @@ def mainlist_series(item):
     itemlist.append(item.clone( title = 'Más vistas', action ='list_all', url = host + 'catalogo.php?t=todos&o=1', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Más valoradas', action ='list_all', url = host + 'catalogo.php?t=todos&o=2', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Animes', action = 'list_all', url = host + 'catalogo.php?t=anime', search_type = 'tvshow', text_color='springgreen' ))
+    if not config.get_setting('descartar_anime', default=False):
+        itemlist.append(item.clone( title = 'Animes', action = 'list_all', url = host + 'catalogo.php?t=anime', search_type = 'tvshow', text_color='springgreen' ))
 
     itemlist.append(item.clone( title = 'Dibujos animados', action = 'list_all', url = host + 'catalogo.php?t=series-animadas', search_type = 'tvshow', text_color='moccasin' ))
 
@@ -126,7 +127,7 @@ def temporadas(item):
     if not matches:
         if '>LISTA DE CAPITULOS<' in data:
             if config.get_setting('channels_seasons', default=True):
-                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan] sin Temporadas[/COLOR]')
+                platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), '[COLOR tan] sin Temporadas[/COLOR]')
 
             item.page = 0
             item.contentType = 'season'

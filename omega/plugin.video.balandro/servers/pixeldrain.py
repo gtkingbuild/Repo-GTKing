@@ -12,6 +12,8 @@ def get_video_url(page_url, url_referer=''):
 
     if "File Not Found" in data:
         return 'Archivo inexistente ó eliminado'
+    elif '.rar ~ pixeldrain' in data:
+        return "El archivo está en formato comprimido"
 
     vid = scrapertools.find_single_match(page_url, "/u/([^$]+)")
     if not vid: vid = scrapertools.find_single_match(page_url, "/l/([^$]+)")

@@ -39,6 +39,103 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Series de [COLOR hotpink]Westerns[/COLOR]', action = 'menu_series', url = host + '-01.weebly.com' ))
 
+    itemlist.append(item.clone( title = 'YouTube [COLOR hotpink]Animación[/COLOR] ', action = 'youtubes', thumbnail=config.get_thumb('youtube'), text_color = 'moccasin' ))
+
+    return itemlist
+
+
+def youtubes(item):
+    logger.info()
+    itemlist = []
+
+    itemlist.append(item.clone ( title = 'Alvin y las ardillas', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=5Vjg3ANC4DU&list=PLOsRHhzd4sScQJEGfperCQ1SrllmM0QoV' ))
+
+    itemlist.append(item.clone ( title = 'Campeones oliver y benji', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=MhMxi5ShEks&list=PLtdTPPagpK29qTvIM49_ZvRIifiHpHf4q' ))
+
+    itemlist.append(item.clone ( title = "D'artacán y los tres mosqueperros", action = 'list_tubes', url = 'https://www.youtube.com/watch?v=k9YIjOL-KZU&list=PLpSWLIHTG6idwDXwIm-7eaCpauPBw0vGf' ))
+
+    itemlist.append(item.clone ( title = 'Daniel el travieso', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=uL_E5wum6hI&list=PLrzXhAF3O2FOaRwEQblgHh0zyMZ6EcNPZ' ))
+
+    itemlist.append(item.clone ( title = 'David el gnomo', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=2dCUmOQfQ4E&list=PL6jgvKHZMaUX_JfZPZ_GCsHx1aSNmnIjo' ))
+
+    itemlist.append(item.clone ( title = 'Dragones y mazmorras', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=VuaYo4KVRhY&list=PLsHZRFRhMph1o1qcw0MO71pPtnJrupuvy' ))
+
+    itemlist.append(item.clone ( title = 'El gato isidoro', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=2xUmmgPyrbg&list=PLyq8RHRc3jNjinn6pHFmIY6C3aRNunCOw' ))
+
+    itemlist.append(item.clone ( title = 'El libro de la selva', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=y1ynWnB9JpI&list=PLHfWUw8p_628MqyXvX4C9-QqviKJGOmS_' ))
+
+    itemlist.append(item.clone ( title = 'Érase una vez el cuerpo humano', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=CtCQI8gP1HM&list=PL3trIOgZnbH1Xk_qpl2srL5wYlgd8Bu9f' ))
+
+    itemlist.append(item.clone ( title = 'Fraguel rock', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=9mQ_Im0MBlg&list=PL7KciiA9T9EYwWlZbAxn5GksT2pn7wAYy' ))
+
+    itemlist.append(item.clone ( title = 'He-Man y los masters del universo', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=Stwkaqqtous&list=PLHVth4IGGf8uJ8WoenAucdukgFmzgWvmv' ))
+
+    itemlist.append(item.clone ( title = 'Heidi', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=n5qQMnje_kU&list=PLUuRJYptYFXBmaLE1oNJYPxyl-3mSLKL3' ))
+
+    itemlist.append(item.clone ( title = 'Inspector gadget', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=gTjd0VbDqNQ&list=PLQrG71R4T-nJ3aeMzWhP0U0Luy3USWdXN' ))
+
+    itemlist.append(item.clone ( title = 'La abeja maya', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=E-pKGTkcUkQ&list=PLYpTR-80tSP2dA3FsuEklQm_u4mtLoQdA' ))
+
+    itemlist.append(item.clone ( title = 'La vuelta al mundo en 80 días de willy fog', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=GJUnJcKjeyA&list=PL82F9AECFA0523F53' ))
+
+    itemlist.append(item.clone ( title = 'Las aventuras de teddy ruxpin', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=fZPv0cdLSd0&list=PLvVLlsVj1Vgj1tBps9gIoDoT81RPVQU5A' ))
+
+    itemlist.append(item.clone ( title = 'Las aventuras de tom sawyer', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=4VCilhIiQFM&list=PLYsIs7mU2MjMA_4OU7RZ0ulWFcrd2E5et' ))
+
+    itemlist.append(item.clone ( title = 'Las tortugas ninjas', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=FPfaWD01ux0&list=PL5RvWvJcaVMyXET6HLQTPLHslCJofLrVR' ))
+
+    itemlist.append(item.clone ( title = 'Los cazafantasmas', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=bRDJRNXsThM&list=PLhcFeyCsqAAXXK2XS03ZnNZyE2YET8yl-' ))
+
+    itemlist.append(item.clone ( title = 'Los diminutos', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=lPHVQGZX54w&list=PLx5yOvA8qMRWVlvCjkWrJkAuzb9J-OVts' ))
+
+    itemlist.append(item.clone ( title = 'Los fruitis', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=7yoSgrvOf5o&list=PLdwgTWQaV-mj75-Xr3YuOM71ULjtubjRz' ))
+
+    itemlist.append(item.clone ( title = 'Los pequeños picapiedra', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=3xvmV327wNE&list=PLLhOnau-tupRZXJFjWGL-3ozRzp_Ax4-d' ))
+
+    itemlist.append(item.clone ( title = 'Los pitufos', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=PNKQQ_N6L8g&list=PLynb7MteT3bv-JXyQJFD0dgMX1p-kbTyw' ))
+
+    itemlist.append(item.clone ( title = 'Los osos amorosos', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=vE7gDUUmGG0&list=PLyq8RHRc3jNh2wu2N4eVT5z1RyRWrEkdn' ))
+
+    itemlist.append(item.clone ( title = 'Los teleñecos', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=LUjRXvicq4s&list=PLsNgeP_gZnvnNtuJzsP_eguYiBg1YWRJG' ))
+
+    itemlist.append(item.clone ( title = 'Los trotamusicos', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=CLvxg1YH3zg&list=PLjGG4eB-AY7lLRIEZTftqW63JTe6jCg1W' ))
+
+    itemlist.append(item.clone ( title = 'Lucky luke', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=oJk3rxJ3l10&list=PLpSWLIHTG6idKFhxc3tP14r04ZMNyrl47' ))
+
+    itemlist.append(item.clone ( title = 'Marco', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=hBZyqA8pjXQ&list=PLutxf9xWvQKa0-ZMI5fyFSeABblPOF3Kk' ))
+
+    itemlist.append(item.clone ( title = 'Mofli el último koala', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=4R-iGriuhLA&list=PLpSWLIHTG6idAf7gkOl7N92WnKu3iZqnt' ))
+
+    itemlist.append(item.clone ( title = 'Popeye', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=DgQCJ8HPJCA&list=PLV0ww1Vq7oOxQs1VyZqMOzQuaclGbLRmD' ))
+
+    itemlist.append(item.clone ( title = 'Rui el pequeño cid', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=4KY-WmxftUM&list=PL1812714DE488ECFC' ))
+
+    itemlist.append(item.clone ( title = 'Sherlock holmes', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=2HDDvei0RSA&list=PL04gTKRCAl-Pc6AEz99h-lhC49Q6O2Pas' ))
+
+    itemlist.append(item.clone ( title = 'Ulises 31', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=fns5R61QhhI&list=PL99kuo33pyKXVljP_1-9eSUrES6915Uk9' ))
+
+    return itemlist
+
+
+def list_tubes(item):
+    logger.info()
+    itemlist = []
+
+    data = httptools.downloadpage(item.url).data
+
+    bloque = scrapertools.find_single_match(str(data), '"playlist":.*?"playlist":.*?"title":(.*?)$')
+
+    matches = scrapertools.find_multiple_matches(str(bloque), 'playlistPanelVideoRenderer":.*?simpleText":"(.*?)".*?"videoId":"(.*?)".*?"playlistId"')
+
+    for title, _id in matches:
+        if not _id or not title: continue
+
+        thumb = 'https://i.ytimg.com/vi/' + _id + '/hqdefault.jpg'
+
+        url = 'https://www.youtube.com/watch?v=' + _id
+
+        itemlist.append(item.clone( action = 'findvideos', title = title, url = url, thumbnail = thumb, language = 'Esp' ))
+
     return itemlist
 
 

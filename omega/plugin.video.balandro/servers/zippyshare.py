@@ -3,7 +3,7 @@
 import re
 
 from core import httptools, scrapertools
-from platformcode import logger
+from platformcode import config, logger, platformtools
 
 
 def get_video_url(page_url, url_referer=''):
@@ -19,17 +19,22 @@ def get_video_url(page_url, url_referer=''):
 
     match = re.search('(.+)/v/(\w+)/file.html', page_url)
     if not match: return video_urls
+
     domain = match.group(1)
 
     media_url = scrapertools.find_single_match(data, 'getElementById\(\'dlbutton\'\).href\s*=\s*(.*?);')
     numbers = scrapertools.find_single_match(media_url, '\((.*?)\)')
-    if not numbers: return video_urls
+
+    if not numbers:
+        platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]No Disponible en[COLOR cyan] España[/B][/COLOR]')
+        return video_urls
 
     url = media_url.replace(numbers, "'%s'" % eval(numbers))
     url = eval(url)
 
     mediaurl = '%s%s' % (domain, url)
     extension = "." + mediaurl.split('.')[-1]
+
     video_urls.append([extension, mediaurl])
 
     return video_urls

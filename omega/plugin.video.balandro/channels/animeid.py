@@ -73,17 +73,17 @@ def mainlist_animes(item):
 
     itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
-    itemlist.append(item.clone( title = 'Buscar anime ...', action = 'search', search_type = 'tvshow', text_color='springgreen' ))
+    itemlist.append(item.clone( title = 'Buscar anime ...', action = 'search', search_type = 'all', text_color='springgreen' ))
 
-    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host, search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + '?page=1', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Nuevas temporadas', action = 'list_all', url = host + 'new-season', search_type = 'tvshow', text_color = 'moccasin' ))
+    itemlist.append(item.clone( title = 'Nuevas temporadas/episodios', action = 'list_all', url = host + 'new-season?page=1', _tipo = 'new-season', search_type = 'tvshow', text_color = 'cyan' ))
 
-    itemlist.append(item.clone( title = 'En emisión', action = 'list_all', url = host + 'ongoing-series', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'En emisión', action = 'list_all', url = host + 'ongoing-series?page=1', _tipo = 'ongoing-series', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = host + 'popular', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = host + 'popular?page=1', _tipo = 'popular', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host + 'movies', search_type = 'movie', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host + 'movies?page=1', _tipo = 'movies', search_type = 'movie', text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -109,22 +109,42 @@ def list_all(item):
 
         thumb = scrapertools.find_single_match(match, '<img src="(.*?)"')
 
-        if item.search_type == 'movie':
+        tipo = 'movie' if '-movie-' in url or 'Movie' in match else 'tvshow'
+        sufijo = '' if item.search_type != 'all' else tipo
+
+        if tipo == 'movie':
+            if item.search_type != 'all':
+                if item.search_type == 'tvshow': continue
+
             PeliName = title
 
             if 'Movie' in PeliName: PeliName = PeliName.split("Movie")[0]
 
             PeliName = PeliName.strip()
 
-            itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb,  contentType='movie', contentTitle=PeliName, infoLabels={'year': '-'} ))
-        else:
+            itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb, fmt_sufijo = sufijo,
+                                        contentType='movie', contentTitle=PeliName, infoLabels={'year': '-'} ))
+
+        if tipo == 'tvshow':
+            if item.search_type != 'all':
+                if item.search_type == 'movie': continue
+
             SerieName = title
 
             if 'Season' in SerieName: SerieName = SerieName.split("Season")[0]
 
             SerieName = SerieName.strip()
 
-            itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb, contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': '-'} ))
+            titulo = title
+
+            if item._tipo == 'new-season':
+                epis = scrapertools.find_single_match(match, '<div class="name">.*?Episodio(.*?)</div>').strip()
+
+                if epis:
+                    titulo = titulo + ' [COLOR goldenrod]Episodio[/COLOR] ' + epis
+
+            itemlist.append(item.clone( action='episodios', url=url, title=titulo, thumbnail=thumb, fmt_sufijo = sufijo,
+                                        contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': '-'} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -133,9 +153,12 @@ def list_all(item):
             next_page = scrapertools.find_single_match(data, "<ul class='pagination'.*?class=active>.*?</li>.*?href='(.*?)'")
 
             if next_page:
-                next_page = host[:-1] + next_page
+                if 'page=' in next_page:
+                    if item._tipo: next_page = next_page.replace('?page=', '/' + item._tipo + '?page=')
 
-                itemlist.append(item.clone( title = 'Siguientes ...', url = next_page, action = 'list_all', text_color = 'coral' ))
+                    next_page = host[:-1] + next_page
+
+                    itemlist.append(item.clone( title = 'Siguientes ...', url = next_page, action = 'list_all', text_color = 'coral' ))
 
     return itemlist
 
@@ -198,6 +221,7 @@ def episodios(item):
 
     for match in matches[item.page * item.perpage:]:
         url = scrapertools.find_single_match(match, '<a href="(.*?)"')
+
         title = scrapertools.find_single_match(match, '<div class="name">(.*?)</div>').strip()
 
         if not url or not title: continue
@@ -209,7 +233,8 @@ def episodios(item):
         epis = scrapertools.find_single_match(match, '<div class="type"><span>(.*?)</span>').lower().strip()
         epis = epis.replace('ep', '').strip()
 
-        itemlist.append(item.clone( action='findvideos', url = url, title = title, contentType = 'episode', contentSeason = 1, contentEpisodeNumber=epis ))
+        itemlist.append(item.clone( action='findvideos', url = url, title = title, thumbnail=thumb,
+                                    contentType = 'episode', contentSeason = 1, contentEpisodeNumber=epis ))
 
         if len(itemlist) >= item.perpage:
             break

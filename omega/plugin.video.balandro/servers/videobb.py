@@ -1,12 +1,25 @@
 # -*- coding: utf-8 -*-
 
-from core import httptools, scrapertools, jsontools
-from platformcode import logger
+import os
+
+from core import httptools, scrapertools, filetools, jsontools
+from platformcode import config, logger
 
 
 def get_video_url(page_url, url_referer=''):
     logger.info("url=" + page_url)
     video_urls = []
+
+    path_server = os.path.join(config.get_runtime_path(), 'servers', 'zplayer.json')
+    data = filetools.read(path_server)
+    dict_server = jsontools.load(data)
+
+    try:
+       notes = dict_server['notes']
+    except: 
+       notes = ''
+
+    if "out of service" in notes.lower(): return 'Fuera de Servicio'
 
     try:
         nid = scrapertools.find_single_match(page_url, 'videobb.(?:ru|site)/v/([A-z0-9_-]+)')

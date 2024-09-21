@@ -195,6 +195,8 @@ def list_all(item):
         tipo = 'tvshow' if '/series/' in url or '/episode/' in url else 'movie'
         sufijo = '' if item.search_type != 'all' else tipo
 
+        if '/release-year/' in item.url: year = scrapertools.find_single_match(item.url, "/release-year/(.*?)$")
+
         if tipo == 'tvshow':
             if not item.search_type == "all":
                 if item.search_type == "movie": continue

@@ -159,7 +159,8 @@ def list_all(item):
         next_page = scrapertools.find_single_match(data, '<div class="nav-previous"><a href="(.*?)"')
 
         if next_page:
-            itemlist.append(item.clone(action = 'list_all', title = 'Siguientes ...', url = next_page, text_color='coral' ))
+            if '/page/' in next_page:
+                itemlist.append(item.clone(action = 'list_all', title = 'Siguientes ...', url = next_page, text_color='coral' ))
 
     return itemlist
 

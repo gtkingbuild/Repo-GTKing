@@ -35,9 +35,9 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Magazine', action = 'list_all', url = host, group = 'magazine', page = 1))
 
-    itemlist.append(item.clone( title = 'Videoclub', action = 'list_all', url = host + 'tag/cinematte-videoclub/' ))
+    itemlist.append(item.clone( title = 'VideoClub', action = 'list_all', url = host + 'tag/cinematte-videoclub/' ))
 
-    itemlist.append(item.clone( title = 'Obras maestras', action = 'list_all', url = host + 'tag/cinematte-obras-maestras/' ))
+    itemlist.append(item.clone( title = 'Obras maestras', action = 'list_all', url = host + 'tag/cinematte-obras-maestras/', text_color = 'moccasin' ))
 
     itemlist.append(item.clone( title = 'Cine de culto', action = 'list_all', url = host + 'tag/cinematte-culto/' ))
 
@@ -57,7 +57,7 @@ def generos(item):
 
     itemlist.append(item.clone( title = 'Cinematte', url = host + 'category/cinematte-flix/', action = 'list_all', text_color = 'deepskyblue' ))
     itemlist.append(item.clone( title = 'Críticas', url = host + 'category/critica/', action = 'list_all', text_color = 'deepskyblue' ))
-    itemlist.append(item.clone( title = 'Contemporaneo', url = host + 'category/actualidad/', action = 'list_all', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone( title = 'Contemporáneo', url = host + 'category/actualidad/', action = 'list_all', text_color = 'deepskyblue' ))
 
     if not config.get_setting('descartar_xxx', default=False):
         itemlist.append(item.clone( title = 'Erotismo', url = host + 'category/erotismo/', action = 'list_all', text_color = 'deepskyblue' ))
@@ -113,7 +113,8 @@ def list_all(item):
         elif 'Versión ' in info: langs = 'Vo'
         else: langs = 'Esp'
 
-        title = scrapertools.find_single_match(match, 'rel="bookmark">(.*?)</a>')
+        title = scrapertools.find_single_match(match, '<h4 class="entry-title title">.*?">(.*?)</a>')
+        if not title: title = scrapertools.find_single_match(match, 'rel="bookmark">(.*?)</a>')
         if not title: title = scrapertools.find_single_match(match, ' alt="(.*?)"')
         if not title: title = scrapertools.find_single_match(match, '<a href=".*?">(.*?)</a>')
 

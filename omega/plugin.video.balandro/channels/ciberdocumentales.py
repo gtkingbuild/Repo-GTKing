@@ -26,13 +26,13 @@ def categorias(item):
     itemlist = []
 
     data = httptools.downloadpage(host).data
-    bloque = scrapertools.find_single_match(data, '<div id="menu">(.*?)</div>')
 
-    patron = ' href="(/[^"]+)">([^<]+)'
-    matches = scrapertools.find_multiple_matches(bloque, patron)
+    bloque = scrapertools.find_single_match(data, '>Categorías<(.*?)</ul>')
+
+    matches = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)">(.*?)</a>')
 
     for url, title in matches:
-        itemlist.append(item.clone( action = 'list_all', title = title.capitalize(), url= host + url, text_color='cyan' ))
+        itemlist.append(item.clone( action = 'list_all', title = title, url = url, text_color='cyan' ))
 
     return itemlist
 
@@ -43,28 +43,28 @@ def list_all(item):
 
     data = httptools.downloadpage(item.url).data
 
-    patron = '<div class="fotonoticia">\s*<a\s*target="_blank" href="([^"]+)"><img src="([^"]+)" alt="([^"]+)"'
-    patron += ' /></a><br /><br />\s*</div>\s*<div class="textonoticia">.*?<br /><br />(.*?)</div>'
+    matches = scrapertools.find_multiple_matches(data, '<article(.*?)</article>')
 
-    matches = scrapertools.find_multiple_matches(data, patron)
+    for match in matches:
+        url = scrapertools.find_single_match(match, '<a href="(.*?)"')
 
-    for url, thumb, title, plot in matches:
-        title = title.capitalize()
-        url = host + url
+        title = scrapertools.find_single_match(match, 'title="(.*?)"')
 
-        thumb = host + thumb
-        plot = scrapertools.htmlclean(plot)
+        title = title.replace('&#8211;', '').strip()
 
-        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, plot = plot,
-                                    contentType='movie', infoLabels={"year": '-', "plot": plot}, contentTitle=title, contentExtra='documentary' ))
+        thumb = scrapertools.find_single_match(match, 'data-srcset="(.*?)"')
+
+        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb,
+                                    contentType='movie', infoLabels={"year": '-'}, contentTitle=title, contentExtra='documentary' ))
 
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
-        next_page_link = scrapertools.find_single_match(data, '<span class="current">\d*</span>&nbsp;<a href="([^"]+)')
+        next_page = scrapertools.find_single_match(data, '<link rel="next".*?href="(.*?)"')
 
-        if next_page_link != '':
-            itemlist.append(item.clone( title='Siguientes ...', action='list_all', url = host + next_page_link, text_color='coral' ))
+        if next_page:
+            if '/page/' in next_page:
+                itemlist.append(item.clone( title='Siguientes ...', action='list_all', url = next_page, text_color='coral' ))
 
     return itemlist
 
@@ -75,7 +75,8 @@ def findvideos(item):
 
     data = httptools.downloadpage(item.url).data
 
-    url = scrapertools.find_single_match(data, '<param name="movie" value="([^"]+)')
+    url = scrapertools.find_single_match(data, '<div class="videocnt">.*?src="(.*?)"')
+
     if url:
         servidor = servertools.get_server_from_url(url)
 
@@ -88,7 +89,7 @@ def findvideos(item):
 def search(item, texto):
     logger.info()
     try:
-        item.url = host + '/index.php?categoria=0&keysrc=' + texto.replace(" ", "+")
+        item.url = host + '?s=' + texto.replace(" ", "+") + '&button='
         return list_all(item)
     except:
         import sys

@@ -1,0 +1,17 @@
+{
+  "id": "peliplusuno",
+  "name": "PeliPlusUno",
+  "thumbnail": "pelisplus1.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["lat", "cast", "vose"],
+
+  "clusters": ["news", "languages", "years", "classic", "lasts", "kids", "docs", "vos", "anime"],
+
+  "notes": "Películas por géneros y año. Series por Géneros."
+}

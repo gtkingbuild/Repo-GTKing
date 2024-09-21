@@ -122,11 +122,15 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
+    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'series/page/1', search_type = 'tvshow' ))
+
     itemlist.append(item.clone( title = 'Catálogo (alfabético)', action = 'list_all', url = host + 'series/letra-.', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Lo último', action = 'list_last', url = host + 'ultimos', search_type = 'tvshow', text_color='cyan' ))
 
-    itemlist.append(item.clone( title = 'En HD (alfabético)', action = 'list_all', url = host + 'series/hd/letra-.', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Catálogo HD', action = 'list_all', url = host + 'series/hd/page/1', search_type = 'tvshow' ))
+
+    itemlist.append(item.clone( title = 'Catálogo HD (alfabético)', action = 'list_all', url = host + 'series/hd/letra-.', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Por letra (A - Z)', action = 'alfabetico', url = host + 'tv-series', search_type = 'tvshow' ))
 
@@ -141,9 +145,11 @@ def mainlist_documentary(item):
 
     itemlist.append(item.clone( title = 'Buscar documental ...', action = 'search', search_type = 'documentary', text_color='cyan' ))
 
+    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'documentales/page/1', search_type = 'documentary'))
+
     itemlist.append(item.clone( title = 'Catálogo (alfabético)', action = 'list_all', url = host + 'documentales/letra-.', search_type = 'documentary'))
 
-    itemlist.append(item.clone( title = 'Lo último', action = 'list_last', url = host + 'ultimos', search_type = 'documentary', text_color='darkcyan' ))
+    itemlist.append(item.clone( title = 'Lo último', action = 'list_last', url = host + 'ultimos', search_type = 'documentary', text_color='cyan' ))
 
     itemlist.append(item.clone( title = 'Por letra (A - Z)', action = 'alfabetico', url = host + 'documentales', search_type = 'documentary' ))
 
@@ -222,30 +228,69 @@ def list_all(item):
             if "ESP" in title: titulo = titulo.split("ESP")[0]
             if "(" in titulo: titulo = titulo.split("(")[0]
 
-            thumb if "http" in thumb else "https:" + thumb
+            if '/?url=' in thumb: thumb = scrapertools.find_single_match(thumb, '/?url=(.*?)$')
+            else:
+                thumb if "http" in thumb else "https:" + thumb
 
-            itemlist.append(item.clone( action='findvideos', url=host[:-1] + url, title=title, thumbnail=thumb, contentType='movie', contentTitle=titulo, infoLabels={'year': "-"} ))
+            itemlist.append(item.clone( action='findvideos', url=host[:-1] + url, title=title, thumbnail=thumb,
+                                        contentType='movie', contentTitle=titulo, infoLabels={'year': "-"} ))
 
     elif item.search_type== 'tvshow':
         matches = re.compile(r"<a href='([^']+)'>([^<]+)").findall(data)
 
-        for url, title in matches:
-            if " - " in title: SerieName = title.split(" - ")[0]
-            else: SerieName = title
+        if matches:
+            for url, title in matches:
+                if " - " in title: SerieName = title.split(" - ")[0]
+                else: SerieName = title
 
-            itemlist.append(item.clone( action='episodios', url=host[:-1] + url, title=title, contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': "-"} ))
+                if SerieName:
+                    itemlist.append(item.clone( action='episodios', url=host[:-1] + url, title=title,
+                                                contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': "-"} ))
+
+        else:
+            matches = re.compile(r'<a href="([^"]+)">\s*<img.*?src="([^"]+)').findall(data)
+
+            for url, thumb in matches:
+                title = os.path.basename(os.path.normpath(url)).replace("-", " ")
+
+                if " Temporada" in title: SerieName = title.split(" Temporada")[0]
+                elif " - " in title: SerieName = title.split(" - ")[0]
+                else: SerieName = title
+
+                if '/?url=' in thumb: thumb = scrapertools.find_single_match(thumb, '/?url=(.*?)$')
+
+                if SerieName:
+                    itemlist.append(item.clone( action='episodios', url=host[:-1] + url, title=title, thumbnail=thumb,				
+					                            contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': "-"} ))
 
     else:
         matches = re.compile(r"<a href='([^']+)'>([^<]+)").findall(data)
 
-        for url, title in matches:
-            if "(" in title: titulo = title.split("(")[0]
-            else: titulo = title
+        if matches:
+            for url, title in matches:
+                if "(" in title: titulo = title.split("(")[0]
+                else: titulo = title
 
-            titulo = titulo.strip()
+                titulo = titulo.strip()
 
-            itemlist.append(item.clone( action = 'findvideos', url = host[:-1] + url, title = title,
-                                        contentType = 'movie', contentTitle = titulo, contentExtra = 'documentary', infoLabels={'year': "-"} ))
+                itemlist.append(item.clone( action = 'findvideos', url = host[:-1] + url, title = title,
+                                            contentType = 'movie', contentTitle = titulo, contentExtra = 'documentary', infoLabels={'year': "-"} ))
+
+        else:
+            matches = re.compile(r'<a href="([^"]+)">\s*<img.*?src="([^"]+)').findall(data)
+
+            for url, thumb in matches:
+                title = os.path.basename(os.path.normpath(url)).replace("-", " ")
+
+                if "(" in title: titulo = title.split("(")[0]
+                else: titulo = title
+
+                titulo = titulo.strip()
+
+                if '/?url=' in thumb: thumb = scrapertools.find_single_match(thumb, '/?url=(.*?)$')
+
+                itemlist.append(item.clone( action = 'findvideos', url = host[:-1] + url, title = title, thumbnail=thumb,
+                                            contentType = 'movie', contentTitle = titulo, contentExtra = 'documentary', infoLabels={'year': "-"} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -347,8 +392,9 @@ def list_post(item):
     matches = re.compile(patron).findall(data)
 
     for url, title, info, thumb in matches:
-        if "(" in title: titulo = title.split("(")[0]
-        else: titulo = title
+        titulo = title
+        if "[4K]" in title: titulo = title.split("[4K]")[0]
+        elif "(" in title: titulo = title.split("(")[0]
 
         itemlist.append(item.clone( action='findvideos', url=host[:-1] + url, title=title, thumbnail=thumb if "http" in thumb else "https:" + thumb,
                                     contentType=item.contentType, contentTitle=titulo, infoLabels={'year': "-", 'plot': info} ))

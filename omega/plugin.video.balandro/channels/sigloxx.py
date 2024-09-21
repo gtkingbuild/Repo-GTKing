@@ -1,5 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 
+import re
+
 from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
@@ -23,13 +25,13 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone ( title = 'YouTube', action = 'youtubes', thumbnail=config.get_thumb('youtube'), search_type = 'movie', text_color = 'moccasin' ))
 
-    itemlist.append(item.clone ( title = 'Sagas', action = 'sagas', url = host + 'sagas/', search_type = 'movie' ))
+    itemlist.append(item.clone ( title = 'Sagas', action = 'sagas', url = host + 'sagas/sagas-pag1/', search_type = 'movie' ))
 
     itemlist.append(item.clone ( title = 'Por año', action = 'anios', search_type = 'movie' ))
 
-    itemlist.append(item.clone ( title = 'Por actor', action = 'listas', url = host + 'actores/', group = 'Actores' ))
-    itemlist.append(item.clone ( title = 'Por actriz', action = 'listas', url = host + 'actrices/', group = 'Actrices' ))
-    itemlist.append(item.clone ( title = 'Por dirección, guionistas, productores', action = 'listas', url = host + 'directores/', group = 'Directores' ))
+    itemlist.append(item.clone ( title = 'Por actor', action = 'listas', url = host + 'actores/actores-pag1/', group = 'Actores' ))
+    itemlist.append(item.clone ( title = 'Por actriz', action = 'listas', url = host + 'actrices/actrices-pag1/', group = 'Actrices' ))
+    itemlist.append(item.clone ( title = 'Por dirección, guionistas, productores', action = 'listas', url = host + 'directores/directores-pag1/', group = 'Directores' ))
     itemlist.append(item.clone ( title = 'Por compositores, escritores, novelistas', action = 'listas', url = host + 'otras-biografias/', group = 'Otras biografías' ))
 
     return itemlist
@@ -76,14 +78,16 @@ def list_tubes(item):
     return itemlist
 
 
-
 def sagas(item):
     logger.info()
     itemlist = []
 
     data = httptools.downloadpage(item.url).data
+    data = re.sub(r'\n|\r|\t|&nbsp;|<br>|\s{2,}', "", data)
 
-    matches = scrapertools.find_multiple_matches(data, '<div class="col">.*?<a href="(.*?)".*?data-src="(.*?)".*?alt="(.*?)"')
+    bloque = scrapertools.find_single_match(str(data), '<div class="container-fluid">(.*?)</a></div></div>')
+
+    matches = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)".*?src="(.*?)".*?alt="(.*?)"')
 
     for url, thumb, title in matches:
         if not title or not url: continue
@@ -126,10 +130,11 @@ def listas(item):
     itemlist = []
 
     data = httptools.downloadpage(item.url).data
-
-    bloque = scrapertools.find_single_match(data, '>' + item.group + '<(.*?)</main>')
+    data = re.sub(r'\n|\r|\t|&nbsp;|<br>|\s{2,}', "", data)
 
     if '/otras-biografias' in item.url:
+        bloque = scrapertools.find_single_match(data, '>' + item.group + '<(.*?)</main>')
+
         matches = scrapertools.find_multiple_matches(bloque, '<li><a href="([^"]+)".*?rel="noopener noreferrer">(.*?)</a>')
 
         for url, title in matches:
@@ -137,12 +142,14 @@ def listas(item):
 
             itemlist.append(item.clone( action= 'list_films', title = title, url = url, text_color='tan' ))
     else:
-       matches = scrapertools.find_multiple_matches(bloque, 'data-src="(.*?)".*?alt="(.*?)".*?href="(.*?)"')
+        bloque = scrapertools.find_single_match(str(data), '<div class="container-fluid">(.*?)</a></div></div>')
 
-       for thumb, title, url in matches:
-           if not url or not title: continue
+        matches = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)".*?src="(.*?)".*?alt="(.*?)"')
 
-           itemlist.append(item.clone( action = 'list_films', title = title, url = url, thumbnail = thumb, text_color='moccasin' ))
+        for url, thumb, title in matches:
+            if not url or not title: continue
+
+            itemlist.append(item.clone( action = 'list_films', title = title, url = url, thumbnail = thumb, text_color='moccasin' ))
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<li class="page-item active">.*?<li class="page-item">.*?href="(.*?)"')

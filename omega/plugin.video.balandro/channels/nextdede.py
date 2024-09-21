@@ -5,7 +5,7 @@ import sys
 PY3 = False
 if sys.version_info[0] >= 3: PY3 = True
 
-import os, re, xbmcgui
+import re, xbmcgui
 
 from platformcode import config, logger, platformtools
 from core.item import Item
@@ -60,15 +60,20 @@ custom_headers["Sec-Fetch-Mode"] = "cors"
 custom_headers["Sec-Fetch-Site"] = "same-origin"
 
 
+# ~ webs para comprobar dominio vigente en actions pero pueden requerir proxies
+# ~ webs  0)-'https://dominiosnextdede.com/' ó Telegram 'https://t.me/s/NextdedeInformacion'
+
 dominios = [
-         'https://nextdede.tv'
+         'https://nextdede.us',
+         'https://nextdede.tv',
+         'https://nextdede.top'
          ]
 
 
 host = config.get_setting('dominio', 'nextdede', default=dominios[0])
 
 
-ant_hosts = ['https://nextdede.com', 'https://nextdede.top']
+ant_hosts = ['https://nextdede.com']
 
 
 if host in str(ant_hosts): config.set_setting('dominio', dominios[0], 'nextdede')
@@ -278,6 +283,20 @@ def login(item):
     email = config.get_setting('nextdede_email', 'nextdede', default='')
     password = config.get_setting('nextdede_password', 'nextdede', default='')
     username = config.get_setting('nextdede_username', 'nextdede', default='')
+
+    try:
+       if username:
+           userint = int(username)
+
+           if userint:
+               platformtools.dialog_ok(config.__addon_name + ' NextDede', '[COLOR red][B]El Usuario NO puede ser sólo números.[/B][/COLOR]', '[COLOR cyan][B]Credenciales[/B] [/COLOR][COLOR chartreuse][B]Anuladas[/B][/COLOR]')
+               config.set_setting('channel_nextdede_nextdede_email', '')
+               config.set_setting('channel_nextdede_nextdede_password', '')
+               config.set_setting('channel_nextdede_nextdede_username', '')
+               config.set_setting('channel_nextdede_nextdede_login', False)
+               return False
+    except:
+       pass
 
     token = ''
     data = ''
@@ -505,17 +524,24 @@ def acciones(item):
     itemlist.append(item.clone( channel='domains', action='test_domain_nextdede', title='Test Web del canal [COLOR yellow][B] ' + url + '[/B][/COLOR]',
                                 from_channel='nextdede', folder=False, text_color='chartreuse' ))
 
+    if email:
+        itemlist.append(Item( channel='domains', action='operative_domains_nextdede', title='[B]Dominios Operativo Vigente[/B]',
+                              desde_el_canal = True, host_canal = url, thumbnail=config.get_thumb('nextdede'), text_color='mediumaquamarine' ))
+
+        itemlist.append(Item( channel='domains', action='last_domain_nextdede', title='[B]Comprobar último dominio vigente[/B]',
+                              desde_el_canal = True, host_canal = url, thumbnail=config.get_thumb('nextdede'), text_color='chocolate' ))
+
     if domain_memo: title = '[B]Modificar/Eliminar el dominio memorizado[/B]'
     else: title = '[B]Informar Nuevo Dominio manualmente[/B]'
 
-    itemlist.append(item.clone( channel='domains', action='manto_domain_nextdede', title=title, desde_el_canal = True, folder=False, thumbnail=config.get_thumb('keyboard'), text_color='darkorange' ))
+    itemlist.append(item.clone( channel='domains', action='manto_domain_nextdede', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
 
     if not config.get_setting('nextdede_login', 'nextdede', default=False):
         if email:
             itemlist.append(item.clone( title = '[COLOR chartreuse][B]Iniciar sesión[/B][/COLOR]', action = 'login', start_ses = True ))
 
-            itemlist.append(item.clone( title = '[COLOR springgreen][B]Ver las credenciales[/B][/COLOR]', action = 'shuw_credenciales', thumbnail=config.get_thumb('pencil') ))
-            itemlist.append(Item( channel='domains', action='del_datos_nextdede', title='[B]Eliminar credenciales cuenta[/B]', thumbnail=config.get_thumb('folder'), text_color='crimson' ))
+            itemlist.append(item.clone( title = '[COLOR springgreen][B]Ver las credenciales[/B][/COLOR]', action = 'show_credenciales' ))
+            itemlist.append(Item( channel='domains', action='del_datos_nextdede', title='[B]Eliminar credenciales cuenta[/B]', thumbnail=config.get_thumb('nextdede'), text_color='crimson' ))
         else:
             itemlist.append(Item( channel='helper', action='show_help_register', title='[B]Información para registrarse[/B]', thumbnail=config.get_thumb('help'), text_color='green' ))
 
@@ -524,14 +550,14 @@ def acciones(item):
     if config.get_setting('nextdede_login', 'nextdede', default=False):
         itemlist.append(item.clone( title = '[COLOR chartreuse][B]Cerrar sesión[/B][/COLOR]', action = 'logout' ))
 
-        itemlist.append(item.clone( title = '[COLOR springgreen][B]Ver las credenciales[/B][/COLOR]', action = 'shuw_credenciales', thumbnail=config.get_thumb('pencil') ))
-        itemlist.append(Item( channel='domains', action='del_datos_nextdede', title='[B]Eliminar credenciales cuenta[/B]', thumbnail=config.get_thumb('folder'), text_color='crimson' ))
+        itemlist.append(item.clone( title = '[COLOR springgreen][B]Ver las credenciales[/B][/COLOR]', action = 'show_credenciales' ))
+        itemlist.append(Item( channel='domains', action='del_datos_nextdede', title='[B]Eliminar credenciales cuenta[/B]', thumbnail=config.get_thumb('nextdede'), text_color='crimson' ))
 
     itemlist.append(item_configurar_dominio(item))
 
     itemlist.append(item_configurar_proxies(item))
 
-    itemlist.append(Item( channel='helper', action='show_help_nextdede', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('help') ))
+    itemlist.append(Item( channel='helper', action='show_help_nextdede', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('nextdede') ))
 
     platformtools.itemlist_refresh()
 
@@ -548,7 +574,7 @@ def mainlist(item):
     itemlist.append(item.clone( action='acciones', title=titulo, text_color='goldenrod' ))
 
     if config.get_setting('nextdede_login', 'nextdede', default=False):
-        itemlist.append(item.clone( title = '[COLOR moccasin][B]Listas colecciones[/B][/COLOR]', action = 'list_listas', search_type = 'all' ))
+        itemlist.append(item.clone( title = '[COLOR greenyellow][B]Listas colecciones[/B][/COLOR]', action = 'list_listas', search_type = 'all' ))
 
         itemlist.append(item.clone( title = 'Buscar ...', action = 'search', search_type = 'all', text_color = 'yellow' ))
 
@@ -572,7 +598,7 @@ def mainlist_pelis(item):
 
         if not config.get_setting('dominio', 'nextdede'): config.set_setting('dominio', dominio, 'nextdede')
 
-        itemlist.append(item.clone( title = '[COLOR moccasin][B]Listas colecciones[/B][/COLOR]', action = 'list_listas', search_type = 'all' ))
+        itemlist.append(item.clone( title = '[COLOR greenyellow][B]Listas colecciones[/B][/COLOR]', action = 'list_listas', search_type = 'all' ))
 
         itemlist.append(item.clone( title = 'Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
 
@@ -612,7 +638,7 @@ def mainlist_series(item):
 
         if not config.get_setting('dominio', 'nextdede'): config.set_setting('dominio', dominio, 'nextdede')
 
-        itemlist.append(item.clone( title = '[COLOR moccasin][B]Listas colecciones[/B][/COLOR]', action = 'list_listas', search_type = 'all' ))
+        itemlist.append(item.clone( title = '[COLOR greenyellow][B]Listas colecciones[/B][/COLOR]', action = 'list_listas', search_type = 'all' ))
 
         itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
@@ -1025,7 +1051,7 @@ def findvideos(item):
     return itemlist
 
 
-def shuw_credenciales(item):
+def show_credenciales(item):
     logger.info()
 
     email = config.get_setting('nextdede_email', 'nextdede', default='')

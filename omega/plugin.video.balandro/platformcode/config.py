@@ -93,6 +93,13 @@ def get_thumb(thumb_name, theme='default', mtype='themes'):
     if os.path.exists(path):
         return path
 
+    path = os.path.join(get_runtime_path(), 'resources', 'media', 'channels', 'thumb', thumb_name + '.jpg')
+    if not os.path.exists(path):
+        path = os.path.join(get_runtime_path(), 'resources', 'media', 'channels', 'thumb', thumb_name + '.png')
+
+    if os.path.exists(path):
+        return path
+
     return ''
 
 def get_localized_category(categ):

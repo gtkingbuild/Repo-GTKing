@@ -47,6 +47,9 @@ except:
 host = 'https://www.cuevana2espanol.net/'
 
 
+_player = '.cuevana2espanol.'
+
+
 # ~ por si viene de enlaces guardados
 ant_hosts = ['https://cuevana2espanol.com/', 'https://www.cuevana2espanol.icu/']
 
@@ -103,7 +106,7 @@ def do_downloadpage(url, post=None, headers=None):
     if host in url:
         if hay_proxies: timeout = config.get_setting('channels_repeat', default=30)
 
-    if not url.startswith(host):
+    if not url.startswith(host) and not _player in url:
         data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
     else:
         if hay_proxies:
@@ -509,6 +512,7 @@ def findvideos(item):
 
             if srv == 'fembed': continue
             elif srv == 'streamsb': continue
+            elif srv == 'plustream': continue
 
             elif srv == 'ok-ru': srv = 'okru'
 
@@ -534,6 +538,7 @@ def findvideos(item):
 
             if srv == 'fembed': continue
             elif srv == 'streamsb': continue
+            elif srv == 'plustream': continue
 
             elif srv == 'ok-ru': srv = 'okru'
 
@@ -558,6 +563,7 @@ def findvideos(item):
 
             if srv == 'fembed': continue
             elif srv == 'streamsb': continue
+            elif srv == 'plustream': continue
 
             elif srv == 'ok-ru': srv = 'okru'
 
@@ -582,8 +588,10 @@ def findvideos(item):
             srv = srv.lower().strip()
 
             if srv == '1fichier': continue
+
             elif srv == 'fembed': continue
             elif srv == 'streamsb': continue
+            elif srv == 'plustream': continue
 
             elif srv == 'ok-ru': srv = 'okru'
 
@@ -623,13 +631,17 @@ def play(item):
     if new_url: url = new_url
 
     if '/cinestart.' in url: url = ''
-    elif '/player.php?' in url: url = ''
+    elif '/player.php?' in url or '/download.php?' in url: url = ''
 
     if url:
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 
         url = servertools.normalize_url(servidor, url)
+
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(url).lower()
+            if not new_server.startswith("http"): servidor = new_server
 
         if servidor == 'zplayer': url = url + '|' + host
 

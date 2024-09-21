@@ -339,6 +339,10 @@ def episodios(item):
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
     link = scrapertools.find_single_match(data, '<form action="(.*?)"')
+    if not link: link = scrapertools.find_single_match(data, '<a target="_blank".*?href="(.*?)"')
+
+    if not link:
+        if '/s.php?' in item.url: link = item.url
 
     if link:
         link = link.replace('https://short-link.one/#', 'https://short-link.one/s.php?i=')
@@ -347,7 +351,6 @@ def episodios(item):
         url_base64 = decrypters.decode_url_base64(link, host_torrent)
 
         data = do_downloadpage(url_base64)
-
 
     matches = re.compile('<li>.*?Descargar Capitulo(.*?)<a.*?href="(.*?)"', re.DOTALL).findall(data)
 

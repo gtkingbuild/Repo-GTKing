@@ -7,13 +7,114 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-host = 'https://www.veronline.cc/'
+host = 'https://www.veronline.in/'
 
 
-def do_downloadpage(url, post=None, headers=None):
-    data = httptools.downloadpage(url, post=post, headers=headers).data
+# ~ por si viene de enlaces guardados
+ant_hosts = ['https://www.veronline.sh/', 'https://www.veronline.cc/']
+
+domain = config.get_setting('dominio', 'veronline', default='')
+
+if domain:
+    if domain == host: config.set_setting('dominio', '', 'veronline')
+    elif domain in str(ant_hosts): config.set_setting('dominio', '', 'veronline')
+    else: host = domain
+
+
+def item_configurar_proxies(item):
+    color_list_proxies = config.get_setting('channels_list_proxies_color', default='red')
+
+    color_avis = config.get_setting('notification_avis_color', default='yellow')
+    color_exec = config.get_setting('notification_exec_color', default='cyan')
+
+    context = []
+
+    tit = '[COLOR %s]Información proxies[/COLOR]' % color_avis
+    context.append({'title': tit, 'channel': 'helper', 'action': 'show_help_proxies'})
+
+    if config.get_setting('channel_veronline_proxies', default=''):
+        tit = '[COLOR %s][B]Quitar los proxies del canal[/B][/COLOR]' % color_list_proxies
+        context.append({'title': tit, 'channel': item.channel, 'action': 'quitar_proxies'})
+
+    tit = '[COLOR %s]Ajustes categoría proxies[/COLOR]' % color_exec
+    context.append({'title': tit, 'channel': 'actions', 'action': 'open_settings'})
+
+    plot = 'Es posible que para poder utilizar este canal necesites configurar algún proxy, ya que no es accesible desde algunos países/operadoras.'
+    plot += '[CR]Si desde un navegador web no te funciona el sitio ' + host + ' necesitarás un proxy.'
+    return item.clone( title = '[B]Configurar proxies a usar[/B] ...', action = 'configurar_proxies', folder=False, context=context, plot=plot, text_color='red' )
+
+def quitar_proxies(item):
+    from modules import submnuctext
+    submnuctext._quitar_proxies(item)
+    return True
+
+def configurar_proxies(item):
+    from core import proxytools
+    return proxytools.configurar_proxies_canal(item.channel, host)
+
+
+def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
+    # ~ por si viene de enlaces guardados
+    for ant in ant_hosts:
+        url = url.replace(ant, host)
+
+    if '/series-online/año/' in url: raise_weberror = False
+
+    hay_proxies = False
+    if config.get_setting('channel_veronline_proxies', default=''): hay_proxies = True
+
+    timeout = None
+    if host in url:
+        if hay_proxies: timeout = config.get_setting('channels_repeat', default=30)
+
+    if not url.startswith(host):
+        data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+    else:
+        if hay_proxies:
+            data = httptools.downloadpage_proxy('veronline', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+        else:
+            data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+
+        if not data:
+            if not 'recherche?q=' in url:
+                if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('VerOnline', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+
+                timeout = config.get_setting('channels_repeat', default=30)
+
+                if hay_proxies:
+                    data = httptools.downloadpage_proxy('veronline', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+                else:
+                    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
 
     return data
+
+
+def acciones(item):
+    logger.info()
+    itemlist = []
+
+    domain_memo = config.get_setting('dominio', 'veronline', default='')
+
+    if domain_memo: url = domain_memo
+    else: url = host
+
+    itemlist.append(Item( channel='actions', action='show_latest_domains', title='[COLOR moccasin][B]Últimos Cambios de Dominios[/B][/COLOR]', thumbnail=config.get_thumb('pencil') ))
+
+    itemlist.append(Item( channel='helper', action='show_help_domains', title='[B]Información Dominios[/B]', thumbnail=config.get_thumb('help'), text_color='green' ))
+
+    itemlist.append(item.clone( channel='domains', action='test_domain_veronline', title='Test Web del canal [COLOR yellow][B] ' + url + '[/B][/COLOR]',
+                                from_channel='veronline', folder=False, text_color='chartreuse' ))
+
+    if domain_memo: title = '[B]Modificar/Eliminar el dominio memorizado[/B]'
+    else: title = '[B]Informar Nuevo Dominio manualmente[/B]'
+
+    itemlist.append(item.clone( channel='domains', action='manto_domain_veronline', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
+
+    itemlist.append(item_configurar_proxies(item))
+
+    platformtools.itemlist_refresh()
+
+    return itemlist
 
 
 def mainlist(item):
@@ -24,9 +125,13 @@ def mainlist_series(item):
     logger.info()
     itemlist = []
 
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
+
     itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'series-online.html', search_type = 'tvshow' ))
+
+    itemlist.append(item.clone( title = 'Últimos capítulos', action = 'last_epis', url = host, search_type = 'tvshow', text_color = 'cyan' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'tvshow' ))
@@ -88,11 +193,15 @@ def list_all(item):
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
-    bloque = scrapertools.find_single_match(data, '<span>Veronline.cc</span>(.*?)>mas vistas<')
-    if not bloque: bloque = scrapertools.find_single_match(data, '<span>veronline.cc</span>(.*?)>mas vistas<')
+    bloque = scrapertools.find_single_match(data, '<span>Veronline.in</span>(.*?)>mas vistas<')
 
-    if not bloque: bloque = scrapertools.find_single_match(data, '<span>Veronline</span>(.*?)>mas vistas<')
+    if not bloque: bloque = scrapertools.find_single_match(data, '<span>veronline.in</span>(.*?)>mas vistas<')
+
     if not bloque: bloque = scrapertools.find_single_match(data, '<span>veronline</span>(.*?)>mas vistas<')
+    if not bloque: bloque = scrapertools.find_single_match(data, '<span>Veronline</span>(.*?)>mas vistas<')
+
+    if not bloque: bloque = scrapertools.find_single_match(data, '<span>veronline.*?</span>(.*?)>mas vistas<')
+    if not bloque: bloque = scrapertools.find_single_match(data, '<span>Veronline.*?</span>(.*?)>mas vistas<')
 
     matches = scrapertools.find_multiple_matches(bloque, '<div class="shortstory-in">(.*?)</div></div></div>')
 
@@ -106,16 +215,66 @@ def list_all(item):
 
         title = title.replace('online gratis', '').strip()
 
-        itemlist.append(item.clone( action='temporadas', url = url, title = title, thumbnail = thumb, contentType='tvshow', contentSerieName=title,  infoLabels = {'year': '-'} ))
+        year = '-'
+        if '/series-online/año/' in item.url:
+            year = scrapertools.find_single_match(item.url, "/series-online/año/(.*?)$")
+            if year:
+               year = year.replace('.html', '')
+
+               if '/page-' in year: year = scrapertools.find_single_match(year, "(.*?)/page-")
+
+        if not year: year = '-'
+        itemlist.append(item.clone( action='temporadas', url = url, title = title, thumbnail = thumb,
+                                    contentType='tvshow', contentSerieName=title,  infoLabels = {'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
-        next_page = scrapertools.find_single_match(data, '<div class="pages-numbers">.*?</a>.*?href="(.*?)"')
+        next_page = scrapertools.find_single_match(data, '<div class="pages-numbers">.*?</a>.*?</div>.*?href="(.*?)"')
 
         if next_page:
             if '/page-' in next_page:
                 itemlist.append(item.clone( title = 'Siguientes ...', action='list_all', url = next_page, text_color='coral' ))
+
+    return itemlist
+
+
+def last_epis(item):
+    logger.info()
+    itemlist = []
+
+    data = do_downloadpage(item.url)
+    data = re.sub(r'\n|\r|\t|&nbsp;|<br>|\s{2,}', "", data)
+
+    bloque = scrapertools.find_single_match(data, '>Nuevos Capítulos(.*?)>Nuevos Temporadas')
+
+    matches = scrapertools.find_multiple_matches(bloque, '<li>(.*?)</li>')
+
+    for match in matches:
+        url = scrapertools.find_single_match(match, 'href="(.*?)"')
+
+        title = scrapertools.find_single_match(match, '<a href=".*?">(.*?)<span>')
+
+        if not url or not title: continue
+
+        title = title.replace('&#039;', "'")
+
+        SerieName = scrapertools.find_single_match(title, '(.*?)- T').strip()
+
+        season = scrapertools.find_single_match(title, '- T(.*?)Capítulo').strip()
+
+        if not season: season = 1
+
+        epis = scrapertools.find_single_match(title, 'Capítulo(.*?)</span>').strip()
+
+        if not epis: epis = 1
+
+        title = title.replace('Capítulo ', '[COLOR goldenrod]Capítulo [/COLOR]')
+
+        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, infoLabels={'year': '-'},
+                                    contentSerieName = SerieName, contentType = 'episode', contentSeason = season, contentEpisodeNumber = epis ))
+
+    tmdb.set_infoLabels(itemlist)
 
     return itemlist
 
@@ -213,7 +372,9 @@ def episodios(item):
 
         if not title or not url: continue
 
-        epis = title.replace('Episodio', '').strip()
+        epis = scrapertools.find_single_match(title, 'Episodio(.*?)$').strip()
+        if not epis: epis = scrapertools.find_single_match(title, 'Capítulo(.*?)$').strip()
+        if not epis: epis = scrapertools.find_single_match(title, 'Capitulo(.*?)$').strip()
 
         if not epis: epis = 1
 
@@ -258,10 +419,23 @@ def findvideos(item):
 
             d_url = host[:-1] + d_url
 
-            try: url = httptools.downloadpage(d_url, follow_redirects=False).headers['location']
-            except: url = ''
+            try:
+                hay_proxies = False
+                if config.get_setting('channel_veronline_proxies', default=''): hay_proxies = True
+
+                timeout = None
+                if hay_proxies: timeout = config.get_setting('channels_repeat', default=30)
+
+                if hay_proxies:
+                    url = httptools.downloadpage_proxy('veronline', d_url, follow_redirects=False, timeout=timeout).headers['location']
+                else:
+                    url = httptools.downloadpage(d_url, follow_redirects=False, timeout=timeout).headers['location']
+            except:
+                url = ''
 
             if url:
+                url = url.replace('/younetu.com/player/', '/waaw.to/')
+
                 servidor = servertools.get_server_from_url(url)
                 servidor = servertools.corregir_servidor(servidor)
 

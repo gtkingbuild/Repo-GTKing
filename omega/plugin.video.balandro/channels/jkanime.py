@@ -21,7 +21,7 @@ if PY3:
        import xbmc
        if xbmc.getCondVisibility("system.platform.Linux.RaspberryPi") or xbmc.getCondVisibility("System.Platform.Linux"): LINUX = True
     except: pass
- 
+
 try:
    if LINUX:
        try:
@@ -45,9 +45,6 @@ except:
 
 
 host = 'https://jkanime.net/'
-
-
-perpage = 25
 
 
 def item_configurar_proxies(item):
@@ -127,7 +124,7 @@ def do_downloadpage(url, post=None, headers=None):
                 pass
 
     if '<title>Just a moment...</title>' in data:
-        if not 'buscar/' in url:
+        if not '/buscar/' in url:
             platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]CloudFlare[COLOR orangered] Protection[/B][/COLOR]')
         return ''
 
@@ -143,7 +140,7 @@ def acciones(item):
 
     itemlist.append(item_configurar_proxies(item))
 
-    itemlist.append(Item( channel='helper', action='show_help_jkanime', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('help') ))
+    itemlist.append(Item( channel='helper', action='show_help_jkanime', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('jkanime') ))
 
     platformtools.itemlist_refresh()
 
@@ -166,13 +163,15 @@ def mainlist_animes(item):
 
     itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
-    itemlist.append(item.clone( title = 'Buscar anime ...', action = 'search', search_type = 'tvshow', text_color='springgreen' ))
+    itemlist.append(item.clone( title = 'Buscar anime ...', action = 'search', search_type = 'all', text_color='springgreen' ))
 
-    itemlist.append(item.clone( title = 'Novedades', action = 'list_all', url = host, search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Catálogo', action = 'list_dir', url = host + 'directorio/', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Últimos capítulos', action = 'last_epis', url = host, search_type = 'tvshow', text_color = 'cyan' ))
 
-    itemlist.append(item.clone( title = 'Últimos animes', action = 'list_last', url = host, search_type = 'tvshow', text_color = 'olivedrab' ))
+    itemlist.append(item.clone( title = 'Últimos animes', action = 'list_last', url = host, search_type = 'tvshow', text_color = 'moccasin' ))
+
+    itemlist.append(item.clone( title = 'Más recientes', action = 'list_all', url = host, search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Ovas', action = 'list_all', url = host + 'tipo/ova/', search_type = 'tvshow' ))
 
@@ -215,55 +214,121 @@ def alfabetico(item):
     return sorted(itemlist, key=lambda x: x.title)
 
 
-def list_all(item):
+def list_dir(item):
     logger.info()
     itemlist = []
-
-    if not item.page: item.page = 0
 
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
-    matches = re.compile('<h5.*?href="([^"]+)">([^<]+)<\/a></h5></div>.*?div class="[^"]+"><.*?set[^"]+"[^"]+"([^"]+)"').findall(data)
+    matches = re.compile('<div class="card mb-3 custom_item2"(.*?)</div></div></div></div>').findall(data)
 
-    num_matches = len(matches)
+    for match in matches:
+        url = scrapertools.find_single_match(match, 'href="(.*?)"')
 
-    for url, title, thumb in matches[item.page * perpage:]:
-        if not title: continue
+        title = scrapertools.find_single_match(match, '<a title="(.*?)"')
 
-        if url:
-            if item.search_type == "tvshow":
-                SerieName = title
+        if not url or not title: continue
 
-                if 'OVA' in title: SerieName = title.split("OVA")[0]
-                if 'Season' in title: SerieName = title.split("Season")[0]
-                if 'Movie' in title: SerieName = title.split("Movie")[0]
+        title = title.replace('&quot;', '').replace('&#039;s', "'s").strip()
 
-                SerieName = SerieName.strip()
+        thumb = scrapertools.find_single_match(match, '<img src="(.*?)"')
 
-                itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb, contentType='tvshow', contentSerieName=SerieName, infoLabels={'year':'-'} ))
-            else:
-                url = url + 'pelicula/'
+        tipo = 'movie' if 'Pelicula' in match else 'tvshow'
+        sufijo = '' if item.search_type != 'all' else tipo
 
-                itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, contentType='movie', contentTitle=title, infoLabels={'year': '-'} ))
+        if tipo == 'tvshow':
+            if item.search_type != 'all':
+                if item.search_type == 'movie': continue
 
-            if len(itemlist) >= perpage: break
+            SerieName = title
+
+            if 'OVA' in title: SerieName = title.split("OVA")[0]
+            if 'Season' in title: SerieName = title.split("Season")[0]
+            if 'Movie' in title: SerieName = title.split("Movie")[0]
+
+            SerieName = SerieName.strip()
+
+            itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb, fmt_sufijo=sufijo,
+                                        contentType='tvshow', contentSerieName=SerieName, infoLabels={'year':'-'} ))
+
+        if tipo == 'movie':
+            if item.search_type != 'all':
+                if item.search_type == 'tvshow': continue
+
+            url = url + 'pelicula/'
+
+            itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, fmt_sufijo=sufijo,
+                                        contentType='movie', contentTitle=title, infoLabels={'year': '-'} ))
 
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
-        buscar_next = True
-        if num_matches > perpage:
-            hasta = (item.page * perpage) + perpage
-            if hasta < num_matches:
-                itemlist.append(item.clone( title = 'Siguientes ...', page = item.page + 1, action = 'list_all', text_color = 'coral' ))
-                buscar_next = False
+        next_page = scrapertools.find_single_match(data, '<a class="text nav-next".*?href="(.*?)".*?">Resultados')
 
-        if buscar_next:
-            next_page = scrapertools.find_single_match(data, '<a class="text nav-next".*?href="(.*?)".*?">Resultados')
+        if next_page:
+            itemlist.append(item.clone( title = 'Siguientes ...', url = next_page, action = 'list_dir', text_color = 'coral' ))
 
-            if next_page:
-                itemlist.append(item.clone( title = 'Siguientes ...', url = next_page, action = 'list_all', page = 0, text_color = 'coral' ))
+    return itemlist
+
+
+def list_all(item):
+    logger.info()
+    itemlist = []
+
+    data = do_downloadpage(item.url)
+    data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
+
+    if '/buscar/' in item.url or '/letra/' in item.url:
+        matches = re.compile('<div class="anime__item">(.*?)</div></div>').findall(data)
+    else:
+        matches = re.compile('<div class="anime__item">(.*?)</div></div></div>').findall(data)
+
+    for match in matches:
+        url = scrapertools.find_single_match(match, 'href="(.*?)"')
+
+        title = scrapertools.find_single_match(match, '<h5>.*?">(.*?)</a>')
+
+        if not url or not title: continue
+
+        title = title.replace('&quot;', '').replace('&#039;s', "'s").strip()
+
+        thumb = scrapertools.find_single_match(match, 'data-setbg"(.*?)"')
+
+        tipo = 'movie' if 'Pelicula' in match else 'tvshow'
+        sufijo = '' if item.search_type != 'all' else tipo
+
+        if tipo == 'tvshow':
+            if item.search_type != 'all':
+                if item.search_type == 'movie': continue
+
+            SerieName = title
+
+            if 'OVA' in title: SerieName = title.split("OVA")[0]
+            if 'Season' in title: SerieName = title.split("Season")[0]
+            if 'Movie' in title: SerieName = title.split("Movie")[0]
+
+            SerieName = SerieName.strip()
+
+            itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb, fmt_sufijo=sufijo,
+                                        contentType='tvshow', contentSerieName=SerieName, infoLabels={'year':'-'} ))
+
+        if tipo == 'movie':
+            if item.search_type != 'all':
+                if item.search_type == 'tvshow': continue
+
+            url = url + 'pelicula/'
+
+            itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, fmt_sufijo=sufijo,
+                                        contentType='movie', contentTitle=title, infoLabels={'year': '-'} ))
+
+    tmdb.set_infoLabels(itemlist)
+
+    if itemlist:
+        next_page = scrapertools.find_single_match(data, '<a class="text nav-next".*?href="(.*?)".*?">Resultados')
+
+        if next_page:
+            itemlist.append(item.clone( title = 'Siguientes ...', url = next_page, action = 'list_all', text_color = 'coral' ))
 
     return itemlist
 
@@ -272,8 +337,6 @@ def list_last(item):
     logger.info()
     itemlist = []
 
-    if not item.page: item.page = 0
-
     data = do_downloadpage(item.url)
 
     bloque = scrapertools.find_single_match(data, 'Últimos Animes agregados</h4>.*?<div class="col-lg-4 col-md-6 col-sm-8 trending_div">')
@@ -281,9 +344,9 @@ def list_last(item):
     matches = scrapertools.find_multiple_matches(bloque, 'data-setbg="(.*?)".*?<a  href="(.*?)">(.*?)</a>')
     if not matches: matches = scrapertools.find_multiple_matches(bloque, 'data-setbg="(.*?)".*?<a href="(.*?)">(.*?)</a>')
 
-    num_matches = len(matches)
+    for thumb, url, title in matches:
+        title = title.replace('&quot;', '').replace('&#039;s', "'s").strip()
 
-    for thumb, url, title in matches[item.page * perpage:]:
         SerieName = title
 
         if 'OVA' in title: SerieName = title.split("OVA")[0]
@@ -292,17 +355,10 @@ def list_last(item):
 
         SerieName = SerieName.strip()
 
-        itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb, contentType='tvshow', contentSerieName=SerieName, infoLabels={'year':'-'} ))
-
-        if len(itemlist) >= perpage: break
+        itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb,
+                                    contentType='tvshow', contentSerieName=SerieName, infoLabels={'year':'-'} ))
 
     tmdb.set_infoLabels(itemlist)
-
-    if itemlist:
-        if num_matches > perpage:
-            hasta = (item.page * perpage) + perpage
-            if hasta < num_matches:
-                itemlist.append(item.clone( title = 'Siguientes ...', page = item.page + 1, action = 'list_last', text_color = 'coral' ))
 
     return itemlist
 
@@ -311,35 +367,25 @@ def last_epis(item):
     logger.info()
     itemlist = []
 
-    if not item.page: item.page = 0
-
     data = do_downloadpage(item.url)
 
     matches = scrapertools.find_multiple_matches(data, '<a href="([^"]+)" class="bloqq">.*?<img src="([^"]+)".*?title="([^"]+)".*?\n.*?\n.*?\n.*?\n.*?h6>.*?\n.*?(\d+).*?</')
 
-    num_matches = len(matches)
+    for url, thumb, title, episode in matches:
+        title = title.replace('&quot;', '').replace('&#039;s', "'s").strip()
 
-    for url, thumb, title, episode in matches[item.page * perpage:]:
         SerieName = title
 
         SerieName = SerieName.strip()
 
         title = 'Cap.{} - {}'.format(episode, title)
 
-        title = title.replace('Cap.', '[COLOR goldenrod]Cap.[/COLOR]')
+        title = title.replace('Cap.', '[COLOR goldenrod]Cap. [/COLOR]')
 
         itemlist.append(item.clone( action='findvideos', url = url, title = title, thumbnail=thumb,
                                     contentSerieName=SerieName, contentType='episode', contentSeason=1, contentEpisodeNumber=episode ))
 
-        if len(itemlist) >= perpage: break
-
     tmdb.set_infoLabels(itemlist)
-
-    if itemlist:
-        if num_matches > perpage:
-            hasta = (item.page * perpage) + perpage
-            if hasta < num_matches:
-                itemlist.append(item.clone( title = 'Siguientes ...', page = item.page + 1, action = 'last_epis', text_color = 'coral' ))
 
     return itemlist
 
@@ -420,8 +466,11 @@ def findvideos(item):
 
         other = ''
         if "/um.php" in url: other = 'um'
+        elif "/um2.php" in url: other = 'um2'
+        elif "/umv.php" in url: other = 'umv'
+
         elif "/jk.php" in url: other = 'jk'
-        elif '/jksw.php' in url: other =  'jk'
+        elif '/jksw.php' in url: other =  'jksw'
 
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
@@ -445,8 +494,8 @@ def play(item):
 
     url_play = item.url
 
-    if "/um.php" in item.url or "/um2.php" in item.url:
-        item.url = item.url.replace('/um2.php', '/um.php')
+    if "/um.php" in item.url or "/um2.php" in item.url or '/umv.php' in item.url:
+        item.url = item.url.replace('/um2.php', '/um.php').replace('/umv.php', '/um.php')
 
         headers = {"Referer": item.url}
         data = do_downloadpage(item.url, headers = headers)
@@ -485,6 +534,10 @@ def play(item):
         servidor = servertools.corregir_servidor(servidor)
 
         url_play = servertools.normalize_url(servidor, url_play)
+
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(url_play).lower()
+            if not new_server.startswith("http"): servidor = new_server
 
         itemlist.append(item.clone(url = url_play, server = servidor))
 

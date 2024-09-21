@@ -15,7 +15,7 @@ from core.item import Item
 from core import httptools, scrapertools, jsontools
 
 
-host = "https://www.dailymotion.com/verdocumentalesonline"
+host = "https://www.dailymotion.com/"
 
 # ~ Id: x24nyzt
 # ~ https://developer.dailymotion.com/tools/
@@ -78,7 +78,7 @@ def list_all(item):
     else: url = 'https://api.dailymotion.com/user/x24nyzt/videos'
 
     if item.group == 'vistos':
-         url += '?limit=%d&page=%d&sort=visited' % (perpage, item.page)
+        url += '?limit=%d&page=%d&sort=visited' % (perpage, item.page)
     else:
         url += '?limit=%d&page=%d&sort=recent' % (perpage, item.page)
 

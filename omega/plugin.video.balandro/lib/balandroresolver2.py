@@ -46,7 +46,7 @@ class EstructuraInicial(object):
             for i, match in enumerate(matches):
                 x = self.unhex(match[2]) if match[2][:2] == '\\x' else match[2]
                 valor = self._resolver_funcion(int(match[1], 16), x)
-                
+
                 if "'" not in valor:
                     self.data = self.data.replace(match[0], "\\'"+valor+"\\'")
                 elif '"' not in valor:
@@ -155,11 +155,10 @@ class EstructuraInicial(object):
 
         return w.encode('utf8')
 
+
     def unhex(self, txt):
         return re.sub("\\\\x[a-f0-9][a-f0-9]", lambda m: m.group()[2:].decode('hex'), txt)
 
-
-#  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 def custom_unhex(txt):
     return re.sub('\\\\x([a-fA-F0-9][a-fA-F0-9])', lambda patron2: str(chr(int(patron2.group(1), 16))), txt)
@@ -255,8 +254,6 @@ def hdfull_providers_01(data):
     return p
 
 
-#  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 def uptostream_sumes(data):
     matches = re.findall("('([^']*)'\s*\+\s*'([^']*)')[^.]+", data, re.DOTALL)
 
@@ -349,7 +346,7 @@ def decode_video_uptostream(data):
 
     if not matches:
         logger.info('Uptostream not detected 1')
- 
+
         patron = decode_video_uptostream_01(data)
         if patron: return patron
         return '', ''
@@ -414,8 +411,6 @@ def decode_video_uptostream_01(data):
     return patron
 
 
-#  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 def rshift(val, n):
     return val>>n if val >= 0 else (val+0x100000000)>>n
 
@@ -464,5 +459,4 @@ def get_sucuri_cookie(data):
         ck = ''
 
     return ck.replace('=', ''), e
-
 

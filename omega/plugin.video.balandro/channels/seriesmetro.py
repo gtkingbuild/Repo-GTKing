@@ -132,6 +132,7 @@ def list_all(item):
     itemlist = []
 
     data = do_downloadpage(item.url)
+    data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
     if '</main>' in data: data = data.split('</main>')[0]
     elif '<aside class="sidebar"' in data: data = data.split('<aside class="sidebar"')[0]
@@ -159,10 +160,11 @@ def list_all(item):
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
-        next_page = scrapertools.find_single_match(data, '<a href="([^"]+)"[^>]*><i class="fa-arrow-right">')
+        next_page = scrapertools.find_single_match(data, '<nav class="navigation pagination".*?<a class="page-link current".*?</a>.*?href="([^"]+)"')
 
         if next_page:
-            itemlist.append(item.clone (url = next_page, title = 'Siguientes ...', action = 'list_all', text_color='coral' ))
+            if '/page/' in next_page:
+                itemlist.append(item.clone (url = next_page, title = 'Siguientes ...', action = 'list_all', text_color='coral' ))
 
     return itemlist
 
@@ -486,6 +488,10 @@ def play(item):
 
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
+
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(url).lower()
+            if not new_server.startswith("http"): servidor = new_server
 
         if servidor and servidor != 'directo':
             url = servertools.normalize_url(servidor, url)

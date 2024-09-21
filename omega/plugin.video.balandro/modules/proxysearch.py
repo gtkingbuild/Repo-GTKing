@@ -25,6 +25,68 @@ config.set_setting('proxysearch_process', '')
 config.set_setting('proxysearch_process_proxies', '')
 
 
+con_incidencias = ''
+no_accesibles = ''
+
+try:
+    with open(os.path.join(config.get_runtime_path(), 'dominios.txt'), 'r') as f: txt_status=f.read(); f.close()
+except:
+    try: txt_status = open(os.path.join(config.get_runtime_path(), 'dominios.txt'), encoding="utf8").read()
+    except: txt_status = ''
+
+if txt_status:
+    bloque = scrapertools.find_single_match(txt_status, 'SITUACION CANALES(.*?)CANALES TEMPORALMENTE DES-ACTIVADOS')
+
+    matches = scrapertools.find_multiple_matches(bloque, "[B](.*?)[/B]")
+
+    for match in matches:
+        match = match.strip()
+
+        if '[COLOR moccasin]' in match: con_incidencias += '[B' + match + '/I][/B][/COLOR][CR]'
+
+    bloque = scrapertools.find_single_match(txt_status, 'CANALES PROBABLEMENTE NO ACCESIBLES(.*?)ULTIMOS CAMBIOS DE DOMINIOS')
+
+    matches = scrapertools.find_multiple_matches(bloque, "[B](.*?)[/B]")
+
+    for match in matches:
+        match = match.strip()
+
+        if '[COLOR moccasin]' in match: no_accesibles += '[B' + match + '/I][/B][/COLOR][CR]'
+
+
+dominioshdfull = [
+         'https://hd-full.sbs/',
+         'https://hd-full.life/',
+         'https://hd-full.fit/',
+         'https://hd-full.me/',
+         'https://hd-full.vip/',
+         'https://hd-full.lol/',
+         'https://hd-full.in/',
+         'https://hd-full.one/',
+         'https://hd-full.co/',
+         'https://hdfull.icu/',
+         'https://hdfull.quest/',
+         'https://hdfull.link/'
+         'https://hdfull.today/',
+         'https://hdfull.sbs/',
+         'https://hdfull.one/',
+         'https://hdfull.org/',
+         'https://hd-full.biz/',
+         'https://hd-full.im/',
+         'https://new.hdfull.one/'
+         ]
+
+dominiosnextdede = [
+         'https://nextdede.us',
+         'https://nextdede.tv',
+         'https://nextdede.top'
+         ]
+
+dominiosplaydede = [
+         'https://playdede.eu/'
+         ]
+
+
 channels_poe = [
         ['gdrive', 'https://drive.google.com/drive/']
         ]
@@ -301,11 +363,25 @@ def proxysearch_all(item):
         if not 'proxies' in ch['notes'].lower(): continue
 
         if config.get_setting('mnu_simple', default=False):
-            if 'inestable' in ch['clusters']: continue
+            if 'enlaces torrent exclusivamente' in ch['notes'].lower(): continue
+            elif 'exclusivamente al dorama' in ch['notes'].lower(): continue
+            elif 'exclusivamente al anime' in ch['notes'].lower(): continue
+            elif '+18' in ch['notes']: continue
+
+            elif 'inestable' in ch['clusters']: continue
             elif 'problematic' in ch['clusters']: continue
         else:
             if not config.get_setting('mnu_torrents', default=False) or config.get_setting('search_no_exclusively_torrents', default=False):
                 if 'enlaces torrent exclusivamente' in ch['notes'].lower(): continue
+
+            if not config.get_setting('mnu_doramas', default=True):
+                if 'exclusivamente al dorama' in ch['notes'].lower(): continue
+
+            if not config.get_setting('mnu_animes', default=True):
+                if 'exclusivamente al anime' in ch['notes'].lower(): continue
+
+            if not config.get_setting('mnu_adultos', default=True):
+                if '+18' in ch['notes']: continue
 
             if config.get_setting('mnu_problematicos', default=False):
                 if 'problematic' in ch['clusters']: continue
@@ -352,6 +428,24 @@ def proxysearch_all(item):
         if ch_list:
            for ch in ch_list:
                if not 'proxies' in ch['notes'].lower(): continue
+
+               if not config.get_setting('mnu_torrents', default=False) or config.get_setting('search_no_exclusively_torrents', default=False):
+                   if 'enlaces torrent exclusivamente' in ch['notes'].lower(): continue
+
+               if not config.get_setting('mnu_doramas', default=True):
+                   if 'exclusivamente al dorama' in ch['notes'].lower(): continue
+
+               if not config.get_setting('mnu_animes', default=True):
+                   if 'exclusivamente al anime' in ch['notes'].lower(): continue
+
+               if not config.get_setting('mnu_adultos', default=True):
+                   if '+18' in ch['notes']: continue
+
+               if config.get_setting('mnu_problematicos', default=False):
+                   if 'problematic' in ch['clusters']: continue
+
+               if config.get_setting('search_no_inestables', default=False):
+                   if 'inestable' in ch['clusters']: continue
 
                if channels_excludes:
                    channels_preselct = str(channels_excludes).replace('[', '').replace(']', ',')
@@ -438,6 +532,13 @@ def proxysearch_channel(item, channel_id, channel_name, iniciales_channels_proxi
 
     global procesados
 
+    if txt_status:
+        if con_incidencias:
+           if channel_name in str(con_incidencias): return
+
+        if no_accesibles:
+           if channel_name in str(no_accesibles): return
+
     channels_proxies_memorized = config.get_setting('channels_proxies_memorized', default='')
 
     if config.get_setting('memorize_channels_proxies', default=True):
@@ -504,10 +605,6 @@ def proxysearch_channel(item, channel_id, channel_name, iniciales_channels_proxi
     if not esta_en_poe:
        if dominio: host = dominio
        else:
-          if channel_id == 'playdede':
-              el_canal = ('[COLOR cyan][B]Cargando espere ... [/B][/COLOR][B][COLOR %s]' + channel_name) % color_avis
-              platformtools.dialog_notification(config.__addon_name, el_canal + '[/COLOR][/B]', time=3000)
-
           try:
              data = filetools.read(filename_py)
           except:
@@ -515,25 +612,118 @@ def proxysearch_channel(item, channel_id, channel_name, iniciales_channels_proxi
              platformtools.dialog_ok(config.__addon_name + ' ' + channel_name , el_canal + '[/COLOR][/B]')
              return
 
-          part_py = 'def mainlist'
+          if not host:
+              if channel_id == 'hdfull':
+                  try:
+                     data = httptools.downloadpage('https://dominioshdfull.com/').data
 
-          if 'CLONES ' in data or 'clones ' in data: part_py = 'clones '
-          elif 'CLASS ' in data or 'class ' in data: part_py = 'class '
+                     bloque = scrapertools.find_single_match(data, 'dominios operativos actualizados(.*?)<script>')
 
-          elif 'def login' in data: part_py = 'def login'
-          elif 'def configurar_proxies' in data: part_py = 'def configurar_proxies'
-          elif 'def do_downloadpage' in data: part_py = 'def do_downloadpage'
+                     operative_domains = scrapertools.find_multiple_matches(bloque, 'href="(.*?)"')
 
-          bloc = scrapertools.find_single_match(data.lower(), '(.*?)' + part_py)
-          if 'ant_hosts' in bloc: bloc = scrapertools.find_single_match(data.lower(), '(.*?)ant_hosts')
+                     if not operative_domains: host = dominioshdfull[0]
+                     else:
+                        host = operative_domains[0]
+                        if not host.endswith('/'): host = host + '/'
+                  except:
+                     host = dominioshdfull[0]
 
-          bloc = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', bloc)
+              elif channel_id == 'nextdede':
+                  sel_domain = ''
 
-          host = scrapertools.find_single_match(str(bloc), ".*?host = '(.*?)'")
-          if not host: host = scrapertools.find_single_match(str(bloc), '.*?host = "(.*?)"')
+                  try:
+                     data = httptools.downloadpage('https://dominiosnextdede.com/').data
 
-          if not host: host = scrapertools.find_single_match(bloc, '.*?host.*?"(.*?)"')
-          if not host: host = scrapertools.find_single_match(bloc, ".*?host.*?'(.*?)'")
+                     sel_domain = scrapertools.find_single_match(data, '>Dominio actual.*?<a href="(.*?)"')
+
+                     if sel_domain:
+                         if not sel_domain.endswith('/'): host = sel_domain + '/'
+                  except:
+                     pass
+
+                  if not sel_domain:
+                     try:
+                        data = httptools.downloadpage('https://t.me/s/NextdedeInformacion').data
+
+                        bloque = scrapertools.find_single_match(data, 'bloqueos de operadoras(.*?)</div>')
+
+                        dominios = scrapertools.find_multiple_matches(bloque, 'href="(.*?)"')
+
+                        if not dominios: host = dominiosnextdede[0]
+                        else:
+                            for dominio in dominios:
+                                dominio = dominio.lower().strip()
+                                if dominio:
+                                    dominio = dominio.replace('http:', 'https:')
+                                    if not dominio.endswith('/'): dominio = dominio + '/'
+                                    sel_domain = dominio
+
+                            if sel_domain: host = sel_domain
+                            else: host = dominiosnextdede[0]
+                     except:
+                        host = dominiosnextdede[0]
+
+              elif channel_id == 'playdede':
+                  sel_domain = ''
+
+                  try:
+                     data = httptools.downloadpage('https://dominiosplaydede.com/').data
+
+                     sel_domain = scrapertools.find_single_match(data, '>Dominio actual.*?<a href="(.*?)"')
+
+                     if sel_domain:
+                         if not sel_domain.endswith('/'): host = sel_domain + '/'
+                  except:
+                     pass
+
+                  if not sel_domain:
+                     try:
+                        data = httptools.downloadpage('https://t.me/playdedeinformacion').data
+
+                        dominios = scrapertools.find_multiple_matches(data, '>Web:(.*?)<')
+
+                        if not dominios: host = dominiosplaydede[0]
+                        else:
+                            for dominio in dominios:
+                                dominio = dominio.lower().strip()
+                                if dominio:
+                                    if not dominio.endswith('/'): dominio = dominio + '/'
+                                    sel_domain = dominio
+
+                            if sel_domain: host = sel_domain
+                            else: host = dominiosplaydede[0]
+                     except:
+                        host = dominiosplaydede[0]
+
+          if not host:
+              part_py = 'def mainlist'
+
+              if 'ver_stable_chrome' in data: part_py = 'ver_stable_chrome'
+
+              elif 'CLONES =' in data or 'clones =' in data: part_py = 'clones  ='
+              elif 'CLASS login_' in data or 'class login_' in data: part_py = 'class login_'
+
+              elif 'def do_make_login_logout' in data: part_py = 'def do_make_login_logout'
+              elif 'def login' in data: part_py = 'def login'
+              elif 'def logout' in data: part_py = 'def logout'
+
+              elif 'def configurar_proxies' in data: part_py = 'def configurar_proxies'
+              elif 'def do_downloadpage' in data: part_py = 'def do_downloadpage'
+
+              bloc = scrapertools.find_single_match(data.lower(), '(.*?)' + part_py)
+              bloc = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', bloc)
+
+              host = scrapertools.find_single_match(str(bloc), "host = '(.*?)'")
+              if not host: host = scrapertools.find_single_match(str(bloc), 'host = "(.*?)"')
+
+              if not host: host = scrapertools.find_single_match(str(bloc), "dominios =.*?'(.*?)'")
+              if not host: host = scrapertools.find_single_match(str(bloc), 'dominios =.*?"(.*?)"')
+
+              if not host: host = scrapertools.find_single_match(str(bloc), "host.*?'(.*?)'")
+              if not host: host = scrapertools.find_single_match(str(bloc), 'host.*?"(.*?)"')
+
+              ant_hosts = scrapertools.find_single_match(str(bloc), 'ant_hosts.*?=.*?(.*?)]')
+              if not ant_hosts: ant_hosts = scrapertools.find_single_match(str(bloc), "ant_hosts.*?=.*?(.*?)]")
 
     host = host.strip()
 
@@ -543,10 +733,20 @@ def proxysearch_channel(item, channel_id, channel_name, iniciales_channels_proxi
         platformtools.dialog_ok(config.__addon_name, el_canal + '[/COLOR][/B]')
         return
 
+    headers = {}
+
+    if channel_id == 'playdo':
+        host = host + 'api/search'
+        useragent = httptools.get_user_agent()
+        headers = {"User-Agent": useragent + " pddkit/2023"}
+
     cfg_proxies_channel = 'channel_' + channel_id + '_proxies'
 
     if not config.get_setting(cfg_proxies_channel, default=''):
-        response = httptools.downloadpage(host, raise_weberror=False)
+        response = httptools.downloadpage(host, headers=headers, raise_weberror=False)
+
+        if channel_id == 'playdo':
+           if '{"status":' in str(response.data): return
 
         if response.sucess == True:
             if len(response.data) > 999:
@@ -561,7 +761,10 @@ def proxysearch_channel(item, channel_id, channel_name, iniciales_channels_proxi
                 platformtools.dialog_notification(config.__addon_name, el_canal)
                 return
     else:
-        response = httptools.downloadpage(host, raise_weberror=False)
+        response = httptools.downloadpage(host, headers=headers, raise_weberror=False)
+
+        if channel_id == 'playdo':
+            if '{"status":' in str(response.data): return
 
         if response.sucess == True:
             if len(response.data) > 999:

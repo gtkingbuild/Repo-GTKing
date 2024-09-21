@@ -5,11 +5,6 @@ import sys
 PY3 = False
 if sys.version_info[0] >= 3: PY3 = True
 
-if PY3:
-    from urllib.parse import unquote
-else:
-    from urlparse import unquote
-
 
 import re
 
@@ -27,7 +22,7 @@ if PY3:
        import xbmc
        if xbmc.getCondVisibility("system.platform.Linux.RaspberryPi") or xbmc.getCondVisibility("System.Platform.Linux"): LINUX = True
     except: pass
- 
+
 try:
    if LINUX:
        try:
@@ -50,11 +45,11 @@ except:
    except: pass
 
 
-host = 'https://meganovelas.online/'
+host = 'https://srnovelas.org/'
 
 
 # ~ por si viene de enlaces guardados
-ant_hosts = ['https://www.srnovelas.cc/', 'https://srnovelas.com/']
+ant_hosts = ['https://www.srnovelas.cc/', 'https://srnovelas.com/', 'https://meganovelas.online/']
 
 domain = config.get_setting('dominio', 'srnovelas', default='')
 
@@ -117,6 +112,18 @@ def do_downloadpage(url, post=None, headers=None):
         else:
             data = httptools.downloadpage(url, post=post, headers=headers).data
 
+        if not data:
+            if not '?s=' in url:
+                if not '/temp/ajax/iframe.php?id=' in url:
+                    if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('SrNovelas', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+
+                    timeout = config.get_setting('channels_repeat', default=30)
+
+                    if hay_proxies:
+                        data = httptools.downloadpage_proxy('srnovelas', url, post=post, headers=headers, timeout=timeout).data
+                    else:
+                        data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+
     if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
         if BR or BR2:
             try:
@@ -165,7 +172,7 @@ def acciones(item):
 
     itemlist.append(item_configurar_proxies(item))
 
-    itemlist.append(Item( channel='helper', action='show_help_srnovelas', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('help') ))
+    itemlist.append(Item( channel='helper', action='show_help_srnovelas', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('srnovelas') ))
 
     platformtools.itemlist_refresh()
 
@@ -188,10 +195,6 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host, search_type = 'tvshow', text_color = 'cyan' ))
 
-    itemlist.append(item.clone( title = 'En emisión', action = 'list_all', url = host, group = 'onair', search_type = 'tvshow' ))
-
-    itemlist.append(item.clone( title = 'Programas de TV', action = 'list_all', url = host + 'programas-tv/', search_type = 'tvshow' ))
-
     itemlist.append(item.clone( title = 'Por país', action = 'paises', search_type = 'tvshow' ))
 
     return itemlist
@@ -211,6 +214,52 @@ def paises(item):
     return itemlist
 
 
+def last_epis(item):
+    logger.info()
+    itemlist = []
+
+    data = do_downloadpage(item.url)
+    data = re.sub(r'\n|\r|\t|&nbsp;|<br>|\s{2,}', "", data)
+
+    matches = scrapertools.find_multiple_matches(data, '<article(.*?)</article>')
+
+    for match in matches:
+        url = scrapertools.find_single_match(match, 'href="(.*?)"')
+        title = scrapertools.find_single_match(match, '<p class="entry-title">(.*?)</p>')
+
+        if not url or not title: continue
+
+        thumb = scrapertools.find_single_match(match, 'src="(.*?)"')
+
+        SerieName = scrapertools.find_single_match(match, 'alt="(.*?)"')
+        if not SerieName:
+            SerieName = scrapertools.find_single_match(match, '<p class="entry-title">(.*?)Capitulo')
+            SerieName = SerieName.replace('Final', '').strip()
+
+        season = 1
+
+        epis = scrapertools.find_single_match(match, '<p class="entry-title">.*?Capitulo(.*?)</p>')
+        epis = epis.replace('Final', '').strip()
+
+        if not epis: epis = 1
+
+        titulo = str(season) + 'x' + str(epis) + ' ' + SerieName
+
+        itemlist.append(item.clone( action = 'findvideos', url = url, title = titulo, thumbnail = thumb, infoLabels={'year': '-'},
+                                    contentSerieName = SerieName, contentType = 'episode', contentSeason = season, contentEpisodeNumber = epis ))
+
+    tmdb.set_infoLabels(itemlist)
+
+    if itemlist:
+        next_url = scrapertools.find_single_match(data, 'class="page-numbers current">.*?href="(.*?)"')
+
+        if next_url:
+            if '/page/' in next_url:
+                itemlist.append(item.clone( title = 'Siguientes ...', url = next_url, action = 'last_epis', text_color = 'coral' ))
+
+    return itemlist
+
+
 def list_all(item):
     logger.info()
     itemlist = []
@@ -219,10 +268,8 @@ def list_all(item):
 
     data = do_downloadpage(item.url)
 
-    if item.group == 'onair': bloque = scrapertools.find_single_match(data, '>Novelas en Emisión<(.*?)<footer>')
-    else:
-       if '>Novelas Completas Gratis<' in data: bloque = scrapertools.find_single_match(data, '>Novelas Completas Gratis<(.*?)</h2>')
-       else: bloque = scrapertools.find_single_match(data, '<h1>(.*?)$')
+    if '>Novelas Completas Gratis<' in data: bloque = scrapertools.find_single_match(data, '>Novelas Completas Gratis<(.*?)</main>')
+    else: bloque = scrapertools.find_single_match(data, '<h1>(.*?)$')
 
     matches = scrapertools.find_multiple_matches(bloque, '<article(.*?)</article>')
 
@@ -281,72 +328,6 @@ def list_all(item):
 
             if hasta < num_matches:
                 itemlist.append(item.clone( title='Siguientes ...', page = item.page + 1, action='list_all', text_color='coral' ))
-
-    return itemlist
-
-
-def last_epis(item):
-    logger.info()
-    itemlist = []
-
-    data = do_downloadpage(item.url)
-    data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
-
-    bloque = scrapertools.find_single_match(data, '>Últimos Episodios<(.*?)>Novelas en Emisión<')
-
-    matches = scrapertools.find_multiple_matches(bloque, '<article(.*?)</article>')
-
-    for match in matches:
-        url = scrapertools.find_single_match(match, 'href="(.*?)"')
-
-        title = scrapertools.find_single_match(match, ' title="(.*?)"')
-        if not title: title = scrapertools.find_single_match(match, ' alt="(.*?)"')
-
-        if not url or not title: continue
-
-        year = '-'
-
-        try:
-           name = title.split(" (")[0]
-           year = title.split(" (")[1]
-           if ')' in year: year = year.split(")")[0]
-           elif '-' in year: year = year.split("-")[0]
-
-           if year: title = name
-        except:
-            name = title
-
-        SerieName = name
-
-        if 'Temporada' in SerieName: SerieName = SerieName.split("Temporada")[0]
-        elif 'temporada' in SerieName: SerieName = SerieName.split("temporada")[0]
-
-        SerieName = SerieName.strip()
-
-        if 'Capitulos' in SerieName: SerieName = SerieName.split("Capitulos")[0]
-        elif 'capitulos' in SerieName: SerieName = SerieName.split("capitulos")[0]
-
-        if 'Capitulo' in SerieName: SerieName = SerieName.split("Capitulo")[0]
-        elif 'capitulo' in SerieName: SerieName = SerieName.split("capitulo")[0]
-
-        SerieName = SerieName.strip()
-
-        thumb = scrapertools.find_single_match(match, 'src="(.*?)"')
-
-        epis = scrapertools.find_single_match(url, '-capitulo-(.*?)$')
-
-        epis = epis.replace('/', '')
-
-        if not epis: epis = 1
-
-        title = title.capitalize()
-
-        title = title.replace('capitulo', '[COLOR goldenrod]Capitulo[/COLOR]').replace('capítulo', '[COLOR goldenrod]Capítulo[/COLOR]')
-
-        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, infoLabels={'year': year},
-                                    contentSerieName = SerieName, contentType = 'episode', contentSeason = 1, contentEpisodeNumber = epis ))
-
-    tmdb.set_infoLabels(itemlist)
 
     return itemlist
 
@@ -491,6 +472,9 @@ def findvideos(item):
     matches = scrapertools.find_multiple_matches(data, 'data-title="Opción.*?data-src="(.*?)"')
     if not matches: matches = scrapertools.find_multiple_matches(data, '<iframe.*?data-src="(.*?)"')
 
+    if not matches: matches = scrapertools.find_multiple_matches(data, 'data-title="Opción.*?src="(.*?)"')
+    if not matches: matches = scrapertools.find_multiple_matches(data, '<iframe.*?src="(.*?)"')
+
     for url in matches:
         ses += 1
 
@@ -543,6 +527,10 @@ def findvideos(item):
 
         matches = scrapertools.find_multiple_matches(data1, "<iframe.*?src='(.*?)'")
         if not matches: matches = scrapertools.find_multiple_matches(data1, '<iframe.*?src="(.*?)"')
+
+        if not matches: matches = scrapertools.find_multiple_matches(data1, "<IFRAME.*?SRC='(.*?)'")
+        if not matches: matches = scrapertools.find_multiple_matches(data1, '<IFRAME.*?SRC="(.*?)"')
+
         if not matches: matches = scrapertools.find_multiple_matches(data1, '<td>Server.*?href="(.*?)"')
 
         for url in matches:

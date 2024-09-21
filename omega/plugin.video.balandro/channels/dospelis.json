@@ -13,5 +13,5 @@
 
   "clusters": ["news", "lasts", "rankings", "languages", "producers", "years", "adults", "kids", "docs", "vos", "anime"],
 
-  "notes": "Web CERRADA. Películas por idioma, calidad, géneros y año. También Series"
+  "notes": "Web CERRADA. Películas por géneros. También Series"
 }

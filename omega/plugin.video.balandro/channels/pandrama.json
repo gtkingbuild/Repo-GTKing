@@ -1,14 +1,14 @@
 {
   "id": "pandrama",
-  "name": "Pandrama",
+  "name": "PanDrama",
   "thumbnail": "pandrama.jpg",
 
   "active": true,
 
   "searchable": false,
-  "search_types": ["all", "movie", "tvshow"],
+  "search_types": ["tvshow"],
 
-  "categories": ["movie", "tvshow"],
+  "categories": ["tvshow"],
   "language": ["lat", "vose"],
 
   "clusters": ["dorama"],

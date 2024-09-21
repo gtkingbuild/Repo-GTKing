@@ -12,6 +12,10 @@
         "url": "\\1"
       },
       {
+        "pattern": "https://streamvid.net/embed-([0-9a-zA-Z]+)",
+        "url": "https://streamvid.net/embed-\\1"
+      },
+      {
         "pattern": "https://streamvid.net/([0-9a-zA-Z]+)",
         "url": "https://streamvid.net/\\1"
       },

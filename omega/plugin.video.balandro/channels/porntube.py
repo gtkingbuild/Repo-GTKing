@@ -8,7 +8,7 @@ if sys.version_info[0] >= 3: PY3 = True
 
 import time
 
-from platformcode import config, logger
+from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, jsontools
 
@@ -16,6 +16,24 @@ from threading import Thread
 
 
 host = "https://www.porntube.com/"
+
+
+def do_downloadpage(url, post=None, headers=None):
+    timeout = None
+    if host in url: timeout = config.get_setting('channels_repeat', default=30)
+
+    data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+
+    if not data:
+        if url.startswith(host):
+            if not 'search?q=' in url:
+                if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('PornTube', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+
+                timeout = config.get_setting('channels_repeat', default=30)
+
+                httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+
+    return data
 
 
 def mainlist(item):
@@ -55,7 +73,8 @@ def canales(item):
     itemlist = []
 
     headers = {'referer': host + 'channels?hl=es'}
-    data = httptools.downloadpage(item.url, headers = headers).data
+
+    data = do_downloadpage(item.url, headers = headers)
 
     data = jsontools.load(data).get('channels', {}).get('_embedded', {}).get('items', [])
 
@@ -78,7 +97,8 @@ def categorias(item):
     url = host + 'api/tag/list?orientation=straight&hl=es&ssr=false'
 
     headers = {'referer': host + 'tags?hl=es'}
-    data = httptools.downloadpage(url, headers = headers).data
+
+    data = do_downloadpage(url, headers = headers)
 
     data = jsontools.load(data).get('tags', {}).get('_embedded', {}).get('items', [])
 
@@ -100,7 +120,8 @@ def pornstars(item):
     itemlist = []
 
     headers = {'referer': host + 'pornstar?hl=es'}
-    data = httptools.downloadpage(item.url, headers = headers).data
+
+    data = do_downloadpage(item.url, headers = headers)
 
     data = jsontools.load(data).get('pornstars', {}).get('_embedded', {}).get('items', [])
 
@@ -122,7 +143,7 @@ def list_all(item):
 
     threads = list()
 
-    data = httptools.downloadpage(item.url).data
+    data = do_downloadpage(item.url)
 
     i = 0
 
@@ -155,6 +176,8 @@ def list_all(item):
         if next_page:
             if next_page.startswith('/'): next_page = host + next_page[1:]
 
+            next_page = next_page.replace('&amp;', '&')
+
             itemlist.append(item.clone( title='Siguientes ...', url = next_page, action='list_all', text_color='coral' ))
 
     return itemlist
@@ -174,7 +197,8 @@ def get_embed(item, itemlist):
     if media_embed:
         url = host + 'api/videos/%s?ssr=true&slug=%s&hl=es&orientation=straight' % (media_embed, name)
 
-        data = httptools.downloadpage(url).data
+        data = do_downloadpage(url)
+
         result = jsontools.load(data)
 
         link = '+'.join([str(e['height']) for e in result['video']['encodings']])
@@ -191,7 +215,8 @@ def findvideos(item):
     itemlist = []
 
     headers = {'origin': host}
-    data = httptools.downloadpage(item.url, headers = headers).data
+
+    data = do_downloadpage(item.url, headers = headers)
 
     data = jsontools.load(data)
 

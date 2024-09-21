@@ -13,5 +13,5 @@
 
   "clusters": ["news", "producers", "languages", "qualityes", "kids", "docs", "vos"],
 
-  "notes": "Web CERRADA. Películas por idioma, géneros y calidad."
+  "notes": "Web CERRADA. Películas por géneros."
 }

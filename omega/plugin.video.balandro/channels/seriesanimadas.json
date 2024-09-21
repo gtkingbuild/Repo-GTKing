@@ -11,7 +11,7 @@
   "categories": ["tvshow"],
   "language": ["vose", "vo"],
 
-  "clusters": ["current", "anime"],
+  "clusters": ["anime"],
 
-  "notes": "Web CERRADA. Web dedicada exclusivamente al anime"
+  "notes": "Web CERRADA. Web dedicada exclusivamente al anime."
 }

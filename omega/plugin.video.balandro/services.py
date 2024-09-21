@@ -4,9 +4,9 @@ import threading
 from platformcode import config
 
 
-# Comprobar actualizaciones solamente una vez al iniciar Kodi, no es necesario dejar el servicio corriendo (o sí para dispositivos siempre encendidos !?)
+# ~ Comprobar actualizaciones solamente una vez al iniciar Kodi, no es necesario dejar el servicio corriendo
 def comprobar_actualizaciones():
-    if config.get_setting('addon_update_atstart', default=False):
+    if config.get_setting('addon_update_atstart', default=True):
         from platformcode import updater
         updater.check_addon_updates(verbose=config.get_setting('addon_update_verbose', default=False))
 
@@ -15,15 +15,17 @@ threading.Thread(target=comprobar_actualizaciones).start()
 
 # Lanzar servicio para comprobar nuevos capítulos
 def comprobar_nuevos_episodios():
-    if config.get_setting('addon_tracking_atstart', default=True):
+    if config.get_setting('addon_tracking_atstart', default=False):
         interval = int(config.get_setting('addon_tracking_interval', default='12')) * 3600 # horas convertidas a segundos
 
         import xbmc, time
         from core import trackingtools
 
         monitor = xbmc.Monitor()
+
         while not monitor.abortRequested():
-            if config.get_setting('addon_tracking_atstart', default=True): # por si se desactiva con el servicio ejecutándose
+            # ~ por si se desactiva con el servicio ejecutándose
+            if config.get_setting('addon_tracking_atstart', default=False):
                 lastscrap = config.get_setting('addon_tracking_lastscrap', default='')
                 if lastscrap == '' or float(lastscrap) + interval <= time.time():
                     trackingtools.check_and_scrap_new_episodes(notification=config.get_setting('addon_tracking_verbose', default=False))

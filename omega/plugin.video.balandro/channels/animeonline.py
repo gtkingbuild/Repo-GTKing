@@ -91,10 +91,12 @@ def configurar_proxies(item):
     return proxytools.configurar_proxies_canal(item.channel, host)
 
 
-def do_downloadpage(url, post=None, headers=None):
+def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
     # ~ por si viene de enlaces guardados
     for ant in ant_hosts:
         url = url.replace(ant, host)
+
+    if '/release/' in url: raise_weberror = False
 
     hay_proxies = False
     if config.get_setting('channel_animeonline_proxies', default=''): hay_proxies = True
@@ -104,12 +106,12 @@ def do_downloadpage(url, post=None, headers=None):
         if hay_proxies: timeout = config.get_setting('channels_repeat', default=30)
 
     if not url.startswith(host):
-        data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+        data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
     else:
         if hay_proxies:
-            data = httptools.downloadpage_proxy('animeonline', url, post=post, headers=headers, timeout=timeout).data
+            data = httptools.downloadpage_proxy('animeonline', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
         else:
-            data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+            data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
 
         if not data:
             if not '?s=' in url:
@@ -118,9 +120,9 @@ def do_downloadpage(url, post=None, headers=None):
                 timeout = config.get_setting('channels_repeat', default=30)
 
                 if hay_proxies:
-                    data = httptools.downloadpage_proxy('animeonline', url, post=post, headers=headers, timeout=timeout).data
+                    data = httptools.downloadpage_proxy('animeonline', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
                 else:
-                    data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+                    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
 
     if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
         if BR or BR2:
@@ -130,12 +132,12 @@ def do_downloadpage(url, post=None, headers=None):
                     httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
 
                 if not url.startswith(host):
-                    data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+                    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
                 else:
                     if hay_proxies:
-                        data = httptools.downloadpage_proxy('animeonline', url, post=post, headers=headers, timeout=timeout).data
+                        data = httptools.downloadpage_proxy('animeonline', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
                     else:
-                        data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+                        data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
             except:
                 pass
 
@@ -170,7 +172,7 @@ def acciones(item):
 
     itemlist.append(item_configurar_proxies(item))
 
-    itemlist.append(Item( channel='helper', action='show_help_animeonline', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('help') ))
+    itemlist.append(Item( channel='helper', action='show_help_animeonline', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('animeonline') ))
 
     platformtools.itemlist_refresh()
 
@@ -193,7 +195,7 @@ def mainlist_animes(item):
 
     itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
-    itemlist.append(item.clone( title = 'Buscar anime ...', action = 'search', search_type = 'tvshow', text_color='springgreen' ))
+    itemlist.append(item.clone( title = 'Buscar anime ...', action = 'search', search_type = 'all', text_color='springgreen' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'online/', search_type = 'tvshow' ))
 
@@ -226,19 +228,19 @@ def dragons(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title = 'Dragon Ball', action = 'temporadas', url = host + 'online/dragon-ball/', search_type = 'tvshow',
+    itemlist.append(item.clone( title = 'Dragon Ball', action = 'temporadas', url = host + 'online/dragon-ball/',
                                 contentType = 'tvshow', contentSerieName = 'Dragon Ball' ))
 
-    itemlist.append(item.clone( title = 'Dragon Ball Kai', action = 'temporadas', url = host + 'online/dragon-ball-kai/', search_type = 'tvshow',
+    itemlist.append(item.clone( title = 'Dragon Ball Kai', action = 'temporadas', url = host + 'online/dragon-ball-kai/',
                                 contentType = 'tvshow', contentSerieName = 'Dragon Ball Kai' ))
 
-    itemlist.append(item.clone( title = 'Dragon Ball Super', action = 'temporadas', url = host + 'online/dragon-ball-super-3/', search_type = 'tvshow',
+    itemlist.append(item.clone( title = 'Dragon Ball Super', action = 'temporadas', url = host + 'online/dragon-ball-super-3/',
                                 contentType = 'tvshow', contentSerieName = 'Dragon Ball Super' ))
 
-    itemlist.append(item.clone( title = 'Dragon Ball GT', action = 'temporadas', url = host + 'online/dragon-ball-gt-3/', search_type = 'tvshow',
+    itemlist.append(item.clone( title = 'Dragon Ball GT', action = 'temporadas', url = host + 'online/dragon-ball-gt-3/',
                                 contentType = 'tvshow', contentSerieName = 'Dragon Ball GT' ))
 
-    itemlist.append(item.clone( title = 'Dragon Ball Heroes', action = 'temporadas', url = host + 'online/dragon-ball-heroes-3/', search_type = 'tvshow',
+    itemlist.append(item.clone( title = 'Dragon Ball Heroes', action = 'temporadas', url = host + 'online/dragon-ball-heroes-3/',
                                 contentType = 'tvshow', contentSerieName = 'Dragon Ball Heroes' ))
 
     tmdb.set_infoLabels(itemlist)
@@ -250,10 +252,10 @@ def pelis(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title = 'Catálogo (Películas)', action = 'list_all', url = host + 'pelicula/', search_type = 'movie', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone( title = 'Catálogo [COLOR deepskyblue]Películas[/COLOR]', action = 'list_all', url = host + 'pelicula/' ))
 
-    itemlist.append(item.clone( title = 'Más vistas', action = 'list_all', url = host + 'tendencias/?get=movies', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'Más valoradas', action = 'list_all', url = host + 'ratings/?get=movies', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Más vistas', action = 'list_all', url = host + 'tendencias/?get=movies' ))
+    itemlist.append(item.clone( title = 'Más valoradas', action = 'list_all', url = host + 'ratings/?get=movies' ))
 
     return itemlist
 
@@ -262,8 +264,8 @@ def idiomas(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title = 'En castellano', action = 'list_all', url = host + 'genero/anime-castellano/', search_type = 'tvshow', text_color='springgreen' ))
-    itemlist.append(item.clone( title = 'En latino', action = 'list_all', url = host + 'genero/audio-latino/', search_type = 'tvshow', text_color='springgreen' ))
+    itemlist.append(item.clone( title = 'En castellano', action = 'list_all', url = host + 'genero/anime-castellano/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En latino', action = 'list_all', url = host + 'genero/audio-latino/', text_color='moccasin' ))
 
     return itemlist
 
@@ -326,21 +328,32 @@ def list_all(item):
         if qlty == 'final' or qlty == 'corto' or qlty == 'sin censura': qlty = ''
 
         year = scrapertools.find_single_match(match, '</h3><span>(.*?)</span>')
-        if not year: year = '-'
+        if not year:
+            if '/release/' in item.url: year = scrapertools.find_single_match(item.url, "/release/(.*?)/")
+            else: year = '-'
 
-        title = title.replace('&#8217;', '').replace('&#8211;', '')
+        title = title.replace('&#8217;', '').replace('&#8211;', '').replace('&#8220;', '').replace('&#8221;', '')
 
-        if item.group == 'last_epis' or item.search_type == 'movie':
-            if item.search_type == 'movie':
+        tipo = 'movie' if '/pelicula/' in url else 'tvshow'
+        sufijo = '' if item.search_type != 'all' else tipo
+
+        if item.group == 'last_epis' or tipo == 'movie':
+            if tipo == 'movie':
+                if item.search_type != 'all':
+                    if item.search_type == 'tvshow': continue
+
                 PeliName = title
 
                 if 'Movie' in title: PeliName = title.split("Movie")[0]
 
                 PeliName = PeliName.strip()
 
-                itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, qualities=qlty, languages=lang,
+                itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, qualities=qlty, languages=lang, fmt_sufijo=sufijo,
                                             contentType='movie', contentTitle=PeliName, infoLabels={'year': year} ))
             else:
+                if item.search_type != 'all':
+                    if item.search_type == 'movie': continue
+
                 if '>Película<' in match: continue
 
                 SerieName = title
@@ -354,27 +367,34 @@ def list_all(item):
 
                 title = title.replace('Cap ', '[COLOR goldenrod]Cap [/COLOR]')
 
-                itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, qualities=qlty, languages=lang,
+                itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, qualities=qlty, languages=lang, fmt_sufijo=sufijo,
                                             contentType = 'episode', contentSerieName = SerieName, contentSeason = 1, contentEpisodeNumber=epis, infoLabels={'year': year} ))
 
-        else:
+                continue
+
+        if tipo == 'tvshow':
+            if item.search_type != 'all':
+                if item.search_type == 'movie': continue
+
             SerieName = title
 
             if 'Movie' in title: SerieName = title.split("Movie")[0]
 
             SerieName = SerieName.strip()
 
-            itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb, qualities=qlty, languages=lang,
+            itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb, qualities=qlty, languages=lang, fmt_sufijo=sufijo,
                                         contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
-        next_page = scrapertools.find_single_match(data,'<span class="current">.*?' + "<a href='(.*?)'")
+        if '<div class="pagination">' in data:
+            next_page = scrapertools.find_single_match(data,'<span class="current">.*?' + "<a href='(.*?)'")
+            if not next_page: next_page = scrapertools.find_single_match(data,'<span class="current">.*?<a href="(.*?)"')
 
-        if next_page:
-            if '/page/' in next_page:
-                itemlist.append(item.clone( title = 'Siguientes ...', action = 'list_all', url = next_page, text_color = 'coral' ))
+            if next_page:
+                if '/page/' in next_page:
+                    itemlist.append(item.clone( title = 'Siguientes ...', action = 'list_all', url = next_page, text_color = 'coral' ))
 
     return itemlist
 
@@ -559,6 +579,9 @@ def findvideos(item):
                 if url == 'undefined': continue
 
                 if url.startswith('https:/streamwish.'): url = url.replace('https:/streamwish.', 'https://streamwish.')
+                elif url.startswith('https://filemooon.'): url = url.replace('https://filemooon.', 'https://filemoon.')
+
+                if '/netuplayer.top/' in url: url = url.replace('/netuplayer.top/', '/netu.to/')
 
                 if 'Sub Español' in dat_server: lang = 'Vose'
                 elif 'Sub Latino' in dat_server: lang = 'Vose'
@@ -585,7 +608,7 @@ def findvideos(item):
 
                 link_other = link_other.replace('www.', '').replace('.com', '').replace('.net', '').replace('.org', '').replace('.top', '').replace('.do', '')
                 link_other = link_other.replace('.co', '').replace('.cc', '').replace('.sh', '').replace('.to', '').replace('.tv', '').replace('.ru', '').replace('.io', '')
-                link_other = link_other.replace('.eu', '').replace('.ws', '').replace('.sx', '').replace('.online', '')
+                link_other = link_other.replace('.eu', '').replace('.ws', '').replace('.ag', '').replace('.sx', '').replace('.online', '').replace('.lat', '')
 
                 if servidor == 'various': other = servertools.corregir_other(link_other)
                 else:

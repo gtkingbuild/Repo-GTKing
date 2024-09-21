@@ -41,11 +41,17 @@ def get_video_url(page_url, url_referer=''):
     logger.info("url=" + page_url)
     video_urls = []
 
+    if '/watch_video.php?v=/watch_video.php?v=/player/embed_player.php?vid=' in page_url: page_url = page_url.replace('/watch_video.php?v=/watch_video.php?v=/player/embed_player.php?vid=', '/watch_video.php?v=')
+    elif '/watch_video.php?v=/player/embed_player.php?vid=' in page_url: page_url = page_url.replace('/watch_video.php?v=/player/embed_player.php?vid=', '/watch_video.php?v=')
+    elif '/watch_video.php?v=/watch_video.php?v=' in page_url: page_url = page_url.replace('/watch_video.php?v=/watch_video.php?v=', '/watch_video.php?v=')
+
+    page_url = page_url.replace('&amp;', '&').replace('&autoplay=no/', '').replace('&autoplay=no', '').replace('&autoplay=yes/', '').replace('&autoplay=yes', '')
+
     ini_page_url = page_url
 
     if not xbmc.getCondVisibility('System.HasAddon("script.module.resolveurl")'):
         return '[COLOR cyan][B]script.module.resolveurl [COLOR red][B]No Instalado[/COLOR]'
-	
+
     if config.get_setting('servers_time', default=True):
         platformtools.dialog_notification('Cargando [COLOR cyan][B]Waaw[/B][/COLOR]', 'Espera requerida de %s segundos' % espera)
         time.sleep(int(espera))
@@ -81,6 +87,9 @@ def get_video_url(page_url, url_referer=''):
 
         elif "KeyError: 'obf_link'" in traceback.format_exc():
             return 'KeyError [COLOR red][B]obf_link[/COLOR]'
+
+        elif "AttributeError: 'int'" in traceback.format_exc():
+            return 'AttributeError [COLOR red][B]get_int[/COLOR]'
 
         elif '<urlopen error' in traceback.format_exc():
             return 'No se puede establecer la conexión'

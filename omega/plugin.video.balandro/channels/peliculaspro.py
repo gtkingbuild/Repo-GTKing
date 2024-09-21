@@ -21,7 +21,7 @@ if PY3:
        import xbmc
        if xbmc.getCondVisibility("system.platform.Linux.RaspberryPi") or xbmc.getCondVisibility("System.Platform.Linux"): LINUX = True
     except: pass
- 
+
 try:
    if LINUX:
        try:
@@ -170,7 +170,7 @@ def acciones(item):
 
     itemlist.append(item_configurar_proxies(item))
 
-    itemlist.append(Item( channel='helper', action='show_help_peliculaspro', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('help') ))
+    itemlist.append(Item( channel='helper', action='show_help_peliculaspro', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('peliculaspro') ))
 
     platformtools.itemlist_refresh()
 
@@ -428,19 +428,21 @@ def findvideos(item):
         other = ''
 
         if servidor:
-           if srv == 'streamz': servidor = srv
-           elif srv == 'doods': servidor = 'doodstream'
-           elif srv == 'streamtape': servidor = 'streamtape'
+            if srv == 'streamz': servidor = srv
+            elif srv == 'doods': servidor = 'doodstream'
+            elif srv == 'streamtape': servidor = 'streamtape'
+            elif srv == 'netu' or srv == 'hqq': servidor = 'waaw'
+            elif srv == 'd0o0d' or srv == 'do0od' or srv == 'd0000d' or srv == 'd000d': servidor = 'doodstream'
 
-           elif srv == 'streamcrypt':  other = srv + ' ' + str(i)
+            elif srv == 'streamcrypt':  other = srv + ' ' + str(i)
 
-           else:
-               if servidor == srv: srv = ''
+            else:
+                if servidor == srv: srv = ''
 
-               elif servidor == 'directo': other = servertools.corregir_other(srv)
-               elif servidor == 'various': other = servertools.corregir_other(srv)
+                elif servidor == 'directo': other = servertools.corregir_other(srv)
+                elif servidor == 'various': other = servertools.corregir_other(srv)
 
-               else: other = srv + ' ' + str(i)
+                else: other = srv + ' ' + str(i)
 
         itemlist.append(Item( channel = item.channel, action = 'play', title = '', server = servidor, url = url, language = idioma, other = other ))
 
@@ -526,8 +528,13 @@ def play(item):
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(url).lower()
+            if not new_server.startswith("http"): servidor = new_server
+
         if not servidor == 'directo':
             url = servertools.normalize_url(servidor, url)
+
             itemlist.append(item.clone( url=url, server=servidor ))
 
     return itemlist

@@ -3,7 +3,7 @@
   "name": "Uptobox",
 
   "active": true,
-  "notes": "Cerrado en Septiembre 2023. Alternative vía: Script.Module.ResolveUrl",
+  "notes": "Cerrado en Septiembre 2023. Out of Service. Alternative vía: Script.Module.ResolveUrl",
 
   "find_videos": {
     "ignore_urls": [],

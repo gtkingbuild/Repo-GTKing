@@ -21,7 +21,7 @@ if PY3:
        import xbmc
        if xbmc.getCondVisibility("system.platform.Linux.RaspberryPi") or xbmc.getCondVisibility("System.Platform.Linux"): LINUX = True
     except: pass
- 
+
 try:
    if LINUX:
        try:
@@ -44,7 +44,7 @@ except:
    except: pass
 
 
-host = 'https://cinecalidad.fi/'
+host = 'https://www.cinecalidad.vg/'
 
 
 _players = ['https://cinecalidad.', '.cinecalidad.']
@@ -63,7 +63,9 @@ ant_hosts = ['https://www.cinecalidad.eu/', 'https://www.cinecalidad.im/', 'http
              'https://v2.cinecalidad.foo/', 'https://www.cinecalidad.so/', 'https://wvw.cinecalidad.so/',
              'https://vww.cinecalidad.so/', 'https://wwv.cinecalidad.so/', 'https://vvv.cinecalidad.so/',
              'https://ww.cinecalidad.so/', 'https://w.cinecalidad.so/', 'https://vvw.cinecalidad.so/',
-             'https://wv.cinecalidad.so/', 'https://vvvv.cinecalidad.so/', 'https://wvvv.cinecalidad.so/']
+             'https://wv.cinecalidad.so/', 'https://vvvv.cinecalidad.so/', 'https://wvvv.cinecalidad.so/',
+             'https://cinecalidad.fi/']
+
 
 domain = config.get_setting('dominio', 'cinecalidad', default='')
 
@@ -111,7 +113,7 @@ def do_downloadpage(url, post=None, headers=None):
         url = url.replace(ant, host)
 
     raise_weberror = True
-    if '/fecha/' in url: raise_weberror = False
+    if '/release/' in url: raise_weberror = False
 
     hay_proxies = False
     if config.get_setting('channel_cinecalidad_proxies', default=''): hay_proxies = True
@@ -125,7 +127,7 @@ def do_downloadpage(url, post=None, headers=None):
             data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
 
         if not data:
-            if '?s=' in url:
+            if not '?s=' in url:
                 if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('CineCalidad', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
 
                 timeout = config.get_setting('channels_repeat', default=30)
@@ -152,6 +154,11 @@ def do_downloadpage(url, post=None, headers=None):
             except:
                 pass
 
+    if '<title>Just a moment...</title>' in data:
+        if not '?s=' in url:
+            platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]CloudFlare[COLOR orangered] Protection[/B][/COLOR]')
+        return ''
+
     return data
 
 
@@ -177,6 +184,8 @@ def acciones(item):
     itemlist.append(item.clone( channel='domains', action='manto_domain_cinecalidad', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
 
     itemlist.append(item_configurar_proxies(item))
+
+    itemlist.append(Item( channel='helper', action='show_help_cinecalidad', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('cinecalidad') ))
 
     platformtools.itemlist_refresh()
 
@@ -207,6 +216,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'En castellano:', folder=False, text_color='moccasin' ))
     itemlist.append(item.clone( title = ' - Catálogo', action = 'list_all', url = host + 'espana/', search_type = 'movie' ))
+    itemlist.append(item.clone( title = ' - Por año', action='anios', search_type = 'movie', group = '?ref=es' ))
 
     itemlist.append(item.clone( title = 'En latino:', folder=False, text_color='moccasin' ))
     itemlist.append(item.clone( title = ' - Catálogo', action = 'list_all', url = host, search_type = 'movie' ))
@@ -231,7 +241,7 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'serie/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimas', action = 'destacadas', url = host, search_type = 'tvshow', text_color = 'cyan' ))
+    itemlist.append(item.clone( title = 'Últimas', action = 'destacadas', url = host, search_type = 'tvshow', text_color = 'moccasin' ))
 
     itemlist.append(item.clone( title = 'Más populares', action = 'list_all', url = host + 'series-populares/', search_type = 'tvshow' ))
 
@@ -287,8 +297,11 @@ def anios(item):
     from datetime import datetime
     current_year = int(datetime.today().year)
 
-    for x in range(current_year, 1969, -1):
-        url = host + 'fecha/' + str(x) + '/'
+    top_year = 1939
+    if item.group == '?ref=es': top_year = 1999
+
+    for x in range(current_year, top_year, -1):
+        url = host + 'release/' + str(x) + '/'
 
         itemlist.append(item.clone( title = str(x), url = url, action = 'list_all', text_color = 'deepskyblue' ))
 
@@ -301,6 +314,8 @@ def list_all(item):
 
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
+
+    _promos = 0
 
     matches = scrapertools.find_multiple_matches(data, '<article(.*?)</article>')
 
@@ -316,7 +331,12 @@ def list_all(item):
 
         url = url.replace('\\/', '/')
 
-        if '-1-ano' in url or '-premium-12-meses' in url or '/netflix/a-day-without-a-mexican/' in url: continue
+        if '-premium-12-meses' in url or '-premium-1-ano' in url or '-12-meses' in url or '/netflix/o/' in url or '/product/' in url:
+            _promos += 1
+            continue
+        elif 'Netflix Premium' in match or 'Suscripción Disney Plus' in match or 'Suscripción HBO' in match:
+            _promos += 1
+            continue
 
         if not url or not title: continue
 
@@ -331,6 +351,8 @@ def list_all(item):
             year = '-'
 
         if year == '-': year = scrapertools.find_single_match(match, '6px;">(.*?)</div>')
+
+        if '/release/' in item.url: year = scrapertools.find_single_match(item.url, "/release/(.*?)/")
 
         if not year: year = '-'
 
@@ -359,7 +381,7 @@ def list_all(item):
                 if item.search_type == "movie": continue
 
             itemlist.append(item.clone( action='temporadas', url = url, title = title, thumbnail = thumb, fmt_sufijo=sufijo,
-                                        contentType = 'tvshow', contentSerieName = title,  infoLabels = {'year': '-'} ))
+                                        contentType = 'tvshow', contentSerieName = title,  infoLabels = {'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -368,6 +390,12 @@ def list_all(item):
 
         if next_page_link:
             itemlist.append(item.clone( title='Siguientes ...', url = next_page_link, action = 'list_all', text_color='coral' ))
+    else:
+        if not _promos == 0:
+            next_page_link = scrapertools.find_single_match(data, '<a class="next page-numbers".*?href="(.*?)"')
+
+            if next_page_link:
+                itemlist.append(item.clone( title='Siguientes ...', url = next_page_link, action = 'list_all', text_color='coral' ))
 
     return itemlist
 
@@ -578,10 +606,11 @@ def findvideos(item):
             elif servidor == 'google': servidor = 'gvideo'
             elif servidor == 'drive': servidor = 'gvideo'
             elif servidor == 'google drive': servidor = 'gvideo'
+            elif servidor == 'netu' or servidor == 'hqq': servidor = 'waaw'
+            elif servidor == 'd0o0d' or servidor == 'do0od' or servidor == 'd0000d' or servidor == 'd000d': servidor = 'doodstream'
 
-            elif servidor == 'streamwish':
-                  other = servidor.capitalize()
-                  servidor = 'various'
+            elif servidor == 'goodstream': servertools.corregir_other(servidor)
+            elif servidor == 'streamwish': servertools.corregir_other(servidor)
 
             if servertools.is_server_available(servidor):
                 if not servertools.is_server_enabled(servidor): continue
@@ -620,9 +649,12 @@ def findvideos(item):
 
             elif servidor == 'veri': continue
 
+            elif servidor == 'utorrent': servidor = 'torrent'
+
             elif servidor == 'bittorrent': servidor = 'torrent'
 
             elif 'bittorrent' in servidor: servidor = 'torrent'
+            elif 'spanishtracker' in servidor: servidor = 'torrent'
 
             elif 'voesx' in servidor: servidor = 'voe'
             elif servidor == 'maxplay': servidor = 'voe'
@@ -636,7 +668,8 @@ def findvideos(item):
             else:
                 if not config.get_setting('developer_mode', default=False): continue
 
-            itemlist.append(Item (channel = item.channel, action = 'play', server = servidor, title = '', data_url = data_url, data_lmt = data_lmt, quality = qlty, language = lang ))
+            itemlist.append(Item (channel = item.channel, action = 'play', server = servidor, title = '', data_url = data_url, data_lmt = data_lmt,
+                                  quality = qlty, language = lang ))
 
     # ~ es por las series
     if not hay_descargas:
@@ -671,7 +704,7 @@ def findvideos(item):
 
                 url = item.url + _url
 
-                itemlist.append(Item (channel = item.channel, action = 'play', server = 'directo', title = '', url = url, other = servidor ))
+                itemlist.append(Item (channel = item.channel, action = 'play', server = servidor, title = '', url = url, other = 'd' ))
 
     if not itemlist:
         if not ses == 0:
@@ -690,33 +723,37 @@ def play(item):
     if domain_memo: host_player = domain_memo
     else: host_player = host
 
-    if item.server == 'directo':
-        data = do_downloadpage(item.url)
+    if item.server == 'directo' or item.other == 'd':
+        url = ''
 
-        url = scrapertools.find_single_match(data, '<a target="_blank".*?href="(.*?)"')
+        if item.url:
+            data = do_downloadpage(item.url)
 
-        if url.endswith('.torrent'):
-            if config.get_setting('proxies', item.channel, default=''):
-                import os
+            url = scrapertools.find_single_match(data, '<a target="_blank".*?href="(.*?)"')
 
-                data = do_downloadpage(url)
-                file_local = os.path.join(config.get_data_path(), "temp.torrent")
-                with open(file_local, 'wb') as f: f.write(data); f.close()
+            if url.endswith('.torrent'):
+                if config.get_setting('proxies', item.channel, default=''):
+                    import os
 
-                itemlist.append(item.clone( url = file_local, server = 'torrent' ))
-            else:
-                itemlist.append(item.clone( url = url, server = 'torrent' ))
+                    data = do_downloadpage(url)
+                    file_local = os.path.join(config.get_data_path(), "temp.torrent")
+                    with open(file_local, 'wb') as f: f.write(data); f.close()
+
+                    itemlist.append(item.clone( url = file_local, server = 'torrent' ))
+                else:
+                    itemlist.append(item.clone( url = url, server = 'torrent' ))
+
+                return itemlist
+
+        if url:
+            servidor = servertools.get_server_from_url(url)
+            servidor = servertools.corregir_servidor(servidor)
+
+            url = servertools.normalize_url(servidor, url)
+
+            itemlist.append(item.clone(url = url, server = servidor))
 
             return itemlist
-
-        servidor = servertools.get_server_from_url(url)
-        servidor = servertools.corregir_servidor(servidor)
-
-        url = servertools.normalize_url(servidor, url)
-
-        itemlist.append(item.clone(url = url, server = servidor))
-
-        return itemlist
 
     url = base64.b64decode(item.data_url).decode("utf-8")
 
@@ -791,7 +828,12 @@ def play(item):
         if servidor == 'directo':
             if not url.startswith('http'): return itemlist
 
-        elif servidor == 'zplayer': url = url + '|' + host_player
+            if '/okru.' in url: servidor = 'okru'
+
+            new_server = servertools.corregir_other(url).lower()
+            if not new_server.startswith("http"): servidor = new_server
+
+        if servidor == 'zplayer': url = url + '|' + host_player
 
         itemlist.append(item.clone(url = url, server = servidor))
 

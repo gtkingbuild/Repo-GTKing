@@ -10,7 +10,7 @@
     "patterns": [
       {
         "pattern": "([a-z0-9]+\\.zippyshare.com/v/[A-z0-9]+/file.html)",
-        "url": "http://\\1"
+        "url": "https://\\1"
       }
     ]
   }

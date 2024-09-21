@@ -1,0 +1,17 @@
+{
+  "id": "ennovelasws",
+  "name": "EnNovelasWs",
+  "thumbnail": "ennovelasws.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["tales"],
+
+  "notes": "Web dedicada principalmente en Novelas."
+}

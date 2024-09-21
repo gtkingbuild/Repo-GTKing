@@ -1,10 +1,47 @@
 # -*- coding: utf-8 -*-
 
+import sys
+
+PY3 = False
+if sys.version_info[0] >= 3: PY3 = True
+
 import re
 
 from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
+
+
+LINUX = False
+BR = False
+BR2 = False
+
+if PY3:
+    try:
+       import xbmc
+       if xbmc.getCondVisibility("system.platform.Linux.RaspberryPi") or xbmc.getCondVisibility("System.Platform.Linux"): LINUX = True
+    except: pass
+
+try:
+   if LINUX:
+       try:
+          from lib import balandroresolver2 as balandroresolver
+          BR2 = True
+       except: pass
+   else:
+       if PY3:
+           from lib import balandroresolver
+           BR = true
+       else:
+          try:
+             from lib import balandroresolver2 as balandroresolver
+             BR2 = True
+          except: pass
+except:
+   try:
+      from lib import balandroresolver2 as balandroresolver
+      BR2 = True
+   except: pass
 
 
 host = 'https://seriesretro.com/'
@@ -13,10 +50,109 @@ host = 'https://seriesretro.com/'
 perpage = 20
 
 
-def do_downloadpage(url, post=None, headers=None):
-    data = httptools.downloadpage(url, post=post, headers=headers).data
+def item_configurar_proxies(item):
+    color_list_proxies = config.get_setting('channels_list_proxies_color', default='red')
+
+    color_avis = config.get_setting('notification_avis_color', default='yellow')
+    color_exec = config.get_setting('notification_exec_color', default='cyan')
+
+    context = []
+
+    tit = '[COLOR %s]Información proxies[/COLOR]' % color_avis
+    context.append({'title': tit, 'channel': 'helper', 'action': 'show_help_proxies'})
+
+    if config.get_setting('channel_seriesretro_proxies', default=''):
+        tit = '[COLOR %s][B]Quitar los proxies del canal[/B][/COLOR]' % color_list_proxies
+        context.append({'title': tit, 'channel': item.channel, 'action': 'quitar_proxies'})
+
+    tit = '[COLOR %s]Ajustes categoría proxies[/COLOR]' % color_exec
+    context.append({'title': tit, 'channel': 'actions', 'action': 'open_settings'})
+
+    plot = 'Es posible que para poder utilizar este canal necesites configurar algún proxy, ya que no es accesible desde algunos países/operadoras.'
+    plot += '[CR]Si desde un navegador web no te funciona el sitio ' + host + ' necesitarás un proxy.'
+    return item.clone( title = '[B]Configurar proxies a usar ...[/B]', action = 'configurar_proxies', folder=False, context=context, plot=plot, text_color='red' )
+
+def quitar_proxies(item):
+    from modules import submnuctext
+    submnuctext._quitar_proxies(item)
+    return True
+
+def configurar_proxies(item):
+    from core import proxytools
+    return proxytools.configurar_proxies_canal(item.channel, host)
+
+
+def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
+    hay_proxies = False
+    if config.get_setting('channel_seriesretro_proxies', default=''): hay_proxies = True
+
+    timeout = None
+    if host in url:
+        if hay_proxies: timeout = config.get_setting('channels_repeat', default=30)
+
+    if not url.startswith(host):
+        data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+    else:
+        if hay_proxies:
+            data = httptools.downloadpage_proxy('seriesretro', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+        else:
+            data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+
+        if not data:
+            if not '?s=' in url:
+                if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('SeriesRetro', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+
+                timeout = config.get_setting('channels_repeat', default=30)
+
+                if hay_proxies:
+                    data = httptools.downloadpage_proxy('seriesretro', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+                else:
+                    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+
+    if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
+        if BR or BR2:
+            try:
+                ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
+                if ck_name and ck_value:
+                    httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
+
+                if not url.startswith(host):
+                    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+                else:
+                   if hay_proxies:
+                       data = httptools.downloadpage_proxy('seriesretro', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+                   else:
+                       data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+            except:
+                pass
+
+    if '<title>Just a moment...</title>' in data:
+        if not '?s=' in url:
+            platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]CloudFlare[COLOR orangered] Protection[/B][/COLOR]')
+        return ''
+
+    elif '<title>One moment, please...</title>' in data:
+        if not '?s=' in url:
+            platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]CloudFlare[COLOR orangered] Protection [COLOR plum]Level 2[/B][/COLOR]')
+        return ''
 
     return data
+
+
+def acciones(item):
+    logger.info()
+    itemlist = []
+
+    itemlist.append(item.clone( channel='submnuctext', action='_test_webs', title='Test Web del canal [COLOR yellow][B] ' + host + '[/B][/COLOR]',
+                                from_channel='seriesretro', folder=False, text_color='chartreuse' ))
+
+    itemlist.append(item_configurar_proxies(item))
+
+    itemlist.append(Item( channel='helper', action='show_help_seriesretro', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('seriesretro') ))
+
+    platformtools.itemlist_refresh()
+
+    return itemlist
 
 
 def mainlist(item):
@@ -26,13 +162,15 @@ def mainlist_series(item):
     logger.info()
     itemlist = []
 
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
+
     itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'lista-series/', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Últimos episodios', action = 'list_epis', url = host + 'lista-series/episodios-agregados-actualizados/', search_type = 'tvshow', text_color='cyan' ))
 
-    itemlist.append(item.clone( title = 'Animación', action = 'list_all', url = host + 'category/animacion/', search_type = 'tvshow', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'Animación', action = 'list_all', url = host + 'category/animacion/', search_type = 'tvshow', text_color='greenyellow' ))
 
     itemlist.append(item.clone( title = 'Live action', action = 'list_all', url = host + 'category/liveaction/', search_type = 'tvshow', text_color='moccasin' ))
 
@@ -135,12 +273,12 @@ def list_all(item):
                 buscar_next = False
 
         if buscar_next:
-            if '<div class=wp-pagenavi>' in data:
-                next_url = scrapertools.find_single_match(data, 'class="page-numbers current".*?href="(.*?)"')
+            if '<div class="wp-pagenavi">' in data:
+                next_page = scrapertools.find_single_match(data, '<div class="wp-pagenavi">.*?class="page-numbers current".*?href="(.*?)"')
 
-                if next_url:
-                    if '/page/' in next_url:
-                        itemlist.append(item.clone( action = 'list_all', page = 0, url = next_url, title = 'Siguientes ...', text_color='coral' ))
+                if next_page:
+                    if '/page/' in next_page:
+                        itemlist.append(item.clone( action = 'list_all', page = 0, url = next_page, title = 'Siguientes ...', text_color='coral' ))
 
     return itemlist
 
@@ -152,8 +290,6 @@ def list_alfa(item):
     data = do_downloadpage(item.url)
 
     matches = scrapertools.find_multiple_matches(data, '<td><span class="Num">(.*?)</tr>')
-
-    num_matches = len(matches)
 
     for match in matches:
         url = scrapertools.find_single_match(match, '<a href="(.*?)"')
@@ -207,12 +343,12 @@ def list_epis(item):
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
-        if '<div class="wp-pagenavi"' in data:
-            next_url = scrapertools.find_single_match(data, 'class="page-numbers current".*?href="(.*?)"')
+        if '<div class="wp-pagenavi">' in data:
+            next_page = scrapertools.find_single_match(data, '<div class="wp-pagenavi">.*?class="page-numbers current".*?href="(.*?)"')
 
-            if next_url:
-                if '/page/' in next_url:
-                    itemlist.append(item.clone (url = next_url, title = 'Siguientes ...', action = 'list_epis', text_color='coral' ))
+            if next_page:
+                if '/page/' in next_page:
+                    itemlist.append(item.clone (url = next_page, title = 'Siguientes ...', action = 'list_epis', text_color='coral' ))
 
     return itemlist
 
@@ -370,6 +506,9 @@ def findvideos(item):
 
         if servidor == 'various': link_other = servertools.corregir_other(srv)
 
+        if url.endswith('.torrent'): servidor = 'torrent'
+        elif 'magnet:?' in url: servidor = 'torrent'
+
         itemlist.append(Item( channel = item.channel, action = 'play', url = url, server = servidor, title = '', language = 'Lat', other = link_other ))
 
     # ~ Descargas
@@ -386,6 +525,9 @@ def findvideos(item):
         servidor = servertools.corregir_servidor(servidor)
 
         url = scrapertools.find_single_match(match, ' href="(.*?)"')
+
+        if url.endswith('.torrent'): servidor = 'torrent'
+        elif 'magnet:?' in url: servidor = 'torrent'
 
         other = 'D'
 
@@ -407,7 +549,10 @@ def play(item):
 
     if url.startswith(host):
         if item.other == 'D' or 'D ' in item.other :
-            url = httptools.downloadpage(url, follow_redirects=False, only_headers=True).headers.get('location', '')
+            if config.get_setting('channel_seriesretro_proxies', default=''):
+                url = httptools.downloadpage_proxy('seriesretro', url, follow_redirects=False, only_headers=True).headers.get('location', '')
+            else:
+                url = httptools.downloadpage(url, follow_redirects=False, only_headers=True).headers.get('location', '')
         else:
             data = do_downloadpage(url)
 
@@ -428,10 +573,22 @@ def play(item):
         elif '/gdriveplayer.io/' in url:
             return 'Servidor [COLOR plum]NO soportado[/COLOR]'
 
+        if url.endswith('.torrent'):
+            itemlist.append(item.clone( url = url, server = 'torrent' ))
+            return itemlist
+
+        elif 'magnet:?' in url:
+            itemlist.append(item.clone( url = url, server = 'torrent' ))
+            return itemlist
+
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 
-        if servidor:
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(url).lower()
+            if not new_server.startswith("http"): servidor = new_server
+
+        if servidor != 'directo':
             url = servertools.normalize_url(servidor, url)
 
             if 'zplayer' in url: url += "|referer=%s" % host

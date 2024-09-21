@@ -125,7 +125,7 @@ def do_downloadpage(url, post = None, referer = None):
             data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
 
         if not data:
-            if not '/search' in url:
+            if not '/search/' in url:
                 if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('HdFullSe', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
 
                 timeout = config.get_setting('channels_repeat', default=30)
@@ -134,6 +134,11 @@ def do_downloadpage(url, post = None, referer = None):
                     data = httptools.downloadpage_proxy('hdfullse', url, post=post, headers=headers, timeout=timeout).data
                 else:
                     data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+
+    if '<title>Just a moment...</title>' in data:
+        if not '/search/' in url:
+            platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]CloudFlare[COLOR orangered] Protection[/B][/COLOR]')
+        return ''
 
     return data
 
@@ -154,11 +159,11 @@ def acciones(item):
     itemlist.append(item.clone( channel='domains', action='test_domain_hdfullse', title='Test Web del canal [COLOR yellow][B] ' + url + '[/B][/COLOR]',
                                 from_channel='hdfullse', folder=False, text_color='chartreuse' ))
 
-    itemlist.append(Item( channel='domains', action='operative_domains_hdfullse', title='Comprobar [B]Dominio Operativo Vigentes[/B]',
-                          desde_el_canal = True, thumbnail=config.get_thumb('settings'), text_color='mediumaquamarine' ))
+    itemlist.append(Item( channel='domains', action='operative_domains_hdfullse', title='Comprobar [B]Dominio Operativo Vigente[/B]',
+                          desde_el_canal = True, thumbnail=config.get_thumb('hdfullse'), text_color='mediumaquamarine' ))
 
     itemlist.append(Item( channel='domains', action='last_domain_hdfullse', title='[B]Comprobar último dominio vigente[/B]',
-                          desde_el_canal = True, host_canal = url, thumbnail=config.get_thumb('settings'), text_color='chocolate' ))
+                          desde_el_canal = True, host_canal = url, thumbnail=config.get_thumb('hdfullse'), text_color='chocolate' ))
 
     if domain_memo: title = '[B]Modificar/Eliminar el dominio memorizado[/B]'
     else: title = '[B]Informar Nuevo Dominio manualmente[/B]'
@@ -167,7 +172,7 @@ def acciones(item):
 
     itemlist.append(item_configurar_proxies(item))
 
-    itemlist.append(Item( channel='helper', action='show_help_hdfullse', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('help') ))
+    itemlist.append(Item( channel='helper', action='show_help_hdfullse', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('hdfullse') ))
 
     platformtools.itemlist_refresh()
 
@@ -186,7 +191,9 @@ def mainlist(item):
     itemlist.append(item.clone( title = 'Series', action = 'mainlist_series', text_color = 'hotpink' ))
 
     itemlist.append(item.clone( title='Novelas', action = 'mainlist_series', text_color = 'limegreen' ))
-    itemlist.append(item.clone( title='Doramas', action = 'mainlist_series', text_color = 'firebrick' ))
+
+    if config.get_setting('mnu_doramas', default=False):
+        itemlist.append(item.clone( title='Doramas', action = 'mainlist_series', text_color = 'firebrick' ))
 
     if not config.get_setting('descartar_anime', default=False):
         itemlist.append(item.clone( title='Animes', action = 'mainlist_series', text_color = 'springgreen' ))
@@ -218,6 +225,7 @@ def mainlist_pelis(item):
     itemlist.append(item.clone( action = 'list_all', title = 'Más valoradas', url = host + '/movies/imdb_rating', search_type = 'movie' ))
 
     itemlist.append(item.clone( action = 'list_all', title = 'Por alfabético', url = host + '/movies/abc', search_type = 'movie' ))
+
     itemlist.append(item.clone( action = 'generos', title = 'Por género', search_type = 'movie' ))
     itemlist.append(item.clone( action = 'anios', title = 'Por año', search_type = 'movie' ))
 
@@ -237,7 +245,9 @@ def mainlist_series(item):
     itemlist.append(item.clone( action = 'list_all', title = 'Más valoradas', url= host + '/tv-shows/imdb_rating', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( action = 'list_all', title = 'Novelas', url = host + '/tv-tags/soap', search_type = 'tvshow', text_color='limegreen' ))
-    itemlist.append(item.clone( action = 'list_all', title = 'Doramas', url = host + '/tv-tags/dorama', search_type = 'tvshow', text_color='firebrick' ))
+
+    if config.get_setting('mnu_doramas', default=False):
+        itemlist.append(item.clone( action = 'list_all', title = 'Doramas', url = host + '/tv-tags/dorama', search_type = 'tvshow', text_color='firebrick' ))
 
     if not config.get_setting('descartar_anime', default=False):
         itemlist.append(item.clone( action = 'list_all', title = 'Animes', url = host + '/tv-tags/anime', search_type = 'tvshow', text_color='springgreen' ))
@@ -269,6 +279,9 @@ def generos(item):
         if config.get_setting('descartar_anime', default=False):
             if title == 'Anime': continue
 
+        if not config.get_setting('mnu_doramas', default=False):
+            if title == 'Dorama': continue
+
         itemlist.append(item.clone( title = title, url = host + url, action = 'list_all', text_color = text_color ))
 
     return sorted(itemlist, key = lambda it: it.title)
@@ -292,6 +305,9 @@ def list_all(item):
     itemlist = []
 
     if not item.page: item.page = 0
+
+    year = '-'
+    if '/year/' in item.url: year = scrapertools.find_single_match(item.url, "/year/(.*?)/")
 
     if item.search_post: data = do_downloadpage(item.url, post=item.search_post)
     else: data = do_downloadpage(item.url)
@@ -323,13 +339,13 @@ def list_all(item):
                 if item.search_type == "tvshow": continue
 
             itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, languages = ', '.join(languages), fmt_sufijo = sufijo,
-                                        contentType = 'movie', contentTitle = title, infoLabels = {'year': '-'} ))
+                                        contentType = 'movie', contentTitle = title, infoLabels = {'year': year} ))
 
         if tipo == 'tvshow':
             if not item.search_type == "all":
                 if item.search_type == "movie": continue
             itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb, languages = ', '.join(languages), fmt_sufijo = sufijo,
-                                        contentType = 'tvshow', contentSerieName = title, infoLabels = {'year': '-'} ))
+                                        contentType = 'tvshow', contentSerieName = title, infoLabels = {'year': year} ))
 
         if len(itemlist) >= perpage: break
 
@@ -382,7 +398,7 @@ def temporadas(item):
     matches = re.compile(patron, re.DOTALL).findall(data)
 
     for url, title, thumb, retitle in matches:
-        numtempo = scrapertools.find_single_match(title, 'Temporadas (\d+)')
+        numtempo = scrapertools.find_single_match(retitle, 'Temporadas (\d+)$')
         if not numtempo: numtempo = scrapertools.find_single_match(url, '-(\d+)$')
 
         if not numtempo: continue
@@ -419,6 +435,10 @@ def temporadas(item):
             itemlist = episodios(item)
             return itemlist
 
+        if not ('/season-' + numtempo) in url:
+            new_url = scrapertools.find_single_match(url, '(.*?)/season-')
+            url = new_url + '/season-' + numtempo
+
         itemlist.append(item.clone( action = 'episodios', url = url, title = titulo, thumbnail = thumb, referer = item.url, page = 0,
                                     contentType = 'season', contentSeason = numtempo, text_color = 'tan' ))
 
@@ -451,7 +471,7 @@ def episodios(item):
     patron += '"name">(.*?)<.*?'
     patron += '</b>(.*?)</h5>'
 
-    matches = re.compile(patron, re.DOTALL).findall(data)
+    matches = re.compile(patron, re.DOTALL).findall(bloque)
 
     if item.page == 0 and item.perpage == 50:
         sum_parts = len(matches)
@@ -529,20 +549,27 @@ def findvideos(item):
     data_js = do_downloadpage(host + '/static/style/js/jquery.hdfull.view.min.js')
 
     keys = scrapertools.find_multiple_matches(data_js, 'JSON.parse\(atob.*?substrings\((.*?)\)')
+
     if not keys: 
         keys = scrapertools.find_multiple_matches(data_js, 'JSON.*?\]\((0x[0-9a-f]+)\)\);')
+        if not keys: keys = scrapertools.find_multiple_matches(data_js, 'JSON.*?\]\(([0-9]+)\)\);')
+
         if keys: 
             for i, key in enumerate(keys): keys[i] = int(key, 16)
 
-        else: keys = scrapertools.find_multiple_matches(data_js, 'JSON.*?\]\(([0-9]+)\)\);')
+    if not keys:
+        if config.get_setting('developer_mode', default=False): platformtools.dialog_notification(config.__addon_name + ' HdFullSe', '[COLOR red][B]Faltan Keys[/B][/COLOR]')
+
+    provs = ''
 
     data_js = do_downloadpage(host + '/static/js/providers.js')
 
-    try:
-        provs = balandroresolver.hdfull_providers(data_js)
-        if not provs: return itemlist
-    except:
-        return itemlist
+    try: provs = balandroresolver.hdfull_providers(data_js)
+    except: pass
+
+    if not provs:
+        if config.get_setting('developer_mode', default=False):
+            if not str(provs) == '[]': platformtools.dialog_notification(config.__addon_name + ' HdFullSe', '[COLOR red][B]Faltan Provs[/B][/COLOR]')
 
     data = do_downloadpage(item.url)
 
@@ -555,9 +582,16 @@ def findvideos(item):
            data_decrypt = jsontools.load(balandroresolver.obfs(base64.b64decode(data_obf), 126 - int(key)))
            if data_decrypt: break
         except:
-           return itemlist
+           pass
+
+    if not data_decrypt:
+        if str(data_decrypt) == '':
+            if config.get_setting('developer_mode', default=False):
+                if not str(data_decrypt) == '[]': platformtools.dialog_notification(config.__addon_name + ' HdFullSe', '[COLOR red][B]Faltan Decrypts[/B][/COLOR]')
 
     matches = []
+
+    ses = 0
 
     for match in data_decrypt:
         if match['provider'] in provs:
@@ -566,21 +600,23 @@ def findvideos(item):
                 url = eval(provs[match['provider']][1].replace('_code_', "match['code']"))
                 matches.append([match['lang'], match['quality'], url, embed])
             except:
-                pass
-
-    ses = 0
+                ses += 1
+        else:
+            ses += 1
 
     for idioma, calidad, url, embed in matches:
         ses += 1
 
         if embed == 'd':
-            if not 'uptobox' in url: continue
+            if 'clicknupload' in url: pass
+            elif not 'uptobox' in url: continue
 
         elif '/powvideo.' in url: continue
         elif '/streamplay.' in url: continue
 
         elif 'onlystream.tv' in url: url = url.replace('onlystream.tv', 'upstream.to')
         elif 'vev.io' in url: url = url.replace('vev.io', 'streamtape.com/e')
+        elif 'waaw.tv' in url: url = url.replace('/watch_video.php?v=', '/e/')
 
         try:
             calidad = unicode(calidad, 'utf8').upper().encode('utf8')

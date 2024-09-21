@@ -14,6 +14,10 @@
       {
         "pattern": "vidoza.(net|co|org)/([a-z0-9]+).html",
         "url": "https://vidoza.net/embed-\\1"
+      },
+      {
+        "pattern": "videzz.(net|co|org)/([a-z0-9]+).html",
+        "url": "https://vidoza.net/embed-\\1"
       }
     ]
   }

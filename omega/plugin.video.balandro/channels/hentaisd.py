@@ -34,12 +34,14 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Sin censura', action = 'list_all', url = host + 'hentai/sin-censura/' ))
 
-    itemlist.append(item.clone( title = 'Por género', action = 'generos' ))
+    itemlist.append(item.clone( title = 'Latino', action = 'list_list', url = host + 'hentai/generos/latino/' ))
+
+    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias' ))
 
     return itemlist
 
 
-def generos(item):
+def categorias(item):
     logger.info()
     itemlist = []
 
@@ -49,6 +51,12 @@ def generos(item):
     matches = re.compile('<h3 class="media-heading"><a href="([^"]+)" alt="([^"]+)"', re.DOTALL).findall(data)
 
     for url, title in matches:
+        if title == 'audio latino': continue
+        elif title == 'Audio Castellano': continue
+        elif title == 'Calida Full HD': continue
+
+        title = title.replace('&ntilde;', 'ñ')
+
         itemlist.append(item.clone( action = 'list_list', url = url, title = title, text_color='orange' ))
 
     return sorted(itemlist, key=lambda i: i.title)

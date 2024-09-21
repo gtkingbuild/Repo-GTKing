@@ -11,7 +11,8 @@ host = 'https://smartpelis.tv/'
 
 
 # ~ por si viene de enlaces guardados
-ant_hosts = ['https://pelismart.tv/', 'https://smartpeli.com/', 'https://smartpeli.tv/']
+ant_hosts = ['https://pelismart.tv/', 'https://smartpeli.com/', 'https://www3.smartpeli.com/',
+             'https://smartpeli.tv/']
 
 
 domain = config.get_setting('dominio', 'pelismart', default='')
@@ -368,10 +369,13 @@ def play(item):
 
                 return itemlist
 
-        elif servidor == 'zplayer':
-            url += '|%s' % item.url
+        elif servidor == 'zplayer': url += '|%s' % item.url
 
         if url:
+            if servidor == 'directo':
+                new_server = servertools.corregir_other(url).lower()
+                if not new_server.startswith("http"): servidor = new_server
+
             itemlist.append(item.clone(server = servidor, url = url))
 
     return itemlist

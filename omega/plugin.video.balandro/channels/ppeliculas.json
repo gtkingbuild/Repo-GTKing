@@ -1,6 +1,6 @@
 {
   "id": "ppeliculas",
-  "name": "Ppeliculas",
+  "name": "PPeliculas",
   "thumbnail": "ppeliculas.png",
 
   "active": true,
@@ -8,10 +8,10 @@
   "searchable": true,
   "search_types": ["all", "movie", "tvshow"],
 
-  "categories": ["movie", "tvshow"],
+  "categories": ["movie", "tvshow", "torrent"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["onlyone", "notice", "news", "rankings", "lasts", "kids", "docs", "vos"],
+  "clusters": ["onlyone", "notice", "torrents", "news", "rankings", "lasts", "kids", "docs", "vos"],
 
-  "notes": "Películas por géneros. También Series. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Canal con enlaces Streaming y Torrent. Películas por géneros. También Series. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

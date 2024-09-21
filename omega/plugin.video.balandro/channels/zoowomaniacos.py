@@ -97,12 +97,12 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host_opts ))
 
-    itemlist.append(item.clone( title = 'Las 1001 que hay que ver', action= 'list_all', url = host_opts, text_color = 'moccasin',
+    itemlist.append(item.clone( title = 'Las 1001 que hay que ver', action= 'list_all', url = host_opts, text_color = 'cyan',
                                 pane = 'Las 1001',
                                 post = {'start': 0, 'length': perpage, 'metodo': 'ObtenerListaTotal', 'searchPanes[a5][0]': 'Las 1001', 'search[value]': '', 'searchPanes[a3][0]': '', 'searchPanes[a4][0]': '', 'searchPanes[a6][0]': ''},
                                 ))
 
-    itemlist.append(item.clone( title = 'Películas de culto', action= 'list_all', url = host_opts,
+    itemlist.append(item.clone( title = 'Películas de culto', action= 'list_all', url = host_opts, text_color = 'moccasin',
                                 pane = 'Película de Culto',
                                 post = {'start': 0, 'length': perpage, 'metodo': 'ObtenerListaTotal', 'searchPanes[a5][0]': 'Película de Culto', 'search[value]': '', 'searchPanes[a3][0]': '', 'searchPanes[a4][0]': '', 'searchPanes[a6][0]': ''},
                                 ))
@@ -119,7 +119,7 @@ def mainlist_pelis(item):
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Por país', action = 'paises', search_type = 'movie' ))
 
-    itemlist.append(item.clone( title = 'Por dirección, interpretación ...', action = 'alfabetico' ))
+    itemlist.append(item.clone( title = 'Por dirección, interpretación ...', action = 'alfabetico', text_color='salmon' ))
 
     return itemlist
 

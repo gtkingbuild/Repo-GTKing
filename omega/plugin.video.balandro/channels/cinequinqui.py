@@ -24,9 +24,9 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
 
-    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'movies/', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + '?post_type=movies', search_type = 'movie' ))
 
-    itemlist.append(item.clone( title = 'Más valoradas', action = 'list_all', url = host + 'movies/', group = 'best', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Más valoradas', action = 'list_all', url = host + '?post_type=movies', group = 'best', search_type = 'movie' ))
 
     return itemlist
 
@@ -37,7 +37,7 @@ def list_all(item):
 
     data = do_downloadpage(item.url)
 
-    if '/?s=' in item.url: bloque = scrapertools.find_single_match(data, '<h1(.*?)</h2>')
+    if '/?s=' in item.url: bloque = scrapertools.find_single_match(data, '<h1(.*?)</div></div></div>')
     else:
         if not item.group: bloque = scrapertools.find_single_match(data, '</h2>(.*?)CINE QUINQUI ONLINE')
         else: bloque = scrapertools.find_single_match(data, '<h1(.*?)<h2>')
@@ -68,7 +68,9 @@ def list_all(item):
         next_page = scrapertools.find_single_match(data, '<span class="current">.*?' + "<a href='(.*?)'")
 
         if next_page:
-            if '/page/' in next_page:
+            if '/page/' in next_page or 'paged=' in next_page:
+                next_page = next_page.replace('&#038;', '&')
+
                 itemlist.append(item.clone( title = 'Siguientes ...', url = next_page, action = 'list_all', text_color='coral' ))
 
     return itemlist

@@ -234,7 +234,7 @@ def render_items(itemlist, parent_item):
         xbmcplugin.addDirectoryItem(handle=handle, url=item_url, listitem=listitem, isFolder=item.folder)
 
     # Fijar los tipos de vistas
-    if parent_item.channel == 'mainmenu' or (parent_item.channel == 'tracking' and parent_item.action in ['mainlist','mainlist_listas']):
+    if parent_item.channel == 'mainmenu' or (parent_item.channel == 'tracking' and parent_item.action in ['mainlist', 'mainlist_listas']):
         # vista con: Lista amplia, Muro de iconos
         xbmcplugin.setContent(handle, '')
     elif parent_item.channel == 'tracking' and parent_item.action in ['mainlist_series', 'mainlist_doramas', 'mainlist_animes', 'mainlist_episodios', 'serie_temporadas', 'serie_episodios']:
@@ -434,8 +434,9 @@ def set_context_commands(item, parent_item, colores):
     if not config.get_setting('mnu_simple', default=False):
         if config.get_setting('mnu_desargas', default=True):
             if item.channel != '' and item.action == 'findvideos' and parent_item.channel != 'downloads':
-                context_commands.append( ('[B][COLOR %s]Descargar Vídeo[/COLOR][/B]' % colores['download'], config.build_RunPlugin(
-                    item.clone(channel="downloads", action="save_download", from_channel=item.channel, from_action=item.action))) )
+                if not item.channel == 'amateurtv':
+                    context_commands.append( ('[B][COLOR %s]Descargar Vídeo[/COLOR][/B]' % colores['download'], config.build_RunPlugin(
+                        item.clone(channel="downloads", action="save_download", from_channel=item.channel, from_action=item.action))) )
 
     # Buscar trailer
     if item.contentType in ['movie', 'tvshow'] and item.infoLabels['tmdb_id']:
@@ -567,7 +568,10 @@ def developer_mode_check_findvideos(itemlist, parent_item):
 
         # Server Various y anulados/controlados
         if apuntar:
-            if it.server in ['dropload', 'fastupload', 'filemoon', 'moonplayer', 'hexupload', 'hexload', 'krakenfiles', 'mvidoo', 'rutube', 'streamhub', 'streamwish', 'tubeload', 'uploadever', 'videowood', 'yandex', 'desiupload', 'filelions', 'youdbox', 'yodbox', 'youdboox', 'vudeo', 'embedgram', 'embedrise', 'embedwish', 'wishembed', 'vidguard', 'vgfplay', 'v6embed', 'vgembed', 'vembed', 'vid-guard', 'strwish', 'azipcdn', 'awish', 'dwish', 'mwish', 'swish', 'lulustream', 'luluvdo', 'lion', 'alions', 'dlions', 'mlions', 'turboviplay', 'emturbovid', 'tuborstb', 'streamvid' 'upload.do', 'uploaddo', 'file-upload', 'wishfast', 'doodporn', 'vidello', 'vidspeed', 'sfastwish', 'fviplions', 'moonmov', 'flaswish', 'vkspeed', 'vkspeed7', 'obeywish', 'twitch', 'vidhidepro', 'hxfile', 'drop', 'embedv', 'vgplayer', 'userload', 'uploadraja']:
+            if it.server in ['dropload', 'fastupload', 'filemoon', 'moonplayer', 'hexupload', 'hexload', 'krakenfiles', 'mvidoo', 'rutube', 'streamhub', 'streamwish', 'tubeload', 'uploadever', 'videowood', 'yandex', 'desiupload', 'filelions', 'youdbox', 'yodbox', 'youdboox', 'vudeo', 'embedgram', 'embedrise', 'embedwish', 'wishembed', 'vidguard', 'vgfplay', 'v6embed', 'vgembed', 'vembed', 'vid-guard', 'strwish', 'azipcdn', 'awish', 'dwish', 'mwish', 'swish', 'lulustream', 'luluvdo', 'lulu', 'lion', 'alions', 'dlions', 'mlions', 'turboviplay', 'emturbovid', 'tuborstb', 'streamvid' 'upload.do', 'uploaddo', 'file-upload', 'wishfast', 'doodporn', 'vidello', 'vidroba', 'vidspeed', 'sfastwish', 'fviplions', 'moonmov', 'flaswish', 'vkspeed', 'vkspeed7', 'obeywish', 'twitch', 'vidhide', 'hxfile', 'drop', 'embedv', 'vgplayer', 'userload', 'uploadraja', 'cdnwish', 'goodstream', 'asnwish', 'flastwish', 'jodwish', 'fmoonembed', 'embedmoon', 'moonjscdn', 'rumble', 'bembed', 'javlion', 'streamruby', 'sruby', 'rubystream', 'stmruby', 'rubystm', 'swhoi', 'listeamed', 'go-streamer.net', 'fsdcmo', 'fdewsdc', 'qiwi', 'swdyu', 'ponmi', 'wishonly', 'streamsilk']:
+                apuntar = False
+
+            elif it.server in ['allviid', 'cloudfile', 'cloudmail', 'dailyuploads', 'darkibox', 'dembed', 'downace', 'fastdrive', 'fastplay', 'filegram', 'gostream', 'letsupload', 'liivideo', 'myupload', 'oneupload', 'pandafiles', 'rovideo', 'send', 'streamable', 'streamdav', 'streamgzzz', 'streamoupload', 'tusfiles', 'uploadba', 'uploadflix', 'uploady', 'veev', 'veoh', 'vidbob', 'vidlook', 'vidmx', 'vid', 'vidpro', 'vidstore', 'vipss', 'vkprime', 'worlduploads', 'ztreamhub' 'amdahost', 'updown']:
                 apuntar = False
 
             elif it.server in ['fembed', 'fembed-hd', 'fembeder', 'divload', 'ilovefembed', 'myurlshort', 'jplayer', 'feurl', 'fembedisthebest', 'femax20', 'fcdn', 'fembad', 'pelispng', 'hlshd', 'embedsito', 'mrdhan', 'dutrag', 'fplayer', 'diasfem', 'suzihaza', 'vanfem', 'youtvgratis', 'oceanplay', 'gotovideo.kiev.ua', 'owodeuwu', 'sypl', 'fembed9hd', 'watchse', 'vcdn', 'femoload', 'cubeembed']:
@@ -579,7 +583,7 @@ def developer_mode_check_findvideos(itemlist, parent_item):
             elif it.server in ['sbplay', 'sbplay1', 'sbplay2', 'pelistop', 'sbfast', 'sbfull', 'ssbstream', 'sbthe', 'sbspeed', 'cloudemb', 'tubesb', 'embedsb', 'playersb', 'sbcloud1', 'watchsb', 'viewsb', 'watchmo', 'streamsss', 'sblanh', 'sbanh', 'sblongvu', 'sbchill', 'sbrity', 'sbhight', 'sbbrisk', 'sbface', 'view345', 'sbone', 'sbasian', 'streaamss', 'lvturbo', 'sbnet', 'sbani', 'sbrapid', 'cinestart', 'vidmoviesb', 'sbsonic', 'sblona', 'likessb']:
                 apuntar = False
 
-            elif it.server in ['ddownload', 'dfiles', 'dropapk', 'fileflares', 'filerice', 'fireload', 'katfile', 'megaupload', 'oload', 'pandafiles', 'rockfile', 'turbobit', 'uploadrive', 'uppit', 'qiwi']:
+            elif it.server in ['ddownload', 'dfiles', 'dropapk', 'fileflares', 'filerice', 'fireload', 'katfile', 'megaupload', 'oload', 'pandafiles', 'rockfile', 'turbobit', 'uploadrive', 'uppit']:
                 apuntar = False
 
         if apuntar:
@@ -986,14 +990,14 @@ def play_torrent(mediaurl, parent_item):
     if cliente_torrent == 'Seleccionar':
         from modules import filters
 
-        ret = filters.show_clients_torrent(parent_item)
+        ret = filters.show_clients_torrent_no_obsoletes(parent_item)
 
         if ret == -1: return False
         else:
            cliente_torrent = ret[0]
 
            if xbmc.getCondVisibility('System.HasAddon("%s")' % ret[1]):
-               if dialog_yesno(config.__addon_name, 'Selecionado: [COLOR yellow][B]' + cliente_torrent.capitalize() + '[/B][/COLOR]', '[COLOR greenyellow][B]¿ Desea asignar este Cliente/Motor torrent, como motor habitual para no volver a seleccionarlo más ?[/B][/COLOR]'): 
+               if dialog_yesno(config.__addon_name, 'Selecionado: [COLOR yellow][B]' + cliente_torrent.capitalize() + '[/B][/COLOR]', '[COLOR cyan][B]¿ Desea asignar este Cliente/Motor torrent, como motor habitual para no volver a seleccionarlo más ?[/B][/COLOR]'): 
                    config.set_setting('cliente_torrent', cliente_torrent.capitalize())
 
     cliente_torrent = cliente_torrent.lower()

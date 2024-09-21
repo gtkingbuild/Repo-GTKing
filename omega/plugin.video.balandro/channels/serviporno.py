@@ -81,6 +81,8 @@ def categorias(item):
     matches = re.compile(patron, re.DOTALL).findall(data)
 
     for thumb, url, title in matches:
+         if title == 'Árabes': title = 'Arabes'
+
          url = host[:-1] + url
 
          itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color='tan' ))
@@ -97,7 +99,7 @@ def pornstars(item):
 
     patron = '<div class="box-chica">.*?'
     patron += '<a href="([^"]+)".*?'
-    patron += 'data-src="(.*?).*?'
+    patron += 'data-src="(.*?)".*?'
     patron += '<h4><a href="[^"]+">([^<]+)</a></h4>.*?'
     patron += '<a class="total-videos".*?>([^<]+)</a>'
 
@@ -106,9 +108,9 @@ def pornstars(item):
     for url, thumb, title, videos in matches:
          url = host[:-1] + url
 
-         titulo = '[COLOR moccasin]%s[/COLOR] (%s)' % (title, videos)
+         titulo = '[COLOR moccasin]%s[/COLOR] (%s)' % (title, videos.replace('vídeos', '').strip())
 
-         itemlist.append(item.clone (action='list_all', title=titulo, url=url, thumbnail=thumb, text_color = 'moccasin' ))
+         itemlist.append(item.clone (action='list_all', title=titulo, url=url, thumbnail=thumb ))
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<a href="([^"]+)" class="btn-pagination">Siguiente')

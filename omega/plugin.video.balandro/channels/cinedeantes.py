@@ -33,7 +33,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone ( title = 'Selección cine', action = 'list_sel', url = 'https://pastebin.com/raw/QW0A0mzx', text_color = 'moccasin' ))
 
-    itemlist.append(item.clone ( title = 'Por agrupación (A - Z)', action = 'agrupa' ))
+    itemlist.append(item.clone ( title = 'Por agrupación (A - Z)', action = 'agrupa' , text_color='salmon'))
 
     itemlist.append(item.clone ( title = 'Por saga', action = 'pelis', grupo = 'sagas' ))
     itemlist.append(item.clone ( title = 'Por género', action = 'generos', search_type = 'movie' ))

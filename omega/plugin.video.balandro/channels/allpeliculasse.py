@@ -6,6 +6,8 @@ from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
+from lib import decrypters
+
 
 host = 'https://allpeliculas.se/'
 
@@ -108,6 +110,8 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'peliculas/', search_type = 'movie' ))
 
+    itemlist.append(item.clone( title = 'Más populares', action = 'list_all', url = host + 'peliculas-populares/', search_type = 'movie' ))
+
     itemlist.append(item.clone( title = 'En 4K', action = 'list_all', url = host + 'hd-4k/', search_type = 'movie', text_color = 'moccasin' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
@@ -126,12 +130,17 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'series/', search_type = 'tvshow' ))
 
+    itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
+
     return itemlist
 
 
 def generos(item):
     logger.info()
     itemlist = []
+
+    if item.search_type == 'movie': text_color = 'deepskyblue'
+    else: text_color = 'hotpink'
 
     data = do_downloadpage(host)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
@@ -143,9 +152,11 @@ def generos(item):
     for url, tit in matches:
         if tit == '4k UHD': continue
 
+        if item.search_type == 'tvshow': url = url.replace('/category/', '/genre_series/')
+
         tit = tit.replace('&amp;', '&')
 
-        itemlist.append(item.clone( title = tit, url = url, action = 'list_all', text_color='deepskyblue' ))
+        itemlist.append(item.clone( title = tit, url = url, action = 'list_all', text_color = text_color ))
 
     return itemlist
 
@@ -197,7 +208,9 @@ def list_all(item):
             if ' (' in title: title = title.replace(' (' + year + ')', '').strip()
             elif ' [' in title: title = title.replace(' [' + year + ']', '').strip()
 
-        title = title.replace('&#8217;', "'").replace('&#038;', '&')
+        title = title.replace('&#8217;', "'").replace('&#038;', '&').replace('&#8211;', '').replace('&#8230;', ' ').strip()
+
+        if '/year_pelicula/' in item.url: year = scrapertools.find_single_match(item.url, "/year_pelicula/(.*?)/")
 
         tipo = 'tvshow' if '/series/' in url else 'movie'
         sufijo = '' if item.search_type != 'all' else tipo
@@ -217,6 +230,8 @@ def list_all(item):
                                         contentType = 'tvshow', contentSerieName = title, infoLabels={'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
+
+    if '/peliculas-populares/' in item.url: return itemlist
 
     if itemlist:
         if "<div class='pagination" in data:
@@ -374,13 +389,13 @@ def findvideos(item):
         itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = url, language = lang, other = link_other ))
 
     # ~ Descargas
-
     bloque = scrapertools.find_single_match(data, '<div class="downloads-(.*?)</div> </div>')
     if not bloque: bloque = scrapertools.find_single_match(data, '<div class="downloads-(.*?)</div></div>')
 
-    matches = scrapertools.find_multiple_matches(bloque, 'href="(.*?)"')
+    matches = scrapertools.find_multiple_matches(bloque, 'target="_blank"(.*?)</a>')
 
-    for url in matches:
+    for match in matches:
+        url = scrapertools.find_single_match(match, 'href="(.*?)"')
         if url.startswith(host): continue
 
         elif not url.startswith("http"):
@@ -388,6 +403,10 @@ def findvideos(item):
            else: continue
 
         ses += 1
+
+        if '/1fichier.' in match: continue
+        elif '/turbobit.' in match: continue
+        elif '/fembed.' in match: continue
 
         if '/1fichier.' in url: continue
         elif '/turbobit.' in url: continue
@@ -400,12 +419,62 @@ def findvideos(item):
 
         url = servertools.normalize_url(servidor, url)
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = url, language = lang ))
+        link_other = ''
+        if servidor == 'various': link_other = servertools.corregir_other(url)
+
+        if '/megaup' in match: link_other = 'Megaup'
+        elif '/undefined' in match: link_other = 'Indefinido'
+        elif '/torrent' in match: link_other = 'Torrent'
+        elif '/mega' in match: link_other = 'Mega'
+        elif '/google' in match: link_other = 'Gvideo'
+        elif '/mediafire' in match: link_other = 'Mediafire'
+
+        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = url, language = lang, other = link_other ))
 
     if not itemlist:
         if not ses == 0:
             platformtools.dialog_notification(config.__addon_name, '[COLOR tan][B]Sin enlaces Soportados[/B][/COLOR]')
             return
+
+    return itemlist
+
+
+def play(item):
+    logger.info()
+    itemlist = []
+
+    url = item.url
+
+    if item.server == 'torrent':
+        itemlist.append(item.clone( url = item.url, server = 'torrent' ))
+        return itemlist
+
+    else:
+        if 'magnet' in item.other:
+            itemlist.append(item.clone( url = item.url, server = 'torrent' ))
+            return itemlist
+
+        if item.server == 'directo':
+            host_torrent = host[:-1]
+            url_base64 = decrypters.decode_url_base64(item.url, host_torrent)
+
+            if url_base64.startswith('magnet:'):
+                itemlist.append(item.clone( url = url_base64, server = 'torrent' ))
+                return itemlist
+
+            elif url_base64.endswith(".torrent"):
+                itemlist.append(item.clone( url = url_base64, server = 'torrent' ))
+                return itemlist
+
+    if url:
+        if '/acortalink.' in url:
+           return 'Tiene [COLOR plum]Acortador[/COLOR] del enlace'
+
+        if item.server == 'directo':
+            new_server = servertools.corregir_other(url).lower()
+            if not new_server.startswith("http"): item.server = new_server
+
+        itemlist.append(item.clone(url = url, server = item.server))
 
     return itemlist
 

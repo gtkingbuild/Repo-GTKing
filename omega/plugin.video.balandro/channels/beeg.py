@@ -34,8 +34,9 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = url_api + 'facts/tag?id=27173&limit=48&offset=0' ))
 
-    itemlist.append(item.clone( title = 'Por canal', action = 'categorias', url = url_api + 'tag/facts/tags?get_original=true&slug=index', group = 'chan' ))
-    itemlist.append(item.clone( title = 'Por estrella', action = 'categorias', url = url_api + 'tag/facts/tags?get_original=true&slug=index', group = 'star' ))
+    itemlist.append(item.clone( title = 'Por canal', action = 'categorias', url = url_api + 'tag/facts/tags?get_original=true&slug=index', group = 'chan', tcat = 'prods' ))
+    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url = url_api + 'tag/facts/tags?get_original=true&slug=index', group = 'chan', tcat = 'other' ))
+    itemlist.append(item.clone( title = 'Por estrella', action = 'categorias', url = url_api + 'tag/facts/tags?get_original=true&slug=index', group = 'star', tcat = 'human' ))
 
     return itemlist
 
@@ -48,8 +49,11 @@ def categorias(item):
     else: text_color = 'moccasin'
 
     data = httptools.downloadpage(item.url).data
-
     jdata = jsontools.load(data)
+
+    if item.tcat == 'human': jdata = jdata['human']
+    elif item.tcat == 'other': jdata = jdata['other']
+    else: jdata = jdata['productions']
 
     for tag in jdata:
         thumb = ''
@@ -61,17 +65,10 @@ def categorias(item):
 
             if tag.get("thumbs", ""):
                 thumb = tag["thumbs"]
-                thumb = scrapertools.find_single_match(str(thumb), "'id': (.*?),")
-                thumb = 'https://thumbs.externulls.com/photos/' + thumb + '/to.webp?'
+                thumb = scrapertools.find_single_match(str(thumb), "'pt_photo': (.*?),").strip()
+                thumb = 'https://thumbs.externulls.com/photos/' + str(thumb) + '/to.webp?'
         except:
             continue
-
-        if item.group == 'chan':
-            if not thumb: continue
-        else:
-            if thumb: continue
-
-            thumb = thumb_beeg
 
         url = url_api + 'facts/tag?slug=%s&limit=48&offset=0' % slug
 
@@ -91,17 +88,18 @@ def list_all(item):
 
     for video in jdata:
         try:
-            id = video['fc_file_id']
+            id = video["file"]['id']
             thumb = video["fc_facts"][0]['fc_thumbs']
 
-            stuff = video["file"]["stuff"]
+            title = scrapertools.find_single_match(str(video), "'cd_value': '(.*?)'")
+            if not title: title = scrapertools.find_single_match(str(video), "'cd_value':.*?" + "(.*?)")
+            if not title: title = id
 
-            title = stuff["sf_name"]
             stime = video["file"]["fl_duration"]
         except:
-            continue
+           continue
 
-        thumb = "https://thumbs-015.externulls.com/videos/%s/%s.jpg" % (id, thumb[0])
+        thumb = "https://thumbs-015.externulls.com/videos/%s/%s.jpg" % (str(id), str(thumb[0]))
 
         url = url_api + 'facts/file/' + str(id)
 

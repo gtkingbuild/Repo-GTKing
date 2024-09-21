@@ -1,0 +1,17 @@
+{
+  "id": "cuevana3pro",
+  "name": "Cuevana3Pro",
+  "thumbnail": "cuevana3pro.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["lat", "cast", "vose"],
+
+  "clusters": ["inestable", "notice", "current", "news", "years", "lists", "kids", "docs", "vos", "anime"],
+
+  "notes": "Películas por géneros y año. Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

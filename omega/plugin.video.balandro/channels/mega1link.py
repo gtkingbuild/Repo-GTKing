@@ -112,18 +112,25 @@ def list_all(item):
         if year: title = title = title.replace(' ' + year, '').replace(' (' + year + ')', '').strip()
         else: year = '-'
 
+        if '/release/' in item.url: year = scrapertools.find_single_match(item.url, "/release/(.*?)/")
+
         qlty = scrapertools.find_single_match(article, '<span class=quality>(.*?)</span>')
         qlty = re.sub(' -$', '', qlty)
 
         plot = scrapertools.find_single_match(article, '<div class=texto>(.*?)</div>')
 
+        PeliTitle = title
+
+        if "DVDrip" in PeliTitle: PeliTitle = PeliTitle.split("DVDrip")[0]
+
         itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, qualities=qlty, 
-                                    contentType='movie', contentTitle=title, infoLabels={'year': year, 'plot': plot} ))
+                                    contentType='movie', contentTitle=PeliTitle, infoLabels={'year': year, 'plot': plot} ))
 
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<span class="current">.*?' + "<a href='(.*?)'")
+        if not next_page: next_page = scrapertools.find_single_match(data, '<span class="current">.*?<a href="(.*?)"')
 
         if next_page:
             if '/page/' in next_page:
@@ -160,14 +167,17 @@ def findvideos(item):
         url = scrapertools.find_single_match(lin, '<a href="(.*?)"')
         if not url: url = scrapertools.find_single_match(lin, "<a href='(.*?)'")
 
-        server = servertools.corregir_servidor(scrapertools.find_single_match(lin, "domain=([^.']+)"))
+        servidor = scrapertools.find_single_match(lin, "domain=([^.']+)")
 
-        if not url or not server: continue
+        if not url or not servidor: continue
 
-        if server == 'soon': continue
+        if servidor == 'soon': continue
+        elif servidor == 'uii': continue
+        elif servidor == 'pastedvdrip': continue
+        elif servidor == 'rinku': continue
 
-        if servertools.is_server_available(server):
-            if not servertools.is_server_enabled(server): continue
+        if servertools.is_server_available(servidor):
+            if not servertools.is_server_enabled(servidor): continue
         else:
             if not config.get_setting('developer_mode', default=False): continue
 
@@ -177,8 +187,11 @@ def findvideos(item):
 
         lang = scrapertools.find_single_match(lin, "<td>([^<]+)")
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = server, title = '', url = url, 
-                              language = IDIOMAS.get(lang, lang), quality = qlty, quality_num = puntuar_calidad(qlty) ))
+        other = ''
+        if servidor == 'various': other = servertools.corregir_other(servidor)
+
+        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, 
+                              language = IDIOMAS.get(lang, lang), quality = qlty, quality_num = puntuar_calidad(qlty), other = other ))
 
     if not itemlist:
         if not ses == 0:
@@ -203,12 +216,20 @@ def play(item):
             url = url.replace('&amp;', '&')
 
             if url:
+                if '/uii.' in url:
+                    return 'Servidor [COLOR goldenrod]No Soportado[/COLOR]'
+
                 servidor = servertools.get_server_from_url(url)
                 servidor = servertools.corregir_servidor(servidor)
 
+                if servidor == 'directo':
+                    new_server = servertools.corregir_other(url).lower()
+                    if not new_server.startswith("http"): servidor = new_server
+
                 if servidor and servidor != 'directo':
                     url = servertools.normalize_url(servidor, url)
-                    itemlist.append(item.clone( url=url, server=servidor ))
+
+                    itemlist.append(item.clone(url=url, server=servidor ))
     else:
         itemlist.append(item.clone())
 
@@ -254,10 +275,12 @@ def list_search(item):
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
-        next_page = scrapertools.find_single_match(data, ' href="([^"]+)"[^>]*><span class="icon-chevron-right">')
+        next_page = scrapertools.find_single_match(data, '<span class="current">.*?' + "<a href='(.*?)'")
+        if not next_page: next_page = scrapertools.find_single_match(data, '<span class="current">.*?<a href="(.*?)"')
 
         if next_page:
-            itemlist.append(item.clone( title='Siguientes ...', url=next_page, action='list_search', text_color='coral' ))
+            if '/page/' in next_page:
+                itemlist.append(item.clone( title='Siguientes ...', url=next_page, action='list_search', text_color='coral' ))
 
     return itemlist
 

@@ -1,0 +1,17 @@
+{
+  "id": "novelastop",
+  "name": "NovelasTop",
+  "thumbnail": "novelastop.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["cast", "lat"],
+
+  "clusters": ["suggested", "lasts", "rankings", "years", "producers", "vos", "tales", "docs"],
+
+  "notes": "Web dedicada exclusivamente en Novelas. Series por Géneros."
+}

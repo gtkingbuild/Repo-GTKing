@@ -605,6 +605,7 @@
             </node>
         </node>
         <node label="32006">
+		<shortcut label="32006" type="32006" icon="favourites.png">ActivateWindow(favouritesbrowser)</shortcut>
             <content>favourite</content>
         </node>
         <node label="10004">

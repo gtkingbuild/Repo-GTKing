@@ -14,7 +14,8 @@ _players = ['.pelitorrent.']
 
 
 # ~ por si viene de enlaces guardados
-ant_hosts = ['https://www.tupelihd.com/', 'https://senininternetin.com/']
+ant_hosts = ['https://www.tupelihd.com/', 'https://senininternetin.com/', 'https://pelitorrent.xyz/',
+             'https://pelitorrent.com/']
 
 
 domain = config.get_setting('dominio', 'tupelihd', default='')
@@ -67,6 +68,7 @@ def do_downloadpage(url, post=None, headers=None):
 
     raise_weberror = True
     if '/peliculas/estrenos-' in url: raise_weberror = False
+    elif '/release/' in url: raise_weberror = False
 
     hay_proxies = False
     if config.get_setting('channel_tupelihd_proxies', default=''): hay_proxies = True
@@ -78,6 +80,17 @@ def do_downloadpage(url, post=None, headers=None):
             data = httptools.downloadpage_proxy('tupelihd', url, post=post, headers=headers, raise_weberror=raise_weberror).data
         else:
             data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
+
+        if not data:
+            if not '?s=' in url:
+                if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('TuPeliHd', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+
+                timeout = config.get_setting('channels_repeat', default=30)
+
+                if hay_proxies:
+                    data = httptools.downloadpage_proxy('tupelihd', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+                else:
+                    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
 
     return data
 
@@ -259,7 +272,7 @@ def list_all(item):
 
     data = do_downloadpage(item.url)
 
-    bloque = scrapertools.find_single_match(data, '<h1(.*?)<h3')
+    bloque = scrapertools.find_single_match(data, '<h1(.*?)</section>')
 
     matches = re.compile('<article(.*?)</article>', re.DOTALL).findall(bloque)
 
@@ -271,12 +284,17 @@ def list_all(item):
 
         if not url or not title: continue
 
+        title = title.replace('&#038;', '&')
+
         tipo = 'tvshow' if '/series/' in url else 'movie'
         sufijo = '' if item.search_type != 'all' else tipo
 
         thumb = scrapertools.find_single_match(article, ' src="([^"]+)"')
+
         year = scrapertools.find_single_match(article, '<span class="year">(\d+)</span>')
         if not year: year = '-'
+
+        if '/release/' in item.url: year = scrapertools.find_single_match(item.url, "/release/(.*?)/")
 
         qlty_lang = scrapertools.find_single_match(article, '<span class="calidad">(.*?)</span')
         if '|' in qlty_lang:
@@ -569,9 +587,23 @@ def play(item):
                     platformtools.dialog_ok(config.__addon_name + ' TuPeliHd', '[COLOR cyan][B]Al parecer el Canal cambió de Dominio.[/B][/COLOR]', '[COLOR yellow][B]' + url_avis + '[/B][/COLOR]', 'Por favor, Reviselo en [COLOR goldenrod][B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]')
                     return itemlist
 
-    if item.server == 'torrent':
-        itemlist.append(item.clone( url = item.url, server = 'torrent' ))
-        return itemlist
+    if '/?trdownload=' in item.url:
+        if not item.url.startswith(host_player):
+            url = httptools.downloadpage(item.url, only_headers = True, follow_redirects = False).headers.get('location')
+        else:
+            if config.get_setting('channel_tupelihd_proxies', default=''):
+                url = httptools.downloadpage_proxy('tupelihd', item.url, only_headers = True, follow_redirects = False).headers.get('location')
+            else:
+                url = httptools.downloadpage(item.url, only_headers = True, follow_redirects = False).headers.get('location')
+
+        if url:
+            if url.endswith('.torrent'):
+               itemlist.append(item.clone( url = url, server = 'torrent' ))
+               return itemlist
+
+    elif item.server == 'torrent':
+          itemlist.append(item.clone( url = item.url, server = 'torrent' ))
+          return itemlist
 
     elif item.other == 't':
         if not item.url.startswith(host_player):
@@ -593,11 +625,18 @@ def play(item):
         url = scrapertools.find_single_match(data, '<div class="Video">.*?src="(.*?)"')
 
     if url:
+        if url.startswith('https://drive.google.com/'): url = ''
+
+    if url:
        if item.server == 'torrent':
-            itemlist.append(item.clone(url = url, server = item.server))
+           if url.endswith('.torrent'): itemlist.append(item.clone(url = url, server = item.server))
        else:
             servidor = servertools.get_server_from_url(url)
             servidor = servertools.corregir_servidor(servidor)
+
+            if servidor == 'directo':
+                new_server = servertools.corregir_other(url).lower()
+                if not new_server.startswith("http"): servidor = new_server
 
             if servidor and servidor != 'directo':
                 url = servertools.normalize_url(servidor, url)

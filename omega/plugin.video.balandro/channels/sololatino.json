@@ -1,0 +1,17 @@
+{
+  "id": "sololatino",
+  "name": "SoloLatino",
+  "thumbnail": "sololatino.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["news", "rankings", "years", "lasts", "producers", "docs", "kids", "vos", "anime"],
+
+  "notes": "Películas por géneros y años. Series por Géneros."
+}

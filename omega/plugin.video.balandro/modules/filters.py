@@ -52,51 +52,40 @@ def mainlist(item):
 
     if channels_search_excluded_documentaries: tot_opt_anular += 1
 
-    if config.get_setting('channels_link_main', default=True):
-        itemlist.append(item.clone( action = 'channels_excluded', title='Excluir canales en las búsquedas de [COLOR yellow][B]Películas y/ó Series[/B][/COLOR]',
-                                    extra = 'mixed', folder = False ))
-
-    itemlist.append(item.clone( action = 'channels_excluded', title='Excluir canales en las búsquedas de [COLOR deepskyblue][B]Películas[/B][/COLOR]',
-                                extra = 'movies', folder = False ))
-    itemlist.append(item.clone( action = 'channels_excluded', title='Excluir canales en las búsquedas de [COLOR hotpink][B]Series[/B][/COLOR]',
-                                extra = 'tvshows', folder = False ))
-    itemlist.append(item.clone( action = 'channels_excluded', title='Excluir canales en las búsquedas de [COLOR cyan][B]Documentales[/B][/COLOR]',
-                                extra = 'documentaries', folder = False ))
-    itemlist.append(item.clone( action = 'channels_excluded', title='Excluir canales en las búsquedas de [COLOR blue][B]Torrents[/B][/COLOR]',
-                                extra = 'torrents', folder = False ))
+    itemlist.append(item.clone( action='', title= '[COLOR cyan][B]EXCLUIR CANALES DE LAS BÚSQUEDAS:[/B][/COLOR]', folder=False ))
 
     if config.get_setting('channels_link_main', default=True):
-        itemlist.append(item.clone( action = 'channels_excluded', title='Excluir canales en las búsquedas de [COLOR green][B]Todos[/B][/COLOR]',
-                                    extra = 'all', folder = False ))
+        itemlist.append(item.clone( action = 'channels_excluded', title=' - Excluir canales de [COLOR yellow][B]Películas y/ó Series[/B][/COLOR]', extra = 'mixed', folder = False ))
+
+    itemlist.append(item.clone( action = 'channels_excluded', title=' - Excluir canales de [COLOR deepskyblue][B]Películas[/B][/COLOR]', extra = 'movies', folder = False, thumbnail=config.get_thumb('movie') ))
+    itemlist.append(item.clone( action = 'channels_excluded', title=' - Excluir canales de [COLOR hotpink][B]Series[/B][/COLOR]', extra = 'tvshows', folder = False, thumbnail=config.get_thumb('tvshow') ))
+    itemlist.append(item.clone( action = 'channels_excluded', title=' - Excluir canales de [COLOR cyan][B]Documentales[/B][/COLOR]', extra = 'documentaries', folder = False, thumbnail=config.get_thumb('documentary') ))
+    itemlist.append(item.clone( action = 'channels_excluded', title=' - Excluir canales de [COLOR blue][B]Torrents[/B][/COLOR]', extra = 'torrents', folder = False, thumbnail=config.get_thumb('torrents') ))
+
+    if config.get_setting('channels_link_main', default=True):
+        itemlist.append(item.clone( action = 'channels_excluded', title=' - Excluir canales de [COLOR green][B]Todos[/B][/COLOR]', extra = 'all', folder = False ))
 
     if config.get_setting('channels_link_main', default=True):
         if channels_search_excluded_mixed:
-            itemlist.append(item.clone( title = '[B]Anular las exclusiones para [COLOR yellow]Películas y/ó Series[/COLOR][/B]', action = 'channels_excluded_del',
-                                        extra = 'mixed', folder = False, text_color='coral' ))
+            itemlist.append(item.clone( title = ' - [B]Anular las exclusiones para [COLOR yellow]Películas y/ó Series[/COLOR][/B]', action = 'channels_excluded_del', extra = 'mixed', folder = False, text_color='coral' ))
 
     if channels_search_excluded_movies:
-        itemlist.append(item.clone( title = '[B]Anular las exclusiones para [COLOR deepskyblue]Películas[/COLOR][/B]', action = 'channels_excluded_del',
-                                    extra = 'movies', folder = False, text_color='coral' ))
+        itemlist.append(item.clone( title = ' - [B]Anular las exclusiones para [COLOR deepskyblue]Películas[/COLOR][/B]', action = 'channels_excluded_del', extra = 'movies', folder = False, text_color='coral' ))
 
     if channels_search_excluded_tvshows:
-        itemlist.append(item.clone( title = '[B]Anular las exclusiones para [COLOR hotpink]Series[/COLOR][/B]', action = 'channels_excluded_del',
-                                    extra = 'tvshows', folder = False, text_color='coral' ))
+        itemlist.append(item.clone( title = ' - [B]Anular las exclusiones para [COLOR hotpink]Series[/COLOR][/B]', action = 'channels_excluded_del', extra = 'tvshows', folder = False, text_color='coral' ))
 
     if channels_search_excluded_documentaries:
-        itemlist.append(item.clone( title = '[B]Anular las exclusiones para [COLOR cyan]Documentales[/COLOR][/B]', action = 'channels_excluded_del',
-                                    extra = 'documentaries', folder = False, text_color='coral' ))
+        itemlist.append(item.clone( title = ' - [B]Anular las exclusiones para [COLOR cyan]Documentales[/COLOR][/B]', action = 'channels_excluded_del', extra = 'documentaries', folder = False, text_color='coral' ))
 
     if channels_search_excluded_torrents:
-        itemlist.append(item.clone( title = '[B]Anular las exclusiones para [COLOR blue]Torrents[/COLOR][/B]', action = 'channels_excluded_del',
-                                    extra = 'torrents', folder = False, text_color='coral' ))
+        itemlist.append(item.clone( title = ' - [B]Anular las exclusiones para [COLOR blue]Torrents[/COLOR][/B]', action = 'channels_excluded_del', extra = 'torrents', folder = False, text_color='coral' ))
 
     if config.get_setting('channels_link_main', default=True):
         if channels_search_excluded_all or tot_opt_anular > 1:
-            itemlist.append(item.clone( title = '[B]Anular [COLOR green]Todas[/COLOR][/B] las exclusiones', action = 'channels_excluded_del',
-                                        extra= 'all', folder = False, text_color='yellow' ))
+            itemlist.append(item.clone( title = ' - [B]Anular [COLOR green]Todas[/COLOR][/B] las exclusiones', action = 'channels_excluded_del', extra= 'all', folder = False, text_color='yellow' ))
 
-    itemlist.append(item.clone( title='[B]Quitar otros posibles canales excluidos en las búsquedas de [COLOR green]Todos[/B]', action='del_no_searchables',
-                                extra='all', text_color='red' ))
+    itemlist.append(item.clone( title=' - [B]Quitar otros canales excluidos de [COLOR green]Todos[/B]', action='del_no_searchables', extra='all', text_color='red' ))
 
     platformtools.itemlist_refresh()
 
@@ -107,12 +96,12 @@ def mainlist2(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( action = 'channels_excluded', title='[COLOR greenyellow][B]Efectuar las búsquedas Solo en determinados canales[/B][/COLOR]',
-                                extra = 'included', folder = False ))
+    itemlist.append(item.clone( action='', title= '[COLOR greenyellow][B]EFECTUAR BÚSQUEDAS [COLOR gold](solo en determinados canales)[/B][/COLOR]', folder=False ))
+
+    itemlist.append(item.clone( action = 'channels_excluded', title='Pulsar para acceder a la Lista de Canales', extra = 'included', folder = False ))
 
     if channels_search_included:
-        itemlist.append(item.clone( title = '[COLOR coral][B]Anular Todos los canales[/COLOR][/B] en las búsquedas de Solo determinados canales',
-                                    action = 'channels_excluded_del', extra = 'included', folder = False, text_color='yellow' ))
+        itemlist.append(item.clone( title = '[COLOR coral][B]Anular Todos los canales[COLOR greenyellow][B] para efectuar las búsquedas[/B][/COLOR]', action = 'channels_excluded_del', extra = 'included', folder = False, text_color='yellow' ))
 
     platformtools.itemlist_refresh()
 
@@ -140,8 +129,7 @@ def del_no_searchables(item):
                i += 1
                config.set_setting(cfg_searchable_channel, False)
 
-    if i == 0:
-        platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Sin canales de este tipo[/B][/COLOR]' % color_adver)
+    if i == 0: platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Sin canales de este tipo[/B][/COLOR]' % color_adver)
 
 
 def only_animes(item):
@@ -187,10 +175,10 @@ def only_animes(item):
         tipos = str(tipos).replace('[', '').replace(']', '').replace("'", '')
 
         if ch['searchable'] == False:
-            tipos = str(tipos).replace('movie', 'Vídeos')
-            tipos = str(tipos).replace('movie', 'Películas').replace('tvshow', 'Series').replace('all,', '').strip()
+            tipos = str(tipos).replace('movie', '[COLOR orange]Vídeos[/COLOR]')
+            tipos = str(tipos).replace('tvshow', '[COLOR hotpink]Series[/COLOR]').replace('all,', '').strip()
         else:
-            tipos = str(tipos).replace('movie', 'Películas').replace('tvshow', 'Series').replace('documentary', 'Documentales').replace('all,', '').strip()
+            tipos = str(tipos).replace('movie', '[COLOR deepskyblue]Películas[/COLOR]').replace('tvshow', '[COLOR hotpink]Series[/COLOR]').replace('documentary', '[COLOR cyan]Documentales[/COLOR]').replace('all,', '').strip()
 
         if info: info = info + '  '
         info = info + '[COLOR mediumspringgreen][B]' + tipos + '[/B][/COLOR]'
@@ -260,8 +248,11 @@ def only_adults(item):
         tipos = ch['search_types']
         tipos = str(tipos).replace('[', '').replace(']', '').replace("'", '')
 
-        if ch['searchable'] == False: tipos = str(tipos).replace('movie', 'Vídeos')
-        else: tipos = str(tipos).replace('movie', 'Películas').replace('tvshow', 'Series').replace('documentary', 'Documentales').replace('all,', '').strip()
+        if ch['searchable'] == False:
+            tipos = str(tipos).replace('movie', '[COLOR orange]Vídeos[/COLOR]')
+            tipos = str(tipos).replace('tvshow', '[COLOR hotpink]Series[/COLOR]').replace('all,', '').strip()
+        else:
+            tipos = str(tipos).replace('movie', '[COLOR deepskyblue]Películas[/COLOR]').replace('tvshow', '[COLOR hotpink]Series[/COLOR]').replace('documentary', '[COLOR cyan]Documentales[/COLOR]').replace('all,', '').strip()
 
         if info: info = info + '  '
         info = info + '[COLOR mediumspringgreen][B]' + tipos + '[/B][/COLOR]'
@@ -361,7 +352,12 @@ def with_proxies(item):
 
         tipos = ch['search_types']
         tipos = str(tipos).replace('[', '').replace(']', '').replace("'", '')
-        tipos = str(tipos).replace('movie', 'Películas').replace('tvshow', 'Series').replace('documentary', 'Documentales').replace('all,', '').strip()
+
+        if ch['searchable'] == False:
+            tipos = str(tipos).replace('movie', '[COLOR orange]Vídeos[/COLOR]')
+            tipos = str(tipos).replace('tvshow', '[COLOR hotpink]Series[/COLOR]').replace('all,', '').strip()
+        else:
+            tipos = str(tipos).replace('movie', '[COLOR deepskyblue]Películas[/COLOR]').replace('tvshow', '[COLOR hotpink]Series[/COLOR]').replace('documentary', '[COLOR cyan]Documentales[/COLOR]').replace('all,', '').strip()
 
         if info: info = info + '  '
         info = info + '[COLOR mediumspringgreen][B]' + tipos + '[/B][/COLOR]'
@@ -449,7 +445,12 @@ def no_actives(item):
 
         tipos = ch['search_types']
         tipos = str(tipos).replace('[', '').replace(']', '').replace("'", '')
-        tipos = str(tipos).replace('movie', 'Películas').replace('tvshow', 'Series').replace('documentary', 'Documentales').replace('all,', '').strip()
+
+        if ch['searchable'] == False:
+            tipos = str(tipos).replace('movie', '[COLOR orange]Vídeos[/COLOR]')
+            tipos = str(tipos).replace('tvshow', '[COLOR hotpink]Series[/COLOR]').replace('all,', '').strip()
+        else:
+            tipos = str(tipos).replace('movie', '[COLOR deepskyblue]Películas[/COLOR]').replace('tvshow', '[COLOR hotpink]Series[/COLOR]').replace('documentary', '[COLOR cyan]Documentales[/COLOR]').replace('all,', '').strip()
 
         if info: info = info + '  '
         info = info + '[COLOR mediumspringgreen][B]' + tipos + '[/B][/COLOR]'
@@ -519,7 +520,12 @@ def only_prefered(item):
 
         tipos = ch['search_types']
         tipos = str(tipos).replace('[', '').replace(']', '').replace("'", '')
-        tipos = str(tipos).replace('movie', 'Películas').replace('tvshow', 'Series').replace('documentary', 'Documentales').replace('all,', '').strip()
+
+        if ch['searchable'] == False:
+            tipos = str(tipos).replace('movie', '[COLOR orange]Vídeos[/COLOR]')
+            tipos = str(tipos).replace('tvshow', '[COLOR hotpink]Series[/COLOR]').replace('all,', '').strip()
+        else:
+            tipos = str(tipos).replace('movie', '[COLOR deepskyblue]Películas[/COLOR]').replace('tvshow', '[COLOR hotpink]Series[/COLOR]').replace('documentary', '[COLOR cyan]Documentales[/COLOR]').replace('all,', '').strip()
 
         if info: info = info + '  '
         info = info + '[COLOR mediumspringgreen][B]' + tipos + '[/B][/COLOR]'
@@ -582,7 +588,12 @@ def only_torrents(item):
 
         tipos = ch['search_types']
         tipos = str(tipos).replace('[', '').replace(']', '').replace("'", '')
-        tipos = str(tipos).replace('movie', 'Películas').replace('tvshow', 'Series').replace('documentary', 'Documentales').replace('all,', '').strip()
+
+        if ch['searchable'] == False:
+            tipos = str(tipos).replace('movie', '[COLOR orange]Vídeos[/COLOR]')
+            tipos = str(tipos).replace('tvshow', '[COLOR hotpink]Series[/COLOR]').replace('all,', '').strip()
+        else:
+            tipos = str(tipos).replace('movie', '[COLOR deepskyblue]Películas[/COLOR]').replace('tvshow', '[COLOR hotpink]Series[/COLOR]').replace('documentary', '[COLOR cyan]Documentales[/COLOR]').replace('all,', '').strip()
 
         if info: info = info + '  '
         info = info + '[COLOR mediumspringgreen][B]' + tipos + '[/B][/COLOR]'
@@ -647,7 +658,12 @@ def channels_status(item):
 
         tipos = ch['search_types']
         tipos = str(tipos).replace('[', '').replace(']', '').replace("'", '')
-        tipos = str(tipos).replace('movie', '[COLOR deepskyblue]Películas[/COLOR]').replace('tvshow', '[COLOR hotpink]Series[/COLOR]').replace('documentary', '[COLOR cyan]Documentales[/COLOR]').replace('all,', '').strip()
+
+        if ch['searchable'] == False:
+            tipos = str(tipos).replace('movie', '[COLOR orange]Vídeos[/COLOR]')
+            tipos = str(tipos).replace('tvshow', '[COLOR hotpink]Series[/COLOR]').replace('all,', '').strip()
+        else:
+            tipos = str(tipos).replace('movie', '[COLOR deepskyblue]Películas[/COLOR]').replace('tvshow', '[COLOR hotpink]Series[/COLOR]').replace('documentary', '[COLOR cyan]Documentales[/COLOR]').replace('all,', '').strip()
 
         if '+18' in ch['notes']: tipos = str(tipos).replace('[COLOR deepskyblue]Películas[/COLOR]', '[COLOR teal]Vídeos[/COLOR]')
 
@@ -845,7 +861,12 @@ def channels_excluded(item):
 
         tipos = ch['search_types']
         tipos = str(tipos).replace('[', '').replace(']', '').replace("'", '')
-        tipos = str(tipos).replace('movie', 'Películas').replace('tvshow', 'Series').replace('documentary', 'Documentales').replace('all,', '').strip()
+
+        if ch['searchable'] == False:
+            tipos = str(tipos).replace('movie', '[COLOR orange]Vídeos[/COLOR]')
+            tipos = str(tipos).replace('tvshow', '[COLOR hotpink]Series[/COLOR]').replace('all,', '').strip()
+        else:
+            tipos = str(tipos).replace('movie', '[COLOR deepskyblue]Películas[/COLOR]').replace('tvshow', '[COLOR hotpink]Series[/COLOR]').replace('documentary', '[COLOR cyan]Documentales[/COLOR]').replace('all,', '').strip()
 
         if info: info = info + '  '
         info = info + '[COLOR mediumspringgreen][B]' + tipos + '[/B][/COLOR]'
@@ -1041,6 +1062,9 @@ def show_servers_list(item):
     elif item.tipo == 'sinsoporte':
         cabecera = 'Servidores No Soportados'
         filtro = False
+    elif item.tipo == 'outservice':
+        cabecera = 'Servidores Sin Servicio'
+        filtro = True
     else:
         cabecera = 'Todos los Servidores'
         filtro = None
@@ -1084,11 +1108,13 @@ def show_servers_list(item):
            notes = ''
 
         if item.tipo == 'sinsoporte':
-            if not "Requiere" in notes: continue
+            if not "requiere" in notes.lower(): continue
+        elif item.tipo == 'outservice':
+            if not "out of service" in notes.lower(): continue
         elif item.tipo == 'alternativos':
-            if not "Alternative" in notes: continue
+            if not "alternative" in notes.lower(): continue
 
-            add_on = scrapertools.find_single_match(notes, 'vía:(.*?)$').strip().lower()
+            add_on = scrapertools.find_single_match(notes.lower(), 'vía:(.*?)$').strip().lower()
             if ' (' in add_on: add_on = scrapertools.find_single_match(add_on, '(.*?) ').strip().lower()
 
             if xbmc.getCondVisibility('System.HasAddon("%s")' % add_on): exists_addon = ' [COLOR tan][B] Instalada [/B]'
@@ -1117,6 +1143,7 @@ def show_servers_list(item):
                 info = info + '[COLOR indianred][B] Descartado [/B][/COLOR]'
 
         if notes:
+            notes = notes.replace('Out of Service', '[COLOR red][B]Fuera de Servicio[/B][/COLOR]')
             if info: info = info + '  '
             info = info + '[COLOR mediumaquamarine]' + notes + '[/COLOR]'
 
@@ -1215,8 +1242,8 @@ def show_channels_list(item):
             if 'temporary' in ch['clusters']: info = info + '[COLOR pink][B] Temporalmente Inactivo [/B][/COLOR]'
             else:
                info = info + '[COLOR red][B] Inactivo [/B][/COLOR]'
-               if 'web anulada.' in ch['notes'].lower(): info = info + '[COLOR pink][B] ANULADO[/B][/COLOR]'
-               elif 'web cerrada.' in ch['notes'].lower(): info = info + '[COLOR gold][B] CERRADO[/B][/COLOR]'
+               if 'web anulada' in ch['notes'].lower(): info = info + '[COLOR pink][B] ANULADO[/B][/COLOR]'
+               elif 'web cerrada' in ch['notes'].lower(): info = info + '[COLOR gold][B] CERRADO[/B][/COLOR]'
                elif 'canal privado' in ch['notes'].lower(): info = info + '[COLOR grey][B] PRIVADO[/B][/COLOR]'
 
         elif ch['searchable'] == False: info = info + '[COLOR coral][B] No búsquedas [/B][/COLOR]'
@@ -1257,7 +1284,12 @@ def show_channels_list(item):
 
         tipos = ch['search_types']
         tipos = str(tipos).replace('[', '').replace(']', '').replace("'", '')
-        tipos = str(tipos).replace('movie', 'Películas').replace('tvshow', 'Series').replace('documentary', 'Documentales').replace('all,', '').strip()
+
+        if ch['searchable'] == False:
+            tipos = str(tipos).replace('movie', '[COLOR orange]Vídeos[/COLOR]')
+            tipos = str(tipos).replace('tvshow', '[COLOR hotpink]Series[/COLOR]').replace('all,', '').strip()
+        else:
+            tipos = str(tipos).replace('movie', '[COLOR deepskyblue]Películas[/COLOR]').replace('tvshow', '[COLOR hotpink]Series[/COLOR]').replace('documentary', '[COLOR cyan]Documentales[/COLOR]').replace('all,', '').strip()
 
         if info: info = info + '  '
         info = info + '[COLOR mediumspringgreen][B]' + tipos + '[/B][/COLOR]'
@@ -1306,6 +1338,15 @@ def show_channels_list(item):
         canal = canales[ret]
         tests_channels(canal[0], canal[1], canal[2])
 
+def show_clients_torrent_no_obsoletes(item):
+    logger.info()
+
+    item.no_obsoletes = True
+
+    sel_ret = show_clients_torrent(item)
+
+    return sel_ret
+
 def show_clients_torrent(item):
     logger.info()
 
@@ -1329,6 +1370,12 @@ def show_clients_torrent(item):
             else: exists_torrent = ' [COLOR yellow][B] Instalado [/B]'
         else: exists_torrent = ' [COLOR red][B] No instalado [/B]'
 
+        if item.no_obsoletes:
+            if client_name == 'Pulsar': continue
+            elif client_name == 'Quasar': continue
+            elif client_name == 'Stream': continue
+            elif client_name == 'Xbmctorrent': continue
+
         if client_name == 'Elementum': client_recommended = '[COLOR limegreen][B]  Recomendado[/B][/COLOR]'
         elif client_name == 'Pulsar': client_recommended = '[COLOR goldenrod][B]  Obsoleto[/B][/COLOR]'
         elif client_name == 'Quasar': client_recommended = '[COLOR goldenrod][B]  Obsoleto[/B][/COLOR]'
@@ -1340,7 +1387,10 @@ def show_clients_torrent(item):
 
         torrents.append((client_name, client_id + exists_torrent))
 
-    ret = platformtools.dialog_select('Clientes/Motores externos para [COLOR yellow]Torrents[/COLOR]', opciones_torrent, useDetails=True)
+    txt = 'Clientes/Motores externos para [COLOR yellow]Torrents[/COLOR]'
+    if item.no_obsoletes: txt = '[COLOR cyan]Seleccionar[/COLOR] Cliente/Motor externo para Torrent'
+
+    ret = platformtools.dialog_select(txt, opciones_torrent, useDetails=True)
 
     if ret == -1: return ret
 	
@@ -1355,7 +1405,10 @@ def show_clients_torrent(item):
             if not cliente_torrent == name:
                 platformtools.dialog_ok(torrent[0], torrent[1] + '[/COLOR]', 'Por favor, asignelo como [COLOR coral]Cliente/Motor Torrent Habitual[/COLOR]')
         else:
-            platformtools.dialog_ok(torrent[0], torrent[1] + '[/COLOR]', '[COLOR yellowgreen][B]No lo puede Asignar, falta instalarlo[/B][/COLOR]')
+            if name == 'Pulsar' or name == 'Quasar' or name == 'Stream' or name == 'Xbmctorrent':
+                platformtools.dialog_ok(torrent[0], torrent[1] + '[/COLOR]', '[COLOR cyan][B]No lo puede Asignar, está Obsoleto[/B][/COLOR]')
+            else:
+                platformtools.dialog_ok(torrent[0], torrent[1] + '[/COLOR]', '[COLOR yellowgreen][B]No lo puede Asignar, falta instalarlo[/B][/COLOR]')
             return -1
 
     return sel_ret

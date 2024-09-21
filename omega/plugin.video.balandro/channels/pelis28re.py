@@ -14,7 +14,10 @@ def do_downloadpage(url, post=None, headers=None):
     if not headers:
        if '/genero/'in url: headers = {'Referer': url}
 
-    data = httptools.downloadpage(url, post=post, headers=headers).data
+    raise_weberror = True
+    if '/peliculas/' in url: raise_weberror = False
+
+    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
 
     return data
 
@@ -179,6 +182,8 @@ def list_all(item):
         if year: title = title.replace('(', year + ')').strip()
         else: year = '-'
 
+        if '/peliculas/' in item.url: year = scrapertools.find_single_match(item.url, "/peliculas/(.*?)/")
+
         title = title.replace('&#8217;', "'").replace('&#8211;', '').strip()
 
         title = title.replace('Ver ', '').replace('ver ', '').replace(' Online', '').replace(' online', '').replace(' Serie', '').replace(' serie', '').strip()
@@ -198,7 +203,7 @@ def list_all(item):
                 if item.search_type == 'movie': continue
 
             itemlist.append(item.clone( action ='temporadas', url = url, title = title, thumbnail = thumb, fmt_sufijo=sufijo,
-                                        contentType = 'tvshow', contentSerieName = title, infoLabels = {'year': '-'} ))
+                                        contentType = 'tvshow', contentSerieName = title, infoLabels = {'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -350,7 +355,17 @@ def findvideos(item):
 
         data1 = do_downloadpage(host + 'wp-json/dooplayer/v2/' + d_post + '/' + d_type + '/' + d_nume)
 
-        lnk = scrapertools.find_single_match(data1, '"embed_url":.*?"(.*?)"')
+        lnk = ''
+
+        if '<link itemprop=' in data1:
+            data1 = data1.replace('\\/', '/')
+
+            data1 = str(data1).replace('=\\', '=').replace('\\"', '/"')
+            lnk = scrapertools.find_single_match(str(data1), 'https(.*?)"')
+            if lnk: lnk = 'https' + lnk
+
+        if not lnk:
+            lnk = scrapertools.find_single_match(data1, '"embed_url":.*?"(.*?)"')
 
         lnk = lnk.replace('\\/', '/')
 
@@ -371,6 +386,8 @@ def findvideos(item):
                 elif '.cuevana3.' in lnk: continue
                 elif '-ukr-' in lnk: continue
 
+                other = ''
+
                 servidor = servertools.get_server_from_url(lnk)
                 servidor = servertools.corregir_servidor(servidor)
 
@@ -379,7 +396,14 @@ def findvideos(item):
                 else:
                     if not config.get_setting('developer_mode', default=False): continue
 
-                other = ''
+                if servidor == 'directo':
+                    try:
+                       if '//' in lnk: other = lnk.split('//')[1]
+                       else: other = lnk.split('/')[1]
+
+                       other = other.split('/')[0]
+                    except:
+                       other = lnk
 
                 if servidor == 'various': other = servertools.corregir_other(lnk)
 
@@ -393,6 +417,8 @@ def findvideos(item):
                 elif '.cuevana3.' in lnk: continue
                 elif '-ukr-' in lnk: continue
 
+                other = ''
+
                 servidor = servertools.get_server_from_url(lnk)
                 servidor = servertools.corregir_servidor(servidor)
 
@@ -401,7 +427,14 @@ def findvideos(item):
                 else:
                     if not config.get_setting('developer_mode', default=False): continue
 
-                other = ''
+                if servidor == 'directo':
+                    try:
+                       if '//' in lnk: other = lnk.split('//')[1]
+                       else: other = lnk.split('/')[1]
+
+                       other = other.split('/')[0]
+                    except:
+                       other = lnk
 
                 if servidor == 'various': other = servertools.corregir_other(lnk)
 
@@ -437,6 +470,8 @@ def findvideos(item):
             elif '/1fichier.' in url: continue
             elif '/short.' in url: continue
 
+            other = ''
+
             servidor = servertools.get_server_from_url(url)
             servidor = servertools.corregir_servidor(servidor)
 
@@ -445,7 +480,14 @@ def findvideos(item):
             else:
                 if not config.get_setting('developer_mode', default=False): continue
 
-            other = ''
+            if servidor == 'directo':
+                try:
+                   if '//' in url: other = url.split('//')[1]
+                   else: other = url.split('/')[1]
+
+                   other = other.split('/')[0]
+                except:
+                   other = url
 
             if servidor == 'various': other = servertools.corregir_other(url)
 

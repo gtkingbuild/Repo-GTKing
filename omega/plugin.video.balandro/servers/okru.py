@@ -93,6 +93,10 @@ def get_video_url(page_url, url_referer=''):
         return 'Archivo eliminado Violación Copyright'
     elif 'author of this video has not been found or is blocked' in data:
         return 'Autor del vídeo inexistente ó bloqueado'
+    elif 'Access to this video is restricted' in data:
+        return 'El acceso al vídeo está Restringido'
+    elif 'src="/captcha.asd.js?v=' in data:
+        return 'Requiere verificación [COLOR red]reCAPTCHA[/COLOR]'
     elif "notFound" in data:
         return 'Archivo inexistente ó eliminado'
 

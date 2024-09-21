@@ -11,7 +11,7 @@
   "categories": ["movie"],
   "language": ["cast"],
 
-  "clusters": ["suggested", "classic", "rankings"],
+  "clusters": ["classic", "rankings"],
 
   "notes": "Películas clásicas del género Quinqui."
 }

@@ -27,7 +27,7 @@ from core import httptools
 from platformcode import logger
 
 
-# Expresiones regulares
+# ~ Expresiones regulares
 
 def find_single_match(data, patron, index=0):
     try:
@@ -50,19 +50,19 @@ def printMatches(matches):
         logger.info("%d %s" % (i, match))
 
 
-# Web elements
-
-# Devuelve True si es algún género erótico / xxx
 def es_genero_xxx(texto):
+    # ~ Devuelve True si es algún género erótico / xxx
     # ~ ['Erótica', 'Erótico', 'Erotico', 'Erotica', 'Xxx, erotico', 'Adultos +18', 'Eróticas +18', 'Eroticas +18', 'Animación para adultos', 'Abusos sexuales']
+
     txt = texto.lower().replace('ó', 'o')
     if 'erotic' in txt or '+18' in txt or 'adulto' in txt or 'sexual' in txt:
         return True
     return False
 
 
-# Si hay alguna @ en el texto, cloudflare lo considera como un email y lo protege en un link (Ej: Tod@s)
 def clean_cfemail(texto):
+   # ~ Si hay alguna @ en el texto, cloudflare lo considera como un email y lo protege en un link (Ej: Tod@s)
+
     matches = find_multiple_matches(texto, ' data-cfemail="([^"]+)"')
     for cfemail in matches:
         r = int(cfemail[:2],16)
@@ -87,7 +87,7 @@ def unescape(text):
     def fixup(m):
         text = m.group(0)
         if text[:2] == "&#":
-            # character reference
+            # ~ character reference
             try:
                 if text[:3] == "&#x":
                     text = unichr(int(text[3:-1], 16)).encode("utf-8")
@@ -101,13 +101,9 @@ def unescape(text):
                 logger.error("error de valor")
                 pass
         else:
-            # named entity
+            # ~ named entity
             try:
-                if PY3:
-                    import html.entities as htmlentitydefs
-                else:
-                    import htmlentitydefs
-                text = unichr(htmlentitydefs.name2codepoint[text[1:-1]]).encode("utf-8")
+                text = unichr(n2cp[text[1:-1]]).encode("utf-8")
                 if PY3 and isinstance(text, bytes):
                     text = text.decode("utf-8")
             except KeyError:
@@ -115,14 +111,14 @@ def unescape(text):
                 pass
             except:
                 pass
-        return text  # leave as is
+        return text  # ~ leave as is
 
     return re.sub("&#?\w+;", fixup, text)
 
-    # Convierte los codigos html "&ntilde;" y lo reemplaza por "ñ" caracter unicode utf-8
-
 
 def decodeHtmlentities(string):
+    # ~ Convierte los codigos html "&ntilde;" y lo reemplaza por "ñ" caracter unicode utf-8
+
     string = entitiesfix(string)
     entity_re = re.compile("&(#?)(\d{1,5}|\w{1,8});")
 
@@ -148,7 +144,8 @@ def decodeHtmlentities(string):
 
 
 def entitiesfix(string):
-    # Las entidades comienzan siempre con el símbolo & , y terminan con un punto y coma ( ; ).
+    # ~ Las entidades comienzan siempre con el símbolo & , y terminan con un punto y coma ( ; ).
+
     string = string.replace("&aacute", "&aacute;")
     string = string.replace("&eacute", "&eacute;")
     string = string.replace("&iacute", "&iacute;")
@@ -165,6 +162,7 @@ def entitiesfix(string):
     string = string.replace("&#191", "&#191;")
     string = string.replace("&#161", "&#161;")
     string = string.replace(";;", ";")
+    string = string.replace("&#x27;", "")
     return string
 
 
@@ -274,9 +272,8 @@ def htmlclean(cadena):
 
 
 def slugify(title):
-    # print title
+    # ~ Sustituye acentos y eñes
 
-    # Sustituye acentos y eñes
     title = title.replace("Á", "a")
     title = title.replace("É", "e")
     title = title.replace("Í", "i")
@@ -304,23 +301,23 @@ def slugify(title):
     title = title.replace("/", "-")
     title = title.replace("&amp;", "&")
 
-    # Pasa a minúsculas
+    # ~ Pasa a minúsculas
     title = title.lower().strip()
 
-    # Elimina caracteres no válidos
+    # ~ Elimina caracteres no válidos
     validchars = "abcdefghijklmnopqrstuvwxyz1234567890- "
     title = ''.join(c for c in title if c in validchars)
 
-    # Sustituye espacios en blanco duplicados y saltos de línea
+    # ~ Sustituye espacios en blanco duplicados y saltos de línea
     title = re.compile("\s+", re.DOTALL).sub(" ", title)
 
-    # Sustituye espacios en blanco por guiones
+    # ~ Sustituye espacios en blanco por guiones
     title = re.compile("\s", re.DOTALL).sub("-", title.strip())
 
-    # Sustituye espacios en blanco duplicados y saltos de línea
+    # ~ Sustituye espacios en blanco duplicados y saltos de línea
     title = re.compile("\-+", re.DOTALL).sub("-", title)
 
-    # Arregla casos especiales
+    # ~ Arregla casos especiales
     if title.startswith("-"):
         title = title[1:]
 
@@ -335,11 +332,10 @@ def remove_htmltags(string):
 
 
 def remove_show_from_title(title, show):
-    # print slugify(title)+" == "+slugify(show)
-    # Quita el nombre del programa del título
+    # ~ Quita el nombre del programa del título
 
     if slugify(title).startswith(slugify(show)):
-        # Convierte a unicode primero, o el encoding se pierde
+        # ~ Convierte a unicode primero, o el encoding se pierde
         if not PY3: title = unicode(title, "utf-8", "replace")
         if not PY3: show = unicode(show, "utf-8", "replace")
         title = title[len(show):].strip()
@@ -350,7 +346,7 @@ def remove_show_from_title(title, show):
         if title == "":
             title = str(time.time())
 
-        # Vuelve a utf-8
+        # ~ Vuelve a utf-8
         title = title.encode("utf-8", "ignore")
         if PY3 and isinstance(title, bytes):
             title = title.decode("utf-8")
@@ -366,7 +362,7 @@ def get_filename_from_url(url):
     try:
         filename = parsed_url.path
     except:
-        # Si falla es porque la implementación de parsed_url no reconoce los atributos como "path"
+        # ~ Si falla es porque la implementación de parsed_url no reconoce los atributos como "path"
         if len(parsed_url) >= 4:
             filename = parsed_url[2]
         else:

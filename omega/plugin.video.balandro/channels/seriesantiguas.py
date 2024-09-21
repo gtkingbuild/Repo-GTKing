@@ -7,11 +7,11 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-host = 'https://www.seriesantiguas.com/'
+host = 'https://seriesantiguas.tv/'
 
 
 # ~ por si viene de enlaces guardados
-ant_hosts = ['https://www.seriesantiguas.net/', 'https://seriesantiguas.com/']
+ant_hosts = ['https://www.seriesantiguas.net/', 'https://seriesantiguas.com/', 'https://www.seriesantiguas.com/']
 
 
 domain = config.get_setting('dominio', 'seriesantiguas', default='')
@@ -72,6 +72,8 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'series/', search_type = 'tvshow' ))
 
+    itemlist.append(item.clone( title = 'Animes', action = 'list_all', url = host + 'media-category/animes/', search_type = 'tvshow', text_color='springgreen' ))
+
     itemlist.append(item.clone( title = "Las de los 80's", action = 'list_all', url = host + 'media-category/80s/', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = "Las de los 90's", action = 'list_all', url = host + 'media-category/90s/', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = "Las de los 2000's", action = 'list_all', url = host + 'media-category/00s/', search_type = 'tvshow' ))
@@ -119,6 +121,8 @@ def list_all(item):
         thumb = scrapertools.find_single_match(match, 'src="(.*?)"')
 
         if thumb.startswith('/'): thumb = host[:-1] + thumb
+
+        url = url.replace('-en-vivo', '')
 
         itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb, contentType = 'tvshow', contentSerieName = title, infoLabels = {'year': '-'} ))
 
@@ -184,20 +188,20 @@ def temporadas(item):
         for numtempo in matches:
             title = 'Temporada ' + numtempo
 
-            url = item.url + '/#aztec-tab-' + numtempo
+            url = item.url + '#aztec-tab-' + numtempo
 
             if len(matches) == 1:
                 if config.get_setting('channels_seasons', default=True):
                     platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
 
                 item.page = 0
-                item.url = url
+                item.url = item.url
                 item.contentType = 'season'
                 item.contentSeason = numtempo
                 itemlist = episodios(item)
                 return itemlist
 
-            itemlist.append(item.clone( action = 'episodios', title = title, url = url, old = '', page = 0, contentType = 'season', contentSeason = numtempo, text_color = 'tan' ))
+            itemlist.append(item.clone( action = 'episodios', title = title, url = url, page = 0, contentType = 'season', contentSeason = numtempo, text_color = 'tan' ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -270,13 +274,13 @@ def episodios(item):
 
     for epis in matches[item.page * item.perpage:]:
         if not item.special:
-            if not item.old:
+            if item.old:
                 if not '-temporada-' + str(item.contentSeason) in epis: continue
 
-        url = scrapertools.find_single_match(epis, '<a href="([^"]+)"')
+        url = scrapertools.find_single_match(epis, '<a href="(.*?)"')
 
         if not item.old:
-            episode = scrapertools.find_single_match(epis, '<h2 class="progression-video-title">(.*?). ')
+            episode = scrapertools.find_single_match(epis, '<h2 class="progression-video-title">(.*?). ').strip()
 
             title = scrapertools.find_single_match(epis, '<h2 class="progression-video-title">.*?. (.*?)</h2').strip()
         else:
@@ -290,12 +294,16 @@ def episodios(item):
         if not url or not episode: continue
 
         if not item.old:
-            title = str(item.contentSeason) + 'x' + episode + ' ' + title
+            if item.special:
+                title = '0x' + episode + ' ' + title
+            else:
+                title = str(item.contentSeason) + 'x' + episode + ' ' + title
 
         thumb = scrapertools.find_single_match(epis, 'src="(.*?)"')
         if not thumb: thumb = scrapertools.find_single_match(epis, "src='(.*?)'")
 
-        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, contentType = 'episode', contentEpisodeNumber = episode ))
+        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb,
+                                    contentType = 'episode', contentEpisodeNumber = episode ))
 
         if len(itemlist) >= item.perpage:
             break
@@ -344,7 +352,10 @@ def findvideos(item):
 
         url = servertools.normalize_url(servidor, url)
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = 'Lat' ))
+        other = ''
+        if servidor == 'various': other = servertools.corregir_other(url)
+
+        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = 'Lat', other = other ))
 
     return itemlist
 

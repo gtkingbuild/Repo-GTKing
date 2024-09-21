@@ -1,0 +1,17 @@
+{
+  "id": "eztv",
+  "name": "EzTv",
+  "thumbnail": "eztv.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow", "torrent"],
+  "language": ["vo"],
+
+  "clusters": ["onlyone"],
+
+  "notes": "Canal con enlaces Torrent exclusivamente. Series en versión original. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

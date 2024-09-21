@@ -13,5 +13,5 @@
 
   "clusters": ["adults", "news", "rankings", "producers", "kids", "docs", "vos", "anime"],
 
-  "notes": "Web CERRADA. Películas por géneros. Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Web CERRADA. Películas por géneros. Series por Géneros."
 }

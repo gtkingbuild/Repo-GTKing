@@ -22,9 +22,24 @@ def get_video_url(page_url, url_referer=''):
             page_url = _embed
 
     data = httptools.downloadpage(page_url).data
+    data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
     if 'File is no longer available as it expired or has been deleted' in data:
         return 'Archivo inexistente ó eliminado'
+
+    file_id = scrapertools.find_single_match(data, "'file_id'.*?'(.*?)'")
+    if file_id:
+        h = {}
+
+        h ['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; rv:109.0) Gecko/20100101 Firefox/115.0'
+
+        h['Accept'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8'
+
+        h['Sec-Fetch-User'] = '?1'
+        h['Cookie'] = 'aff=2; file_id=%s' % file_id
+
+        data = httptools.downloadpage(page_url, headers=h).data
+        data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
     try:
         packed = scrapertools.find_single_match(data, "text/javascript'>(eval.*?)\s*</script>")
@@ -46,12 +61,14 @@ def get_video_url(page_url, url_referer=''):
     if not matches: matches = scrapertools.find_multiple_matches(str(data_var), 'sources:.*?file.*?"(.*?)"')
 
     for url in matches:
+        if not 'master.m3u8' in url: continue
+
         video_urls.append(['.m3u8', url])
 
-    if not (len(video_urls)) == 1: return video_urls
+    if video_urls:
+        if not (len(video_urls)) == 1:
+            return 'Archivo Múltiple No Soportado'
 
-    if not 'master.m3u8' in str(video_urls): return video_urls
-
-    video_urls = servertools.get_parse_hls(video_urls)
+        video_urls = servertools.get_parse_hls(video_urls)
 
     return video_urls

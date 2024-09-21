@@ -128,7 +128,7 @@ def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
                pass
 
     if '<title>Just a moment...</title>' in data:
-        if not '?s=' in url:
+        if not 'search?q=' in url:
             platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]CloudFlare[COLOR orangered] Protection[/B][/COLOR]')
         return ''
 
@@ -144,7 +144,7 @@ def acciones(item):
 
     itemlist.append(item_configurar_proxies(item))
 
-    itemlist.append(Item( channel='helper', action='show_help_zonaleros', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('help') ))
+    itemlist.append(Item( channel='helper', action='show_help_zonaleros', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('zonaleros') ))
 
     platformtools.itemlist_refresh()
 
@@ -214,9 +214,15 @@ def generos(item):
     matches = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)">(.*?)</a>')
 
     for url, title in matches:
+        if not config.get_setting('descartar_anime', default=False):
+            if title == 'Anime': continue
+
+        if config.get_setting('descartar_xxx', default=False):
+            if title == 'Eroticos': continue
+
         itemlist.append(item.clone( action = 'list_all', title = title, url = url, text_color = text_color ))
 
-    return itemlist
+    return sorted(itemlist, key=lambda x: x.title)
 
 
 def anios(item):
@@ -416,6 +422,8 @@ def findvideos(item):
         datar = data.replace('[', '="').replace(']', '"')
 
         for srv, title in srvs:
+            ses += 1
+
             link = scrapertools.find_multiple_matches(str(datar), 'video="' + srv + '".*?<iframe src="(.*?)"')
 
             if link:
@@ -424,7 +432,9 @@ def findvideos(item):
                 servidor = servertools.corregir_servidor(title)
 
                 if title == 'googledrive': servidor = 'gvideo'
+                elif title == 'vid': servidor = 'vidoza'
                 elif title == 'hd1' or title == 'hd2': servidor = 'various'
+                elif title == 'sthd': servidor = 'directo'
 
                 if servertools.is_server_available(servidor):
                     if not servertools.is_server_enabled(servidor): continue
@@ -432,7 +442,9 @@ def findvideos(item):
                     if not config.get_setting('developer_mode', default=False): continue
 
                 other = ''
-                if servidor == 'various': other = srv.capitalize()
+                if servidor == 'various':
+                    if title == 'hd1' or title == 'hd2': other = title
+                    else: other = srv.capitalize()
 
                 itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = link, language = 'Lat', other = other ))
 
@@ -442,9 +454,13 @@ def findvideos(item):
         downs = scrapertools.find_multiple_matches(block, '<tr>(.*?)</tr>')
 
         for down in downs:
+            ses += 1
+
             srv = scrapertools.find_single_match(down, '<td>(.*?)</td>')
 
             srv = srv.lower().strip()
+
+            if not 'http' in down: continue
 
             if srv == 'dropapk': continue
             elif srv == '1fichier': continue
@@ -457,8 +473,12 @@ def findvideos(item):
 
             link = scrapertools.find_single_match(down, 'href="(.*?)"')
 
+            other = ''
+            if servidor == 'various': other = srv.capitalize()
+
             if link:
-                itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = link, quality = qlty, language = 'Lat' ))
+                itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = link,
+                                      quality = qlty, language = 'Lat', other = other ))
 
     else:
         _token = scrapertools.find_single_match(data, '<meta name="csrf-token" content="(.*?)"')
@@ -494,7 +514,9 @@ def findvideos(item):
                     servidor = servertools.corregir_servidor(srv)
 
                     if srv == 'googledrive': servidor = 'gvideo'
+                    elif srv == 'vid': servidor = 'vidoza'
                     elif srv == 'hd1' or srv == 'hd2': servidor = 'various'
+                    elif srv == 'sthd': servidor = 'directo'
 
                     if servertools.is_server_available(servidor):
                         if not servertools.is_server_enabled(servidor): continue
@@ -502,7 +524,9 @@ def findvideos(item):
                         if not config.get_setting('developer_mode', default=False): continue
 
                     other = ''
-                    if servidor == 'various': other = srv.capitalize()
+                    if servidor == 'various':
+                        if srv == 'hd1' or title == 'hd2': other = srv
+                        else: other = srv.capitalize()
 
                     itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, quality = qlty, language = 'Lat', other = other ))
 
@@ -545,21 +569,25 @@ def play(item):
         except:
             new_url = ''
 
-    if new_url:
-        url = new_url
+    if new_url: url = new_url 
 
-        servidor = servertools.get_server_from_url(new_url)
-        servidor = servertools.corregir_servidor(servidor)
-
-    if servidor == 'directo': url = ''
-
-    elif 'zona-leros.com' in url: url = ''
+    if 'zona-leros.com' in url: url = ''
     elif '.zpaste.' in url: url = ''
 
     if url:
+        servidor = servertools.get_server_from_url(url)
+        servidor = servertools.corregir_servidor(servidor)
+
+        url = servertools.normalize_url(servidor, url)
+
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(url).lower()
+            if not new_server.startswith("http"): servidor = new_server
+
         if servidor == 'zplayer': url = url + '|' + host
 
-        itemlist.append(item.clone(server = servidor, url = url))
+        if not servidor == 'directo':
+            itemlist.append(item.clone(server = servidor, url = url))
 
     return itemlist
 

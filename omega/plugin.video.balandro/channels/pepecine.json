@@ -13,5 +13,5 @@
 
   "clusters": ["adults", "news", "rankings", "years", "countries", "lists", "lasts", "vos"],
 
-  "notes": "Web CERRADA. Películas y Series, por géneros. Esta web intercala películas/series para adultos en algunas secciones, pero puedes desactivarlas en la configuración del addon."
+  "notes": "Web CERRADA. Películas por géneros. También Series."
 }

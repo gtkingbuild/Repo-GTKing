@@ -78,6 +78,8 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'series?page=1', search_type = 'tvshow' ))
 
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host, search_type = 'tvshow', text_color = 'cyan' ))
+
     itemlist.append(item.clone( title = 'Más populares', action = 'list_all', url = host + 'popular?page=1', search_type = 'tvshow' ))
 
     return itemlist
@@ -95,9 +97,7 @@ def generos(item):
     matches = re.compile('<a href="(.*?)".*? title="(.*?)"').findall(bloque)
 
     for url, title in matches:
-        url = host[:-1] + url
-
-        url = url + '?page=1'
+        url = host[:-1] + url + '?page=1'
 
         itemlist.append(item.clone( title = title.capitalize(), action = 'list_all', url = url, text_color = 'deepskyblue' ))
 
@@ -143,6 +143,12 @@ def list_all(item):
 
         thumb = scrapertools.find_single_match(match, ' src="(.*?)"')
 
+        year = '-'
+        if '/peliculas-' in item.url:
+            year = scrapertools.find_single_match(item.url, "/peliculas-(.*?)page=")
+            year = year.replace('?', '').strip()
+            if not year: year = '-'
+
         if '/serie/' in url:
             if item.search_type == 'movie': continue
 
@@ -153,12 +159,14 @@ def list_all(item):
 
             SerieName = SerieName.strip()
 
-            itemlist.append(item.clone( action='temporadas', url=url, title=title, thumbnail=thumb, contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': '-'} ))
+            itemlist.append(item.clone( action='temporadas', url=url, title=title, thumbnail=thumb,
+                                        contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': year} ))
 
         else:
             if item.search_type == 'tvshow': continue
 
-            itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, contentType='movie', contentTitle=title, infoLabels={'year': '-'} ))
+            itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb,
+                                        contentType='movie', contentTitle=title, infoLabels={'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -172,6 +180,47 @@ def list_all(item):
                 next_page = next_page + 'page=' + str(next_pag)
 
                 itemlist.append(item.clone( title = 'Siguientes ...', url = next_page, action = 'list_all', page = next_pag, text_color = 'coral' ))
+
+    return itemlist
+
+
+def last_epis(item):
+    logger.info()
+    itemlist = []
+
+    data = do_downloadpage(item.url)
+    data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
+
+    bloque = scrapertools.find_single_match(data, '<h2>Últimos episodios</h2>(.*?)>Ver Más<')
+
+    patron = '<div class="item-pelicula pull-left">.*?<a href="(.*?)".*?title="(.*?)".*?src="(.*?)".*?<span class="year text-center">(.*?)</span>'
+
+    matches = re.compile(patron, re.DOTALL).findall(bloque)
+
+    for url, title, thumb, episode in matches:
+        if not url or not title: continue
+
+        SerieName = title
+
+        if 'Season' in SerieName: SerieName = SerieName.split("Season")[0]
+        if 'Movie' in SerieName: SerieName = SerieName.split("Movie")[0]
+
+        SerieName = SerieName.strip()
+
+        epis = episode.replace('Episodio', '').strip()
+
+        episode = episode.replace('Episodio', 'Epis.')
+
+        title = episode + ' ' + title
+
+        title = title.replace('Epis.', '[COLOR goldenrod]Epis.[/COLOR]')
+
+        url = host[:-1] + url
+
+        itemlist.append(item.clone( action='temporadas', url = url, title = title, thumbnail=thumb,
+                                    contentSerieName = SerieName, contentType = 'episode', contentSeason = 1, contentEpisodeNumber=epis))
+
+    tmdb.set_infoLabels(itemlist)
 
     return itemlist
 

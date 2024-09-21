@@ -13,5 +13,5 @@
 
   "clusters": ["classic", "languages", "years", "adults", "docs", "vos"],
 
-  "notes": "Web ANULADA. Películas clásicas, por idiomas, géneros y años."
+  "notes": "Web ANULADA. Películas clásicas, por géneros."
 }

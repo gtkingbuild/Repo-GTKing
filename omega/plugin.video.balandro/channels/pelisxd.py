@@ -21,7 +21,7 @@ if PY3:
        import xbmc
        if xbmc.getCondVisibility("system.platform.Linux.RaspberryPi") or xbmc.getCondVisibility("System.Platform.Linux"): LINUX = True
     except: pass
- 
+
 try:
    if LINUX:
        try:
@@ -93,6 +93,17 @@ def do_downloadpage(url, post=None, headers=None):
         else:
             data = httptools.downloadpage(url, post=post, headers=headers).data
 
+        if not data:
+            if not '?s=' in url:
+                if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('PelisXd', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+
+                timeout = config.get_setting('channels_repeat', default=30)
+
+                if hay_proxies:
+                    data = httptools.downloadpage_proxy('pelisxd', url, post=post, headers=headers, timeout=timeout).data
+                else:
+                    data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+
     if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
         if BR or BR2:
             try:
@@ -127,7 +138,7 @@ def acciones(item):
 
     itemlist.append(item_configurar_proxies(item))
 
-    itemlist.append(Item( channel='helper', action='show_help_pelisxd', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('help') ))
+    itemlist.append(Item( channel='helper', action='show_help_pelisxd', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('pelisxd') ))
 
     platformtools.itemlist_refresh()
 
@@ -237,29 +248,44 @@ def findvideos(item):
 
     matches = re.compile('href="#options-(.*?)">.*?<span class="server">(.*?)</span>', re.DOTALL).findall(data)
 
-    for option, servidor in matches:
-        servidor = servidor.lower()
+    for option, srv in matches:
+        srv = srv.lower()
 
-        if '-' in servidor:
-            servidor = servidor.strip()
-            lang = scrapertools.find_single_match(servidor, '.*?-(.*?)$').strip()
-            servidor = scrapertools.find_single_match(servidor, '(.*?)-')
+        if '-' in srv:
+            srv = srv.strip()
+            lang = scrapertools.find_single_match(srv, '.*?-(.*?)$').strip()
+            srv = scrapertools.find_single_match(srv, '(.*?)-')
         else:
             lang = item.languages
 
-        servidor = servertools.corregir_servidor(servidor)
+        if 'vidhide' in srv: srv = 'vidhide'
+
+        servidor = servertools.corregir_servidor(srv)
 
         if servidor == 'embed': continue
 
         elif servidor == 'player': servidor = 'directo'
+        elif servidor == 'd000d': servidor = 'doodstream'
 
         bloque = scrapertools.find_single_match(data, '<div id="options-' + str(option) + '"(.*?)</div>')
 
         url = scrapertools.find_single_match(str(bloque), '<iframe src="(.*?)"')
         if not url: url = scrapertools.find_single_match(str(bloque), '<iframe data-src="(.*?)"')
+        if not url: url = scrapertools.find_single_match(str(bloque), 'src="(.*?)"')
+
+        if 'data:image' in url:
+            url = scrapertools.find_single_match(data, '<div id="options-' + str(option) + '".*?<iframe loading=.*?data-lazy-src="(.*?)"')
 
         if url:
-            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = IDIOMAS.get(lang, lang) ))
+            url = url.replace('&#038;', '&').replace('&amp;', '&')
+
+            other = ''
+            if servidor == 'various': other = servertools.corregir_other(srv)
+            elif servidor == 'directo':
+               if config.get_setting('developer_mode', default=False): other = url
+               else: continue
+
+            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = IDIOMAS.get(lang, lang), other = other.capitalize() ))
 
     return itemlist
 
@@ -293,7 +319,14 @@ def play(item):
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 
-        itemlist.append(item.clone(url = url, server = servidor))
+        url = servertools.normalize_url(servidor, url)
+
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(url).lower()
+            if not new_server.startswith("http"): servidor = new_server
+
+        if not servidor == 'directo':
+            itemlist.append(item.clone(url = url, server = servidor))
 
     return itemlist
 

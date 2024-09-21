@@ -22,7 +22,7 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Más destacadas', action = 'list_all', url = host + '?Categoria_id=1', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Por productora', action = 'categorias', url = host, search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Por productora', action = 'categorias', url = host, search_type = 'tvshow', text_color = 'moccasin' ))
 
     itemlist.append(item.clone( title = 'Por letra (A - Z)', action = 'alfabetico', search_type = 'tvshow' ))
 

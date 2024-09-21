@@ -17,11 +17,11 @@
         "url": "https://waaw.to/watch_video.php?v=\\2"
       },
       {
-        "pattern": "(?:hqq|waaw|netu|waaw1).(?:ac|tv|watch|to)/(?:f/|e/)([A-z0-9]+)",
+        "pattern": "(?:hqq.|waaw.|netu.|waaw1.)(?:ac|tv|watch|to)/(?:f/|e/)([A-z0-9]+)",
         "url": "https://waaw.to/watch_video.php?v=\\1"
       },
       {
-        "pattern": "(?:hqq|waaw|netu|waaw1).(?:ac|tv|watch|to)/.*?(?:v=|vid=)([A-z0-9]+)",
+        "pattern": "(?:hqq.|waaw.|netu.|waaw1.)(?:ac|tv|watch|to|php)/(?:v=|vid=)([A-z0-9]+)",
         "url": "https://waaw.to/watch_video.php?v=\\1"
       },
       {
@@ -29,15 +29,19 @@
         "url": "https://waaw.to/watch_video.php?v=\\2"
       },
       {
-        "pattern": "(?:hqq|waaw|netu|waaw1)(?:.ac|.tv|.watch|.to|.php).*?(?:v=|vid=)([A-z0-9]+)",
+        "pattern": "(?:hqq.|waaw.|netu.|waaw1.)(?:ac|tv|watch|to|php).*?hash=([A-z0-9]+)",
         "url": "https://waaw.to/watch_video.php?v=\\1"
       },
       {
-        "pattern": "(?:hqq|waaw|netu|waaw1)(?:.ac|.tv|.watch|.to|.php).*?hash=([A-z0-9]+)",
+        "pattern": "(?:hqq.|waaw.|netu.|waaw1.)(?:ac|tv|watch|to)(.*?$)",
         "url": "https://waaw.to/watch_video.php?v=\\1"
       },
       {
-        "pattern": "(?:hqq|waaw|netu|waaw1).(?:ac|to|tv|to)",
+        "pattern": "(?:hqq.|waaw.|netu.|waaw1.|megaplay.|pbtube.|wiztube.)(?:ac|tv|watch|to|cc|xyz)/player/embed_player.php?vid=([A-z0-9]+)",
+        "url": "https://waaw.to/watch_video.php?v=\\1"
+      },
+      {
+        "pattern": "https://vidxhot.(?:com|net)/f/([A-z0-9]+)",
         "url": "https://waaw.to/watch_video.php?v=\\1"
       },
       {
@@ -45,19 +49,15 @@
         "url": "https://waaw.to/watch_video.php?v=\\1"
       },
       {
-        "pattern": "(?:hqq|waaw|netu|waaw1)(?:.ac|.tv|.watch|.to|.php)/(e/|f/)([A-z0-9]+)",
-        "url": "https://waaw.to/watch_video.php?v=\\1"
-      },
-      {
-        "pattern": "(?:hqq|waaw|netu|waaw1|megaplay|pbtube|wiztube).(?:ac|tv|watch|to|cc|xyz)/player/embed_player.php?vid=([A-z0-9]+)",
-        "url": "https://waaw.to/watch_video.php?v=\\1"
-      },
-      {
         "pattern": "https://player.moovies.in/f/([A-z0-9]+)",
         "url": "https://waaw.to/watch_video.php?v=\\1"
       },
       {
-        "pattern": "https://(?:richhioon|woffxxx|pornjustx).(?:eu|com)/e/([A-z0-9]+)",
+        "pattern": "https://player.moovies.in/e/([A-z0-9]+)",
+        "url": "https://waaw.to/watch_video.php?v=\\1"
+      },
+      {
+        "pattern": "https://(?:richhioon.|woffxxx.|pornjustx.)(?:eu|com)/(?:f/|e/)([A-z0-9]+)",
         "url": "https://waaw.to/watch_video.php?v=\\1"
       },
       {
@@ -78,6 +78,10 @@
       },
       {
         "pattern": "https://oyohd.one/(?:f/|e/)([A-z0-9]+)",
+        "url": "https://waaw.to/watch_video.php?v=\\1"
+      },
+      {
+        "pattern": "https://player.sorozatok.me/(?:f/|e/)([A-z0-9]+)",
         "url": "https://waaw.to/watch_video.php?v=\\1"
       }
     ]

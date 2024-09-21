@@ -74,7 +74,7 @@ def anios(item):
     for x in range(current_year, 1959, -1):
         url = host + '?s=' + str(x)
 
-        itemlist.append(item.clone( title = str(x), url = url, action='list_all', text_color = 'deepskyblue' ))
+        itemlist.append(item.clone( title = str(x), url = url, action='list_all', anio = str(x), text_color = 'deepskyblue' ))
 
     return itemlist
 
@@ -119,8 +119,11 @@ def list_all(item):
         if not year == '-':
             if ' (' in title: title = title.replace(' (' + year + ')', '').strip()
             elif ' [' in title: title = title.replace(' [' + year + ']', '').strip()
-	
-        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, contentType = 'movie', contentTitle = title, infoLabels = {'year': year} ))
+
+        if item.anio: year = item.anio
+
+        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb,
+                                            contentType = 'movie', contentTitle = title, infoLabels = {'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 

@@ -30,6 +30,15 @@ no_results_proxies = config.get_setting('search_no_results_proxies', default=Tru
 no_results = config.get_setting('search_no_results', default=False)
 
 
+context_cfg_search = []
+
+tit = '[COLOR tan][B]Preferencias Menús[/B][/COLOR]'
+context_cfg_search.append({'title': tit, 'channel': 'helper', 'action': 'show_menu_parameters'})
+
+tit = '[COLOR %s]Ajustes categoría Menú y Buscar[/COLOR]' % color_exec
+context_cfg_search.append({'title': tit, 'channel': 'actions', 'action': 'open_settings'})
+
+
 def mainlist(item):
     logger.info()
     itemlist = []
@@ -39,21 +48,26 @@ def mainlist(item):
 
     item.category = 'Buscar'
 
-    itemlist.append(item.clone( action='show_help', title='[COLOR green][B]Información[/B][/COLOR] Búsquedas', thumbnail=config.get_thumb('help') ))
+    itemlist.append(item.clone( action='', title='[B]BUSCAR:[/B]', folder=False, text_color='yellow' ))
+
+    itemlist.append(item.clone( action='show_help', title='[COLOR green][B]Información [COLOR yellow]Búsquedas[/B][/COLOR]', thumbnail=config.get_thumb('news') ))
+
+    itemlist.append(item.clone( channel='helper', action='show_help_audios', title= '[COLOR green][B]Información[/B][/COLOR] [COLOR cyan][B]Idiomas[/B][/COLOR] en los Audios de los Vídeos', thumbnail=config.get_thumb('news') ))
 
     if config.get_setting('search_extra_main', default=False):
         itemlist.append(item.clone( action='', title= '[B]Búsquedas por Título en TMDB:[/B]', folder=False, text_color='violet', thumbnail=thumb_tmdb ))
 
-        itemlist.append(item.clone( channel='tmdblists', action='search', search_type='movie', title= ' - Buscar [COLOR deepskyblue]Película[/COLOR] ...',
-                                    thumbnail=config.get_thumb('movie'), plot = 'Escribir el nombre de una película para buscarla en The Movie Database' ))
+        itemlist.append(item.clone( channel='tmdblists', action='search', search_type='movie', title= ' - Buscar [COLOR deepskyblue]Película[/COLOR] ...', thumbnail=config.get_thumb('movie'), plot = 'Indicar el título de una película para buscarla en The Movie Database' ))
 
-        itemlist.append(item.clone( channel='tmdblists', action='search', search_type='tvshow', title= ' - Buscar [COLOR hotpink]Serie[/COLOR] ...',
-                                    thumbnail=config.get_thumb('tvshow'), plot = 'Escribir el nombre de una serie para buscarla en The Movie Database' ))
+        itemlist.append(item.clone( channel='tmdblists', action='search', search_type='tvshow', title= ' - Buscar [COLOR hotpink]Serie[/COLOR] ...', thumbnail=config.get_thumb('tvshow'), plot = 'Indicar el título de una serie para buscarla en The Movie Database' ))
 
         itemlist.append(item.clone( action='', title= '[B]Búsquedas por Título en Filmaffinity:[/B]', folder=False, text_color='violet', thumbnail=thumb_filmaffinity ))
 
-        itemlist.append(item.clone( channel='filmaffinitylists', action='listas', search_type='all', stype='title', title=' - Buscar [COLOR yellow]Película y/ó Serie[/COLOR] ...',
-                                    thumbnail=config.get_thumb('search'), plot = 'Escribir el nombre de una película ó serie para buscarla en Filmaffinity' ))
+        itemlist.append(item.clone( channel='filmaffinitylists', action='listas', search_type='all', stype='title', title=' - Buscar [COLOR yellow]Película y/ó Serie[/COLOR] ...', thumbnail=config.get_thumb('search'), plot = 'Indicar el título de una película ó serie para buscarla en Filmaffinity' ))
+
+        if not config.get_setting('mnu_simple', default=False):
+            if config.get_setting('mnu_documentales', default=True):
+                itemlist.append(item.clone( channel='filmaffinitylists', action='listas', search_type='documentary', stype='documentary', title=' - Buscar [COLOR cyan]Documental[/COLOR] ...', thumbnail=config.get_thumb('documentary'), plot = 'Indicar el título de un documental para buscarlo en Filmaffinity' ))
 
     titulo = '[B]Búsquedas por Titulo:[/B]'
     if config.get_setting('search_extra_main', default=False): titulo = '[B]Búsquedas por Título en los Canales:[/B]'
@@ -61,108 +75,82 @@ def mainlist(item):
     itemlist.append(item.clone( action='', title= titulo, folder=False, text_color='chartreuse', thumbnail=config.get_thumb('stack') ))
 
     if config.get_setting('search_extra_trailers', default=False):
-         itemlist.append(item.clone( channel='trailers', action='search', title= ' - Buscar [COLOR darkgoldenrod]Tráiler[/COLOR]', thumbnail=config.get_thumb('trailers'),
-                                    plot = 'Escribir el nombre de una película para buscar su tráiler' ))
+         itemlist.append(item.clone( channel='trailers', action='search', title= ' - Buscar [COLOR darkgoldenrod]Tráiler[/COLOR]', thumbnail=config.get_thumb('trailers'), plot = 'Indicar el título de una película para buscar su tráiler' ))
 
     if config.get_setting('channels_link_main', default=True):
-        itemlist.append(item.clone( action='search', search_type='all', title= ' - Buscar [COLOR yellow]Película y/ó Serie[/COLOR] ...',
-                                    plot = 'Buscar indistintamente películas y/ó series en todos los canales' ))
-
-    itemlist.append(item.clone( action='search', search_type='movie', title= ' - Buscar [COLOR deepskyblue]Película[/COLOR] ...',
-                                thumbnail=config.get_thumb('movie'), plot = 'Escribir el nombre de una película para buscarla en los canales de películas' ))
-
-    itemlist.append(item.clone( action='search', search_type='tvshow', title= ' - Buscar [COLOR hotpink]Serie[/COLOR] ...',
-                                thumbnail=config.get_thumb('tvshow'), plot = 'Escribir el nombre de una serie para buscarla en los canales de series' ))
+        itemlist.append(item.clone( action='search', search_type='all', title= ' - Buscar [COLOR yellow]Película y/ó Serie[/COLOR] ...', plot = 'Indicar el título para Buscarlo indistintamente en películas y/ó series en todos los canales' ))
 
     if not config.get_setting('mnu_simple', default=False):
+        if config.get_setting('mnu_pelis', default=True):
+            itemlist.append(item.clone( action='search', search_type='movie', title= ' - Buscar [COLOR deepskyblue]Película[/COLOR] ...', thumbnail=config.get_thumb('movie'), plot = 'Indicar el título de una película para buscarla en los canales de películas' ))
+
+        if config.get_setting('mnu_series', default=True):
+            itemlist.append(item.clone( action='search', search_type='tvshow', title= ' - Buscar [COLOR hotpink]Serie[/COLOR] ...', thumbnail=config.get_thumb('tvshow'), plot = 'Indicar el título de una serie para buscarla en los canales de series' ))
+
         if config.get_setting('mnu_documentales', default=True):
-            itemlist.append(item.clone( action='search', search_type='documentary', title= ' - Buscar [COLOR cyan]Documental[/COLOR] ...',
-                                        thumbnail=config.get_thumb('documentary'),
-                                        plot = 'Escribir el nombre de un documental para buscarlo en los canales de documentales' ))
+            itemlist.append(item.clone( action='search', search_type='documentary', title= ' - Buscar [COLOR cyan]Documental[/COLOR] ...', thumbnail=config.get_thumb('documentary'), plot = 'Indicar el título de un documental para buscarlo en los canales de documentales' ))
 
-    if not config.get_setting('mnu_simple', default=False):
         if config.get_setting('mnu_doramas', default=True):
-            itemlist.append(item.clone( action='search', search_type='all', title= ' - Buscar [COLOR firebrick]Dorama[/COLOR] ...',
-                                        thumbnail=config.get_thumb('computer'), search_special = 'dorama',
-                                        plot = 'Escribir el nombre de un dorama para buscarlo Solo en los canales exlusivos de Doramas' ))
+            itemlist.append(item.clone( action='search', search_type='all', title= ' - Buscar [COLOR firebrick]Dorama[/COLOR] ...',  thumbnail=config.get_thumb('computer'), search_special = 'dorama', plot = 'Indicar el título de un dorama para buscarlo Solo en los canales exlusivos de Doramas' ))
 
         if config.get_setting('mnu_animes', default=True):
             if not config.get_setting('descartar_anime', default=True):
-               itemlist.append(item.clone( action='search', search_type='all', title= ' - Buscar [COLOR springgreen]Anime[/COLOR] ...',
-                                           thumbnail=config.get_thumb('anime'), search_special = 'anime',
-                                           plot = 'Escribir el nombre de un anime para buscarlo Solo en los canales exlusivos de Animes' ))
+               itemlist.append(item.clone( action='search', search_type='all', title= ' - Buscar [COLOR springgreen]Anime[/COLOR] ...', thumbnail=config.get_thumb('anime'), search_special = 'anime', plot = 'Indicar el título de un anime para buscarlo Solo en los canales exlusivos de Animes' ))
 
     if config.get_setting('search_extra_main', default=False):
         itemlist.append(item.clone( action='', title= '[B]Búsquedas Especiales:[/B]', folder=False, text_color='yellowgreen' ))
 
-        itemlist.append(item.clone( channel='tmdblists', action='mainlist', title= ' - Búsquedas y listas en [COLOR violet]TMDB[/COLOR]', thumbnail=thumb_tmdb,
-                                    plot = 'Buscar personas y ver listas de películas y series de la base de datos de The Movie Database' ))
+        itemlist.append(item.clone( channel='tmdblists', action='mainlist', title= ' - Búsquedas y listas en [COLOR violet]TMDB[/COLOR]', thumbnail=thumb_tmdb, plot = 'Buscar personas y ver listas de películas y series de la base de datos de The Movie Database' ))
 
-        itemlist.append(item.clone( channel='filmaffinitylists', action='mainlist', title= ' - Búsquedas y listas en [COLOR violet]Filmaffinity[/COLOR]', thumbnail=thumb_filmaffinity,
-                                    plot = 'Buscar personas y ver listas de películas, series, documentales, etc. de Filmaffinity' ))
+        itemlist.append(item.clone( channel='filmaffinitylists', action='mainlist', title= ' - Búsquedas y listas en [COLOR violet]Filmaffinity[/COLOR]', thumbnail=thumb_filmaffinity, plot = 'Buscar personas y ver listas de películas, series ó documentales de Filmaffinity' ))
 
     if config.get_setting('search_extra_proxies', default=True):
-        itemlist.append(item.clone( action='', title= '[B]Búsquedas en canales con Proxies:[/B]', folder=False, text_color='red' ))
+        itemlist.append(item.clone( action='', title= '[B]Búsquedas en canales con Proxies:[/B]', folder=False, thumbnail=config.get_thumb('stack'), text_color='red' ))
 
-        itemlist.append(item.clone( channel='helper', action='show_help_proxies', title= ' - [COLOR green][B]Información[/B][/COLOR] Uso de proxies' ))
-        itemlist.append(item.clone( channel='helper', action='show_help_providers', title= ' - [COLOR green][B]Información[/B][/COLOR] Proveedores de proxies' ))
-        itemlist.append(item.clone( channel='helper', action='show_help_providers2', title= ' - [COLOR green][B]Información[/B][/COLOR] Lista [COLOR aqua][B]Ampliada[/B][/COLOR] Proveedores de proxies' ))
-        itemlist.append(item.clone( channel='helper', action='show_help_recommended', title= ' - Qué [COLOR green][B]Proveedores[/B][/COLOR] de proxies están [COLOR lime][B]Recomendados[/B][/COLOR]' ))
+        itemlist.append(item.clone( channel='helper', action='show_help_proxies', title= ' - [COLOR green][B]Información[/B][/COLOR] Uso de proxies', thumbnail=config.get_thumb('news') ))
+        itemlist.append(item.clone( channel='helper', action='show_help_providers', title= ' - [COLOR green][B]Información[/B][/COLOR] Proveedores de proxies', thumbnail=config.get_thumb('news') ))
+        itemlist.append(item.clone( channel='helper', action='show_help_providers2', title= ' - [COLOR green][B]Información[/B][/COLOR] Lista [COLOR aqua][B]Ampliada[/B][/COLOR] Proveedores de proxies', thumbnail=config.get_thumb('news') ))
+        itemlist.append(item.clone( channel='helper', action='show_help_recommended', title= ' - Qué [COLOR green][B]Proveedores[/B][/COLOR] de proxies están [COLOR lime][B]Recomendados[/B][/COLOR]', thumbnail=config.get_thumb('news') ))
 
-        itemlist.append(item.clone( channel='filters', title=  ' - Qué canales pueden usar proxies', action='with_proxies',
-                                    thumbnail=config.get_thumb('stack'), new_proxies=True ))
+        itemlist.append(item.clone( channel='filters', action='with_proxies', title=  ' - Qué canales pueden usar [COLOR red][B]Proxies[/B][/COLOR]', thumbnail=config.get_thumb('stack'), new_proxies=True ))
 
         if config.get_setting('memorize_channels_proxies', default=True):
-            itemlist.append(item.clone( channel='filters', title=  ' - Qué [COLOR red]canales[/COLOR] tiene con proxies memorizados', action='with_proxies',
-                                        thumbnail=config.get_thumb('stack'), new_proxies=True, memo_proxies=True, test_proxies=True ))
+            itemlist.append(item.clone( channel='filters', action='with_proxies', title=  ' - Qué [COLOR red][B]Canales[/B][/COLOR] tiene con proxies Memorizados', thumbnail=config.get_thumb('stack'), new_proxies=True, memo_proxies=True, test_proxies=True ))
 
-        itemlist.append(item.clone( channel='actions', title= ' - Quitar los proxies en los canales [COLOR red](que los tengan memorizados)[/COLOR]',
-                                    action = 'manto_proxies', thumbnail=config.get_thumb('flame') ))
+        itemlist.append(item.clone( channel='actions', title= ' - Quitar los proxies en los canales [COLOR red][B](que los Tengan)[/B][/COLOR]', action = 'manto_proxies', thumbnail=config.get_thumb('flame') ))
 
-        itemlist.append(item.clone( channel='proxysearch', title =  ' - Configurar proxies a usar [COLOR plum](en los canales que los necesiten)[/COLOR]',
-                                    action = 'proxysearch_all', thumbnail=config.get_thumb('flame') ))
+        itemlist.append(item.clone( channel='proxysearch', title =  ' - Configurar proxies a usar [COLOR plum][B](en los canales que los Necesiten)[/B][/COLOR]', action = 'proxysearch_all', thumbnail=config.get_thumb('flame') ))
 
         if config.get_setting('proxysearch_excludes', default=''):
-            itemlist.append(item.clone( channel='proxysearch', title =  ' - Anular los canales excluidos de Configurar proxies a usar',
-                                        action = 'channels_proxysearch_del', thumbnail=config.get_thumb('flame'), text_color='coral' ))
+            itemlist.append(item.clone( channel='proxysearch', title =  ' - Anular los canales excluidos de Configurar proxies a usar', action = 'channels_proxysearch_del', thumbnail=config.get_thumb('flame'), text_color='coral' ))
 
     if config.get_setting('sub_mnu_cfg_search', default=True):
-        itemlist.append(item.clone( action='', title= '[B]Personalización búsquedas:[/B]', folder=False, text_color='moccasin' ))
+        itemlist.append(item.clone( action='', title= '[B]Personalización búsquedas:[/B]', folder=False, thumbnail=config.get_thumb('help'), text_color='moccasin' ))
 
-        itemlist.append(item.clone( action='show_help_parameters', title=' - Qué [COLOR chocolate]Ajustes[/COLOR] tiene en preferencias para las búsquedas',
-                                    thumbnail=config.get_thumb('help') ))
+        itemlist.append(item.clone( action='show_help_parameters', title=' - Qué [COLOR chocolate]Ajustes[/COLOR] tiene en preferencias para las búsquedas', thumbnail=config.get_thumb('news') ))
 
-        itemlist.append(item.clone( channel='filters', action='no_actives', title= ' - Qué canales [COLOR goldenrod][B]Nunca[/B][/COLOR] intervendrán en las búsquedas',
-                                    no_searchables = True, thumbnail=config.get_thumb('stack') ))
+        itemlist.append(item.clone( channel='filters', action='no_actives', title= ' - Qué canales [COLOR goldenrod][B]Nunca[/B][/COLOR] intervendrán en las búsquedas', no_searchables = True, thumbnail=config.get_thumb('stack') ))
 
-        itemlist.append(item.clone( channel='filters', action='no_actives', title= ' - Qué canales no intervienen en las búsquedas están [COLOR gray][B]Desactivados[/B][/COLOR]',
-                                    thumbnail=config.get_thumb('stack') ))
+        itemlist.append(item.clone( channel='filters', action='no_actives', title= ' - Qué canales no intervienen en las búsquedas están [COLOR gray][B]Desactivados[/B][/COLOR]', thumbnail=config.get_thumb('stack') ))
 
-        itemlist.append(item.clone( channel='filters', action='channels_status', title= ' - Personalizar [COLOR gold]Canales[/COLOR] (Desactivar ó Re-activar)',
-                                    des_rea = True, thumbnail=config.get_thumb('stack') ))
+        itemlist.append(item.clone( channel='filters', action='channels_status', title= ' - Personalizar [COLOR gold]Canales[/COLOR] (Desactivar ó Re-activar)', des_rea = True, thumbnail=config.get_thumb('stack') ))
 
-        itemlist.append(item.clone( channel='filters', action='only_prefered', title= ' - Qué canales tiene marcados como [COLOR gold]Preferidos[/COLOR]',
-                                    thumbnail=config.get_thumb('stack') ))
+        itemlist.append(item.clone( channel='filters', action='only_prefered', title= ' - Qué canales tiene marcados como [COLOR gold]Preferidos[/COLOR]', thumbnail=config.get_thumb('stack') ))
 
-        itemlist.append(item.clone( channel='filters', action='channels_status', title= ' - Personalizar canales [COLOR gold]Preferidos[/COLOR] (Marcar ó Des-marcar)',
-                                    des_rea = False, thumbnail=config.get_thumb('stack') ))
+        itemlist.append(item.clone( channel='filters', action='channels_status', title= ' - Personalizar canales [COLOR gold]Preferidos[/COLOR] (Marcar ó Des-marcar)', des_rea = False, thumbnail=config.get_thumb('stack') ))
 
-    itemlist.append(item.clone( action='', title= '[B]Personalizaciones especiales:[/B]', folder=False, text_color='teal' ))
+    itemlist.append(item.clone( action='', title= '[B]Personalizaciones especiales:[/B]', folder=False, thumbnail=config.get_thumb('help'), text_color='yellow' ))
 
     if config.get_setting('search_show_last', default=True):
-        itemlist.append(item.clone( channel='actions', action = 'manto_textos', title= ' - Quitar los [COLOR red]Textos Memorizados[/COLOR] de las búsquedas',
-                                    thumbnail=config.get_thumb('settings') ))
+        itemlist.append(item.clone( channel='actions', action = 'manto_textos', title= ' - Quitar los [COLOR coral][B]Textos[/B][/COLOR] Memorizados de las búsquedas', thumbnail=config.get_thumb('pencil') ))
 
-    itemlist.append(item.clone( channel='filters', title = ' - [COLOR greenyellow][B]Efectuar las búsquedas Solo en determinados canales[/B][/COLOR]',
-                                action = 'mainlist2', thumbnail=config.get_thumb('stack') ))
+    itemlist.append(item.clone( channel='filters', action = 'mainlist2', title = ' - [COLOR greenyellow][B]Efectuar búsquedas [COLOR gold](solo en determinados canales)[/B][/COLOR]', thumbnail=config.get_thumb('stack') ))
 
-    itemlist.append(item.clone( channel='filters', title = ' - [COLOR cyan][B]Excluir canales de las búsquedas[/B][/COLOR]', action = 'mainlist',
-                                thumbnail=config.get_thumb('stack') ))
+    itemlist.append(item.clone( channel='filters', action = 'mainlist', title = ' - [COLOR cyan][B]Excluir canales de las búsquedas[/B][/COLOR]', thumbnail=config.get_thumb('stack') ))
 
-    itemlist.append(item.clone( action='', title= '[B]Ajustes:[/B]', folder=False, text_color='goldenrod' ))
+    itemlist.append(item.clone( action='', title= '[B]Ajustes:[/B]', thumbnail=config.get_thumb('help'), folder=False, text_color='goldenrod' ))
 
-    itemlist.append(item.clone( channel='actions', title= ' - [COLOR chocolate]Ajustes[/COLOR] categorías ([COLOR red][B]Proxies[/B][/COLOR] y [COLOR yellow][B]Buscar[/B][/COLOR])', action = 'open_settings',
-                                thumbnail=config.get_thumb('settings') ))
+    itemlist.append(item.clone( channel='actions', title= ' - [COLOR chocolate]Ajustes[/COLOR] categorías ([COLOR red][B]Proxies[/B][/COLOR] y [COLOR yellow][B]Buscar[/B][/COLOR])', action = 'open_settings', thumbnail=config.get_thumb('settings') ))
 
     return itemlist
 
@@ -177,52 +165,39 @@ def show_help_parameters(item):
 
     txt += ' - [B][COLOR gold]Canales[/COLOR][/B] que nunca intervienen en las busquedas:'
     txt += '[CR][COLOR darkorange][B]    CineDeAntes,  CineLibreOnline,  CineMatteFlix,  Frozenlayer,'
-    txt += '[CR]    SeoDiv,  SigloXX,  Trailers,  TvSeries[/B][/COLOR]'
+    txt += '[CR]    SeoDiv,  SeriesBiblicas,  SigloXX,  Trailers,  TvSeries,  YouTubeDocs[/B][/COLOR]'
 
-    if not config.get_setting('mnu_documentales', default=True):
-        txt += '[CR][CR] - Los canales de [B][COLOR cyan]Documentales[/COLOR][/B] jamás intervendrán en las busquedas'
+    if not config.get_setting('mnu_documentales', default=True): txt += '[CR][CR] - Los canales de [B][COLOR cyan]Documentales[/COLOR][/B] jamás intervendrán en las busquedas'
 
     txt += '[CR][CR] - Qué canales Nunca intervendrán en las busquedas de [COLOR gold][B]Peliculas, Series y/ó Documentales[/B][/COLOR]:'
 
-    if config.get_setting('mnu_doramas', default=True):
-        txt += '[CR]   - Los canales de [B][COLOR firebrick]Doramas[/COLOR][/B]'
+    if config.get_setting('mnu_doramas', default=True): txt += '[CR]   - Los canales de [B][COLOR firebrick]Doramas[/COLOR][/B]'
 
-    if config.get_setting('mnu_animes', default=True):
-        txt += '[CR]   - Los canales de [B][COLOR springgreen]Animes[/COLOR][/B]'
+    if config.get_setting('mnu_animes', default=True): txt += '[CR]   - Los canales de [B][COLOR springgreen]Animes[/COLOR][/B]'
 
-    if config.get_setting('mnu_adultos', default=True):
-        txt += '[CR]   - Los canales de [B][COLOR orange]Adultos[/COLOR][/B]'
+    if config.get_setting('mnu_adultos', default=True): txt += '[CR]   - Los canales de [B][COLOR orange]Adultos[/COLOR][/B]'
 
     txt += '[CR][CR] - [COLOR goldenrod][B]Procesos[/COLOR][/B]:'
 
     txt += '[CR]   - Cuantos Resultados se previsualizarán por canal: [COLOR coral][B]' + str(config.get_setting('search_limit_by_channel', default=2)) + '[/COLOR][/B]'
 
-    if config.get_setting('search_only_prefered', default=False):
-        txt += '[CR]   - Tiene Activado efectuar búsquedas solo en los canales [B][COLOR gold]Preferidos[/COLOR][/B]'
+    if config.get_setting('search_only_prefered', default=False): txt += '[CR]   - Tiene Activado efectuar búsquedas solo en los canales [B][COLOR gold]Preferidos[/COLOR][/B]'
 
-    if config.get_setting('search_only_suggesteds', default=False):
-        txt += '[CR]   - Tiene Activado efectuar búsquedas solo en los canales [B][COLOR moccasin]Sugeridos[/COLOR][/B]'
+    if config.get_setting('search_only_suggesteds', default=False): txt += '[CR]   - Tiene Activado efectuar búsquedas solo en los canales [B][COLOR moccasin]Sugeridos[/COLOR][/B]'
 
-    if config.get_setting('search_no_proxies', default=False):
-        txt += '[CR]   - Tiene Activado descartar búsquedas en los canales con [B][COLOR red]Proxies informados[/COLOR][/B]'
+    if config.get_setting('search_no_proxies', default=False): txt += '[CR]   - Tiene Activado descartar búsquedas en los canales con [B][COLOR red]Proxies informados[/COLOR][/B]'
 
-    if config.get_setting('search_con_torrents', default=False):
-        txt += '[CR]   - Tiene Activado efectuar las búsquedas solo en los canales que pueden contener archivos [B][COLOR blue]Torrent[/COLOR][/B]'
+    if config.get_setting('search_con_torrents', default=False): txt += '[CR]   - Tiene Activado efectuar las búsquedas solo en los canales que pueden contener archivos [B][COLOR blue]Torrent[/COLOR][/B]'
 
-    if config.get_setting('search_no_torrents', default=False):
-        txt += '[CR]   - Tiene Activado descartar en las búsquedas los canales que pueden contener archivos [B][COLOR blue]Torrent[/COLOR][/B]'
+    if config.get_setting('search_no_torrents', default=False): txt += '[CR]   - Tiene Activado descartar en las búsquedas los canales que pueden contener archivos [B][COLOR blue]Torrent[/COLOR][/B]'
 
-    if config.get_setting('search_no_exclusively_torrents', default=False):
-        txt += '[CR]   - Tiene Activado descartar en las búsquedas los canales con enlaces exclusivamente [B][COLOR blue]Torrent[/COLOR][/B]'
+    if config.get_setting('search_no_exclusively_torrents', default=False): txt += '[CR]   - Tiene Activado descartar en las búsquedas los canales con enlaces exclusivamente [B][COLOR blue]Torrent[/COLOR][/B]'
 
-    if config.get_setting('search_no_notices', default=False):
-        txt += '[CR]   - Tiene Activado descartar búsquedas en los canales con [COLOR green][B]Aviso[/COLOR][COLOR red] CloudFlare [COLOR orangered]Protection[/B][/COLOR]'
+    if config.get_setting('search_no_notices', default=False): txt += '[CR]   - Tiene Activado descartar búsquedas en los canales con [COLOR green][B]Aviso[/COLOR][COLOR red] CloudFlare [COLOR orangered]Protection[/B][/COLOR]'
 
-    if config.get_setting('search_no_inestables', default=False):
-        txt += '[CR]   - Tiene Activado descartar búsquedas en los canales con [B][COLOR plum]Inestables[/COLOR][/B]'
+    if config.get_setting('search_no_inestables', default=False): txt += '[CR]   - Tiene Activado descartar búsquedas en los canales con [B][COLOR plum]Inestables[/COLOR][/B]'
 
-    if config.get_setting('search_no_problematicos', default=False):
-        txt += '[CR]   - Tiene Ativado descartar búsquedas en los canales que sean [B][COLOR darkgoldenrod]Problemáticos[/COLOR][/B]'
+    if config.get_setting('search_no_problematicos', default=False): txt += '[CR]   - Tiene Ativado descartar búsquedas en los canales que sean [B][COLOR darkgoldenrod]Problemáticos[/COLOR][/B]'
 
     txt += '[CR]   - Añadir acceso al detalle de Personalizar Próximas Búsquedas:'
 
@@ -249,11 +224,9 @@ def show_help_parameters(item):
     if config.get_setting('search_no_results', default=False): txt += ' [COLOR coral][B] Activado[/B][/COLOR]'
     else: txt += ' [COLOR coral][B] Des-Activado[/B][/COLOR]'
 
-    if config.get_setting('search_no_channels', default=False):
-        txt += '[CR]    - Tiene Activado notificar en las búsquedas los canales [B][COLOR yellowgreen]Ignorados[/COLOR][/B]'
+    if config.get_setting('search_no_channels', default=False): txt += '[CR]    - Tiene Activado notificar en las búsquedas los canales [B][COLOR yellowgreen]Ignorados[/COLOR][/B]'
 
-    if not config.get_setting('search_multithread', default=True):
-        txt += '[CR]    - Tiene Des-Activada la opción [B][COLOR yellowgreen]Multithread[/COLOR][/B]'
+    if not config.get_setting('search_multithread', default=True): txt += '[CR]    - Tiene Des-Activada la opción [B][COLOR yellowgreen]Multithread[/COLOR][/B]'
 
     if config.get_setting('search_included_all', default=''):
         incluidos = config.get_setting('search_included_all', default='')
@@ -386,10 +359,10 @@ def show_help_parameters(item):
 
             txt += '[CR]   [COLOR plum][B]Personas:[/B][/COLOR]  ' + config.get_setting('search_last_person')
 
-        if not hay_lastest:
-            txt += '[CR]   [COLOR cyan][B]Sin textos memorizados[/B][/COLOR]'
+        if not hay_lastest: txt += '[CR]   [COLOR cyan][B]Sin textos memorizados[/B][/COLOR]'
 
     platformtools.dialog_textviewer('Información sobre sus parámetros de búsquedas', txt)
+
     return True
 
 
@@ -405,6 +378,8 @@ def show_help(item):
     txt += 'Desde los Ajustes [COLOR yellow][B]categoría Buscar[/B][/COLOR] se puede definir [COLOR chartreuse][B] los Resultados que se Previsualizan para cada canal[/B][/COLOR].'
     txt += ' Si por ejemplo el canal devuelve 15 resultados y se previsualizan 2, entrar en el enlace del [COLOR gold][B]Nombre del canal[/B][/COLOR] de la búsqueda para verlos todos.'
 
+    txt += '[CR][CR]En cada web/canal el [COLOR cyan][B]Tiempo de Respuesta[/B][/COLOR] puede ser elevado y más aún si tiene Proxies Configurados.'
+
     txt += '[CR][CR]Según cada web/canal su buscador puede permitir diferenciar por [COLOR teal][B]Películas y/ó Series ó No[/B][/COLOR].'
 
     txt += '[CR][CR][COLOR yellowgreen][B]También es variable la sensibilidad de la búsqueda (si busca sólo en el Título ó también en la Sinopsis, el tratamiento si hay varias palabras, si devuelve muchos ó pocos resultados, etc.)[/B][/COLOR]'
@@ -413,8 +388,8 @@ def show_help(item):
 
     txt += '[CR][CR]Desde cualquier [COLOR teal][B]Película ó Serie[/B][/COLOR] guardada en [COLOR tan][B]Preferidos[/B][/COLOR], si al acceder se produce un error en la web, se ofrece un diálogo para volver a buscar esa referencia ([COLOR gold][B]Misma/Parecida/Similar[/B][/COLOR]) en los demás canales ó en el mismo canal (por si los enlaces ya no funcionan).'
 
-
     platformtools.dialog_textviewer('Información sobre búsquedas', txt)
+
     return True
 
 
@@ -524,7 +499,6 @@ def do_search(item, tecleado):
 
     elif item.extra == 'only_torrents':
         channels_search_excluded = config.get_setting('search_excludes_torrents', default='')
-
     else:
         channels_search_excluded = config.get_setting('search_excludes_mixed', default='')
         channels_search_excluded = channels_search_excluded + config.get_setting('search_excludes_all', default='')
@@ -575,7 +549,7 @@ def do_search(item, tecleado):
             if sesion_login == False:
                 num_canales = num_canales - 1
                 continue
-                
+
         if no_inestables or config.get_setting('mnu_simple', default=False):
             if 'inestable' in ch['clusters']:
                 num_canales = num_canales - 1
@@ -641,12 +615,10 @@ def do_search(item, tecleado):
                 if not config.get_setting(cfg_status_channel, default=''):
                     num_canales = num_canales - 1
                     continue
-
             elif only_suggesteds:
                 if not 'suggested' in ch['clusters']:
                    num_canales = num_canales - 1
                    continue
-
             elif only_torrents:
                 if not 'torrents' in ch['clusters']:
                    num_canales = num_canales - 1
@@ -661,7 +633,6 @@ def do_search(item, tecleado):
             do_search_channel(c_item, tecleado, ch)
 
         if progreso.iscanceled(): break
-
 
     if multithread:
         if PY3:
@@ -688,7 +659,7 @@ def do_search(item, tecleado):
     config.set_setting('sin_resp', 'si')
 
     if item.from_channel != '': 
-        # ~ Búsqueda exacta en otros/todos canales de una peli/serie : mostrar sólo las coincidencias exactas
+        # ~ Buscar exacto o parecido en otros/todos canales de una peli/serie
         tecleado_lower = tecleado.lower()
 
         for ch in ch_list:
@@ -728,6 +699,7 @@ def do_search(item, tecleado):
     else:
         # ~ Búsqueda parecida en todos los canales : link para acceder a todas las coincidencias y previsualización de n enlaces por canal
         nro = 0
+        sin = 0
 
         titulo = ''
 
@@ -745,14 +717,23 @@ def do_search(item, tecleado):
                 if len(ch['itemlist_search']) == 0:
                     action = 'mainlist'
 
+                    if not config.get_setting('search_no_results_proxies', default=True): continue
+
+                    sin += 1
+
+                    if sin == 1:
+                        itemlist.append(item.clone( action='', title='[B][I]- CANALES:  Sin Resultados[/I][/B]', thumbnail=config.get_thumb('search'), text_color='yellow' ))
+
                     if no_results or sin_results:
-                        titulo = ch['name'] + '[COLOR coral] sin resultados'
+                        titulo = ch['name']
 
                         if config.get_setting(cfg_proxies_channel, default=''):
+                            if 'notice' in ch['clusters']: titulo = titulo + ' [COLOR goldenrod]Posible cloudflare[/COLOR]'
                             channels_new_proxies.append(ch['id'])
                             titulo = titulo + ' [COLOR red]quizás requiera [I]Nuevos Proxies[/I]'
                         else:
                             if 'proxies' in ch['notes'].lower():
+                                if 'notice' in ch['clusters']: titulo = titulo + ' [COLOR goldenrod]Posible cloudflare[/COLOR]'
                                 channels_new_proxies.append(ch['id'])
                                 titulo = titulo + ' [COLOR darkorange]quizás necesite [I]Configurar Proxies[/I]'
 
@@ -762,8 +743,10 @@ def do_search(item, tecleado):
                     else:
                         if config.get_setting(cfg_proxies_channel, default=''):
                             if no_results_proxies:
+                                titulo = ch['name']
+
                                 channels_new_proxies.append(ch['id'])
-                                titulo = ch['name'] + '[COLOR coral] sin resultados'
+                                if 'notice' in ch['clusters']: titulo = titulo + ' [COLOR goldenrod]Posible cloudflare[/COLOR]'
                                 titulo = titulo + ' [COLOR red]quizás requiera [I]Nuevos Proxies[/I]'
                             else:
                                 continue
@@ -863,7 +846,6 @@ def do_search(item, tecleado):
                     if config.get_setting(cfg_searchable_channel, default=False):
                         if no_channels: titulo = titulo + ' [COLOR cyan]Ignorado por Excluido'
                         continue
-
                     else:
                        if only_prefered: continue
                        elif only_suggesteds: continue
@@ -875,13 +857,10 @@ def do_search(item, tecleado):
                            else:
                                sesion_login = config.get_setting('channel_%s_%s_login' % (ch['id'], ch['id']), default=False)
                                if sesion_login == False: titulo = titulo + ' [COLOR teal]falta [I]Iniciar Sesion[/I]'
-
                        elif only_includes:
                            if no_channels: titulo = titulo + ' [COLOR yellow]Ignorado no está en Incluidos'
-
                        elif no_notices:
                            if no_channels: titulo = titulo + ' [COLOR yellow]Ignorado por CloudFlare Protection'
-
                        elif 'proxies' in ch['notes'].lower(): titulo = titulo + ' [COLOR red]comprobar si [I]Necesita Proxies[/I]'
                        else:
                            if channels_search_excluded:
@@ -898,9 +877,12 @@ def do_search(item, tecleado):
             nro += 1
 
             if nro == 1:
+                itemlist.append(item.clone( action='', title='[B][I]- BUSCADO:  ' + tecleado + '[/I][/B]', thumbnail=config.get_thumb('search'), text_color='yellow' ))
+
                 if config.get_setting('sub_mnu_cfg_prox_search', default=True):
-                    itemlist.append(Item( channel='submnuctext', action='submnu_search', title='[B]Personalizar Próximas búsquedas[/B]',
-                                          extra = item.search_type, thumbnail=config.get_thumb('settings'), text_color='moccasin' ))
+                    itemlist.append(Item( channel='submnuctext', action='submnu_search', title='[B]Personalizar Próximas búsquedas[/B]', context=context_cfg_search, extra = item.search_type, thumbnail=config.get_thumb('help'), text_color='moccasin' ))
+
+                itemlist.append(item.clone( channel='helper', action='show_help_audios', title= '[COLOR green][B]Información[/B][/COLOR] [COLOR cyan][B]Idiomas[/B][/COLOR] en los Audios de los Vídeos', thumbnail=config.get_thumb('news') ))
 
             if not titulo:
                 itemlist.append(Item( action = '', title = tecleado + '[COLOR coral]sin resultados en ningún canal[/COLOR]' ))
@@ -911,7 +893,7 @@ def do_search(item, tecleado):
             tit = '[COLOR cyan][B]Cambios Próximas Búsquedas[/B][/COLOR]'
             context.append({'title': tit, 'channel': '', 'action': ''})
 
-            if ' proxies' in titulo or 'sin resultados' in titulo:
+            if ' Proxies' in titulo:
                 tit = '[COLOR darkorange][B]Test Web del canal[/B][/COLOR]'
                 context.append({'title': tit, 'channel': item.channel, 'action': '_tests'})
 
@@ -924,6 +906,19 @@ def do_search(item, tecleado):
 
                     tit = '[COLOR %s][B]Configurar proxies a usar[/B][/COLOR]' % color_list_proxies
                     context.append({'title': tit, 'channel': item.channel, 'action': '_proxies'})
+            else:
+                if 'proxies' in ch['notes'].lower():
+                    cfg_proxies_channel = 'channel_' + ch['id'] + '_proxies'
+
+                    if config.get_setting(cfg_proxies_channel, default=''):
+                        tit = '[COLOR darkorange][B]Test Web del canal[/B][/COLOR]'
+                        context.append({'title': tit, 'channel': item.channel, 'action': '_tests'})
+
+                        tit = '[COLOR %s]Información Proxies[/COLOR]' % color_infor
+                        context.append({'title': tit, 'channel': 'helper', 'action': 'show_help_proxies'})
+
+                        tit = '[COLOR %s][B]Configurar proxies a usar[/B][/COLOR]' % color_list_proxies
+                        context.append({'title': tit, 'channel': item.channel, 'action': '_proxies'})
 
             cfg_searchable_channel = 'channel_' + ch['id'] + '_no_searchable'
 
@@ -951,22 +946,19 @@ def do_search(item, tecleado):
 
             titulo = '[B][COLOR %s]%s[/COLOR][/B]' % (color, titulo)
 
-            itemlist.append(Item( channel=ch['id'], action=action, buscando=tecleado, title=titulo, module_search= True,
-                                                    context=context, thumbnail=ch['thumbnail'], search_type=item.search_type ))
+            itemlist.append(Item( channel=ch['id'], action=action, buscando=tecleado, title=titulo, module_search= True, context=context, thumbnail=ch['thumbnail'], search_type=item.search_type ))
 
             if 'itemlist_search' in ch:
                 for j, it in enumerate(ch['itemlist_search']):
                     if it.contentType not in ['movie', 'tvshow', 'season']: continue
-                    if j < search_limit_by_channel:
-                        itemlist.append(it)
-                    else:
-                        break
+                    if j < search_limit_by_channel: itemlist.append(it)
+                    else: break
 
             if 'búsqueda cancelada' in titulo: break
 
-    if channels_new_proxies:
-        itemlist.append(Item( channel='submnuctext', action='_search_new_proxies', title='[B][COLOR goldenrod]Buscar Nuevos Proxies [/COLOR][COLOR chartreuse]Todos los canales [/COLOR][COLOR coral]Sin resultados[/COLOR][/B]',
-                              channels_new_proxies = channels_new_proxies, extra = item.search_type, thumbnail=config.get_thumb('settings') ))
+    if config.get_setting('sub_mnu_cfg_prox_search', default=True):
+        if channels_new_proxies:
+            itemlist.append(Item( channel='submnuctext', action='_search_new_proxies', title='[B][COLOR goldenrod]BUSCAR [COLOR red]Proxies[/COLOR] en [/COLOR][COLOR chartreuse]TODOS los Canales [/COLOR][COLOR coral]SIN RESULTADOS[/COLOR][/B]', channels_new_proxies = channels_new_proxies, extra = item.search_type, thumbnail=config.get_thumb('flame') ))
 
     progreso.close()
 

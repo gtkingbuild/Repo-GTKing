@@ -1,0 +1,17 @@
+{
+  "id": "pediatorrent",
+  "name": "PediaTorrent",
+  "thumbnail": "pediatorrent.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["torrent", "movie", "tvshow"],
+  "language": ["cast"],
+
+  "clusters": ["onlyone", "torrents", "qualityes", "years", "kids", "docs", "4k"],
+
+  "notes": "Canal con enlaces Torrent exclusivamente. Películas, series y documentales, por géneros, calidad y año."
+}

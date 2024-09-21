@@ -1,0 +1,17 @@
+{
+  "id": "novelas360",
+  "name": "Novelas360",
+  "thumbnail": "novelas360.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["inestable", "lasts", "countries", "lists", "vos", "tales", "bibles"],
+
+  "notes": "Web dedicada exclusivamente en Novelas."
+}

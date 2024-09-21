@@ -36,26 +36,9 @@ def mainlist_pelis(item):
     itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = host + 'most-popular/' ))
     itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = host + 'top-rated/' ))
 
-    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url= host + 'categories/' ))
     itemlist.append(item.clone( title = 'Por canal', action = 'canales', url= host + 'channels/' ))
+    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url= host + 'categories/' ))
     itemlist.append(item.clone( title = 'Por estrella', action = 'pornstars', url = host + 'performers/' ))
-
-    return itemlist
-
-
-def categorias(item):
-    logger.info()
-    itemlist = []
-
-    data = do_downloadpage(item.url)
-    data = re.sub(r'\n|\r|\t|&nbsp;|<br>', '', data)
-
-    bloque = scrapertools.find_single_match(data, '<h1>(.*?)>Recommended<')
-
-    matches = re.compile('<div class="th".*?href="(.*?)".*?title="(.*?)".*?src="(.*?)"', re.DOTALL).findall(bloque)
-
-    for url, title, thumb in matches:
-         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color='tan' ))
 
     return itemlist
 
@@ -75,7 +58,7 @@ def canales(item):
          itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, tipo = 'canales', text_color='orange' ))
 
     if itemlist:
-        next_page = scrapertools.find_single_match(data, '<li class="page-current"><span class="item">.*?href="(.*?)"')
+        next_page = scrapertools.find_single_match(data, '<div class="page page-current".*?href="(.*?)"')
 
         if next_page:
             next_page = host[:-1] + next_page
@@ -83,6 +66,23 @@ def canales(item):
             itemlist.append(item.clone (action='canales', title='Siguientes ...', url=next_page, text_color = 'coral') )
 
     return itemlist
+
+
+def categorias(item):
+    logger.info()
+    itemlist = []
+
+    data = do_downloadpage(item.url)
+    data = re.sub(r'\n|\r|\t|&nbsp;|<br>', '', data)
+
+    bloque = scrapertools.find_single_match(data, '<h1>(.*?)>Recommended<')
+
+    matches = re.compile('<div class="th".*?href="(.*?)".*?title="(.*?)".*?src="(.*?)"', re.DOTALL).findall(bloque)
+
+    for url, title, thumb in matches:
+         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color='tan' ))
+
+    return sorted(itemlist, key=lambda x: x.title)
 
 
 def pornstars(item):
@@ -100,7 +100,7 @@ def pornstars(item):
          itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, tipo = 'pornstars', text_color='moccasin' ))
 
     if itemlist:
-        next_page = scrapertools.find_single_match(data, '<li class="page-current"><span class="item">.*?href="(.*?)"')
+        next_page = scrapertools.find_single_match(data, '<div class="page page-current".*?href="(.*?)"')
 
         if next_page:
             next_page = host[:-1] + next_page
@@ -134,7 +134,7 @@ def list_all(item):
         itemlist.append(item.clone (action='findvideos', title=title, url=url, thumbnail=thumb, contentType = 'movie', contentTitle = title, contentExtra='adults') )
 
     if itemlist:
-        next_page = scrapertools.find_single_match(data, '<li class="page-current"><span class="item">.*?href="(.*?)"')
+        next_page = scrapertools.find_single_match(data, '<div class="page page-current".*?<a class="page-link".*?href="(.*?)"')
 
         if next_page:
             next_page = host[:-1] + next_page

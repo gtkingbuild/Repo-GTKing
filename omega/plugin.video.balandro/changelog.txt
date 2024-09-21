@@ -2,6 +2,54 @@
 
 [COLOR yellow][B]2024[/B][/COLOR]
 
+4.0.10 [COLOR darkorange] 22 de Agosto de 2024[/COLOR]
+    Correcciones: Errores detectados
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
+
+4.0.09 [COLOR darkorange] 25 de Julio de 2024[/COLOR]
+    Correcciones: Errores detectados
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
+
+4.0.08 [COLOR darkorange] 2 de Julio de 2024[/COLOR]
+    Correcciones: Errores detectados
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
+
+4.0.07 [COLOR darkorange] 10 de Junio de 2024[/COLOR]
+    Correcciones: Errores detectados
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
+
+4.0.06 [COLOR darkorange] 20 de Mayo de 2024[/COLOR]
+    Correcciones: Errores detectados
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
+
+4.0.05 [COLOR darkorange] 3 de Mayo de 2024[/COLOR]
+    Correcciones: Errores detectados
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
+
+4.0.04 [COLOR darkorange] 24 de Marzo de 2024[/COLOR]
+    Correcciones: Errores detectados
+
+    [COLOR aqua]Nuevo Repo 4.0.1[/COLOR]
+
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
+
+4.0.03 [COLOR darkorange] 14 de Marzo de 2024[/COLOR]
+    Correcciones: Errores detectados
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
+
+4.0.02 [COLOR darkorange] 21 de Febrero de 2024[/COLOR]
+    Correcciones: Errores detectados
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
+
 4.0.01 [COLOR darkorange] 24 de Enero de 2024[/COLOR]
     Correcciones: Errores detectados
     Generos: Re-configurados

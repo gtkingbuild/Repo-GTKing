@@ -57,8 +57,7 @@ def categorias(item):
     matches = re.compile('<a class="category-item" href="([^"]+)">([^"]+)</a>', re.DOTALL).findall(bloque)
 
     for url, title in matches:
-        url = host[:-1] + url
-        url = url + '?ajax=1&type=most-recent&page=1'
+        url = host[:-1] + url + '?ajax=1&type=most-recent&page=1'
 
         itemlist.append(item.clone (action='list_all', title=title, url=url, text_color='tan' ))
 
@@ -74,24 +73,26 @@ def list_all(item):
 
     jdata = jsontools.load(data)
 
-    for video in jdata["data"]:
-        domain = ''
+    try:
+        for video in jdata["data"]:
+            domain = ''
 
-        duration = video["duration"]
+            duration = video["duration"]
 
-        title = video["videoTitle"]
+            title = video["videoTitle"]
 
-        src = video["src"]
-        thumb = src.get('domain', domain) + src.get('pathMedium', domain) + "1.jpg"
+            src = video["src"]
 
-        url = video["urls_CDN"]
-        url = url.get('480', domain)
+            thumb = src.get('domain', domain) + src.get('pathMedium', domain) + "1.jpg"
 
-        url = url.replace("/\n/", "/")
+            url = video["urls_CDN"]
+ 
+            titulo = "[COLOR tan]%s[/COLOR] %s" % (duration, title)
 
-        titulo = "[COLOR tan]%s[/COLOR] %s" % (duration, title)
-
-        itemlist.append(item.clone (action='findvideos', title=titulo, url=url, thumbnail=thumb, contentType = 'movie', contentTitle = title, contentExtra='adults') )
+            itemlist.append(item.clone (action='findvideos', title=titulo, url=url, domain=domain, thumbnail=thumb,
+                                        contentType = 'movie', contentTitle = title, contentExtra='adults') )
+    except:
+        pass
 
     if itemlist:
         actual = int(scrapertools.find_single_match(item.url, '&page=([0-9]+)'))
@@ -108,7 +109,15 @@ def findvideos(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(Item( channel = item.channel, action='play', title='', url=item.url, server = 'directo', language = 'Vo') )
+    if '480' in str(item.url):
+        url = item.url.get('480', item.domain)
+
+        itemlist.append(Item( channel = item.channel, action='play', title='', url=url, server = 'directo', language = 'Vo', other = '480') )
+
+    if '360' in str(item.url):
+        url = item.url.get('360', item.domain)
+
+        itemlist.append(Item( channel = item.channel, action='play', title='', url=url, server = 'directo', language = 'Vo', other = '360') )
 
     return itemlist
 
@@ -116,7 +125,7 @@ def findvideos(item):
 def search(item, texto):
     logger.info()
     try:
-        item.url =  host + 'search/%s/' % (texto.replace(" ", "+"))
+        item.url = host + texto.replace(" ", "+")
         return list_all(item)
     except:
         import sys

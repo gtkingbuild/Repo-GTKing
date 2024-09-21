@@ -3,6 +3,7 @@
   "name": "Cloudvideo",
 
   "active": true,
+  "notes": "Alternative vía: Script.Module.ResolveUrl",
 
   "find_videos": {
     "ignore_urls": [],

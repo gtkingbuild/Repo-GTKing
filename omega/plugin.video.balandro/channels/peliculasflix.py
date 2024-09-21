@@ -50,7 +50,7 @@ def mainlist_pelis(item):
     itemlist.append(item.clone( title = 'Por género', action = 'generos' ))
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', search_type = 'movie' ))
 
-    itemlist.append(item.clone( title = 'Por productora', action = 'productoras' ))
+    itemlist.append(item.clone( title = 'Por productora', action = 'productoras', text_color = 'moccasin' ))
 
     itemlist.append(item.clone( title = 'Por idioma', action = 'idiomas' ))
 

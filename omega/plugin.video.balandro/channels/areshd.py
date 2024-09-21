@@ -281,11 +281,14 @@ def findvideos(item):
 
              other = srv
 
+             if other == 'plustream': servidor = 'directo'
+
              if servidor == srv: other = ''
              elif not servidor == 'directo':
                 if not servidor == 'various': other = ''
 
-             itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = link, language = lang, other = other.capitalize() ))
+             itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = link,
+                                   language = lang, other = other.capitalize() ))
 
          i += 1
 
@@ -312,10 +315,16 @@ def play(item):
     if url:
         if '/cinestart.' in url: return itemlist
 
+        elif url.startswith("https://okru.cx/?h="): return itemlist
+
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 
         url = servertools.normalize_url(servidor, url)
+
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(url).lower()
+            if not new_server.startswith("http"): servidor = new_server
 
         if servidor == 'zplayer': url = url + '|' + host
 

@@ -21,7 +21,7 @@ if PY3:
        import xbmc
        if xbmc.getCondVisibility("system.platform.Linux.RaspberryPi") or xbmc.getCondVisibility("System.Platform.Linux"): LINUX = True
     except: pass
- 
+
 try:
    if LINUX:
        try:
@@ -45,9 +45,6 @@ except:
 
 
 host = 'https://peliplayhd.com/'
-
-
-perpage = 24
 
 
 def item_configurar_proxies(item):
@@ -146,7 +143,7 @@ def acciones(item):
 
     itemlist.append(item_configurar_proxies(item))
 
-    itemlist.append(Item( channel='helper', action='show_help_peliplayhd', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('help') ))
+    itemlist.append(Item( channel='helper', action='show_help_peliplayhd', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('peliplayhd') ))
 
     platformtools.itemlist_refresh()
 
@@ -245,20 +242,16 @@ def list_all(item):
     logger.info()
     itemlist = []
 
-    if not item.page: item.page = 0
-
     data = do_downloadpage(item.url)
 
-    if '>MÁS POLUPARES<' in data:
-        bloque = scrapertools.find_single_match(data, '</h1>(.*?)>MÁS POLUPARES<')
+    if 'MAS POPULARES' in data:
+        bloque = scrapertools.find_single_match(data, '</h1>(.*?)>MAS POPULARES<')
     else:
         bloque = scrapertools.find_single_match(data, '</h1>(.*?)<p class="copy">©')
 
     matches = scrapertools.find_multiple_matches(bloque, '<article(.*?)</article>')
 
-    num_matches = len(matches)
-
-    for match in matches[item.page * perpage:]:
+    for match in matches:
         url = scrapertools.find_single_match(match, ' href="(.*?)"')
 
         title = scrapertools.find_single_match(match, '<h2 class="entry-title">(.*?)</h2>')
@@ -275,6 +268,8 @@ def list_all(item):
 
         if year: title = title.replace('(' + year +')', '').strip()
         else: year = '-'
+
+        if '/release/' in item.url: year = scrapertools.find_single_match(item.url, "/release/(.*?)/")
 
         tipo = 'movie' if '/peliculas/' in url else 'tvshow'
         sufijo = '' if item.search_type != 'all' else tipo
@@ -293,24 +288,14 @@ def list_all(item):
             itemlist.append(item.clone( action='temporadas', url=url, title=title, thumbnail=thumb, fmt_sufijo=sufijo,
                                         contentType = 'tvshow', contentSerieName = title, infoLabels={'year': year} ))
 
-        if len(itemlist) >= perpage: break
-
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
-        buscar_next = True
-        if num_matches > perpage:
-            hasta = (item.page * perpage) + perpage
-            if hasta < num_matches:
-                itemlist.append(item.clone( title = 'Siguientes ...', page=item.page + 1, action='list_all', text_color='coral' ))
-                buscar_next = False
+        next_url = scrapertools.find_single_match(data, '<a class="page-link current".*?</a>.*?<a class="page-link".*?href="(.*?)"')
 
-        if buscar_next:
-            next_url = scrapertools.find_single_match(data, '<a class="page-link".*?</a>.*?href="(.*?)"')
-
-            if next_url:
-                if '/page/' in next_url:
-                    itemlist.append(item.clone( title = 'Siguientes ...', url = next_url, action = 'list_all', text_color = 'coral' ))
+        if next_url:
+            if '/page/' in next_url:
+                itemlist.append(item.clone( title = 'Siguientes ...', url = next_url, action = 'list_all', text_color = 'coral' ))
 
     return itemlist
 
@@ -472,6 +457,37 @@ def findvideos(item):
 
             other = srv
 
+            if 'peliplaywish' in srv:
+                servidor = 'directo'
+                other = 'peliplaywish'
+            elif 'mivideoplay' in srv:
+                servidor = 'directo'
+                other = 'mivideoplay'
+            elif 'peliplaymoon' in srv:
+                servidor = 'directo'
+                other = 'peliplaymoon'
+            elif 'fmoonembed' in srv:
+                servidor = 'directo'
+                other = 'fmoonembed'
+            elif 'embedmoon' in srv:
+                servidor = 'directo'
+                other = 'embedmoon'
+            elif 'jodwish' in srv:
+                servidor = 'directo'
+                other = 'jodwish'
+            elif 'swhoi' in srv:
+                servidor = 'directo'
+                other = 'swhoi'
+            elif 'swdyu' in srv:
+                servidor = 'directo'
+                other = 'swdyu'
+            elif 'strwish' in srv:
+                servidor = 'directo'
+                other = 'strwish'
+            elif 'vidhidepre' in srv:
+                servidor = 'directo'
+                other = 'vidhidepre'
+
             if servidor == srv: other = ''
             elif not servidor == 'directo':
                if not servidor == 'various': other = ''
@@ -497,13 +513,28 @@ def play(item):
     url = scrapertools.find_single_match(data, '<iframe.*?src="([^"]+)')
     if not url: url = scrapertools.find_single_match(data, '<IFRAME.*?SRC="([^"]+)')
 
+    if item.other == 'Peliplaywish' or item.other == 'Mivideoplay' or item.other == 'Peliplaymoon' or item.other == 'Fmoonembed' or item.other == 'Embedmoon' or item.other == 'Jodwish' or item.other == 'Swhoi' or item.other == 'Swdyu' or item.other == 'strwish' or item.other == 'vidhidepre':
+        if '/?trembed' in url:
+            data = do_downloadpage(url)
+
+            url = scrapertools.find_single_match(str(data), 'link: "(.*?)"')
+            if not url: url = scrapertools.find_single_match(str(data), "location.href = '(.*?)'")
+            if not url: url = scrapertools.find_single_match(str(data), 'sources:.*?file:.*?"(.*?)"')
+
     if url:
+        if '//e/' in url: url = url.replace('//e/', '/e/')
+
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 
         url = servertools.normalize_url(servidor, url)
 
-        itemlist.append(item.clone(server = servidor, url = url))
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(url).lower()
+            if not new_server.startswith("http"): servidor = new_server
+
+        if not servidor == 'directo':
+            itemlist.append(item.clone(server = servidor, url = url))
 
     return itemlist
 

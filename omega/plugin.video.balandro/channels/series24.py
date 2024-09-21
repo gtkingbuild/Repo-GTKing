@@ -7,12 +7,14 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-host = 'https://www11.series24.cc/'
+# ~ 14/8/24 Peliculas solo hay 26
+
+host = 'https://ww-w.series24.cc/'
 
 
 # ~ por si viene de enlaces guardados
 ant_hosts = ['https://www.series24.cc/', 'https://www1.series24.cc/', 'https://ww3.series24.cc/',
-            'https://ww2.series24.cc/']
+            'https://ww2.series24.cc/', 'https://www11.series24.cc/', 'https://w-ww.series24.cc/']
 
 
 domain = config.get_setting('dominio', 'series24', default='')
@@ -59,6 +61,8 @@ def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
     # ~ por si viene de enlaces guardados
     for ant in ant_hosts:
         url = url.replace(ant, host)
+
+    if '/series-de/' in url: raise_weberror = False
 
     if not headers: headers = {'Referer': host}
 
@@ -137,7 +141,9 @@ def mainlist_series(item):
     itemlist.append(item.clone( title = 'Novelas', action = 'list_all', url = host + 'series-genero/novelas/', search_type = 'tvshow', text_color='limegreen' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
-    itemlist.append(item.clone( title = 'Por plataforma', action = 'plataformas', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Por año', action='anios', search_type = 'tvshow' ))
+
+    itemlist.append(item.clone( title = 'Por plataforma', action = 'plataformas', search_type = 'tvshow', text_color='moccasin' ))
 
     return itemlist
 
@@ -159,6 +165,21 @@ def generos(item):
         itemlist.append(item.clone( action = 'list_all', title = title, url = url, text_color = 'hotpink' ))
 
     return sorted(itemlist, key=lambda it: it.title)
+
+
+def anios(item):
+    logger.info()
+    itemlist = []
+
+    from datetime import datetime
+    current_year = int(datetime.today().year)
+
+    for x in range(current_year, 1969, -1):
+        url = host + 'series-de/' + str(x) + '/'
+
+        itemlist.append(item.clone( title = str(x), url = url, action = 'list_all', text_color = 'hotpink' ))
+
+    return itemlist
 
 
 def plataformas(item):
@@ -228,6 +249,8 @@ def list_all(item):
 
         if not url or not title: continue
 
+        if '/ver-pelicula-online/' in url: continue
+
         thumb = scrapertools.find_single_match(match, 'src="(.*?)"')
 
         year = scrapertools.find_single_match(match, '<span class="imdb".*?</span>.*?<span>(.*?)</span>')
@@ -236,7 +259,9 @@ def list_all(item):
         if year: title = title.replace('(' + year + ')', '').strip()
         else: year = '-'
 
-        title = title.replace('&#038;', '').replace('&#8211;', '').replace("&#8217;", "'")
+        if '/series-de/' in item.url: year = scrapertools.find_single_match(item.url, "/series-de/(.*?)/")
+
+        title = title.replace('&#8230;', '').replace('&#8211;', '').replace('&#038;', '').replace('&#8217;s', "'s")
 
         titulo = title
 
@@ -547,6 +572,10 @@ def play(item):
 
         url = servertools.normalize_url(servidor, url)
 
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(url).lower()
+            if not new_server.startswith("http"): servidor = new_server
+
         itemlist.append(item.clone( url = url, server = servidor ))
 
     return itemlist
@@ -565,6 +594,8 @@ def list_search(item):
     for article in matches:
         url = scrapertools.find_single_match(article, ' href="(.*?)"')
 
+        if '/ver-pelicula-online/' in url: continue
+
         title = scrapertools.find_single_match(article, ' alt="(.*?)"')
 
         thumb = scrapertools.find_single_match(article, ' src="(.*?)"')
@@ -578,6 +609,17 @@ def list_search(item):
         itemlist.append(item.clone( action='temporadas', url=url, title=title, thumbnail=thumb, contentType='tvshow', contentSerieName=title, infoLabels={'year': year, 'plot': plot} ))
 
     tmdb.set_infoLabels(itemlist)
+
+    if itemlist:
+        if '<span class="current">' in data:
+            patron = '<span class="current">.*?'
+            patron += "href='(.*?)'"
+
+            next_page = scrapertools.find_single_match(data, patron)
+
+            if next_page:
+                if '/page/' in next_page:
+                    itemlist.append(item.clone( title = 'Siguientes ...', url = next_page, action = 'list_search', text_color='coral' ))
 
     return itemlist
 

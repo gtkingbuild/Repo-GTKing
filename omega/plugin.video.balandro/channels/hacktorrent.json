@@ -1,0 +1,17 @@
+{
+  "id": "hacktorrent",
+  "name": "HackTorrent",
+  "thumbnail": "hacktorrent.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow", "torrent"],
+  "language": ["cast", "lat", "vose", "vo"],
+
+  "clusters": ["onlyone", "current", "torrents", "qualityes", "years", "languages", "kids", "docs", "anime", "4k"],
+
+  "notes": "Canal con enlaces Torrent exclusivamente. Películas por géneros, calidad y año. También Series."
+}
