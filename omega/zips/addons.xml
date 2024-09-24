@@ -1743,7 +1743,7 @@ No se acepta ninguna responsabilidad por el uso de este addon.
     </extension>
 </addon>
 
-<addon id="skin.auramod.GTKing-Phoenix" version="21.1.1" name="[COLOR lime]Aura[COLOR gold]Mod [B][COLOR azure]GTKING [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X[/COLOR][/B]" provider-name="Auramod, [COLOR gold]GTKing PHOENIX[/COLOR]">
+<addon id="skin.auramod.GTKing-Phoenix" version="21.2" name="[COLOR lime]Aura[COLOR gold]Mod [B][COLOR azure]GTKING [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X[/COLOR][/B]" provider-name="Auramod, [COLOR gold]GTKing PHOENIX[/COLOR]">
     <requires>
         <import addon="xbmc.gui" version="5.17.0"/>
         <import addon="script.skin.helper.service" version="1.1.24"/>
