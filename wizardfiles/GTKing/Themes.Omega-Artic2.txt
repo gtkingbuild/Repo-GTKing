@@ -1,5 +1,5 @@
-name="[B][COLOR white]•• [COLOR red]Parche: [COLOR crimson]GTKing Artic Phoenix OMEGA [COLOR tan]12/09/2024[/COLOR][/B]"
-url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/21.0.Artic/Parche.Artic.Phoenix.OMEGA.zip"
+#name="[B][COLOR white]•• [COLOR red]Parche: [COLOR crimson]GTKing Artic Phoenix 2 OMEGA [COLOR tan]12/09/2024[/COLOR][/B]"
+url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/21.0.Artic2/Parche.Artic.Phoenix.OMEGA.zip"
 icon="https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardfiles/wizard_icons_builds/icon_artic.jpg"
 fanart="https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardfiles/wizard_fanarts_builds/fanart_artic.jpg"
 adult="no"
