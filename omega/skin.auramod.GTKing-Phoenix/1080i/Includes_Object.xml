@@ -8737,9 +8737,9 @@
             <thumb>special://skin/extras/icons/hourglass2.png</thumb>
           </item>		  
           <item>
-           <label>Instalador Luar</label>
-            <onclick>ActivateWindow(10001,&quot;plugin://script.luar/&quot;,return)</onclick>
-            <thumb>special://skin/extras/icons/luarr.png</thumb> 
+           <label>Elementum</label>
+            <onclick>ActivateWindow(10001,&quot;plugin://plugin.video.elementum/&quot;,return)</onclick>
+            <thumb>special://skin/extras/icons/elementum.png</thumb> 
           </item>
           <!-- <item>
 		   <label>Herramientas Cristal</label>
