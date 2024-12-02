@@ -34,4 +34,5 @@ if __name__ == "__main__":
 	elif action == "channels": vjlive.channels()
 	elif action == "settings": utils.addon.openSettings(sys.argv[1])
 	elif action == "favchannels": vjlive.favchannels()
+	elif action == "makem3u": vjlive.makem3u()
 	else: getattr(vjackson, "_%s" % action)(params)

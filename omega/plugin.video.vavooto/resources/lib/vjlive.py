@@ -1,24 +1,23 @@
 # -*- coding: utf-8 -*-
-import sys, re, requests, time, xbmcgui, xbmc, json, vavoosigner
+import sys, re, requests, time, xbmcgui, xbmc, json, os, os
 from resources.lib import utils
 try: 
 	from infotagger.listitem import ListItemInfoTag
 	tagger = True
 except: tagger = False
 
-vavoourl="https://www2.vavoo.to/live2/index"
-
 def resolve_link(link):
-	_data='{"token":"26fY7-FIvyz_UA5t9T_ndXB02KgaCT-jDx0uA9CE7iRAO_V2lCSGkAzzTXOpjHZHBvOoKcuq1OVCnbYX035d8698U0OYDaLo-7p8BJJIJNj7d1z-7byaQDuDFdEHPbnZAKAxG_fskVIrE0XkBV7_HbBnlIBDQ_EgxA","reason":"app-focus","locale":"de","theme":"light","metadata":{"device":{"type":"Handset","brand":"Xiaomi","model":"21081111RG","name":"21081111RG","uniqueId":"33267ca74bec24c7"},"os":{"name":"android","version":"7.1.2","abis":["arm64-v8a","armeabi-v7a","armeabi"],"host":"non-pangu-pod-sbcp6"},"app":{"platform":"android","version":"1.1.2","buildId":"97245000","engine":"jsc","signatures":["7c8c6b5030a8fa447078231e0f2c0d9ee4f24bb91f1bf9599790a1fafbeef7e0"],"installer":"com.android.secex"},"version":{"package":"net.dezor.browser","binary":"1.1.2","js":"1.2.9"}},"appFocusTime":1589,"playerActive":false,"playDuration":0,"devMode":false,"hasMhub":false,"castConnected":false,"package":"net.dezor.browser","version":"1.2.9","process":"app","firstAppStart":1681125328576,"lastAppStart":1681125328576,"ipLocation":null,"adblockEnabled":true,"proxy":{"supported":true,"enabled":true}}'
-	signed = requests.post("https://www.dezor.net/api/app/ping", data=_data).json()["mhub"]
-	_headers={"user-agent": "MediaHubMX/2", "accept": "application/json", "content-type": "application/json; charset=utf-8", "content-length": "158", "accept-encoding": "gzip", "Host": "www.kool.to", "mediahubmx-signature":signed}
-	_data={"language":"de","region":"AT","url":link.replace("oha.to/oha-tv", "kool.to/kool-tv").replace("huhu.to/huhu-tv", "kool.to/kool-tv"),"clientVersion":"1.1.3"}
-	url = "https://www.kool.to/kool-cluster/mediahubmx-resolve.json"
+	_headers={"user-agent": "MediaHubMX/2", "accept": "application/json", "content-type": "application/json; charset=utf-8", "content-length": "115", "accept-encoding": "gzip", "mediahubmx-signature":utils.getAuthSignature()}
+	_data={"language":"de","region":"AT","url":link,"clientVersion":"3.0.2"}
+	url = "https://vavoo.to/vto-cluster/mediahubmx-resolve.json"
 	return requests.post(url, data=json.dumps(_data), headers=_headers).json()[0]["url"]
 
 def filterout(name):
+	name = re.sub(r"\.\D", "", name)
 	name = re.sub("( (SD|HD|FHD|UHD|H265))?( \\(BACKUP\\))? \\(\\d+\\)$", "", name)
-	name = re.sub("(\(.*\)|DE : | \|\w| FHD| HD\+| HD| 1080| AUSTRIA| GERMANY| DEUTSCHLAND|HEVC|RAW| SD| YOU)", "", name).strip(".")
+	name = re.sub(r"(DE : | \|\w| FHD| HD\+| HD| 1080| AUSTRIA| GERMANY| DEUTSCHLAND|HEVC|RAW| SD| YOU)", "", name).strip(".")
+	name = re.sub(r"\(.*\)", "", name)
+	name = re.sub(r"\[.*\]", "", name)
 	name = name.replace("EINS", "1").replace("ZWEI", "2").replace("DREI", "3").replace("SIEBEN", "7").replace("  ", " ").replace("TNT", "WARNER").replace("III", "3").replace("II", "2").replace("BR TV", "BR").strip()
 	if "ALLGAU" in name: name = "ALLGAU TV"
 	if all(ele in name for ele in ["1", "2", "3"]): name = "1-2-3 TV"
@@ -42,11 +41,8 @@ def filterout(name):
 	elif "DMAX" in name: name = "DMAX"
 	elif "DISNEY" in name: name = "DISNEY CHANNEL"
 	elif "KINOWELT" in name: name = "KINOWELT"
-	elif "MDR" in name:
-		if "TH" in name: name = "MDR THUERINGEN"
-		elif "ANHALT" in name: name = "MDR SACHSEN ANHALT"
-		elif "SACHSEN" in name: name = "MDR SACHSEN"
-		else: name = "MDR"
+	elif "MDR" in name: name = "MDR"
+	elif "NDR" in name: name = "NDR"
 	elif "RBB" in name: name = "RBB"
 	elif "SERVUS" in name: name = "SERVUS TV"
 	elif "RTL" in name:
@@ -98,9 +94,14 @@ def filterout(name):
 	elif "DELUX" in name: name = "DELUXE MUSIC"
 	elif "DISCO" in name: name = "DISCOVERY"
 	elif "TLC" in name: name = "TLC"
+	elif "N-TV" in name: name = "NTV"
+	elif "TELE 5 TV" in name: name = "TELE 5"
+	elif "N24 DOCU" in name: name = "N24 DOKU"
+	elif "TAGESSCHAU24" in name: name = "TAGESSCHAU 24"
+	elif "SPIEGEL TV WISSEN" in name: name = "SPIEGEL WISSEN"
 	elif "HISTORY" in name: name = "HISTORY"
 	elif "VISION" in name: name = "MOTORVISION"
-	elif "INVESTIGATION" in name or "A&E" in name: name = "A&E"
+	elif "INVESTIGATION" in name or "A&E" in name: name = "CRIME + INVESTIGATION"
 	elif "AUTO" in name: name = "AUTO MOTOR SPORT"
 	elif "WELT" in name: name = "WELT DER WUNDER" if "WUNDER" in name else "WELT"
 	elif "NAT" in name and "GEO" in name: name = "NAT GEO WILD" if "WILD" in name else "NATIONAL GEOGRAPHIC"
@@ -121,35 +122,16 @@ def filterout(name):
 	return name
 
 def getchannels():
-	return get_hls_channels() if utils.addon.getSetting("hls") == "true" else get_ts_channels()
-
-def get_ts_channels():
-	try: group = json.loads(utils.addon.getSetting("groups"))
-	except: group = choose()
-	chanfile = utils.get_cache("chanfile")
-	if chanfile: return chanfile
-	channels={}
-	for c in requests.get(vavoourl, params={"output": "json"}).json():
-		if "DE :" in c["name"] or c["group"] in group:
-			name = filterout(c["name"])
-			if name not in channels: channels[name] = []
-			channels[name].append(c["url"])
-	utils.set_cache("chanfile", channels)
-	return channels
-
-def get_hls_channels():
 	global channels
 	channels = {}
 	try: groups = json.loads(utils.addon.getSetting("groups"))
 	except: groups = choose()
-	chanfile = utils.get_cache("hlschanfile")
-	if chanfile: return chanfile
 
 	def _getchannels(group, cursor=0, germany=False):
 		global channels
-		_headers={"user-agent":"WATCHED/1.8.3 (android)", "accept": "application/json", "content-type": "application/json; charset=utf-8", "cookie": "lng=", "watched-sig": vavoosigner.getWatchedSig()}
-		_data={"adult": True,"cursor": cursor,"filter": {"group": group},"sort": "name"}
-		r = requests.post("https://www.oha.to/oha-tv-index/directory.watched", data=json.dumps(_data), headers=_headers).json()
+		_headers={"accept-encoding": "gzip", "user-agent":"MediaHubMX/2", "accept": "application/json", "content-type": "application/json; charset=utf-8", "mediahubmx-signature": utils.getAuthSignature()}
+		_data={"language":"de","region":"AT","catalogId":"vto-iptv","id":"vto-iptv","adult":False,"search":"","sort":"name","filter":{"group":group},"cursor":cursor,"clientVersion":"3.0.2"}
+		r = requests.post("https://vavoo.to/vto-cluster/mediahubmx-catalog.json", data=json.dumps(_data), headers=_headers).json()
 		nextCursor = r.get("nextCursor")
 		items = r.get("items")
 		for item in items:
@@ -170,12 +152,11 @@ def get_hls_channels():
 	for group in groups:
 		_getchannels(group)
 	
-	utils.set_cache("hlschanfile", channels)
 	return channels
 	
 def choose():
 	groups=[]
-	for c in requests.get(vavoourl, params={"output": "json"}).json():
+	for c in requests.get("https://www2.vavoo.to/live2/index", params={"output": "json"}).json():
 		if c["group"] not in groups: groups.append(c["group"])
 	groups.sort()
 	indicies = utils.selectDialog(groups, "Choose Groups", True)
@@ -228,17 +209,20 @@ def livePlay(name):
 			title = "%s (%s/%s)" % (name, i + 1, len(m))  # wird verwendet für infoLabels
 	n = m[i]
 	o = xbmcgui.ListItem(name)
-	url = resolve_link(n) if utils.addon.getSetting("hls") == "true" else "%s?n=1&b=5&vavoo_auth=%s|User-Agent=VAVOO/2.6" % (n, vavoosigner.getAuthSignature())
+	url = resolve_link(n) # if utils.addon.getSetting("hls") == "true" else "%s?n=1&b=5&vavoo_auth=%s|User-Agent=VAVOO/2.6" % (n, getAuthSignature())
 	o.setPath(url)
-	if ".m3u8" in url:
+	if utils.addon.getSetting("hls") == "true":
 		o.setMimeType("application/vnd.apple.mpegurl")
 		o.setProperty("inputstreamaddon" if utils.PY2 else "inputstream" , "inputstream.adaptive")
 		o.setProperty("inputstream.adaptive.manifest_type", "hls")
 	elif utils.addon.getSetting("ffmpeg") == "true" and xbmc.getCondVisibility("System.HasAddon(inputstream.ffmpegdirect)"):
-		o.setMimeType("video/mp2t")
+		o.setMimeType("application/vnd.apple.mpegurl")
 		o.setProperty("inputstream", "inputstream.ffmpegdirect")
 		o.setProperty("inputstream.ffmpegdirect.is_realtime_stream", "true")
 		o.setProperty("inputstream.ffmpegdirect.stream_mode", "timeshift")
+		if utils.addon.getSetting("openmode") != "0":
+			o.setProperty("inputstream.ffmpegdirect.open_mode", "ffmpeg" if  utils.addon.getSetting("openmode") == "1" else "curl")
+		o.setProperty("inputstream.ffmpegdirect.manifest_type", "hls")
 	o.setProperty("IsPlayable", "true")
 	title = title if title else name
 	infoLabels={"title": title, "plot": "[B]%s[/B] - Stream %s von %s" % (name, i+1, len(m))}
@@ -249,6 +233,18 @@ def livePlay(name):
 	utils.set_resolved(o)
 	utils.end()
 			
+			
+def makem3u():
+	m3u = ["#EXTM3U\n"]
+	for name in getchannels():
+		m3u.append('#EXTINF:-1 group-title="Standart",%s\nplugin://plugin.video.vavooto/?name=%s\n' % (name.strip(), name.replace("&", "%26").replace("+", "%2b").strip()))
+	m3uPath = os.path.join(utils.addonprofile, "vavoo.m3u")
+	with open(m3uPath ,"w") as a:
+		a.writelines(m3u)
+	dialog = xbmcgui.Dialog()
+	ok = dialog.ok('VAVOO.TO', 'm3u erstellt in %s' % m3uPath)
+		
+		
 def channels():
 	try: lines = json.loads(utils.addon.getSetting("favs"))
 	except: lines=[]
@@ -266,6 +262,7 @@ def channels():
 			plot = "[COLOR gold]TV Favorit[/COLOR]" #% name
 			cm.append(("von TV Favoriten entfernen", "RunPlugin(%s?action=delTvFavorit&name=%s)" % (sys.argv[0], name.replace("&", "%26").replace("+", "%2b"))))
 		cm.append(("Einstellungen", "RunPlugin(%s?action=settings)" % sys.argv[0]))
+		cm.append(("m3u erstellen", "RunPlugin(%s?action=makem3u)" % sys.argv[0]))
 		o.addContextMenuItems(cm)
 		infoLabels={"title": title, "plot": plot}
 		if tagger:

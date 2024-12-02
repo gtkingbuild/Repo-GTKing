@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import sys, xbmc, os, json, requests, urllib3, xbmcplugin, vavoosigner, resolveurl, base64
+import sys, xbmc, os, json, requests, urllib3, xbmcplugin, resolveurl, base64
 try: from resources.lib import utils
 except: from lib import utils
 from xbmcgui import ListItem, Dialog
@@ -197,27 +197,21 @@ def checkstream(url):
 def _get(params):
 	manual = True if params.get("manual") == "true" else False
 	find = True if params.get("find") == "true" else False
-	if utils.addon.getSetting("site") == "false":
-		utils.log("Suche Streams in VAVOO")
-		if params.get("e"): params["id"] = "%s.%s.%s" % (params["id"], params["s"], params["e"])
-		mirrors = cachedcall("links", {"id": params["id"], "language": "de"}, 3600)
-	else:
-		params["site"] = "dezor"
-		mirrors = utils.get_cache(params)
-		if not mirrors:
-			utils.log("Suche Streams in DEZOR")
-			b = utils.get_meta(params)
-			_headers={"user-agent": "MediaHubMX/2", "accept": "application/json", "content-type": "application/json; charset=utf-8", "content-length": "158", "accept-encoding": "gzip", "Host": "www.kool.to", "mediahubmx-signature": vavoosigner.getDezorSig()}
-			if params.get("e"):
-				for episode in b["episodes"]:
-					if episode["episode_number"] == int(params["e"]):
-						airdate = episode["air_date"]
-						tmdb_episode_id = episode["id"]
-				_data={"language":"de","region":"AT","type":"series","ids":{"tmdb_id": b["ids"]["tmdb"],"imdb_id":b["ids"]["imdb"]},"name":b["infos"]["tvshowtitle"],"nameTranslations":{},"originalName":b["infos"]["originaltitle"],"releaseDate":b["infos"]["premiered"],"episode":{"ids":{"tmdb_episode_id":tmdb_episode_id},"name":b["infos"]["title"],"releaseDate":airdate,"season":params["s"],"episode":params["e"]},"clientVersion":"1.1.3"}
-			else: _data={"language":"de","region":"AT","type":"movie","ids":{"tmdb_id": b["ids"]["tmdb"],"imdb_id":b["ids"]["imdb"]},"name":b["infos"]["title"],"nameTranslations":{},"originalName":b["infos"]["originaltitle"],"releaseDate":b["infos"]["premiered"],"episode":{},"clientVersion":"1.1.3"}
-			url = "https://www.kool.to/kool-cluster/mediahubmx-source.json"
-			mirrors = requests.post(url, data=json.dumps(_data), headers=_headers).json()
-			utils.set_cache(params, mirrors, 3600)
+	params["site"] = "dezor"
+	mirrors = utils.get_cache(params)
+	if not mirrors:
+		b = utils.get_meta(params)
+		_headers={"user-agent": "MediaHubMX/2", "accept": "application/json", "content-type": "application/json; charset=utf-8", "content-length": "158", "accept-encoding": "gzip", "Host": "www.kool.to", "mediahubmx-signature": utils.getAuthSignature()}
+		if params.get("e"):
+			for episode in b["episodes"]:
+				if episode["episode_number"] == int(params["e"]):
+					airdate = episode["air_date"]
+					tmdb_episode_id = episode["id"]
+			_data={"language":"de","region":"AT","type":"series","ids":{"tmdb_id": b["ids"]["tmdb"],"imdb_id":b["ids"]["imdb"]},"name":b["infos"]["tvshowtitle"],"nameTranslations":{},"originalName":b["infos"]["originaltitle"],"releaseDate":b["infos"]["premiered"],"episode":{"ids":{"tmdb_episode_id":tmdb_episode_id},"name":b["infos"]["title"],"releaseDate":airdate,"season":params["s"],"episode":params["e"]},"clientVersion":"1.1.3"}
+		else: _data={"language":"de","region":"AT","type":"movie","ids":{"tmdb_id": b["ids"]["tmdb"],"imdb_id":b["ids"]["imdb"]},"name":b["infos"]["title"],"nameTranslations":{},"originalName":b["infos"]["originaltitle"],"releaseDate":b["infos"]["premiered"],"episode":{},"clientVersion":"1.1.3"}
+		url = "https://www.kool.to/kool-cluster/mediahubmx-source.json"
+		mirrors = requests.post(url, data=json.dumps(_data), headers=_headers).json()
+		utils.set_cache(params, mirrors, 3600)
 	if not mirrors:
 		utils.log("Keine Mirrors gefunden")
 		if not find: showFailedNotification()
@@ -307,7 +301,7 @@ def cachedcall(action, params, timeout=75600):
 def callApi(action, params, method="GET", headers=None, **kwargs):
 	utils.log(params, header="Action:%s params:" % action)
 	if not headers: headers = dict()
-	headers["auth-token"] = vavoosigner.getAuthSignature()
+	headers["auth-token"] = utils.getAuthSignature()
 	resp = session.request(method, (BASEURL + action), params=params, headers=headers, **kwargs)
 	resp.raise_for_status()
 	data = resp.json()
