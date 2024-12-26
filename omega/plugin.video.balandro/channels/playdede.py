@@ -44,16 +44,16 @@ except:
    except: pass
 
 
-host = 'https://playdede.eu/'
+host = 'https://playdede.me/'
 
 
 # ~ webs para comprobar dominio vigente en actions pero pueden requerir proxies
-# ~ webs  0)-'https://dominiosplaydede.com/' ó Telegram 'https://t.me/playdedeinformacion'
+# ~ webs  0)-https://privacidad.me/@playdede  1)-Twitter https://x.com/playdedesocial  2)-Telegram https://t.me/playdedeinformacion
 
 
 # ~ por si viene de enlaces guardados posteriores
 ant_hosts = ['https://playdede.com/', 'https://playdede.org/', 'https://playdede.nu/',
-             'https://playdede.to/', 'https://playdede.us/']
+             'https://playdede.to/', 'https://playdede.us/', 'https://playdede.eu/']
 
 
 domain = config.get_setting('dominio', 'playdede', default='')
@@ -71,7 +71,7 @@ perpage = 21
 login_ok = '[COLOR chartreuse]PlayDede Login correcto[/COLOR]'
 login_ko = '[COLOR red][B]PlayDede Login incorrecto[/B][/COLOR]'
 no_login = '[COLOR orangered][B]PlayDede Sin acceso Login[/B][/COLOR]'
-start_ses_ok = '[COLOR chartreuse][B]Sesión Iniciada[/B][/COLOR], Por favor [COLOR cyan][B]Retroceda Menús[/B][/COLOR] y acceda de Nuevo al Canal.'
+start_ses_ok = '[COLOR chartreuse][B]Sesión Iniciada[/B][/COLOR], Por favor, si fuera necesario [COLOR cyan][B]Retroceda Menús[/B][/COLOR] y acceda de Nuevo al Canal.'
 
 datos_ko = '>Registrarme<'
 
@@ -465,7 +465,7 @@ def acciones(item):
     username = config.get_setting('playdede_username', 'playdede', default='')
 
     if username:
-        itemlist.append(Item( channel='domains', action='operative_domains_playdede', title='[B]Dominio Operativo Vigente[/B]',
+        itemlist.append(Item( channel='domains', action='operative_domains_playdede', title='[B]Dominio Operativo Vigente' + '[COLOR dodgerblue] https://privacidad.me/@playdede[/B][/COLOR]',
                               desde_el_canal = True, host_canal = url, thumbnail=config.get_thumb('playdede'), text_color='mediumaquamarine' ))
 
         itemlist.append(Item( channel='domains', action='last_domain_playdede', title='[B]Comprobar último dominio vigente[/B]',
@@ -495,7 +495,11 @@ def acciones(item):
 
     itemlist.append(item_configurar_proxies(item))
 
+    itemlist.append(item.clone( title = '[COLOR aquamarine][B]Aviso[/COLOR] [COLOR violet][B]Ubicacióm[/B][/COLOR] Media Center', action = 'show_media_center', thumbnail=config.get_thumb('mediacenter') ))
+
     itemlist.append(Item( channel='helper', action='show_help_playdede', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('playdede') ))
+
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'playdede', thumbnail=config.get_thumb('playdede') ))
 
     platformtools.itemlist_refresh()
 
@@ -589,7 +593,7 @@ def mainlist_series(item):
 
         itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'series/', slug = 'series', nro_pagina = 1, search_type = 'tvshow' ))
 
-        itemlist.append(item.clone( title = 'Nuevos episodios', action = 'list_last', url = host, _type = 'episodes', nro_pagina = 1, search_type = 'tvshow', text_color = 'cyan' ))
+        itemlist.append(item.clone( title = 'Últimos episodios', action = 'list_last', url = host, _type = 'episodes', nro_pagina = 1, search_type = 'tvshow', text_color = 'cyan' ))
 
         itemlist.append(item.clone( title = 'Últimas', action = 'list_last', url = host, _type = 'series', nro_pagina = 1, search_type = 'tvshow', text_color = 'yellowgreen' ))
 
@@ -1039,6 +1043,7 @@ def list_all(item):
         title = clean_title(title, url)
 
         if 'Tu directorio de' in title: continue
+        elif '/extraiptv.' in url: continue
 
         thumb = scrapertools.find_single_match(match, '<img src="(.*?)"')
 
@@ -1111,6 +1116,9 @@ def list_last(item):
                     login(item)
                     data = do_downloadpage(url)
 
+                    if data:
+                        data = do_downloadpage(url, post=post)
+
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
     data = data.replace('\\/', '/')
@@ -1137,6 +1145,7 @@ def list_last(item):
         title = clean_title(title, url)
 
         if 'Tu directorio de' in title: continue
+        elif '/extraiptv.' in url: continue
 
         thumb = scrapertools.find_single_match(match, '<img src="(.*?)"')
 
@@ -1227,7 +1236,10 @@ def list_last(item):
 
             titulo = titulo.replace('  ', ' ')
 
-            if not 'x' in titulo: titulo = titulo + ' ' + str(season) + 'x' + str(epis)
+            if len(epis) == 2:
+                if epis.startswith("0"): epis = epis.replace('0', '')
+
+            titulo: titulo = str(season) + 'x' + str(epis) + ' ' + titulo.replace(str(season) + 'x' + str(epis), '')
 
             SerieName = SerieName.replace('  ', ' ')
 
@@ -1330,12 +1342,13 @@ def list_network(item):
 
         if not url or not title: continue
 
-        if 'Tu directorio de' in title: continue
-
         if url.startswith('/'): url = host[:-1] + url
         elif not url.startswith('http'): url = host + url
 
         title = clean_title(title, url)
+
+        if 'Tu directorio de' in title: continue
+        elif '/extraiptv.' in url: continue
 
         thumb = scrapertools.find_single_match(match, '<img src="(.*?)"')
 
@@ -1376,6 +1389,23 @@ def temporadas(item):
 
     data = do_downloadpage(item.url)
 
+    url = item.url
+
+    # ~ si se perdio la sesion (utoken)
+    if data:
+        if datos_ko in str(data):
+            logout(item)
+            login(item)
+            data = do_downloadpage(url)
+
+            if data:
+                username = config.get_setting('playdede_username', 'playdede', default='')
+
+                if not username in data:
+                    logout(item)
+                    login(item)
+                    data = do_downloadpage(url)
+
     matches = re.compile('<div class="clickSeason.*?data-season="(.*?)"', re.DOTALL).findall(data)
     if not matches: matches = re.compile("<div class='clickSeason.*?data-season='(.*?)'", re.DOTALL).findall(data)
 
@@ -1411,6 +1441,22 @@ def episodios(item):
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
+    url = item.url
+
+    if data:
+        if datos_ko in str(data):
+            logout(item)
+            login(item)
+            data = do_downloadpage(url)
+
+            if data:
+                username = config.get_setting('playdede_username', 'playdede', default='')
+
+                if not username in data:
+                    logout(item)
+                    login(item)
+                    data = do_downloadpage(url)
+
     bloque = scrapertools.find_single_match(data, '<div class="se-c".*?data-season="%d"(.*?)<\/div><\/div>' % (item.contentSeason))
     if not bloque: bloque = scrapertools.find_single_match(data, "<div class='se-c'.*?data-season='%d'(.*?)<\/div><\/div>" % (item.contentSeason))
 
@@ -1428,7 +1474,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('PlayDede', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('PlayDede', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -1508,14 +1557,12 @@ def findvideos(item):
 
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
+    ses = 0
+
     # ~ Reproductor
     matches = re.compile('<div class="playerItem(.*?)</div></div>', re.DOTALL).findall(data)
 
-    ses = 0
-
     for match in matches:
-        ses += 1
-
         sid = scrapertools.find_single_match(match, 'data-loadPlayer="(.*?)"')
         if not sid: sid = scrapertools.find_single_match(match, "data-loadplayer='(.*?)'")
 
@@ -1523,9 +1570,12 @@ def findvideos(item):
 
         if not server or not sid: continue
 
+        if server == 'alternativo': continue
+
+        ses += 1
+
         if server == 'powvideo': continue
         elif server == 'streamplay': continue
-        elif server == 'alternativo': continue
 
         lang = scrapertools.find_single_match(match, 'data-lang="(.*?)"')
 
@@ -1544,6 +1594,7 @@ def findvideos(item):
         elif server == 'hexupload': other = 'Hexupload'
         elif server == 'userload': other = 'Userload'
         elif server == 'streamruby': other = 'Streamruby'
+        elif server == 'streamsilk': other = 'Streamsilk'
 
         elif server == 'luluvideo':
               server = 'various'
@@ -1561,15 +1612,16 @@ def findvideos(item):
     matches = re.compile('data-quality="(.*?)".*?data-lang="(.*?)".*?href="(.*?)".*?<span>.*?">(.*?)</b>', re.DOTALL).findall(bloque)
 
     for qlty, lang, url, server in matches:
-        ses += 1
-
         if not url or not server: continue
+
+        if server == 'alternativo': continue
+
+        ses += 1
 
         server = server.lower().strip()
 
         if server == 'powvideo': continue
         elif server == 'streamplay': continue
-        elif server == 'alternativo': continue
 
         if lang.lower() == 'espsub': lang = 'Vose'
 
@@ -1584,6 +1636,7 @@ def findvideos(item):
         elif server == 'hexupload': other = 'Hexupload'
         elif server == 'userload': other = 'Userload'
         elif server == 'streamruby': other = 'Streamruby'
+        elif server == 'streamsilk': other = 'Streamsilk'
 
         elif server == 'luluvideo':
               server = 'various'
@@ -1601,13 +1654,14 @@ def findvideos(item):
     matches = re.compile('data-quality="(.*?)".*?data-lang="(.*?)".*?href="(.*?)".*?<span>.*?">(.*?)</b>', re.DOTALL).findall(bloque)
 
     for qlty, lang, url, server in matches:
-        ses += 1
-
         if not url or not server: continue
 
-        server = server.lower().strip()
-
         if '>recomendado<' in server: continue
+        elif server == 'alternativo': continue
+
+        ses += 1
+
+        server = server.lower().strip()
 
         if '/ul.' in url: continue
         elif '/1fichier.' in url: continue
@@ -1678,7 +1732,7 @@ def play(item):
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(url_play).lower()
-            if not new_server.startswith("http"): servidor = new_server
+            if new_server.startswith("http"): servidor = new_server
 
         itemlist.append(item.clone(url = url_play, server = servidor))
 
@@ -1734,6 +1788,11 @@ def list_search(item):
                 if '/serie/' in url: continue
             else:
                 if '/pelicula/' in url: continue
+
+        title = clean_title(title, url)
+
+        if 'Tu directorio de' in title: continue
+        elif '/extraiptv.' in url: continue
 
         thumb = scrapertools.find_single_match(match, '<img src="(.*?)"')
 
@@ -1810,6 +1869,20 @@ def show_credenciales(item):
     password = config.get_setting('playdede_password', 'playdede', default='')
 
     platformtools.dialog_ok(config.__addon_name + ' PlayDede - Credenciales', 'User..:  [COLOR yellow][B]' + username, '[/B][/COLOR]Pass.:  [COLOR yellow][B]' + password + '[/B][/COLOR]')
+
+
+def show_media_center(item):
+    logger.info()
+
+    txt = 'Si el Canal [COLOR plum][B] NO Obtiene Resultados[/B][/COLOR] y la Ubicación de su Media Center [COLOR violet][B]NO es España[/B][/COLOR]:[CR]'
+
+    txt += 'Necesitará Obligatoriamnete [COLOR red][B]Configurar Proxies a usar ...[/B][/COLOR] en este canal.[CR][CR]'
+
+    txt += '[COLOR cyan][B]Aviso del Web Master de este canal:[/B][/COLOR][CR]'
+
+    txt += '[COLOR yellow][B]Debido a la situación actual, hemos tenido que tomar medidas de seguridad adicionales. Por esta razón, el acceso a nuestra web está limitado a países hispanohablantes. Recomendamos utilizar una VPN de un país de habla hispana para continuar disfrutando de nuestro contenido. Entendemos que esto pueda causar inconvenientes, pero es necesario si queremos permanecer activos durante más tiempo.[/B][/COLOR]'
+
+    platformtools.dialog_textviewer('Información Aviso Ubicacióm Media Center', txt)
 
 
 def search(item, texto):

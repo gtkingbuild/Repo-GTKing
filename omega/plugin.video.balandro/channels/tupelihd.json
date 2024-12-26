@@ -3,7 +3,7 @@
   "name": "TuPeliHd",
   "thumbnail": "tupelihd.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["all", "movie", "tvshow"],
@@ -11,7 +11,7 @@
   "categories": ["movie", "tvshow", "torrent"],
   "language": ["cast", "lat"],
 
-  "clusters": ["onlyone", "current", "torrents", "news", "qualityes", "years", "lasts", "kids", "docs", "4k"],
+  "clusters": ["onlyone", "current", "torrents", "news", "qualityes", "years", "lasts", "classic", "rankings", "kids", "docs", "4k"],
 
-  "notes": "Canal con enlaces Streaming y Torrent. Películas por géneros, calidad y año. También series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Web CERRADA. Canal con enlaces Streaming y Torrent. Películas por géneros, calidad y año. También series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

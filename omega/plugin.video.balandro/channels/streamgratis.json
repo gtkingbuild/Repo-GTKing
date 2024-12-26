@@ -1,0 +1,17 @@
+{
+  "id": "streamgratis",
+  "name": "StreamGratis",
+  "thumbnail": "streamgratis.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": [ "movie", "tvshow" ],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["years", "lasts", "kids", "docs", "vos"],
+
+  "notes": "Películas por géneros y año. También Series."
+}

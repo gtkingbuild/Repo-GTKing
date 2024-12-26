@@ -1546,8 +1546,10 @@ class Tmdb(object):
             dic_aux = dict((i['id'], i) for i in ret_dic["temporada_crew"])
             for e in temporada["episodes"]:
                 for crew in e['crew']:
-                    if crew['id'] not in dic_aux.keys():
-                        dic_aux[crew['id']] = crew
+                    try:
+                       if crew['id'] not in dic_aux.keys():
+                           dic_aux[crew['id']] = crew
+                    except: pass
             ret_dic["temporada_crew"] = dic_aux.values()
 
         # Obtener datos del capitulo si procede

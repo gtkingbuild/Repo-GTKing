@@ -21,6 +21,10 @@
         "url": "https://mixdrop.ag/e/\\1"
       },
       {
+        "pattern": "http(?:s|)://mxdrop.(?:co|to|sx|bz|ch|gl|club|vc|ag|is|si||nu|ms|ps)/(?:e|f|embed)/(?:embed-|)([A-z0-9]+)",
+        "url": "https://mixdrop.ag/e/\\1"
+      },
+      {
         "pattern": "https://mixdrop21.net/(?:e|f|embed)/(?:embed-|)([A-z0-9]+)",
         "url": "https://mixdrop.ag/e/\\1"
       },

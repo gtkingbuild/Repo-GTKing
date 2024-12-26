@@ -90,6 +90,8 @@ def list_all(item):
 
         thumb = scrapertools.find_single_match(match, ' src="(.*?)"')
 
+        title = title.replace('Season', '[COLOR tan]Temp.[/COLOR]').replace('season', '[COLOR tan]Temp.[/COLOR]')
+
         itemlist.append(item.clone( action='temporadas', url=url, title=title, thumbnail=thumb,
                                     contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': year} ))
 
@@ -152,7 +154,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('KissAsian', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('KissAsian', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -186,6 +191,8 @@ def episodios(item):
 
     for url, epis in matches[item.page * item.perpage:]:
         title = str(item.contentSeason) + 'x' + str(epis) + ' ' + item.contentSerieName
+
+        title = title.replace('Season', '[COLOR tan]Temp.[/COLOR]').replace('season', '[COLOR tan]Temp.[/COLOR]')
 
         itemlist.append(item.clone( action='findvideos', url = url, title = title,
                                     contentType = 'episode', contentSeason = item.contentSeason, contentEpisodeNumber=epis ))
@@ -238,7 +245,7 @@ def findvideos(item):
 
         url = servertools.normalize_url(servidor, url)
 
-        if '/asianbxkiun.' in url:
+        if '/asianbxkiun.' in url or '/embasic.pro' in url:
             data = do_downloadpage(url)
 
             links = re.compile('data-video="(.*?)"', re.DOTALL).findall(data)
@@ -247,6 +254,7 @@ def findvideos(item):
                 if not link: continue
 
                 elif '/asianbxkiun.' in link: continue
+                elif '/embasic.pro/' in link: continue
 
                 servidor = servertools.get_server_from_url(link)
                 servidor = servertools.corregir_servidor(servidor)

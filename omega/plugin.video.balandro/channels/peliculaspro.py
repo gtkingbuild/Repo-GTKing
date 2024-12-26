@@ -91,7 +91,7 @@ def configurar_proxies(item):
     return proxytools.configurar_proxies_canal(item.channel, host)
 
 
-def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
+def do_downloadpage(url, post=None, headers=None):
     # ~ por si viene de enlaces guardados
     for ant in ant_hosts:
         url = url.replace(ant, host)
@@ -104,12 +104,12 @@ def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
         if hay_proxies: timeout = config.get_setting('channels_repeat', default=30)
 
     if not url.startswith(host):
-        data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+        data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
     else:
         if hay_proxies:
-            data = httptools.downloadpage_proxy('peliculaspro', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+            data = httptools.downloadpage_proxy('peliculaspro', url, post=post, headers=headers, timeout=timeout).data
         else:
-            data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+            data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
 
         if not data:
             if not '?s=' in url:
@@ -120,7 +120,7 @@ def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
                 if hay_proxies:
                     data = httptools.downloadpage_proxy('peliculaspro', url, post=post, headers=headers, timeout=timeout).data
                 else:
-                    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+                    data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
 
     if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
         if BR or BR2:
@@ -130,12 +130,12 @@ def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
                     httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
 
                 if not url.startswith(host):
-                    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+                    data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
                 else:
                     if hay_proxies:
-                        data = httptools.downloadpage_proxy('peliculaspro', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+                        data = httptools.downloadpage_proxy('peliculaspro', url, post=post, headers=headers, timeout=timeout).data
                     else:
-                        data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+                        data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
             except:
                 pass
 
@@ -171,6 +171,8 @@ def acciones(item):
     itemlist.append(item_configurar_proxies(item))
 
     itemlist.append(Item( channel='helper', action='show_help_peliculaspro', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('peliculaspro') ))
+
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'peliculaspro', thumbnail=config.get_thumb('peliculaspro') ))
 
     platformtools.itemlist_refresh()
 
@@ -307,8 +309,16 @@ def temporadas(item):
 
     temporadas = re.compile('<a data-post="(.*?)".*?data-season="(.*?)"', re.DOTALL).findall(data)
 
+    tot_seasons = len(temporadas)
+
     for dpost, tempo in temporadas:
-        title = 'Temporada ' + tempo
+        nro_tempo = tempo
+
+        if tot_seasons >= 10:
+            if len(nro_tempo) == 1:
+                nro_tempo = '0' + nro_tempo
+
+        title = 'Temporada ' + nro_tempo
 
         if len(temporadas) == 1:
             if config.get_setting('channels_seasons', default=True):
@@ -325,7 +335,7 @@ def temporadas(item):
 
     tmdb.set_infoLabels(itemlist)
 
-    return sorted(itemlist, key=lambda x: x.contentSeason)
+    return sorted(itemlist, key=lambda x: x.title)
 
 
 def episodios(item):
@@ -349,7 +359,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('PeliculasPro', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('PeliculasPro', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -384,7 +397,10 @@ def episodios(item):
                 else: item.perpage = 50
 
     for epis, title, url, in matches[item.page * item.perpage:]:
-        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, contentType = 'episode', contentSeason = item.contentSeason, contentEpisodeNumber = epis ))
+        titulo = str(item.contentSeason) + 'x' + str(epis) + ' ' + title.replace(str(item.contentSeason) + 'x' + str(epis), '')
+
+        itemlist.append(item.clone( action = 'findvideos', url = url, title = titulo,
+                                    contentType = 'episode', contentSeason = item.contentSeason, contentEpisodeNumber = epis ))
 
         if len(itemlist) >= item.perpage:
             break
@@ -402,15 +418,19 @@ def findvideos(item):
     logger.info()
     itemlist = []
 
-    IDIOMAS = {'Castellano': 'Esp', 'Latino': 'Lat', 'Sub Español': 'Vose'}
+    IDIOMAS = {'Castellano': 'Esp', 'Latino': 'Lat', 'Sub Español': 'Vose', 'Subtitulado': 'Vose'}
 
     data = do_downloadpage(item.url)
 
     matches = scrapertools.find_multiple_matches(data, 'id="options-(.*?)".*?<iframe .*?src="(.*?)"')
 
+    ses = 0
+
     i = 0
 
     for opt, url in matches:
+        ses += 1
+
         i += 1
 
         srv, lang = scrapertools.find_single_match(data, 'href="#options-' + str(opt)+ '">.*?<span class="server">(.*?)-(.*?)</span>')
@@ -428,13 +448,19 @@ def findvideos(item):
         other = ''
 
         if servidor:
-            if srv == 'streamz': servidor = srv
-            elif srv == 'doods': servidor = 'doodstream'
-            elif srv == 'streamtape': servidor = 'streamtape'
-            elif srv == 'netu' or srv == 'hqq': servidor = 'waaw'
-            elif srv == 'd0o0d' or srv == 'do0od' or srv == 'd0000d' or srv == 'd000d': servidor = 'doodstream'
+            if srv.startswith("sb"): continue
+            elif srv == 'vanfem': continue
+            elif srv == 'freepelis': continue
 
-            elif srv == 'streamcrypt':  other = srv + ' ' + str(i)
+            elif srv == 'streamz': servidor = srv
+            elif srv == 'doods': servidor = 'doodstream'
+            elif srv == 'streamtape' or srv == 'stapadblockuser': servidor = 'streamtape'
+            elif srv == 'netu' or srv == 'hqq': servidor = 'waaw'
+            elif srv == 'd0o0d' or srv == 'do0od' or srv == 'd0000d' or srv == 'd000d' or srv == 'dood': servidor = 'doodstream'
+            elif srv == 'vidoza': servidor = 'vidoza'
+            elif srv == 'pelisfree': servidor = 'waaw'
+
+            elif srv == 'streamcrypt': other = srv + ' ' + str(i)
 
             else:
                 if servidor == srv: srv = ''
@@ -444,6 +470,10 @@ def findvideos(item):
 
                 else: other = srv + ' ' + str(i)
 
+                if 'li>' in idioma:
+                    idioma = ''
+                    other = ''
+
         itemlist.append(Item( channel = item.channel, action = 'play', title = '', server = servidor, url = url, language = idioma, other = other ))
 
     # ~ downloads
@@ -452,13 +482,14 @@ def findvideos(item):
     matches = scrapertools.find_multiple_matches(bloque, '<span class="num">.*?</span>(.*?)</td>.*?<td>(.*?)</td>.*?<span>(.*?)</span>.*?href="(.*?)"')
 
     for srv, lang, qlty, url in matches:
-        i += 1
+        ses += 1
 
         srv = srv.lower().strip()
 
         if srv == '1fichier': continue
         elif srv == 'ver en': continue
         elif srv == 'drop': continue
+        elif srv == 'bit': continue
 
         idioma = IDIOMAS.get(lang, lang)
 
@@ -469,9 +500,13 @@ def findvideos(item):
         if servidor == srv: other = ''
         elif not servidor == 'directo':
            if not servidor == 'various': other = ''
+        else:
+           if 'li>' in idioma:
+               idioma = ''
+               other = ''
 
         itemlist.append(Item( channel = item.channel, action = 'play', title = '', server = servidor, url = url,
-                              language = idioma, quality = qlty, other = other.capitalize() ))
+                              language = idioma, quality = qlty, other = other ))
 
     if not itemlist:
         if not ses == 0:
@@ -496,23 +531,48 @@ def play(item):
     url = item.url
 
     if url.startswith(host_player):
-        data = do_downloadpage(item.url)
+        if '/?trhide=' in url or '/?trdownload=' in url:
+            url = ''
 
-        url = scrapertools.find_single_match(data, '<iframe.*?src="(.*?)"')
+            headers = {'Referer': item.url}
 
-        if 'about:blank' in url:
-           url = scrapertools.find_single_match(data, '<meta property="og:url" content="(.*?)"')
+            try:
+                if config.get_setting('channel_peliculaspro_proxies', default=''):
+                    url = httptools.downloadpage_proxy('peliculaspro', item.url, headers=headers, follow_redirects=False).headers['location']
+                else:
+                    url = httptools.downloadpage(item.url, headers=headers, follow_redirects=False).headers['location']
+            except:
+                pass
 
-           data = do_downloadpage(url)
+        else:
+            data = do_downloadpage(item.url)
 
-           url = scrapertools.find_single_match(data, '<iframe.*?src="(.*?)"')
+            url = scrapertools.find_single_match(data, '<iframe.*?src="(.*?)"')
 
-           if 'about:blank' in url:
-               return 'Requiere clave [COLOR plum]Descifrado[/COLOR]'
+            if '/?trhide=' in url or '/?trdownload=' in url:
+                headers = {'Referer': item.url}
 
-        elif 'var optFileURL' in data: url = scrapertools.find_single_match(data, 'var optFileURL = "(.*?)"')
+                try:
+                    if config.get_setting('channel_peliculaspro_proxies', default=''):
+                        url = httptools.downloadpage_proxy('peliculaspro', url, headers=headers, follow_redirects=False).headers['location']
+                    else:
+                        url = httptools.downloadpage(url, headers=headers, follow_redirects=False).headers['location']
+                except:
+                    url = ''
 
-        if not url: url = scrapertools.find_single_match(data, '<a class="fake-player-container" href="(.*?)"')
+            elif 'about:blank' in url:
+               url = scrapertools.find_single_match(data, '<meta property="og:url" content="(.*?)"')
+
+               data = do_downloadpage(url)
+
+               url = scrapertools.find_single_match(data, '<iframe.*?src="(.*?)"')
+
+               if 'about:blank' in url:
+                   return 'Requiere clave [COLOR plum]Descifrado[/COLOR]'
+
+            elif 'var optFileURL' in data: url = scrapertools.find_single_match(data, 'var optFileURL = "(.*?)"')
+
+            if not url: url = scrapertools.find_single_match(data, '<a class="fake-player-container" href="(.*?)"')
 
     elif url.startswith('https://streamcrypt.net/'):
         url = httptools.downloadpage(url, follow_redirects=False).headers.get('location', '')
@@ -524,18 +584,23 @@ def play(item):
             data = do_downloadpage(url)
             url = scrapertools.find_single_match(data, "window.open.*?'(.*?)'")
 
+    if '/peliculaspro.' in url: url = ''
+
+    elif url == '/blank.html': url = ''
+
     if url:
+        if url.startswith('https://pelisfree.site/'): url = url.replace('/pelisfree.site/', '/waaw.to/')
+
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(url).lower()
-            if not new_server.startswith("http"): servidor = new_server
+            if new_server.startswith("http"): servidor = new_server
 
-        if not servidor == 'directo':
-            url = servertools.normalize_url(servidor, url)
+        url = servertools.normalize_url(servidor, url)
 
-            itemlist.append(item.clone( url=url, server=servidor ))
+        itemlist.append(item.clone( url=url, server=servidor ))
 
     return itemlist
 

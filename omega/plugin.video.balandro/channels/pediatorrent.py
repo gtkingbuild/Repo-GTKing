@@ -136,13 +136,13 @@ def list_all(item):
     if not matches: matches = scrapertools.find_multiple_matches(data, '<div class="relative flex flex-col gap-y-3 my-5 md:my-4">(.*?)</div></div>')
 
     for match in matches:
-        url = scrapertools.find_single_match(match, ' href="(.*?)"')
+        url = scrapertools.find_single_match(match, 'href="(.*?)"')
 
-        title = scrapertools.find_single_match(match, ' alt="(.*?)"').strip()
+        title = scrapertools.find_single_match(match, 'alt="(.*?)"').strip()
 
         if not url or not title: continue
 
-        thumb = scrapertools.find_single_match(match, ' src="(.*?)"')
+        thumb = scrapertools.find_single_match(match, 'src="(.*?)"')
 
         qlty = scrapertools.find_single_match(match, '<span>(.*?)</span>')
 
@@ -156,10 +156,9 @@ def list_all(item):
             if item.search_type != 'all':
                 if item.search_type == 'movie': continue
 
-            if "Temporada" in title: SerieName = title.split("Temporada ")[0]
-            else: SerieName = title
+            SerieName = corregir_SerieName(title)
 
-            SerieName = SerieName.replace('[720]', '').strip()
+            title = title.replace('Temporada', '[COLOR tan]Temp.[/COLOR]').replace('temporada', '[COLOR tan]Temp.[/COLOR]')
 
             itemlist.append(item.clone( action='episodios', url = url, title = title, thumbnail = thumb, qualities=qlty, fmt_sufijo=sufijo,
                                         contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': year} ))
@@ -209,7 +208,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('PediaTorrent', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('PediaTorrent', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -291,6 +293,39 @@ def findvideos(item):
         itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = 'torrent', language = lang ))
 
     return itemlist
+
+
+def corregir_SerieName(SerieName):
+    logger.info()
+
+    if "[" in SerieName: SerieName = SerieName.split("[")[0]
+    elif "720p" in SerieName: SerieName = SerieName.split("720p")[0]
+
+    if '1ª' in SerieName: SerieName = SerieName.split("1ª")[0]
+    if '2ª' in SerieName: SerieName = SerieName.split("2ª")[0]
+    if '3ª' in SerieName: SerieName = SerieName.split("3ª")[0]
+    if '4ª' in SerieName: SerieName = SerieName.split("4ª")[0]
+    if '5ª' in SerieName: SerieName = SerieName.split("5ª")[0]
+    if '6ª' in SerieName: SerieName = SerieName.split("6ª")[0]
+    if '7ª' in SerieName: SerieName = SerieName.split("7ª")[0]
+    if '8ª' in SerieName: SerieName = SerieName.split("8ª")[0]
+    if '9ª' in SerieName: SerieName = SerieName.split("9ª")[0]
+
+    if "1 Temporada" in SerieName: SerieName = SerieName.split("1 Temporada")[0]
+    elif "2 Temporada" in SerieName: SerieName = SerieName.split("2 Temporada")[0]
+    elif "3 Temporada" in SerieName: SerieName = SerieName.split("3 Temporada")[0]
+    elif "4 Temporada" in SerieName: SerieName = SerieName.split("4 Temporada")[0]
+    elif "5 Temporada" in SerieName: SerieName = SerieName.split("5 Temporada")[0]
+    elif "6 Temporada" in SerieName: SerieName = SerieName.split("6 Temporada")[0]
+    elif "7 Temporada" in SerieName: SerieName = SerieName.split("6 Temporada")[0]
+    elif "8 Temporada" in SerieName: SerieName = SerieName.split("8 Temporada")[0]
+    elif "9 Temporada" in SerieName: SerieName = SerieName.split("9 Temporada")[0]
+    elif " Temporada" in SerieName: SerieName = SerieName.split(" Temporada")[0]
+    elif " - " in SerieName: SerieName = SerieName.split(" - ")[0]
+
+    SerieName = SerieName.strip()
+
+    return SerieName
 
 
 def search(item, texto):

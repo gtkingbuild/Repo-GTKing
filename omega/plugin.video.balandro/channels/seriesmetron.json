@@ -1,0 +1,17 @@
+{
+  "id": "seriesmetron",
+  "name": "SeriesMetroN",
+  "thumbnail": "seriesmetron.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["onlyone", "news", "lasts", "stars", "directors", "kids", "docs", "vos"],
+
+  "notes": "Películas por géneros. Series por Géneros."
+}

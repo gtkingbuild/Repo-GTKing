@@ -59,7 +59,7 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Últimos episodios', action = 'list_all', url = host + 'episode', group = 'episodes', search_type = 'tvshow', text_color = 'cyan' ))
 
-    itemlist.append(item.clone( title = 'Temporadas completas', action = 'list_all', url = host + 'tag/tv-series-full-episode', group = 'episodes', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Temporadas completas', action = 'list_all', url = host + 'tag/tv-series-full-episode', group = 'completes', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'tvshow' ))
@@ -190,7 +190,7 @@ def list_all(item):
            title = title.replace('TV Shows ', '').replace('TV-Shows ', '').replace('TV-Series ', '').replace('TV Series ', '').strip()
            title = title.replace('(' + year + ')', '').strip()
 
-        title = title.replace('&#8217;', '').replace('&#038;', '&').strip()
+        title = title.replace('&#8217;', '').replace('&#8211;', '').replace('&#038;', '&').strip()
 
         tipo = 'tvshow' if '/series/' in url or '/episode/' in url else 'movie'
         sufijo = '' if item.search_type != 'all' else tipo
@@ -208,15 +208,27 @@ def list_all(item):
             SerieName = SerieName.strip()
 
             if item.group == 'episodes':
-                if not '-full-episodes' in url: title = title.replace('Episode', '[COLOR goldenrod]Episode[/COLOR]')
+                title = title.replace('Season', '[COLOR tan]Temp.[/COLOR]')
+
+                if not '-full-episodes' in url: title = title.replace('Episode', '[COLOR goldenrod]Epis.[/COLOR]')
 
                 season = scrapertools.find_single_match(url, '-season-(.*?)-')
 
                 epis = scrapertools.find_single_match(url, '-episode-(.*?)$')
                 if not epis: epis = 0
 
-                itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, fmt_sufijo=sufijo,
+                titulo = str(season) + 'x' + str(epis) + ' ' + title
+
+                itemlist.append(item.clone( action='findvideos', url=url, title=titulo, thumbnail=thumb, fmt_sufijo=sufijo,
                                             contentSerieName=SerieName, contentType = 'episode', contentSeason = season, contentEpisodeNumber = epis, infoLabels={'year': year} ))
+            elif item.group == 'completes':
+                season = scrapertools.find_single_match(url, '-season-(.*?)-')
+
+                title = title.replace('Season', '[COLOR tan]Temp.[/COLOR]').replace('Full Episodes', '').replace('Complete', '').replace('Compete', '').strip()
+
+                itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb, fmt_sufijo=sufijo,
+                                            contentSerieName=SerieName, contentType = 'tvshow', contentSeason = season, infoLabels={'year': year} ))
+
             else:
                 season = scrapertools.find_single_match(url, '-season-(.*?)-')
 
@@ -284,7 +296,14 @@ def episodios(item):
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
-    bloque = scrapertools.find_single_match(data, '<strong>Season ' + str(item.contentSeason) + '(.*?)</ul>')
+    if 'Episode 1 - ' in data:
+        new_url = scrapertools.find_single_match(data, '<strong>Season.*?<a href="(.*?)"')
+
+        data = do_downloadpage(new_url)
+        data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
+
+    if '>Links<' in data: bloque = scrapertools.find_single_match(data, '>Links<(.*?)</div></div></div')
+    else: bloque = scrapertools.find_single_match(data, '<strong>Season ' + str(item.contentSeason) + '(.*?)</ul>')
 
     matches = re.compile('href="(.*?)">(.*?)</a>', re.DOTALL).findall(bloque)
 
@@ -296,7 +315,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('YtsTv', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('YtsTv', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -330,15 +352,36 @@ def episodios(item):
                     item.perpage = sum_parts
                 else: item.perpage = 50
 
-    for url, episode in matches[item.page * item.perpage:]:
+    for url, datos in matches[item.page * item.perpage:]:
+        if '" class="lnk-lnk' in url: url = scrapertools.find_single_match(url, '(.*?)"')
+
+        if not url: continue
+
+        lang = scrapertools.find_single_match(datos, '<span class="lang_tit">(.*?)</span>')
+        if lang == 'English': lang = 'Ing'
+
+        qlty = scrapertools.find_single_match(datos, '<span class="lang_tit">.*?<span class="lnk lnk-dl" >(.*?)</span>')
+        if '<b>Notice</b>' in qlty: qlty = ''
+
+        episode = datos
+
         epis = episode.replace('Episode', '').strip()
 
         if '-' in epis: episode = scrapertools.find_single_match(epis, '(.*?)-').strip()
         else: episode = epis
 
+        if '<span class="serv_tit">' in episode:
+            epis = scrapertools.find_single_match(episode, '<span class="serv_tit">.*?E(.*?)</span>')
+            episode = epis
+
+        if not epis: continue
+
         titulo = '%sx%s %s' % (str(item.contentSeason), epis, item.contentSerieName)
 
-        itemlist.append(item.clone( action='findvideos', title = titulo, url = url, contentType = 'episode', contentSeason = item.contentSeason, contentEpisodeNumber = episode ))
+        titulo = titulo + ' ' + qlty
+
+        itemlist.append(item.clone( action='findvideos', title = titulo, url = url, lang = lang, qlty = qlty,
+                                    contentType = 'episode', contentSeason = item.contentSeason, contentEpisodeNumber = episode ))
 
         if len(itemlist) >= item.perpage:
             break
@@ -355,6 +398,11 @@ def episodios(item):
 def findvideos(item):
     logger.info()
     itemlist = []
+
+    if item.url.endswith(".torrent") or item.url.startswith("magnet:"):
+        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = item.url, server = 'torrent', language = item.lang, quality = item.qlty ))
+
+        return itemlist
 
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
@@ -373,7 +421,7 @@ def findvideos(item):
         if url.startswith('magne:'): url = url.replace('.magne', '.magnet')
         elif url.endswith(".torren"): url = url.replace('.torren', '.torrent')
 
-        if url.startswith('magnet:'): pass
+        if url.startswith("magnet:"): pass
         elif url.endswith(".torrent"): pass
         else: url = ''
 
@@ -418,6 +466,7 @@ def play(item):
         itemlist.append(item.clone( url = url, server = 'torrent' ))
 
     return itemlist
+
 
 def search(item, texto):
     logger.info()

@@ -161,6 +161,8 @@ def acciones(item):
 
     itemlist.append(Item( channel='helper', action='show_help_subtorrents', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('subtorrents') ))
 
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'subtorrents', thumbnail=config.get_thumb('subtorrents') ))
+
     platformtools.itemlist_refresh()
 
     return itemlist
@@ -188,13 +190,13 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
 
-    itemlist.append(item.clone( title = 'Versión original:', folder=False, text_color='moccasin' ))
+    itemlist.append(item.clone( title = '[B]Versión original:[/B]', folder=False, text_color='moccasin' ))
 
     itemlist.append(item.clone( title = ' - Catálogo', action = 'list_all', url = host + 'peliculas-subtituladas/', search_type = 'movie' ))
 
     itemlist.append(item.clone( title = ' - [COLOR cyan]Estrenos[/COLOR]', action = 'list_all', url = host + 'peliculas-subtituladas/?filtro=estrenos', search_type = 'movie' ))
 
-    itemlist.append(item.clone( title = 'Otros idiomas:', folder=False, text_color='moccasin' ))
+    itemlist.append(item.clone( title = '[B]Otros idiomas:[/B]', folder=False, text_color='moccasin' ))
 
     itemlist.append(item.clone( title = ' - Catálogo', action = 'list_all', url = host + 'peliculas-subtituladas/?filtro=audio-latino', search_type = 'movie' ))
 
@@ -281,7 +283,8 @@ def list_all(item):
 
         title = title.replace('&#038;', '&')
 
-        itemlist.append(item.clone( action='findvideos', url=url, title=title, qualities=qlty, languages=lang, contentType='movie', contentTitle=title, infoLabels={'year': '-'} ))
+        itemlist.append(item.clone( action='findvideos', url=url, title=title, qualities=qlty, languages=lang,
+                                    contentType='movie', contentTitle=title, infoLabels={'year': '-'} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -315,7 +318,8 @@ def list_series(item):
 
         if not host in url: url = host + url
 
-        itemlist.append(item.clone( action='temporadas', url=url, title=title, thumbnail = thumb, contentType='tvshow', contentSerieName=title, infoLabels={'year': '-'} ))
+        itemlist.append(item.clone( action='temporadas', url=url, title=title, thumbnail=thumb,
+                                    contentType='tvshow', contentSerieName=title, infoLabels={'year': '-'} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -351,6 +355,8 @@ def temporadas(item):
 
         itemlist.append(item.clone( action = 'episodios', title = title, url = item.url, page = 0, contentType = 'season', contentSeason = int(tempo), text_color = 'tan' ))
 
+    tmdb.set_infoLabels(itemlist)
+
     return itemlist    
 
 
@@ -382,12 +388,20 @@ def episodios(item):
 
     matches = re.compile(patron, re.DOTALL).findall(data)
 
+    sum_parts = len(matches)
+
+    if config.get_setting('channels_charges', default=True):
+        if sum_parts >= 100:
+            platformtools.dialog_notification('SubTorrents', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
+
     for lang, title, url, year, sub_tit, url_2 in matches:
         if not title: continue
 
         if not year: year = '-'
 
         s_e = scrapertools.get_season_and_episode(title)
+
+        s_e = s_e.replace('x0','x')
 
         try:
            season = int(s_e.split("x")[0])
@@ -411,9 +425,13 @@ def episodios(item):
 
         if 'subtitulado' in title.lower(): lang = 'Vose'
 
-        itemlist.append(item.clone( action='findvideos', url=url, title=title, language = lang,
+        titulo = str(season) + 'x' + str(epis) + ' ' + title.replace(str(season) + 'x' + str(epis), '').replace(str(season) + 'x0' + str(epis), '')
+
+        itemlist.append(item.clone( action='findvideos', url=url, title=titulo, language = lang,
                                     contentSerieName = item.contentSerieName, contentType = 'episode',
                                     contentSeason = season, contentEpisodeNumber = epis, infoLabels={'year': year} ))
+
+    tmdb.set_infoLabels(itemlist)
 
     return sorted(itemlist, key=lambda x: x.contentEpisodeNumber)
 

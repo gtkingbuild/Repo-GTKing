@@ -33,32 +33,13 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'page/1/?filter=latest' ))
 
-    itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = host + 'page/1/?filter=most-viewed' ))
     itemlist.append(item.clone( title = 'Más populares', action = 'list_all', url = host + 'page/1/?filter=popular' ))
+    itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = host + 'page/1/?filter=most-viewed' ))
     itemlist.append(item.clone( title = 'Long Play', action = 'list_all', url = host + 'page/1/?filter=longest' ))
 
     itemlist.append(item.clone( title = 'Por canal', action = 'canales', url= host + 'categories/page/1/' ))
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url= host + 'tags/' ))
     itemlist.append(item.clone( title = 'Por estrella', action = 'pornstars', url = host + 'actors/page/1/' ))
-
-    return itemlist
-
-
-def categorias(item):
-    logger.info()
-    itemlist = []
-
-    data = do_downloadpage(item.url)
-    data = re.sub(r"\n|\r|\t|&nbsp;|<br>|<br/>", "", data)
-
-    bloque = scrapertools.find_single_match(data, '</h1>(.*?)</main>')
-
-    matches = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)".*?">(.*?)</a>')
-
-    for url, title in matches:
-        title = title.capitalize()
-
-        itemlist.append(item.clone (action='list_all', title=title, url=url, text_color='tan' ))
 
     return itemlist
 
@@ -83,7 +64,7 @@ def canales(item):
 
         thumb = scrapertools.find_single_match(match, 'src="(.*?)"')
 
-        itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color='orange' ))
+        itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color='violet' ))
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<li><a class="current">.*?<a href="(.*?)"')
@@ -91,6 +72,25 @@ def canales(item):
         if next_page:
             if '/page/' in next_page:
                 itemlist.append(item.clone (action='canales', title='Siguientes ...', url=next_page, text_color = 'coral') )
+
+    return itemlist
+
+
+def categorias(item):
+    logger.info()
+    itemlist = []
+
+    data = do_downloadpage(item.url)
+    data = re.sub(r"\n|\r|\t|&nbsp;|<br>|<br/>", "", data)
+
+    bloque = scrapertools.find_single_match(data, '</h1>(.*?)</main>')
+
+    matches = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)".*?">(.*?)</a>')
+
+    for url, title in matches:
+        title = title.capitalize()
+
+        itemlist.append(item.clone (action='list_all', title=title, url=url, text_color='moccasin' ))
 
     return itemlist
 
@@ -115,7 +115,7 @@ def pornstars(item):
 
         thumb = scrapertools.find_single_match(match, 'src="(.*?)"')
 
-        itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color='moccasin' ))
+        itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color='orange' ))
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<li><a class="current">.*?<a href="(.*?)"')
@@ -193,12 +193,11 @@ def findvideos(item):
                 itemlist.append(Item( channel = item.channel, action='play', title='', url=url, server = servidor, language = 'Vo', other = other) )
 
     # ~ Embeds
-    matches = re.compile('<meta itemprop="embedURL".*?content="(.*?)"', re.DOTALL).findall(data)
+    matches = re.compile('<iframe src="(.*?)"', re.DOTALL).findall(data)
+    if not matches: matches = re.compile('<meta itemprop="embedUR.*?content="(.*?)"', re.DOTALL).findall(data)
 
     for url in matches:
         ses += 1
-
-        if url == '#content': continue
 
         if url:
             servidor = servertools.get_server_from_url(url)

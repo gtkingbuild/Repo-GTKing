@@ -3,7 +3,7 @@
   "name": "SeriesLan",
   "thumbnail": "serieslan.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["tvshow"],
@@ -11,7 +11,7 @@
   "categories": ["tvshow"],
   "language": ["lat"],
 
-  "clusters": ["suggested", "infantil", "classic", "lists", "rankings", "kids"],
+  "clusters": ["infantil", "classic", "lists", "rankings", "kids"],
 
-  "notes": "Series infantiles clásicas en idioma orignal de emisión."
+  "notes": "Web CERRADA. Series infantiles clásicas en idioma orignal de emisión."
 }

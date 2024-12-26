@@ -1,0 +1,17 @@
+{
+  "id": "pelisplayhd",
+  "name": "PelisPlayHd",
+  "thumbnail": "pelisplayhd.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["years", "docs", "kids", "vos"],
+
+  "notes": "Películas por géneros y Series por Géneros."
+}

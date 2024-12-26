@@ -7,6 +7,8 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
+# ~  24/11/24 Series No se tratan solo hay 30
+
 host = 'https://w-ww.pelispedia2.top/'
 
 
@@ -27,7 +29,7 @@ def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
     for ant in ant_hosts:
         url = url.replace(ant, host)
 
-    if '/lanzamiento/' in url: raise_weberror = False
+    if '/release/' in url: raise_weberror = False
 
     data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
 
@@ -55,6 +57,8 @@ def acciones(item):
 
     itemlist.append(item.clone( channel='domains', action='manto_domain_pelispedia2me', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
 
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'pelispedia2me', thumbnail=config.get_thumb('pelispedia2me') ))
+
     platformtools.itemlist_refresh()
 
     return itemlist
@@ -73,8 +77,6 @@ def mainlist_pelis(item):
     itemlist.append(item.clone( title = 'Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'ver-pelicula/', search_type = 'movie' ))
-
-    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'peliculas/estrenos/', search_type = 'movie', text_color = 'cyan' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'movie' ))
@@ -98,7 +100,7 @@ def generos(item):
 
         itemlist.append(item.clone( action='list_all', title=title, url=url, text_color = 'deepskyblue' ))
 
-    return itemlist
+    return sorted(itemlist, key=lambda x: x.title)
 
 
 def anios(item):
@@ -109,7 +111,7 @@ def anios(item):
     current_year = int(datetime.today().year)
 
     for x in range(current_year, 1938, -1):
-        url = host + 'lanzamiento/' + str(x) + '/'
+        url = host + 'release/' + str(x) + '/'
 
         itemlist.append(item.clone( title = str(x), url = url, action='list_all', page = 1, text_color = 'deepskyblue' ))
 
@@ -122,7 +124,7 @@ def list_all(item):
 
     data = do_downloadpage(item.url)
 
-    bloque = scrapertools.find_single_match(data, '<h1(.*?)<div class="copy">')
+    bloque = scrapertools.find_single_match(data, 'Añadido recientemente(.*?)<div class="copy">')
 
     matches = re.compile('<article(.*?)</article>', re.DOTALL).findall(bloque)
 
@@ -160,7 +162,7 @@ def list_all(item):
         else:
            if '(' + year + ')' in title: title = title.replace('(' + year + ')', '').strip()
 
-        if '/lanzamiento/' in item.url: year = scrapertools.find_single_match(item.url, "/lanzamiento/(.*?)/")
+        if '/release/' in item.url: year = scrapertools.find_single_match(item.url, "/lanzamiento/(.*?)/")
 
         title = title.replace('&#8211;', '').replace('&#8217;', '').replace('&#038;', '&')
 
@@ -263,7 +265,7 @@ def play(item):
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(url).lower()
-            if not new_server.startswith("http"): servidor = new_server
+            if new_server.startswith("http"): servidor = new_server
 
         itemlist.append(item.clone( url = url, server = servidor ))
 

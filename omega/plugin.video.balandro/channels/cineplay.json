@@ -1,0 +1,17 @@
+{
+  "id": "cineplay",
+  "name": "CinePlay",
+  "thumbnail": "cineplay.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["years", "docs", "kids", "vos"],
+
+  "notes": "Películas por géneros y Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

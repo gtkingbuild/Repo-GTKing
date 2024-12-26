@@ -1,0 +1,17 @@
+{
+  "id": "t1337x",
+  "name": "T1337X",
+  "thumbnail": "t1337x.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["torrent", "movie", "tvshow"],
+  "language": ["vo"],
+
+  "clusters": ["onlyone", "torrents", "years", "languages", "docs", "adults", "anime"],
+
+  "notes": "Canal con enlaces Torrent exclusivamente. Películas por géneros y año. También Series. En Versión Original."
+}

@@ -213,15 +213,13 @@ def list_all(item):
             if not item.search_type == 'all':
                 if item.search_type == 'movie': continue
 
-            SerieName = title
-
-            if "(Completo)" in SerieName: SerieName = SerieName.split("(Completo)")[0]
-            if "(Completa)" in SerieName: SerieName = SerieName.split("(Completa)")[0]
-
-            if "Temporada" in SerieName: SerieName = SerieName.split("Temporada")[0]
-            if "Completa" in SerieName: SerieName = SerieName.split("Completa")[0]
+            SerieName = corregir_SerieName(title)
 
             if " (" in SerieName: SerieName = SerieName.split(" (")[0]
+
+            title = title.replace('Temporada', '[COLOR tan]Temp.[/COLOR]').replace('temporada', '[COLOR tan]Temp.[/COLOR]')
+
+            title = title.replace('Inglés', '[COLOR red]Inglés[/COLOR]')
 
             itemlist.append(item.clone( action='temporadas', url=url, title=title, thumbnail=thumb, fmt_sufijo=sufijo,
                                         contentSerieName=SerieName, contentType='tvshow', contentSeason = 1, infoLabels={'year': year} ))
@@ -283,7 +281,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('AsiaLive', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('AsiaLive', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -328,6 +329,7 @@ def episodios(item):
         epis = epis.strip()
 
         epis = scrapertools.find_single_match(epis, 'Episodio(.*?)$').strip()
+        epis = epis.replace('FINAL', '').replace('Final', '').replace('final', '').strip()
 
         if not epis: epis = 1
 
@@ -440,11 +442,33 @@ def play(item):
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(url).lower()
-            if not new_server.startswith("http"): servidor = new_server
+            if new_server.startswith("http"): servidor = new_server
 
         itemlist.append(item.clone(url = url, server = servidor))
 
     return itemlist
+
+
+def corregir_SerieName(SerieName):
+    logger.info()
+
+    if "(Completo)" in SerieName: SerieName = SerieName.split("(Completo)")[0]
+    if "(Completa)" in SerieName: SerieName = SerieName.split("(Completa)")[0]
+
+    if "Temporada" in SerieName: SerieName = SerieName.split("Temporada")[0]
+    if "Completa" in SerieName: SerieName = SerieName.split("Completa")[0]
+
+    if 'Season' in SerieName: SerieName = SerieName.split("Season")[0]
+    if 'season' in SerieName: SerieName = SerieName.split("season")[0]
+
+    if 'Anime' in SerieName: SerieName = SerieName.split("Anime")[0]
+    if 'anime' in SerieName: SerieName = SerieName.split("anime")[0]
+
+    if 'OVAs' in SerieName: SerieName = SerieName.split("OVAs")[0]
+
+    SerieName = SerieName.strip()
+
+    return SerieName
 
 
 def search(item, texto):

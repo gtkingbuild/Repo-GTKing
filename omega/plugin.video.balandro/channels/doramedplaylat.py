@@ -257,7 +257,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('DoramedPlayLat', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('DoramedPlayLat', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -317,7 +320,8 @@ def findvideos(item):
 
     data = do_downloadpage(item.url)
 
-    matches = re.compile('<iframe.*?src="(.*?)"', re.DOTALL).findall(data)
+    matches = re.compile("<iframe.*?src='(.*?)'", re.DOTALL).findall(data)
+    if not matches: matches = re.compile('<iframe.*?src="(.*?)"', re.DOTALL).findall(data)
 
     ses = 0
 

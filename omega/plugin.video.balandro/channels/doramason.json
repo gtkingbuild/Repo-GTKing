@@ -3,7 +3,7 @@
   "name": "DoramasOn",
   "thumbnail": "doramason.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": false,
   "search_types": ["tvshow"],
@@ -13,5 +13,5 @@
 
   "clusters": ["dorama"],
 
-  "notes": "Web dedicada exclusivamente al dorama"
+  "notes": "Web CERRADA. Web dedicada exclusivamente al dorama"
 }

@@ -450,8 +450,8 @@ def scrap_and_save_movie(item, op='add'):
 
     tmdb_id = item.infoLabels['tmdb_id']
 
-    if not tmdb_id: return False, 'Se requiere id de TMDB'
-    if item.contentType != 'movie': return False, 'contentType no contemplado!'
+    if not tmdb_id: return False, 'Se requiere Identificación de TMDB'
+    if item.contentType != 'movie': return False, 'ContentType Desconocido!'
 
     # Tipo de scrap a realizar
 
@@ -460,7 +460,7 @@ def scrap_and_save_movie(item, op='add'):
         update_infolabels = False
         update_urls = True
     else: 
-        return False, 'Invalid op!'
+        return False, 'Invalid Operation!'
 
     # Conexión bd
     db = TrackingData()
@@ -502,8 +502,8 @@ def scrap_and_save_tvshow(item, op='add', tvdbinfo=False):
 
     tmdb_id = item.infoLabels['tmdb_id']
 
-    if not tmdb_id: return False, 'Se requiere id de TMDB'
-    if item.contentType not in ['tvshow', 'season', 'episode']: return False, 'contentType no contemplado!'
+    if not tmdb_id: return False, 'Se requiere Identificación de TMDB'
+    if item.contentType not in ['tvshow', 'season', 'episode']: return False, 'ContentType Desconocido!'
 
     # Tipo de scrap a realizar
     if op == 'add':
@@ -515,7 +515,7 @@ def scrap_and_save_tvshow(item, op='add', tvdbinfo=False):
         update_infolabels = False
         update_urls = False
     else:
-        return False, 'Invalid op!'
+        return False, 'Invalid Operation!'
 
     # Conexión bd
     db = TrackingData()
@@ -544,7 +544,7 @@ def scrap_and_save_tvshow(item, op='add', tvdbinfo=False):
         try:
            canal = __import__('channels.' + item.channel, fromlist=[''])
         except:
-           return False, 'El canal %s ya no existe' % item.channel
+           return False, 'El Canal %s ya no Existe' % item.channel
 
         # Si el canal tiene tracking_all_episodes usarlo para ir más rápido 
         # Excepción con newpct1, usar sólo tracking_all al añadir para que recorra todos los episodios, pero para actualizar mirar solamente en la primera página de episodios
@@ -557,10 +557,15 @@ def scrap_and_save_tvshow(item, op='add', tvdbinfo=False):
             if hasattr(canal, item.action):
                 itemlist = getattr(canal, item.action)(item)
             else:
-                return False, 'En el canal %s ya no existe %s' % (item.channel, item.action)
+                return False, 'En el Canal %s ya no Existe %s' % (item.channel, item.action)
 
     if itemlist is None or len(itemlist) == 0:
         db.close()
+
+        if not config.get_setting('developer_mode', default=False):
+            platformtools.dialog_notification(config.__addon_name, '[B][COLOR cyan]Sin Resultados de Enlaces[/COLOR][/B]')
+            return False, ''
+
         return False, 'El canal no devuelve resultados'
 
     # Si es una actualización y el canal devuelve temporadas en lugar de episodios, solamente buscar episodios nuevos en la última temporada
@@ -574,7 +579,7 @@ def scrap_and_save_tvshow(item, op='add', tvdbinfo=False):
         try:
            canal = __import__('channels.' + item.channel, fromlist=[''])
         except:
-           return False, 'El canal %s ya no existe' % item.channel
+           return False, 'El Canal %s ya no Existe' % item.channel
 
         for it in itemlist:
             if it.contentType != 'season': continue
@@ -648,6 +653,11 @@ def scrap_and_save_tvshow(item, op='add', tvdbinfo=False):
 
     else:
         db.close()
+
+        if not config.get_setting('developer_mode', default=False):
+            platformtools.dialog_notification(config.__addon_name, '[B][COLOR cyan]Sin Resultados de Enlaces[/COLOR][/B]')
+            return False, ''
+
         return False, 'El canal no devuelve temporadas ni episodios válidos'
 
     # Si es una actualización y ha habido cambios, actualizar updated de la tabla shows para que conste como actualizada
@@ -678,8 +688,7 @@ def search_new_episodes(tmdb_id, show_progress=False, tvdbinfo=False):
     logger.info('tmdb_id: %s' % tmdb_id)
 
     if show_progress:
-        tit = 'Buscando episodios'
-        progreso = platformtools.dialog_progress(tit, 'Iniciando la búsqueda de nuevos episodios ...')
+        progreso = platformtools.dialog_progress('Buscando episodios', 'Iniciando la búsqueda de nuevos episodios ...')
 
     itemlist = [] # lista de items para actualizar cada canal
     tot_cambios = {} # cambios hechos en cada canal
@@ -699,6 +708,7 @@ def search_new_episodes(tmdb_id, show_progress=False, tvdbinfo=False):
     # Enlaces a nivel de temporadas (Última temporada para cada canal)
     db.cur.execute('SELECT channel, MAX(season) FROM channels_seasons WHERE tmdb_id=? GROUP BY channel', (tmdb_id,))
     canales_temp = db.cur.fetchall()
+
     # Descartar canales ya tratados a nivel de serie
     canales_temp[:] = [x for x in canales_temp if x[0] not in [ch for (ch,url) in canales]]
 
@@ -711,12 +721,14 @@ def search_new_episodes(tmdb_id, show_progress=False, tvdbinfo=False):
     db.close()
 
     if len(itemlist) == 0:
-        return False, 'No hay enlaces de ningún canal para actualizar.'
+        return False, 'No hay enlaces de ningún Canal para Actualizar.'
 
     if show_progress:
         progreso.update(0, muestra_cambios_canales(tot_cambios))
 
-    n = 0; n_tot = len(itemlist)
+    n = 0
+    n_tot = len(itemlist)
+
     for it_update in itemlist:
         done, cambios = scrap_and_save_tvshow(it_update, op='new_episodes', tvdbinfo=tvdbinfo)
         logger.info('Actualizados enlaces para tmdb_id: %s en el canal %s. Resultado: %s' % (tmdb_id, it_update.channel, cambios))
@@ -734,7 +746,7 @@ def search_new_episodes(tmdb_id, show_progress=False, tvdbinfo=False):
 
     if show_progress:
         progreso.close()
-        platformtools.dialog_ok(it_update.contentSerieName, 'Actualización completada.', muestra_cambios_canales(tot_cambios))
+        platformtools.dialog_ok(it_update.contentSerieName, '[COLOR hotpink][B]Proceso Búsqueda Completado.[/B][/COLOR]', muestra_cambios_canales(tot_cambios))
         logger.info(muestra_cambios_canales(tot_cambios))
 
     # Actualizar lastscrap si la serie está en tracking_shows
@@ -761,13 +773,13 @@ def muestra_cambios_canales(tot_cambios):
     itemlist = []
     for ch, cambios in tot_cambios.items():
         if cambios is None:
-            itemlist.append('[COLOR gray]%s: pendiente[/COLOR]' % ch)
+            itemlist.append('[COLOR pink][B]%s[/B][/COLOR] [COLOR cyan]Pendiente[/COLOR]' % ch)
         elif cambios == 'Error':
-            itemlist.append('[COLOR red]%s: error[/COLOR]' % ch)
+            itemlist.append('[COLOR goldenrod][B]%s[/B][/COLOR] [COLOR red]Error[/COLOR]' % ch)
         elif len(cambios) == 0:
-            itemlist.append('[COLOR green]%s: sin novedades[/COLOR]' % ch)
+            itemlist.append('[COLOR limegreen][B]%s[/B][/COLOR] [COLOR sienna]Sin Novedades[/COLOR]' % ch)
         else:
-            itemlist.append('[COLOR gold]%s: %s[/COLOR]' % (ch, ','.join(cambios)))
+            itemlist.append('[COLOR yellowgreen][B]%s[/B][/COLOR] [COLOR gold]%s[/COLOR]' % (ch, ','.join(cambios)))
 
     return ', '.join(itemlist)
 
@@ -802,12 +814,12 @@ def check_and_scrap_new_episodes(notification=True):
             done, msg = search_new_episodes(tmdb_id, show_progress=False, tvdbinfo=tvdbinfo)
             if isinstance(msg, int) and msg > 0: n_cambios += 1
 
-    tit = 'Búsqueda efectuada en %d series.' % int(n_series)
+    tit = 'Resultados en %d series.' % int(n_series)
     if n_cambios == 0: tit += ' Sin novedades.'
     else: tit += ' Novedades en %d de ellas.' % int(n_cambios)
 
     if notification:
-        platformtools.dialog_notification('Nuevos episodios', tit)
+        platformtools.dialog_notification('Nuevos episodios', '[COLOR cyan]' + tit + '[/COLOR]')
 
 
 # Funciones para actualizar solamente infoLabels

@@ -187,7 +187,7 @@ def list_all(item):
         if item.group == 'temp':
             tempo = scrapertools.find_single_match(match, '<span class="b">(.*?)</span>')
 
-            titulo = titulo + ' ' + '[COLOR goldenrod]Temporada [/COLOR]' + str(tempo)
+            titulo = titulo + ' ' + '[COLOR goldenrod]Temp. [/COLOR]' + str(tempo)
 
         itemlist.append(item.clone( action='temporadas', url = url, title = titulo, thumbnail = thumb,
                                     contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': year} ))
@@ -344,7 +344,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('VerNovelas', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('VerNovelas', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')

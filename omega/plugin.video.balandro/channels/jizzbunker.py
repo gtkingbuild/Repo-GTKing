@@ -33,10 +33,10 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'newest/' ))
 
-    itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = host + 'straight/popular1/' ))
+    itemlist.append(item.clone( title = 'Más populares', action = 'list_all', url = host + 'straight/popular1/' ))
     itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = host + 'straight/trending/' ))
 
-    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url= host + 'channels/' ))
+    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url= host + 'channels/alphabetically' ))
 
     return itemlist
 
@@ -55,11 +55,11 @@ def categorias(item):
     matches = re.compile(patron,re.DOTALL).findall(data)
 
     for url, thumb, title, total in matches:
-        url = url.replace('channel', 'channel30')
+        title = title.capitalize()
 
-        itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color='tan' ))
+        itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color='moccasin' ))
 
-    return sorted(itemlist, key=lambda x: x.title)
+    return itemlist
 
 
 def list_all(item):
@@ -84,9 +84,6 @@ def list_all(item):
         next_page = scrapertools.find_single_match(data, '<li><a href="([^"]+)" rel="next">&rarr;</a>')
 
         if next_page:
-            if not host in next_page:
-                next_page = host + next_page
-
             itemlist.append(item.clone (action='list_all', title='Siguientes ...', url=next_page, text_color = 'coral') )
 
     return itemlist

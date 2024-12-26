@@ -10,12 +10,13 @@ from core import httptools, scrapertools, servertools, tmdb
 # ~ pelis No hay 24/12/2023
 
 
-host = 'https://g.ennovelas-tv.com/'
+host = 'https://j.ennovelas-tv.com/'
 
 
 # ~ por si viene de enlaces guardados
 ant_hosts = ['https://c.ennovelas-tv.com/', 'https://d.ennovelas-tv.com/', 'https://e.ennovelas-tv.com/',
-             'https://f.ennovelas-tv.com/']
+             'https://f.ennovelas-tv.com/', 'https://g.ennovelas-tv.com/', 'https://h.ennovelas-tv.com/',
+             'https://i.ennovelas-tv.com/']
 
 
 domain = config.get_setting('dominio', 'ennovelastv', default='')
@@ -68,6 +69,8 @@ def acciones(item):
 
     itemlist.append(item.clone( channel='domains', action='manto_domain_ennovelastv', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
 
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'ennovelastv', thumbnail=config.get_thumb('ennovelastv') ))
+
     platformtools.itemlist_refresh()
 
     return itemlist
@@ -87,9 +90,9 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'series/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimos capítulos', action = 'list_epis', url = host + 'episodes11/', search_type = 'tvshow', text_color = 'cyan' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'list_epis', url = host + 'episodes11/', search_type = 'tvshow', text_color = 'cyan' ))
 
-    itemlist.append(item.clone( title = 'Últimas series', action = 'list_last', url = host + 'ennovelass/', search_type = 'tvshow', text_color = 'moccasin' ))
+    itemlist.append(item.clone( title = 'Últimas series', action = 'list_last', url = host, search_type = 'tvshow', text_color = 'moccasin' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Por año', action='anios', search_type = 'tvshow' ))
@@ -212,14 +215,15 @@ def list_all(item):
                 epis = scrapertools.find_single_match(match, '<span>Cap.*?<span>(.*?)</span>')
                 if not epis: epis = 1
 
-                title = title.replace('Capitulo', '[COLOR goldenrod]Capitulo[/COLOR]').replace('Capítulo', '[COLOR goldenrod]Capítulo[/COLOR]')
+                title = title.replace('Temporada', '[COLOR tan]Temp.[/COLOR]')
+
+                title = title.replace('Capitulo', '[COLOR goldenrod]Epis.[/COLOR]').replace('Capítulo', '[COLOR goldenrod]Epis.[/COLOR]')
 
                 itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, infoLabels={'year': year},
                                             contentSerieName = SerieName, contentType = 'episode', contentSeason = season, contentEpisodeNumber = epis ))
                 continue
 
-            else:
-                title = title.replace('Temporada', '[COLOR tan]Temporada[/COLOR]')
+        title = title.replace('Temporada', '[COLOR tan]Temp.[/COLOR]')
 
         itemlist.append(item.clone( action='temporadas', url=url, title=title, thumbnail=thumb,
                                     contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': year} ))
@@ -227,11 +231,12 @@ def list_all(item):
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
-        next_url = scrapertools.find_single_match(data, '<div class="pagination">.*?<span class="current">.*?a href="(.*?)"')
+        next_page = scrapertools.find_single_match(data, '<div class="pagination">.*?<span class="current">.*?a href="(.*?)"')
+        if not next_page: next_page = scrapertools.find_single_match(data, "<div class='pagination'>.*?<span class='current'>.*?a href='(.*?)'")
 
-        if next_url:
-            if '/page/' in next_url:
-                itemlist.append(item.clone( title = 'Siguientes ...', url = next_url, action = 'list_all', text_color = 'coral' ))
+        if next_page:
+            if '/page/' in next_page:
+                itemlist.append(item.clone( title = 'Siguientes ...', url = next_page, action = 'list_all', text_color = 'coral' ))
 
     return itemlist
 
@@ -280,7 +285,9 @@ def list_epis(item):
 
         SerieName = SerieName.strip()
 
-        title = title.replace('Capitulo', '[COLOR goldenrod]Capitulo[/COLOR]').replace('Capítulo', '[COLOR goldenrod]Capítulo[/COLOR]')
+        title = title.replace('Temporada', '[COLOR tan]Temp.[/COLOR]')
+
+        title = title.replace('Capitulo', '[COLOR goldenrod]Epis.[/COLOR]').replace('Capítulo', '[COLOR goldenrod]Epis.[/COLOR]')
 
         itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, infoLabels={'year': '-'},
                                     contentSerieName = SerieName, contentType = 'episode', contentSeason = season, contentEpisodeNumber = epis ))
@@ -326,7 +333,7 @@ def list_last(item):
 
         SerieName = SerieName.strip()
 
-        title = title.replace('Temporada', '[COLOR tan]Temporada[/COLOR]')
+        title = title.replace('Temporada', '[COLOR tan]Temp.[/COLOR]')
 
         itemlist.append(item.clone( action='temporadas', url=url, title=title, thumbnail=thumb,
                                     contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': '-'} ))
@@ -406,7 +413,10 @@ def episodios(item):
         try: tvdb_id = scrapertools.find_single_match(str(item), "'tvdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('EnNovelasTv', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('EnNovelasTv', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -449,6 +459,8 @@ def episodios(item):
         epis = scrapertools.find_single_match(match, '<span>(.*?)</span>')
         if not epis: epis = 1
 
+        title = title.replace('EP ', '[COLOR goldenrod]Epis. [/COLOR]').replace('Ep ','[COLOR goldenrod]Epis. [/COLOR]')
+
         titulo = str(item.contentSeason) + 'x' + str(epis) + ' ' + title + ' ' + item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'")
 
         itemlist.append(item.clone( action = 'findvideos', url = url, title = titulo,  contentType = 'episode', contentSeason = item.contentSeason, contentEpisodeNumber = epis ))
@@ -485,6 +497,8 @@ def findvideos(item):
         url = url.strip()
 
         if '/likessb.' in url: continue
+        elif '/lylxan.' in url: continue
+        elif '/live.demand.' in url: continue
 
         if url.startswith('//'): url = 'https:' + url
 
@@ -511,8 +525,7 @@ def findvideos(item):
 
         if servidor == 'various': other = servertools.corregir_other(url)
 
-        if not servidor == 'directo':
-            itemlist.append(Item( channel=item.channel, action = 'play', server = servidor, url = url, language = lang, other = other.capitalize() ))
+        itemlist.append(Item( channel=item.channel, action = 'play', server = servidor, url = url, language = lang, other = other.capitalize() ))
 
     # ~ links
     data = do_downloadpage(item.url + '?do=watch')
@@ -540,6 +553,9 @@ def findvideos(item):
 
         for url in matches:
             if '/wp-admin/' in url: continue
+
+            elif '/lylxan.' in url: continue
+            elif '/live.demand.' in url: continue
 
             if url.startswith('//'): url = 'https:' + url
 
@@ -571,8 +587,7 @@ def findvideos(item):
                 if other: other = other + ' D'
                 else: other = 'D'
 
-            if not servidor == 'directo':
-                itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = servidor, language = lang, other = other ))
+            itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = servidor, language = lang, other = other ))
 
     t_link = scrapertools.find_single_match(data, 'var vo_theme_dir = "(.*?)"')
     id_link = scrapertools.find_single_match(data, 'vo_postID = "(.*?)"')
@@ -596,6 +611,9 @@ def findvideos(item):
 
            if '/wp-admin/' in u_link: u_link = ''
 
+           elif '/lylxan.' in u_link: u_link = ''
+           elif '/live.demand.' in u_link: u_link = ''
+
            if u_link:
                if u_link.startswith('https://sr.ennovelas.net/'): u_link = u_link.replace('/sr.ennovelas.net/', '/waaw.to/')
                elif u_link.startswith('https://video.ennovelas.net/'): u_link = u_link.replace('/video.ennovelas.net/', '/waaw.to/')
@@ -615,8 +633,7 @@ def findvideos(item):
                other = ''
                if servidor == 'various': other = servertools.corregir_other(u_link)
 
-               if not servidor == 'directo':
-                   itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = u_link, server = servidor, language = lang, other = other ))
+               itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = u_link, server = servidor, language = lang, other = other ))
 
            i += 1
 
@@ -629,6 +646,9 @@ def findvideos(item):
         ses += 1
 
         if '/wp-admin/' in url: continue
+
+        elif '/lylxan.' in url: continue
+        elif '/live.demand.' in url: continue
 
         if url.startswith('//'): url = 'https:' + url
 
@@ -651,8 +671,7 @@ def findvideos(item):
         if other: other = other + ' d'
         else: other = 'd'
 
-        if not servidor == 'directo':
-            itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = servidor, language = lang, other = other ))
+        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = servidor, language = lang, other = other ))
 
     # ~ Otros
     link_srv = scrapertools.find_single_match(data, '<div id="btnServers">.*?href="(.*?)"')
@@ -673,6 +692,9 @@ def findvideos(item):
 
             if '/wp-admin/' in enlace: continue
 
+            elif '/lylxan.' in enlace: continue
+            elif '/live.demand.' in enlace: continue
+
             if enlace.startswith('//'): enlace = 'https:' + enlace
 
             if '/e//' in enlace: enlace = enlace.replace('/e//', '/e/')
@@ -684,7 +706,7 @@ def findvideos(item):
             elif enlace.startswith('https://video.ennovelas.net/'): enlace = enlace.replace('/video.ennovelas.net/', '/waaw.to/')
             elif enlace.startswith('https://reproductor.telenovelas-turcas.com.es/'): enlace = enlace.replace('/reproductor.telenovelas-turcas.com.es/', '/waaw.to/')
             elif enlace.startswith('https://novelas360.cyou/player/'): enlace = enlace.replace('/novelas360.cyou/player/', '/waaw.to/')
-            elif url.startswith('https://novelas360.cyou/'): url = url.replace('/novelas360.cyou/', '/waaw.to/')
+            elif enlace.startswith('https://novelas360.cyou/'): enlace = enlace.replace('/novelas360.cyou/', '/waaw.to/')
 
             enlace = enlace.replace('&amp;', '&')
 
@@ -696,13 +718,33 @@ def findvideos(item):
             other = ''
             if servidor == 'various': other = servertools.corregir_other(enlace)
 
-            if not servidor == 'directo':
-                itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = enlace, server = servidor, language = lang, other = other ))
+            itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = enlace, server = servidor, language = lang, other = other ))
 
     if not itemlist:
         if not ses == 0:
             platformtools.dialog_notification(config.__addon_name, '[COLOR tan][B]Sin enlaces Soportados[/B][/COLOR]')
             return
+
+    return itemlist
+
+
+def play(item):
+    logger.info()
+    itemlist = []
+
+    url = item.url
+
+    if url:
+        servidor = servertools.get_server_from_url(url)
+        servidor = servertools.corregir_servidor(servidor)
+
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(url).lower()
+            if new_server.startswith("http"): servidor = new_server
+
+        url = servertools.normalize_url(servidor, url)
+
+        itemlist.append(item.clone( url=url, server=servidor ))
 
     return itemlist
 

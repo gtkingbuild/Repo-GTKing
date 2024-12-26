@@ -71,7 +71,17 @@ def findvideos(item):
     if not url: url = scrapertools.find_single_match(data, '<meta name="twitter:player" content="(.*?)"')
 
     if url:
-        url = url.replace('&amp;', '')
+        ref = item.url
+
+        if '?h=' in url:
+            url = scrapertools.find_single_match(url, '(.*?)h=')
+            url = url.replace('?', '').strip()
+
+            ref = url
+
+        url = url.replace('&amp;', '&')
+
+        url = url + '/outro?on_site=0&type=videos&email=1|Referer=' + ref
 
         itemlist.append(Item( channel = item.channel, action = 'play', server='vimeo', title = '', url = url, language = 'Esp' ))
 

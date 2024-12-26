@@ -54,9 +54,9 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Últimos', action = 'list_all', url = host + 'category/featured/', text_color = 'cyan' ))
 
-    itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host, text_color = 'deepskyblue' ))
+    itemlist.append(item.clone( title = 'Parodias', action = 'list_all', url = host + 'category/parodies/', text_color = 'pink' ))
 
-    itemlist.append(item.clone( title = 'Parodias', action = 'list_all', url = host + 'category/parodies/' ))
+    itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host, text_color = 'deepskyblue' ))
 
     itemlist.append(item.clone( title = 'Por estudio', action = 'categorias', url = host, group = 'estudios' ))
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url = host, group = 'categorias'))
@@ -73,6 +73,9 @@ def categorias(item):
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|&nbsp;|<br>', '', data)
 
+    if item.group == 'estudios': text_color = 'violet'
+    else: text_color = 'moccasin'
+
     if item.group == 'estudios':
         data = scrapertools.find_single_match(data, 'Studios</a>(.*?)</ul>')
     else:
@@ -81,11 +84,7 @@ def categorias(item):
     matches = re.compile('href="([^"]+)".*?>([^"]+)</a></li>', re.DOTALL).findall(data)
 
     for url, title in matches:
-        if item.group == 'categorias':
-            if title == 'Parodies': continue
-            elif title == 'Porn Movies': continue
-
-        itemlist.append(item.clone (action='list_all', title=title, url=url, text_color = 'orange' ))
+        itemlist.append(item.clone (action='list_all', title=title, url=url, text_color=text_color ))
 
     if item.group == 'estudios':
         return sorted(itemlist, key=lambda x: x.title)
@@ -100,7 +99,7 @@ def anios(item):
     from datetime import datetime
     current_year = int(datetime.today().year)
 
-    for x in range(current_year, 1971, -1):
+    for x in range(current_year, 1999, -1):
         url = host + 'release-year/' + str(x)
 
         itemlist.append(item.clone( title = str(x), url = url, action = 'list_all', text_color='orange' ))
@@ -124,9 +123,9 @@ def list_all(item):
     num_matches = len(matches)
 
     for url, thumb, title in matches[item.page * perpage:]:
-        if len(itemlist) >= perpage: break
-
         itemlist.append(item.clone (action='findvideos', title=title, url=url, thumbnail=thumb, contentType = 'movie', contentTitle = title, contentExtra='adults') )
+
+        if len(itemlist) >= perpage: break
 
     if itemlist:
         buscar_next = True
@@ -137,7 +136,7 @@ def list_all(item):
                 buscar_next = False
 
         if buscar_next:
-            next_page = scrapertools.find_single_match(data,'<a class="next page-numbers" href="([^"]+)">Next &raquo;</a>')
+            next_page = scrapertools.find_single_match(data,'<a class="next page-numbers" href="([^"]+)">Next')
 
             if next_page:
                 if '/page/' in next_page:
@@ -191,6 +190,8 @@ def findvideos(item):
             elif '/katfile.' in url: continue
             elif '/fikper.' in url: continue
             elif '/turbobit.' in url: continue
+
+            elif '/frdl.' in url: continue
             elif '/hitfile.' in url: continue
 
             if '/drivevideo.' in url:
@@ -207,7 +208,6 @@ def findvideos(item):
                 if servidor == 'various': other = servertools.corregir_other(url)
 
                 itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = 'Vo', other = other ))
-
 
     if not itemlist:
         if not ses == 0:

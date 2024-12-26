@@ -215,7 +215,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('Cuevana3In', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('Cuevana3In', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -262,7 +265,9 @@ def episodios(item):
 
         thumb = scrapertools.find_single_match(match, 'data-src="(.*?)"')
 
-        itemlist.append(item.clone( action='findvideos', url = url, title = title, thumbnail=thumb,
+        titulo = str(item.contentSeason) + 'x' + str(epis) + ' ' + title.replace(str(item.contentSeason) + 'x' + str(epis), '').strip()
+
+        itemlist.append(item.clone( action='findvideos', url = url, title = titulo, thumbnail=thumb,
                                     contentType = 'episode', contentSeason = item.contentSeason, contentEpisodeNumber=epis ))
 
         if len(itemlist) >= item.perpage:
@@ -281,15 +286,18 @@ def findvideos(item):
     logger.info()
     itemlist = []
 
-    IDIOMAS = {'Latino': 'Lat', 'Castellano': 'Esp', 'Subtitulado': 'Vose'}
+    IDIOMAS = {'Latino': 'Lat', 'Español Latino': 'Lat', 'Español': 'Esp', 'Castellano': 'Esp', 'Subtitulado': 'Vose'}
 
     data = do_downloadpage(item.url)
-
+    
     matches = re.compile('<li data-video="(.*?)".*?<span>(.*?)</span>', re.DOTALL).findall(data)
+    if not matches: matches = re.compile('data-tr="(.*?)".*?<span>(.*?)</span>', re.DOTALL).findall(data)
 
     ses = 0
 
     for url, lang_srv in matches:
+        if not url: continue
+
         ses += 1
 
         lang = ''
@@ -322,10 +330,10 @@ def findvideos(item):
 
         other = ''
 
-        if 'HD' in lang:
+        if not lang: lang = '?'
+        elif 'HD' in lang:
             other = scrapertools.find_single_match(lang, 'HD.*?(.*?)$').strip()
             lang = '?'
-
         elif '. ' in lang:
             other = scrapertools.find_single_match(lang, '(.*?). ').strip()
             lang = '?'
@@ -346,6 +354,8 @@ def findvideos(item):
         if servidor == 'various':
             if new_server: other = servertools.corregir_other(new_server)
             else: other = servertools.corregir_other(url)
+
+        if lang == other.lower() or lang == servidor: lang = ''
 
         itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url,
                               server = servidor, language = IDIOMAS.get(lang, lang), other = other ))
@@ -386,7 +396,7 @@ def play(item):
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(url).lower()
-            if not new_server.startswith("http"): servidor = new_server
+            if new_server.startswith("http"): servidor = new_server
 
         itemlist.append(item.clone( url=url, server=servidor ))
 
@@ -407,9 +417,10 @@ def search(item, texto):
             item.url = host + 'search/' + texto.replace(" ", "+")
             itemlist1 = list_all(item)
 
-            item.search_type = 'tvshows'
-            item.url = host + 'search/' + texto.replace(" ", "+")
-            itemlist2 = list_all(item)
+            if not itemlist1:
+                item.search_type = 'tvshows'
+                item.url = host + 'search/' + texto.replace(" ", "+")
+                itemlist2 = list_all(item)
 
             itemlist = itemlist1 + itemlist2
             return itemlist

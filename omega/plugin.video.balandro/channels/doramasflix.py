@@ -61,7 +61,7 @@ def mainlist_pelis(item):
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', search_type = 'movie' ))
 
-    itemlist.append(item.clone( title = 'Por productora', action = 'productoras', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Por productora', action = 'productoras', search_type = 'movie', text_color = 'moccasin' ))
 
     itemlist.append(item.clone( title = 'Por idioma', action = 'idiomas', search_type = 'movie' ))
 
@@ -81,7 +81,7 @@ def mainlist_series(item):
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Por productora', action = 'productoras', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Por productora', action = 'productoras', search_type = 'tvshow', text_color = 'moccasin' ))
 
     itemlist.append(item.clone( title = 'Por idioma', action = 'idiomas', search_type = 'tvshow' ))
 
@@ -101,7 +101,7 @@ def mainlist_doramas(item):
     itemlist.append(item.clone( title = 'Por género', action = 'generos', group = 'doramas', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', group = 'doramas', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Por productora', action = 'productoras', group = 'doramas', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Por productora', action = 'productoras', group = 'doramas', search_type = 'tvshow', text_color = 'moccasin' ))
 
     itemlist.append(item.clone( title = 'Por idioma', action = 'idiomas', group = 'doramas', search_type = 'tvshow' ))
 

@@ -11,6 +11,8 @@ from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
+from lib import decrypters
+
 
 LINUX = False
 BR = False
@@ -156,7 +158,36 @@ def acciones(item):
 
 
 def mainlist(item):
-    return mainlist_series(item)
+    logger.info()
+    itemlist = []
+
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
+
+    itemlist.append(item.clone( title = 'Buscar ...', action = 'search', search_type = 'all', text_color = 'yellow' ))
+
+    itemlist.append(item.clone( title = 'Películas', action = 'mainlist_pelis', text_color = 'deepskyblue' ))
+    itemlist.append(item.clone( title = 'Series', action = 'mainlist_series', text_color = 'hotpink' ))
+
+    return itemlist
+
+
+def mainlist_pelis(item):
+    logger.info()
+    itemlist = []
+
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
+
+    itemlist.append(item.clone( title = 'Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
+
+    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'todas-las-peliculas/', search_type = 'movie' ))
+
+    itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'movie' ))
+
+    itemlist.append(item.clone( title = 'Por letra (A - Z)', action='alfabetico', search_type = 'movie' ))
+
+    return itemlist
+
 
 def mainlist_series(item):
     logger.info()
@@ -186,6 +217,9 @@ def generos(item):
     logger.info()
     itemlist = []
 
+    if item.search_type == 'movie': text_color = 'deepskyblue'
+    else: text_color = 'hotpink'
+
     data = do_downloadpage(host)
 
     patron = 'class="menu-item menu-item-type-taxonomy menu-item-object-category.*?<a href="(.*?)">(.*?)</a>'
@@ -195,7 +229,7 @@ def generos(item):
     for url, title in matches:
         title = title.replace('&amp;', '&')
 
-        itemlist.append(item.clone( action = "list_all", title = title, url = url, text_color = 'hotpink' ))
+        itemlist.append(item.clone( action = "list_all", title = title, url = url, text_color = text_color ))
 
     return sorted(itemlist, key=lambda it: it.title)
 
@@ -204,11 +238,14 @@ def anios(item):
     logger.info()
     itemlist = []
 
+    if item.search_type == 'movie': text_color = 'deepskyblue'
+    else: text_color = 'hotpink'
+
     from datetime import datetime
     current_year = int(datetime.today().year)
 
     for x in range(current_year, 1935, -1):
-        itemlist.append(item.clone( title = str(x), url = host + '?s=trfilter&trfilter=1&years%5B%5D=' + str(x), action = 'list_all', text_color = 'hotpink' ))
+        itemlist.append(item.clone( title = str(x), url = host + '?s=trfilter&trfilter=1&years%5B%5D=' + str(x), action = 'list_all', text_color = text_color ))
 
     return itemlist
 
@@ -217,12 +254,15 @@ def alfabetico(item):
     logger.info()
     itemlist = []
 
+    if item.search_type == 'movie': text_color = 'deepskyblue'
+    else: text_color = 'hotpink'
+
     for letra in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
         letras = letra.lower()
 
         url = host + 'letter/' + letras + '/'
 
-        itemlist.append(item.clone( action = 'list_alfa', title = letra, url = url, text_color = 'hotpink' ))
+        itemlist.append(item.clone( action = 'list_alfa', title = letra, url = url, text_color = text_color ))
 
     return itemlist
 
@@ -255,10 +295,24 @@ def list_all(item):
         if year: title = title.replace('(' + year + ')', '').strip()
         else: year = '-'
 
-        title = title.replace('&#038;', '&')
+        title = title.replace('&#038;', '&').replace('&#8217;s', "'s").replace('&#8211;', '').strip()
 
-        itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb,
-                                    contentType = 'tvshow', contentSerieName = title, infoLabels = {'year': year} ))
+        tipo = 'movie' if '/movie/' in url else 'tvshow'
+        sufijo = '' if item.search_type != 'all' else tipo
+
+        if tipo == 'movie':
+            if item.search_type != 'all':
+                if item.search_type == 'tvshow': continue
+
+            itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, fmt_sufijo = sufijo,
+                                        contentType = 'movie', contentTitle = title, infoLabels = {'year': year} ))
+
+        if tipo == 'tvshow':
+            if item.search_type != 'all':
+                if item.search_type == 'movie': continue
+
+            itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb, fmt_sufijo = sufijo,
+                                        contentType = 'tvshow', contentSerieName = title, infoLabels = {'year': year} ))
 
         if len(itemlist) >= perpage: break
 
@@ -294,6 +348,7 @@ def list_alfa(item):
     for match in matches:
         url = scrapertools.find_single_match(match, '<a href="(.*?)"')
         title = scrapertools.find_single_match(match, '<strong>(.*?)</strong>').strip()
+
         if not url or not title: continue
 
         if '/aplicacion-oficial-de-seriesretro-com/' in url: continue
@@ -305,7 +360,16 @@ def list_alfa(item):
         if year: title = title.replace('(' + year + ')', '').strip()
         else: year = '-'
 
-        itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb, contentType = 'tvshow', contentSerieName = title, infoLabels = {'year': year} ))
+        if '/movie/' in url:
+            if item.search_type == 'tvshow': continue
+
+            itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb,
+                                        contentType = 'movie', contentTitle = title, infoLabels = {'year': year} ))
+        else:
+            if item.search_type == 'movie': continue
+
+            itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb,
+                                        contentType = 'tvshow', contentSerieName = title, infoLabels = {'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -404,7 +468,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('SeriesRetro', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('SeriesRetro', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -486,7 +553,9 @@ def findvideos(item):
 
         servidor = servertools.corregir_servidor(servidor)
 
-        url = scrapertools.find_single_match(data, ' id="Opt' + str(opt) + '.*?src="(.*?)"')
+        url = scrapertools.find_single_match(data, ' id="Opt' + str(opt) + '".*?src="(.*?)"')
+        if not url: url = scrapertools.find_single_match(data, ' id="Opt' + str(opt) + '".*?data-xsrc="(.*?)"')
+
         if not url: url = scrapertools.find_single_match(data, ' id="Opt' + str(opt) + '.*?src=&quot;(.*?)&quot;')
 
         if url.startswith('//') == True: url = scrapertools.find_single_match(data, ' id="Opt' + str(opt) + '.*?src=&quot;(.*?)&quot;')
@@ -502,6 +571,10 @@ def findvideos(item):
         elif servidor == 'analu':
             link_other = servidor
             servidor = 'directo'
+        elif servidor == 'utorrent':
+            link_other = 'torrent'
+            servidor = 'directo'
+
         else: link_other = ''
 
         if servidor == 'various': link_other = servertools.corregir_other(srv)
@@ -522,7 +595,8 @@ def findvideos(item):
 
         if not servidor: continue
 
-        servidor = servertools.corregir_servidor(servidor)
+        if servidor == 'utorrent': servidor = 'torrent'
+        else: servidor = servertools.corregir_servidor(servidor)
 
         url = scrapertools.find_single_match(match, ' href="(.*?)"')
 
@@ -548,7 +622,7 @@ def play(item):
     url = item.url.replace('&amp;#038;', '&').replace('&#038;', '&').replace('&amp;', '&')
 
     if url.startswith(host):
-        if item.other == 'D' or 'D ' in item.other :
+        if item.other == 'D' or 'D ' in item.other:
             if config.get_setting('channel_seriesretro_proxies', default=''):
                 url = httptools.downloadpage_proxy('seriesretro', url, follow_redirects=False, only_headers=True).headers.get('location', '')
             else:
@@ -573,6 +647,25 @@ def play(item):
         elif '/gdriveplayer.io/' in url:
             return 'Servidor [COLOR plum]NO soportado[/COLOR]'
 
+        if '/acortalink.' in url:
+            host_torrent = host[:-1]
+            url_base64 = decrypters.decode_url_base64(item.url, host_torrent)
+
+            if url_base64.startswith('magnet:'):
+                itemlist.append(item.clone( url = url_base64, server = 'torrent' ))
+                return itemlist
+
+            elif url_base64.endswith(".torrent"):
+                itemlist.append(item.clone( url = url_base64, server = 'torrent' ))
+                return itemlist
+
+            if item.server == 'mega':
+                if '/file/' in url_base64:
+                    url = url_base64.replace(host + 'file/', 'https://mega.nz/#!')
+
+                    itemlist.append(item.clone( url = url, server = 'mega' ))
+                    return itemlist
+ 
         if url.endswith('.torrent'):
             itemlist.append(item.clone( url = url, server = 'torrent' ))
             return itemlist
@@ -581,19 +674,28 @@ def play(item):
             itemlist.append(item.clone( url = url, server = 'torrent' ))
             return itemlist
 
+        if item.server == 'mega':
+            if '/file/' in url:
+                url = url.replace(host + 'file/', 'https://mega.nz/#!')
+
+                itemlist.append(item.clone( url = url, server = 'mega' ))
+                return itemlist
+
+        if '/acortalink.' in url:
+            return 'Tiene [COLOR plum]Acortador[/COLOR] del enlace'
+
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(url).lower()
-            if not new_server.startswith("http"): servidor = new_server
+            if new_server.startswith("http"): servidor = new_server
 
-        if servidor != 'directo':
-            url = servertools.normalize_url(servidor, url)
+        url = servertools.normalize_url(servidor, url)
 
-            if 'zplayer' in url: url += "|referer=%s" % host
+        if 'zplayer' in url: url += "|referer=%s" % host
 
-            itemlist.append(item.clone(url = url, server = servidor))
+        itemlist.append(item.clone(url = url, server = servidor))
 
     return itemlist
 

@@ -74,6 +74,20 @@ def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
         else:
             data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
 
+    if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
+        if not url.startswith(host):
+            data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
+        else:
+            if hay_proxies:
+                data = httptools.downloadpage_proxy('pelispanda', url, post=post, headers=headers, raise_weberror=raise_weberror).data
+            else:
+                data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
+
+    if '<title>Just a moment...</title>' in data:
+        if not 'buscar/?buscar=' in url:
+            platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]CloudFlare[COLOR orangered] Protection[/B][/COLOR]')
+        return ''
+
     return data
 
 
@@ -99,6 +113,10 @@ def acciones(item):
     itemlist.append(item.clone( channel='domains', action='manto_domain_pelispanda', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
 
     itemlist.append(item_configurar_proxies(item))
+
+    itemlist.append(Item( channel='helper', action='show_help_pelispanda', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('pelispanda') ))
+
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'pelispanda', thumbnail=config.get_thumb('pelispanda') ))
 
     platformtools.itemlist_refresh()
 
@@ -330,7 +348,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('PelisPanda', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('PelisPanda', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')

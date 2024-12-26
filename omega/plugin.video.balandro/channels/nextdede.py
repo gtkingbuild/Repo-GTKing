@@ -84,7 +84,7 @@ useragent = httptools.get_user_agent()
 login_ok = '[COLOR chartreuse]NextDede Login correcto[/COLOR]'
 login_ko = '[COLOR red][B]NextDede Login incorrecto[/B][/COLOR]'
 no_login = '[COLOR orangered][B]NextDede Sin acceso Login[/B][/COLOR]'
-start_ses_ok = '[COLOR chartreuse][B]Sesión Iniciada[/B][/COLOR], Por favor [COLOR cyan][B]Retroceda Menús[/B][/COLOR] y acceda de Nuevo al Canal.'
+start_ses_ok = '[COLOR chartreuse][B]Sesión Iniciada[/B][/COLOR], Por favor, si fuera necesario [COLOR cyan][B]Retroceda Menús[/B][/COLOR] y acceda de Nuevo al Canal.'
 
 
 class login_dialog(xbmcgui.WindowDialog):
@@ -557,7 +557,9 @@ def acciones(item):
 
     itemlist.append(item_configurar_proxies(item))
 
-    itemlist.append(Item( channel='helper', action='show_help_nextdede', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('nextdede') ))
+    itemlist.append(Item( channel='helper', action='show_help_nextdede', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', _mnu = True, thumbnail=config.get_thumb('nextdede') ))
+
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'nextdede', thumbnail=config.get_thumb('nextdede') ))
 
     platformtools.itemlist_refresh()
 
@@ -644,7 +646,7 @@ def mainlist_series(item):
 
         itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = dominio + '/discovery?filter={"type": "serie", "sorting": "newest"}', search_type = 'tvshow' ))
 
-        itemlist.append(item.clone( title = 'Nuevas', action = 'list_all', url = dominio + '/series', search_type = 'tvshow', text_color = 'moccasin' ))
+        itemlist.append(item.clone( title = 'Novedades', action = 'list_all', url = dominio + '/series', search_type = 'tvshow', text_color = 'yellowgreen' ))
 
         itemlist.append(item.clone( title = 'Últimas agregadas', action = 'list_last', url = dominio + '/trends', search_type = 'tvshow', text_color = 'cyan' ))
 

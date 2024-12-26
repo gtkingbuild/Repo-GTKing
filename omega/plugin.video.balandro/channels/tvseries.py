@@ -44,75 +44,125 @@ def mainlist_series(item):
     return itemlist
 
 
+def menu_series(item):
+    logger.info()
+    itemlist = []
+
+    itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', url = item.url, search_type = 'tvshow', text_color = 'hotpink' ))
+
+    itemlist.append(item.clone( title = 'Catálogo', action = 'series', url = item.url, search_type = 'tvshow' ))
+
+    itemlist.append(item.clone( title = 'Catálogo series con temporadas', action = 'series', url = item.url, grupo = 'seasons', search_type = 'tvshow' ))
+
+    itemlist.append(item.clone( title = 'Por letra (A - Z)', action = 'alfabetico', url = item.url, search_type = 'tvshow' ))
+
+    return itemlist
+
+
 def youtubes(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone ( title = 'Alvin y las ardillas', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=5Vjg3ANC4DU&list=PLOsRHhzd4sScQJEGfperCQ1SrllmM0QoV' ))
+    title = 'Alvin y las ardillas'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=5Vjg3ANC4DU&list=PLOsRHhzd4sScQJEGfperCQ1SrllmM0QoV', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Campeones oliver y benji', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=MhMxi5ShEks&list=PLtdTPPagpK29qTvIM49_ZvRIifiHpHf4q' ))
+    title = 'Campeones oliver y benji'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=MhMxi5ShEks&list=PLtdTPPagpK29qTvIM49_ZvRIifiHpHf4q', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = "D'artacán y los tres mosqueperros", action = 'list_tubes', url = 'https://www.youtube.com/watch?v=k9YIjOL-KZU&list=PLpSWLIHTG6idwDXwIm-7eaCpauPBw0vGf' ))
+    title = "D'artacán y los tres mosqueperros"
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=k9YIjOL-KZU&list=PLpSWLIHTG6idwDXwIm-7eaCpauPBw0vGf', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Daniel el travieso', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=uL_E5wum6hI&list=PLrzXhAF3O2FOaRwEQblgHh0zyMZ6EcNPZ' ))
+    title = 'Daniel el travieso'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=uL_E5wum6hI&list=PLrzXhAF3O2FOaRwEQblgHh0zyMZ6EcNPZ', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'David el gnomo', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=2dCUmOQfQ4E&list=PL6jgvKHZMaUX_JfZPZ_GCsHx1aSNmnIjo' ))
+    title = 'David el gnomo'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=2dCUmOQfQ4E&list=PL6jgvKHZMaUX_JfZPZ_GCsHx1aSNmnIjo', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Dragones y mazmorras', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=VuaYo4KVRhY&list=PLsHZRFRhMph1o1qcw0MO71pPtnJrupuvy' ))
+    title = 'Dragones y mazmorras'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=VuaYo4KVRhY&list=PLsHZRFRhMph1o1qcw0MO71pPtnJrupuvy', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'El gato isidoro', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=2xUmmgPyrbg&list=PLyq8RHRc3jNjinn6pHFmIY6C3aRNunCOw' ))
+    title = 'El gato isidoro'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=2xUmmgPyrbg&list=PLyq8RHRc3jNjinn6pHFmIY6C3aRNunCOw', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'El libro de la selva', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=y1ynWnB9JpI&list=PLHfWUw8p_628MqyXvX4C9-QqviKJGOmS_' ))
+    title = 'El libro de la selva'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=y1ynWnB9JpI&list=PLHfWUw8p_628MqyXvX4C9-QqviKJGOmS_', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Érase una vez el cuerpo humano', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=CtCQI8gP1HM&list=PL3trIOgZnbH1Xk_qpl2srL5wYlgd8Bu9f' ))
+    title = 'Érase una vez el cuerpo humano'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=CtCQI8gP1HM&list=PL3trIOgZnbH1Xk_qpl2srL5wYlgd8Bu9f', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Fraguel rock', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=9mQ_Im0MBlg&list=PL7KciiA9T9EYwWlZbAxn5GksT2pn7wAYy' ))
+    title = 'Fraguel rock'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=9mQ_Im0MBlg&list=PL7KciiA9T9EYwWlZbAxn5GksT2pn7wAYy', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'He-Man y los masters del universo', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=Stwkaqqtous&list=PLHVth4IGGf8uJ8WoenAucdukgFmzgWvmv' ))
+    title = 'He-Man y los masters del universo'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=Stwkaqqtous&list=PLHVth4IGGf8uJ8WoenAucdukgFmzgWvmv', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Heidi', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=n5qQMnje_kU&list=PLUuRJYptYFXBmaLE1oNJYPxyl-3mSLKL3' ))
+    title = 'Heidi'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=n5qQMnje_kU&list=PLUuRJYptYFXBmaLE1oNJYPxyl-3mSLKL3', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Inspector gadget', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=gTjd0VbDqNQ&list=PLQrG71R4T-nJ3aeMzWhP0U0Luy3USWdXN' ))
+    title = 'Inspector gadget'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=gTjd0VbDqNQ&list=PLQrG71R4T-nJ3aeMzWhP0U0Luy3USWdXN', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'La abeja maya', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=E-pKGTkcUkQ&list=PLYpTR-80tSP2dA3FsuEklQm_u4mtLoQdA' ))
+    title = 'La abeja maya'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=E-pKGTkcUkQ&list=PLYpTR-80tSP2dA3FsuEklQm_u4mtLoQdA', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'La vuelta al mundo en 80 días de willy fog', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=GJUnJcKjeyA&list=PL82F9AECFA0523F53' ))
+    title = 'La vuelta al mundo en 80 días de willy fog'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=GJUnJcKjeyA&list=PL82F9AECFA0523F53', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Las aventuras de teddy ruxpin', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=fZPv0cdLSd0&list=PLvVLlsVj1Vgj1tBps9gIoDoT81RPVQU5A' ))
+    title = 'Las aventuras de teddy ruxpin'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=fZPv0cdLSd0&list=PLvVLlsVj1Vgj1tBps9gIoDoT81RPVQU5A', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Las aventuras de tom sawyer', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=4VCilhIiQFM&list=PLYsIs7mU2MjMA_4OU7RZ0ulWFcrd2E5et' ))
+    title = 'Las aventuras de tom sawyer'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=4VCilhIiQFM&list=PLYsIs7mU2MjMA_4OU7RZ0ulWFcrd2E5et', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Las tortugas ninjas', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=FPfaWD01ux0&list=PL5RvWvJcaVMyXET6HLQTPLHslCJofLrVR' ))
+    title = 'Las tortugas ninjas'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=FPfaWD01ux0&list=PL5RvWvJcaVMyXET6HLQTPLHslCJofLrVR', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Los cazafantasmas', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=bRDJRNXsThM&list=PLhcFeyCsqAAXXK2XS03ZnNZyE2YET8yl-' ))
+    title = 'Los cazafantasmas'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=bRDJRNXsThM&list=PLhcFeyCsqAAXXK2XS03ZnNZyE2YET8yl-', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Los diminutos', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=lPHVQGZX54w&list=PLx5yOvA8qMRWVlvCjkWrJkAuzb9J-OVts' ))
+    title = 'Los diminutos'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=lPHVQGZX54w&list=PLx5yOvA8qMRWVlvCjkWrJkAuzb9J-OVts', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Los fruitis', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=7yoSgrvOf5o&list=PLdwgTWQaV-mj75-Xr3YuOM71ULjtubjRz' ))
+    title = 'Los fruitis'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=7yoSgrvOf5o&list=PLdwgTWQaV-mj75-Xr3YuOM71ULjtubjRz', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Los pequeños picapiedra', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=3xvmV327wNE&list=PLLhOnau-tupRZXJFjWGL-3ozRzp_Ax4-d' ))
+    title = 'Los pequeños picapiedra'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=3xvmV327wNE&list=PLLhOnau-tupRZXJFjWGL-3ozRzp_Ax4-d', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Los pitufos', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=PNKQQ_N6L8g&list=PLynb7MteT3bv-JXyQJFD0dgMX1p-kbTyw' ))
+    title = 'Los pitufos'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=PNKQQ_N6L8g&list=PLynb7MteT3bv-JXyQJFD0dgMX1p-kbTyw', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Los osos amorosos', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=vE7gDUUmGG0&list=PLyq8RHRc3jNh2wu2N4eVT5z1RyRWrEkdn' ))
+    title = 'Los osos amorosos'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=vE7gDUUmGG0&list=PLyq8RHRc3jNh2wu2N4eVT5z1RyRWrEkdn', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Los teleñecos', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=LUjRXvicq4s&list=PLsNgeP_gZnvnNtuJzsP_eguYiBg1YWRJG' ))
+    title = 'Los teleñecos'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=LUjRXvicq4s&list=PLsNgeP_gZnvnNtuJzsP_eguYiBg1YWRJG', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Los trotamusicos', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=CLvxg1YH3zg&list=PLjGG4eB-AY7lLRIEZTftqW63JTe6jCg1W' ))
+    title = 'Los trotamusicos'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=CLvxg1YH3zg&list=PLjGG4eB-AY7lLRIEZTftqW63JTe6jCg1W', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Lucky luke', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=oJk3rxJ3l10&list=PLpSWLIHTG6idKFhxc3tP14r04ZMNyrl47' ))
+    title = 'Lucky luke'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=oJk3rxJ3l10&list=PLpSWLIHTG6idKFhxc3tP14r04ZMNyrl47', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Marco', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=hBZyqA8pjXQ&list=PLutxf9xWvQKa0-ZMI5fyFSeABblPOF3Kk' ))
+    title = 'Marco'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=hBZyqA8pjXQ&list=PLutxf9xWvQKa0-ZMI5fyFSeABblPOF3Kk', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Mofli el último koala', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=4R-iGriuhLA&list=PLpSWLIHTG6idAf7gkOl7N92WnKu3iZqnt' ))
+    title = 'Mofli el último koala'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=4R-iGriuhLA&list=PLpSWLIHTG6idAf7gkOl7N92WnKu3iZqnt', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Popeye', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=DgQCJ8HPJCA&list=PLV0ww1Vq7oOxQs1VyZqMOzQuaclGbLRmD' ))
+    title = 'Popeye'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=DgQCJ8HPJCA&list=PLV0ww1Vq7oOxQs1VyZqMOzQuaclGbLRmD', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Rui el pequeño cid', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=4KY-WmxftUM&list=PL1812714DE488ECFC' ))
+    title = 'Rui el pequeño cid'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=4KY-WmxftUM&list=PL1812714DE488ECFC', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Sherlock holmes', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=2HDDvei0RSA&list=PL04gTKRCAl-Pc6AEz99h-lhC49Q6O2Pas' ))
+    title = 'Sherlock holmes'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=2HDDvei0RSA&list=PL04gTKRCAl-Pc6AEz99h-lhC49Q6O2Pas', contentSerieName = title, infoLabels = {'year': '-'} ))
 
-    itemlist.append(item.clone ( title = 'Ulises 31', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=fns5R61QhhI&list=PL99kuo33pyKXVljP_1-9eSUrES6915Uk9' ))
+    title = 'Ulises 31'
+    itemlist.append(item.clone ( title = title, action = 'list_tubes', url = 'https://www.youtube.com/watch?v=fns5R61QhhI&list=PL99kuo33pyKXVljP_1-9eSUrES6915Uk9', contentSerieName = title, infoLabels = {'year': '-'} ))
+
+    tmdb.set_infoLabels(itemlist)
 
     return itemlist
 
@@ -135,21 +185,6 @@ def list_tubes(item):
         url = 'https://www.youtube.com/watch?v=' + _id
 
         itemlist.append(item.clone( action = 'findvideos', title = title, url = url, thumbnail = thumb, language = 'Esp' ))
-
-    return itemlist
-
-
-def menu_series(item):
-    logger.info()
-    itemlist = []
-
-    itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', url = item.url, search_type = 'tvshow', text_color = 'hotpink' ))
-
-    itemlist.append(item.clone( title = 'Catálogo', action = 'series', url = item.url, search_type = 'tvshow' ))
-
-    itemlist.append(item.clone( title = 'Catálogo series con temporadas', action = 'series', url = item.url, grupo = 'seasons', search_type = 'tvshow' ))
-
-    itemlist.append(item.clone( title = 'Por letra (A - Z)', action = 'alfabetico', url = item.url, search_type = 'tvshow' ))
 
     return itemlist
 
@@ -354,6 +389,12 @@ def list_all(item):
             else:
                 temporada = scrapertools.find_single_match(titulo, '.*?".*?x(.*?)"')
                 capitulo = scrapertools.find_single_match(titulo, '.*?"(.*?)x')
+
+        if 'x' in temporada: temporada = temporada.replace('x', '').strip()
+        if 'x' in capitulo: capitulo = capitulo.replace('x', '').strip()
+
+        if not temporada: temporada = 0
+        if not capitulo: capitulo = 0
 
         itemlist.append(item.clone( action = 'findvideos', url = url, title = title, language = lang, thumbnail = thumb,
                                     contentType='episode', contentSeason = temporada, contentEpisodeNumber = capitulo ))

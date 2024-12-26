@@ -108,7 +108,7 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'series-online.html', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimos capítulos', action = 'last_epis', url = host, search_type = 'tvshow', text_color = 'cyan' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host, search_type = 'tvshow', text_color = 'cyan' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'tvshow' ))
@@ -190,7 +190,7 @@ def list_all(item):
 
         thumb = scrapertools.find_single_match(match, '<img src="(.*?)"')
 
-        title = title.replace('online gratis', '').strip()
+        title = title.replace('online gratis', '').replace('&#039;', "'").replace('&amp;', '&').strip()
 
         year = '-'
         if '/series-online/año/' in item.url:
@@ -234,7 +234,7 @@ def last_epis(item):
 
         if not url or not title: continue
 
-        title = title.replace('&#039;', "'")
+        title = title.replace('&#039;', "'").replace('&amp;', '&')
 
         SerieName = scrapertools.find_single_match(title, '(.*?)- T').strip()
 
@@ -242,13 +242,17 @@ def last_epis(item):
 
         if not season: season = 1
 
-        epis = scrapertools.find_single_match(title, 'Capítulo(.*?)</span>').strip()
+        epis = scrapertools.find_single_match(title, 'Capítulo(.*?)$').strip()
 
         if not epis: epis = 1
 
-        title = title.replace('Capítulo ', '[COLOR goldenrod]Capítulo [/COLOR]')
+        title = title.replace(' T ', '[COLOR tan]Temp.[/COLOR]')
 
-        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, infoLabels={'year': '-'},
+        title = title.replace('Capítulo ', '[COLOR goldenrod]Epis. [/COLOR]')
+
+        titulo = str(season) + 'x' + str(epis) + ' ' + title
+
+        itemlist.append(item.clone( action = 'findvideos', url = url, title = titulo, infoLabels={'year': '-'},
                                     contentSerieName = SerieName, contentType = 'episode', contentSeason = season, contentEpisodeNumber = epis ))
 
     tmdb.set_infoLabels(itemlist)

@@ -10,6 +10,10 @@
     "patterns": [
       {
         "pattern": "https://gofile.io/d/([0-9a-zA-Z]+)",
+        "url": "https://gofile.io/d/\\1"
+      },
+      {
+        "pattern": "https://gofile.io/([0-9a-zA-Z]+)",
         "url": "https://api.gofile.io/\\1"
       },
       {

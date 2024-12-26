@@ -15,7 +15,7 @@ from core import httptools, scrapertools, tmdb
 from lib import decrypters
 
 
-host = 'https://www5.divxtotal.mov/'
+host = 'https://divxtotal.io/'
 
 
 # ~ por si viene de enlaces guardados
@@ -23,7 +23,7 @@ ant_hosts = ['https://www.divxtotal.re/', 'https://www.divxtotal.ac/', 'https://
              'https://www.divxtotal.ms/', 'https://www.divxtotal.fi/', 'https://www.divxtotal.cat/',
              'https://www.divxtotal.pl/', 'https://www.divxtotal.wf/', 'https://www.divxtotal.win/',
              'https://www1.divxtotal.zip/', 'https://www2.divxtotal.zip/', 'https://www2.divxtotal.mov/',
-             'https://www3.divxtotal.mov/', 'https://www4.divxtotal.mov/']
+             'https://www3.divxtotal.mov/', 'https://www4.divxtotal.mov/', 'https://www5.divxtotal.mov/']
 
 
 domain = config.get_setting('dominio', 'divxtotal', default='')
@@ -118,6 +118,8 @@ def acciones(item):
     itemlist.append(item.clone( channel='domains', action='manto_domain_divxtotal', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
 
     itemlist.append(item_configurar_proxies(item))
+
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'divxtotal', thumbnail=config.get_thumb('divxtotal') ))
 
     platformtools.itemlist_refresh()
 
@@ -218,7 +220,9 @@ def list_all(item):
 
     if item.group == 'lasts':
         if item.search_type == 'movie': bloque = scrapertools.find_single_match(data, '>Películas</h3>(.*?)>Series</h3>')
-        else: bloque = scrapertools.find_single_match(data, '>Series</h3>(.*?)>Programas</h3>')
+        else:
+           bloque = scrapertools.find_single_match(data, '>Series</h3>(.*?)>Programas</h3>')
+           if not bloque: bloque = scrapertools.find_single_match(data, '>Series</h3>(.*?)$')
 
     matches = scrapertools.find_multiple_matches(bloque, '<tr>(.*?)</tr>')
     if not matches:
@@ -401,7 +405,7 @@ def findvideos(item):
         other = ''
         if not link.startswith('http'):
             if link.startswith('/'): link = host[:-1] + link
-            other = 'Directo'
+            else: other = 'Directo'
 
         itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = link, server = 'torrent', language = lang, quality = qlty, other = other))
 

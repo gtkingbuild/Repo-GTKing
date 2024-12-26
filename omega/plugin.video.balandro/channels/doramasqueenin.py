@@ -148,7 +148,7 @@ def list_all(item):
 
         if not url or not title: continue
 
-        title = title.replace('&#8217;s', "'s").replace('&#8217;t', "'t").replace('&#8211;', '').strip()
+        title = title.replace('&#8217;s', "'s").replace('&#8217;t', "'t").replace('&#038;', '&').replace('&#8211;', '').strip()
         title = title.replace('&#8217;', '').replace('&#8220;', '').replace('&#8221;', '').replace('&amp;', '').replace('amp;', '').replace('quot;', '').strip()
 
         thumb = scrapertools.find_single_match(match, 'src="(.*?)"')
@@ -162,15 +162,15 @@ def list_all(item):
         if item.group == 'last':
             if "Capitulo" in SerieName: SerieName = SerieName.split("Capitulo")[0]
 
-            SerieName = title.strip()
-
             season = scrapertools.find_single_match(url, '-temporada-(.*?)$')
             if not season: season = 1
 
             episode = scrapertools.find_single_match(url, '-capitulo-(.*?)/')
             if not episode: episode = 1
 
-            title = title.replace('Capitulo', '[COLOR goldenrod]Capitulo[/COLOR]')
+            title = title.replace('Season', '[COLOR tan]Temp.[/COLOR]').replace('season', '[COLOR tan]Temp.[/COLOR]')
+
+            title = title.replace('Capitulo', '[COLOR goldenrod]Epis.[/COLOR]')
 
             itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, contentSerieName=SerieName,
                                         contentType = 'episode', contentSeason = season, contentEpisodeNumber=episode, infoLabels={'year': year} ))
@@ -238,7 +238,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('DoramasQueenIn', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('DoramasQueenIn', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')

@@ -79,6 +79,18 @@ def mainlist(item):
 
 
 def show_help(item):
+    txt = '[COLOR goldenrod][B]AJUSTES TMDB:[/B][/COLOR][CR]'
+
+    tmdb_cache = config.get_setting('tmdb_cache_expire', default=4)
+
+    if tmdb_cache == 0: cache = 'Cada 1 día'
+    elif tmdb_cache == 1: cache = 'Cada 7 días'
+    elif tmdb_cache == 2: cache = 'Cada 15 días'
+    elif tmdb_cache == 3: cache = 'Cada 30 días'
+    else: cache = 'No'
+
+    txt += ' - [COLOR cyan]Cuando Renovar la Caché de TMDB (por defecto No): [/COLOR][COLOR red][B]' + cache + '[/B][/COLOR][CR]'
+
     # ~ config [0-'es', 1-'es-MX', 2-'en', 3-'it', 4-'pt', 5-'fr', 6-'de']
 
     tmdb_lang = config.get_setting('tmdb_lang', default=0)
@@ -91,11 +103,14 @@ def show_help(item):
     elif tmdb_lang == 5: idioma = 'Francés'
     else: idioma = 'Alemán'
 
-    txt = '[COLOR cyan]Idioma de Búsqueda en TMDB: [/COLOR][COLOR red][B]' + idioma + '[/B][/COLOR][CR][CR]'
+    txt += ' - [COLOR cyan]Idioma de Búsqueda en TMDB (por defecto Español): [/COLOR][COLOR red][B]' + idioma + '[/B][/COLOR][CR]'
+
+    txt += ' - [COLOR cyan]Número de Búsquedas Simultáneas (puede causar Inestabilidad, por defecto 20): [/COLOR][COLOR red][B]' +  str(config.get_setting('tmdb_threads', default=20))+ '[/B][/COLOR][CR]'
+
+    txt += '[CR][COLOR goldenrod][B]INFORMACIÓN TMDB:[/B][/COLOR][CR]'
 
     txt += 'En este apartado se pueden hacer consultas a la web [COLOR gold][B]The Movie Database[/B][/COLOR] (TMDB), un proyecto comunitario que ofrece información de películas, series y personas.'
 
-    txt += '[CR]'
     txt += '[CR]Se puede buscar la [COLOR moccasin][B]filmografía[/B][/COLOR] de una persona y ver las películas/series dónde ha participado.'
 
     txt += '[CR]'
@@ -110,6 +125,7 @@ def show_help(item):
     txt += ' Si hubierna varios resultados se muestra una [COLOR yellowgreen][B]Lista de Personas[/B][/COLOR] para seleccionar la que corresponda (Ej: Kubrick).'
 
     platformtools.dialog_textviewer('Información búsquedas y listas en TMDB', txt)
+
     return True
 
 

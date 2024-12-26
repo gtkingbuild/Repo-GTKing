@@ -40,6 +40,8 @@ def mainlist(item):
 
     itemlist.append(item.clone( title = '[B]DESCARGAS:[/B]', action = '', text_color='seagreen' ))
 
+    itemlist.append(item.clone( action='show_infos', title='[COLOR fuchsia][B]Cuestiones Preliminares[/B][/COLOR]', thumbnail=config.get_thumb('news') ))
+
     elem = 0
 
     if download_path.startswith('smb://'):
@@ -94,19 +96,28 @@ def mainlist(item):
               pass
 
     if not elem == 0:
-        itemlist.append(item.clone( title = '[B]INFORMACIÓN:[/B]', action = '', thumbnail=config.get_thumb('help'), text_color='seagreen' ))
-
-        itemlist.append(item.clone( channel='actions', title = '[COLOR red][B]Eliminar Todas las Descargas[/B][/COLOR]', action = 'manto_folder_downloads', thumbnail=config.get_thumb('downloads') ))
-
-    itemlist.append(item.clone( title = '[B]Ubicación actual de las[/B] [COLOR seagreen][B]Descargas[/B][/COLOR]', action = 'show_folder_downloads', thumbnail=config.get_thumb('downloads') ))
-
-    itemlist.append(item.clone( channel='helper', title = '[COLOR green][B]Información[/B][/COLOR] ¿ Cómo funcionan ?', action = 'show_help_descargas', thumbnail=config.get_thumb('news') ))
-
-    itemlist.append(item.clone( channel='helper', action = 'show_help_usb', title = '¿ [B]Se puede Descargar directamente en una[/B] [COLOR goldenrod][B]Unidad USB[/B][/COLOR] ?', thumbnail=config.get_thumb('usb') ))
+        itemlist.append(item.clone( channel='actions', title = '[COLOR red][B]Eliminar[/B][/COLOR] Todas las Descargas', action = 'manto_folder_downloads', thumbnail=config.get_thumb('downloads') ))
 
     itemlist.append(item.clone( channel='actions', action = 'open_settings', title= '[COLOR chocolate][B]Ajustes[/B][/COLOR] categoría [COLOR seagreen][B]Descargas[/B][/COLOR]', thumbnail=config.get_thumb('settings') ))
 
     platformtools.itemlist_refresh()
+
+    return itemlist
+
+
+def show_infos(item):
+    logger.info()
+    itemlist = []
+
+    itemlist.append(item.clone( action='', title='[COLOR fuchsia][B]DESCARGAS Cuestiones Prelininares:[/B][/COLOR]', thumbnail=config.get_thumb('news') ))
+
+    itemlist.append(item.clone( title = ' - [B]Ubicación actual de las[/B] [COLOR seagreen][B]Descargas[/B][/COLOR]', action = 'show_folder_downloads', thumbnail=config.get_thumb('downloads') ))
+
+    itemlist.append(item.clone( channel='helper', title = ' - [COLOR green][B]Información[/B][/COLOR] ¿ Cómo funcionan ?', action = 'show_help_descargas', thumbnail=config.get_thumb('news') ))
+
+    itemlist.append(item.clone( channel='helper', action = 'show_help_usb', title = ' - ¿ [B]Se puede Descargar directamente en una[/B] [COLOR goldenrod][B]Unidad USB[/B][/COLOR] ?', thumbnail=config.get_thumb('usb') ))
+
+    itemlist.append(item.clone( channel='helper', action='show_not_download', title= ' - ¿ Qué [COLOR goldenrod][B]NO[/B][/COLOR] está contemplado en las [COLOR seagreen][B]Descargas[/B][/COLOR] ?', thumbnail=config.get_thumb('roadblock') ))
 
     return itemlist
 
@@ -262,8 +273,10 @@ def save_download(item):
 
                         elif isinstance(itemlist_play, basestring):
                             ok_play = False
-                            dialog_ok(config.__addon_name, itemlist_play)
-
+                            if notification_d_ok:
+                                platformtools.dialog_ok(config.__addon_name, itemlist_play)
+                            else:
+                                platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]No se pudo descargar[/COLOR][/B]' % color_exec)
                         else:
                             ok_play = False
                             if notification_d_ok:

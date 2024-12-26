@@ -37,7 +37,7 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'series/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimos doramas', action = 'list_all', url = host + 'series/?status=&type=&order=update', search_type = 'tvshow', text_color = 'cyan' ))
+    itemlist.append(item.clone( title = 'Últimos doramas', action = 'list_all', url = host + 'series/?status=&type=&order=update', search_type = 'tvshow', text_color = 'moccasin' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos',  search_type = 'tvshow' ))
 
@@ -98,7 +98,12 @@ def list_all(item):
         elif ' 4th ' in match: season = 4
         elif ' 5th ' in match: season = 5
         elif ' 6th ' in match: season = 6
+        elif ' 7th ' in match: season = 7
+        elif ' 8th ' in match: season = 8
+        elif ' 9th ' in match: season = 9
         else: season = 1
+
+        title = title.replace('Season', '[COLOR tan]Temp.[/COLOR]').replace('season', '[COLOR tan]Temp.[/COLOR]')
 
         itemlist.append(item.clone( action = 'episodios', url = url, title = title, thumbnail = thumb, infoLabels={'year': '-'},
                                     contentSerieName = SerieName, contentType = 'tvshow', contentSeason = season  ))
@@ -140,7 +145,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('KiriAsian', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('KiriAsian', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -175,6 +183,11 @@ def episodios(item):
                 else: item.perpage = 50
 
     for url, epi, title in epis[item.page * item.perpage:]:
+        c_year = scrapertools.find_single_match(title, '(\d{4})')
+        if c_year: title = title.replace('(' + c_year + ')', '').strip()
+
+        title = title.replace('Episode', '[COLOR goldenrod]Epis.[/COLOR]').replace('episode', '[COLOR goldenrod]Epis.[/COLOR]')
+
         titulo = '%sx%s - %s' % (str(item.contentSeason), epi, title)
 
         if len(epi) == 1: orden = '0' + epi
@@ -216,9 +229,19 @@ def findvideos(item):
         if not video: continue
 
         url = scrapertools.find_single_match(video,'<iframe.*?src="(.*?)"')
+        if not url: url = scrapertools.find_single_match(video,'<IFRAME.*?SRC="(.*?)"')
 
         if url:
-            if '/play.php?' in url:
+            if '/streaming.php' in url:
+                if not 'http' in url: url = 'https:' + url
+
+                data1 = do_downloadpage(url)
+
+                url = scrapertools.find_single_match(data1,'file: "(.*?)"')
+
+                if not url: continue
+
+            elif '/play.php?' in url:
                 if not 'http' in url: url = 'https:' + url
 
                 data2 = do_downloadpage(url)
@@ -232,10 +255,20 @@ def findvideos(item):
                     other = ''
                     if servidor == 'various': other = servertools.corregir_other(vid)
 
+                    if '/asianload.' in vid:
+                        data3 = do_downloadpage(vid)
+
+                        vid = scrapertools.find_single_match(data3, 'file:"(.*?)"')
+                        if not vid: vid = scrapertools.find_single_match(data3, 'file: "(.*?)"')
+
+                        if not vid: continue
+
                     if servidor == 'directo':
-                        if not config.get_setting('developer_mode', default=False): continue
-                        other = vid.split("/")[2]
-                        other = other.replace('https:', '').strip()
+                        if vid.endswith('.m3u8'): other = 'Asianload'
+                        else:
+                            if not config.get_setting('developer_mode', default=False): continue
+                            other = vid.split("/")[2]
+                            other = other.replace('https:', '').strip()
 
                     itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = vid, language = 'Vose', other = other ))
 
@@ -252,9 +285,12 @@ def findvideos(item):
                 if servidor == 'various': other = servertools.corregir_other(url)
 
                 if '/asianload.' in url:
-                   data3 = do_downloadpage(url)
+                   data4 = do_downloadpage(url)
 
-                   url = scrapertools.find_single_match(data3, 'file:"(.*?)"')
+                   url = scrapertools.find_single_match(data4, 'file:"(.*?)"')
+                   if not url: url = scrapertools.find_single_match(data4, 'file: "(.*?)"')
+
+                   if not url: continue
 
                 if servidor == 'directo':
                     if url.endswith('.m3u8'): other = 'Asianload'

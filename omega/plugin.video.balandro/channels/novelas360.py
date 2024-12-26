@@ -16,8 +16,11 @@ perpage = 20
 def do_downloadpage(url, post=None, headers=None):
     data = httptools.downloadpage(url, post=post, headers=headers).data
 
+    if '<title>Error de la base de datos</title>' in data: data = ''
+    elif 'Internal Server Error' in data: data = ''
+
     if not data:
-        if '?s=' in url:
+        if not '?s=' in url:
             if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('Novelas360', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
 
             timeout = config.get_setting('channels_repeat', default=30)
@@ -37,11 +40,19 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
-    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'series/', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = '[B]Novelas:[/B]', folder=False, text_color='moccasin' ))
 
-    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', search_type = 'tvshow', text_color = 'cyan' ))
+    itemlist.append(item.clone( title = ' - Catálogo', action = 'list_nov', url = host + 'video_tag/novelas-online/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Bíblicas', action = 'list_all', url = host + 'telenovelas/biblicas/', search_type = 'tvshow', text_color='moccasin' ))
+    itemlist.append(item.clone( title = ' - [COLOR cyan]Últimos capítulos[/COLOR]', action = 'list_nov', url = host + 'video_tag/telenovelas-online-gratis/', search_type = 'tvshow' ))
+
+    itemlist.append(item.clone( title = '[B]Series:[/B]', folder=False, text_color='moccasin' ))
+
+    itemlist.append(item.clone( title = ' - Catálogo', action = 'list_all', url = host + 'series/', search_type = 'tvshow' ))
+
+    itemlist.append(item.clone( title = ' - [COLOR cyan]Últimos episodios[/COLOR]', action = 'last_epis', search_type = 'tvshow' ))
+
+    itemlist.append(item.clone( title = 'Bíblicas', action = 'list_all', url = host + 'telenovelas/biblicas/', search_type = 'tvshow', text_color = 'yellowgreen' ))
 
     itemlist.append(item.clone( title = 'Por país', action = 'paises', search_type = 'tvshow' ))
 
@@ -83,13 +94,16 @@ def list_all(item):
     for url, title, thumb in matches[item.page * perpage:]:
         if not url or not title: continue
 
+        thumb = 'https:' + thumb
+
         SerieName = title
 
         if 'capitulo' in SerieName: SerieName = SerieName.split("capitulo")[0]
+        if 'capítulo' in SerieName: SerieName = SerieName.split("capítulo")[0]
+        if 'Capitulo' in SerieName: SerieName = SerieName.split("Capitulo")[0]
+        if 'Capítulo' in SerieName: SerieName = SerieName.split("Capítulo")[0]
 
         SerieName = SerieName.strip()
-
-        thumb = 'https:' + thumb
 
         itemlist.append(item.clone( action = 'temporadas', url = url, title = title, thumbnail = thumb,
                                     contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': '-'} ))
@@ -104,6 +118,73 @@ def list_all(item):
 
             if hasta < num_matches:
                 itemlist.append(item.clone( title='Siguientes ...', page = item.page + 1, action='list_all', text_color='coral' ))
+
+    return itemlist
+
+
+def list_nov(item):
+    logger.info()
+    itemlist = []
+
+    data = do_downloadpage(item.url)
+    data = re.sub(r'\n|\r|\t|&nbsp;|<br>|\s{2,}', "", data)
+
+    bloque = scrapertools.find_single_match(data, '>telenovelas online gratis<(.*?)<h4 class="widget-title">')
+    if not bloque: bloque = scrapertools.find_single_match(data, '>novelas online<(.*?)<h4 class="widget-title">')
+
+    matches = scrapertools.find_multiple_matches(bloque, '<div class="item-img">(.*?)</div></div>')
+
+    for match in matches:
+        url = scrapertools.find_single_match(match, '<a href="(.*?)"')
+
+        title = scrapertools.find_single_match(match, '<h3>.*?">(.*?)</a>')
+
+        if not url or not title: continue
+
+        thumb = scrapertools.find_single_match(match, 'data-srcset=.*?src="(.*?)"')
+
+        thumb = 'https:' + thumb
+
+        SerieName = title
+
+        if 'capitulo' in SerieName: SerieName = SerieName.split("capitulo")[0]
+        if 'capítulo' in SerieName: SerieName = SerieName.split("capítulo")[0]
+        if 'Capitulo' in SerieName: SerieName = SerieName.split("Capitulo")[0]
+        if 'Capítulo' in SerieName: SerieName = SerieName.split("Capítulo")[0]
+
+        SerieName = SerieName.strip()
+
+        if '/video_tag/telenovelas-online-gratis/' in item.url:
+            season: season = 1
+
+            epis = scrapertools.find_single_match(url, '-capitulo-(.*?)-')
+            if not epis: epis = scrapertools.find_single_match(url, '-capitulo-(.*?)/')
+
+            if not epis: epis = 1
+
+            titulo = str(season) + 'x' + str(epis) + ' ' + SerieName
+
+            itemlist.append(item.clone( action = 'findvideos', url = url, title = titulo, thumbnail = thumb, infoLabels={'year': '-'},
+                                        contentSerieName = SerieName, contentType = 'episode', contentSeason = season, contentEpisodeNumber = epis ))
+
+        else:
+            url = scrapertools.find_single_match(url, '(.*?)-capitulo-')
+
+            url = url.replace('/video/', '/video_tag/') + '/'
+
+            titulo = title.replace('capitulo', '').replace('Capitulo', '').replace('capítulo', '').replace('Capítulo', '').strip()
+
+            itemlist.append(item.clone( action = 'temporadas', url = url, title = titulo, thumbnail = thumb,
+                                        contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': '-'} ))
+
+    tmdb.set_infoLabels(itemlist)
+
+    if itemlist:
+        if '<ul class="pagination' in data:
+            next_page = scrapertools.find_single_match(data, '<ul class="pagination.*?class="page-numbers current">.*?href="(.*?)"')
+
+            if '/page/' in next_page:
+                itemlist.append(item.clone( title = 'Siguientes ...', action = 'list_nov', url = next_page, text_color='coral' ))
 
     return itemlist
 
@@ -136,6 +217,9 @@ def last_epis(item):
         SerieName = title
 
         if 'capitulo' in SerieName: SerieName = SerieName.split("capitulo")[0]
+        if 'capítulo' in SerieName: SerieName = SerieName.split("capítulo")[0]
+        if 'Capitulo' in SerieName: SerieName = SerieName.split("Capitulo")[0]
+        if 'Capítulo' in SerieName: SerieName = SerieName.split("Capítulo")[0]
 
         SerieName = SerieName.strip()
 
@@ -198,7 +282,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('Novelas360', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('Novelas360', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')

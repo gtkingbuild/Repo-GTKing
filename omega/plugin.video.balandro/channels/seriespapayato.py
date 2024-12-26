@@ -5,6 +5,7 @@ import sys
 PY3 = False
 if sys.version_info[0] >= 3: PY3 = True
 
+
 import re
 
 from platformcode import config, logger, platformtools
@@ -47,6 +48,17 @@ except:
 host = 'https://www3.papayaseries.net/'
 
 
+# ~ por si viene de enlaces guardados
+ant_hosts = ['https://seriespapaya.to/', 'https://papayaseries.net/']
+
+domain = config.get_setting('dominio', 'seriespapayato', default='')
+
+if domain:
+    if domain == host: config.set_setting('dominio', '', 'seriespapayato')
+    elif domain in str(ant_hosts): config.set_setting('dominio', '', 'seriespapayato')
+    else: host = domain
+
+
 def item_configurar_proxies(item):
     color_list_proxies = config.get_setting('channels_list_proxies_color', default='red')
 
@@ -81,8 +93,6 @@ def configurar_proxies(item):
 
 def do_downloadpage(url, post=None, referer=None, raise_weberror=True):
     # ~ por si viene de enlaces guardados
-    ant_hosts = ['https://seriespapaya.to/', 'https://papayaseries.net/']
-
     for ant in ant_hosts:
         url = url.replace(ant, host)
 
@@ -148,12 +158,26 @@ def acciones(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( channel='submnuctext', action='_test_webs', title='Test Web del canal [COLOR yellow][B] ' + host + '[/B][/COLOR]',
+    domain_memo = config.get_setting('dominio', 'seriespapayato', default='')
+
+    if domain_memo: url = domain_memo
+    else: url = host
+
+    itemlist.append(Item( channel='actions', action='show_latest_domains', title='[COLOR moccasin][B]Últimos Cambios de Dominios[/B][/COLOR]', thumbnail=config.get_thumb('pencil') ))
+
+    itemlist.append(Item( channel='helper', action='show_help_domains', title='[B]Información Dominios[/B]', thumbnail=config.get_thumb('help'), text_color='green' ))
+
+    itemlist.append(item.clone( channel='domains', action='test_domain_seriespapayato', title='Test Web del canal [COLOR yellow][B] ' + url + '[/B][/COLOR]',
                                 from_channel='seriespapayato', folder=False, text_color='chartreuse' ))
+
+    if domain_memo: title = '[B]Modificar/Eliminar el dominio memorizado[/B]'
+    else: title = '[B]Informar Nuevo Dominio manualmente[/B]'
+
+    itemlist.append(item.clone( channel='domains', action='manto_domain_seriespapayato', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
 
     itemlist.append(item_configurar_proxies(item))
 
-    itemlist.append(Item( channel='helper', action='show_help_seriespapayato', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('seriespapayato') ))
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'seriespapayato', thumbnail=config.get_thumb('seriespapayato') ))
 
     platformtools.itemlist_refresh()
 
@@ -222,7 +246,7 @@ def list_all(item):
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
-    matches = scrapertools.find_multiple_matches(data, '<article class="(.*?)</article>')
+    matches = scrapertools.find_multiple_matches(data, '<article(.*?)</article>')
 
     for match in matches:
         url = scrapertools.find_single_match(match, '<a href="([^"]+)"')
@@ -335,7 +359,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('SeriesPapayaTo', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('SeriesPapayaTo', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -457,7 +484,7 @@ def play(item):
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(new_url).lower()
-            if not new_server.startswith("http"): servidor = new_server
+            if new_server.startswith("http"): servidor = new_server
 
         if servidor:
            itemlist.append(item.clone(server = servidor, url = new_url))

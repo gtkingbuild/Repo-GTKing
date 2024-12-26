@@ -1,47 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import sys
-
-PY3 = False
-if sys.version_info[0] >= 3: PY3 = True
-
-import codecs
+import re, codecs
 
 from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, tmdb, servertools
-
-
-LINUX = False
-BR = False
-BR2 = False
-
-if PY3:
-    try:
-       import xbmc
-       if xbmc.getCondVisibility("system.platform.Linux.RaspberryPi") or xbmc.getCondVisibility("System.Platform.Linux"): LINUX = True
-    except: pass
-
-try:
-   if LINUX:
-       try:
-          from lib import balandroresolver2 as balandroresolver
-          BR2 = True
-       except: pass
-   else:
-       if PY3:
-           from lib import balandroresolver
-           BR = true
-       else:
-          try:
-             from lib import balandroresolver2 as balandroresolver
-             BR2 = True
-          except: pass
-except:
-   try:
-      from lib import balandroresolver2 as balandroresolver
-      BR2 = True
-   except: pass
 
 
 host = 'https://www1.pelisforte.se/'
@@ -120,21 +83,13 @@ def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
                     data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
 
     if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
-        if BR or BR2:
-            try:
-                ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
-                if ck_name and ck_value:
-                    httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
-
-                if not url.startswith(host):
-                    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
-                else:
-                    if hay_proxies:
-                        data = httptools.downloadpage_proxy('pelisforte', url, post=post, headers=headers, raise_weberror=raise_weberror).data
-                    else:
-                       data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
-            except:
-                pass
+        if not url.startswith(host):
+            data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
+        else:
+            if hay_proxies:
+                data = httptools.downloadpage_proxy('pelisforte', url, post=post, headers=headers, raise_weberror=raise_weberror).data
+            else:
+                data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
 
     if '<title>Just a moment...</title>' in data:
         if not '?s=' in url:
@@ -169,6 +124,8 @@ def acciones(item):
 
     itemlist.append(Item( channel='helper', action='show_help_pelisforte', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('pelisforte') ))
 
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'pelisforte', thumbnail=config.get_thumb('pelisforte') ))
+
     platformtools.itemlist_refresh()
 
     return itemlist
@@ -185,7 +142,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
 
-    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'ultimas-peliculas/', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'todas-las-peliculas/', search_type = 'movie' ))
 
     itemlist.append(item.clone( title = 'Harry Potter', action = 'list_all', url = host + 'sg/harry-potter-1670251190', search_type = 'movie', text_color='moccasin' ))
     itemlist.append(item.clone( title = 'Marvel', action = 'list_all', url = host + 'sg/marvel-mcu/', search_type = 'movie', text_color='moccasin' ))
@@ -193,6 +150,8 @@ def mainlist_pelis(item):
     itemlist.append(item.clone( title = 'Por idioma', action = 'idiomas', search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'movie' ))
+
+    itemlist.append(item.clone( title = 'Por letra (A - Z)', action = 'alfabetico', search_type = 'movie' ))
 
     return itemlist
 
@@ -240,6 +199,21 @@ def anios(item):
     return itemlist
 
 
+def alfabetico(item):
+    logger.info()
+    itemlist = []
+
+    url_letra = host + 'letter/'
+
+    for letra in '#ABCDEFGHIJKLMNOPQRSTUVWXYZ':
+        if letra == '#': url = url_letra + '0-9/'
+        else: url = url_letra + letra + '/'
+
+        itemlist.append(item.clone( title = letra, action = 'list_all', url = url, text_color = 'deepskyblue' ))
+
+    return itemlist
+
+
 def list_all(item): 
     logger.info()
     itemlist = []
@@ -252,7 +226,7 @@ def list_all(item):
 
     for match in matches:
         url = scrapertools.find_single_match(match, '<a href="(.*?)"')
-        if not url: url = scrapertools.find_single_match(match, '<a href=(.*?) ').strip()
+        if not url: url = scrapertools.find_single_match(match, 'href=(.*?) ').strip()
 
         title = scrapertools.find_single_match(match, 'class="entry-title">(.*?)</')
 
@@ -272,8 +246,8 @@ def list_all(item):
 
     if itemlist:
         if '>SIGUIENTE' in data:
-            next_page = scrapertools.find_single_match(data, '<a class="page-link current".*?<a class="page-link" .*?href="(.*?)"')
-            if not next_page: next_page = scrapertools.find_single_match(data, '<a class="page-link current".*?</a>.*?<a class=page-link.*?href=(.*?)>')
+            next_page = scrapertools.find_single_match(data, 'class="page-link current".*?class="page-link" .*?href="(.*?)"')
+            if not next_page: next_page = scrapertools.find_single_match(data, 'class="page-link current".*?</a>.*?class=page-link.*?href=(.*?)>')
 
             if next_page:
                 next_page = next_page.replace('&#038;', '&')
@@ -289,11 +263,12 @@ def findvideos(item):
     itemlist = []
 
     data = do_downloadpage(item.url)
+    data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
     bloque = scrapertools.find_single_match(data, '>OPCIONES<(.*?)</section>')
 
     matches = scrapertools.find_multiple_matches(bloque, 'href="#options-(.*?)">.*?<span class="server">(.*?)-(.*?)</span>')
-    if not matches: matches = scrapertools.find_multiple_matches(bloque, 'href=#options-(.*?)>.*?<span class=server>(.*?)-(.*?)</span>')
+    if not matches: matches = scrapertools.find_multiple_matches(bloque, 'href=#options-(.*?)>.*?<spanclass=server>(.*?)-(.*?)</span>')
 
     ses = 0
 
@@ -317,11 +292,12 @@ def findvideos(item):
         else: lang = idioma
 
         url = scrapertools.find_single_match(data, '<div id="options-' + opt + '".*?src="([^"]+)"')
-        if not url: url = scrapertools.find_single_match(data, '<div id=options-' + opt + '.*?<iframe data-src="(.*?)"')
+        if not url: url = scrapertools.find_single_match(data, '<divid=options-' + opt + '.*?data-src="(.*?)"')
 
         if url:
             servidor = servertools.corregir_servidor(srv)
 
+            ref = ''
             other = ''
 
             if srv == 'ok':
@@ -329,7 +305,8 @@ def findvideos(item):
                 srv = 'ok'
             elif srv == 'okhd':
                 servidor = 'directo'
-                srv = 'okhd'
+                srv = 'tiwi'
+                ref = item.url
 
             elif srv == 'playpf': servidor = 'directo'
             elif srv == 'ds': servidor = 'directo'
@@ -338,7 +315,8 @@ def findvideos(item):
 
             elif servidor == 'various': other = servertools.corregir_other(srv)
 
-            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = lang , other = other.capitalize()))
+            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, ref = ref,
+                            language = lang, other = other.capitalize()))
 
     # ~ descargas recaptcha
 
@@ -389,8 +367,9 @@ def play(item):
                     return 'Servidor [COLOR plum]No Soportado[/COLOR]'
                 elif '/playpf.link/' in url:
                     return 'Servidor [COLOR plum]No Soportado[/COLOR]'
-                elif '/okhd.' in url:
-                    return 'Servidor [COLOR plum]No Soportado[/COLOR]'
+
+                if item.ref:
+                    url += "|Referer=" + item.ref
 
                 servidor = servertools.get_server_from_url(url)
                 servidor = servertools.corregir_servidor(servidor)
@@ -435,15 +414,16 @@ def play(item):
     if url:
         if 'gounlimited' in url:
             return 'Requiere verificación [COLOR red]reCAPTCHA[/COLOR]'
-        elif '/okhd.' in url:
-            return 'Servidor [COLOR plum]No Soportado[/COLOR]'
+
+        if item.ref:
+            url += "|Referer=" + item.ref
 
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(url).lower()
-            if not new_server.startswith("http"): servidor = new_server
+            if new_server.startswith("http"): servidor = new_server
 
         itemlist.append(item.clone(server = servidor, url = url))
 

@@ -10,6 +10,30 @@
       {
         "pattern": "https://tiwi.kiwi/embed-([a-z0-9]+).html",
         "url": "https://tiwi.kiwi/embed-\\1.html"
+      },
+      {
+        "pattern": "(https://videohb.(?:com|net|org|\\w{2,4})/(?:e|d|v)/[a-z0-9]+)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "https://media.cm/(?:d/|)([a-z0-9]+)",
+        "url": "https://media.cm/\\1"
+      },
+      {
+        "pattern": "https://vidello.net/(?:embed-|)([a-z0-9]+.html)",
+        "url": "https://vidello.net/\\1"
+      },
+      {
+        "pattern": "https://pbflux.com/(?:embed-|)([a-z0-9]+.html)",
+        "url": "https://pbflux.com/\\1"
+      },
+      {
+        "pattern": "(https://okhd.nu/(?:embed-|)[a-z0-9]+.html(:?\\|Referer=[A-z0-9./:\\?]+|))",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://tubexplayer.com/embed-[a-z0-9]+)",
+        "url": "\\1.html"
       }
     ]
   }

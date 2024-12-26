@@ -350,7 +350,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('PepeCineTop', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('PepeCineTop', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -441,9 +444,13 @@ def findvideos(item):
         if not servidor == 'directo':
             new_url = servertools.normalize_url(servidor, new_url)
 
+            other = ''
+            if servidor == 'various': other = servertools.corregir_other(new_url)
+
             if servidor == 'zplayer': new_url = new_url + '|' + host
 
-            itemlist.append(Item( channel = item.channel, action = 'play', title = '', server = servidor, url = new_url, language = idioma, quality = qlty ))
+            itemlist.append(Item( channel = item.channel, action = 'play', title = '', server = servidor, url = new_url,
+                                  language = idioma, quality = qlty, other = other ))
 
             continue
 
@@ -459,13 +466,17 @@ def findvideos(item):
 
             if servidor == 'directo': continue
 
+            other = ''
+            if servidor == 'various': other = servertools.corregir_other(link)
+
             if idioma == 'Ver Online':
                lang2 = lang2.strip()
                idioma = IDIOMAS.get(lang2, lang2)
 
             if servidor == 'zplayer': link = link + '|' + host
 
-            itemlist.append(Item( channel = item.channel, action = 'play', title = '', server = servidor, url = link, language = idioma, quality = qlty ))
+            itemlist.append(Item( channel = item.channel, action = 'play', title = '', server = servidor, url = link,
+                                  language = idioma, quality = qlty, other = other ))
 
     if not itemlist:
         if not ses == 0:

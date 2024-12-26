@@ -160,9 +160,10 @@ def temporadas(item):
     if not temporadas:
        _bloque = scrapertools.find_single_match(data, '</h2>(.*?)<h2 class="wp-block-heading has-text-align-center"')
 
-       temporadas = re.compile('<h2 class="entry-title">.*?Temporada (.*?)</h2>', re.DOTALL).findall(_bloque)
+       if not '>TODOS LOS CAPÍTULOS<' in data:
+           temporadas = re.compile('<h2 class="entry-title">.*?Temporada (.*?)</h2>', re.DOTALL).findall(_bloque)
 
-       if temporadas: urls = True
+           if temporadas: urls = True
 
     if not temporadas:
         if config.get_setting('channels_seasons', default=True):
@@ -269,7 +270,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('Creyente', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('Creyente', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -314,9 +318,25 @@ def episodios(item):
         thumb = scrapertools.find_single_match(match, 'src="(.*?)"')
 
         epis = scrapertools.find_single_match(title, 'Capitulo(.*?)$').strip()
+
+        epis = epis.replace('»', '').replace('FINAL', '').replace('Final', '').replace('final', '').strip()
+
+
+        if 'Temporada' in epis: epis = scrapertools.find_single_match(epis, '(.*?)Temporada').strip()
+        if 'Audio' in epis: epis = scrapertools.find_single_match(epis, '(.*?)Audio').strip()
+        if 'Subtitulada' in epis: epis = scrapertools.find_single_match(epis, '(.*?)Subtitulada').strip()
+        if 'HD' in epis: epis = scrapertools.find_single_match(epis, '(.*?)HD').strip()
+
         if not epis: epis = 1
 
-        itemlist.append(item.clone( action='findvideos', url = url, title = title, thumbnail = thumb, sub = sub,
+        title = title.replace('Temporada', '[COLOR tan]Temp.[/COLOR]').replace('temporada', '[COLOR tan]Temp.[/COLOR]')
+        title = title.replace('Capitulo', '[COLOR tan]Cap.[/COLOR]').replace('capitulo', '[COLOR tan]Cap.[/COLOR]')
+
+        title = title.replace(' » ', ' ')
+
+        titulo = str(item.contentSeason) + 'x' + str(epis) + ' ' + title
+
+        itemlist.append(item.clone( action='findvideos', url = url, title = titulo, thumbnail = thumb, sub = sub,
                                     contentType = 'episode', contentSeason = item.contentSeason, contentEpisodeNumber=epis ))
 
         if len(itemlist) >= item.perpage:
@@ -326,7 +346,7 @@ def episodios(item):
 
     if itemlist:
         if len(matches) > ((item.page + 1) * item.perpage):
-            itemlist.append(item.clone( title="Siguientes ...", action="episodios", page = item.page + 1, perpage = item.perpage, i = i, text_color='coral' ))
+            itemlist.append(item.clone( title="Siguientes ...", action="episodios", page = item.page + 1, perpage = item.perpage, text_color='coral' ))
 
     return itemlist
 

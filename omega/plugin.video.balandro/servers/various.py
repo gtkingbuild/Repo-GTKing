@@ -37,6 +37,8 @@ def get_video_url(page_url, url_referer=''):
     logger.info("(page_url='%s')" % page_url)
     video_urls = []
 
+    ini_page_url = page_url
+
     if xbmc.getCondVisibility('System.HasAddon("script.module.resolveurl")'):
         txt_server = 'Unknow'
 
@@ -59,17 +61,30 @@ def get_video_url(page_url, url_referer=''):
         elif 'uploadraja' in page_url: txt_server = 'Uuloadraja'
         elif 'rumble' in page_url: txt_server = 'Rumble'
         elif 'qiwi' in page_url: txt_server = 'Qiwi'
+        elif 'streamsilk' in page_url: txt_server = 'Streamsilk'
+
+        elif 'terabox' in page_url:
+              txt_server = 'Terabox'
+
+              page_url = page_url.replace('terabox.app/', 'terabox.com/')
 
         elif 'streamruby' in page_url or 'sruby' in page_url or 'rubystream' in page_url or 'stmruby' in page_url or 'rubystm' in page_url: txt_server = 'Streamruby'
 
         elif 'goodstream' in page_url:
               txt_server = 'Goodstream'
 
-              if not '/video/embed/' in page_url: page_url = page_url.replace('/goodstream.uno/', '/goodstream.uno/video/embed/')
+              if '/embed-' in page_url:
+                  page_url = page_url.replace('/goodstream.uno/embed-', '/goodstream.uno/video/embed/')
+                  page_url = page_url.replace('/goodstream.one/embed-', '/goodstream.uno/video/embed/')
+                  page_url = page_url.replace('.html', '')
+ 
+              if not '/video/embed/' in page_url:
+                  page_url = page_url.replace('/goodstream.uno/', '/goodstream.uno/video/embed/')
+                  page_url = page_url.replace('/goodstream.one/', '/goodstream.uno/video/embed/')
 
         elif 'filemoon' in page_url or 'fmoonembed' in page_url or 'embedmoon' in page_url or 'moonjscdn' in page_url:
               txt_server = 'Filemoon'
-              page_url = page_url.replace('/filemoon.to/', '/filemoon.sx/').replace('/filemoon.in/', '/filemoon.sx/').replace('/filemoon.nl/', '/filemoon.sx/').replace('/filemoon.wf/', '/filemoon.sx/').replace('/filemoon.eu/', '/filemoon.sx/').replace('/filemoon.art/', '/filemoon.sx/').replace('/filemoon.link/', '/filemoon.sx/').replace('/filemoon.top/', '/filemoon.sx/').replace('/filemoon.lat/', '/filemoon.sx/')
+              page_url = page_url.replace('/filemoon.to/', '/filemoon.sx/').replace('/filemoon.in/', '/filemoon.sx/').replace('/filemoon.nl/', '/filemoon.sx/').replace('/filemoon.wf/', '/filemoon.sx/').replace('/filemoon.eu/', '/filemoon.sx/').replace('/filemoon.art/', '/filemoon.sx/').replace('/filemoon.link/', '/filemoon.sx/').replace('/filemoon.top/', '/filemoon.sx/').replace('/filemoon.lat/', '/filemoon.sx/').replace('/filemoon.org/', '/filemoon.sx/').replace('/filemoon.online/', '/filemoon.sx/')
               page_url = page_url.replace('/fmoonembed.pro/', '/filemoon.sx/').replace('/embedmoon.xyz/', '/filemoon.sx/').replace('/moonjscdn.info/', '/filemoon.sx/')
 
         elif 'streamhub' in page_url:
@@ -94,12 +109,15 @@ def get_video_url(page_url, url_referer=''):
               txt_server = 'Yandex'
               page_url = page_url.replace('/yadi.sk/', '/disk.yandex.ru/')
 
-        elif 'streamwish' in page_url or 'strwish' in page_url or 'embedwish' in page_url or 'wishembed' in page_url or 'awish' in page_url or 'dwish' in page_url or 'mwish' in page_url or 'wishfast' in page_url or 'sfastwish' in page_url or 'doodporn' in page_url or 'flaswish' in page_url or 'obeywish' in page_url or 'cdnwish' in page_url or 'asnwish' in page_url or 'flastwish' in page_url or 'jodwish' in page_url or 'swhoi' in page_url or 'fsdcmo' in page_url or 'swdyu' in page_url or 'wishonly' in page_url:
+        elif 'streamwish' in page_url or 'strwish' in page_url or 'embedwish' in page_url or 'wishembed' in page_url or 'awish' in page_url or 'dwish' in page_url or 'mwish' in page_url or 'wishfast' in page_url or 'sfastwish' in page_url or 'doodporn' in page_url or 'flaswish' in page_url or 'obeywish' in page_url or 'cdnwish' in page_url or 'asnwish' in page_url or 'flastwish' in page_url or 'jodwish' in page_url or 'swhoi' in page_url or 'fsdcmo' in page_url or 'swdyu' in page_url or 'wishonly' in page_url or 'playerwish' in page_url or 'hlswish' in page_url or 'wish' in page_url or 'iplayerhls' in page_url or 'hlsflast' in page_url:
               txt_server = 'Streamwish'
               page_url = page_url.replace('/streamwish.com/', '/streamwish.to/').replace('/streamwish.top/', '/streamwish.to/').replace('/streamwish.site/', '/streamwish.to/').replace('/strwish.xyz/', '/streamwish.to/').replace('/strwish.com/', '/streamwish.to/').replace('/embedwish.com/', '/streamwish.to/').replace('/wishembed.pro/', '/streamwish.to/')
               page_url = page_url.replace('/awish.pro/', '/streamwish.to/').replace('/dwish.pro/', '/streamwish.to/').replace('/mwish.pro/', '/streamwish.to/').replace('/wishfast.top/', '/streamwish.to/').replace('/sfastwish.com/', '/streamwish.to/').replace('/doodporn.xyz/', '/streamwish.to/')
               page_url = page_url.replace('/flaswish.com/', '/streamwish.to/').replace('/obeywish.com/', '/streamwish.to/').replace('/cdnwish.com/', '/streamwish.to/').replace('/asnwish.com/', '/streamwish.to/').replace('/flastwish.com/', '/streamwish.to/').replace('/jodwish.com/', '/streamwish.to/')
-              page_url = page_url.replace('/swhoi.com/', '/streamwish.to/').replace('/fsdcmo.sbs/', '/streamwish.to/').replace('/swdyu.com/', '/streamwish.to/').replace('/wishonly.site/', '/streamwish.to/')
+              page_url = page_url.replace('/swhoi.com/', '/streamwish.to/').replace('/fsdcmo.sbs/', '/streamwish.to/').replace('/swdyu.com/', '/streamwish.to/').replace('/wishonly.site/', '/streamwish.to/').replace('/playerwish.com/', '/streamwish.to/')
+              page_url = page_url.replace('/hlswish.com/', '/streamwish.to/').replace('/swishsrv.com/', '/streamwish.to/').replace('/streamwish.fun/', '/streamwish.to/')
+
+              page_url = page_url.replace('/iplayerhls.com/', '/streamwish.to/').replace('/hlsflast.com/', '/streamwish.to/')
 
         elif 'desiupload' in page_url:
               txt_server = 'Desiupload'
@@ -138,9 +156,9 @@ def get_video_url(page_url, url_referer=''):
               txt_server = 'Lulustream'
               page_url = page_url.replace('/luluvdo.com/', '/lulustream.com/').replace('/lulu.st/', '/lulustream.com/').replace('/ponmi.sbs/', '/lulustream.com/')
 
-        elif 'turboviplay' in page_url or 'emturbovid' in page_url or 'tuborstb' in page_url or 'streamsilk' in page_url:
+        elif 'turboviplay' in page_url or 'emturbovid' in page_url or 'tuborstb' in page_url:
               txt_server = 'Turboviplay'
-              page_url = page_url.replace('/turboviplay.com/', '/emturbovid.com/').replace('/tuborstb.co/', '/emturbovid.com/').replace('/streamsilk.com/', '/emturbovid.com/')
+              page_url = page_url.replace('/turboviplay.com/', '/emturbovid.com/').replace('/tuborstb.co/', '/emturbovid.com/')
 
         elif 'file-upload' in page_url:
               txt_server = 'Fileupload'
@@ -160,13 +178,22 @@ def get_video_url(page_url, url_referer=''):
               txt_server = 'Twitch'
               page_url = page_url.replace('/player.twitch.tv/', '/www.twitch.tv/')
 
-        elif 'vidhide' in page_url:
+        elif 'vidhide' in page_url or 'stblion' in page_url or 'dhtpre' in page_url or 'dramacool' in page_url:
               txt_server = 'Vidhidepro'
               page_url = page_url.replace('/embed/', '/v/').replace('/file/', '/s/').replace('/download/', '/v/')
 
               page_url = page_url.replace('/vidhide.com/v/', '/vidhidepro.com/s/').replace('/vidhidepro.com/v/', '/vidhidepro.com/s/').replace('/vidhidevip.com/v/', '/vidhidepro.com/s/').replace('/vidhide.com/f/', '/vidhidepro.com/s/').replace('/vidhidepro.com/f/', '/vidhidepro.com/s/').replace('/vidhidevip.com/f/', '/vidhidepro.com/s/')
 
               page_url = page_url.replace('/vidhidepre.com/v/', '/vidhidepro.com/s/').replace('/vidhidepre.com/f/', '/vidhidepro.com/s/')
+              page_url = page_url.replace('/vidhideplus.com/v/', '/vidhidepro.com/s/').replace('/vidhideplus.com/f/', '/vidhidepro.com/s/')
+              page_url = page_url.replace('/vidhide.fun/v/', '/vidhidepro.com/s/').replace('/vidhide.fun/f/', '/vidhidepro.com/s/')
+              page_url = page_url.replace('/vidhidehub.com/v/', '/vidhidepro.com/s/').replace('/vidhidehub.com/f/', '/vidhidepro.com/s/')
+
+              page_url = page_url.replace('/stblion.xyz/v/', '/vidhidepro.com/s/').replace('/stblion.xyz/f/', '/vidhidepro.com/s/')
+
+              page_url = page_url.replace('/dhtpre.com/v/', '/vidhidepro.com/s/').replace('/dhtpre.com/f/', '/vidhidepro.com/s/')
+
+              page_url = page_url.replace('/dramacool.men/v/', '/vidhidepro.com/s/').replace('/dramacool.men/f/', '/vidhidepro.com/s/')
 
         if txt_server == 'Unknow': return 'Servidor desconocido'
 
@@ -194,7 +221,9 @@ def get_video_url(page_url, url_referer=''):
             el_srv += ('ResolveUrl[/B][/COLOR]')
             platformtools.dialog_notification(config.__addon_name, el_srv, time=3000)
 
-            return 'Vídeo no encontrado con ResolveUrl'
+            page_url = ini_page_url
+
+            return 'No se pudo Reproducir el Vídeo con ResolveUrl'
 
         except:
             import traceback
@@ -211,13 +240,10 @@ def get_video_url(page_url, url_referer=''):
 
             if 'resolveurl.resolver.ResolverError:' in traceback.format_exc():
                 trace = traceback.format_exc()
-                if 'File Not Found or' in trace or 'The requested video was not found' in trace or 'File deleted' in trace or 'No video found' in trace or 'No playable video found' in trace or 'Video cannot be located' in trace or 'file does not exist' in trace or 'Video not found' in trace:
+                if 'File Removed' in trace or 'File Not Found or' in trace or 'The requested video was not found' in trace or 'File deleted' in trace or 'No video found' in trace or 'No playable video found' in trace or 'Video cannot be located' in trace or 'file does not exist' in trace or 'Video not found' in trace:
                     return 'Archivo inexistente ó eliminado'
                 elif 'No se ha encontrado ningún link al' in trace or 'Unable to locate link' in trace or 'Video Link Not Found' in trace:
-                    return 'Fichero sin link al vídeo'
-
-                elif 'Wrong captcha. Please try again.' in trace:
-                    return 'Captcha erróneo. [COLOR cyan][B]Inténtelo de nuevo[/COLOR]'
+                    return 'Fichero sin link al vídeo ó restringido'
 
             elif '<urlopen error' in traceback.format_exc():
                 return 'No se puede establecer la conexión'

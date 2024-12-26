@@ -7,7 +7,7 @@ from core.item import Item
 from core import httptools, scrapertools, servertools
 
 
-host = 'https://www4.hentaila.com/'
+host = 'https://www5.hentaila.com/'
 
 
 def mainlist(item):
@@ -35,7 +35,7 @@ def mainlist_pelis(item):
     itemlist.append(item.clone( title = 'En emisión', action = 'list_all', url = host + 'directorio?status[1]=on' ))
     itemlist.append(item.clone( title = 'Finalizados', action = 'list_all', url = host + 'directorio?status[2]=on' ))
 
-    itemlist.append(item.clone( title = 'Sin censura', action = 'list_all', url = host + 'directorio?uncensored=on' ))
+    itemlist.append(item.clone( title = 'Sin censura', action = 'list_all', url = host + 'directorio?uncensored=on', text_color = 'tan' ))
 
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias' ))
 
@@ -51,12 +51,12 @@ def categorias(item):
 
     bloque = scrapertools.find_single_match(data, '>Generos<(.*?)</section>')
 
-    matches = re.compile('<li.*?<a href="(.*?)".*?class>(.*?)</a>', re.DOTALL).findall(bloque)
+    matches = re.compile('<a href="(.*?)".*?class.*?>(.*?)</a>', re.DOTALL).findall(bloque)
 
     for genre, title in matches:
         url = host[:-1] + genre
 
-        itemlist.append(item.clone( action = 'list_all', url = url, title = title, text_color='orange' ))
+        itemlist.append(item.clone( action = 'list_all', url = url, title = title, text_color='moccasin' ))
 
     return sorted(itemlist, key=lambda i: i.title)
 
@@ -121,7 +121,9 @@ def episodios(item):
 
         thumb = host[:-1] + thumb
 
-        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, contentType = 'movie', contentTitle = title, contentExtra='adults' ))
+        titulo = title.replace('Episodio', '[COLOR goldenrod]Epis.[/COLOR]')
+
+        itemlist.append(item.clone( action = 'findvideos', url = url, title = titulo, thumbnail = thumb, contentType = 'movie', contentTitle = title, contentExtra='adults' ))
 
     return itemlist
 

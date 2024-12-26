@@ -3,7 +3,7 @@
   "name": "AnimeSpace",
   "thumbnail": "animespace.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": false,
   "search_types": ["tvshow"],
@@ -13,5 +13,5 @@
 
   "clusters": ["anime"],
 
-  "notes": "Web dedicada exclusivamente al anime"
+  "notes": "Web CERRADA. Web dedicada exclusivamente al anime"
 }

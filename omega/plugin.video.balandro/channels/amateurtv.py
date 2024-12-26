@@ -36,8 +36,9 @@ def mainlist_pelis(item):
     itemlist.append(item.clone( title = 'Mujeres', action = 'list_all', url = host  + '/v3/readmodel/cache/cams/w/0/50/es/' ))
     itemlist.append(item.clone( title = 'Hombres', action = 'list_all', url = host  + '/v3/readmodel/cache/cams/m/0/50/es/' ))
     itemlist.append(item.clone( title = 'Parejas', action = 'list_all', url = host  + '/v3/readmodel/cache/cams/c/0/50/es/' ))
-    itemlist.append(item.clone( title = 'Transexuales', action = 'list_all', url = host  + '/v3/readmodel/cache/cams/t/0/50/es/' ))
-    itemlist.append(item.clone( title = 'Privados', action = 'list_all', url = host  + '/v3/readmodel/cache/cams/p/0/50/es/' ))
+    itemlist.append(item.clone( title = 'Transsexuales', action = 'list_all', url = host  + '/v3/readmodel/cache/cams/t/0/50/es/' ))
+
+    itemlist.append(item.clone( title = 'Privados', action = 'list_all', url = host  + '/v3/readmodel/cache/cams/p/0/50/es/', text_color = 'tan' ))
 
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url = host  + '/v3/tag/list' ))
 
@@ -68,7 +69,7 @@ def categorias(item):
 
         title = title.capitalize()
 
-        itemlist.append(item.clone (action='list_list', title=title, url=url, text_color='tan' ))
+        itemlist.append(item.clone (action='list_list', title=title, url=url, text_color='moccasin' ))
     
     return sorted(itemlist,key=lambda x: x.title)
 
@@ -94,7 +95,7 @@ def list_list(item):
 
         titulo = name.replace('_', '').capitalize()
 
-        if country: titulo = titulo + ' [COLOR orange]' + str(country).lower() + '[/COLOR]'
+        if country: titulo = titulo + ' [COLOR violet]' + str(country).lower() + '[/COLOR]'
 
         if age:
            if not str(age) == '[None]':
@@ -146,7 +147,7 @@ def list_all(item):
 
         titulo = name.replace('_', '').capitalize()
 
-        if country: titulo = titulo + ' [COLOR orange]' + str(country).lower() + '[/COLOR]'
+        if country: titulo = titulo + ' [COLOR violet]' + str(country).lower() + '[/COLOR]'
 
         if age:
            if not str(age) == '[None]':

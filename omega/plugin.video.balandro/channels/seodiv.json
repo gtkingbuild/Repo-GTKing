@@ -3,7 +3,7 @@
   "name": "SeoDiv",
   "thumbnail": "seodiv.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": false,
   "search_types": ["tvshow"],
@@ -13,5 +13,5 @@
 
   "clusters": ["notice", "onlyone", "suggested", "infantil", "classic", "kids"],
 
-  "notes": "Series infantiles clásicas en idioma orignal de emisión."
+  "notes": "Web CERRADA. Series infantiles clásicas en idioma orignal de emisión."
 }

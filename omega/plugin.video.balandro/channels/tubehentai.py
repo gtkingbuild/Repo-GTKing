@@ -9,8 +9,6 @@ from core import httptools, scrapertools
 
 host = 'https://tubehentai.com/'
 
-perpage = 30
-
 
 def mainlist(item):
     return mainlist_pelis(item)
@@ -28,15 +26,15 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Buscar vídeo ...', action = 'search', search_type = 'movie', text_color = 'orange' ))
 
-    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'most-recent/'))
+    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'most-recent/' ))
 
-    itemlist.append(item.clone( title = 'Al azar', action = 'list_all', url = host + 'random/'))
+    itemlist.append(item.clone( title = 'Al azar', action = 'list_all', url = host + 'random/' , text_color = 'pink' ))
 
-    itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = host + 'most-viewed/'))
-    itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = host + 'top-rated/'))
+    itemlist.append(item.clone( title = 'Más populares', action = 'list_all', url = host + 'most-viewed/' ))
+    itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = host + 'top-rated/' ))
     itemlist.append(item.clone( title = 'Long play', action = 'list_all', url = host + 'longest/' ))
 
-    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias'))
+    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias' ))
 
     return itemlist
 

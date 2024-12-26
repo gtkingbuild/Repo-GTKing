@@ -203,6 +203,8 @@ def findvideos(item):
 
         servidor = scrapertools.find_single_match(enlace, "domain=(?:www.|dl.|)([^'.]+)")
 
+        if 'up-4ever' in servidor: continue
+
         other = ''
         if servidor == 'qiwi': other = 'Qiwi'
 
@@ -257,9 +259,21 @@ def play(item):
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(item.url).lower()
-            if not new_server.startswith("http"): servidor = new_server
+            if new_server.startswith("http"): servidor = new_server
 
-        if servidor and servidor != 'directo':
+        if servidor:
+            if '.fembed.' in item.url:
+               return 'Servidor [COLOR red]Obsoleto[/COLOR]'
+            elif 'jetload.' in item.url:
+               return 'Servidor [COLOR red]Obsoleto[/COLOR]'
+
+            elif '.up-4ever'in item.url:
+               return 'Servidor [COLOR goldenrod]No Soportado[/COLOR]'
+
+            if '.fivemanage.' in item.url:
+                if item.url.startswith("//"): item.url = 'https:' + item.url
+                servidor = 'directo'
+
             servidor = servertools.corregir_servidor(servidor)
 
             url = servertools.normalize_url(servidor, item.url)

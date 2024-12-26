@@ -337,7 +337,7 @@ def last_epis(item):
 
         if not epis: epis = 1
 
-        titulo = title.replace('capitulo', '[COLOR goldenrod]capitulo[/COLOR]')
+        titulo = title.replace('capitulo', '[COLOR goldenrod]Epis.[/COLOR]')
 
         itemlist.append(item.clone( action='findvideos', title = titulo, thumbnail = thumb, url = url,
                                     contentSerieName = SerieName, contentType = 'episode', contentSeason = season, contentEpisodeNumber = epis ))
@@ -391,7 +391,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('DoramasYt', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('DoramasYt', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -430,10 +433,10 @@ def episodios(item):
     for match in matches[item.page * item.perpage:]:
         url = _url + '-episodio-' + match
 
-        title = 'Capítulo ' + match
+        title = 'Epis. ' + match
 
         if item.search_type == 'movie': titulo = item.contentTitle + ' ' + title
-        else: titulo = title + ' ' + item.contentSerieName
+        else: titulo = '1x'+ str(match) + ' ' + title + ' ' + item.contentSerieName
 
         itemlist.append(item.clone( action='findvideos', url = url, title = titulo,
                                     contentType = 'episode', contentSeason = 1, contentEpisodeNumber=match ))
@@ -524,6 +527,8 @@ def findvideos(item):
         elif srv == 'ok':
           if '.fireload.com/' in url: continue
 
+          elif '/1cloudfile.' in url: srv = ''
+
           elif '/mega.nz/' in url: srv = 'mega'
 
         if not srv: srv = servertools.get_server_from_url(url)
@@ -558,9 +563,6 @@ def play(item):
        if '?url=' in url: url = scrapertools.find_single_match(url, 'url=(.*?)$')
 
     if url:
-        if '/videa.' in url:
-            return 'Servidor [COLOR tan]Videa[/COLOR] NO Soportado'
-
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 
@@ -568,7 +570,7 @@ def play(item):
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(url).lower()
-            if not new_server.startswith("http"): servidor = new_server
+            if new_server.startswith("http"): servidor = new_server
 
         itemlist.append(item.clone(server = servidor, url = url))
 

@@ -32,7 +32,8 @@ def mainlist_pelis(item):
     itemlist.append(item.clone( title = 'Buscar vídeo ...', action = 'search', search_type = 'movie', text_color = 'orange' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host ))
-    itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = host + 'mas-vistos/' ))
+
+    itemlist.append(item.clone( title = 'Más populares', action = 'list_all', url = host + 'mas-vistos/' ))
     itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = host + 'mas-votados/' ))
 
     itemlist.append(item.clone( title = 'Por canal', action = 'canales', url= host + 'sitios/' ))
@@ -56,7 +57,7 @@ def canales(item):
     for thumb, url, title in matches:
          url = host[:-1] + url
 
-         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color = 'orange' ))
+         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color = 'violet' ))
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<a href="([^"]+)" class="btn-pagination">Siguiente')
@@ -85,7 +86,7 @@ def categorias(item):
 
          url = host[:-1] + url
 
-         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color='tan' ))
+         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color='moccasin' ))
 
     return sorted(itemlist,key=lambda x: x.title)
 
@@ -99,18 +100,15 @@ def pornstars(item):
 
     patron = '<div class="box-chica">.*?'
     patron += '<a href="([^"]+)".*?'
-    patron += 'data-src="(.*?)".*?'
+    patron += "data-src='(.*?)'.*?"
     patron += '<h4><a href="[^"]+">([^<]+)</a></h4>.*?'
-    patron += '<a class="total-videos".*?>([^<]+)</a>'
 
     matches = re.compile(patron, re.DOTALL).findall(data)
 
-    for url, thumb, title, videos in matches:
+    for url, thumb, title in matches:
          url = host[:-1] + url
 
-         titulo = '[COLOR moccasin]%s[/COLOR] (%s)' % (title, videos.replace('vídeos', '').strip())
-
-         itemlist.append(item.clone (action='list_all', title=titulo, url=url, thumbnail=thumb ))
+         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color='orange' ))
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<a href="([^"]+)" class="btn-pagination">Siguiente')

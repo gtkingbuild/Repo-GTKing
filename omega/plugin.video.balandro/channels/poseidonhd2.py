@@ -51,6 +51,8 @@ def acciones(item):
 
     itemlist.append(item.clone( channel='domains', action='manto_domain_poseidonhd2', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
 
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'poseidonhd2', thumbnail=config.get_thumb('poseidonhd2') ))
+
     platformtools.itemlist_refresh()
 
     return itemlist
@@ -302,7 +304,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('PoseidonHd2', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('PoseidonHd2', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -339,7 +344,9 @@ def episodios(item):
     for title, epis, thumb in matches[item.page * item.perpage:]:
         url = item.url + '/temporada/' + str(item.contentSeason) + '/episodio/' + epis
 
-        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb,
+        titulo = str(item.contentSeason) + 'x' + str(epis) + ' ' + title
+
+        itemlist.append(item.clone( action = 'findvideos', url = url, title = titulo, thumbnail = thumb,
                                     contentType = 'episode', contentSeason = item.contentSeason, contentEpisodeNumber = epis ))
 
         if len(itemlist) >= item.perpage:
@@ -393,6 +400,8 @@ def findvideos(item):
                 if srv:
                    other = ''
 
+                   if srv == 'plustream': continue
+
                    if srv == 'drive': srv ='gvideo'
                    elif srv == 'ok-ru': srv ='okru'
                    elif srv == 'voex': srv ='voe'
@@ -400,7 +409,9 @@ def findvideos(item):
                    elif srv == 'filemoon': other = srv
                    elif srv == 'streamwish': other = srv
                    elif srv == 'filelions': other = srv
-                   elif srv == 'player' or srv == 'embed' or srv == 'plustream':
+                   elif srv == 'vidhide': other = srv
+
+                   elif srv == 'player' or srv == 'embed':
                       other = srv
                       srv = ''
 
@@ -540,7 +551,7 @@ def play(item):
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(url).lower()
-            if not new_server.startswith("http"): servidor = new_server
+            if new_server.startswith("http"): servidor = new_server
 
         itemlist.append(item.clone(server = servidor, url = url))
 

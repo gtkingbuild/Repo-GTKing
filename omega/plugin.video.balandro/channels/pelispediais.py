@@ -195,7 +195,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('PelisPediaIs', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('PelisPediaIs', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -241,6 +244,10 @@ def episodios(item):
         thumb = 'https:' + thumb
 
         epis = scrapertools.find_single_match(match, '<span class="num-epi">.*?x(.*?)</span>')
+
+        title = title.replace('Temporada', '[COLOR tan]Temp.[/COLOR]')
+
+        title = title.replace('Capitulo', '[COLOR goldenrod]Epis.[/COLOR]').replace('Capítulo', '[COLOR goldenrod]Epis.[/COLOR]')
 
         titulo = str(item.contentSeason) + 'x' + str(epis) + ' ' + title
 

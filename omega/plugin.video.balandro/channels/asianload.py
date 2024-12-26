@@ -7,12 +7,12 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-host = 'https://streamcool.pro/'
+host = 'https://embasic.pro/'
 
 
 def do_downloadpage(url, post=None, headers=None):
     # ~ por si viene de enlaces guardados
-    ant_hosts = ['https://asianhdplay.pro/']
+    ant_hosts = ['https://asianhdplay.pro/', 'https://streamcool.pro/']
 
     for ant in ant_hosts:
         url = url.replace(ant, host)
@@ -32,7 +32,7 @@ def mainlist_animes(item):
 
     itemlist.append(item.clone( title = 'Buscar dorama ...', action = 'search', search_type = 'tvshow', text_color='firebrick' ))
 
-    itemlist.append(item.clone( title = 'Episodios:', folder=False, text_color='moccasin' ))
+    itemlist.append(item.clone( title = '[B]Episodios:[/B]', folder=False, text_color='moccasin' ))
 
     itemlist.append(item.clone( title = ' - Catálogo', action = 'list_all', url = host, search_type = 'tvshow' ))
 
@@ -74,6 +74,7 @@ def list_all(item):
         if " (" in title:
            year = scrapertools.find_single_match(title, '(\d{4})')
            if year: title = title.replace('(' + year + ')', '').strip()
+           else: year = '-'
 
         url = host[:-1] + url
 
@@ -86,7 +87,7 @@ def list_all(item):
 
             PeliName = PeliName.strip()
 
-            title = title.replace('Episode', '[COLOR deepskyblue]Episode[/COLOR]')
+            title = title.replace('Episode', '[COLOR deepskyblue]Film[/COLOR]')
 
             itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb,
                                         contentType='movie', contentTitle=PeliName, infoLabels={'year': year} ))
@@ -94,10 +95,13 @@ def list_all(item):
             SerieName = title.replace('(Dub)' , '')
 
             if "Episode" in SerieName: SerieName = SerieName.split("Episode")[0]
-            elif "Season" in SerieName: SerieName = SerieName.split("Season")[0]
-            elif " S1 " in SerieName: SerieName = SerieName.split(" S1 ")[0]
-            elif " S2 " in SerieName: SerieName = SerieName.split(" S2 ")[0]
-            elif " S3 " in SerieName: SerieName = SerieName.split(" S3 ")[0]
+            if "Episodio" in SerieName: SerieName = SerieName.split("Episodio")[0]
+
+            if "Season" in SerieName: SerieName = SerieName.split("Season")[0]
+            if "season" in SerieName: SerieName = SerieName.split("season")[0]
+            if " S1 " in SerieName: SerieName = SerieName.split(" S1 ")[0]
+            if " S2 " in SerieName: SerieName = SerieName.split(" S2 ")[0]
+            if " S3 " in SerieName: SerieName = SerieName.split(" S3 ")[0]
 
             SerieName = SerieName.strip()
 
@@ -106,12 +110,16 @@ def list_all(item):
             elif "-s3-" in url: season = 3
             else:
                season = scrapertools.find_single_match(url, '-season-(.*?)-episode-')
-               if not season: season = 1
+               
+
+            if '-' in season:
+                season = scrapertools.find_single_match(season, '(.*?)-')
+                if not season: season = 1
 
             epis = scrapertools.find_single_match(url, '-episode-(.*?)$')
             if not epis: epis = 1
 
-            title = title.replace('Episode', '[COLOR goldenrod]Episode[/COLOR]')
+            title = title.replace('Episode', '[COLOR goldenrod]Epis.[/COLOR]')
 
             itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, 
                                         contentType = 'episode', contentSerieName = SerieName,

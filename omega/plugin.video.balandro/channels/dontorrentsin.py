@@ -12,7 +12,7 @@ from core.item import Item
 from core import httptools, scrapertools, tmdb
 
 
-host = 'https://www13.dontorrent.link/'
+host = 'https://www17.dontorrent.link/'
 
 
 # ~ por si viene de enlaces guardados
@@ -20,7 +20,8 @@ ant_hosts = ['https://dontorrent.in/', 'https://dontorrent.tv/', 'https://www1.d
              'https://www2.dontorrent.fr/', 'https://www3.dontorrent.fr/', 'https://www4.dontorrent.fr/',
              'https://www5.dontorrent.fr/', 'https://www6.dontorrent.fr/', 'https://www7.dontorrent.fr/',
              'https://www8.dontorrent.fr/', 'https://www9.dontorrent.link/', 'https://www10.dontorrent.link/',
-             'https://www11.dontorrent.link/', 'https://www12.dontorrent.link/']
+             'https://www11.dontorrent.link/', 'https://www12.dontorrent.link/', 'https://www13.dontorrent.link/',
+             'https://www14.dontorrent.link/', 'https://www15.dontorrent.link/', 'https://www16.dontorrent.link/']
 
 
 domain = config.get_setting('dominio', 'dontorrentsin', default='')
@@ -104,6 +105,8 @@ def acciones(item):
     itemlist.append(item.clone( channel='domains', action='manto_domain_dontorrentsin', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
 
     itemlist.append(item_configurar_proxies(item))
+
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'dontorrentsin', thumbnail=config.get_thumb('dontorrentsin') ))
 
     platformtools.itemlist_refresh()
 
@@ -274,10 +277,11 @@ def list_all(item):
 
         if matches:
             for url, title in matches:
-                if " - " in title: SerieName = title.split(" - ")[0]
-                else: SerieName = title
+                SerieName = corregir_SerieName(title)
 
                 if SerieName:
+                    title = title.replace('Temporada', '[COLOR tan]Temp.[/COLOR]').replace('temporada', '[COLOR tan]Temp.[/COLOR]')
+
                     itemlist.append(item.clone( action='episodios', url=host[:-1] + url, title=title,
                                                 contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': "-"} ))
 
@@ -287,13 +291,13 @@ def list_all(item):
             for url, thumb in matches:
                 title = os.path.basename(os.path.normpath(url)).replace("-", " ")
 
-                if " Temporada" in title: SerieName = title.split(" Temporada")[0]
-                elif " - " in title: SerieName = title.split(" - ")[0]
-                else: SerieName = title
+                SerieName = corregir_SerieName(title)
 
                 if '/?url=' in thumb: thumb = scrapertools.find_single_match(thumb, '/?url=(.*?)$')
 
                 if SerieName:
+                    title = title.replace('Temporada', '[COLOR tan]Temp.[/COLOR]').replace('temporada', '[COLOR tan]Temp.[/COLOR]')
+
                     itemlist.append(item.clone( action='episodios', url=host[:-1] + url, title=title, thumbnail=thumb,				
 					                            contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': "-"} ))
 
@@ -369,8 +373,9 @@ def list_last(item):
 
             itemlist.append(item.clone( action='findvideos', url=host + url, title=title, contentType=item.search_type, contentTitle=titulo, infoLabels={'year': "-"} ))
         else:
-            if " - " in title: SerieName = title.split(" - ")[0]
-            else: SerieName = title
+            SerieName = corregir_SerieName(title)
+
+            title = title.replace('Temporada', '[COLOR tan]Temp.[/COLOR]').replace('temporada', '[COLOR tan]Temp.[/COLOR]')
 
             itemlist.append(item.clone( action='episodios', url=host + url, title=title, contentType=item.search_type, contentSerieName=SerieName, infoLabels={'year': "-"} ))
 
@@ -587,9 +592,9 @@ def list_search(item):
             if not item.search_type == 'all':
                 if item.search_type == "movie": continue
 
-            if "[" in title: SerieName = title.split("[")[0]
-            elif " - " in title: SerieName = title.split(" - ")[0]
-            else: SerieName = title
+            SerieName = corregir_SerieName(title)
+
+            title = title.replace('Temporada', '[COLOR tan]Temp.[/COLOR]').replace('temporada', '[COLOR tan]Temp.[/COLOR]')
 
             itemlist.append(item.clone( action='episodios', url=host[:-1] + url, title=title, fmt_sufijo=sufijo, 
                                         contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': "-"} ))
@@ -621,6 +626,38 @@ def list_search(item):
                  itemlist.append(item.clone( title='Siguientes ...', url=next_page, action='list_search', text_color='coral' ))
 
     return itemlist
+
+def corregir_SerieName(SerieName):
+    logger.info()
+
+    if "[" in SerieName: SerieName = SerieName.split("[")[0]
+    elif "720p" in SerieName: SerieName = SerieName.split("720p")[0]
+
+    if '1ª' in SerieName: SerieName = SerieName.split("1ª")[0]
+    if '2ª' in SerieName: SerieName = SerieName.split("2ª")[0]
+    if '3ª' in SerieName: SerieName = SerieName.split("3ª")[0]
+    if '4ª' in SerieName: SerieName = SerieName.split("4ª")[0]
+    if '5ª' in SerieName: SerieName = SerieName.split("5ª")[0]
+    if '6ª' in SerieName: SerieName = SerieName.split("6ª")[0]
+    if '7ª' in SerieName: SerieName = SerieName.split("7ª")[0]
+    if '8ª' in SerieName: SerieName = SerieName.split("8ª")[0]
+    if '9ª' in SerieName: SerieName = SerieName.split("9ª")[0]
+
+    if "1 Temporada" in SerieName: SerieName = SerieName.split("1 Temporada")[0]
+    elif "2 Temporada" in SerieName: SerieName = SerieName.split("2 Temporada")[0]
+    elif "3 Temporada" in SerieName: SerieName = SerieName.split("3 Temporada")[0]
+    elif "4 Temporada" in SerieName: SerieName = SerieName.split("4 Temporada")[0]
+    elif "5 Temporada" in SerieName: SerieName = SerieName.split("5 Temporada")[0]
+    elif "6 Temporada" in SerieName: SerieName = SerieName.split("6 Temporada")[0]
+    elif "7 Temporada" in SerieName: SerieName = SerieName.split("6 Temporada")[0]
+    elif "8 Temporada" in SerieName: SerieName = SerieName.split("8 Temporada")[0]
+    elif "9 Temporada" in SerieName: SerieName = SerieName.split("9 Temporada")[0]
+    elif " Temporada" in SerieName: SerieName = SerieName.split(" Temporada")[0]
+    elif " - " in SerieName: SerieName = SerieName.split(" - ")[0]
+
+    SerieName = SerieName.strip()
+
+    return SerieName
 
 def search(item, texto):
     logger.info()

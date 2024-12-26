@@ -45,19 +45,19 @@ def get_video_url(page_url, url_referer=''):
 
     data = httptools.downloadpage(page_url).data
 
-    id = scrapertools.find_single_match(page_url, "/d/([^$]+)")
-    if not id: id = scrapertools.find_single_match(page_url, "api.gofile.io/(.*?)$")
+    if not '/d/' in page_url:
+       id = scrapertools.find_single_match(page_url, "api.gofile.io/(.*?)$")
 
-    api_data = httptools.downloadpage('https://api.gofile.io/createAccount').data
+       api_data = httptools.downloadpage('https://api.gofile.io/createAccount').data
 
-    if not '"ok"' in str(api_data):
-        return 'Archivo inexistente ó eliminado'
+       if not '"ok"' in str(api_data):
+           return 'Archivo inexistente ó eliminado'
 
-    token = scrapertools.find_single_match(str(api_data), '"token":"(.*?)"')
-    if not token: return video_urls
+       token = scrapertools.find_single_match(str(api_data), '"token":"(.*?)"')
+       if not token: return video_urls
 
-    url = 'https://api.gofile.io/getContent?contentId=%s&token=%s' % (id, token)
-    data = httptools.downloadpage(url, headers={'Referer': page_url.replace('/api.gofile.io/', '/gofile.io/d/')}).data
+       url = 'https://api.gofile.io/getContent?contentId=%s&token=%s' % (id, token)
+       data = httptools.downloadpage(url, headers={'Referer': page_url.replace('/api.gofile.io/', '/gofile.io/d/')}).data
 
     if not '"contents"' in str(data):
         if xbmc.getCondVisibility('System.HasAddon("script.module.resolveurl")'):
@@ -76,7 +76,14 @@ def get_video_url(page_url, url_referer=''):
                     video_urls.append(['mp4', resuelto])
                     return video_urls
 
+                color_exec = config.get_setting('notification_exec_color', default='cyan')
+                el_srv = ('Sin respuesta en [B][COLOR %s]') % color_exec
+                el_srv += ('ResolveUrl[/B][/COLOR]')
                 platformtools.dialog_notification(config.__addon_name, el_srv, time=3000)
+
+                page_url = ini_page_url
+
+                return 'No se pudo Reproducir el Vídeo con ResolveUrl'
 
             except:
                 import traceback
@@ -84,20 +91,18 @@ def get_video_url(page_url, url_referer=''):
 
                 if 'resolveurl.resolver.ResolverError:' in traceback.format_exc():
                     trace = traceback.format_exc()
-                    if 'File Not Found or' in trace or 'The requested video was not found' in trace or 'File deleted' in trace or 'No video found' in trace or 'No playable video found' in trace or 'Video cannot be located' in trace or 'file does not exist' in trace or 'Video not found' in trace:
+                    if 'File Removed' in trace or 'File Not Found or' in trace or 'The requested video was not found' in trace or 'File deleted' in trace or 'No video found' in trace or 'No playable video found' in trace or 'Video cannot be located' in trace or 'file does not exist' in trace or 'Video not found' in trace:
                         return 'Archivo inexistente ó eliminado'
                     elif 'No se ha encontrado ningún link al' in trace or 'Unable to locate link' in trace or 'Video Link Not Found' in trace:
-                        return 'Fichero sin link al vídeo'
+                        return 'Fichero sin link al vídeo ó restringido'
 
                 elif '<urlopen error' in traceback.format_exc():
                     return 'No se puede establecer la conexión'
 
-                platformtools.dialog_notification(config.__addon_name, el_srv, time=3000)
-
-                return video_urls
+                return 'Sin Respuesta ResolveUrl'
 
         else:
-            return 'Vídeo no Autorizado, sin ResolveUrl'
+            return 'Falta ResolveUrl'
 
     info =  scrapertools.find_single_match(str(data), '"contents":"(.*?)"')
 

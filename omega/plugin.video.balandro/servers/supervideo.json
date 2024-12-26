@@ -9,11 +9,11 @@
     "patterns": [
       {
         "pattern": "http(?:s|)://supervideo.tv/(?:e/|emb.html\\?|)([A-z0-9]+)",
-        "url": "https://supervideo.tv/\\1"
+        "url": "https://supervideo.cc/\\1"
       },
       {
         "pattern": "http(?:s|)://supervideo.cc/(?:e/|emb.html\\?|)([A-z0-9]+)",
-        "url": "https://supervideo.tv/\\1"
+        "url": "https://supervideo.cc/\\1"
       }
     ]
   }

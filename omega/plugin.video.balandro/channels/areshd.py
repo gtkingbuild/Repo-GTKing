@@ -185,7 +185,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('AresHd', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('AresHd', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -224,7 +227,9 @@ def episodios(item):
 
         url = host + 'episodio/' + name + '-temporada-' + str(item.contentSeason) + '-episodio-' + epis
 
-        itemlist.append(item.clone( action='findvideos', url = url, title = title, thumbnail=thumb,
+        titulo = str(item.contentSeason) + 'x' + str(epis) + ' ' + title.replace(str(item.contentSeason) + 'x' + str(epis), '').strip()
+
+        itemlist.append(item.clone( action='findvideos', url = url, title = titulo, thumbnail=thumb,
                                     contentType = 'episode', contentSeason = item.contentSeason, contentEpisodeNumber=epis ))
 
         if len(itemlist) >= item.perpage:
@@ -281,7 +286,7 @@ def findvideos(item):
 
              other = srv
 
-             if other == 'plustream': servidor = 'directo'
+             if other == 'plustream': continue
 
              if servidor == srv: other = ''
              elif not servidor == 'directo':
@@ -324,7 +329,7 @@ def play(item):
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(url).lower()
-            if not new_server.startswith("http"): servidor = new_server
+            if new_server.startswith("http"): servidor = new_server
 
         if servidor == 'zplayer': url = url + '|' + host
 

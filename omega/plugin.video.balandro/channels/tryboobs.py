@@ -33,7 +33,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host ))
 
-    itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = host + 'most-popular/week/' ))
+    itemlist.append(item.clone( title = 'Más populares', action = 'list_all', url = host + 'most-popular/week/' ))
     itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = host + 'top-rated/week/' ))
 
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url= host + 'categories/' ))
@@ -79,7 +79,7 @@ def pornstars(item):
     matches = re.compile(patron,re.DOTALL).findall(data)
 
     for url, thumb, total, title in matches:
-        itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color='moccasin' ))
+        itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color='orange' ))
 
     if itemlist:
         next_url = scrapertools.find_single_match(data, '<li><a class="pag-next" href="([^"]+)"><ins>Next</ins></a>')

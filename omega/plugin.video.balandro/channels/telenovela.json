@@ -1,0 +1,17 @@
+{
+  "id": "telenovela",
+  "name": "TeleNovela",
+  "thumbnail": "telenovela.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["lasts", "countries", "producers", "vos", "tales"],
+
+  "notes": "Web dedicada exclusivamente en Novelas. Series por Géneros."
+}

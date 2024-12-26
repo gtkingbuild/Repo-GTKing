@@ -15,6 +15,7 @@ def get_video_url(page_url, url_referer=''):
         page_url = page_url.replace('/uqload.io/', '/uqload.com/embed-')
         page_url = page_url.replace('/uqload.to/', '/uqload.com/embed-')
         page_url = page_url.replace('/uqload.ws/', '/uqload.com/embed-')
+        page_url = page_url.replace('/uqload.net/', '/uqload.com/embed-')
 
     if not page_url.endswith('.html'): page_url += '.html'
 
@@ -27,6 +28,6 @@ def get_video_url(page_url, url_referer=''):
     matches = scrapertools.find_multiple_matches(bloque, '(http.*?)"')
 
     for url in matches:
-        video_urls.append(['mp4', url+'|Referer=https://uqload.com/'])
+        video_urls.append(['mp4', url + '|Referer=https://uqload.com/'])
 
     return video_urls

@@ -3,7 +3,7 @@
   "name": "Streamlare",
 
   "active": true,
-  "notes": "Out of Service. Alternative vía: Script.Module.ResolveUrl",
+  "notes": "Out of Service, Alternative vía: Script.Module.ResolveUrl",
 
   "find_videos": {
     "ignore_urls": [],

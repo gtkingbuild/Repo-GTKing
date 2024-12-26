@@ -57,6 +57,8 @@ def acciones(item):
 
     itemlist.append(item.clone( channel='domains', action='manto_domain_elitetorrent', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
 
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'elitetorrent', thumbnail=config.get_thumb('elitetorrent') ))
+
     platformtools.itemlist_refresh()
 
     return itemlist
@@ -86,7 +88,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'peliculas-16-1/', search_type = 'movie' ))
 
-    itemlist.append(item.clone( title = 'Últimas', action = 'list_all', url = host + 'estrenos/', search_type = 'movie', text_color='cyan' ))
+    itemlist.append(item.clone( title = 'Últimas', action = 'list_all', url = host + 'estrenos-23/', search_type = 'movie', text_color='cyan' ))
 
     itemlist.append(item.clone( title = 'Por idioma', action = 'idiomas', search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Por calidad', action = 'calidades',  search_type = 'movie' ))
@@ -104,12 +106,11 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
-    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'series-20-1/', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Catálogo episodios', action = 'list_all', url = host + 'series-20-1/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimas', action = 'list_all', url = host + 'estrenos/', search_type = 'tvshow', text_color='cyan' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'list_all', url = host + 'estrenos-23/', search_type = 'tvshow', text_color='cyan' ))
 
     return itemlist
-
 
 
 def idiomas(item):
@@ -242,9 +243,21 @@ def list_all(item):
             SerieName = SerieName.replace('-', ' ')
 
             if ' s0' in SerieName: SerieName = SerieName.split(" s0")[0]
+            elif ' t0' in SerieName: SerieName = SerieName.split(" t0")[0]
+            elif ' 1x' in SerieName: SerieName = SerieName.split(" 1x")[0]
+            elif ' 2x' in SerieName: SerieName = SerieName.split(" 2x")[0]
+            elif ' 3x' in SerieName: SerieName = SerieName.split(" 3x")[0]
+            elif ' 4x' in SerieName: SerieName = SerieName.split(" 4x")[0]
+            elif ' 5x' in SerieName: SerieName = SerieName.split(" 4x")[0]
+            elif ' 01x' in SerieName: SerieName = SerieName.split(" 01x")[0]
+            elif ' 02x' in SerieName: SerieName = SerieName.split(" 02x")[0]
+            elif ' 03x' in SerieName: SerieName = SerieName.split(" 03x")[0]
+            elif ' 04x' in SerieName: SerieName = SerieName.split(" 04x")[0]
+            elif ' 05x' in SerieName: SerieName = SerieName.split(" 05x")[0]
 
             itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb,
                                         qualities=qlty, languages = ', '.join(lngs), fmt_sufijo=sufijo,
+                                        contentExtra='3',
                                         contentSerieName = SerieName, contentType = 'tvshow', infoLabels={'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
@@ -283,6 +296,7 @@ def episodios(item):
         episode = 0
 
     itemlist.append(item.clone( action = 'findvideos', url = item.url, title = item.title, thumbnail = item.thumbnail, contentSerieName = SerieName,
+                                contentExtra='',
                                 contentSeason = season, contentType = 'episode', contentEpisodeNumber = episode ))
 
     tmdb.set_infoLabels(itemlist)

@@ -114,7 +114,7 @@ def mainlist_animes(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'lista-donghuas', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Nuevos capítulos', action = 'list_all', url = host + 'lista-episodios', group = 'last_epis', search_type = 'tvshow', text_color = 'cyan' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'list_all', url = host + 'lista-episodios', group = 'last_epis', search_type = 'tvshow', text_color = 'cyan' ))
 
     itemlist.append(item.clone( title = 'En emision', action = 'list_all', url = host + 'lista-donghuas-emision', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Finalizados', action = 'list_all', url = host + 'lista-donghuas-finalizados', search_type = 'tvshow' ))
@@ -172,26 +172,27 @@ def list_all(item):
 
         if not host in url: url = host[:-1] + url
 
-        SerieName = title
-
-        SerieName = SerieName.strip()
+        SerieName = corregir_SerieName(title)
 
         if item.group == 'last_epis':
-            if 'Episodio ' in SerieName: SerieName = SerieName.split("Episodio ")[0]
-
             epis = scrapertools.find_single_match(match,'Episodio (.*?)$').strip()
+            if '</h5>' in epis: epis = scrapertools.find_single_match(epis,'(.*?)</h5>').strip()
+
             if not epis: epis = 1
 
-            title = title.replace('Episodio ', '[COLOR goldenrod]Episodio [/COLOR]')
+            titulo = '[COLOR goldenrod]Epis. [/COLOR]' + str(epis) + ' ' + title.replace('Episodio', '').strip()
 
-            itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, infoLabels={'year': '-'},
+            itemlist.append(item.clone( action = 'findvideos', url = url, title = titulo, thumbnail = thumb, infoLabels={'year': '-'},
                                         contentSerieName = SerieName, contentType = 'episode', contentSeason = 1, contentEpisodeNumber = epis))
 
         else:
-            if 'Movie' in SerieName: SerieName = SerieName.split("Movie")[0]
-
-            itemlist.append(item.clone( action = 'episodios', url = url, title = title, thumbnail = thumb,
-                                        contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': '-'} ))
+            if '>Película<' in match or 'Movie' in match:
+                PeliName = SerieName
+                itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb,
+                                            contentType = 'movie', contentTitle = PeliName, infoLabels={'year': '-'} ))
+            else:
+                itemlist.append(item.clone( action = 'episodios', url = url, title = title, thumbnail = thumb,
+                                            contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': '-'} ))
 
         if len(itemlist) >= perpage: break
 
@@ -249,7 +250,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('MundoDonghua', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('MundoDonghua', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -292,7 +296,10 @@ def episodios(item):
 
         epis = scrapertools.find_single_match(title, '.*?-(.*?)$').strip()
 
-        itemlist.append(item.clone( action='findvideos', url = url, title = title, contentType = 'episode', contentSeason = 1, contentEpisodeNumber = epis ))
+        if item.contentSerieName: titulo = '1x' + str(epis) + ' ' + title.replace(' - ' + str(epis), '').strip()
+        else: titulo = item.title
+
+        itemlist.append(item.clone( action='findvideos', url=url, title=titulo, contentType = 'episode', contentSeason = 1, contentEpisodeNumber = epis ))
 
         if len(itemlist) >= item.perpage:
             break
@@ -322,6 +329,7 @@ def findvideos(item):
 
             unpack = jsunpack.unpack(match)
 
+
             url = scrapertools.find_single_match(unpack, 'file(?:"|):"([^"]+)')
 
             if not url:
@@ -338,8 +346,12 @@ def findvideos(item):
                     ref = item.url
                     url =  host + 'api_donghua.php?slug=' + slug
 
+            if ' width=' in url: url = scrapertools.find_single_match(url, '(.*?)"')
+
             if url:
                 if not url.startswith('http'): url = 'https:' + url
+
+                if '/api_donghua.php?' in url: continue
 
                 servidor = servertools.get_server_from_url(url)
                 servidor = servertools.corregir_servidor(servidor)
@@ -362,10 +374,22 @@ def findvideos(item):
 
                 url =  host + 'api_donghua.php?slug=' + match
 
-                data = do_downloadpage(url, headers={'Referer': item.url})
+                data1 = do_downloadpage(url, headers={'Referer': item.url})
 
-                if data.get('url',''): url = 'https://www.dailymotion.com/video/' + base64.b64decode(data['url']).decode('utf-8')
-                elif data.get('source', ''): url = data['source'][0].get('file','')
+                try:
+                   if data1.get('url', ''): url = 'https://www.dailymotion.com/video/' + base64.b64decode(data1['url']).decode('utf-8')
+                   elif data1.get('source', ''): url = data1['source'][0].get('file', '')
+                except:
+                   url = scrapertools.find_single_match(str(data1), '"url":.*?"(.*?)"')
+                   fil = scrapertools.find_single_match(str(data1), '"file":.*?"(.*?)"')
+
+                   if not url and not fil: continue
+
+                   if url:
+                       url = base64.b64decode(url).decode('utf-8')
+                       url = 'https://www.dailymotion.com/video/' + url
+                   else:
+                       url = fil
 
                 if url:
                     if not url.startswith('http'): url = 'https:' + url
@@ -380,6 +404,8 @@ def findvideos(item):
 
                     other = ''
                     if servidor == 'various': other = servertools.corregir_other(url)
+
+                    if '/redirector.php?' in url: servidor = ''
 
                     itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = url, ref = ref, language = 'Vose', other = other ))
 
@@ -438,13 +464,65 @@ def play(item):
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(url).lower()
-            if not new_server.startswith("http"): servidor = new_server
+ 
+            if new_server.startswith("http"):
+                servidor = new_server
+
+                if '/nemonicplayer/' in url: servidor = 'directo'
 
         if servidor == 'zplayer': url = url + '|' + host
 
         itemlist.append(item.clone(server = servidor, url = url))
 
     return itemlist
+
+
+def corregir_SerieName(SerieName):
+    logger.info()
+
+    if 'Episodio ' in SerieName: SerieName = SerieName.split("Episodio ")[0]
+    if 'Capítulo' in SerieName: SerieName = SerieName.split("Capítulo")[0]
+    if 'Capitulo' in SerieName: SerieName = SerieName.split("Capitulo")[0]
+
+    if 'Movie' in SerieName: SerieName = SerieName.split("Movie")[0]
+
+    if 'Season' in SerieName: SerieName = SerieName.split("Season")[0]
+    if 'season' in SerieName: SerieName = SerieName.split("season")[0]
+
+    if 'OVA' in SerieName: SerieName = SerieName.split("OVA")[0]
+
+    if ' S1 ' in SerieName: SerieName = SerieName.split(" S1 ")[0]
+    elif ' S2 ' in SerieName: SerieName = SerieName.split(" S2 ")[0]
+    elif ' S3 ' in SerieName: SerieName = SerieName.split(" S3 ")[0]
+    elif ' S4 ' in SerieName: SerieName = SerieName.split(" S4 ")[0]
+    elif ' S5 ' in SerieName: SerieName = SerieName.split(" S5 ")[0]
+    elif ' S6 ' in SerieName: SerieName = SerieName.split(" S6 ")[0]
+    elif ' S7 ' in SerieName: SerieName = SerieName.split(" S7 ")[0]
+    elif ' S8 ' in SerieName: SerieName = SerieName.split(" S8 ")[0]
+    elif ' S9 ' in SerieName: SerieName = SerieName.split(" S9 ")[0]
+
+    if ' T1 ' in SerieName: SerieName = SerieName.split(" T1 ")[0]
+    elif ' T2 ' in SerieName: SerieName = SerieName.split(" T2 ")[0]
+    elif ' T3 ' in SerieName: SerieName = SerieName.split(" T3 ")[0]
+    elif ' T4 ' in SerieName: SerieName = SerieName.split(" T4 ")[0]
+    elif ' T5 ' in SerieName: SerieName = SerieName.split(" T5 ")[0]
+    elif ' T6 ' in SerieName: SerieName = SerieName.split(" T6 ")[0]
+    elif ' T7 ' in SerieName: SerieName = SerieName.split(" T7 ")[0]
+    elif ' T8 ' in SerieName: SerieName = SerieName.split(" T8 ")[0]
+    elif ' T9 ' in SerieName: SerieName = SerieName.split(" T9 ")[0]
+
+    if '2nd' in SerieName: SerieName = SerieName.split("2nd")[0]
+    if '3rd' in SerieName: SerieName = SerieName.split("3rd")[0]
+    if '4th' in SerieName: SerieName = SerieName.split("4th")[0]
+    if '5th' in SerieName: SerieName = SerieName.split("5th")[0]
+    if '6th' in SerieName: SerieName = SerieName.split("6th")[0]
+    if '7th' in SerieName: SerieName = SerieName.split("7th")[0]
+    if '8th' in SerieName: SerieName = SerieName.split("8th")[0]
+    if '9th' in SerieName: SerieName = SerieName.split("9th")[0]
+
+    SerieName = SerieName.strip()
+
+    return SerieName
 
 
 def search(item, texto):

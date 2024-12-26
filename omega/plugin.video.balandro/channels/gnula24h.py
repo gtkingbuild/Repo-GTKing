@@ -9,19 +9,20 @@ from core import httptools, scrapertools, servertools, tmdb
 
 # ~ 14/8/24 Peliculas solo hay 26
 
-host = 'https://wv5h.gnula.cc/'
+host = 'https://wv-5n.gnula.cc/'
 
 
 # ~ por si viene de enlaces guardados
 ant_hosts = ['https://ww3.gnula2h.cc/', 'https://www11.gnula.cc/', 'https://w-ww.gnula.cc/',
              'https://ww-w.gnula.cc/', 'https://www1.gnula.cc/', 'https://w-w-w.gnula.cc/',
-             'https://wv5n.gnula.cc/']
+             'https://wv5n.gnula.cc/', 'https://wv5h.gnula.cc/', 'https://wv5l.gnula.cc/',
+             'https://w-v5n.gnula.cc/']
 
 
-domain = config.get_setting('dominio', 'gnula2h', default='')
+domain = config.get_setting('dominio', 'gnula24h', default='')
 
 if domain:
-    if domain == host: config.set_setting('dominio', '', 'gnula2h')
+    if domain == host: config.set_setting('dominio', '', 'gnula24h')
     elif domain in str(ant_hosts): config.set_setting('dominio', '', 'gnula2h')
     else: host = domain
 
@@ -110,7 +111,7 @@ def acciones(item):
     logger.info()
     itemlist = []
 
-    domain_memo = config.get_setting('dominio', 'gnula2h', default='')
+    domain_memo = config.get_setting('dominio', 'gnula24h', default='')
 
     if domain_memo: url = domain_memo
     else: url = host
@@ -119,8 +120,8 @@ def acciones(item):
 
     itemlist.append(Item( channel='helper', action='show_help_domains', title='[B]Información Dominios[/B]', thumbnail=config.get_thumb('help'), text_color='green' ))
 
-    itemlist.append(item.clone( channel='domains', action='test_domain_gnula2h', title='Test Web del canal [COLOR yellow][B] ' + url + '[/B][/COLOR]',
-                                from_channel='gnula2h', folder=False, text_color='chartreuse' ))
+    itemlist.append(item.clone( channel='domains', action='test_domain_gnula24h', title='Test Web del canal [COLOR yellow][B] ' + url + '[/B][/COLOR]',
+                                from_channel='gnula24h', folder=False, text_color='chartreuse' ))
 
     if domain_memo: title = '[B]Modificar/Eliminar el dominio memorizado[/B]'
     else: title = '[B]Informar Nuevo Dominio manualmente[/B]'
@@ -130,6 +131,8 @@ def acciones(item):
     itemlist.append(item_configurar_proxies(item))
 
     itemlist.append(Item( channel='helper', action='show_help_gnula24h', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('gnula24h') ))
+
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'gnula24h', thumbnail=config.get_thumb('gnula24h') ))
 
     platformtools.itemlist_refresh()
 
@@ -270,7 +273,7 @@ def list_all(item):
 
         if '/ver-pelicula/' in url: continue
 
-        title = title.replace('&#8230;', '').replace('&#8211;', '').replace('&#038;', '').replace('&#8217;s', "'s")
+        title = title.replace('&#8230;', '').replace('&#8211;', '').replace('&#038;', '').replace('&#8217;s', "'s").replace('&#8217;', '')
 
         thumb = scrapertools.find_single_match(match, 'src="(.*?)"')
 
@@ -417,7 +420,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('Gnula24H', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('Gnula24H', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -580,7 +586,7 @@ def play(item):
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(url).lower()
-            if not new_server.startswith("http"): servidor = new_server
+            if new_server.startswith("http"): servidor = new_server
 
         itemlist.append(item.clone( url = url, server = servidor ))
 
@@ -604,7 +610,7 @@ def list_search(item):
 
         title = scrapertools.find_single_match(article, ' alt="(.*?)"')
 
-        title = title.replace('&#8217;', '')
+        title = title.replace('&#8230;', '').replace('&#8211;', '').replace('&#038;', '').replace('&#8217;s', "'s").replace('&#8217;', '')
 
         thumb = scrapertools.find_single_match(article, ' src="(.*?)"')
 

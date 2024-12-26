@@ -298,8 +298,17 @@ def episodios(item):
 
     data = jdata['seasons']
 
+    first_time = False
+
     for elem in data:
         capis = elem.get('episodes')
+
+        if not first_time:
+            if config.get_setting('channels_charges', default=True):
+                sum_parts = len(capis)
+                if sum_parts >= 100:
+                    platformtools.dialog_notification('', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
+                    first_time = True
 
         for elem1 in capis:
             tempo = elem1['season']

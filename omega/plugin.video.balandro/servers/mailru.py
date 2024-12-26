@@ -25,6 +25,7 @@ def get_video_url_orig(page_url, url_referer=''):
     url = page_url.replace("embed/", "").replace(".html", ".json")
 
     resp = httptools.downloadpage(url)
+
     if '"error":"video_not_found"' in resp.data or '"error":"Can\'t find VideoInstance"' in resp.data:
         return 'Archivo inexistente ó eliminado'
 
@@ -63,6 +64,9 @@ def get_video_url_embed(page_url, url_referer=''):
     url = 'https://my.mail.ru/+/video/meta/%s?xemail=&ajax_call=1&func_name=&mna=&mnb=&ext=1&_=%s' % (vid, ts)
 
     resp = httptools.downloadpage(url, headers={'Referer': page_url})
+
+    if '"error":"forbidden"' in resp.data:
+        return 'Archivo inexistente ó eliminado'
 
     if not 'set-cookie' in resp.headers: return video_urls
     ck = scrapertools.find_single_match(resp.headers['set-cookie'], '(video_key=[^;]+)')

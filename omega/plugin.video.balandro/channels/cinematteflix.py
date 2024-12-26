@@ -31,7 +31,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
 
-    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'category/videoclub/' ))
+    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'category/videoclub-gratis-cinematteflix/' ))
 
     itemlist.append(item.clone( title = 'Magazine', action = 'list_all', url = host, group = 'magazine', page = 1))
 
@@ -115,12 +115,12 @@ def list_all(item):
 
         title = scrapertools.find_single_match(match, '<h4 class="entry-title title">.*?">(.*?)</a>')
         if not title: title = scrapertools.find_single_match(match, 'rel="bookmark">(.*?)</a>')
-        if not title: title = scrapertools.find_single_match(match, ' alt="(.*?)"')
         if not title: title = scrapertools.find_single_match(match, '<a href=".*?">(.*?)</a>')
+        if not title: title = scrapertools.find_single_match(match, ' alt="(.*?)"')
 
         if not title: continue
 
-        title = title.lower()
+        title = title.lower().strip()
 
         title = title.replace('Ver Serie completa ', '').replace('ver ', '').replace('videoclub gratuito online ', '').replace('videoclub gratuito ', '').replace('videoclub gratis: ', '').replace('videoclub gratis ', '').replace('videoclub online gratis: ', '').replace('videoclub online gratis ', '').replace('videoclub online: ', '').replace('videoclub online ', '').replace('videoclub: ', '').replace('videoclub ', '').replace('y descargar ', '').strip()
 

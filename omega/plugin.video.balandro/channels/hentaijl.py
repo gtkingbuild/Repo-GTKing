@@ -30,7 +30,13 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Últimos', action = 'list_all', url = host, group = 'find', text_color = 'cyan' ))
 
-    itemlist.append(item.clone( title = 'Latino', action = 'list_all', url = host + 'directorio-hentai?genre[]=71&order=updated' ))
+    itemlist.append(item.clone( title = 'Más populares', action = 'list_all', url = host + 'directorio-hentai?order=views' ))
+    itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = host + 'directorio-hentai?order=rating' ))
+
+    itemlist.append(item.clone( title = 'En emisión', action = 'list_all', url = host + 'directorio-hentai?estado[]=0&order=created' ))
+    itemlist.append(item.clone( title = 'Finalizados', action = 'list_all', url = host + 'directorio-hentai?estado[]=1&order=created' ))
+
+    itemlist.append(item.clone( title = 'En latino', action = 'list_all', url = host + 'directorio-hentai?genre[]=71&order=updated', text_color = 'pink' ))
 
     itemlist.append(item.clone( title = 'Hentai', action = 'list_all', url = host + 'directorio-hentai?tipo[]=1&tipo[]=7&order=updated' ))
     itemlist.append(item.clone( title = 'Jav', action = 'list_all', url = host + 'directorio-hentai?tipo[]=2&order=updated' ))
@@ -55,7 +61,7 @@ def categorias(item):
     for value, title in matches:
         url = host + 'directorio-hentai?genre[]=' + value + '&order=updated'
 
-        itemlist.append(item.clone( action = 'list_all', url = url, title = title, text_color='orange' ))
+        itemlist.append(item.clone( action = 'list_all', url = url, title = title, text_color='moccasin' ))
 
     return itemlist
 
@@ -67,7 +73,7 @@ def anios(item):
     from datetime import datetime
     current_year = int(datetime.today().year)
 
-    for x in range(current_year, 1989, -1):
+    for x in range(current_year, 1999, -1):
         url = host + 'directorio-hentai?year[]=' + str(x) + '&order=updated'
 
         itemlist.append(item.clone( title = str(x), url = url, action='list_all', text_color='orange' ))
@@ -100,10 +106,12 @@ def list_all(item):
 
         thumb = scrapertools.find_single_match(match, "<img src='(.*?)'")
 
+        titulo = title.replace('episodio', '[COLOR goldenrod]Epis.[/COLOR]')
+
         if item.group == 'find':
-            itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, contentType = 'movie', contentTitle = title, contentExtra='adults' ))
+            itemlist.append(item.clone( action = 'findvideos', url = url, title = titulo, thumbnail = thumb, contentType = 'movie', contentTitle = title, contentExtra='adults' ))
         else:
-            itemlist.append(item.clone( action = 'episodios', url = url, title = title, thumbnail = thumb, contentType = 'movie', contentTitle = title, contentExtra='adults' ))
+            itemlist.append(item.clone( action = 'episodios', url = url, title = titulo, thumbnail = thumb, contentType = 'movie', contentTitle = title, contentExtra='adults' ))
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<li class="page-item active">.*?href="(.*?)"')

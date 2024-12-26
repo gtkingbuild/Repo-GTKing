@@ -6,6 +6,12 @@ from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
+try:
+    from Cryptodome.Cipher import AES
+    from lib import jscrypto
+except:
+    pass
+
 
 host = 'https://pelisplushd.bz/'
 
@@ -111,9 +117,11 @@ def acciones(item):
     if domain_memo: title = '[B]Modificar/Eliminar el dominio memorizado[/B]'
     else: title = '[B]Informar Nuevo Dominio manualmente[/B]'
 
-    itemlist.append(item.clone( channel='domains', action='manto_domain_animeflv', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
+    itemlist.append(item.clone( channel='domains', action='manto_domain_pelisplushdnz', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
 
     itemlist.append(item_configurar_proxies(item))
+
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'pelisplushdnz', thumbnail=config.get_thumb('pelisplushdnz') ))
 
     platformtools.itemlist_refresh()
 
@@ -148,7 +156,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
 
-    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'peliculas?page=', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'peliculas?page=1', search_type = 'movie' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'movie' ))
@@ -164,13 +172,13 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
-    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'series?page=', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'series?page=1', search_type = 'tvshow' ))
 
     if not config.get_setting('descartar_anime', default=False):
         itemlist.append(item.clone( title = 'Animes', action = 'mainlist_animes', search_type = 'tvshow', text_color = 'springgreen' ))
 
     if config.get_setting('mnu_doramas', default=False):
-        itemlist.append(item.clone( title = 'Doramas', action = 'list_all', url = host + 'generos/dorama/series?page=', search_type = 'tvshow', text_color = 'firebrick' ))
+        itemlist.append(item.clone( title = 'Doramas', action = 'list_all', url = host + 'generos/dorama/series?page=1', search_type = 'tvshow', text_color = 'firebrick' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'tvshow' ))
@@ -186,7 +194,7 @@ def mainlist_animes(item):
 
     itemlist.append(item.clone( title = 'Buscar anime ...', action = 'search', search_type = 'tvshow', text_color = 'springgreen' ))
 
-    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'animes?page=', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'animes?page=1', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', group = 'animes', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', group = 'animes', search_type = 'tvshow' ))
@@ -246,7 +254,7 @@ def anios(item):
        else: limit = 1959
 
     for x in range(current_year, limit, -1):
-        url = host + 'year/' + str(x) + '?page='
+        url = host + 'year/' + str(x) + '?page=1'
 
         itemlist.append(item.clone( title = str(x), url = url, action = 'list_all', text_color = text_color ))
 
@@ -257,9 +265,7 @@ def list_all(item):
     logger.info()
     itemlist = []
 
-    if not item.page: item.page = 1
-
-    data = do_downloadpage(item.url + str(item.page))
+    data = do_downloadpage(item.url)
 
     bloque = scrapertools.find_single_match(data, '<div class="Posters">(.*?)<div class="copyright">')
 
@@ -318,7 +324,7 @@ def list_all(item):
 
     if itemlist:
         if '<ul class="pagination' in data:
-            next_page = scrapertools.find_single_match(data, '<ul class="pagination.*?<li class="page-item active".*?<a class="page-link" href="(.*?)"')
+            next_page = scrapertools.find_single_match(data, '<ul class="pagination.*?<li class="page-item active".*?</span>.*?href="(.*?)"')
 
             if next_page:
                 if 'page=' in next_page:
@@ -336,10 +342,14 @@ def temporadas(item):
 
     temporadas = re.compile('data-toggle="tab">(.*?)</a>', re.DOTALL).findall(data)
 
+    hay_season0 = False
+
     tot_tempo = len(temporadas)
 
     for tempo in temporadas:
         tempo = tempo.replace('Temporada', '').replace('TEMPORADA', '').strip()
+
+        if tempo == '0': hay_season0 = True
 
         nro_tempo = tempo
         if tot_tempo >= 10:
@@ -351,13 +361,18 @@ def temporadas(item):
             if config.get_setting('channels_seasons', default=True):
                 platformtools.dialog_notification(item.contentSerieName.replace('&#038;', '&').replace('&#8217;', "'"), 'solo [COLOR tan]' + title + '[/COLOR]')
 
+            item.pills = ''
             item.page = 0
             item.contentType = 'season'
             item.contentSeason = tempo
             itemlist = episodios(item)
             return itemlist
 
-        itemlist.append(item.clone( action = 'episodios', title = title, page = 0, contentType = 'season', contentSeason = tempo, text_color='tan' ))
+        pills = tempo
+        if hay_season0: pills = int(tempo) + 1
+
+        itemlist.append(item.clone( action = 'episodios', title = title, pills = pills, page = 0,
+                                   contentType = 'season', contentSeason = tempo, text_color='tan' ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -380,7 +395,9 @@ def episodios(item):
     if not bloque: bloque = scrapertools.find_single_match(data, 'data-toggle="tab">TEMPORADA.*?' + str(item.contentSeason) + '(.*?)<div class="clear"></div>')
 
     if bloque:
-        bloque = scrapertools.find_single_match(bloque, 'id="pills-vertical-' + str(item.contentSeason) + '(.*?)</div>')
+        bloque = scrapertools.find_single_match(bloque, 'id="pills-vertical-' + str(item.pills) + '(.*?)</div>')
+
+        if not bloque: bloque = scrapertools.find_single_match(bloque, 'id="pills-vertical-' + str(item.contentSeason) + '(.*?)</div>')
 
     matches = re.compile('<a href="(.*?)".*?">(.*?):(.*?)</a>', re.DOTALL).findall(bloque)
 
@@ -394,7 +411,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('PelisPlusHdNz', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('PelisPlusHdNz', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -429,6 +449,8 @@ def episodios(item):
                 else: item.perpage = 50
 
     for url, temp_epis, title in matches:
+        if not title: continue
+
         if url.startswith('/'): url = host[:-1] + url
 
         episode = scrapertools.find_single_match(temp_epis, ".*?-(.*?)$").strip()
@@ -461,6 +483,8 @@ def episodios(item):
             if len(itemlist) >= item.perpage:
                 break
 
+        tmdb.set_infoLabels(itemlist)
+
         if itemlist:
             if num_matches > ((item.page + 1) * item.perpage):
                 itemlist.append(item.clone( title = "Siguientes ...", action = "episodios", data_epi = item.data_epi, orden = '10000',
@@ -469,6 +493,8 @@ def episodios(item):
         return itemlist
 
     else:
+        tmdb.set_infoLabels(itemlist)
+
         return sorted(itemlist, key=lambda i: i.orden)
 
 
@@ -482,9 +508,9 @@ def findvideos(item):
 
     data = do_downloadpage(item.url)
 
-    matches = scrapertools.find_multiple_matches(data, '<a href="#option(.*?)">(.*?)</a>')
-
     ses = 0
+
+    matches = scrapertools.find_multiple_matches(data, '<a href="#option(.*?)">(.*?)</a>')
 
     for opt, srv in matches:
         if not srv: continue
@@ -497,7 +523,67 @@ def findvideos(item):
 
         srv = srv.lower()
 
-        if srv == 'moe':
+        if srv == 'embed69':
+            ses += 1
+
+            datae = do_downloadpage(url)
+
+            e_links = scrapertools.find_single_match(datae, 'const dataLink =(.*?);')
+            e_bytes = scrapertools.find_single_match(datae, "const bytes =.*?'(.*?)'")
+
+            e_links = e_links.replace(']},', '"type":"file"').replace(']}]', '"type":"file"')
+
+            langs = scrapertools.find_multiple_matches(str(e_links), '"video_language":(.*?)"type":"file"')
+
+            for lang in langs:
+                ses += 1
+
+                lang = lang + '"type":"video"'
+
+                links = scrapertools.find_multiple_matches(str(lang), '"servername":"(.*?)","link":"(.*?)".*?"type":"video"')
+
+                if 'SUB' in lang: lang = 'Vose'
+                elif 'LAT' in lang: lang = 'Lat'
+                elif 'ESP' in lang: lang = 'Esp'
+                else: lang = '?'
+
+                for srv, link in links:
+                    ses += 1
+
+                    srv = srv.lower().strip()
+
+                    if not srv: continue
+                    elif host in link: continue
+
+                    elif '1fichier.' in srv: continue
+                    elif 'plustream' in srv: continue
+                    elif 'embedsito' in srv: continue
+                    elif 'disable2' in srv: continue
+                    elif 'disable' in srv: continue
+                    elif 'xupalace' in srv: continue
+                    elif 'uploadfox' in srv: continue
+
+                    servidor = servertools.corregir_servidor(srv)
+
+                    if servertools.is_server_available(servidor):
+                        if not servertools.is_server_enabled(servidor): continue
+                    else:
+                        if not config.get_setting('developer_mode', default=False): continue
+
+                    other = ''
+
+                    if servidor == 'various': other = servertools.corregir_other(srv)
+
+                    if servidor == 'directo':
+                        if not config.get_setting('developer_mode', default=False): continue
+                        else:
+                           other = url.split("/")[2]
+                           other = other.replace('https:', '').strip()
+
+                    itemlist.append(Item( channel = item.channel, action = 'play', server=servidor, title = '', crypto=link, bytes=e_bytes,
+                                          language=lang, other=other ))
+
+        elif srv == 'moe':
             data2 = do_downloadpage(url)
 
             matches2 = scrapertools.find_multiple_matches(data2, '<li onclick="' + "go_to_player.*?'(.*?)'.*?" + 'data-lang="(.*?)".*?<span>(.*?)</span>')
@@ -506,6 +592,14 @@ def findvideos(item):
                 srv2 = srv2.lower()
 
                 if srv2 == '1fichier': continue
+                elif srv2 == 'embedsito': continue
+                elif srv2 == 'mirror': continue
+                elif srv2 == 'hydrax': continue
+	
+                elif 'xupalace' in link: continue
+                elif 'uploadfox' in link: continue
+                elif 'plustream' in link: continue
+                elif 'embed69' in link: continue
 
                 if not link: continue
 
@@ -549,39 +643,159 @@ def findvideos(item):
                     servidor = 'directo'
                     other = 'plusvip'
 
-                if 'plustream' in link: other = 'plustream'
+                if 'plustream' in link: continue
 
                 if servidor == 'various': other = servertools.corregir_other(link)
 
                 itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = link,
                                       language = IDIOMAS.get(lang, lang), other = other.capitalize() ))
 
-            continue
+        else:
+            lang = '?'
 
-        if 'api.mycdn.moe/uqlink.php?id=' in url: url = url.replace('api.mycdn.moe/uqlink.php?id=', 'uqload.com/embed-')
+            if '/xupalace.' in url:
+                ses += 1
 
-        elif 'api.mycdn.moe/dourl.php?id=' in url: url = url.replace('api.mycdn.moe/dourl.php?id=', 'dood.to/e/')
+                if 'php?id=' in url:
+                    datax = do_downloadpage(url)
 
-        elif 'api.mycdn.moe/dl/?uptobox=' in url: url = url.replace('api.mycdn.moe/dl/?uptobox=', 'uptobox.com/')
+                    url = scrapertools.find_single_match(datax, '<iframe src="(.*?)"')
 
-        servidor = servertools.get_server_from_url(url)
-        servidor = servertools.corregir_servidor(servidor)
+                    if url:
+                        servidor = servertools.get_server_from_url(url)
+                        servidor = servertools.corregir_servidor(servidor)
 
-        url = servertools.normalize_url(servidor, url)
+                        if servertools.is_server_available(servidor):
+                            if not servertools.is_server_enabled(servidor): continue
+                        else:
+                            if not config.get_setting('developer_mode', default=False): continue
 
-        link_other = ''
+                        url = servertools.normalize_url(servidor, url)
 
-        if servidor == 'directo':
-            link_other = scrapertools.find_single_match(data, '<a href="#option' + opt + '">(.*?)</a>')
+                        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url=url, language=lang, other=other ))
+
+                    continue
+
+                elif '/video/' in url:
+                    datax = do_downloadpage(url)
+
+                    matchesx = scrapertools.find_multiple_matches(datax, "go_to_playerVast.*?'(.*?)'")
+
+                    for matchx in matchesx:
+                        if '/embedsito.' in matchx: continue
+                        elif '/player-cdn.' in matchx: continue
+                        elif '/1fichier.' in matchx: continue
+                        elif '/hydrax.' in matchx: continue
+                        elif '/xupalace.' in matchx: continue
+                        elif '/uploadfox.' in matchx: continue
+
+                        servidor = servertools.get_server_from_url(matchx)
+                        servidor = servertools.corregir_servidor(servidor)
+
+                        if servertools.is_server_available(servidor):
+                           if not servertools.is_server_enabled(servidor): continue
+                        else:
+                            if not config.get_setting('developer_mode', default=False): continue
+
+                        url = servertools.normalize_url(servidor, matchx)
+
+                        other = ''
+                        if servidor == 'various': other = servertools.corregir_other(url)
+
+                        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url=url, language=lang, other=other ))
+
+                    continue
+
+                else: continue
+
+        if '/xupalace.' in url:
+            lang = '?'
+
+            ses += 1
+
+            if 'php?id=' in url:
+                datax = do_downloadpage(url)
+
+                url = scrapertools.find_single_match(datax, '<iframe src="(.*?)"')
+
+                if url:
+                    servidor = servertools.get_server_from_url(url)
+                    servidor = servertools.corregir_servidor(servidor)
+
+                    if servertools.is_server_available(servidor):
+                        if not servertools.is_server_enabled(servidor): continue
+                    else:
+                        if not config.get_setting('developer_mode', default=False): continue
+
+                    url = servertools.normalize_url(servidor, url)
+
+                    itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url=url, language=lang, other=other ))
+
+                continue
+
+            elif '/video/' in url:
+                datax = do_downloadpage(url)
+
+                matchesx = scrapertools.find_multiple_matches(datax, "go_to_playerVast.*?'(.*?)'")
+
+                for matchx in matchesx:
+                    if '/embedsito.' in matchx: continue
+                    elif '/player-cdn.' in matchx: continue
+                    elif '/1fichier.' in matchx: continue
+                    elif '/hydrax.' in matchx: continue
+                    elif '/xupalace.' in matchx: continue
+                    elif '/uploadfox.' in matchx: continue
+
+                    servidor = servertools.get_server_from_url(matchx)
+                    servidor = servertools.corregir_servidor(servidor)
+
+                    if servertools.is_server_available(servidor):
+                        if not servertools.is_server_enabled(servidor): continue
+                    else:
+                        if not config.get_setting('developer_mode', default=False): continue
+
+                    url = servertools.normalize_url(servidor, matchx)
+
+                    other = ''
+                    if servidor == 'various': other = servertools.corregir_other(url)
+
+                    itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url=url, language=lang, other=other ))
+
+                continue
+
+        if url:
+            if 'api.mycdn.moe/uqlink.php?id=' in url: url = url.replace('api.mycdn.moe/uqlink.php?id=', 'uqload.com/embed-')
+
+            elif 'api.mycdn.moe/dourl.php?id=' in url: url = url.replace('api.mycdn.moe/dourl.php?id=', 'dood.to/e/')
+
+            elif 'api.mycdn.moe/dl/?uptobox=' in url: url = url.replace('api.mycdn.moe/dl/?uptobox=', 'uptobox.com/')
+
+            servidor = servertools.get_server_from_url(url)
+            servidor = servertools.corregir_servidor(servidor)
+
+            url = servertools.normalize_url(servidor, url)
+
+            link_other = ''
+
+            if servidor == 'directo':
+                link_other = scrapertools.find_single_match(data, '<a href="#option' + opt + '">(.*?)</a>')
 
             link_other = link_other.lower().strip()
 
             if link_other == '1fichier': continue
 
-            if 'plustream' in url: link_other = 'plustream'
+            elif 'embedsito' in link_other: continue
+            elif 'player-cdn' in link_other: continue
+            elif '1fichier' in link_other: continue
+            elif 'hydrax' in link_other: continue
+            elif 'xupalace' in link_other: continue
+            elif 'uploadfox' in link_other: continue
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = url,
-	                          language = IDIOMAS.get(lang, lang), other = link_other.capitalize() ))
+            elif 'plustream' in link_other: continue
+            elif 'embed69' in link_other: continue
+
+            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = url,
+	                              language = IDIOMAS.get(lang, lang), other = link_other.capitalize() ))
 
     if not itemlist:
         if not ses == 0:
@@ -597,6 +811,19 @@ def play(item):
 
     url = item.url
 
+    if item.crypto:
+        logger.info("check-1-crypto: %s" % item.crypto)
+        logger.info("check-2-crypto: %s" % item.bytes)
+        try:
+            ###############url =  AES.decrypt(item.crypto, item.bytes)
+            url = AES.new(item.crypto, AES.MODE_SIV==10)
+            logger.info("check-3-crypto: %s" % url)
+
+            url = jscrypto.new(item.crypto, 2, IV=item.bytes)
+            logger.info("check-4-crypto: %s" % url)
+        except:
+            return '[COLOR cyan]No se pudo [COLOR red]Desencriptar[/COLOR]'
+
     if '/streamsito.com/uqlink.php?id=' in url: url = url.replace('/streamsito.com/uqlink.php?id=', '/uqload.com/embed-')
 
     servidor = servertools.get_server_from_url(url)
@@ -604,14 +831,14 @@ def play(item):
 
     url = servertools.normalize_url(servidor, url)
 
-    if '/plustream.' in url:
+    if '/plustream.' in url or '/xupalace.' in url:
         return 'Servidor [COLOR goldenrod]No Soportado[/COLOR]'
 
     if servidor == 'zplayer': url = url + '|Referer=' + host
 
     if servidor == 'directo':
         new_server = servertools.corregir_other(url).lower()
-        if not new_server.startswith("http"): servidor = new_server
+        if new_server.startswith("http"): servidor = new_server
 
     itemlist.append(item.clone( url = url, server = servidor ))
 
@@ -688,7 +915,7 @@ def list_search(item):
 def search(item, texto):
     logger.info()
     try:
-       item.url = host + 'search?s=' + texto.replace(" ", "+")
+       item.url = host + 'search?s=' + texto.replace(" ", "+") + '&page=1'
        return list_search(item)
     except:
        import sys

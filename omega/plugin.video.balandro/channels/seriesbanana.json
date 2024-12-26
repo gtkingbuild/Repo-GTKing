@@ -3,7 +3,7 @@
   "name": "SeriesBanana",
   "thumbnail": "seriesbanana.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["tvshow"],
@@ -13,5 +13,5 @@
 
   "clusters": ["onlyone", "infantil", "classic", "kids", "vos"],
 
-  "notes": "Series por Géneros."
+  "notes": "Web CERRADA. Series por Géneros."
 }

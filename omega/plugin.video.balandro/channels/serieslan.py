@@ -255,7 +255,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('SeriesLan', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('SeriesLan', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -342,7 +345,7 @@ def findvideos(item):
         lang = scrapertools.find_single_match(data, '<span>Idioma:\s*</span>([^<]+)')
         if 'Latino' in lang: lang = 'Lat'
 
-    matches = re.findall('<button class="selop" sl="([^"]+)">([^<]+)</button>', data, flags=re.DOTALL)
+    matches = re.findall('<button class="selop" sl="(.*?)".*?>(.*?)</button>', data, flags=re.DOTALL)
 
     ses = 0
 
@@ -354,6 +357,8 @@ def findvideos(item):
         ord_link += 1
 
         url = resuelve_golink(int(num), _sa, _sl)
+
+        srv = srv.lower().strip()
 
         servidor = servertools.corregir_servidor(srv)
 
@@ -418,12 +423,12 @@ def play(item):
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(url).lower()
-            if not new_server.startswith("http"): servidor = new_server
+            if new_server.startswith("http"): servidor = new_server
 
-        if servidor and (servidor != 'directo' or 'googleusercontent' in url):
-            url = servertools.normalize_url(servidor, url)
+        #if servidor and (servidor != 'directo' or 'googleusercontent' in url):
+        url = servertools.normalize_url(servidor, url)
 
-            itemlist.append(item.clone( url=url, server=servidor ))
+        itemlist.append(item.clone( url=url, server=servidor ))
 
     return itemlist
 

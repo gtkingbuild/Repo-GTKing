@@ -11,7 +11,7 @@
   "categories": ["tvshow"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["suggested", "lasts", "years", "kids", "docs", "vos"],
+  "clusters": ["clone", "lasts", "years", "kids", "docs", "vos"],
 
   "notes": "Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

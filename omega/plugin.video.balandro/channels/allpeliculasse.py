@@ -219,8 +219,13 @@ def list_all(item):
             if item.search_type != 'all':
                 if item.search_type == 'tvshow': continue
 
+            titulo = title
+
+            if "La Película" in titulo: titulo = titulo.split("La Película")[0]
+            if "La película" in title: titulo = titulo.split("La película")[0]
+
             itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, fmt_sufijo = sufijo,
-                                        contentType = 'movie', contentTitle = title, infoLabels = {'year': year} ))
+                                        contentType = 'movie', contentTitle = titulo, infoLabels = {'year': year} ))
 
         if tipo == 'tvshow':
             if item.search_type != 'all':
@@ -304,7 +309,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('AllPeliculasSe', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('AllPeliculasSe', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -406,10 +414,8 @@ def findvideos(item):
 
         if '/1fichier.' in match: continue
         elif '/turbobit.' in match: continue
-        elif '/fembed.' in match: continue
 
-        if '/1fichier.' in url: continue
-        elif '/turbobit.' in url: continue
+        elif '/fembed.' in match: continue
 
         elif '/cloudemb.' in url or '.fembed.' in url or '/fembad.' in url or 'vanfem' in url: continue
         elif '/tubesb.' in url  or '/sbsonic.' in url or '/sbrapid.' in url or '/lvturbo.' in url or '/sbface.' in url or '/sbbrisk.' in url or '/sblona.' in url: continue
@@ -424,7 +430,7 @@ def findvideos(item):
 
         if '/megaup' in match: link_other = 'Megaup'
         elif '/undefined' in match: link_other = 'Indefinido'
-        elif '/torrent' in match: link_other = 'Torrent'
+        elif '/torrent' in match or 'Utorrent' in match: link_other = 'Torrent'
         elif '/mega' in match: link_other = 'Mega'
         elif '/google' in match: link_other = 'Gvideo'
         elif '/mediafire' in match: link_other = 'Mediafire'
@@ -472,7 +478,7 @@ def play(item):
 
         if item.server == 'directo':
             new_server = servertools.corregir_other(url).lower()
-            if not new_server.startswith("http"): item.server = new_server
+            if new_server.startswith("http"): item.server = new_server
 
         itemlist.append(item.clone(url = url, server = item.server))
 

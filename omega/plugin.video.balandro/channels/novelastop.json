@@ -11,7 +11,7 @@
   "categories": ["tvshow"],
   "language": ["cast", "lat"],
 
-  "clusters": ["suggested", "lasts", "rankings", "years", "producers", "vos", "tales", "docs"],
+  "clusters": ["current", "suggested", "lasts", "rankings", "years", "producers", "vos", "tales", "docs"],
 
   "notes": "Web dedicada exclusivamente en Novelas. Series por Géneros."
 }

@@ -1,0 +1,17 @@
+{
+  "id": "tgx",
+  "name": "TGx",
+  "thumbnail": "tgx.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["torrent", "movie", "tvshow"],
+  "language": ["vo"],
+
+  "clusters": ["onlyone", "notice", "torrents", "languages", "4k", "docs", "adults", "anime", "lists"],
+
+  "notes": "Canal con enlaces Torrent exclusivamente. Películas por géneros. Series por Géneros. En Versión Original."
+}

@@ -56,6 +56,8 @@ def acciones(item):
 
     itemlist.append(item.clone( channel='domains', action='manto_domain_animeflv', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
 
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'animeflv', thumbnail=config.get_thumb('animeflv') ))
+
     platformtools.itemlist_refresh()
 
     return itemlist
@@ -83,15 +85,19 @@ def mainlist_animes(item):
 
     itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host, search_type = 'tvshow', text_color = 'cyan' ))
 
-    itemlist.append(item.clone( title = 'Últimos animes', action = 'list_all', url = host, search_type = 'tvshow', text_color = 'moccasin' ))
+    itemlist.append(item.clone( title = 'Últimos animes', action = 'list_all', url = host, group = 'news', search_type = 'tvshow', text_color = 'moccasin' ))
+
+    itemlist.append(item.clone( title = 'En emisión', action = 'list_all', url = host + 'browse?genres=all&year=all&status=En_emision&order=1&Tipo=all&page=1', _tipo = 'all', search_type = 'tvshow' ))
+
+    itemlist.append(item.clone( title = 'Finalizados', action = 'list_all', url = host + 'browse?genres=all&year=all&status=Finalizado&order=1&Tipo=all&page=1', _tipo = 'all', search_type = 'tvshow' ))
+
+    itemlist.append(item.clone( title = 'Especiales', action = 'list_all', url = host + 'browse?genres=all&year=all&status=all&order=1&Tipo=3?page=1', _tipo = '3', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Ovas', action = 'list_all', url = host + 'browse?genres=all&year=all&status=all&order=1&Tipo=4?page=1', _tipo = '4', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host + 'browse?genres=all&year=all&status=all&order=1&Tipo=2?page=1', _tipo = '2', search_type = 'movie', text_color = 'deepskyblue' ))
 
-    itemlist.append(item.clone( title = 'Especiales', action = 'list_all', url = host + 'browse?genres=all&year=all&status=all&order=1&Tipo=3?page=1', _tipo = '3', search_type = 'tvshow' ))
-
-    itemlist.append(item.clone( title = 'Por agrupación', action = 'agrupaciones', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos',  search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'tvshow' ))
@@ -99,7 +105,7 @@ def mainlist_animes(item):
     return itemlist
 
 
-def agrupaciones(item):
+def categorias(item):
     logger.info()
     itemlist = []
 
@@ -171,6 +177,8 @@ def list_all(item):
 
         if not url or not title: continue
 
+        title = title.replace('&oacute;n', 'on')
+
         thumb = scrapertools.find_single_match(match, '<img src="(.*?)"')
 
         plot = scrapertools.find_single_match(match, '<p class="des">(.*?)</p>')
@@ -182,22 +190,23 @@ def list_all(item):
             if item.search_type != 'all':
                 if item.search_type == 'tvshow': continue
 
-            itemlist.append(item.clone( action='findvideos', url=url if url.startswith('http') else host[:-1] + url, title=title, thumbnail=thumb, fmt_sufijo=sufijo,
-                                        contentType='movie', contentTitle=title, infoLabels={'year': '-', 'plot': plot} ))
+            PeliName = corregir_SerieName(title)
+
+            itemlist.append(item.clone( action='findvideos', url=url if url.startswith('http') else host[:-1] + url, title=title,
+                                        thumbnail=thumb, fmt_sufijo=sufijo,
+                                        contentType='movie', contentTitle=PeliName, infoLabels={'year': '-', 'plot': plot} ))
 
         if tipo == 'tvshow':
             if item.search_type != 'all':
                 if item.search_type == 'movie': continue
 
-            SerieName = title
+            SerieName = corregir_SerieName(title)
 
-            if 'Season' in SerieName: SerieName = SerieName.split("Season")[0]
-            if 'Movie' in SerieName: SerieName = SerieName.split("Movie")[0]
+            title = title.replace('Season', '[COLOR tan]Temp.[/COLOR]').replace('season', '[COLOR tan]Temp.[/COLOR]')
 
-            SerieName = SerieName.strip()
-
-            itemlist.append(item.clone( action='episodios', url=url if url.startswith('http') else host[:-1] + url, title=title, thumbnail=thumb, fmt_sufijo=sufijo,
-                                        page = 0, contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year':'-', 'plot': plot} ))
+            itemlist.append(item.clone( action='episodios', url=url if url.startswith('http') else host[:-1] + url, title=title,
+                                        thumbnail=thumb, fmt_sufijo=sufijo,
+                                        page = 0, contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': '-', 'plot': plot} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -231,12 +240,7 @@ def last_epis(item):
     for url, thumb, episode, title in matches:
         if not url or not title: continue
 
-        SerieName = title
-
-        if 'Season' in SerieName: SerieName = SerieName.split("Season")[0]
-        if 'Movie' in SerieName: SerieName = SerieName.split("Movie")[0]
-
-        SerieName = SerieName.strip()
+        SerieName = corregir_SerieName(title)
 
         epis = episode.replace('Episodio', '').strip()
 
@@ -246,8 +250,11 @@ def last_epis(item):
 
         title = title.replace('Epis.', '[COLOR goldenrod]Epis.[/COLOR]')
 
+        title = title.replace('Season', '[COLOR tan]Temp.[/COLOR]').replace('season', '[COLOR tan]Temp.[/COLOR]')
+
         itemlist.append(item.clone( action='findvideos', url = url if url.startswith('http') else host[:-1] + url, title = title, thumbnail=thumb,
-                                    contentSerieName = SerieName, contentType = 'episode', contentSeason = 1, contentEpisodeNumber=epis))
+                                    contentSerieName = SerieName, contentType = 'episode',
+                                    contentSeason = 1, contentEpisodeNumber=epis, infoLabels={'year': '-'} ))
 
     tmdb.set_infoLabels(itemlist)
 
@@ -274,7 +281,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('AnimeFlv', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('AnimeFlv', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -313,10 +323,15 @@ def episodios(item):
     for url, thumb, title in matches[item.page * item.perpage:]:
         i += 1
 
-        titulo = title + ' ' + item.contentSerieName
+        epis = scrapertools.find_single_match(title, 'Episodio(.*?)$').strip()
+
+        if not epis: epis = i
+
+        if item.contentSerieName: titulo = '1x' + str(epis) + ' ' + title.replace('Episodio ' + str(epis), '').strip() + ' ' + item.contentSerieName
+        else: titulo = item.title
 
         itemlist.append(item.clone( action='findvideos', url = url if url.startswith('http') else host[:-1] + url, title = titulo,
-                                    thumbnail=thumb, contentType = 'episode', contentSeason = 1, contentEpisodeNumber = i ))
+                                    thumbnail=thumb, contentType = 'episode', contentSeason = 1, contentEpisodeNumber = epis ))
 
         if len(itemlist) >= item.perpage:
             break
@@ -360,6 +375,10 @@ def findvideos(item):
             data = do_downloadpage(url)
 
             links = scrapertools.find_multiple_matches(data, '<li class="linkserver".*?data-video="(.*?)"')
+
+            if not links:
+                ses = ses - 1
+                continue
 
             for link in links:
                 servidor = servertools.get_server_from_url(link)
@@ -421,11 +440,36 @@ def play(item):
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(url).lower()
-            if not new_server.startswith("http"): servidor = new_server
+            if new_server.startswith("http"): servidor = new_server
 
         itemlist.append(item.clone(url = url, server = servidor))
 
     return itemlist
+
+
+def corregir_SerieName(SerieName):
+    logger.info()
+
+    if 'Season' in SerieName: SerieName = SerieName.split("Season")[0]
+    if 'season' in SerieName: SerieName = SerieName.split("season")[0]
+    if 'Movie' in SerieName: SerieName = SerieName.split("Movie")[0]
+
+    if ': ' in SerieName: SerieName = SerieName.split(": ")[0]
+
+    if '(TV)' in SerieName: SerieName = SerieName.split("(TV)")[0]
+
+    if '2nd' in SerieName: SerieName = SerieName.split("2nd")[0]
+    if '3rd' in SerieName: SerieName = SerieName.split("3rd")[0]
+    if '4th' in SerieName: SerieName = SerieName.split("4th")[0]
+    if '5th' in SerieName: SerieName = SerieName.split("5th")[0]
+    if '6th' in SerieName: SerieName = SerieName.split("6th")[0]
+    if '7th' in SerieName: SerieName = SerieName.split("7th")[0]
+    if '8th' in SerieName: SerieName = SerieName.split("8th")[0]
+    if '9th' in SerieName: SerieName = SerieName.split("9th")[0]
+
+    SerieName = SerieName.strip()
+
+    return SerieName
 
 
 def search(item, texto):

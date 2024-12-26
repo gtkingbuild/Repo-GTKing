@@ -276,8 +276,10 @@ def list_all(item):
     matches = scrapertools.find_multiple_matches(bloque, '<article(.*?)</article>')
 
     for match in matches:
-        url = scrapertools.find_single_match(match, ' href="(.*?)"')
+        url = scrapertools.find_single_match(match, 'href="(.*?)"')
+
         title = scrapertools.find_single_match(match, '<img alt="(.*?)"')
+        if not title: title = scrapertools.find_single_match(match, "<img alt='(.*?)'")
 
         if not url or not title: continue
 
@@ -380,7 +382,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('PlusHd', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('PlusHd', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -429,10 +434,14 @@ def episodios(item):
 
         title = title.replace('\\u00c9', 'E')
 
+        title = title.replace('\/', '').strip()
+
         titulo = str(item.contentSeason) + 'x' + str(epis) + ' ' + title
 
         itemlist.append(item.clone( action='findvideos', url = url, title = titulo, thumbnail = thumb,
                                     contentType = 'episode', contentSeason = item.contentSeason, contentEpisodeNumber=epis ))
+
+    tmdb.set_infoLabels(itemlist)
 
     return itemlist
 
@@ -450,6 +459,7 @@ def findvideos(item):
     else: lang = '?'
 
     bloque = scrapertools.find_single_match(data, '<div class="bg-tabs">(.*?)</div> </div> </div>')
+    if not bloque: bloque = scrapertools.find_single_match(data, "<div class='bg-tabs'>(.*?)</div> </div> </div>")
 
     matches = scrapertools.find_multiple_matches(bloque, 'data-server="(.*?)".*?<span>(.*?)</span>')
 
@@ -483,6 +493,8 @@ def findvideos(item):
         if url.startswith('/'): url = host[:-1] + url
 
         if not 'http' in url: continue
+
+        if '/pelisplus.upns.pro' in url: continue
 
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)

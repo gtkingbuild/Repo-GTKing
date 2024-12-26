@@ -78,7 +78,9 @@ def findvideos(item):
     for url in matches:
         url = host + url.replace(" ", "%20")
 
-        itemlist.append(Item( channel = item.channel, action = 'play', url = url, server = 'directo', title = '', language = 'Esp' ))
+        age = 'Solo descarga'
+
+        itemlist.append(Item( channel = item.channel, action = 'play', url = url, server = 'directo', title = '', language = 'Esp', age = age ))
 
         url = url.replace('.mkv', '.torrent').replace('.mp4', '.torrent')
 

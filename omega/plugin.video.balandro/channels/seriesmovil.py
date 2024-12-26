@@ -142,7 +142,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('SeriesMovil', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('SeriesMovil', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -220,6 +223,8 @@ def findvideos(item):
             other = scrapertools.find_single_match(data, '<span class="nmopt">' + opt + '</span>.*?<span>.*?<span>(.*?)</span>').strip()
             other = scrapertools.find_single_match(other, ' • (.*?)$').strip().lower()
 
+            if other.startswith("sb"): continue
+
             other = servertools.corregir_servidor(other)
 
             if servertools.is_server_available(other):
@@ -248,6 +253,8 @@ def findvideos(item):
 
         datae = do_downloadpage(host + 'wp-admin/admin-ajax.php', post = post)
 
+        if other.startswith("sb"): continue
+
         other = servertools.corregir_servidor(other)
 
         url = scrapertools.find_single_match(datae, '<IFRAME SRC="(.*?)"')
@@ -261,7 +268,8 @@ def findvideos(item):
 
             other = other.capitalize() + ' E'
 
-            itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', url = url, language = IDIOMAS.get(lang, lang), quality = qlty, other = other ))
+            itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', url = url,
+                                  language = IDIOMAS.get(lang, lang), quality = qlty, other = other ))
 
     # ~ Descargas
     bloque = scrapertools.find_single_match(data, '<div class="OptionBx on">(.*?)</section>')
@@ -278,7 +286,10 @@ def findvideos(item):
         if url:
            other = srv  + ' D'
 
-           itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', url = url, language = IDIOMAS.get(lang, lang), quality = qlty, other = other ))
+           if other.startswith("Sb"): continue
+
+           itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', url = url,
+                                 language = IDIOMAS.get(lang, lang), quality = qlty, other = other ))
 
     if not itemlist:
         if not ses == 0:
@@ -298,6 +309,8 @@ def play(item):
 
     if '?trdownload=' in url:
         new_url = httptools.downloadpage(url, follow_redirects=False).headers.get('location', '')
+
+        if new_url: url = new_url
     else:
         data = do_downloadpage(url)
 
@@ -314,7 +327,7 @@ def play(item):
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(url).lower()
-            if not new_server.startswith("http"): servidor = new_server
+            if new_server.startswith("http"): servidor = new_server
 
         itemlist.append(item.clone( url = url, server = servidor ))
 

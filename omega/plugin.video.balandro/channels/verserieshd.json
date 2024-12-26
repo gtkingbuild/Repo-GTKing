@@ -3,7 +3,7 @@
   "name": "VerSeriesHd",
   "thumbnail": "verserieshd.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["tvshow"],
@@ -11,7 +11,7 @@
   "categories": ["tvshow"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["lasts", "years", "kids", "docs", "vos"],
+  "clusters": ["clone", "lasts", "years", "kids", "docs", "vos"],
 
-  "notes": "Series por Géneros."
+  "notes": "Web CERRADA. Series por Géneros."
 }

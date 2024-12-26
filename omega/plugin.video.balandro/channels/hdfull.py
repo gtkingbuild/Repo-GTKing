@@ -49,24 +49,24 @@ except:
 
 
 dominios = [
+         'https://hdfull.cfd/',
+         'https://hdfull.tel/',
+         'https://hdfull.buzz/',
+         'https://hdfull.blog/',
+         'https://hd-full.info/',
          'https://hd-full.sbs/',
          'https://hd-full.life/',
          'https://hd-full.fit/',
          'https://hd-full.me/',
          'https://hd-full.vip/',
          'https://hd-full.lol/',
-         'https://hd-full.in/',
-         'https://hd-full.one/',
          'https://hd-full.co/',
-         'https://hdfull.icu/',
          'https://hdfull.quest/',
-         'https://hdfull.link/'
          'https://hdfull.today/',
+         'https://hd-full.biz/',
          'https://hdfull.sbs/',
          'https://hdfull.one/',
          'https://hdfull.org/',
-         'https://hd-full.biz/',
-         'https://hd-full.im/',
          'https://new.hdfull.one/'
          ]
 
@@ -81,14 +81,15 @@ ant_hosts = ['https://hdfull.sh/', 'https://hdfull.im/', 'https://hdfull.in/',
              'https://hdfull.top/', 'https://hdfull.vip/', 'https://hdfull.wtf/',
              'https://hdfull.gdn/', 'https://hdfull.cloud/', 'https://hdfull.video/',
              'https://hdfull.work/', 'https://hdfull.life/', 'https://hdfull.digital/',
-             'https://hdfull.store/']
+             'https://hdfull.store/', 'https://hd-full.in/', 'https://hdfull.icu/',
+             'https://hd-full.im/', 'https://hd-full.one/', 'https://hdfull.link/']
 
 
 if host in str(ant_hosts): config.set_setting('dominio', dominios[0], 'hdfull')
 
 
 login_ok = '[COLOR chartreuse]HdFull Login correcto[/COLOR]'
-start_ses_ok = '[COLOR chartreuse][B]Sesión Iniciada[/B][/COLOR], Por favor [COLOR cyan][B]Retroceda Menús[/B][/COLOR] y acceda de Nuevo al Canal.'
+start_ses_ok = '[COLOR chartreuse][B]Sesión Iniciada[/B][/COLOR], Por favor, si fuera necesario [COLOR cyan][B]Retroceda Menús[/B][/COLOR] y acceda de Nuevo al Canal.'
 
 perpage = 20
 
@@ -486,8 +487,8 @@ def acciones(item):
     username = config.get_setting('hdfull_username', 'hdfull', default='')
 
     if username:
-        itemlist.append(Item( channel='domains', action='operative_domains_hdfull', title='[B]Dominios Operativos Vigentes[/B]',
-                              desde_el_canal = True, thumbnail=config.get_thumb('hdfull'), text_color='mediumaquamarine' ))
+        itemlist.append(Item( channel='domains', action='operative_domains_hdfull', title='[COLOR mediumaquamarine][B]Dominios Operativos Vigentes' + '[COLOR dodgerblue] https://dominioshdfull.com/[/B][/COLOR]',
+                              desde_el_canal = True, thumbnail=config.get_thumb('hdfull') ))
 
         itemlist.append(Item( channel='domains', action='last_domain_hdfull', title='[B]Comprobar último dominio vigente[/B]',
                               desde_el_canal = True, host_canal = url, thumbnail=config.get_thumb('hdfull'), text_color='chocolate' ))
@@ -517,7 +518,9 @@ def acciones(item):
     itemlist.append(item_configurar_dominio(item))
     itemlist.append(item_configurar_proxies(item))
 
-    itemlist.append(Item( channel='helper', action='show_help_hdfull', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('hdfull') ))
+    itemlist.append(Item( channel='helper', action='show_help_hdfull', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', _mnu = True, thumbnail=config.get_thumb('hdfull') ))
+
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'hdfull', thumbnail=config.get_thumb('hdfull') ))
 
     platformtools.itemlist_refresh()
 
@@ -552,9 +555,9 @@ def mainlist(item):
         itemlist.append(item.clone( title = 'Búsqueda de personas:', action = '', folder=False, text_color='tan' ))
 
         itemlist.append(item.clone( title = ' - Buscar intérprete ...', action = 'search', group = 'actor', search_type = 'person',
-                                    plot = 'Debe indicarse el nombre y apellido/s del intérprete (lo más exacto posible).'))
+                                    plot = 'Indicar el Nombre y Apellido/s del intérprete (lo más exacto posible).'))
         itemlist.append(item.clone( title = ' - Buscar dirección ...', action = 'search', group = 'director', search_type = 'person',
-                                    plot = 'Debe indicarse el nombre y apellido/s del director (lo más exacto posible).'))
+                                    plot = 'Indicar el Nombre y Apellido/s del director (lo más exacto posible).'))
 
         itemlist.append(item.clone( title = 'Búsqueda en listas populares:', action = '', folder=False, text_color='greenyellow' ))
         itemlist.append(item.clone( title = ' - Buscar lista ...', action = 'search', target_action = 'top', search_type = 'all',
@@ -587,8 +590,8 @@ def mainlist_pelis(item):
 
         itemlist.append(item.clone( action='list_all', title='Catálogo', url = dominio + 'peliculas', search_type = 'movie' ))
 
-        itemlist.append(item.clone( action='list_all', title='Últimos estrenos', url = dominio + 'peliculas-estreno', search_type = 'movie', text_color='cyan' ))
-        itemlist.append(item.clone( action='list_all', title='Últimas actualizadas', url = dominio + 'peliculas-actualizadas', search_type = 'movie' ))
+        itemlist.append(item.clone( action='list_all', title='Estrenos', url = dominio + 'peliculas-estreno', search_type = 'movie', text_color='cyan' ))
+        itemlist.append(item.clone( action='list_all', title='Actualizadas', url = dominio + 'peliculas-actualizadas', search_type = 'movie' ))
 
         itemlist.append(item.clone( action='list_all', title='Más valoradas', url = dominio + 'peliculas/imdb_rating', search_type = 'movie' ))
 
@@ -623,7 +626,7 @@ def mainlist_series(item):
 
         itemlist.append(item.clone( action='list_all', title='Catálogo', url = dominio + 'series', search_type = 'tvshow' ))
 
-        itemlist.append(item.clone( action='list_all', title='Últimas', url = dominio + 'series/date', search_type='tvshow', text_color='moccasin' ))
+        itemlist.append(item.clone( action='list_all', title='Últimas', url = dominio + 'series/date', search_type='tvshow', text_color='yellowgreen' ))
 
         itemlist.append(item.clone( action='list_all', title='Más valoradas', url= dominio + 'series/imdb_rating', search_type = 'tvshow' ))
 
@@ -640,7 +643,7 @@ def mainlist_series(item):
         if not config.get_setting('descartar_anime', default=False):
             itemlist.append(item.clone( action='list_episodes', title=' - [COLOR springgreen]Anime[/COLOR]', opcion = 'anime', search_type = 'tvshow' ))
 
-        itemlist.append(item.clone( action='list_episodes', title=' - [COLOR moccasin]Últimos[/COLOR]', opcion = 'latest', search_type = 'tvshow' ))
+        itemlist.append(item.clone( action='list_episodes', title=' - [COLOR yellowgreen]Últimos[/COLOR]', opcion = 'latest', search_type = 'tvshow' ))
         itemlist.append(item.clone( action='list_episodes', title=' - Actualizados', opcion = 'updated', search_type = 'tvshow' ))
 
         itemlist.append(item.clone( action='series_abc', title='Por letra (A - Z)', search_type = 'tvshow' ))
@@ -833,7 +836,7 @@ def list_episodes(item):
         show = epi['show']['title']['es'] if 'es' in epi['show']['title'] and epi['show']['title']['es'] != '' else epi['show']['title']['en'] if 'en' in epi['show']['title'] else ''
 
         tit = epi['title']['es'] if 'es' in epi['title'] and epi['title']['es'] != '' else epi['title']['en'] if 'en' in epi['title'] else ''
-        titulo = '%s %sx%s %s' % (show, epi['season'], epi['episode'], tit)
+        titulo = '%sx%s %s %s' % (epi['season'], epi['episode'], tit, '[COLOR violet]' + show + '[/COLOR]')
 
         langs = ['Vose' if idio == 'ESPSUB' else idio.capitalize() for idio in epi['languages']]
         if langs: titulo += ' [COLOR %s]%s[/COLOR]' % (color_lang, ', '.join(langs))
@@ -1032,7 +1035,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('HdFull', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('HdFull', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -1068,6 +1074,8 @@ def episodios(item):
 
     for epi in data[item.page * item.perpage:]:
         tit = epi['title']['es'] if 'es' in epi['title'] and epi['title']['es'] else epi['title']['en'] if 'en' in epi['title'] and epi['title']['en'] else ''
+        if not tit: tit = epi['show']['title']['es'] if 'es' in epi['show']['title'] and epi['show']['title']['es'] != '' else epi['show']['title']['en'] if 'en' in epi['show']['title'] else ''
+
         titulo = '%sx%s %s' % (epi['season'], epi['episode'], tit)
 
         langs = ['Vose' if idio == 'ESPSUB' else idio.capitalize() for idio in epi['languages']]
@@ -1390,10 +1398,10 @@ def search(item, texto):
 
     try:
         if item.group:
-            item.url = dominio + 'buscar' + '/' + item.group + '/' + texto
+            item.url = dominio + 'buscar' + '/' + item.group + '/' + texto.replace(' ', '+')
 
         elif item.target_action:
-            item.post = 'target=lists&action=search&search=%s&start=0&limit=99' % texto.replace(' ','+')
+            item.post = 'target=lists&action=search&search=%s&start=0&limit=99' % texto.replace(' ', '+')
             return list_listas(item)
 
         else:
@@ -1402,7 +1410,7 @@ def search(item, texto):
             magic = scrapertools.find_single_match(data, "name='__csrf_magic'\s*value=\"([^\"]+)")
             if not magic: return []
 
-            item.search_post = '__csrf_magic=%s&menu=search&query=%s' % (magic, texto.replace(' ','+'))
+            item.search_post = '__csrf_magic=%s&menu=search&query=%s' % (magic, texto.replace(' ', '+'))
             item.url = dominio + 'buscar'
 
         return list_all(item)

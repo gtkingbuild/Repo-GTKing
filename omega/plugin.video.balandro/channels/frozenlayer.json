@@ -8,7 +8,7 @@
   "searchable": false,
   "search_types": ["tvshow"],
 
-  "categories": ["tvshow", "torrent"],
+  "categories": ["movie", "tvshow", "torrent"],
   "language": ["vose"],
 
   "clusters": ["anime", "dorama", "torrents"],

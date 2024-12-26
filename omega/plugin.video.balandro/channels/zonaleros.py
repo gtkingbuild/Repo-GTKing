@@ -80,8 +80,6 @@ def configurar_proxies(item):
 
 
 def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
-    if not headers: headers ={'Referer': host}
-
     hay_proxies = False
     if config.get_setting('channel_zonaleros_proxies', default=''): hay_proxies = True
 
@@ -268,7 +266,7 @@ def list_all(item):
 
         if not title or not url: continue
 
-        title = title.replace('Ver', '').replace('ver', '').replace('Descargar', '').replace('descargar', '').replace('&#039;', "'").strip()
+        title = title.replace('Ver', '').replace('ver', '').replace('Descargar', '').replace('descargar', '').replace('&#039;', "'").replace('&amp;', '').strip()
 
         thumb = scrapertools.find_single_match(match, 'src="([^"]+)"')
 
@@ -342,6 +340,7 @@ def episodios(item):
     season = scrapertools.find_single_match(data, '<div id="temp-' + str(item.contentSeason) + '"(.*?)</ul>')
 
     matches = scrapertools.find_multiple_matches(season, '<a href="(.*?)".*?<img src="(.*?)".*?alt="(.*?)".*?<span class="Capi">(.*?)</span>')
+    if not matches: matches = scrapertools.find_multiple_matches(season, "<a href='(.*?)'.*?<img src='(.*?)'.*?alt='(.*?)'.*?<span class='Capi'>(.*?)</span>")
 
     if item.page == 0 and item.perpage == 50:
         sum_parts = len(matches)
@@ -351,7 +350,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('ZonaLeros', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('ZonaLeros', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -390,6 +392,10 @@ def episodios(item):
 
         nro_epi = scrapertools.find_single_match(epis, 'x(.*?)$')
 
+        title = title.replace('temporada', '[COLOR tan]Temp.[/COLOR]')
+
+        title = title.replace('episodio', '[COLOR goldenrod]Epis.[/COLOR]')
+
         titulo = str(item.contentSeason) + 'x' + nro_epi + ' ' + title
 
         itemlist.append(item.clone( action = 'findvideos', url = url, title = titulo,
@@ -418,6 +424,7 @@ def findvideos(item):
 
     if item.contentEpisodeNumber:
         srvs = scrapertools.find_multiple_matches(data, 'data-id="(.*?)".*?title="(.*?)"')
+        if not srvs: srvs = scrapertools.find_multiple_matches(data, "data-id='(.*?)'.*?title='(.*?)'")
 
         datar = data.replace('[', '="').replace(']', '"')
 
@@ -428,6 +435,11 @@ def findvideos(item):
 
             if link:
                 title = title.lower().strip()
+
+                if title == 'dropapk': continue
+                elif title == '1fichier': continue
+                elif title == 'onedrive': continue
+                elif title == 'free' or title == 'freehd': continue
 
                 servidor = servertools.corregir_servidor(title)
 
@@ -464,6 +476,8 @@ def findvideos(item):
 
             if srv == 'dropapk': continue
             elif srv == '1fichier': continue
+            elif srv == 'onedrive': continue
+            elif srv == 'free' or srv == 'freehd': continue
 
             if srv == 'googledrive': srv = 'gvideo'
 
@@ -511,6 +525,11 @@ def findvideos(item):
                 if url:
                     srv = srv.lower().strip()
 
+                    if srv == 'dropapk': continue
+                    elif srv == '1fichier': continue
+                    elif srv == 'onedrive': continue
+                    elif srv == 'free' or srv == 'freehd': continue
+
                     servidor = servertools.corregir_servidor(srv)
 
                     if srv == 'googledrive': servidor = 'gvideo'
@@ -550,7 +569,6 @@ def play(item):
 
     url = str(url).replace('[', '').replace(']', '').replace("'", '').strip()
 
-
     try:
         if config.get_setting('channel_zonaleros_proxies', default=''):
             new_url = httptools.downloadpage_proxy('zonaleros', url, follow_redirects=False).headers['location']
@@ -569,7 +587,10 @@ def play(item):
         except:
             new_url = ''
 
-    if new_url: url = new_url 
+    if new_url:
+        new_url = new_url.replace('https://pelisfree.site/', 'https://waaw.to/')
+
+        url = new_url 
 
     if 'zona-leros.com' in url: url = ''
     elif '.zpaste.' in url: url = ''
@@ -582,12 +603,11 @@ def play(item):
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(url).lower()
-            if not new_server.startswith("http"): servidor = new_server
+            if new_server.startswith("http"): servidor = new_server
 
         if servidor == 'zplayer': url = url + '|' + host
 
-        if not servidor == 'directo':
-            itemlist.append(item.clone(server = servidor, url = url))
+        itemlist.append(item.clone(server = servidor, url = url))
 
     return itemlist
 

@@ -7,7 +7,7 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb, jsontools
 
 
-host = 'https://playdede.ws/'
+host = 'https://www1.playdede.ws/'
 
 
 elepage = 42
@@ -16,6 +16,12 @@ perpage = 21
 
 
 def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
+    # ~ por si viene de enlaces guardados
+    ant_hosts = ['https://playdede.ws/']
+
+    for ant in ant_hosts:
+        url = url.replace(ant, host)
+
     if '/?anio=' in url: raise_weberror = False
 
     data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
@@ -77,9 +83,9 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'seriesa/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Nuevos episodios', action = 'list_last', url = host, _type = 'episodes', search_type = 'tvshow', text_color = 'cyan' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'list_last', url = host, _type = 'episodes', search_type = 'tvshow', text_color = 'cyan' ))
 
-    itemlist.append(item.clone( title = 'Últimas actualizadas', action = 'list_last', url = host, _type = 'series', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Últimas', action = 'list_last', url = host, _type = 'series', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Cartelera', action = 'list_all', url = host + 'seriesa/?tipo=cartelera', search_type = 'tvshow', text_color = 'moccasin' ))
 
@@ -385,6 +391,8 @@ def list_last(item):
 
             s_e = scrapertools.get_season_and_episode(title)
 
+            s_e = s_e.replace('x0', 'x')
+
             try:
                season = int(s_e.split("x")[0])
                epis = s_e.split("x")[1]
@@ -452,9 +460,24 @@ def list_last(item):
 
             if 'Https' in titulo:
                 titulo = titulo.replace('Https', '').strip()
-                titulo = title
+                titulo = title.replace(str(season) + 'x' + str(epis), '')
+                titulo = str(season) + 'x' + str(epis) + ' ' + titulo
 
             SerieName = SerieName.replace('  ', ' ')
+
+            SerieName = SerieName.replace('Https:playdede.ws/episode/', '').replace('Https:www1.playdede.ws', '')
+
+            if "/" in SerieName: SerieName = SerieName.split("/")[0]
+
+            if str(epis).startswith("0"):
+                episodio = str(epis).replace('0', '')
+                SerieName = SerieName.replace(str(season) + 'x' + str(episodio), '')
+            else:
+                SerieName = SerieName.replace(str(season) + 'x' + str(epis), '')
+
+            SerieName = SerieName.strip()
+
+            SerieName = title.replace(str(season) + 'x' + str(epis), '')
 
             itemlist.append(item.clone( action = 'findvideos', url = url, title = titulo, thumbnail = thumb,
                                         contentSerieName = SerieName, contentType = 'episode', contentSeason = season, contentEpisodeNumber = epis ))
@@ -562,7 +585,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('PlayPlus', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('PlayPlus', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -598,6 +624,9 @@ def episodios(item):
 
     for url, thumb, titulo, name in matches[item.page * item.perpage:]:
         s_e = scrapertools.get_season_and_episode(name)
+
+        s_e = s_e.replace('x0', 'x')
+
         season = int(s_e.split("x")[0])
         episode = s_e.split("x")[1]
 
@@ -643,6 +672,9 @@ def findvideos(item):
 
         if server == 'powvideo': continue
         elif server == 'streamplay': continue
+        elif server == 'fsapi': continue
+        elif server == '2embed': continue
+        elif server == 'tomatomatela': continue
 
         elif 'premiun' in server: continue
 
@@ -742,6 +774,9 @@ def findvideos(item):
 
         if server == 'powvideo': continue
         elif server == 'streamplay': continue
+        elif server == 'fsapi': continue
+        elif server == '2embed': continue
+        elif server == 'tomatomatela': continue
 
         if lang.lower() == 'espsub': lang = 'Vose'
 

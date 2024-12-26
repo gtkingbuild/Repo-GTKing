@@ -3,7 +3,7 @@
   "name": "Jawcloud",
  
   "active": true,
-  "notes": "Out of Service.",
+  "notes": "Out of Service",
 
   "find_videos": {
     "ignore_urls": [],

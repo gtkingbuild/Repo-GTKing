@@ -35,13 +35,16 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Últimos', action = 'list_all', url = host + '/0/', text_color = 'cyan' ))
 
-    itemlist.append(item.clone( title = 'Los mejores', action = 'list_all', url = host + 'best-videos/' ))
-    itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = host + 'most-viewed/' ))
+    itemlist.append(item.clone( title = 'Los mejores', action = 'list_all', url = host + 'best-videos/', text_color = 'tan' ))
+
+    itemlist.append(item.clone( title = 'Más populares', action = 'list_all', url = host + 'most-viewed/' ))
     itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = host + 'top-rated/' ))
 
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url = host + 'cats/', group = 'cats' ))
 
     itemlist.append(item.clone( title = 'Por estrella (A - Z)', action = 'pornstars', url = host + 'pornstar-list/' ))
+
+    itemlist.append(item.clone (action = 'categorias', title = 'Estrellas más populares', url = host + 'pornstar-list/', group = 'stars', text_color = 'pink' ))
 
     return itemlist
 
@@ -52,6 +55,9 @@ def categorias(item):
 
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|&nbsp;|<br>', '', data)
+
+    if item.group == 'cats': text_color = 'moccasin'
+    else: text_color = 'orange'
 
     if item.group == 'cats':
         matches = scrapertools.find_multiple_matches(data, '<div class="categoriesbox"(.*?)</div></div>')
@@ -72,7 +78,7 @@ def categorias(item):
         else:
             thumb = scrapertools.find_single_match(match, 'src="(.*?)"')
 
-        itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color = 'tan' ) )
+        itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color=text_color ) )
 
     if item.group == 'cats' or item.group == 'stars':
         return sorted(itemlist,key=lambda x: x.title)
@@ -93,12 +99,10 @@ def pornstars(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone (action = 'categorias', title = 'Más Populares', url = item.url, group = 'stars', text_color = 'orange' ))
-
     for letra in string.ascii_uppercase:
         url = item.url + letra + '/'
 
-        itemlist.append(item.clone (title = letra, action = 'categorias', url = url, text_color = 'moccasin' ))
+        itemlist.append(item.clone (title = letra, action = 'categorias', url = url, text_color = 'orange' ))
 
     return itemlist
 
@@ -126,7 +130,8 @@ def list_all(item):
 
         if not url or not title: continue
 
-        title = title.replace('&amp;', '&')
+
+        title = title.replace('&amp;', '&').replace('&#039;t', "'t").replace('&#039;', '')
 
         url = host[:-1] + url
 

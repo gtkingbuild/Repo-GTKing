@@ -156,7 +156,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('LaCartoons', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('LaCartoons', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -190,18 +193,20 @@ def episodios(item):
                     item.perpage = sum_parts
                 else: item.perpage = 50
 
-    for url, capitulo, title in matches[item.page * item.perpage:]:
+    for url, cap, title in matches[item.page * item.perpage:]:
         if url.startswith('/'): url = host[:-1] + url
 
-        epis = scrapertools.find_single_match(capitulo, 'Capitulo(.*?)-').strip()
+        epis = scrapertools.find_single_match(cap, 'Capitulo(.*?)-').strip()
 
         title = title.replace('&#39;s', "'s")
 
-        title = '%sx%s %s %s' % (str(item.contentSeason), epis, capitulo, title)
+        title = '%sx%s %s %s' % (str(item.contentSeason), epis, cap, title)
 
         title = title.replace('--', '').replace('-', '')
 
-        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, contentType='episode', contentSeason = item.contentSeason, contentEpisodeNumber = capitulo ))
+        if epis: title = title.replace('Capitulo ' + str(epis) + ' ', '').strip()
+
+        itemlist.append(item.clone( action = 'findvideos', url = url, title = title, contentType='episode', contentSeason = item.contentSeason, contentEpisodeNumber = epis ))
 
         if len(itemlist) >= item.perpage:
             break

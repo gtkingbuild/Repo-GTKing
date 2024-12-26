@@ -36,9 +36,9 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host  + 'movies' ))
 
-    itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = host  + 'most-viewed' ))
+    itemlist.append(item.clone( title = 'Más populares', action = 'list_all', url = host  + 'most-viewed' ))
 
-    itemlist.append(item.clone( title = 'Escenas', action = 'escenas' ))
+    itemlist.append(item.clone( title = 'Escenas', action = 'escenas', text_color = 'pink' ))
 
     itemlist.append(item.clone( title = 'Por canal', action = 'canales', url = host ))
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url = host))
@@ -79,7 +79,7 @@ def canales(item):
     for url, title in matches:
         title = title.replace('&#038;', '&').replace('&#8217;s', "'s").replace('&#8217;', "'s").replace('&amp;', '&')
 
-        itemlist.append(item.clone (action='list_all', title=title, url=url, text_color = 'moccasin' ))
+        itemlist.append(item.clone (action='list_all', title=title, url=url, text_color = 'violet' ))
 
     return sorted(itemlist,key=lambda x: x.title)
 
@@ -95,7 +95,7 @@ def categorias(item):
     matches = re.compile('<a href="(.*?)">(.*?)</a>', re.DOTALL).findall(bloque)
 
     for url, title in matches:
-        itemlist.append(item.clone (action='list_all', title=title, url=url, text_color = 'tan' ))
+        itemlist.append(item.clone (action='list_all', title=title, url=url, text_color = 'moccasin' ))
 
     return sorted(itemlist,key=lambda x: x.title)
 
@@ -123,7 +123,7 @@ def anios(item):
     from datetime import datetime
     current_year = int(datetime.today().year)
 
-    for x in range(current_year, 1969, -1):
+    for x in range(current_year, 1999, -1):
         url = host + 'release-year/' + str(x)
 
         itemlist.append(item.clone( title = str(x), url = url, action = 'list_all', text_color = 'orange' ))
@@ -194,15 +194,18 @@ def findvideos(item):
     matches = matches1 + matches2
 
     for url in matches:
+        ses += 1
+
         if 'link=' in url: url = scrapertools.find_single_match(url, 'link=(.*?)$')
 
         if not url: continue
 
-        if '/streamsilk.' in url: continue
-        elif '/swiftload.' in url: continue
-        elif '/frdl.' in url: continue
-        elif '/nitroflare.' in url: continue
+        if '/frdl.' in url: continue
         elif '/snowdayonline.' in url: continue
+        elif '/freepopnews.' in url: continue
+
+        elif '/nitroflare.' in url: continue
+        elif 'rapidgator.' in url: continue
 
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)

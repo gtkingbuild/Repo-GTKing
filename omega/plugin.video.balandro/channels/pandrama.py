@@ -62,14 +62,14 @@ def list_all(item):
 
         SerieName = SerieName.strip()
 
-        titulo = title.replace('Capítulo', '[COLOR goldenrod]Capitulo[/COLOR]').replace('capítulo', '[COLOR goldenrod]Capitulo[/COLOR]').replace('capítulo', '[COLOR goldenrod]Capitulo[/COLOR]').replace('capitulo', '[COLOR goldenrod]Capitulo[/COLOR]')
+        titulo = title.replace('Capítulo', '[COLOR goldenrod]Epis.[/COLOR]').replace('capítulo', '[COLOR goldenrod]Epis-[/COLOR]').replace('capítulo', '[COLOR goldenrod]Epis.[/COLOR]').replace('capitulo', '[COLOR goldenrod]Epis.[/COLOR]')
 
         epis = scrapertools.find_single_match(url, '-capitulo-(.*?)-')
 
         if not epis: epis = 1
 
         itemlist.append(item.clone( action='findvideos', url=url, title=titulo, thumbnail=thumb,
-                                    contentSeason=1, contentEpisodeNumber=epis, contentType='tvshow', contentSerieName=SerieName, infoLabels={'year': '-'} ))
+                                    contentSeason=1, contentEpisodeNumber=epis, contentType='episode', contentSerieName=SerieName, infoLabels={'year': '-'} ))
 
     tmdb.set_infoLabels(itemlist)
 

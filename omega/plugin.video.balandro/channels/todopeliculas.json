@@ -1,0 +1,17 @@
+{
+  "id": "todopeliculas",
+  "name": "TodoPeliculas",
+  "thumbnail": "todopeliculas.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["suggested", "news", "rankings", "kids", "docs", "vos"],
+
+  "notes": "Películas por géneros."
+}

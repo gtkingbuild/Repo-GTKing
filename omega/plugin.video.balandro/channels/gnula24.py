@@ -9,14 +9,14 @@ from core import httptools, scrapertools, servertools, tmdb
 
 # ~ 14/8/24 Peliculas solo hay 26
 
-host = 'https://wv5u.seriesgod.cc/'
+host = 'https://w-v5u.seriesgod.cc/'
 
 
 # ~ por si viene de enlaces guardados
 ant_hosts = ['https://www.gnula24.xyz/', 'https://www3.gnula24.xyz/', 'https://ww2.gnula24.xyz/',
              'https://www11.gnula24.xyz/', 'https://w-ww.gnula24.xyz/', 'https://c1.gnula24.xyz/',
              'https://www.seriesgod.cc/', 'https://ww-w.seriesgod.cc/', 'https://w-ww.seriesgod.cc/',
-             'https://www.seriesgod.cc/']
+             'https://www.seriesgod.cc/', 'https://wv5u.seriesgod.cc/']
 
 
 domain = config.get_setting('dominio', 'gnula24', default='')
@@ -115,6 +115,8 @@ def acciones(item):
     itemlist.append(item.clone( channel='domains', action='manto_domain_gnula24', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
 
     itemlist.append(item_configurar_proxies(item))
+
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'gnula24', thumbnail=config.get_thumb('gnula24') ))
 
     platformtools.itemlist_refresh()
 
@@ -256,7 +258,7 @@ def list_all(item):
 
         if '/movies/' in url: continue
 
-        title = title.replace('&#8230;', '').replace('&#8211;', '').replace('&#038;', '').replace('&#8217;s', "'s")
+        title = title.replace('&#8230;', '').replace('&#8211;', '').replace('&#038;', '').replace('&#8217;s', "'s").replace('&#8217;', '')
 
         title = re.sub(r" \(.*?\)| \| .*", "", title)
 
@@ -406,7 +408,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('Gnula24', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('Gnula24', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -599,7 +604,7 @@ def list_search(item):
 
         title = scrapertools.find_single_match(article, ' alt="(.*?)"')
 
-        title = title.replace('&#8217;', '')
+        title = title.replace('&#8230;', '').replace('&#8211;', '').replace('&#038;', '').replace('&#8217;s', "'s").replace('&#8217;', '')
 
         thumb = scrapertools.find_single_match(article, ' src="(.*?)"')
 

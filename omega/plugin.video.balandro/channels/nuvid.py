@@ -46,11 +46,24 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = host + 'search/videos/videos', tipo = 'rt' ))
 
-    itemlist.append(item.clone( title = 'Alta definición', action = 'list_all', url = host + 'search/videos/hd', qlty = '1' ))
+    itemlist.append(item.clone( title = 'Alta definición', action = 'list_all', url = host + 'search/videos/hd', qlty = '1', text_color = 'tan' ))
+
+    itemlist.append(item.clone( title = 'Por calidad', action = 'calidades', search_type = 'movie' ))
 
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias' ))
 
-    itemlist.append(item.clone( title = 'Por calidad', action = 'calidades', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Por estrella', action = 'pornstars', url = host + 'pornstars' ))
+
+    return itemlist
+
+
+def calidades(item):
+    logger.info()
+    itemlist = []
+
+    itemlist.append(item.clone( title = 'En 3D', action = 'list_all', url = host + '3d-porn', text_color = 'tan' ))
+    itemlist.append(item.clone( title = 'En 4K', action = 'list_all', url = host + '4k-porn', text_color = 'tan' ))
+    itemlist.append(item.clone( title = 'En HD', action = 'list_all', url = host + 'hd-porn', text_color = 'tan' ))
 
     return itemlist
 
@@ -62,17 +75,6 @@ def categorias(item):
     itemlist.append(item.clone( title = 'Hetero', action = 'list_cat',  url = host + 'categories', tipo = 'Straight', text_color = 'orange' ))
     itemlist.append(item.clone( title = 'Gays', action = 'list_cat',  url = host + 'categories', tipo = 'Gays', text_color = 'orange' ))
     itemlist.append(item.clone( title = 'Transsexual', action = 'list_cat',  url = host + 'categories', tipo = 'Transsexual', text_color = 'orange' ))
-
-    return itemlist
-
-
-def calidades(item):
-    logger.info()
-    itemlist = []
-
-    itemlist.append(item.clone( title = 'En 3D', action = 'list_all', url = host + '3d-porn', text_color = 'moccasin' ))
-    itemlist.append(item.clone( title = 'En 4K', action = 'list_all', url = host + '4k-porn', text_color = 'moccasin' ))
-    itemlist.append(item.clone( title = 'En HD', action = 'list_all', url = host + 'hd-porn', text_color = 'moccasin' ))
 
     return itemlist
 
@@ -99,7 +101,33 @@ def list_cat(item):
 
         title = title.strip()
 
-        itemlist.append(item.clone (action='list_all', title = title, url = url, ref = host + 'categories', text_color='tan' ))
+        itemlist.append(item.clone (action='list_all', title = title, url = url, ref = host + 'categories', text_color='moccasin' ))
+
+    return itemlist
+
+
+def pornstars(item):
+    logger.info()
+    itemlist = []
+
+    data = do_downloadpage(item.url)
+    data = re.sub(r"\n|\r|\t|&nbsp;|<br>|<br/>", "", data)
+
+    bloque = scrapertools.find_single_match(data, '>z<(.*?)</div> </div> </div>')
+
+    matches = re.compile('href="(.*?)".*?<img src="(.*?)".*?alt="(.*?)"').findall(bloque)
+
+    for url, thumb, title in matches:
+        url = host[:-1] + url
+
+        itemlist.append(item.clone( action = 'list_all', title = title, url = url, thumbnail = thumb, text_color='orange' ))
+
+    if itemlist:
+        next_url = scrapertools.find_single_match(data, 'class="active">.*?<a href="(.*?)"')
+
+        if next_url:
+            itemlist.append(item.clone( title = 'Siguientes ...', action = 'pornstars', url = next_url if next_url.startswith('http') else host[:-1] + next_url,
+                                        text_color = 'coral' ))
 
     return itemlist
 

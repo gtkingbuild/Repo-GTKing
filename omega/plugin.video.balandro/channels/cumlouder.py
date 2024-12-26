@@ -48,22 +48,17 @@ def repertorios(item):
 
     data = httptools.downloadpage(item.url).data
 
-    patron = '<div itemprop="itemListElement".*?href="([^"]+)".*?data-src="([^"]+)".*?h2 itemprop="name">([^<]+).*?p>([^<]+)</p>'
+    patron = '<div itemprop="itemListElement".*?href="([^"]+)".*?data-src="([^"]+)".*?h2 itemprop="name">([^<]+).*?p>'
 
     matches = re.compile(patron, re.DOTALL).findall(data)
 
-    for url, thumb, title, vid in matches:
-        vid = vid.lower()
-        vid = vid.replace('videos', '').strip()
-
+    for url, thumb, title, in matches:
         title = title.lower().capitalize()
 
-        titulo = '[COLOR orange]%s[/COLOR] (%s)' % (title, vid)
-
-        itemlist.append(item.clone( action = 'list_all', url = url, thumbnail = thumb, title = titulo, page = 1 ))
+        itemlist.append(item.clone( action = 'list_all', url = url, thumbnail = thumb, title = title, page = 1, text_color = 'pink' ))
 
     if itemlist:
-        next_url = scrapertools.find_single_match(data, '<a class="btn-pagination" itemprop="name" href="(.*?)"')
+        next_url = scrapertools.find_single_match(data, '<a class="btn-pagination".*?itemprop="name".*?href="(.*?)"')
 
         if next_url:
             next_url = host + next_url
@@ -85,24 +80,19 @@ def canales(item):
 
     data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;", "", data)
 
-    patron = '<a channel-url=.*?href="([^"]+)".*?data-src="([^"]+)".*?alt="([^"]+)".*?<span class="ico-videos sprite"></span>([^<]+)</span>'
+    patron = '<a channel-url=.*?href="([^"]+)".*?data-src="([^"]+)".*?alt="([^"]+)"'
 
     matches = scrapertools.find_multiple_matches(data, patron)
 
-    for url, thumb, title, vid in matches:
+    for url, thumb, title, in matches:
         url = host + url + '?show=channels'
-
-        vid = vid.lower()
-        vid = vid.replace('videos', '').strip()
-
-        titulo = '[COLOR orange]%s[/COLOR] (%s)' % (title, vid)
 
         if not thumb.startswith('http'): thumb = 'https:' + thumb
 
-        itemlist.append(item.clone( action = 'list_all', url = url, title = titulo, thumbnail = thumb, page = 1, text_color = 'tan' ))
+        itemlist.append(item.clone( action = 'list_all', url = url, title = title, thumbnail = thumb, page = 1, text_color = 'violet' ))
 
     if itemlist:
-        next_url = scrapertools.find_single_match(data, '<a class="btn-pagination" itemprop="name" href="(.*?)"')
+        next_url = scrapertools.find_single_match(data, '<a class="btn-pagination".*?temprop="name".*?href="(.*?)"')
 
         if next_url:
             next_url = host + next_url
@@ -132,10 +122,10 @@ def categorias(item):
 
         if not thumb.startswith('http'): thumb = 'https:' + thumb
 
-        itemlist.append(item.clone( action = 'list_all', url = url, title = title, thumbnail = thumb, page = 1, text_color='tan' ))
+        itemlist.append(item.clone( action = 'list_all', url = url, title = title, thumbnail = thumb, page = 1, text_color='moccasin' ))
 
     if itemlist:
-        next_url = scrapertools.find_single_match(data, '<a class="btn-pagination" itemprop="name" href="(.*?)"')
+        next_url = scrapertools.find_single_match(data, '<a class="btn-pagination".*?itemprop="name".*?href="(.*?)"')
 
         if next_url:
             next_url = host + next_url
@@ -157,23 +147,17 @@ def pornstars(item):
 
     data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;", "", data)
 
-    patron = 'class="muestra-escena muestra-pornostar show-girl" href="([^"]+)".*?data-src="([^"]+)".*?' \
-             'alt="([^"]+)".*?<span class="videos"> <span class="ico-videos sprite"></span>([^<]+)</span>'
+    patron = 'class="muestra-escena muestra-pornostar show-girl" href="([^"]+)".*?data-src="([^"]+)".*?alt="([^"]+)"'
 
     matches = scrapertools.find_multiple_matches(data, patron)
 
-    for url, thumb, title, vid in matches:
+    for url, thumb, title in matches:
         url = host + url
 
-        vid = vid.lower()
-        vid = vid.replace('videos', '').strip()
-
-        titulo = '[COLOR orange]%s[/COLOR] (%s)' % (title, vid)
-
-        itemlist.append(item.clone( action = 'list_all', url = url, thumbnail = thumb, title = titulo, page = 1, text_color='moccasin' ))
+        itemlist.append(item.clone( action = 'list_all', url = url, thumbnail = thumb, title = title, page = 1, text_color='orange' ))
 
     if itemlist:
-        next_url = scrapertools.find_single_match(data, '<a class="btn-pagination" itemprop="name" href="(.*?)"')
+        next_url = scrapertools.find_single_match(data, '<a class="btn-pagination".*?itemprop="name".*?href="(.*?)"')
 
         if next_url:
             next_url = host + next_url
@@ -214,7 +198,7 @@ def list_all(item):
                                     contentType = 'movie', contentTitle = title, contentExtra='adults' ))
 
     if itemlist:
-        next_url = scrapertools.find_single_match(data, '<a class="btn-pagination" itemprop="name" href="(.*?)"')
+        next_url = scrapertools.find_single_match(data, '<a class="btn-pagination".*?itemprop="name".*?href="(.*?)"')
 
         if next_url:
             next_url = host + next_url

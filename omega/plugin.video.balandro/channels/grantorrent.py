@@ -46,7 +46,10 @@ except:
    except: pass
 
 
-host = 'https://www4.grantorrent.wf/'
+host = 'https://grantorrent.mov/'
+
+
+_player = 'https://dl.grantorrent.wf/'
 
 
 # ~ por si viene de enlaces guardados
@@ -57,7 +60,8 @@ ant_hosts = ['http://grantorrent.net/', 'https://grantorrent1.com/', 'https://gr
              'https://grantorrent.ch/', 'https://grantorrent.ac/', 'https://grantorrent.re/',
              'https://grantorrent.se/', 'https://grantorrent.si/', 'https://grantorrent.fi/',
              'https://grantorrent.bz/', 'https://grantorrent.zip/', 'https://www1.grantorrent.pm/',
-             'https://www1.grantorrent.wf/', 'https://www2.grantorrent.wf/', 'https://www3.grantorrent.wf/']
+             'https://www1.grantorrent.wf/', 'https://www2.grantorrent.wf/', 'https://www3.grantorrent.wf/',
+             'https://www4.grantorrent.wf/']
 
 
 domain = config.get_setting('dominio', 'grantorrent', default='')
@@ -186,6 +190,8 @@ def acciones(item):
     itemlist.append(item.clone( channel='domains', action='manto_domain_grantorrent', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
 
     itemlist.append(item_configurar_proxies(item))
+
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'grantorrent', thumbnail=config.get_thumb('grantorrent') ))
 
     platformtools.itemlist_refresh()
 
@@ -368,7 +374,7 @@ def play(item):
         url_base64 = decrypters.decode_url_base64(item.url, host_torrent)
 
         if url_base64.endswith('.torrent'):
-           url_base64 = url_base64.replace(host, 'https://dl.' + b64_host + '/' )
+           if not '//dl.' in url_base64: url_base64 = url_base64.replace(host, _player)
            item.url = url_base64
 
     if item.url.endswith('.torrent'):

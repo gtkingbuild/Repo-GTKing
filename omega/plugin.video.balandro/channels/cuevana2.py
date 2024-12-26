@@ -44,14 +44,15 @@ except:
    except: pass
 
 
-host = 'https://www.cuevana2.run/'
+host = 'https://www.cuevana2.lat/'
 
 
 _player = '.cuevana2.'
 
 
 # ~ por si viene de enlaces guardados
-ant_hosts = ['https://www.cuevana2.icu/', 'https://ww2.cuevana2.biz/', 'https://cuevana2.biz/']
+ant_hosts = ['https://www.cuevana2.icu/', 'https://ww2.cuevana2.biz/', 'https://cuevana2.biz/',
+             'https://www.cuevana2.run/']
 
 
 domain = config.get_setting('dominio', 'cuevana2', default='')
@@ -167,6 +168,8 @@ def acciones(item):
     itemlist.append(item.clone( channel='domains', action='manto_domain_cuevana2', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
 
     itemlist.append(item_configurar_proxies(item))
+
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'cuevana2', thumbnail=config.get_thumb('cuevana2') ))
 
     platformtools.itemlist_refresh()
 
@@ -291,6 +294,8 @@ def list_all(item):
         year = scrapertools.find_single_match(article, '<span>(\d{4})</span>')
         if not year: year = '-'
 
+        title = title.replace('&#x27;', "'")
+
         tipo = 'movie' if '/pelicula/' in url else 'tvshow'
         sufijo = '' if item.search_type != 'all' else tipo
 
@@ -311,10 +316,7 @@ def list_all(item):
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
-        if 'current' in 'data':
-            next_url = scrapertools.find_single_match(data, '<a class="page-link".*?current.*?href="(.*?)"')
-        else:
-            next_url = scrapertools.find_single_match(data, '<a class="page-link".*?href="(.*?)"')
+        next_url = scrapertools.find_single_match(data, '<li class="page-item active">.*?</span></li>.*?<a class="page-link".*?href="(.*?)"')
 
         if next_url:
             if '/page/' in next_url:
@@ -352,18 +354,19 @@ def last_epis(item):
         season = scrapertools.find_single_match(temp_epis, '(.*?)x')
         episode = scrapertools.find_single_match(temp_epis, '.*?x(.*?)$')
 
+        title = title.replace('&#x27;', "'")
+
         name = title.replace(temp_epis, '').strip() 
 
-        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb,
+        titulo = str(season) + 'x' + str(episode) + ' ' + name
+
+        itemlist.append(item.clone( action='findvideos', url=url, title=titulo, thumbnail=thumb,
                                     contentSerieName=name, contentType='episode', contentSeason=season, contentEpisodeNumber=episode ))
 
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
-        if 'current' in 'data':
-            next_url = scrapertools.find_single_match(data, '<a class="page-link".*?current.*?href="(.*?)"')
-        else:
-            next_url = scrapertools.find_single_match(data, '<a class="page-link".*?href="(.*?)"')
+        next_url = scrapertools.find_single_match(data, '<li class="page-item active">.*?</span></li>.*?<a class="page-link".*?href="(.*?)"')
 
         if next_url:
             if '/page/' in next_url:
@@ -413,11 +416,9 @@ def episodios(item):
 
     bloque = scrapertools.find_single_match(str(data), '"post":(.*?)$')
 
-    patron = '"image":"(.*?)".*?"season":"(.*?)".*?"episode":"(.*?)"'
-
     i = 0
 
-    matches = re.compile(patron, re.DOTALL).findall(str(bloque))
+    matches = re.compile('"image":"(.*?)".*?"season":"(.*?)".*?"episode":"(.*?)"', re.DOTALL).findall(str(bloque))
 
     if item.page == 0 and item.perpage == 50:
         sum_parts = len(matches)
@@ -427,7 +428,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('Cuevana2', '[COLOR cyan]Cargando Temp. ' + str(item.contentSeason) + ' sobre ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('Cuevana2', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -641,7 +645,7 @@ def play(item):
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(url).lower()
-            if not new_server.startswith("http"): servidor = new_server
+            if new_server.startswith("http"): servidor = new_server
 
         if servidor == 'zplayer': url = url + '|' + host
 

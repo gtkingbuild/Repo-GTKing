@@ -10,9 +10,6 @@ from core import httptools, scrapertools, servertools
 host = 'https://es.pornhub.com/'
 
 
-perpage = 30
-
-
 def do_downloadpage(url, post=None, headers=None):
     data = httptools.downloadpage(url, post=post, headers=headers).data
 
@@ -37,15 +34,18 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + "video/" ))
 
-    itemlist.append(item.clone( title = 'En castellano', action = 'list_all', url = host + "language/spanish" ))
+    itemlist.append(item.clone( title = 'En castellano', action = 'list_all', url = host + "language/spanish", text_color = 'pink' ))
 
-    itemlist.append(item.clone( title = 'Novedades', action = 'list_all', url = host + "video?o=cm" ))
-    itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = host + "video?o=mv" ))
+    itemlist.append(item.clone( title = 'Últimos', action = 'list_all', url = host + "video?o=cm", text_color = 'cyan' ))
+
+    itemlist.append(item.clone( title = 'Más populares', action = 'list_all', url = host + "video?o=mv" ))
     itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = host + "video?o=tr" ))
+
     itemlist.append(item.clone( title = 'Más candentes', action = 'list_all', url = host + "video?o=ht" ))
 
+    itemlist.append(item.clone( title = 'Caseros', action = 'list_all', url = host + "video?p=homemade&o=tr", text_color = 'tan' ))
+
     itemlist.append(item.clone( title = 'Long play', action = 'list_all', url = host + "video?o=lg" ))
-    itemlist.append(item.clone( title = 'Caseros', action = 'list_all', url = host + "video?p=homemade&o=tr" ))
 
     itemlist.append(item.clone( title = 'Por canal', action = 'canales', url = host + 'channels?o=rk' ))
     itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', url = host + 'categories/' ))
@@ -64,7 +64,7 @@ def canales(item):
     matches = re.compile('div class="channelsWrapper clearfix">.*?<a href="(.*?)".*?alt="(.*?)".*?src="(.*?)"').findall(data)
 
     for url, title, thumb in matches:
-        itemlist.append(item.clone( action = 'list_channels', url = url if url.startswith('http') else host[:-1] + url, title = title, thumbnail = thumb, text_color = 'orange' ))
+        itemlist.append(item.clone( action = 'list_channels', url = url if url.startswith('http') else host[:-1] + url, title = title, thumbnail = thumb, text_color = 'violet' ))
 
     if itemlist:
         next_url = scrapertools.find_single_match(data, '<li class="page_next"><a href="([^"]+)')
@@ -90,7 +90,7 @@ def categorias(item):
     for url, title, thumb in matches:
         if title == 'Árabe': title = 'Arabe'
 
-        itemlist.append(item.clone( action = 'list_all', url = url if url.startswith('http') else host[:-1] + url, title = title, thumbnail = thumb, text_color = 'tan' ))
+        itemlist.append(item.clone( action = 'list_all', url = url if url.startswith('http') else host[:-1] + url, title = title, thumbnail = thumb, text_color = 'moccasin' ))
 
     return sorted(itemlist, key=lambda x: x.title)
 
@@ -107,7 +107,9 @@ def pornstars(item):
     matches = re.compile(patron).findall(data)
 
     for url, thumb, title in matches:
-        itemlist.append(item.clone( action = 'list_starvideos', url = url if url.startswith('http') else host[:-1] + url, title = title, thumbnail = thumb, text_color='moccasin' ))
+        title = title.capitalize()
+
+        itemlist.append(item.clone( action = 'list_starvideos', url = url if url.startswith('http') else host[:-1] + url, title = title, thumbnail = thumb, text_color='orange' ))
 
     if itemlist:
         next_url = scrapertools.find_single_match(data, '<li class="page_next"><a href="([^"]+)')

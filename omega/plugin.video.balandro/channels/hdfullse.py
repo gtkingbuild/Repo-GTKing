@@ -159,7 +159,7 @@ def acciones(item):
     itemlist.append(item.clone( channel='domains', action='test_domain_hdfullse', title='Test Web del canal [COLOR yellow][B] ' + url + '[/B][/COLOR]',
                                 from_channel='hdfullse', folder=False, text_color='chartreuse' ))
 
-    itemlist.append(Item( channel='domains', action='operative_domains_hdfullse', title='Comprobar [B]Dominio Operativo Vigente[/B]',
+    itemlist.append(Item( channel='domains', action='operative_domains_hdfullse', title='Comprobar [B]Dominio Operativo Vigente' + '[COLOR dodgerblue] https://hdfull.pm[/B][/COLOR]',
                           desde_el_canal = True, thumbnail=config.get_thumb('hdfullse'), text_color='mediumaquamarine' ))
 
     itemlist.append(Item( channel='domains', action='last_domain_hdfullse', title='[B]Comprobar último dominio vigente[/B]',
@@ -173,6 +173,8 @@ def acciones(item):
     itemlist.append(item_configurar_proxies(item))
 
     itemlist.append(Item( channel='helper', action='show_help_hdfullse', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('hdfullse') ))
+
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'hdfullse', thumbnail=config.get_thumb('hdfullse') ))
 
     platformtools.itemlist_refresh()
 
@@ -201,10 +203,9 @@ def mainlist(item):
     itemlist.append(item.clone( title = 'Búsqueda de personas:', action = '', folder=False, text_color='tan' ))
 
     itemlist.append(item.clone( title = ' - Buscar intérprete ...', action = 'search', group = 'star', search_type = 'person', 
-                                plot = 'Debe indicarse el nombre y apellido/s del intérprete.'))
-
+                                plot = 'Indicar el Nombre y Apellido/s del intérprete.'))
     itemlist.append(item.clone( title = ' - Buscar dirección ...', action = 'search', group = 'director', search_type = 'person',
-                                plot = 'Debe indicarse el nombre y apellido/s del director.'))
+                                plot = 'Indicar el Nombre y Apellido/s del director.'))
 
     return itemlist
 
@@ -481,7 +482,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('HdFullSe', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('HdFullSe', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -613,6 +617,7 @@ def findvideos(item):
 
         elif '/powvideo.' in url: continue
         elif '/streamplay.' in url: continue
+        elif '/vidtodo.' in url: continue
 
         elif 'onlystream.tv' in url: url = url.replace('onlystream.tv', 'upstream.to')
         elif 'vev.io' in url: url = url.replace('vev.io', 'streamtape.com/e')
@@ -643,10 +648,10 @@ def search(item, texto):
     logger.info()
     try:
         if item.group:
-            item.url = host + '/search' + '/' + item.group + '/' + texto
+            item.url = host + '/search' + '/' + item.group + '/' + texto.replace(' ', '+')
         else:
             texto = texto.replace(' ', '+')
-            item.search_post = {'menu': 'search', 'query': texto}
+            item.search_post = {'menu': 'search', 'query': texto.replace(' ', '+')}
             item.url = host + '/search'
 			
         return list_all(item)

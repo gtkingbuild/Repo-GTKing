@@ -60,7 +60,7 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_ser', url = host, search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimos capítulos', action = 'last_epis', url = host, search_type = 'tvshow', text_color = 'cyan' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host, search_type = 'tvshow', text_color = 'cyan' ))
 
     itemlist.append(item.clone( title = 'Últimas', action = 'list_ser', url = host, search_type = 'tvshow', group = 'lasts', text_color = 'moccasin' ))
 
@@ -75,13 +75,31 @@ def otras(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title = 'Antorchas heroes de la fé', action = 'temporadas', url = host + 'antorchas-heroes-de-la-fe/', search_type = 'tvshow' ))
+    title = 'Antorchas heroes de la fé'
+    url = host + 'antorchas-heroes-de-la-fe/'
 
-    itemlist.append(item.clone( title = 'El superlibro', action = 'temporadas', url = host + 'el-superlibro/', search_type = 'tvshow' ))
+    itemlist.append(item.clone( action='temporadas', url=url, title=title,
+                                contentType = 'tvshow', contentSerieName = title, infoLabels={'year': '-'} ))
 
-    itemlist.append(item.clone( title = 'La vindicación', action = 'temporadas', url = host + 'la-vindicacion-completa/', search_type = 'tvshow' ))
+    title = 'El superlibro'
+    url = host + 'el-superlibro/'
 
-    itemlist.append(item.clone( title = 'Tetelestai', action = 'temporadas', url = host + 'tetelestai/', search_type = 'tvshow' ))
+    itemlist.append(item.clone( action='temporadas', url=url, title=title,
+                                contentType = 'tvshow', contentSerieName = title, infoLabels={'year': '-'} ))
+
+    title = 'La vindicación'
+    url = host + 'la-vindicacion-completa/'
+
+    itemlist.append(item.clone( action='temporadas', url=url, title=title,
+                                contentType = 'tvshow', contentSerieName = title, infoLabels={'year': '-'} ))
+
+    title = 'Tetelestai'
+    url = host + 'tetelestai/'
+
+    itemlist.append(item.clone( action='temporadas', url=url, title=title,
+                                contentType = 'tvshow', contentSerieName = title, infoLabels={'year': '-'} ))
+
+    tmdb.set_infoLabels(itemlist)
 
     return itemlist
 
@@ -166,6 +184,8 @@ def list_ser(item):
         title = match.replace(host, '').replace('http://seriesbiblicas.net/', '').replace('/', '').strip()
 
         if not title: continue
+
+        if title == 'javascript:;': continue
 
         titulo = title.replace('-hd-google-drive', ' ').replace('-google-drive', ' ').replace('-hd-ok-ru', ' ').replace('-ok-ru', ' ').replace('-hd', ' ').replace('-sd', ' ').strip()
 
@@ -340,7 +360,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('SeriesBiblicas', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('SeriesBiblicas', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')

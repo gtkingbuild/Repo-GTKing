@@ -44,7 +44,7 @@ except:
    except: pass
 
 
-host = 'https://wvw.henaojara.com/'
+host = 'https://www.henaojara.com/'
 
 
 _players = ['.henaojara.']
@@ -52,7 +52,7 @@ _players = ['.henaojara.']
 
 # ~ por si viene de enlaces guardados
 ant_hosts = ['https://henaojara.com/', 'https://henaojara2.com/', 'https://www1.henaojara.com/',
-             'https://www.henaojara.com/']
+             'https://wvw.henaojara.com/']
 
 
 domain = config.get_setting('dominio', 'henaojara', default='')
@@ -150,6 +150,11 @@ def do_downloadpage(url, post=None, headers=None):
             platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]CloudFlare[COLOR orangered] Protection[/B][/COLOR]')
         return ''
 
+    if '>Sorry, you have been blocked<' in data:
+        if not '?s=' in url:
+            platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]Access[COLOR orangered] Blocked[/B][/COLOR]')
+        return ''
+
     return data
 
 
@@ -178,6 +183,8 @@ def acciones(item):
 
     itemlist.append(Item( channel='helper', action='show_help_henaojara', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('henaojara') ))
 
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'henaojara', thumbnail=config.get_thumb('henaojara') ))
+
     platformtools.itemlist_refresh()
 
     return itemlist
@@ -203,13 +210,13 @@ def mainlist_animes(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'veronline/category/categorias/', search_type = 'tvshow' ))
 
+    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'veronline/category/estrenos/', search_type = 'tvshow', text_color = 'greenyellow' ))
+
     itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host, search_type = 'tvshow', text_color = 'cyan' ))
 
     itemlist.append(item.clone( title = 'Últimos animes', action = 'list_last', url = host, search_type = 'tvshow', text_color = 'moccasin' ))
 
     itemlist.append(item.clone( title = 'En emisión', action = 'list_all', url = host + 'veronline/category/emision/', search_type = 'tvshow' ))
-
-    itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'veronline/category/estrenos/', search_type = 'tvshow', text_color = 'greenyellow' ))
 
     itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host + 'veronline/category/pelicula/', search_type = 'movie', text_color = 'deepskyblue' ))
 
@@ -287,14 +294,7 @@ def list_all(item):
         year = scrapertools.find_single_match(title, '(\d{4})')
         if year: title = title.replace('(' + year + ')', '').strip()
 
-        SerieName = title
-
-        if 'Temporada' in title: SerieName = title.split("Temporada")[0]
-        if 'Movie' in title: SerieName = title.split("Movie")[0]
-
-        SerieName = re.sub(r"Sub |Español|Latino|Castellano|HD|Temporada \d+|\(\d{4}\)", "", SerieName).strip()
-        SerieName = SerieName.replace('Español Latino HD', '').replace('Español Castellano HD', '').replace('Sub Español HD', '').strip()
-        SerieName = SerieName.strip()
+        SerieName = corregir_SerieName(title)
 
         thumb = scrapertools.find_single_match(match, ' src="(.*?)"')
 
@@ -319,8 +319,6 @@ def list_all(item):
             if 'Movie' in PeliName: PeliName = PeliName.split("Movie")[0]
 
             PeliName = PeliName.replace('Peliculas', '').replace('Pelicula', '').strip()
-
-            PeliName = PeliName.strip()
 
             itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, fmt_sufijo=sufijo,
                                         contentType='movie', contentTitle=PeliName, infoLabels={'year': '-'} ))
@@ -361,14 +359,7 @@ def list_last(item):
         if year: title = title.replace('(' + year + ')', '').strip()
         else: year = '-'
 
-        SerieName = title
-
-        if 'Temporada' in title: SerieName = title.split("Temporada")[0]
-        if 'Movie' in title: SerieName = title.split("Movie")[0]
-
-        SerieName = re.sub(r"Sub |Español|Latino|Castellano|HD|Temporada \d+|\(\d{4}\)", "", SerieName).strip()
-        SerieName = SerieName.replace('Español Latino HD', '').replace('Español Castellano HD', '').replace('Sub Español HD', '').strip()
-        SerieName = SerieName.strip()
+        SerieName = corregir_SerieName(title)
 
         PeliName = SerieName
 
@@ -376,8 +367,7 @@ def list_last(item):
 
         epis = scrapertools.find_single_match(match, '<span class="ClB">(.*?)</span>')
 
-        tipo = 'movie' if epis == '0' or epis == '1' else 'tvshow'
-        sufijo = '' if item.search_type == 'movie' else tipo
+        tipo = 'movie' if epis == '0' else 'tvshow'
 
         if tipo == 'tvshow':
             temp = scrapertools.find_single_match(url, '/season/.*?hd-(.*?)/')
@@ -385,17 +375,21 @@ def list_last(item):
 
             title = 'Temporada ' + str(temp) + ' ' + title
 
-            title = title.replace('Temporada', '[COLOR goldenrod]Temporada[/COLOR]')
+            title = title.replace('Temporada', '[COLOR goldenrod]Temp.[/COLOR]')
 
             itemlist.append(item.clone( action='temporadas', url=url, title=title, thumbnail=thumb,
                                         contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': year} ))
 
         if tipo == 'movie':
+            PeliName = re.sub(r"Sub |Español|Latino|Castellano|HD|Temporada \d+|\(\d{4}\)", "", title).strip()
+
             if 'Movie' in PeliName: PeliName = PeliName.split("Movie")[0]
 
             PeliName = PeliName.replace('Peliculas', '').replace('Pelicula', '').strip()
 
-            itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, fmt_sufijo=sufijo,
+            title = '[COLOR deepskyblue]Film [/COLOR]' + title
+
+            itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb,
                                         contentType='movie', contentTitle=PeliName, infoLabels={'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
@@ -431,11 +425,14 @@ def last_epis(item):
         SerieName = SerieName.strip()
 
         temp = scrapertools.find_single_match(match, '<span class="ClB">(.*?)x')
+        if not temp: temp = 1
+
         epis = scrapertools.find_single_match(match, '<span class="ClB">.*?x(.*?)</span>')
+        if not epis: epis = 1
 
         title = 'Episodio ' + epis + ' ' + title
 
-        title = title.replace('Episodio', '[COLOR goldenrod]Episodio[/COLOR]')
+        title = title.replace('Episodio', '[COLOR goldenrod]Epis.[/COLOR]')
 
         if 'Pelicula' in title: title = title.replace('Pelicula', '[COLOR deepskyblue]Pelicula[/COLOR]')
 
@@ -461,6 +458,21 @@ def temporadas(item):
 
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|&nbsp;|<br>|\s{2,}', "", data)
+
+    hay_estreno = False
+    if '>ESTRENO:' in data or '>Estreno:' in data: hay_estreno = True
+
+    if hay_estreno:
+        fec_estreno = scrapertools.find_single_match(data, '>ESTRENO:(.*?)<').strip()
+        if not fec_estreno: fec_estreno = scrapertools.find_single_match(data, '>Estreno:(.*?)<').strip()
+
+        if fec_estreno:
+            platformtools.dialog_notification(config.__addon_name, '[COLOR cyan][B]Proximamente[/B][/COLOR]')
+
+            fec_estreno = 'Estreno: ' + fec_estreno
+            itemlist.append(item.clone( action='', title = fec_estreno, thumbnail = item.thumbnail, text_color='cyan', infoLabels={'year': ''} ))
+
+            return itemlist
 
     if '>Pelicula' in data or '-movie-' in item.url:
         peli = scrapertools.find_single_match(data, '<span class="Num">.*?<a href="(.*?)"')
@@ -529,8 +541,11 @@ def episodios(item):
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|&nbsp;|<br>|\s{2,}', "", data)
 
+    hay_estreno = False
+    if '>ESTRENO:' in data or '>Estreno:' in data: hay_estreno = True
+
     if 'data-tab="' in data:
-        bloque = scrapertools.find_single_match(data, 'data-tab="' + str(item.contentSeason) + '".*?</table>')
+        bloque = scrapertools.find_single_match(data, 'data-tab="' + str(item.contentSeason) + '"(.*?)</table>')
     else:
         bloque = data
 
@@ -546,7 +561,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('HenaOjara', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('HenaOjara', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -588,14 +606,15 @@ def episodios(item):
 
         if '</b>' in title: title = scrapertools.find_single_match(title, "</b>(.*?)$").strip()
 
-        titulo = '%sx%s - %s' % (str(item.contentSeason), epis, title)
+        if item.contentSerieName: titulo = '%sx%s - %s' % (str(item.contentSeason), epis, str(item.contentSerieName))
+        else: titulo = item.title
 
         itemlist.append(item.clone( action='findvideos', url = url, title = titulo, thumbnail = thumb,
                                     contentType = 'episode', contentSeason = item.contentSeason, contentEpisodeNumber = epis ))
 
         if len(itemlist) >= item.perpage:
             if next_cap:
-                next_cap = next_cap.replace('Proximo Capitulo', 'Próximo Capítulo')
+                next_cap = next_cap.replace('Proximo Capitulo', 'Próx. Epis.')
                 itemlist.append(item.clone( action='', title = next_cap, thumbnail = item.thumbnail, text_color='cyan'))
             break
 
@@ -604,6 +623,17 @@ def episodios(item):
             itemlist.append(item.clone( title="Siguientes ...", action="episodios", page=item.page + 1, perpage = item.perpage, text_color='coral' ))
 
     tmdb.set_infoLabels(itemlist)
+
+    if not itemlist:
+        if hay_estreno:
+            fec_estreno = scrapertools.find_single_match(data, '>ESTRENO:(.*?)<').strip()
+            if not fec_estreno: fec_estreno = scrapertools.find_single_match(data, '>Estreno:(.*?)<').strip()
+
+            if fec_estreno:
+                platformtools.dialog_notification(config.__addon_name, '[COLOR cyan][B]Proximamente[/B][/COLOR]')
+
+                fec_estreno = 'Estreno: ' + fec_estreno
+                itemlist.append(item.clone( action='', title = fec_estreno, thumbnail = item.thumbnail, text_color='cyan', infoLabels={'year': ''} ))
 
     return itemlist
 
@@ -617,6 +647,8 @@ def findvideos(item):
 
     if '>Pelicula' in data or '-movie-' in item.url:
         peli = scrapertools.find_single_match(data, '<span class="Num">.*?<a href="(.*?)"')
+
+        peli = peli.replace('&amp;#038;', '&').replace('&#038;', '&').replace('&amp;', '&')
 
         if not '/disqus.' in peli: data = do_downloadpage(peli)
 
@@ -659,7 +691,9 @@ def findvideos(item):
 
                 players = players.replace('&amp;#038;', '&').replace('&#038;', '&').replace('&amp;', '&')
 
-                data3 = do_downloadpage(players)
+                headers = {'Referer': host, 'Priority': 'u=4', 'Sec-GPC': '1', 'Accept-Encoding': 'gzip, deflate, br, zstd' }
+
+                data3 = do_downloadpage(players, headers=headers)
 
                 matches3 = scrapertools.find_multiple_matches(data3, "loadVideo.*?'(.*?)'" + '.*?alt="(.*?)"')
 
@@ -673,6 +707,7 @@ def findvideos(item):
                     if srv == 'fembed': continue
                     elif srv == 'streamsb': continue
                     elif srv == 'nyuu': continue
+                    elif srv == '4sync': continue
 
                     if srv == 'netuplayer' or srv == 'netu' or srv == 'hqq': servidor = 'waaw'
 
@@ -704,6 +739,7 @@ def findvideos(item):
 
             if other == 'fembed': continue
             elif other == 'streamsb': continue
+            elif other == '4sync': continue
 
             if other == 'netuplayer' or other == 'netu' or other == 'hqq': servidor = 'waaw'
 
@@ -743,6 +779,7 @@ def findvideos(item):
 
         if srv == 'fembed': continue
         elif srv == 'streamsb': continue
+        elif srv == '4sync': continue
 
         if srv == 'netuplayer' or srv == 'netu' or srv == 'hqq': servidor = 'waaw'
 
@@ -817,8 +854,21 @@ def play(item):
                else:
                    url = httptools.downloadpage(url, follow_redirects=False, timeout=timeout).headers['location']
 
+           url = url.replace('&amp;#038;', '&').replace('&#038;', '&').replace('&amp;', '&')
+
            if '/multiplayer/' in url:
-               return 'Tiene [COLOR plum]Acortador[/COLOR] del enlace'
+               data = do_downloadpage(url, headers={'Referer': url})
+
+               srv = scrapertools.find_single_match(data, "value = '(.*?)'")
+
+               if srv:
+                   data = do_downloadpage(url, post={'servidor': srv}, headers={'Referer': url})
+
+                   url = scrapertools.find_single_match(data, '<a href="(.*?)"')
+               else: url = ''
+
+               if not url:
+                   return 'Tiene [COLOR plum]Acortador[/COLOR] del enlace'
         except:
            url = ''
 
@@ -879,11 +929,65 @@ def play(item):
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(url).lower()
-            if not new_server.startswith("http"): servidor = new_server
+            if new_server.startswith("http"): servidor = new_server
 
         itemlist.append(item.clone( url=url, server=servidor))
 
     return itemlist
+
+
+def corregir_SerieName(SerieName):
+    logger.info()
+
+    if 'Capítulo' in SerieName: SerieName = SerieName.split("Capítulo")[0]
+    if 'Capitulo' in SerieName: SerieName = SerieName.split("Capitulo")[0]
+
+    if 'Movie' in SerieName: SerieName = SerieName.split("Movie")[0]
+
+    if '(Sin Relleno)' in SerieName: SerieName = SerieName.split("(Sin Relleno)")[0]
+
+    if '(TV)' in SerieName: SerieName = SerieName.split("(TV)")[0]
+
+    SerieName = re.sub(r"Sub |Español|Latino|Castellano|HD|Temporada \d+|\(\d{4}\)", "", SerieName).strip()
+    SerieName = SerieName.replace('Español Latino HD', '').replace('Español Castellano HD', '').replace('Sub Español HD', '').strip()
+
+    if 'Temporada' in SerieName: SerieName = SerieName.split("Temporada")[0]
+
+    if 'Season' in SerieName: SerieName = SerieName.split("Season")[0]
+    if 'season' in SerieName: SerieName = SerieName.split("season")[0]
+
+    if ' S1 ' in SerieName: SerieName = SerieName.split(" S1 ")[0]
+    elif ' S2 ' in SerieName: SerieName = SerieName.split(" S2 ")[0]
+    elif ' S3 ' in SerieName: SerieName = SerieName.split(" S3 ")[0]
+    elif ' S4 ' in SerieName: SerieName = SerieName.split(" S4 ")[0]
+    elif ' S5 ' in SerieName: SerieName = SerieName.split(" S5 ")[0]
+    elif ' S6 ' in SerieName: SerieName = SerieName.split(" S6 ")[0]
+    elif ' S7 ' in SerieName: SerieName = SerieName.split(" S7 ")[0]
+    elif ' S8 ' in SerieName: SerieName = SerieName.split(" S8 ")[0]
+    elif ' S9 ' in SerieName: SerieName = SerieName.split(" S9 ")[0]
+
+    if ' T1 ' in SerieName: SerieName = SerieName.split(" T1 ")[0]
+    elif ' T2 ' in SerieName: SerieName = SerieName.split(" T2 ")[0]
+    elif ' T3 ' in SerieName: SerieName = SerieName.split(" T3 ")[0]
+    elif ' T4 ' in SerieName: SerieName = SerieName.split(" T4 ")[0]
+    elif ' T5 ' in SerieName: SerieName = SerieName.split(" T5 ")[0]
+    elif ' T6 ' in SerieName: SerieName = SerieName.split(" T6 ")[0]
+    elif ' T7 ' in SerieName: SerieName = SerieName.split(" T7 ")[0]
+    elif ' T8 ' in SerieName: SerieName = SerieName.split(" T8 ")[0]
+    elif ' T9 ' in SerieName: SerieName = SerieName.split(" T9 ")[0]
+
+    if '2nd' in SerieName: SerieName = SerieName.split("2nd")[0]
+    if '3rd' in SerieName: SerieName = SerieName.split("3rd")[0]
+    if '4th' in SerieName: SerieName = SerieName.split("4th")[0]
+    if '5th' in SerieName: SerieName = SerieName.split("5th")[0]
+    if '6th' in SerieName: SerieName = SerieName.split("6th")[0]
+    if '7th' in SerieName: SerieName = SerieName.split("7th")[0]
+    if '8th' in SerieName: SerieName = SerieName.split("8th")[0]
+    if '9th' in SerieName: SerieName = SerieName.split("9th")[0]
+
+    SerieName = SerieName.strip()
+
+    return SerieName
 
 
 def search(item, texto):

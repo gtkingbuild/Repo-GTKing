@@ -168,6 +168,8 @@ def acciones(item):
 
     itemlist.append(item_configurar_proxies(item))
 
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'cuevana2esp', thumbnail=config.get_thumb('cuevana2esp') ))
+
     platformtools.itemlist_refresh()
 
     return itemlist
@@ -293,6 +295,8 @@ def list_all(item):
         year = scrapertools.find_single_match(article, '<span>(\d{4})</span>')
         if not year: year = '-'
 
+        title = title.replace('&#x27;', "'")
+
         tipo = 'movie' if '/movies/' in url else 'tvshow'
         sufijo = '' if item.search_type != 'all' else tipo
 
@@ -313,10 +317,7 @@ def list_all(item):
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
-        if 'current' in 'data':
-            next_url = scrapertools.find_single_match(data, '<a class="page-link".*?current.*?href="(.*?)"')
-        else:
-            next_url = scrapertools.find_single_match(data, '<a class="page-link".*?href="(.*?)"')
+        next_url = scrapertools.find_single_match(data, '<li class="page-item active">.*?</span></li>.*?<a class="page-link".*?href="(.*?)"')
 
         if next_url:
             if '/page/' in next_url:
@@ -354,18 +355,19 @@ def last_epis(item):
         season = scrapertools.find_single_match(temp_epis, '(.*?)x')
         episode = scrapertools.find_single_match(temp_epis, '.*?x(.*?)$')
 
+        title = title.replace('&#x27;', "'")
+
         name = title.replace(temp_epis, '').strip() 
 
-        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb,
+        titulo = str(season) + 'x' + str(episode) + ' ' + name
+
+        itemlist.append(item.clone( action='findvideos', url=url, title=titulo, thumbnail=thumb,
                                     contentSerieName=name, contentType='episode', contentSeason=season, contentEpisodeNumber=episode ))
 
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
-        if 'current' in 'data':
-            next_url = scrapertools.find_single_match(data, '<a class="page-link".*?current.*?href="(.*?)"')
-        else:
-            next_url = scrapertools.find_single_match(data, '<a class="page-link".*?href="(.*?)"')
+        next_url = scrapertools.find_single_match(data, '<li class="page-item active">.*?</span></li>.*?<a class="page-link".*?href="(.*?)"')
 
         if next_url:
             if '/page/' in next_url:
@@ -429,7 +431,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('Cuevana2Esp', '[COLOR cyan]Cargando Temp. ' + str(item.contentSeason) + ' sobre ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('Cuevana2Esp', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -641,7 +646,7 @@ def play(item):
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(url).lower()
-            if not new_server.startswith("http"): servidor = new_server
+            if new_server.startswith("http"): servidor = new_server
 
         if servidor == 'zplayer': url = url + '|' + host
 

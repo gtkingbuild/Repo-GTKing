@@ -56,10 +56,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host, search_type = 'movie' ))
 
-    itemlist.append(item.clone( title = 'Por calidad', action = 'calidades', search_type = 'movie' ))
-
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'movie' ))
 
     return itemlist
 
@@ -72,18 +69,12 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'series/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
-    itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'tvshow' ))
-
     return itemlist
 
 
 def generos(item):
     logger.info()
     itemlist = []
-
-    if item.search_type == 'movie': text_color = 'deepskyblue'
-    else: text_color = 'hotpink'
 
     opciones = {
         'accion': 'Acción',
@@ -109,37 +100,7 @@ def generos(item):
         }
 
     for opc in sorted(opciones):
-        itemlist.append(item.clone( title=opciones[opc], url=host + 'categoria/' + opc + '/', action='list_all', text_color = text_color ))
-
-    return itemlist
-
-
-def anios(item):
-    logger.info()
-    itemlist = []
-
-    if item.search_type == 'movie': text_color = 'deepskyblue'
-    else: text_color = 'hotpink'
-
-    from datetime import datetime
-    current_year = int(datetime.today().year)
-
-    for x in range(current_year, 1949, -1):
-        itemlist.append(item.clone( title = str(x), url = host + 'categoria/' + str(x) + '/', action = 'list_all', text_color = text_color ))
-
-    return itemlist
-
-
-def calidades(item):
-    logger.info()
-    itemlist = []
-
-    itemlist.append(item.clone( title='En 4K', url=host + 'categoria/4k-2/', action='list_all', text_color='moccasin' ))
-    itemlist.append(item.clone( title='En BluRay', url=host + 'categoria/BluRay-1080p/', action='list_all', text_color='moccasin' ))
-    itemlist.append(item.clone( title='En Dvd Rip', url=host + 'categoria/dvdrip/', action='list_all', text_color='moccasin' ))
-    itemlist.append(item.clone( title='En HD Rip', url=host + 'categoria/HDRip-2/', action='list_all', text_color='moccasin' ))
-    itemlist.append(item.clone( title='En Micro HD', url=host + 'categoria/MicroHD-1080p/', action='list_all', text_color='moccasin' ))
-    itemlist.append(item.clone( title='En 3D', url=host + 'categoria/3D/', action='list_all', text_color='moccasin' ))
+        itemlist.append(item.clone( title=opciones[opc], url=host + 'categoria/' + opc + '/', action='list_all', text_color='deepskyblue' ))
 
     return itemlist
 
@@ -177,7 +138,10 @@ def list_all(item):
             title = title.replace('&#8211;', '').strip()
 
             if " Temporada" in title: SerieName = title.split(" Temporada ")[0]
+            elif " temporada" in title: SerieName = title.split(" temporada ")[0]
             else: SerieName = title
+
+            title = title.replace('Temporada', '[COLOR tan]Temp.[/COLOR]').replace('temporada', '[COLOR tan]Temp.[/COLOR]')
 
             itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb, languages = lang, qualities=qlty, fmt_sufijo=sufijo,
                                         contentType = 'tvshow', contentSerieName = SerieName, infoLabels={'year': '-'} ))
@@ -223,7 +187,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('PasateATorrent', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('PasateATorrent', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -281,6 +248,9 @@ def episodios(item):
         else: SerieName = item.contentSerieName
 
         title = SerieName
+
+        if not season: season = 1
+        if not episode: episode = 1
 
         titulo = '%sx%s %s' % (season, episode, title)
 

@@ -56,6 +56,8 @@ def acciones(item):
 
     itemlist.append(item.clone( channel='domains', action='manto_domain_elitetorrentnz', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
 
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'elitetorrentnz', thumbnail=config.get_thumb('elitetorrentnz') ))
+
     platformtools.itemlist_refresh()
 
     return itemlist
@@ -103,9 +105,9 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
-    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'series/', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Catálogo episodios', action = 'list_all', url = host + 'series/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimas', action = 'list_all', url = host + 'estrenos/', search_type = 'tvshow', text_color='cyan' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'list_all', url = host + 'estrenos/', search_type = 'tvshow', text_color='cyan' ))
 
     return itemlist
 
@@ -245,7 +247,8 @@ def list_all(item):
             SerieName = SerieName.replace(host, '').replace('series/', '').strip()
             SerieName = SerieName.replace('-', ' ')
 
-            if ' t0' in SerieName: SerieName = SerieName.split(" t0")[0]
+            if ' s0' in SerieName: SerieName = SerieName.split(" s0")[0]
+            elif ' t0' in SerieName: SerieName = SerieName.split(" t0")[0]
             elif ' 1x' in SerieName: SerieName = SerieName.split(" 1x")[0]
             elif ' 2x' in SerieName: SerieName = SerieName.split(" 2x")[0]
             elif ' 3x' in SerieName: SerieName = SerieName.split(" 3x")[0]
@@ -259,6 +262,7 @@ def list_all(item):
 
             itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb,
                                         qualities=qlty, languages = ', '.join(lngs), fmt_sufijo=sufijo,
+                                        contentExtra='3',
                                         contentSerieName = SerieName, contentType = 'tvshow', infoLabels={'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
@@ -296,8 +300,9 @@ def episodios(item):
         season = 0
         episode = 0
 
-    itemlist.append(item.clone( action = 'findvideos', url = item.url, title = item.title, thumbnail = item.thumbnail, contentSerieName = SerieName,
-                                contentSeason = season, contentType = 'episode', contentEpisodeNumber = episode ))
+    itemlist.append(item.clone( action = 'findvideos', url = item.url, title = item.title, thumbnail = item.thumbnail,
+                                contentExtra='',
+                                contentSerieName = SerieName, contentSeason = season, contentType = 'episode', contentEpisodeNumber = episode ))
 
     tmdb.set_infoLabels(itemlist)
 

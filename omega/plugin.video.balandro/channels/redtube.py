@@ -33,14 +33,14 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'newest/'))
 
-    itemlist.append(item.clone( title = 'En castellano', action = 'list_all', url = host + 'inyourlanguage/es/'))
+    itemlist.append(item.clone( title = 'En castellano', action = 'list_all', url = host + 'inyourlanguage/es/', text_color = 'pink' ))
 
-    itemlist.append(item.clone( title = 'Tendencias', action = 'list_all', url = host + 'hot/' ))
-
-    itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = host + 'mostviewed/' ))
+    itemlist.append(item.clone( title = 'Más populares', action = 'list_all', url = host + 'mostviewed/' ))
     itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = host + 'top/' ))
 
-    itemlist.append(item.clone( title = 'En HD', action = 'list_all', url = host + 'redtube/hd/' ))
+    itemlist.append(item.clone( title = 'Más candentes', action = 'list_all', url = host + 'hot/' ))
+
+    itemlist.append(item.clone( title = 'En HD', action = 'list_all', url = host + 'redtube/hd/', text_color = 'tan' ))
 
     itemlist.append(item.clone( title = 'Long Play', action = 'list_all', url = host + 'longest?period=alltime' ))
 
@@ -65,7 +65,7 @@ def canales(item):
     for url, title, thumb in matches:
          url = host[:-1] + url
 
-         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color = 'orange' ))
+         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color = 'violet' ))
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<a id="wp_navNext".*?href="([^"]+)">')
@@ -97,7 +97,7 @@ def categorias(item):
 
          url = host[:-1] + url
 
-         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color='tan' ))
+         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color='moccasin' ))
 
     return sorted(itemlist,key=lambda x: x.title)
 
@@ -118,7 +118,7 @@ def pornstars(item):
     for url, thumb, title in matches:
          url = host[:-1] + url
 
-         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color='moccasin' ))
+         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color='orange' ))
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, '<a id="wp_navNext".*?href="([^"]+)">')
@@ -203,20 +203,23 @@ def get_video_url(page_url):
 
     data = resp.data
 
-    url = scrapertools.find_single_match(data,'"format":"mp4","videoUrl":"([^"]+)"')
+    url = scrapertools.find_single_match(data,'"format":"mp4",.*?"videoUrl":"([^"]+)"')
 
-    url = url.replace("\\", "")
+    url = url.replace('\\/','/')
+
+    url = url.replace('\\', '')
 
     if url.startswith('/'): url = host[:-1] + url
 
-    data = httptools.downloadpage(url).data
+    if url:
+        data = httptools.downloadpage(url).data
 
-    matches = scrapertools.find_multiple_matches(data, '"defaultQuality":.*?,"quality":"([^"]+)","videoUrl"\:"([^"]+)"')
+        matches = scrapertools.find_multiple_matches(data, '"defaultQuality":.*?,"quality":"([^"]+)","videoUrl"\:"([^"]+)"')
 
-    for qlty, url in matches:
-        url =  url.replace('\\/', '/')
+        for qlty, url in matches:
+            url =  url.replace('\\/', '/')
 
-        video_urls.append([qlty, url])
+            video_urls.append([qlty, url])
  
     return video_urls
 

@@ -1,6 +1,23 @@
 [COLOR coral][B]Versiones de Balandro[/B][/COLOR]
 
+[COLOR cyan][B]Ultima Version del Repositorio [/COLOR][COLOR yellow] Repo 4.0.1 [/COLOR][COLOR yellowgreen]Marzo 2024[/B][/COLOR]
+
 [COLOR yellow][B]2024[/B][/COLOR]
+
+[COLOR yellow]4.0.13[/COLOR] [COLOR darkorange] 10 de Diciembre de 2024[/COLOR][COLOR cyan] Ultima Version[/COLOR]
+    Correcciones: Errores detectados
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
+
+4.0.12 [COLOR darkorange] 4 de Noviembre de 2024[/COLOR]
+    Correcciones: Errores detectados
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
+
+4.0.11 [COLOR darkorange] 26 de Septiembre de 2024[/COLOR]
+    Correcciones: Errores detectados
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
 
 4.0.10 [COLOR darkorange] 22 de Agosto de 2024[/COLOR]
     Correcciones: Errores detectados
@@ -35,8 +52,6 @@
 4.0.04 [COLOR darkorange] 24 de Marzo de 2024[/COLOR]
     Correcciones: Errores detectados
 
-    [COLOR aqua]Nuevo Repo 4.0.1[/COLOR]
-
     Generos: Re-configurados
     Canales y Servidores: Sin variaciones
 
@@ -44,6 +59,8 @@
     Correcciones: Errores detectados
     Generos: Re-configurados
     Canales y Servidores: Sin variaciones
+
+[COLOR aqua][B]Desde Repositorio [/COLOR][COLOR gold]Repo 4.0.0[/COLOR] [COLOR yellowgreen]Enero 2024[/COLOR] [COLOR red]Obsoleto[/B][/COLOR]
 
 4.0.02 [COLOR darkorange] 21 de Febrero de 2024[/COLOR]
     Correcciones: Errores detectados
@@ -58,10 +75,10 @@
 4.0.00 [COLOR darkorange] 7 de Enero de 2024[/COLOR]
     Correcciones: Errores detectados
 
-    [COLOR aqua]Nuevo Repo 4.0.0[/COLOR]
-
     Generos: Re-configurados
     Canales y Servidores: Sin variaciones
+
+[COLOR aqua][B]Desde Repositorio [/COLOR][COLOR gold]Repo 3.0.0[/COLOR] [COLOR yellowgreen]Enero 2023[/COLOR] [COLOR red]Obsoleto[/B][/COLOR]
 
 [COLOR yellow][B]2023[/B][/COLOR]
 
@@ -150,8 +167,6 @@
 2.5.6  [COLOR darkorange] 19 de Enero de 2023[/COLOR]
     Correcciones: Errores detectados
 
-    [COLOR aqua]Nuevo Repo 3.0.0[/COLOR]
-
     Generos: Re-configurados
     Canales y Servidores: Sin variaciones
 
@@ -159,6 +174,8 @@
     Correcciones: Errores detectados
     Generos: Re-configurados
     Canales y Servidores: Sin variaciones
+
+[COLOR aqua][B]Desde Repositorio [/COLOR][COLOR gold]Repo 2.0.0[/COLOR] [COLOR yellowgreen]Junio 2022[/COLOR] [COLOR red]Obsoleto[/B][/COLOR]
 
 [COLOR yellow][B]2022[/B][/COLOR]
 
@@ -234,8 +251,6 @@
 2.3.4  [COLOR darkorange]16 de Junio de 2022[/COLOR]
     Correcciones: Errores detectados
 
-    [COLOR aqua]Nuevo Repo 2.0.0[/COLOR]
-
     Ajustes:
        Menu: Nuevas opciones
        Sistema: Nuevas opciones
@@ -243,6 +258,8 @@
 
     Generos: Re-configurados
     Canales y Servidores: Sin variaciones
+
+[COLOR aqua][B]Desde Repositorio [/COLOR][COLOR gold]Repo 1.0.5[/COLOR] [COLOR yellowgreen]Marzo 2021[/COLOR] [COLOR red]Obsoleto[/B][/COLOR]
 
 2.3.3  [COLOR darkorange]1 de Junio de 2022[/COLOR]
     Correcciones: Errores detectados
@@ -665,10 +682,10 @@
        Nuevos:
           Amazon, Fastream, Highstream, Sbembed, Wolfstream
 
-2.0.0  [COLOR darkorange]6 de Marzo de 2021[/COLOR]
-    [COLOR cyan][B]Compatible con Python 3[/B][/COLOR]
+[COLOR aqua][B]Desde Repositorio [/COLOR][COLOR gold]Repo 1.0.0[/COLOR] [COLOR yellowgreen]Marzo 2021[/COLOR] [COLOR red]Obsoleto[/B][/COLOR]
 
-    [COLOR aqua]Nuevo Repo 1.0.5[/COLOR]
+2.0.0  [COLOR darkorange]6 de Marzo de 2021[/COLOR]
+    [COLOR goldenrod][B]Compatible con Python 3[/B][/COLOR]
 
     Nuevo Menu
     Nueva gestion de Proxies, Torrents y Busquedas

@@ -45,8 +45,9 @@ def categorias(item):
     logger.info()
     itemlist = []
 
-    if item.group == 'chan': text_color = 'tan'
-    else: text_color = 'moccasin'
+    if item.tcat == 'prods': text_color = 'violet'
+    elif item.tcat == 'other': text_color = 'moccasin'
+    else: text_color = 'orange'
 
     data = httptools.downloadpage(item.url).data
     jdata = jsontools.load(data)

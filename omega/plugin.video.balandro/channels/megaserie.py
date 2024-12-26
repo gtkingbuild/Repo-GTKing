@@ -352,10 +352,18 @@ def temporadas(item):
 
     matches = re.compile('data-season="(.*?)"', re.DOTALL).findall(data)
 
+    tot_seasons = len(matches)
+
     for numtempo in matches:
         if not numtempo: continue
-		
-        title = 'Temporada ' + numtempo
+
+        nro_tempo = numtempo
+
+        if tot_seasons >= 10:
+            if len(nro_tempo) == 1:
+                nro_tempo = '0' + nro_tempo
+
+        title = 'Temporada ' + nro_tempo
 
         if len(matches) == 1:
             if config.get_setting('channels_seasons', default=True):
@@ -372,8 +380,6 @@ def temporadas(item):
     tmdb.set_infoLabels(itemlist)
 
     return sorted(itemlist,key=lambda x: x.title)
-
-    return itemlist
 
 
 def episodios(item):
@@ -405,7 +411,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('MegaSerie', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('MegaSerie', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -697,11 +706,11 @@ def play(item):
             servidor = servertools.get_server_from_url(url)
             servidor = servertools.corregir_servidor(servidor)
 
-            url = servertools.normalize_url(servidor, url)
-
             if servidor == 'directo':
                 new_server = servertools.corregir_other(url).lower()
-                if not new_server.startswith("http"): servidor = new_server
+                if new_server.startswith("http"): servidor = new_server
+
+            url = servertools.normalize_url(servidor, url)
 
             if servidor != 'directo':
                 itemlist.append(item.clone( url = url, server = servidor ))

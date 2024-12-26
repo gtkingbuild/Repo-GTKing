@@ -120,9 +120,17 @@ def list_all(item):
 
         title = title.replace('Torrent', '').strip()
 
+        SerieName = title
+
+        if 'Episode' in SerieName: SerieName = SerieName.split("Episode")[0]
+
+        SerieName = SerieName.strip()
+
         url = host[:-1] + url
 
-        itemlist.append(item.clone( action='temporadas', url=url, title=title, contentType='tvshow', contentSerieName=title, infoLabels={'year': '-'} ))
+        titulo = title.replace('Episode', '[COLOR goldenrod]Epis.[/COLOR]')
+
+        itemlist.append(item.clone( action='temporadas', url=url, title=titulo, contentType='tvshow', contentSerieName=SerieName, infoLabels={'year': '-'} ))
 
         if len(itemlist) >= perpage: break
 
@@ -160,10 +168,16 @@ def temporadas(item):
         itemlist = episodios(item)
         return itemlist
 
-    matches = scrapertools.find_multiple_matches(data, "- Season(.*?)--")
+    matches = scrapertools.find_multiple_matches(data, '- Season(.*?)--')
 
     for tempo in matches:
         tempo = tempo.strip()
+
+        if '- Season' in tempo:
+            tempo = scrapertools.find_single_match(tempo, '- Season(.*?)$')
+            tempo = tempo.strip()
+
+            if not tempo: continue
 
         title = 'Temporada ' + tempo
 
@@ -177,7 +191,8 @@ def temporadas(item):
             itemlist = episodios(item)
             return itemlist
 
-        itemlist.append(item.clone( action = 'episodios', title = title, url = item.url, page = 0, contentType = 'season', contentSeason = int(tempo), text_color = 'tan' ))
+        itemlist.append(item.clone( action = 'episodios', title = title, url = item.url, page = 0,
+                                    contentType = 'season', contentSeason = int(tempo), text_color = 'tan' ))
 
     return itemlist    
 
@@ -197,8 +212,13 @@ def episodios(item):
         bloque = re.compile('- Season ' + str(item.contentSeason) + '.*?Episodes</h3>(.*?)<h3>', re.DOTALL).findall(data)
 
     matches = re.compile('<br/>(.*?)--', re.DOTALL).findall(str(bloque))
+    if not matches:  matches = re.compile('<br />(.*?)--', re.DOTALL).findall(str(bloque))
 
     for match in matches:
+        if '<div class="showinfo_header">' in match: continue
+
+        match = match.replace('</div><br/>', '')
+
         match = match.strip()
 
         season = scrapertools.find_single_match(match, '(.*?)x').strip()
@@ -224,7 +244,9 @@ def episodios(item):
         url = ''
 
         for link in links:
-            if not season_episode in link: continue
+            if not season_episode in link:
+               if not _s in link and not _e in link: pass
+               else: continue
 
             url = host[:-1] + link
             break
@@ -233,6 +255,8 @@ def episodios(item):
             itemlist.append(item.clone( action='findvideos', url=url, title=titulo,
                                         contentSerieName = item.contentSerieName, contentType = 'episode',
                                         contentSeason = season, contentEpisodeNumber = epis, infoLabels={'year': ''} ))
+
+    tmdb.set_infoLabels(itemlist)
 
     return itemlist
 

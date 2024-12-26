@@ -156,6 +156,8 @@ def acciones(item):
 
     itemlist.append(item_configurar_proxies(item))
 
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'cliversite', thumbnail=config.get_thumb('cliversite') ))
+
     platformtools.itemlist_refresh()
 
     return itemlist
@@ -187,7 +189,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + '/peliculas/estrenos', search_type = 'movie', tipo = 'estrenos', pagina = 1, text_color='cyan' ))
 
-    itemlist.append(item.clone( title = 'Más Vistas', action = 'list_all', url = host + '/peliculas/mas-vistas', search_type = 'movie', page = 0, pagina = 1 ))  
+    itemlist.append(item.clone( title = 'Más vistas', action = 'list_all', url = host + '/peliculas/mas-vistas', search_type = 'movie', page = 0, pagina = 1 ))  
 
     itemlist.append(item.clone( title = 'Más valoradas', action = 'list_all', url = host + '/peliculas/tendencias', search_type = 'movie', page = 0, pagina = 1 ))
 
@@ -207,7 +209,7 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + '/series', search_type = 'tvshow', tipo = 'index', pagina = 1 ))
 
-    itemlist.append(item.clone( title = 'Series con nuevos capítulos', action = 'list_all', url = host + '/series/tendencias', search_type = 'tvshow', pagina = 1, text_color = 'moccasin' ))
+    itemlist.append(item.clone( title = 'Series con nuevos episodios', action = 'list_all', url = host + '/series/tendencias', search_type = 'tvshow', pagina = 1, text_color = 'cyan' ))
 
     itemlist.append(item.clone( title = 'Más Vistas', action = 'list_all', url = host + '/series/mas-vistas', search_type = 'tvshow', page = 0, pagina = 1 ))
 
@@ -303,6 +305,8 @@ def list_all(item):
         url = host + url
 
         thumb = scrapertools.find_single_match(article, ' src="([^"]+)"')
+
+        title = title.replace('&#039;s', "'s").strip()
 
         year = scrapertools.find_single_match(article, '<span>(\d{4})')
         if not year: year = '-'
@@ -419,7 +423,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('CliverSite', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('CliverSite', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -726,7 +733,10 @@ def play(item):
                         return itemlist
 
         elif item.other == 'super':
-            if '/pelisplay.ccplay?' in item.url:
+            if '/pelisplay.infoplay':
+                return 'Servidor [COLOR goldenrod]No Soportado[/COLOR]'
+
+            elif '/pelisplay.ccplay?' in item.url:
                 if not item.url.startswith(host_player):
                     resp = httptools.downloadpage(item.url)
                 else:
@@ -784,7 +794,7 @@ def play(item):
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(url).lower()
-            if not new_server.startswith("http"): servidor = new_server
+            if new_server.startswith("http"): servidor = new_server
 
         itemlist.append(item.clone(url = url, server = servidor))
 

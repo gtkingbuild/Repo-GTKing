@@ -188,6 +188,8 @@ def acciones(item):
 
     itemlist.append(Item( channel='helper', action='show_help_cuevana3video', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('cuevana3video') ))
 
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'cuevana3video', thumbnail=config.get_thumb('cuevana3video') ))
+
     platformtools.itemlist_refresh()
 
     return itemlist
@@ -286,12 +288,17 @@ def list_all(item):
         url = scrapertools.find_single_match(article, '\s*href=(?:"|)([^ >"]+)')
         if '/pagina-ejemplo' in url: continue
 
+        title = scrapertools.find_single_match(article, '<h2 class="Title">([^<]+)</h2>').strip()
+
+        if not url or not title: continue
+
+        title = title.replace('&#039;s', "'s").strip()
+
         thumb = scrapertools.find_single_match(article, 'data-src="([^ >]+)"')
         if not thumb: thumb = scrapertools.find_single_match(article, ' src=(?:"|)([^ >"]+)')
 
         thumb = host + url
 
-        title = scrapertools.find_single_match(article, '<h2 class="Title">([^<]+)</h2>').strip()
         qlty = scrapertools.find_single_match(article, '<span\s*class=(?:"|)Qlty(?:"|)>([^<]+)</span>')
         plot = scrapertools.find_single_match(article, '<p>(.*?)</p>')
 
@@ -361,13 +368,19 @@ def last_epis(item):
     matches = scrapertools.find_multiple_matches(bloque, patron)
 
     for url, thumb, title, date in matches:
+        if not url or not title: continue
+
         season, episode = scrapertools.get_season_and_episode(title).split("x")
 
         contentSerieName = scrapertools.find_single_match(title, '(.*?) \d')
 
+        title = title.replace('&#039;s', "'s").strip()
+
         url = host + url
+
         thumb = 'https://' + thumb
-        titulo = title + ' (%s)' % date
+
+        titulo = str(season) + 'x' + str(episode) + ' ' + title.replace(str(season) + 'x' + str(episode), '') + ' (%s)' % date
 
         itemlist.append(item.clone( action='findvideos', title = titulo, thumbnail=thumb, url = url,
                                     contentType = 'episode', contentSerieName=contentSerieName, contentSeason = season, contentEpisodeNumber = episode ))
@@ -429,7 +442,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('Cuevana3Video', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('Cuevana3Video', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -480,7 +496,10 @@ def episodios(item):
 
         url = host + url
 
-        itemlist.append(item.clone( action='findvideos', title = title, thumbnail=thumb, url = url, contentType = 'episode', contentSeason = season, contentEpisodeNumber = epis ))
+        titulo = str(season) + 'x' + str(epis) + ' ' + title.replace(str(season) + 'x' + str(epis), '').strip()
+
+        itemlist.append(item.clone( action='findvideos', title = titulo, thumbnail=thumb, url = url,
+                                    contentType = 'episode', contentSeason = season, contentEpisodeNumber = epis ))
 
         if len(itemlist) >= item.perpage:
             break
@@ -655,8 +674,10 @@ def normalize_other(url):
     elif 'streamwish' in url: link_other = 'Streamwish'
     elif 'filemoon' in url: link_other = 'Filemoon'
     elif 'filelions' in url: link_other = 'Filelions'
-    elif 'plustream' in url: link_other = 'Plustream'
-    elif 'vidhidepro' in url: link_other = 'Vidhidepro'
+    elif 'vidhide' in url: link_other = 'Vidhidepro'
+    elif 'goodstream' in url: link_other = 'Goodstream'
+
+    elif 'plustream' in url: link_other = ''
 
     else:
        if config.get_setting('developer_mode', default=False):
@@ -863,12 +884,57 @@ def play(item):
                     itemlist.append(item.clone(url=url, server=servidor))
                     return itemlist
 
+    elif item.other == 'play':
+        if '/pelisplay.infoplay':
+            return 'Servidor [COLOR goldenrod]No Soportado[/COLOR]'
+
+        elif '/pelisplay.ccplay?' in item.url:
+            if not item.url.startswith(host):
+                resp = httptools.downloadpage(item.url)
+            else:
+                if config.get_setting('channel_cuevana3video_proxies', default=''):
+                    resp = httptools.downloadpage_proxy('cuevana3video', item.url)
+                else:
+                    resp = httptools.downloadpage(item.url)
+
+            if not resp.data: return itemlist
+        else:
+            data = do_downloadpage(item.url)
+
+        matches = scrapertools.find_multiple_matches(data, 'data-video="(.*?)"')
+
+        if not matches:
+            url = scrapertools.find_single_match(data, "sources.*?'(.*?)'")
+
+            if url:
+                servidor = servertools.get_server_from_url(url)
+                servidor = servertools.corregir_servidor(servidor)
+
+                url = servertools.normalize_url(servidor, url)
+
+                itemlist.append(item.clone(url=url, server=servidor))
+                return itemlist
+
+        for url in matches:
+            if '//damedamehoy.' in url or '//tomatomatela.' in url:
+                url = resuelve_dame_toma(url)
+
+            if url:
+                itemlist.append(item.clone(url = url, server = 'directo'))
+                return itemlist
+
+            servidor = servertools.get_server_from_url(url)
+            servidor = servertools.corregir_servidor(servidor)
+
+            url = servertools.normalize_url(servidor, url)
+
+            if servidor and servidor != 'directo':
+                itemlist.append(item.clone(url = url, server = servidor))
+                return itemlist
+
     if url:
         if '/clonamesta' in url:
             return 'Requiere verificación [COLOR red]reCAPTCHA[/COLOR]'
-
-        if '/plustream.' in url:
-            return 'Servidor [COLOR goldenrod]No Soportado[/COLOR]'
 
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
@@ -877,7 +943,7 @@ def play(item):
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(url).lower()
-            if not new_server.startswith("http"): servidor = new_server
+            if new_server.startswith("http"): servidor = new_server
 
         itemlist.append(item.clone(url = url, server = servidor))
 

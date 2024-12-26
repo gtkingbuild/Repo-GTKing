@@ -59,7 +59,7 @@ def categorias(item):
     for url, title in matches:
         url = host[:-1] + url + '?ajax=1&type=most-recent&page=1'
 
-        itemlist.append(item.clone (action='list_all', title=title, url=url, text_color='tan' ))
+        itemlist.append(item.clone (action='list_all', title=title, url=url, text_color='moccasin' ))
 
     return itemlist
 

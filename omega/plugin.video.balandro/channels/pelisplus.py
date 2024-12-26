@@ -159,6 +159,8 @@ def acciones(item):
 
     itemlist.append(item_configurar_proxies(item))
 
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'pelisplus', thumbnail=config.get_thumb('pelisplus') ))
+
     platformtools.itemlist_refresh()
 
     return itemlist
@@ -220,6 +222,8 @@ def generos(item):
     matches = scrapertools.find_multiple_matches(bloque, '<a href="([^"]+)" title="(.*?)">.*?</a>')
 
     for url, tit in matches:
+        if not tit: continue
+
         url = host[:-1] + url + '?page='
 
         itemlist.append(item.clone( title = tit, url = url, action = 'list_all', text_color = 'deepskyblue' ))
@@ -266,6 +270,8 @@ def list_all(item):
         if url.startswith('/'): url = host[:-1] + url
 
         title = re.sub(r" \(.*?\)| \| .*", "", title)
+
+        title = title.replace('&#039;', "'")
 
         thumb = scrapertools.find_single_match(match, 'src="(.*?)"')
 
@@ -362,7 +368,10 @@ def episodios(item):
             if not tvdb_id: tvdb_id = scrapertools.find_single_match(str(item), "'tmdb_id': '(.*?)'")
         except: tvdb_id = ''
 
-        if config.get_setting('channels_charges', default=True): item.perpage = sum_parts
+        if config.get_setting('channels_charges', default=True):
+            item.perpage = sum_parts
+            if sum_parts >= 100:
+                platformtools.dialog_notification('PelisPlus', '[COLOR cyan]Cargando ' + str(sum_parts) + ' elementos[/COLOR]')
         elif tvdb_id:
             if sum_parts > 50:
                 platformtools.dialog_notification('PelisPlus', '[COLOR cyan]Cargando Todos los elementos[/COLOR]')
@@ -465,6 +474,7 @@ def findvideos(item):
 
             if '/clonamesta.' in url: continue
             elif '/hydrax.' in url: continue
+            elif '/epicdev.' in url: continue
 
             servidor = servertools.get_server_from_url(url)
             servidor = servertools.corregir_servidor(servidor)
@@ -634,6 +644,53 @@ def play(item):
                     itemlist.append(item.clone(url=url, server=servidor))
                     return itemlist
 
+    elif item.other == 'play':
+        if '/pelisplay.infoplay':
+            return 'Servidor [COLOR goldenrod]No Soportado[/COLOR]'
+
+        elif '/pelisplay.ccplay?' in item.url:
+            if not item.url.startswith(host):
+                resp = httptools.downloadpage(item.url)
+            else:
+                if config.get_setting('channel_cuevana3video_proxies', default=''):
+                    resp = httptools.downloadpage_proxy('cuevana3video', item.url)
+                else:
+                    resp = httptools.downloadpage(item.url)
+
+            if not resp.data: return itemlist
+        else:
+            data = do_downloadpage(item.url)
+
+        matches = scrapertools.find_multiple_matches(data, 'data-video="(.*?)"')
+
+        if not matches:
+            url = scrapertools.find_single_match(data, "sources.*?'(.*?)'")
+
+            if url:
+                servidor = servertools.get_server_from_url(url)
+                servidor = servertools.corregir_servidor(servidor)
+
+                url = servertools.normalize_url(servidor, url)
+
+                itemlist.append(item.clone(url=url, server=servidor))
+                return itemlist
+
+        for url in matches:
+            if '//damedamehoy.' in url or '//tomatomatela.' in url:
+                url = resuelve_dame_toma(url)
+
+            if url:
+                itemlist.append(item.clone(url = url, server = 'directo'))
+                return itemlist
+
+            servidor = servertools.get_server_from_url(url)
+            servidor = servertools.corregir_servidor(servidor)
+
+            url = servertools.normalize_url(servidor, url)
+
+            if servidor and servidor != 'directo':
+                itemlist.append(item.clone(url = url, server = servidor))
+                return itemlist
 
     elif item.server == 'directo':
         data = do_downloadpage(url)
@@ -672,6 +729,9 @@ def play(item):
 
                 itemlist.append(item.clone( url = url, server = servidor ))
     else:
+        if '/hydrax.' in url:
+            return 'Servidor [COLOR goldenrod]No Soportado[/COLOR]'
+
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 
@@ -679,10 +739,7 @@ def play(item):
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(url).lower()
-            if not new_server.startswith("http"): servidor = new_server
-
-        if '/hydrax.' in url:
-            return 'Servidor [COLOR goldenrod]No Soportado[/COLOR]'
+            if new_server.startswith("http"): servidor = new_server
 
         itemlist.append(item.clone( url = url, server = servidor ))
 
@@ -723,6 +780,8 @@ def list_search(item):
 
     for url, thumb, year, title in matches:
         if url.startswith('/'): url = host_player + url
+
+        title = title.replace('&#039;', "'")
 
         if not year: year = '-'
 

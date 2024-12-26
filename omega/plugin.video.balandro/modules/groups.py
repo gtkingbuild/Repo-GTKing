@@ -72,13 +72,13 @@ context_buscar.append({'title': tit, 'channel': 'search', 'action': 'show_help_p
 tit = '[COLOR darkcyan][B]Preferencias Proxies[/B][/COLOR]'
 context_buscar.append({'title': tit, 'channel': 'helper', 'action': 'show_prx_parameters'})
 
-tit = '[COLOR %s]Información Dominios[/COLOR]' % color_infor
+tit = '[COLOR darkorange]Información Dominios[/COLOR]'
 context_buscar.append({'title': tit, 'channel': 'helper', 'action': 'show_help_domains'})
 
 tit = '[COLOR mediumaquamarine][B]Últimos Cambios Dominios[/B][/COLOR]'
 context_buscar.append({'title': tit, 'channel': 'actions', 'action': 'show_latest_domains'})
 
-tit = '[COLOR %s][B]Quitar Dominios Memorizados[/B][/COLOR]' % color_alert
+tit = '[COLOR darkorange][B]Quitar Dominios Memorizados[/B][/COLOR]'
 context_buscar.append({'title': tit, 'channel': 'actions', 'action': 'manto_domains'})
 
 tit = '[COLOR gold][B]Qué Canales No Intervienen[/B][/COLOR]'
@@ -131,7 +131,7 @@ if config.get_setting('proxysearch_excludes', default=''):
 tit = '[COLOR %s]Información Proxies[/COLOR]' % color_infor
 context_buscar.append({'title': tit, 'channel': 'helper', 'action': 'show_help_proxies'})
 
-tit = '[COLOR %s][B]Quitar Proxies Actuales[/B][/COLOR]' % color_list_proxies
+tit = '[COLOR %s][B]Quitar Todos los Proxies[/B][/COLOR]' % color_list_proxies
 context_buscar.append({'title': tit, 'channel': 'actions', 'action': 'manto_proxies'})
 
 tit = '[COLOR %s][B]Información Búsquedas[/B][/COLOR]' % color_infor
@@ -158,7 +158,7 @@ if config.get_setting('proxysearch_excludes', default=''):
 tit = '[COLOR %s]Información Proxies[/COLOR]' % color_avis
 context_proxy_channels.append({'title': tit, 'channel': 'helper', 'action': 'show_help_proxies'})
 
-tit = '[COLOR %s][B]Quitar Proxies Actuales[/B][/COLOR]' % color_list_proxies
+tit = '[COLOR %s][B]Quitar Todos los Proxies[/B][/COLOR]' % color_list_proxies
 context_proxy_channels.append({'title': tit, 'channel': 'actions', 'action': 'manto_proxies'})
 
 tit = '[COLOR %s]Ajustes categorías Menú, Canales, Dominios y Proxies[/COLOR]' % color_exec
@@ -182,7 +182,7 @@ if config.get_setting('proxysearch_excludes', default=''):
 tit = '[COLOR %s]Información Proxies[/COLOR]' % color_infor
 context_generos.append({'title': tit, 'channel': 'helper', 'action': 'show_help_proxies'})
 
-tit = '[COLOR %s][B]Quitar Proxies Actuales[/B][/COLOR]' % color_list_proxies
+tit = '[COLOR %s][B]Quitar Todos los Proxies[/B][/COLOR]' % color_list_proxies
 context_generos.append({'title': tit, 'channel': 'actions', 'action': 'manto_proxies'})
 
 tit = '[COLOR %s]Ajustes categorías Menú, Canales, Dominios y Proxies[/COLOR]' % color_exec
@@ -221,7 +221,7 @@ if config.get_setting('proxysearch_excludes', default=''):
 tit = '[COLOR %s]Información Proxies[/COLOR]' % color_avis
 context_torrents.append({'title': tit, 'channel': 'helper', 'action': 'show_help_proxies'})
 
-tit = '[COLOR %s][B]Quitar Proxies Actuales[/B][/COLOR]' % color_list_proxies
+tit = '[COLOR %s][B]Quitar Todos los Proxies[/B][/COLOR]' % color_list_proxies
 context_torrents.append({'title': tit, 'channel': 'actions', 'action': 'manto_proxies'})
 
 tit = '[COLOR %s]Ajustes categorías Canales, Dominios, Proxies y Torrents[/COLOR]' % color_exec
@@ -255,7 +255,7 @@ if config.get_setting('proxysearch_excludes', default=''):
 tit = '[COLOR %s]Información Proxies[/COLOR]' % color_avis
 context_parental.append({'title': tit, 'channel': 'helper', 'action': 'show_help_proxies'})
 
-tit = '[COLOR %s][B]Quitar Proxies Actuales[/B][/COLOR]' % color_list_proxies
+tit = '[COLOR %s][B]Quitar Todos los Proxies[/B][/COLOR]' % color_list_proxies
 context_parental.append({'title': tit, 'channel': 'actions', 'action': 'manto_proxies'})
 
 tit = '[COLOR %s]Ajustes categorías Canales, Parental, Dominios y Proxies[/COLOR]' % color_exec
@@ -266,40 +266,40 @@ context_config = []
 tit = '[COLOR tan][B]Preferencias Canales[/B][/COLOR]'
 context_config.append({'title': tit, 'channel': 'helper', 'action': 'show_channels_parameters'})
 
-tit = '[COLOR %s]Información Dominios[/COLOR]' % color_infor
+tit = '[COLOR darkorange]Información Dominios[/COLOR]'
 context_config.append({'title': tit, 'channel': 'helper', 'action': 'show_help_domains'})
 
 tit = '[COLOR %s][B]Últimos Cambios Dominios[/B][/COLOR]' % color_exec
 context_config.append({'title': tit, 'channel': 'actions', 'action': 'show_latest_domains'})
 
-tit = '[COLOR %s][B]Quitar Dominios Memorizados[/B][/COLOR]' % color_alert
+tit = '[COLOR darkorange][B]Quitar Dominios Memorizados[/B][/COLOR]'
 context_config.append({'title': tit, 'channel': 'actions', 'action': 'manto_domains'})
 
 tit = '[COLOR green][B]Información Plataforma[/B][/COLOR]'
 context_config.append({'title': tit, 'channel': 'helper', 'action': 'show_plataforma'})
 
-tit = '[COLOR %s][B]Quitar Proxies Memorizados[/B][/COLOR]' % color_alert
+tit = '[COLOR %s][B]Quitar Todos los Proxies[/B][/COLOR]' % color_alert
 context_config.append({'title': tit, 'channel': 'actions', 'action': 'manto_proxies'})
 
 tit = '[COLOR olive][B]Limpiezas[/B][/COLOR]'
 context_config.append({'title': tit, 'channel': 'actions', 'action': 'manto_limpiezas'})
 
-tit = '[COLOR darkorange][B]Borrar Carpeta Caché[/B][/COLOR]'
+tit = '[COLOR orange][B]Borrar Carpeta Caché[/B][/COLOR]'
 context_config.append({'title': tit, 'channel': 'actions', 'action': 'manto_folder_cache'})
 
 tit = '[COLOR %s][B]Sus Ajustes Personalizados[/B][/COLOR]' % color_avis
 context_config.append({'title': tit, 'channel': 'helper', 'action': 'show_sets'})
 
-tit = '[COLOR %s][B]Cookies Actuales[/B][/COLOR]' % color_infor
+tit = '[COLOR %s]Cookies Actuales[/COLOR]' % color_infor
 context_config.append({'title': tit, 'channel': 'helper', 'action': 'show_cook'})
 
-tit = '[COLOR %s][B]Eliminar Cookies[/B][/COLOR]' % color_alert
+tit = '[COLOR %s][B]Eliminar Cookies[/B][/COLOR]' % color_infor
 context_config.append({'title': tit, 'channel': 'actions', 'action': 'manto_cookies'})
 
 tit = '[COLOR %s]Sus Advanced Settings[/COLOR]' % color_adver
 context_config.append({'title': tit, 'channel': 'helper', 'action': 'show_advs'})
 
-tit = '[COLOR %s][B]Eliminar Advanced Settings[/B][/COLOR]' % color_alert
+tit = '[COLOR fuchsia][B]Eliminar Advanced Settings[/B][/COLOR]'
 context_config.append({'title': tit, 'channel': 'actions', 'action': 'manto_advs'})
 
 tit = '[COLOR mediumaquamarine][B]Restablecer Parámetros Internos[/B][/COLOR]'
@@ -326,7 +326,7 @@ if config.get_setting('proxysearch_excludes', default=''):
 tit = '[COLOR %s]Información Proxies[/COLOR]' % color_avis
 context_usual.append({'title': tit, 'channel': 'helper', 'action': 'show_help_proxies'})
 
-tit = '[COLOR %s][B]Quitar Proxies Actuales[/B][/COLOR]' % color_list_proxies
+tit = '[COLOR %s][B]Quitar Todos los Proxies[/B][/COLOR]' % color_list_proxies
 context_usual.append({'title': tit, 'channel': 'actions', 'action': 'manto_proxies'})
 
 tit = '[COLOR %s]Ajustes categorías Canales, Dominios y Proxies[/COLOR]' % color_exec
@@ -361,7 +361,7 @@ def mainlist(item):
 
         if not config.get_setting('mnu_simple', default=False):
             if config.get_setting('mnu_generos', default=True):
-               itemlist.append(item.clone( channel='submnuctext', action='submnu_genres', title= 'Géneros', context=context_generos, thumbnail=config.get_thumb('genres'), text_color='thistle' ))
+               itemlist.append(item.clone( channel='submnuctext', action='submnu_genres', title= '[B]Géneros[/B]', context=context_generos, thumbnail=config.get_thumb('genres'), text_color='thistle' ))
 
         itemlist.append(Item( channel='search', action='mainlist', title='[B]Buscar[/B]', context=context_buscar, thumbnail=config.get_thumb('search'), text_color='yellow' ))
 
@@ -454,6 +454,8 @@ def submnu_news(item):
     elif config.get_setting('channels_link_pyse', default=False): presentar = True
 
     if presentar:
+        itemlist.append(item.clone( channel='helper', action='show_help_audios', title= '[COLOR green][B]Información[/B][/COLOR] [COLOR cyan][B]Idiomas[/B][/COLOR] en los Audios de los Vídeos', thumbnail=config.get_thumb('news') ))
+
         itemlist.append(item.clone( title = '[B][I]Canales:[/I][/B]', action = '', context=context_usual, thumbnail=config.get_thumb('stack'), text_color='tan' ))
 
         if config.get_setting('mnu_pelis', default=True):
@@ -465,15 +467,21 @@ def submnu_news(item):
         if config.get_setting('search_extra_main', default=False):
             itemlist.append(item.clone( title = '[B]Búsquedas a través de Listas en TMDB:[/B]', action = '', thumbnail=thumb_tmdb, text_color='violet' ))
 
-            itemlist.append(item.clone( channel='tmdblists', action='listado', title= ' - Películas en Cartelera', extra='now_playing', thumbnail=config.get_thumb('novedades'), search_type = 'movie' ))
+            itemlist.append(item.clone( channel='tmdblists', action='listado', title= ' - [COLOR deepskyblue][B]Películas[/B][/COLOR] en Cartelera', extra='now_playing', thumbnail=config.get_thumb('novedades'), search_type = 'movie' ))
 
             itemlist.append(item.clone( title = '[B]Búsquedas a través de Listas en Filmaffinity:[/B]', action = '', thumbnail=thumb_filmaffinity, text_color='violet' ))
 
-            itemlist.append(item.clone( channel='filmaffinitylists', action='list_all', title= ' - Películas en Cartelera', url = 'https://www.filmaffinity.com/es/cat_new_th_es.html', thumbnail=config.get_thumb('novedades'), search_type = 'movie' ))
+            itemlist.append(item.clone( channel='filmaffinitylists', action='list_all', title= ' - [COLOR deepskyblue][B]Películas[/B][/COLOR] en Cartelera', url = 'https://www.filmaffinity.com/es/cat_new_th_es.html', thumbnail=config.get_thumb('novedades'), search_type = 'movie' ))
 
-            itemlist.append(item.clone( title = ' - Películas y Series Novedades a la venta', channel='filmaffinitylists', action = 'list_all', url = 'https://www.filmaffinity.com/es/cat_new_sa_es.html', search_type = 'all', thumbnail=thumb_filmaffinity ))
+            itemlist.append(item.clone( title = ' - [COLOR teal][B]Películas y Series[/B][/COLOR] Novedades a la venta', channel='filmaffinitylists', action = 'list_all', url = 'https://www.filmaffinity.com/es/cat_new_sa_es.html', search_type = 'all', thumbnail=thumb_filmaffinity ))
 
-            itemlist.append(item.clone( title = ' - Películas y Series Novedades en alquiler', channel='filmaffinitylists', action = 'list_all', url = 'https://www.filmaffinity.com/es/cat_new_re_es.html', search_type = 'all', thumbnail=thumb_filmaffinity ))
+            itemlist.append(item.clone( title = ' - [COLOR teal][B]Películas y Series[/B][/COLOR] Novedades en alquiler', channel='filmaffinitylists', action = 'list_all', url = 'https://www.filmaffinity.com/es/cat_new_re_es.html', search_type = 'all', thumbnail=thumb_filmaffinity ))
+
+            itemlist.append(item.clone( action='', title= '[B]Búsquedas Especiales:[/B]', folder=False, text_color='yellowgreen' ))
+
+            itemlist.append(item.clone( channel='tmdblists', action='mainlist', title= ' - Búsquedas y listas en [COLOR violet]TMDB[/COLOR]', thumbnail=thumb_tmdb, plot = 'Buscar personas y ver listas de películas y series de la base de datos de The Movie Database' ))
+
+            itemlist.append(item.clone( channel='filmaffinitylists', action='mainlist', title= ' - Búsquedas y listas en [COLOR violet]Filmaffinity[/COLOR]', thumbnail=thumb_filmaffinity, plot = 'Buscar personas y ver listas de películas, series, ó documentales de Filmaffinity' ))
 
     return itemlist
 
@@ -623,7 +631,7 @@ def submnu_series(item):
 
     presentar = False
     if config.get_setting('channels_link_pyse', default=False): presentar = True
-    elif not config.get_setting('mnu_series', default=True): presentar = True
+    elif config.get_setting('mnu_series', default=True): presentar = True
 
     if presentar:
         itemlist.append(item.clone( title = '   - Con Países', action = 'ch_groups', group = 'countries', extra = 'tvshows' ))
@@ -854,6 +862,9 @@ def ch_groups(item):
         if config.get_setting('mnu_problematicos', default=False):
             if 'problematic' in ch['clusters']: continue
 
+        if config.get_setting('mnu_clones', default=False):
+            if 'clone' in ch['clusters']: continue
+
         if 'trailers' in ch['clusters']: continue
 
         if item.group == 'classic':
@@ -1022,7 +1033,7 @@ def ch_groups(item):
 
         if 'proxies' in ch['notes'].lower():
             if config.get_setting(cfg_proxies_channel, default=''):
-                tit = '[COLOR %s][B]Quitar Proxies del Canal[/B][/COLOR]' % color_list_proxies
+                tit = '[COLOR %s]Quitar Proxies del Canal[/COLOR]' % color_list_proxies
                 context.append({'title': tit, 'channel': item.channel, 'action': '_quitar_proxies'})
 
         if ch['searchable']:
@@ -1118,7 +1129,7 @@ def ch_groups(item):
         if 'current' in ch['clusters']:
             cfg_domains = True
 
-            tit = '[COLOR %s]Información Dominios[/COLOR]' % color_infor
+            tit = '[COLOR darkorange]Información Dominios[/COLOR]'
             context.append({'title': tit, 'channel': 'helper', 'action': 'show_help_domains'})
 
         tit = '[COLOR %s][B]Últimos Cambios Dominios[/B][/COLOR]' % color_exec
@@ -1234,6 +1245,16 @@ def ch_groups(item):
             elif config.get_setting('channels_list_no_problematicos', default=False): continue
 
             titulo += '[I][B][COLOR darkgoldenrod] (problemático)[/COLOR][/I][/B]'
+
+        if 'clone' in ch['clusters']:
+            if config.get_setting('mnu_simple', default=False): continue
+
+            if not item.extra == 'all':
+                if not item.extra == 'clones': 
+                    if config.get_setting('mnu_clones', default=False): continue
+                    elif config.get_setting('channels_list_no_clones', default=False): continue
+
+            if not item.extra == 'clones': titulo += '[I][B][COLOR turquoise] (clon)[/COLOR][/I][/B]'
 
         if con_incidencias:
            if ch['name'] in str(con_incidencias): titulo += '[I][B][COLOR tan] (incidencia)[/COLOR][/I][/B]'

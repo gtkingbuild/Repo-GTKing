@@ -13,12 +13,9 @@ host = 'https://www.documaniatv.com/'
 
 cnomv = 'DocumaniaTv'
 
-
 tex_esrn = ' por favor espere unos segundos ... y Reintentelo de nuevo'
 
-
 perpage = 25
-
 
 espera = config.get_setting('servers_waiting', default=6)
 

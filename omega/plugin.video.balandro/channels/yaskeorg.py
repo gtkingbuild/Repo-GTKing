@@ -125,7 +125,7 @@ def clean_title(title):
     title = title.replace('d�l', 'dol').replace('l�n', 'lon').replace('a�d', 'aid').replace('p� ', 'po ').replace('o�a', 'oña').replace('s� ', 'si ').strip()
     title = title.replace('m� ', 'mi ').replace('i�n', 'ion').replace('�ra', 'Era').replace('r�s', 'ras').replace('r�a', 'ria').replace('s�n', 'san').strip()
     title = title.replace('i� ', 'io ').replace('s�s', 'sus').replace('t� ', 'ta ').replace('r� ', 're ').replace('�ma', 'Ama').replace('f�n', 'fon').strip()
-    title = title.replace('r�c', 'rac').replace('p�a', 'pia').replace('n�g', 'nig')
+    title = title.replace('r�c', 'rac').replace('p�a', 'pia').replace('n�g', 'nig').replace('H�b', 'Hab')
 
     title = title.replace(' � ', ' ').replace(' �', ' ').strip()
 

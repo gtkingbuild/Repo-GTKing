@@ -3,7 +3,7 @@
   "name": "Zures",
 
   "active": true,
-  "notes": "Alternative vía: Script.Module.ResolveUrl (Amdahost,  Allviid,  Cloudfile,  Cloudmail,  Dailyuploads,  Darkibox,  Dembed,  Downace,  Fastdrive,  Fastplay,  Filegram,  Gostream,  Letsupload,  Liivideo,  Myupload,  Neohh,  Oneupload,  Pandafiles,  Rovideo,  Send,  Streamable,  Streamdav,  Streamcool,  Streamgzzz,  Streamoupload,  Tusfiles,  Updown,  Uploadbaz,  Uploadflix,  Uploady,  Veev,  Veoh,  Vidbob,  Vidlook,  Vidmx,  Vido,  Vidpro,  Vidstore,  Vipss,  Vkprime,  Worlduploads,  Ztreamhub)",
+  "notes": "Alternative vía: Script.Module.ResolveUrl (Amdahost,  Allviid,  Asian,  Cloudfile,  Cloudmail,  Dailyuploads,  Darkibox,  Dembed,  Downace,  Fastdrive,  Fastplay,  Filegram,  Gostream,  Letsupload,  Liivideo,  Myupload,  Neohh,  Oneupload,  Pandafiles,  Rovideo,  Send,  Streamable,  Streamdav,  Streamcool,  Streamgzzz,  Streamoupload,  SwiftLoad,  Turbovid,  Tusfiles,  Udrop,  Updown,  Uploadbaz,  Uploadflix,  Uploady,  Veev,  Veoh,  Videa,  Vidbob,  Vidlook,  Vidmx,  Vido,  Vidpro,  Vidstore,  Vidtube,  Vipss,  Vkprime,  Worlduploads,  Ztreamhub)",
 
   "find_videos": {
     "ignore_urls": [],
@@ -33,8 +33,12 @@
         "url": "\\1"
       },
       {
-        "pattern": "https://dembed2.(?:com|net|pro)/([0-9a-zA-Z]+)",
-        "url": "\\1"
+        "pattern": "(https://dembed2.)(?:com|net|pro)/([0-9a-zA-Z]+)",
+        "url": "https://dembed2.com/\\2"
+      },
+      {
+        "pattern": "(https://asianplay).(?:net|pro)/([0-9a-zA-Z]+)",
+        "url": "https://asianplay.pro/\\2"
       },
       {
         "pattern": "https://downace.com/([0-9a-zA-Z]+)",
@@ -45,8 +49,8 @@
         "url": "\\1"
       },
       {
-        "pattern": "https://fastplay.(?:sx|cc|to)/([0-9a-zA-Z]+)",
-        "url": "\\1"
+        "pattern": "(https://fastplay.)(?:sx|cc|to)/([0-9a-zA-Z]+)",
+        "url": "https://fastplay.sx/\\2"
       },
       {
         "pattern": "https://filegram.to/([0-9a-zA-Z]+)",
@@ -57,8 +61,8 @@
         "url": "\\1"
       },
       {
-        "pattern": "https://letsupload.(?:io|org)/([0-9a-zA-Z]+)",
-        "url": "\\1"
+        "pattern": "(https://letsupload).(?:io|org|cc)/([0-9a-zA-Z]+)",
+        "url": "https://letsupload.org/\\2"
       },
       {
         "pattern": "https://liivideo.com/([0-9a-zA-Z]+)",
@@ -93,6 +97,10 @@
         "url": "\\1"
       },
       {
+        "pattern": "https://send.now/([0-9a-zA-Z]+)",
+        "url": "\\1"
+      },
+      {
         "pattern": "https://sendit.cloud/([0-9a-zA-Z]+)",
         "url": "\\1"
       },
@@ -113,28 +121,36 @@
         "url": "\\1"
       },
       {
-        "pattern": "https://streamoupload.(?:com|xyz)/([0-9a-zA-Z]+)",
-        "url": "\\1"
+        "pattern": "(https://streamoupload.)(?:com|xyz)/([0-9a-zA-Z]+)",
+        "url": "https://streamoupload.xyz/\\2"
       },
       {
-        "pattern": "https://tusfiles.(?:com|net)/([0-9a-zA-Z]+)",
-        "url": "\\1"
+        "pattern": "(https://turbovid.)(?:eu|com|net)/([0-9a-zA-Z]+)",
+        "url": "https://turbovid.eu/\\2"
+      },
+      {
+        "pattern": "(https://tusfiles.)(?:com|net)/([0-9a-zA-Z]+)",
+        "url": "https://tusfiles.com/\\2"
       },
       {
         "pattern": "https://uploadbaz.me/([0-9a-zA-Z]+)",
         "url": "\\1"
       },
       {
-        "pattern": "https://uploadflix.(?:org|com)/([0-9a-zA-Z]+)",
-        "url": "\\1"
+        "pattern": "(https://uploadflix.)(?:org|com)/([0-9a-zA-Z]+)",
+        "url": "https://uploadflix.com/\\2"
       },
       {
         "pattern": "https://uploady.io/([0-9a-zA-Z]+)",
-        "url": "\\1"
+        "url": "https://uploady.io/\\1"
       },
       {
         "pattern": "https://veev.to/([0-9a-zA-Z]+)",
         "url": "\\1"
+      },
+      {
+        "pattern": "https://doods.to/([0-9a-zA-Z]+)",
+        "url": "https://veev.to/\\1"
       },
       {
         "pattern": "https://veoh.com/([0-9a-zA-Z]+)",
@@ -153,8 +169,8 @@
         "url": "\\1"
       },
       {
-        "pattern": "https://vido.(?:lol|cool)/([0-9a-zA-Z]+)",
-        "url": "\\1"
+        "pattern": "(https://vido.)(?:lol|cool)/([0-9a-zA-Z]+)",
+        "url": "https://vido.cool/\\2"
       },
       {
         "pattern": "https://vidpro.net/([0-9a-zA-Z]+)",
@@ -185,8 +201,28 @@
         "url": "\\1"
       },
       {
-        "pattern": "https://updown.(?:sbs|icu|cam)/([0-9a-zA-Z]+)",
+        "pattern": "(https://updown.)(?:sbs|icu|cam)/([0-9a-zA-Z]+)",
+        "url": "https://updown.cam/\\2"
+      },
+      {
+        "pattern": "https://videa.hu/(.*)",
+        "url": "https://videa.hu/\\1"
+      },
+      {
+        "pattern": "https://videakid.hu/(.*)",
+        "url": "https://videakid.hu/\\1"
+      },
+      {
+        "pattern": "https://swiftload.io/(?:d|e|v)/([0-9a-zA-Z]+)",
+        "url": "https://swiftload.io/v/\\1"
+      },
+      {
+        "pattern": "https://udrop.com/([0-9a-zA-Z]+)",
         "url": "\\1"
+      },
+      {
+        "pattern": "(https://vidtube.)(?:pro|cam|one)/(?:embed-|d/)([0-9a-zA-Z]+)",
+        "url": "https://vidtube.one/embed-\\2.html"
       }
     ]
   }
