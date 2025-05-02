@@ -83,10 +83,10 @@
 						<control type="radiobutton" id="9007" description="Moe's TV">
                             <include>Dialog_Standard_ListButton</include>
                             <radioposx>630</radioposx>
-                            <label>Moe's TV</label>
-							<selected>System.HasAddon(plugin.video.moestv)</selected>							
-                            <onclick>InstallAddon(plugin.video.moestv)</onclick>
-							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/dfPvQz2.jpg)</onfocus>
+                            <label>Acestream Channels</label>
+							<selected>System.HasAddon(plugin.video.acestream_channels)</selected>							
+                            <onclick>InstallAddon(plugin.video.acestream_channels)</onclick>
+							<onfocus>SetProperty(Image_Preview,https://i.imgur.com/dGLRjhJ.jpeg)</onfocus>
                         </control>
 				
                         <!--<control type="radiobutton" id="9005" description="Instalar Winner 2">
