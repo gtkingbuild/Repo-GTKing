@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import re
+import sys
+
+PY3 = False
+if sys.version_info[0] >= 3: PY3 = True
+
+import re, os
 
 from platformcode import config, logger, platformtools
 from core.item import Item
@@ -112,7 +117,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Más populares', action = 'list_all', url = host + 'peliculas-populares/', search_type = 'movie' ))
 
-    itemlist.append(item.clone( title = 'En 4K', action = 'list_all', url = host + 'hd-4k/', search_type = 'movie', text_color = 'moccasin' ))
+    itemlist.append(item.clone( title = 'En [COLOR moccasin]4K[/COLOR]', action = 'list_all', url = host + 'hd-4k/', search_type = 'movie' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'movie' ))
@@ -451,9 +456,24 @@ def play(item):
 
     url = item.url
 
-    if item.server == 'torrent':
-        itemlist.append(item.clone( url = item.url, server = 'torrent' ))
-        return itemlist
+    if item.url.endswith('.torrent'):
+        if config.get_setting('proxies', item.channel, default=''):
+            if PY3:
+                from core import requeststools
+                data = requeststools.read(item.url, 'allpeliculasse')
+            else:
+                data = do_downloadpage(item.url)
+
+            if data:
+                if '<h1>Not Found</h1>' in str(data) or '<!DOCTYPE html>' in str(data) or '<!DOCTYPE>' in str(data):
+                    return 'Archivo [COLOR red]Inexistente[/COLOR]'
+
+                file_local = os.path.join(config.get_data_path(), "temp.torrent")
+                with open(file_local, 'wb') as f: f.write(data); f.close()
+
+                itemlist.append(item.clone( url = file_local, server = 'torrent' ))
+        else:
+            itemlist.append(item.clone( url = item.url, server = 'torrent' ))
 
     else:
         if 'magnet' in item.other:
@@ -469,8 +489,34 @@ def play(item):
                 return itemlist
 
             elif url_base64.endswith(".torrent"):
-                itemlist.append(item.clone( url = url_base64, server = 'torrent' ))
-                return itemlist
+               if config.get_setting('proxies', item.channel, default=''):
+                   if PY3:
+                       from core import requeststools
+                       data = requeststools.read(url_base64, 'allpeliculasse')
+                   else:
+                       data = do_downloadpage(url_base64)
+
+                   if data:
+                       if '<h1>Not Found</h1>' in str(data) or '<!DOCTYPE html>' in str(data) or '<!DOCTYPE>' in str(data):
+                           return 'Archivo [COLOR red]Inexistente[/COLOR]'
+
+                       file_local = os.path.join(config.get_data_path(), "temp.torrent")
+                       with open(file_local, 'wb') as f: f.write(data); f.close()
+
+                       itemlist.append(item.clone( url = file_local, server = 'torrent' ))
+               else:
+                   itemlist.append(item.clone( url = url_base64, server = 'torrent' ))
+
+               return itemlist
+
+            else:
+               if url_base64:
+                   new_server = servertools.get_server_from_url(url_base64)
+                   new_server = servertools.corregir_other(new_server)				   
+
+                   if not new_server == 'directo':
+                       url = url_base64
+                       item.server = new_server
 
     if url:
         if '/acortalink.' in url:

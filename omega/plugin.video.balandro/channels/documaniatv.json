@@ -11,7 +11,7 @@
   "categories": ["documentary"],
   "language": ["cast"],
 
-  "clusters": ["temporary", "onlyone", "suggested", "rankings", "categories", "adults", "docs"],
+  "clusters": ["onlyone", "suggested", "rankings", "categories", "adults", "docs"],
 
-  "notes": "Documentales en castellano por categorías, series. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Web ANULADA. Documentales en castellano por categorías, series. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

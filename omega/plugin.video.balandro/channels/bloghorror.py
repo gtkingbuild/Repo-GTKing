@@ -107,7 +107,7 @@ def list_all(item):
 
         thumb = scrapertools.find_single_match(match, 'data-background="(.*?)"')
 
-        title = title.replace('&#038;', '&').replace('&#8211;', '')
+        title = title.replace('&#038;', '&').replace('&#8211;', '').replace('&#8217;s', "'s")
 
         year = '-'
 
@@ -230,6 +230,26 @@ def findvideos(item):
         if not servidor == 'directo':
             itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url,
                                   server = servidor, language = lang, quality = qlty, other = other, age = lng ))
+
+    # ~ Otros
+    matches = re.compile('<a href="(.*?)".*?data-wpel-link="external">(.*?)<', re.DOTALL).findall(bloque)
+
+    for url, tipo in matches:
+        ses += 1
+
+        if '1fichier' in url: continue
+
+        if tipo.lower() == 'subtitulos': continue
+
+        servidor = servertools.get_server_from_url(url)
+        servidor = servertools.corregir_servidor(servidor)
+
+        url = servertools.normalize_url(servidor, url)
+
+        link_other = ''
+        if servidor == 'various': link_other = servertools.corregir_other(url)
+
+        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = url, language = lang, other = link_other ))
 
     if not itemlist:
         if not ses == 0:

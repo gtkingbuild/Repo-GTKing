@@ -488,7 +488,7 @@ provider-name="The Cleaner">
 	<extension point="xbmc.service" library="videolibrary_service.py" start="login|startup"></extension>
 </addon>
 
-<addon id="plugin.video.balandro" name="Balandro" version="4.0.13" provider-name="Team Balandro">
+<addon id="plugin.video.balandro" name="Balandro" version="4.0.16" provider-name="Team Balandro">
   <requires>
      <import addon="script.module.requests"/>
   </requires>
@@ -508,11 +508,11 @@ provider-name="The Cleaner">
       <screenshot>resources/screenshots/4.jpg</screenshot>
     </assets>
     <news>
-    [COLOR darkorange][B]Versión  [/COLOR][COLOR yellow]4.0.13[/COLOR][COLOR chartreuse]  Diciembre de 2024[/B][/COLOR]
+    [COLOR darkorange][B]Versión  [/COLOR][COLOR yellow]4.0.16[/COLOR][COLOR chartreuse]  Marzo de 2025[/B][/COLOR]
 
     [COLOR goldenrod][B]Media Centers:[/B][/COLOR]
         [COLOR tan][B]Kodi Versiones Oficiales Soportadas:[/B][/COLOR]
-        [COLOR plum][B]]22.x Piers,  21.x Omega,  20.x Nexus,  19.x Matrix,[/B][/COLOR]
+        [COLOR plum][B]22.x Piers,  21.x Omega,  20.x Nexus,  19.x Matrix,[/B][/COLOR]
         [COLOR plum][B]18.x Leia  y  17.x Krypton[/B][/COLOR]
 
     [COLOR springgreen][B]Fuente[/COLOR]  [COLOR cyan]https://repobal.github.io/base/[/B][/COLOR]
@@ -541,7 +541,7 @@ provider-name="The Cleaner">
         Sin Novedades
     </news>
     <summary>Balandro es un Navegador de Páginas Webs</summary>
-    <description>[COLOR moccasin][B]Navega con Kodi por Páginas Webs para poder ver sus contenidos de manera fácil. [COLOR yellow]Balandro es desde el año [COLOR cyan]2018[COLOR yellow] un MOD derivado de [COLOR yellowgreen]Pelisalacarta y Alfa[COLOR yellow],[COLOR mediumaquamarine] y tiene como objeto, permitir visualizar [COLOR deepskyblue]Películas[COLOR mediumaquamarine], [COLOR hotpink]Series[COLOR mediumaquamarine], [COLOR darkcyan]Documentales[COLOR mediumaquamarine], etc., todo a través de Internet y directamente desde su sistema Media Center. [COLOR orchid]Este Add-On es tan solo un mero Ejercicio de Aprendizaje del Lenguaje de Programación Python y se distribuye sin Ningún Contenido Multimedia adjunto al mismo [COLOR lightgrey][I]En consecuencia solo las Webs son Plenamente Responsables de los contenidos que publiquen.[/I][/B][/COLOR]</description>
+    <description>[COLOR moccasin][B]Navega con Kodi por Páginas Webs para poder ver sus contenidos de manera fácil. [COLOR yellow]Balandro es desde el año [COLOR cyan]2018[COLOR yellow] un MOD derivado de [COLOR yellowgreen]Pelisalacarta y Alfa[COLOR yellow],[COLOR mediumaquamarine] y tiene como objeto, permitir visualizar [COLOR deepskyblue]Películas[COLOR mediumaquamarine], [COLOR hotpink]Series[COLOR mediumaquamarine], [COLOR aquamarine]Documentales[COLOR mediumaquamarine], etc., todo a través de Internet y directamente desde su sistema Media Center. [COLOR orchid]Este Add-On es tan solo un mero Ejercicio de Aprendizaje del Lenguaje de Programación Python y se distribuye sin Ningún Contenido Multimedia adjunto al mismo [COLOR red][I]En consecuencia solo las Webs son los Plenamente Responsables de los contenidos que publiquen.[/I][/B][/COLOR]</description>
     <disclaimer>[COLOR aqua][B]Los Propietarios y Distribuidores de este Add-On no Proveen ni Distribuyen Ningún Contenido Mostrado por el Add-On, ni Tienen Afiliación alguna con los Proveedores/Webs de contenidos. [COLOR tan]Está Prohibida su distribución, solo ó junto con Contenidos Multimedia Protegidos por los Derechos de Autor. [COLOR chocolate]Si este tipo de contenido está Prohibido en su País, solamente Usted será el Responsable de su uso. [COLOR white]La vulneración de estas prohibiciones Exonerarán de cualquier Culpa a sus Autores, [COLOR red]Siendo el unico Responsable quien lo haya Distribuido ó Utilizado Ilegalmente.[/B][/COLOR]</disclaimer>
     <platform>all</platform>
     <license>GNU GPL v3</license>
@@ -550,6 +550,38 @@ provider-name="The Cleaner">
   </extension>
 
   <extension point="xbmc.service" library="services.py" start="login|startup"/>
+</addon>
+
+<addon id="plugin.video.blackcat2" name="BlackCat v2" version="1.2.9" provider-name="korda">
+    <requires>
+        <import addon="xbmc.python" version="3.0.0" />
+        <import addon="script.module.requests" version="2.25.1" />
+        <import addon="script.module.beautifulsoup4" version="4.9.3" />
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="main.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="ca_ES">Llista i reprodueix enllaços fent servir el complement Horus.</summary>
+        <summary lang="en_GB">List and play links via the Horus addon.</summary>
+        <summary lang="es_ES">Lista y reproduce enlaces a través del addon Horus.</summary>
+        <description lang="ca_ES">BlackCat utilitza Horus com a passarel·la per reproduir enllaços i també és necessari tindre instal·lat AceStream.</description>
+        <description lang="en_GB">BlackCat uses Horus to play AceStream links and you also need to have AceStream installed.</description>
+        <description lang="es_ES">BlackCat usa Horus para reproducir enlaces y también es necesario tener instalado AceStream.</description>
+        <disclaimer lang="ca_ES">[COLOR red]BlackCat només recopila enllaços publicats a pàgines web disponibles al públic general.[/COLOR]</disclaimer>
+        <disclaimer lang="en_GB">[COLOR red]BlackCat only collects links posted on websites that are available to the general public.[/COLOR]</disclaimer>
+        <disclaimer lang="es_ES">[COLOR red]BlackCat solo recopila enlaces publicados en páginas web disponibles para el público en general.[/COLOR]</disclaimer>
+        <platform>all</platform>
+        <assets>
+            <icon>icon.jpg</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+        <news>
+            ~[1.2.9] HDN minor fix.
+            ~[1.2.7] Bug fix SUP.
+            ~[1.0.9] First release.
+        </news>
+    </extension>
 </addon>
 
 <addon id="plugin.video.doqmental"
@@ -600,74 +632,30 @@ provider-name="The Cleaner">
     </extension>
 </addon>
 
-<addon id="plugin.video.Magellan_Matrix" name="[COLOR lime]Magellan[/COLOR]" version="3.0.0" provider-name="[COLOR lime][B]Magellan[/B][/COLOR]">
-	<requires>
-		<import addon="script.module.six" />
-		<import addon="script.module.kodi-six" />
-		<import addon="script.module.requests" optional="true"/>
-		<import addon="script.module.websocket" version="0.50.0"  optional="true"/>
-		<import addon="script.module.youtube.dl" optional="true"/>
-		<import addon="plugin.video.youtube" optional="true" />
-		<import addon="script.module.dateutil" optional="true" />
-		<import addon="script.module.resolveurl" optional="true"/>
-		<import addon="script.module.urlresolver" optional="true"/>
-		<import addon="script.module.cloudscraper" optional="true"/>
-		<import addon="script.module.inputstreamhelper" optional="true"/>
-		<import addon="script.module.slproxy" optional="true"/>
-	</requires>
-	<extension point="xbmc.python.pluginsource" library="default.py">
-		<provides>video</provides>
-	</extension>
-
-	<extension point="xbmc.addon.metadata">
-		<summary>Magellan Tv e Filmes</summary>
-		<description>Magellan_Matrix é um plugin de vídeo gratuito para o KODI que agrega links de reprodução de vídeos de vários tipos,encontrados
-		livremente na internet,levando o lazer e o prazer a todos vocês, para assistirem e curtirem cada momento, com a família e amigos.</description>
-		<platform>all</platform>
-		<assets>
-			<icon>icon.png</icon>
-			<fanart>fanart.jpg</fanart>
-		</assets>
-	</extension>
-</addon>
-
-<addon id="plugin.video.moestv" name="Moe's TV" version="0.2.1" provider-name="La Taberna">
-  <requires>
-    <import addon="script.module.six" version="1.11.0"/>
-    <import addon="script.module.simplecache"/>
-    <import addon="script.module.inputstreamhelper" version="0.5.0"/>
-    <import addon="plugin.video.duffyou" version="0.1.2"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="default.py">
+<addon id="plugin.video.espada.dragao" name="[COLOR yellow]ESPADA[COLORgrey]DRAGÃO[/COLOR]" version="1.8" provider-name="[COLOR orange]@by_blak_eagle[/COLOR]">
+        <requires>
+        <import addon="script.module.simplejson" />
+        <import addon="script.module.six" />
+        <import addon="script.module.kodi-six" />
+		<import addon="script.module.beautifulsoup4"/>
+        <import addon="script.module.requests"/>
+        <import addon="script.module.inputstreamhelper"/>
+    </requires>
+  <extension point="xbmc.python.pluginsource"
+      library="default.py">
     <provides>video</provides>
   </extension>
-
   <extension point="xbmc.addon.metadata">
-    <summary>Televisión a la carta y en directo.[CR]Algunos de los enlaces de la sección 'En Directo' provienen de las listas publicadas en https://www.tdtchannels.com/ </summary>
-    <disclaimer>Este es un software [COLOR red][B]gratuito[/B][/COLOR][CR][COLOR red][B]Pero no se permite[/B][/COLOR] su distribuición preinstalada en ningún tipo de dispositivo ni tampoco su inclusión total o parcial en cualquier paquete de software y/o hardware por el que el usuario final deba [COLOR red][B]pagar o hacer una donación[/B][/COLOR], por su adquisición, por su uso o por recibir asistencia.[CR]Si cree que alguna de estas normas no se está cumpliendo póngase en contacto con nosotros.</disclaimer>
-    <platform>all</platform>
-    <assets>
-        <icon>icon.jpg</icon>
-        <fanart>fanart.jpg</fanart>
+		<summary>[COLOR lime]Canais de Televisão, desportos e mais...[/COLOR]</summary>
+		<description lang="en">[COLOR orange]Black[/COLOR] [COLOR gold]Eagle[/COLOR] [COLORorange]é um addon da familia Blackeagle Team.TODOS OS LINKS ESTÃO DISPONIVEIS NA INTERNET![/COLOR]</description>
+		<platform>all</platform>
+		<assets>
+       <icon>icon.png</icon>
+       <fanart>fanart.jpg</fanart>
+       <screenshot>resources/screenshots/1.jpg</screenshot>
+       <screenshot>resources/screenshots/2.jpg</screenshot>
+       <screenshot>resources/screenshots/3.jpg</screenshot>
     </assets>
-    <license>[B]Este es un software gratuito[/B]</license>
-    <news> - Versión 0.1.3:
-      * Mostrar vistos en skin embuary
-      [CR]- Versión 0.1.2:
-      * Reparado fix en multi-bitrate
-      [CR]- Versión 0.1.1:
-      * Reparado fix MPD en Atresplayer
-      * Uso de Duff You para resolver enlaces de youtube
-      * Mejoras en la actualización de canales
-      [CR]- Version 0.0.9:
-      * Nuevos canales
-      * Cambios en el orden de los canales
-      * Permitir descargas en la mayoria de los canales.
-      * Canal Mitele: Reparar Geolocalizacion de IPs en windows 10 y kodi 19
-      * Mejora en la actualización de canales
-      * Otras reparaciones menores
-      [CR]- Versión inicial 0.0.7
-    </news>
   </extension>
 </addon>
 
@@ -727,27 +715,6 @@ No se acepta ninguna responsabilidad por el uso de este addon.
 			- Multiples Cambios en la estructura interna.
 			- Añadidas librerías de soporte.
 		</news>
-	</extension>
-</addon>
-
-<addon id="plugin.video.vavooto" name="VAVOO.TO" version="6.5" provider-name="kasi,michaz">
-	<requires>
-		<import addon="script.module.requests"/>
-		<import addon="script.module.resolveurl"/>
-		<import addon="inputstream.ffmpegdirect" optional="true" />
-		<import addon="script.module.futures" optional="true" />
-		<import addon="script.module.infotagger" optional="true" />
-		<!-- only for debug -->
-		<import addon="script.module.pydevd" optional="true"/>
-	</requires>
-	<extension point="xbmc.python.pluginsource" library="main.py">
-		<provides>video</provides>
-	</extension>
-	<extension point="xbmc.python.module" library="resources" />
-	<extension point="xbmc.addon.metadata">
-		<assets>
-			<icon>icon.png</icon>
-		</assets>
 	</extension>
 </addon>
 
@@ -881,46 +848,6 @@ No se acepta ninguna responsabilidad por el uso de este addon.
 
 ### New
 - Add r</news></extension>
-</addon>
-
-<addon id="plugin.world.tv"
-       name="[COLOR blue]V[/COLOR][COLOR yellow]i[/COLOR][COLOR blue]l[/COLOR][COLOR yellow]h[/COLOR][COLOR blue]a[/COLOR][COLOR yellow]o[/COLOR] [COLORspringgreen]W[/COLOR][COLORred]o[/COLOR][COLORcyan]r[/COLOR][COLORpink]l[/COLOR][COLORblue]d[/COLOR] [COLORyellow]T[/COLOR][COLORlime]V[/COLOR]"
-       version="21.5.20"
-       provider-name="[COLOR blue]V[/COLOR][COLOR yellow]i[/COLOR][COLOR blue]l[/COLOR][COLOR yellow]h[/COLOR][COLOR blue]a[/COLOR][COLOR yellow]o[/COLOR]">
-  <requires>
-    <!-- <import addon="xbmc.python" version="2.26.0" /> -->
-    <import addon="script.module.pycryptodome" />
-    <import addon="script.module.requests" />
-    <import addon="script.module.kodi-six" />
-    <import addon="script.module.future" />
-    <import addon="script.module.routing" />
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-  <reuselanguageinvoker>true</reuselanguageinvoker>
-        <summary lang="en">[COLOR lime]O melhor para ver na sua TV!!![/COLOR]</summary>
-        <description>[COLOR blue]V[/COLOR][COLOR yellow]i[/COLOR][COLOR blue]l[/COLOR][COLOR yellow]h[/COLOR][COLOR blue]a[/COLOR][COLOR yellow]o[/COLOR]
-
-[B][COLOR yellow]- Para uso de todos.[/COLOR][/B]
-
-[B][COLOR yellow]- O Add-on Vilhao é de uso gratuito!![/COLOR][/B]
-
-[B][COLOR red]- Proibido a venda deste add-on[/COLOR][/B]</description>
-        <disclaimer lang="en">[B][COLOR lime]- Addon Vilhao funcionando em kodi 18 e 19 com o melhor para sua tv.[/COLOR][/B]</disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license></license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-    <assets>
-        <icon>icon.gif</icon>
-        <fanart>fanart.jpg</fanart>
-    </assets>
-  </extension>
 </addon>
 
 <addon id="repository.alfa-addon" name="[COLOR red]Alfa Add-on[/COLOR] Repo" version="1.0.8" provider-name="Alfa Development Group">
@@ -1096,8 +1023,9 @@ No se acepta ninguna responsabilidad por el uso de este addon.
     </extension>
 </addon>
 
-<addon id="repository.elementumorg" name="ElementumOrg repository" provider-name="elementumorg" version="0.0.2">
+<addon id="repository.elementumorg" name="ElementumOrg repository" provider-name="elementumorg" version="0.0.6">
     <requires>
+        <!--<import addon="xbmc.python" version="3.0.0"/>-->
     </requires>
     <extension point="xbmc.addon.repository">
         <dir>
@@ -1115,6 +1043,12 @@ No se acepta ninguna responsabilidad por el uso de este addon.
         <summary lang="en">GitHub virtual Add-on repository</summary>
         <description lang="en">Customizable repository which acts as a proxy for defined GitHub users' add-ons updates.</description>
         <news>
+- Allow running in standalone mode
+- Migrate to GitHub API
+- Add support for "tag_pattern" field
+- Add support for private repositories by supplying a "token"
+- Try to automatically determine zip ref from version
+- Multiple minor improvements
         </news>
         <assets>
             <icon>icon.png</icon>
@@ -1292,88 +1226,32 @@ No se acepta ninguna responsabilidad por el uso de este addon.
 	</extension>
 </addon>
 
-<addon id="repository.michaz" name="Michaz Repository" provider-name="Michaz" version="4.3">
+<addon id="repository.michaz" name="Michaz Repository" provider-name="Michaz" version="5.0">
 	<extension point="xbmc.addon.repository" name="Michaz Repository">
 		<dir>
 			<info compressed="false">https://michaz1988.github.io/repo/addons.xml</info>
 			<checksum>https://michaz1988.github.io/repo/addons.xml.md5</checksum>
 			<datadir zip="true">https://michaz1988.github.io/repo/</datadir>
 		</dir>
-		<dir minversion="17.9.910" maxversion="18.9.700">
-			<info compressed="false">https://raw.githubusercontent.com/streamxstream/xStreamRepo/master/leia/addons.xml</info>
-			<checksum>https://raw.githubusercontent.com/streamxstream/xStreamRepo/master/leia/addons.xml.md5</checksum>
-			<datadir zip="true">https://raw.githubusercontent.com/streamxstream/xStreamRepo/master/leia/</datadir>
+			<dir minversion="19.0.0" maxversion="19.9.0">
+			<info compressed="false">https://raw.github.com/kaffepausse71/SKINBASE19/master/addons.xml</info>
+			<checksum>https://raw.github.com/kaffepausse71/SKINBASE19/master/addons.xml.md5</checksum>
+			<datadir zip="true">https://raw.github.com/kaffepausse71/SKINBASE19/master/</datadir>
 		</dir>
-		<dir minversion="18.9.701" maxversion="19.9.700">
-			<info compressed="false">https://raw.githubusercontent.com/streamxstream/xStreamRepo/master/matrix/addons.xml</info>
-			<checksum>https://raw.githubusercontent.com/streamxstream/xStreamRepo/master/matrix/addons.xml.md5</checksum>
-			<datadir zip="true">https://raw.githubusercontent.com/streamxstream/xStreamRepo/master/matrix/</datadir>
+		<dir minversion="20.0.0" maxversion="20.9.0">
+			<info compressed="false">https://raw.github.com/kaffepausse71/SKINBASE.NEXUS/master/addons.xml</info>
+			<checksum>https://raw.github.com/kaffepausse71/SKINBASE.NEXUS/master/addons.xml.md5</checksum>
+			<datadir zip="true">https://raw.github.com/kaffepausse71/SKINBASE.NEXUS/master/</datadir>
 		</dir>
-		<dir minversion="19.9.701">
-			<info compressed="false">https://raw.githubusercontent.com/streamxstream/xStreamRepo/master/nexus/addons.xml</info>
-			<checksum>https://raw.githubusercontent.com/streamxstream/xStreamRepo/master/nexus/addons.xml.md5</checksum>
-			<datadir zip="true">https://raw.githubusercontent.com/streamxstream/xStreamRepo/master/nexus/</datadir>
+		<dir minversion="21.0.0" maxversion="21.9.0">
+			<info compressed="false">https://raw.github.com/kaffepausse71/SKINBASE.OMEGA/master/addons.xml</info>
+			<checksum>https://raw.github.com/kaffepausse71/SKINBASE.OMEGA/master/addons.xml.md5</checksum>
+			<datadir zip="true">https://raw.github.com/kaffepausse71/SKINBASE.OMEGA/master/</datadir>
 		</dir>
-		<dir>
-			<info compressed="false">https://slyguy.uk/.repo/addons.xml</info>
-			<checksum>https://slyguy.uk/.repo/addons.xml.md5</checksum>
-			<datadir zip="true">https://slyguy.uk/.repo/</datadir>
-		</dir>
-		<dir>
-			<info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/repo/zips/addons.xml</info>
-			<checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/repo/zips/addons.xml.md5</checksum>
-			<datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/repo/zips/</datadir>
-		</dir>
-		<dir minversion="18.0" maxversion="18.9.0">
-			<info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/leia/zips/addons.xml</info>
-			<checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/leia/zips/addons.xml.md5</checksum>
-			<datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/leia/zips/</datadir>
-		</dir>
-		<dir minversion="18.9.0" maxversion="19.9.0">
-			<info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/addons.xml</info>
-			<checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/addons.xml.md5</checksum>
-			<datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/</datadir>
-		</dir>
-		<dir minversion="19.9.1">
-			<info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/addons.xml</info>
-			<checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/addons.xml.md5</checksum>
-			<datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/</datadir>
-		</dir>
-		<dir>
-			<info compressed="true">https://repo.kodinerds.net/addons/addons.xml</info>
-			<checksum>https://repo.kodinerds.net/addons/addons.xml.md5</checksum>
-			<datadir zip="true">https://repo.kodinerds.net/addons</datadir>
-			<hashes>false</hashes>
-		</dir>
-		<dir minversion="20.9.9" maxversion="21.9.0">
-			<info compressed="true">https://repo.kodinerds.net/addons/omega/addons.xml</info>
-			<checksum>https://repo.kodinerds.net/addons/omega/addons.xml.md5</checksum>
-			<datadir zip="true">https://repo.kodinerds.net/addons/omega/zip/</datadir>
-			<hashes>false</hashes>
-		</dir>
-		<dir minversion="20.0.0" maxversion="21.9.0">
-			<info compressed="true">https://repo.kodinerds.net/addons/nexus/addons.xml</info>
-			<checksum>https://repo.kodinerds.net/addons/nexus/addons.xml.md5</checksum>
-			<datadir zip="true">https://repo.kodinerds.net/addons/nexus/zip/</datadir>
-			<hashes>false</hashes>
-		</dir>
-		<dir minversion="19.0.0" maxversion="21.9.0">
-			<info compressed="true">https://repo.kodinerds.net/addons/matrix/addons.xml</info>
-			<checksum>https://repo.kodinerds.net/addons/matrix/addons.xml.md5</checksum>
-			<datadir zip="true">https://repo.kodinerds.net/addons/matrix/zip/</datadir>
-			<hashes>false</hashes>
-		</dir>
-		<dir minversion="18.0.0" maxversion="18.9.0">
-			<info compressed="true">https://repo.kodinerds.net/addons/leia/addons.xml</info>
-			<checksum>https://repo.kodinerds.net/addons/leia/addons.xml.md5</checksum>
-			<datadir zip="true">https://repo.kodinerds.net/addons/leia/zip/</datadir>
-			<hashes>false</hashes>
-		</dir>
-		<dir minversion="17.0.0" maxversion="18.9.0">
-			<info compressed="true">https://repo.kodinerds.net/addons/krypton/addons.xml</info>
-			<checksum>https://repo.kodinerds.net/addons/krypton/addons.xml.md5</checksum>
-			<datadir zip="true">https://repo.kodinerds.net/addons/krypton/zip/</datadir>
-			<hashes>false</hashes>
+		<dir minversion="22.0.0" maxversion="22.9.0">
+			<info compressed="false">https://raw.github.com/kaffepausse71/SKINBASE.PEGASUS/master/addons.xml</info>
+			<checksum>https://raw.github.com/kaffepausse71/SKINBASE.PEGASUS/master/addons.xml.md5</checksum>
+			<datadir zip="true">https://raw.github.com/kaffepausse71/SKINBASE.PEGASUS/master/</datadir>
 		</dir>
 		<dir>
 			<info compressed="false">https://raw.githubusercontent.com/Gujal00/smrzips/master/addons.xml</info>
@@ -1529,18 +1407,6 @@ No se acepta ninguna responsabilidad por el uso de este addon.
 	<assets>
 		<icon>resources/icon.png</icon>
 	</assets>
-</addon>
-
-<addon id="script.module.vavoo" name="Vavoosign" version="0.1.3.2" provider-name="michaz1988">
-	<requires>
-		<import addon="script.module.requests"/>
-	</requires>
-	<extension point="xbmc.python.module" library="lib" />
-	<extension point="xbmc.addon.metadata">
-		<assets>
-			<icon>icon.png</icon>
-		</assets>
-	</extension>
 </addon>
 
 	<addon id="script.skin.helper.colorpicker" name="Skin Helper Service ColorPicker" version="2.0.2" provider-name="sualfred,marcelveldt">

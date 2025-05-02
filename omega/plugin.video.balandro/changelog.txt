@@ -2,9 +2,26 @@
 
 [COLOR cyan][B]Ultima Version del Repositorio [/COLOR][COLOR yellow] Repo 4.0.1 [/COLOR][COLOR yellowgreen]Marzo 2024[/B][/COLOR]
 
+[COLOR yellow][B]2025[/B][/COLOR]
+
+[COLOR yellow]4.0.16[/COLOR] [COLOR darkorange] 25 de Marzo de 2025[/COLOR][COLOR cyan] Ultima Version[/COLOR]
+    Correcciones: Errores detectados
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
+
+4.0.15 [COLOR darkorange] 5 de Febrero de 2025[/COLOR]
+    Correcciones: Errores detectados
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
+
+4.0.14 [COLOR darkorange] 9 de Enero de 2025[/COLOR]
+    Correcciones: Errores detectados
+    Generos: Re-configurados
+    Canales y Servidores: Sin variaciones
+
 [COLOR yellow][B]2024[/B][/COLOR]
 
-[COLOR yellow]4.0.13[/COLOR] [COLOR darkorange] 10 de Diciembre de 2024[/COLOR][COLOR cyan] Ultima Version[/COLOR]
+4.0.13 [COLOR darkorange] 10 de Diciembre de 2025[/COLOR]
     Correcciones: Errores detectados
     Generos: Re-configurados
     Canales y Servidores: Sin variaciones

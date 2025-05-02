@@ -225,7 +225,7 @@ def list_all(item):
         title = re.sub(r'\((.*)', '', title)
         title = re.sub(r'\[(.*?)\]', '', title)
 
-        title = title.replace('&#8211;', '')
+        title = title.replace('&#8211;', '').replace('&#8230;', '')
 
         thumb = scrapertools.find_single_match(article, '<img src="(.*?)"')
 
@@ -236,7 +236,11 @@ def list_all(item):
 
         lang = 'Lat'
         if '-sub/' in url: lang = 'Vose'
-        if '-es/' in url: lang = 'Esp'
+        elif '-es/' in url: lang = 'Esp'
+
+        elif '-ESP' in article: lang = 'Esp'
+        elif '-LAT' in article: lang = 'Lat'
+        elif '-SUB' in article: lang = 'Vose'
 
         tipo = 'tvshow' if '/serie/' in url else 'movie'
         sufijo = '' if item.search_type != 'all' else tipo

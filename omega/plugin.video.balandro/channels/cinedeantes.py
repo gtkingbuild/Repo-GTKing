@@ -24,21 +24,18 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone ( title = 'Búsquedas:', action = '', folder=False, text_color='plum' ))
     itemlist.append(item.clone ( title = ' - Buscar película ...', action = 'search', grupo = 'alfab', search_type = 'movie', text_color = 'deepskyblue' ))
-    itemlist.append(item.clone ( title = ' - Buscar en Seleccion cine ...', action = 'search', grupo = 'sel', search_type = 'movie', text_color='moccasin' ))
-    itemlist.append(item.clone ( title = ' - Buscar por agrupación ...', action = 'search', grupo = 'agrupa', search_type = 'all', text_color='salmon' ))
+    itemlist.append(item.clone ( title = ' - Buscar en agrupación ...', action = 'search', grupo = 'agrupa', search_type = 'all', search_pop = 'pop', text_color='salmon' ))
 
-    itemlist.append(item.clone ( title = 'Novedades', action = 'news' ))
+    itemlist.append(item.clone ( title = 'Novedades', action = 'news', text_color = 'cyan' ))
 
-    itemlist.append(item.clone ( title = 'Joyas del cine', action = 'list_all', url = host + '/joyas-del-cine.html', text_color = 'cyan' ))
-
-    itemlist.append(item.clone ( title = 'Selección cine', action = 'list_sel', url = 'https://pastebin.com/raw/QW0A0mzx', text_color = 'moccasin' ))
+    itemlist.append(item.clone ( title = 'Joyas del cine', action = 'list_all', url = host + '/joyas-del-cine.html', text_color = 'dodgerblue' ))
 
     itemlist.append(item.clone ( title = 'Por agrupación (A - Z)', action = 'agrupa' , text_color='salmon'))
 
     itemlist.append(item.clone ( title = 'Por saga', action = 'pelis', grupo = 'sagas' ))
     itemlist.append(item.clone ( title = 'Por género', action = 'generos', search_type = 'movie' ))
     itemlist.append(item.clone ( title = 'Por categoría', action = 'pelis', grupo = 'temas' ))
-    itemlist.append(item.clone ( title = 'Por interés', action = 'pelis',  grupo = 'desta' ))
+    itemlist.append(item.clone ( title = 'Por temática', action = 'pelis',  grupo = 'desta' ))
 
     itemlist.append(item.clone ( title = 'Por actor', action = 'pelis', grupo = 'actor' ))
     itemlist.append(item.clone ( title = 'Por actriz', action = 'pelis', grupo = 'actri' ))
@@ -229,7 +226,7 @@ def news(item):
                     accion = 'list_all'
                     url = host + '/cine-europa-oriental.html'
 
-           itemlist.append(item.clone( action = accion, title = title, url = url, thumbnail = thumb, grupo = grupo, filtro_search = name, page = 0, text_color='orchid' ))
+           itemlist.append(item.clone( action = accion, title = title, url = url, thumbnail = thumb, grupo = grupo, filtro_search = name, page = 0 ))
 
        if itemlist:
            if i > perpage:
@@ -607,6 +604,8 @@ def pelis(item):
 
        for url, title in sort_pelis[desde:hasta]:
            if item.grupo == 'temas': text_color = 'deepskyblue'
+           elif item.grupo == 'desta': text_color = 'deepskyblue'
+           elif item.grupo == 'direc': text_color = 'tan'
            else: text_color = 'moccasin'
 
            itemlist.append(item.clone( action = 'list_all', title = title, url = url, page = 0, text_color = text_color ))
@@ -702,166 +701,6 @@ def list_search(item):
     return itemlist
 
 
-def list_sel(item):
-    logger.info()
-    itemlist = []
-
-    if not item.page: item.page = 0
-
-    data = httptools.downloadpage(item.url).data
-    data = data.replace('"imageScale": "fitCenter"', '"url": ""').replace('"isHost" : "true"', '').replace('true', '"url": ""')
-
-    data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
-
-    bloque = scrapertools.find_single_match(str(data), '"Cine Español 1980-1999"(.*?)$')
-
-    matches = scrapertools.find_multiple_matches(bloque, '"name": "(.*?)".*?"image": "(.*?)".*?"url": "(.*?)"')
-
-    num_matches = len(matches)
-
-    for title, thumb, url in matches[item.page * perpage:]:
-        if not url or not title: continue
-
-        if '.rtve.' in url: continue
-        elif '.zerocdn.' in url: continue
-        elif 'streamcloud.' in url: continue
-        elif '.akamaized.' in url: continue
-        elif 'pelis123.' in url: continue
-        elif '/rtve' in url: continue
-        elif '/openload' in url: continue
-
-        if '|' in title: title = title.split("|")[0]
-
-        PeliName = title
-
-        if '(C)' in PeliName: PeliName = PeliName.split("(C)")[0]
-
-        if 'Acción' in PeliName: PeliName = PeliName.split("Acción")[0]
-        if 'Aventuras' in PeliName: PeliName = PeliName.split("Aventuras")[0]
-        if 'Bigrafía' in PeliName: PeliName = PeliName.split("Bigrafía")[0]
-        if 'Biopic' in PeliName: PeliName = PeliName.split("Biopic")[0]
-        if 'Comedia' in PeliName: PeliName = PeliName.split("Comedia")[0]
-        if 'Crimen' in PeliName: PeliName = PeliName.split("Crimen")[0]
-        if 'Destape' in PeliName: PeliName = PeliName.split("Destape")[0]
-        if 'Documental' in PeliName: PeliName = PeliName.split("Documental")[0]
-        if 'Drama' in PeliName: PeliName = PeliName.split("Drama")[0]
-        if 'Fantástico' in PeliName: PeliName = PeliName.split("Fantástico")[0]
-        if 'Flameco' in PeliName: PeliName = PeliName.split("Flamenco")[0]
-        if 'Intriga' in PeliName: PeliName = PeliName.split("Intriga")[0]
-        if 'Misterio' in PeliName: PeliName = PeliName.split("Misterio")[0]
-        if 'Musical' in PeliName: PeliName = PeliName.split("Musical")[0]
-        if 'Política' in PeliName: PeliName = PeliName.split("Política")[0]
-        if 'Romance' in PeliName: PeliName = PeliName.split("Romance")[0]
-        if 'Terror' in PeliName: PeliName = PeliName.split("Terror")[0]
-        if 'Thriller' in PeliName: PeliName = PeliName.split("Thriller")[0]
-        if 'Sci-fi' in PeliName: PeliName = PeliName.split("Sci-fi")[0]
-        if 'Suspense' in PeliName: PeliName = PeliName.split("Suspense")[0]
-        if 'Suspenso' in PeliName: PeliName = PeliName.split("Suspenso")[0]
-        if 'Vejez' in PeliName: PeliName = PeliName.split("Vejez")[0]
-
-        year = scrapertools.find_single_match(title, '(\d{4})')
-        if not year: year = scrapertools.find_single_match(title, ' \d{4} ')
-
-        if year:
-            title = title.replace('(' + year + ')', '').replace(year, '').strip()
-            PeliName = PeliName.replace('(' + year + ')', '').replace(year, '').strip()
-        else: year = '-'
-
-        PeliName = PeliName.strip()
-
-        thumb = thumb.replace('-mmed', '-large') + '|User-Agent=Mozilla/5.0'
-
-        itemlist.append(item.clone( action='findvideos', url = url, title = title, thumbnail = thumb, language= 'Esp',
-                                    contentType = 'movie', contentTitle = PeliName, infoLabels={'year': year} ))
-
-        if len(itemlist) >= perpage: break
-
-    tmdb.set_infoLabels(itemlist)
-
-    if itemlist:
-        if num_matches > perpage:
-            hasta = (item.page * perpage) + perpage
-            if hasta < num_matches:
-                itemlist.append(item.clone( title='Siguientes ...', page=item.page + 1, pagina = item.pagina, action='list_sel', text_color='coral' ))
-
-    return itemlist
-
-
-def search_list_sel(item):
-    logger.info()
-    itemlist = []
-
-    data = httptools.downloadpage(item.url).data
-    data = data.replace('"imageScale": "fitCenter"', '"url": ""').replace('"isHost" : "true"', '').replace('true', '"url": ""')
-
-    data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
-
-    bloque = scrapertools.find_single_match(str(data), '"Cine Español 1980-1999"(.*?)$')
-
-    matches = scrapertools.find_multiple_matches(bloque, '"name": "(.*?)".*?"image": "(.*?)".*?"url": "(.*?)"')
-
-    for title, thumb, url in matches:
-        if not url or not title: continue
-
-        if '.rtve.' in url: continue
-        elif '.zerocdn.' in url: continue
-        elif 'streamcloud.' in url: continue
-        elif '.akamaized.' in url: continue
-        elif 'pelis123.' in url: continue
-        elif '/rtve' in url: continue
-        elif '/openload' in url: continue
-
-        if not item.filtro_search_sel.lower() in title.lower(): continue
-
-        if '|' in title: title = title.split("|")[0]
-
-        PeliName = title
-
-        if '(C)' in PeliName: PeliName = PeliName.split("(C)")[0]
-
-        if 'Acción' in PeliName: PeliName = PeliName.split("Acción")[0]
-        if 'Aventuras' in PeliName: PeliName = PeliName.split("Aventuras")[0]
-        if 'Bigrafía' in PeliName: PeliName = PeliName.split("Bigrafía")[0]
-        if 'Biopic' in PeliName: PeliName = PeliName.split("Biopic")[0]
-        if 'Comedia' in PeliName: PeliName = PeliName.split("Comedia")[0]
-        if 'Crimen' in PeliName: PeliName = PeliName.split("Crimen")[0]
-        if 'Destape' in PeliName: PeliName = PeliName.split("Destape")[0]
-        if 'Documental' in PeliName: PeliName = PeliName.split("Documental")[0]
-        if 'Drama' in PeliName: PeliName = PeliName.split("Drama")[0]
-        if 'Fantástico' in PeliName: PeliName = PeliName.split("Fantástico")[0]
-        if 'Flameco' in PeliName: PeliName = PeliName.split("Flamenco")[0]
-        if 'Intriga' in PeliName: PeliName = PeliName.split("Intriga")[0]
-        if 'Misterio' in PeliName: PeliName = PeliName.split("Misterio")[0]
-        if 'Musical' in PeliName: PeliName = PeliName.split("Musical")[0]
-        if 'Política' in PeliName: PeliName = PeliName.split("Política")[0]
-        if 'Romance' in PeliName: PeliName = PeliName.split("Romance")[0]
-        if 'Terror' in PeliName: PeliName = PeliName.split("Terror")[0]
-        if 'Thriller' in PeliName: PeliName = PeliName.split("Thriller")[0]
-        if 'Sci-fi' in PeliName: PeliName = PeliName.split("Sci-fi")[0]
-        if 'Suspense' in PeliName: PeliName = PeliName.split("Suspense")[0]
-        if 'Suspenso' in PeliName: PeliName = PeliName.split("Suspenso")[0]
-        if 'Vejez' in PeliName: PeliName = PeliName.split("Vejez")[0]
-
-        year = scrapertools.find_single_match(title, '(\d{4})')
-        if not year: year = scrapertools.find_single_match(title, ' \d{4} ')
-
-        if year:
-            title = title.replace('(' + year + ')', '').replace(year, '').strip()
-            PeliName = PeliName.replace('(' + year + ')', '').replace(year, '').strip()
-        else: year = '-'
-
-        PeliName = PeliName.strip()
-
-        thumb = thumb.replace('-mmed', '-large') + '|User-Agent=Mozilla/5.0'
-
-        itemlist.append(item.clone( action='findvideos', url = url, title = title, thumbnail = thumb, language= 'Esp',
-                                    contentType = 'movie', contentTitle = PeliName, infoLabels={'year': year} ))
-
-    tmdb.set_infoLabels(itemlist)
-
-    return itemlist
-
-
 def search(item, texto):
     logger.info()
     try:
@@ -870,13 +709,6 @@ def search(item, texto):
        if item.grupo == 'alfab':
             item.title_search = texto
             return list_search(item)
-
-       elif item.grupo == 'sel':
-            item.url = 'https://pastebin.com/raw/QW0A0mzx'
-
-            item.filtro_search_sel = texto
-            return search_list_sel(item)
-
        else:
             item.filtro_search = texto
             return pelis(item)

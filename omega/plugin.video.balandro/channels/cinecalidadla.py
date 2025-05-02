@@ -1,10 +1,49 @@
 # -*- coding: utf-8 -*-
 
+import sys
+
+PY3 = False
+if sys.version_info[0] >= 3: PY3 = True
+
 import re, base64
 
 from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
+
+from lib import decrypters
+
+
+LINUX = False
+BR = False
+BR2 = False
+
+if PY3:
+    try:
+       import xbmc
+       if xbmc.getCondVisibility("system.platform.Linux.RaspberryPi") or xbmc.getCondVisibility("System.Platform.Linux"): LINUX = True
+    except: pass
+
+try:
+   if LINUX:
+       try:
+          from lib import balandroresolver2 as balandroresolver
+          BR2 = True
+       except: pass
+   else:
+       if PY3:
+           from lib import balandroresolver
+           BR = true
+       else:
+          try:
+             from lib import balandroresolver2 as balandroresolver
+             BR2 = True
+          except: pass
+except:
+   try:
+      from lib import balandroresolver2 as balandroresolver
+      BR2 = True
+   except: pass
 
 
 host = 'https://cine-calidad.mx/'
@@ -39,6 +78,38 @@ if domain:
     else: host = domain
 
 
+def item_configurar_proxies(item):
+    color_list_proxies = config.get_setting('channels_list_proxies_color', default='red')
+
+    color_avis = config.get_setting('notification_avis_color', default='yellow')
+    color_exec = config.get_setting('notification_exec_color', default='cyan')
+
+    context = []
+
+    tit = '[COLOR %s]Información proxies[/COLOR]' % color_avis
+    context.append({'title': tit, 'channel': 'helper', 'action': 'show_help_proxies'})
+
+    if config.get_setting('channel_cinecalidadla_proxies', default=''):
+        tit = '[COLOR %s][B]Quitar los proxies del canal[/B][/COLOR]' % color_list_proxies
+        context.append({'title': tit, 'channel': item.channel, 'action': 'quitar_proxies'})
+
+    tit = '[COLOR %s]Ajustes categoría proxies[/COLOR]' % color_exec
+    context.append({'title': tit, 'channel': 'actions', 'action': 'open_settings'})
+
+    plot = 'Es posible que para poder utilizar este canal necesites configurar algún proxy, ya que no es accesible desde algunos países/operadoras.'
+    plot += '[CR]Si desde un navegador web no te funciona el sitio ' + host + ' necesitarás un proxy.'
+    return item.clone( title = '[B]Configurar proxies a usar ...[/B]', action = 'configurar_proxies', folder=False, context=context, plot=plot, text_color='red' )
+
+def quitar_proxies(item):
+    from modules import submnuctext
+    submnuctext._quitar_proxies(item)
+    return True
+
+
+def configurar_proxies(item):
+    from core import proxytools
+    return proxytools.configurar_proxies_canal(item.channel, host)
+
 def do_downloadpage(url, post=None, headers=None):
     # ~ por si viene de enlaces guardados
     for ant in ant_hosts:
@@ -49,14 +120,49 @@ def do_downloadpage(url, post=None, headers=None):
 
     data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
 
-    if not data:
-        if url.startswith(host):
+    hay_proxies = False
+    if config.get_setting('channel_cinecalidadla_proxies', default=''): hay_proxies = True
+
+    if not url.startswith(host):
+        data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
+    else:
+        if hay_proxies:
+            data = httptools.downloadpage_proxy('cinecalidadla', url, post=post, headers=headers, raise_weberror=raise_weberror).data
+        else:
+            data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
+
+        if not data:
             if not '?s=' in url:
                 if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('CineCalidadLa', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
 
                 timeout = config.get_setting('channels_repeat', default=30)
 
-                data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+                if hay_proxies:
+                    data = httptools.downloadpage_proxy('cinecalidadla', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+                else:
+                    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+
+    if '<title>You are being redirected...</title>' in data or '<title>Just a moment...</title>' in data:
+        if BR or BR2:
+            try:
+                ck_name, ck_value = balandroresolver.get_sucuri_cookie(data)
+                if ck_name and ck_value:
+                    httptools.save_cookie(ck_name, ck_value, host.replace('https://', '')[:-1])
+
+                if not url.startswith(host):
+                    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
+                else:
+                    if hay_proxies:
+                        data = httptools.downloadpage_proxy('cinecalidadla', url, post=post, headers=headers, raise_weberror=raise_weberror).data
+                    else:
+                        data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
+            except:
+                pass
+
+    if '<title>Just a moment...</title>' in data:
+        if not '?s=' in url:
+            platformtools.dialog_notification(config.__addon_name, '[COLOR red][B]CloudFlare[COLOR orangered] Protection[/B][/COLOR]')
+        return ''
 
     return data
 
@@ -81,6 +187,10 @@ def acciones(item):
     else: title = '[B]Informar Nuevo Dominio manualmente[/B]'
 
     itemlist.append(item.clone( channel='domains', action='manto_domain_cinecalidadla', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
+
+    itemlist.append(item_configurar_proxies(item))
+
+    itemlist.append(Item( channel='helper', action='show_help_cinecalidadla', title='[COLOR aquamarine][B]Aviso[/COLOR] [COLOR green]Información[/B][/COLOR] canal', thumbnail=config.get_thumb('cinecalidadla') ))
 
     itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'cinecalidadla', thumbnail=config.get_thumb('cinecalidadla') ))
 
@@ -113,15 +223,14 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = '[B]En castellano:[/B]', folder=False, text_color='moccasin' ))
     itemlist.append(item.clone( title = ' - Catálogo', action = 'list_all', url = host + 'espana/', search_type = 'movie' ))
-    itemlist.append(item.clone( title = ' - Por año', action='anios', search_type = 'movie', group = '?ref=es' ))
 
     itemlist.append(item.clone( title = '[B]En latino:[/B]', folder=False, text_color='moccasin' ))
     itemlist.append(item.clone( title = ' - Catálogo', action = 'list_all', url = host, search_type = 'movie' ))
     itemlist.append(item.clone( title = ' - Más vistas', action = 'destacadas', url = host, search_type = 'movie' ))
     itemlist.append(item.clone( title = ' - En [COLOR moccasin]4K[/COLOR]', action = 'list_all', url = host + 'calidad/4k-ultra-hd-hdr/', search_type = 'movie' ))
 
-    itemlist.append(item.clone( title = ' - Por género', action='generos', search_type = 'movie' ))
-    itemlist.append(item.clone( title = ' - Por año', action='anios', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Por género', action='generos', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Por año', action='anios', search_type = 'movie' ))
 
 
     return itemlist
@@ -185,10 +294,7 @@ def anios(item):
     from datetime import datetime
     current_year = int(datetime.today().year)
 
-    top_year = 1939
-    if item.group == '?ref=es': top_year = 1999
-
-    for x in range(current_year, top_year, -1):
+    for x in range(current_year, 1949, -1):
         url = host + 'fecha/' + str(x) + '/'
 
         itemlist.append(item.clone( title = str(x), url = url, action = 'list_all', text_color='deepskyblue' ))
@@ -444,6 +550,7 @@ def findvideos(item):
     if '?castellano=sp' in item.url: lang = 'Esp'
 
     data = do_downloadpage(item.url)
+    data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
     ses = 0
 
@@ -498,11 +605,11 @@ def findvideos(item):
                 ses = ses - 1
                 continue
 
+            qlty = '1080'
+
             if '<span' in servidor: servidor = scrapertools.find_single_match(servidor, '(.*?)<span')
 
             servidor = servidor.lower().strip()
-
-            qlty = '1080'
 
             if '4k' in servidor or '4K' in servidor:
                qlty = '4K'
@@ -525,6 +632,16 @@ def findvideos(item):
             else:
                 if not config.get_setting('developer_mode', default=False): continue
 
+            if servidor == 'torrent':
+                qltys = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)"(.*?)</li>')
+
+                qlty = '?'
+
+                for _url, _qlty in qltys:
+                    if not _url == url: continue
+
+                    qlty = scrapertools.find_single_match(_qlty, '.*?<span style=".*?">(.*?)</span>')
+
             itemlist.append(Item (channel = item.channel, action = 'play', server = servidor, title = '', url = url, quality = qlty, language = lang ))
 
     if not itemlist:
@@ -538,9 +655,6 @@ def findvideos(item):
 def play(item):
     logger.info()
     itemlist = []
-
-    if '/acortalink.' in item.url:
-        return 'Tiene [COLOR plum]Acortador[/COLOR] del enlace'
 
     domain_memo = config.get_setting('dominio', 'cinecalidadla', default='')
 
@@ -652,13 +766,29 @@ def play(item):
 
     if url:
         if '/acortalink.' in url:
-            return 'Tiene [COLOR plum]Acortador[/COLOR] del enlace'
+            host_torrent = host_player[:-1]
+            url_base64 = decrypters.decode_url_base64(url, host_torrent)
+
+            if url_base64.endswith('.torrent'): url = url_base64
+            elif url_base64.startswith('magnet:'): url = url_base64
+
+            else:
+               if url_base64:
+                   new_server = servertools.get_server_from_url(url_base64)
+                   new_server = servertools.corregir_other(new_server)				   
+
+                   if not new_server == 'directo':
+                       url = url_base64
+                       servidor = new_server
+
+        if '/acortalink.' in url:
+           return 'Tiene [COLOR plum]Acortador[/COLOR] del enlace'
 
         if url.endswith('.torrent'):
             itemlist.append(item.clone( url = url, server = 'torrent' ))
             return itemlist
 
-        elif 'magnet:?' in url:
+        elif 'magnet:' in url:
             itemlist.append(item.clone( url = url, server = 'torrent' ))
             return itemlist
 

@@ -3,7 +3,7 @@
   "name": "AnimeId",
   "thumbnail": "animeid.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": false,
   "search_types": ["tvshow"],
@@ -11,7 +11,7 @@
   "categories": ["tvshow"],
   "language": ["vose", "vo"],
 
-  "clusters": ["current", "anime"],
+  "clusters": ["temporary", "current", "anime"],
 
   "notes": "Web dedicada exclusivamente al anime"
 }

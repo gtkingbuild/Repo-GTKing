@@ -1,0 +1,17 @@
+{
+  "id": "animemix",
+  "name": "AnimeMix",
+  "thumbnail": "animemix.jpg",
+
+  "active": true,
+
+  "searchable": false,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["vose", "lat"],
+
+  "clusters": ["anime"],
+
+  "notes": "Web dedicada exclusivamente al anime."
+}

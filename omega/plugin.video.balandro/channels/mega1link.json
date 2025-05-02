@@ -6,12 +6,12 @@
   "active": true,
 
   "searchable": true,
-  "search_types": ["movie"],
+  "search_types": ["all", "movie", "tvshow"],
 
-  "categories": ["movie", "torrent"],
+  "categories": ["movie", "tvshow", "torrent"],
   "language": ["cast", "lat", "vose"],
 
   "clusters": ["problematic", "torrents", "languages", "qualityes", "kids", "docs", "vos"],
 
-  "notes": "Canal con enlaces Streaming y Torrent. Películas por idiomas, géneros y calidad."
+  "notes": "Canal con enlaces Streaming y Torrent. Películas por idiomas, géneros y calidad. Series por Géneros."
 }

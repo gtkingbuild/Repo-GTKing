@@ -7,12 +7,12 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-host = 'https://ennovelas.org.pl/'
+host = 'https://ennovela.de/'
 
 
 def do_downloadpage(url, post=None, headers=None):
     # ~ por si viene de enlaces guardados
-    ant_hosts = ['https://ennovelas.net.pl/']
+    ant_hosts = ['https://ennovelas.net.pl/', 'https://ennovelas.org.pl/']
 
     for ant in ant_hosts:
         url = url.replace(ant, host)
@@ -81,7 +81,7 @@ def anios(item):
     for x in range(current_year, 1989, -1):
         url = host + 'years/' + str(x) + '/'
 
-        itemlist.append(item.clone( title = str(x), url = url, action = 'list_all', text_color = 'deepskyblue' ))
+        itemlist.append(item.clone( title = str(x), url = url, action = 'list_all', text_color = 'hotpink' ))
 
     return itemlist
 
@@ -90,12 +90,14 @@ def paises(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title = 'América', action = 'list_all', url = host + 'country/united-states/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Chile', action = 'list_all', url = host + 'country/chile/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Colombia', action = 'list_all', url = host + 'country/colombia/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'México', action = 'list_all', url = host + 'country/mexico/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Perú', action = 'list_all', url = host + 'country/peru/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Turquía', action = 'list_all', url = host + 'country/turkey/', text_color='moccasin' ))
+    text_color = 'hotpink'
+
+    itemlist.append(item.clone( title = 'América', action = 'list_all', url = host + 'country/united-states/', text_color=text_color ))
+    itemlist.append(item.clone( title = 'Chile', action = 'list_all', url = host + 'country/chile/', text_color=text_color ))
+    itemlist.append(item.clone( title = 'Colombia', action = 'list_all', url = host + 'country/colombia/', text_color=text_color ))
+    itemlist.append(item.clone( title = 'México', action = 'list_all', url = host + 'country/mexico/', text_color=text_color ))
+    itemlist.append(item.clone( title = 'Perú', action = 'list_all', url = host + 'country/peru/', text_color=text_color ))
+    itemlist.append(item.clone( title = 'Turquía', action = 'list_all', url = host + 'country/turkey/', text_color=text_color ))
 
     return itemlist
 
@@ -128,9 +130,13 @@ def list_all(item):
         SerieName = SerieName.strip()
 
         if 'Capitulo' in SerieName: SerieName = SerieName.split("Capitulo")[0]
+        elif 'Capítulo' in SerieName: SerieName = SerieName.split("Capítulo")[0]
         elif 'capitulo' in SerieName: SerieName = SerieName.split("capitulo")[0]
+        elif 'capìtulo' in SerieName: SerieName = SerieName.split("capítulo")[0]
 
         SerieName = SerieName.strip()
+
+        SerieName = SerieName.replace('á','a').replace('é','e').replace('í','i').replace('ó','o').replace('ú','u')
 
         thumb = scrapertools.find_single_match(match, 'src="(.*?)"')
 
@@ -179,9 +185,13 @@ def last_epis(item):
         SerieName = SerieName.strip()
 
         if 'Capitulo' in SerieName: SerieName = SerieName.split("Capitulo")[0]
+        elif 'Capítulo' in SerieName: SerieName = SerieName.split("Capítulo")[0]
         elif 'capitulo' in SerieName: SerieName = SerieName.split("capitulo")[0]
+        elif 'capìtulo' in SerieName: SerieName = SerieName.split("capítulo")[0]
 
         SerieName = SerieName.strip()
+
+        SerieName = SerieName.replace('á','a').replace('é','e').replace('í','i').replace('ó','o').replace('ú','u')
 
         thumb = scrapertools.find_single_match(match, 'src="(.*?)"')
 

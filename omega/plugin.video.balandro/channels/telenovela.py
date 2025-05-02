@@ -60,14 +60,14 @@ def paises(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title = 'América', action = 'list_all', url = host + 'country/usa/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Chile', action = 'list_all', url = host + 'genre/telenovelas-chilenas/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Colombia', action = 'list_all', url = host + 'genre/novelas-colombianas/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'España', action = 'list_all', url = host + 'genre/novelas-espanolas/', lang = 'Esp', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'México', action = 'list_all', url = host + 'genre/novelas-mexicanas/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Perú', action = 'list_all', url = host + 'genre/novelas-peruanas/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Tuquía', action = 'list_all', url = host + 'country/tr/', lang = 'Vose', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Venezuela', action = 'list_all', url = host + 'genre/novelas-venezolanas/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'América', action = 'list_all', url = host + 'country/usa/', text_color='hotpink' ))
+    itemlist.append(item.clone( title = 'Chile', action = 'list_all', url = host + 'genre/telenovelas-chilenas/', text_color='hotpink' ))
+    itemlist.append(item.clone( title = 'Colombia', action = 'list_all', url = host + 'genre/novelas-colombianas/', text_color='hotpink' ))
+    itemlist.append(item.clone( title = 'España', action = 'list_all', url = host + 'genre/novelas-espanolas/', lang = 'Esp', text_color='hotpink' ))
+    itemlist.append(item.clone( title = 'México', action = 'list_all', url = host + 'genre/novelas-mexicanas/', text_color='hotpink' ))
+    itemlist.append(item.clone( title = 'Perú', action = 'list_all', url = host + 'genre/novelas-peruanas/', text_color='hotpink' ))
+    itemlist.append(item.clone( title = 'Tuquía', action = 'list_all', url = host + 'country/tr/', lang = 'Vose', text_color='hotpink' ))
+    itemlist.append(item.clone( title = 'Venezuela', action = 'list_all', url = host + 'genre/novelas-venezolanas/', text_color='hotpink' ))
 
     return itemlist
 

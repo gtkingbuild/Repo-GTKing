@@ -50,7 +50,7 @@ def get_video_url(page_url, url_referer=''):
     ini_page_url = page_url
 
     if not xbmc.getCondVisibility('System.HasAddon("script.module.resolveurl")'):
-        return 'Falta [COLOR red]ResolveUrl[/COLOR]'
+        return 'Falta ResolveUrl'
 
     if config.get_setting('servers_time', default=True):
         platformtools.dialog_notification('Cargando [COLOR cyan][B]Waaw[/B][/COLOR]', 'Espera requerida de %s segundos' % espera)
@@ -97,6 +97,9 @@ def get_video_url(page_url, url_referer=''):
 
         elif "AttributeError: 'int'" in traceback.format_exc():
             return 'AttributeError [COLOR red][B]get_int[/COLOR]'
+
+        elif 'HTTP Error 404: Not Found' in traceback.format_exc():
+            return 'Archivo inexistente'
 
         elif '<urlopen error' in traceback.format_exc():
             return 'No se puede establecer la conexión'

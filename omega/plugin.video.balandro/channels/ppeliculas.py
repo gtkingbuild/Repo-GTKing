@@ -6,6 +6,8 @@ PY3 = False
 if sys.version_info[0] >= 3: PY3 = True
 
 
+import os
+
 from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
@@ -175,9 +177,9 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Estrenos', action = 'list_all', url = host + 'genre/estreno/', search_type = 'movie', text_color='cyan' ))
 
-    itemlist.append(item.clone( title = 'Tendencias', action = 'list_all', url = host + 'tendencias/', group = 'tendencias', search_type = 'movie' ))
-
     itemlist.append(item.clone( title = 'Más vistas', action = 'list_all', url = host + 'pelicula/', group = 'destacadas', search_type = 'movie' ))
+
+    itemlist.append(item.clone( title = 'Más valoradas', action = 'list_all', url = host + 'tendencias/', group = 'tendencias', search_type = 'movie' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
 
@@ -196,9 +198,9 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host + 'episodios/', search_type = 'tvshow', text_color = 'cyan' ))
 
-    itemlist.append(item.clone( title = 'Tendencias', action = 'list_all', url = host + 'tendencias/', group = 'tendencias', search_type = 'tvshow' ))
-
     itemlist.append(item.clone( title = 'Más vistas', action = 'list_all', url = host + 'series/', group = 'destacadas', search_type = 'tvshow' ))
+
+    itemlist.append(item.clone( title = 'Más valoradas', action = 'list_all', url = host + 'tendencias/', group = 'tendencias', search_type = 'tvshow' ))
 
     return itemlist
 
@@ -364,6 +366,8 @@ def last_epis(item):
         elif ' (' in title: SerieName = title.split(" (")[0]
         else: SerieName = title
 
+        title = title.replace('Vose', '[COLOR red][B]Vose[/B][/COLOR]').replace('Subtitulado', '[COLOR red][B]Vos[/B][/COLOR]')
+
         titulo = str(season) + 'x' + str(epis) + ' ' + title.replace('(' + str(season) + 'X' + str(epis) + ')', '')
 
         itemlist.append(item.clone( action='findvideos', url=url, title=titulo, thumbnail=thumb,
@@ -506,9 +510,9 @@ def corregir_servidor(servidor):
 
     servidor = servidor.replace('.com', '').replace('.org', '').replace('.co', '').replace('.cc', '').replace('.net', '').replace('.to', '').replace('.sx', '')
     servidor = servidor.replace('.ru', '').replace('.tv', '').replace('my.', '').replace('.info', '').replace('.re', '').replace('.xx', '').replace('.click', '')
-    servidor = servidor.replace('v2.', '').replace('.veoh', '').replace('.sh', '').replace('.nz', '').replace('.site', '').replace('.uno', '').replace('.io', '')
+    servidor = servidor.replace('v2.', '').replace('.veoh', '').replace('.sh', '').replace('.nz', '').replace('.site', '').replace('.uno', '').replace('.io', '').replace('.pl', '')
     servidor = servidor.replace('.link', '').replace('.club', '').replace('.red', '').replace('.download', '').replace('.vip', '').replace('.space', '').replace('.name', '')
-    servidor = servidor.replace('.xyz', '').replace('.me', '').replace('.li', '').replace('.one', '').replace('.hu', '').replace('.fun', '').replace('.work', '').strip()
+    servidor = servidor.replace('.xyz', '').replace('.gl', '').replace('.me', '').replace('.eu', '').replace('.li', '').replace('.la', '').replace('.pm', '').replace('.ws', '').replace('.wf', '').replace('.one', '').replace('.hu', '').replace('.fun', '').replace('.work', '').replace('.cloud', '').replace('.google', '').strip()
 
     return servidor
 
@@ -578,6 +582,11 @@ def findvideos(item):
             elif 'buzzheavier' in _server: continue
             elif 'guccihide' in _server: continue
             elif 'rapidgator' in _server: continue
+            elif 'earn4files' in _server: continue
+            elif 'uploadrive' in _server: continue
+            elif 'uploadbuzz' in _server: continue
+            elif 'filescdn' in _server: continue
+            elif 'uploaded' in _server: continue
 
             url = host + 'wp-json/dooplayer/v2/%s/%s/%s'  %  (_post, _type, _nume)
 
@@ -679,6 +688,11 @@ def findvideos(item):
             elif 'buzzheavier' in _server: continue
             elif 'guccihide' in _server: continue
             elif 'rapidgator' in _server: continue
+            elif 'earn4files' in _server: continue
+            elif 'uploadrive' in _server: continue
+            elif 'uploadbuzz' in _server: continue
+            elif 'filescdn' in _server: continue
+            elif 'uploaded' in _server: continue
 
             url = host + 'wp-json/dooplayer/v2/%s/%s/%s'  %  (_post, _type, _nume)
 
@@ -764,6 +778,11 @@ def findvideos(item):
             elif 'buzzheavier' in servidor: continue
             elif 'guccihide' in servidor: continue
             elif 'rapidgator' in servidor: continue
+            elif 'earn4files' in servidor: continue
+            elif 'uploadrive' in servidor: continue
+            elif 'uploadbuzz' in servidor: continue
+            elif 'filescdn' in servidor: continue
+            elif 'uploaded' in servidor: continue
 
             if 'hqq' in servidor or 'netu' in servidor or 'waaw' in servidor: servidor = 'waaw'
             elif 'dood' in servidor: servidor = 'doodstream'
@@ -846,6 +865,11 @@ def findvideos(item):
             elif '1fichier' in servidor: continue
             elif 'turbobit' in servidor: continue
             elif 'katfile' in servidor: continue
+            elif 'earn4files' in servidor: continue
+            elif 'uploadrive' in servidor: continue
+            elif 'uploadbuzz' in servidor: continue
+            elif 'filescdn' in servidor: continue
+            elif 'uploaded' in servidor: continue
 
             if 'hqq' in servidor or 'netu' in servidor or 'waaw' in servidor: servidor = 'waaw'
             elif 'dood' in servidor: servidor = 'doodstream'
@@ -901,6 +925,11 @@ def findvideos(item):
             elif '1fichier' in srv: continue
             elif 'turbobit' in srv: continue
             elif 'katfile' in srv: continue
+            elif 'earn4files' in srv: continue
+            elif 'uploadrive' in srv: continue
+            elif 'uploadbuzz' in srv: continue
+            elif 'filescdn' in srv: continue
+            elif 'uploaded' in srv: continue
 
             if lang == 'Latino': lang = 'Lat'
             elif lang == 'Castellano' or lang == 'Español': lang = 'Esp'
@@ -946,6 +975,11 @@ def findvideos(item):
         elif '1fichier' in srv: continue
         elif 'turbobit' in srv: continue
         elif 'katfile' in srv: continue
+        elif 'earn4files' in srv: continue
+        elif 'uploadrive' in srv: continue
+        elif 'uploadbuzz' in srv: continue
+        elif 'filescdn' in srv: continue
+        elif 'uploaded' in srv: continue
 
         if lang == 'Latino': lang = 'Lat'
         elif lang == 'Castellano' or lang == 'Español': lang = 'Esp'
@@ -959,10 +993,12 @@ def findvideos(item):
         elif 'google' in srv or 'Google' in srv: srv = 'gvideo'
         elif 'gamovideo' in srv: srv = 'gamovideo'
         elif 'vidmoly' in srv: srv = 'vidmoly'
+        elif 'sandratableother'in srv: srv = 'voe'
 
         other = corregir_servidor(srv)
 
-        other = servertools.corregir_other(other)
+        if srv == 'gamovideo' or srv == 'vidmoly': pass
+        else: other = servertools.corregir_other(other)
 
         itemlist.append(Item( channel = item.channel, action = 'play', title = '', server = 'directo', url = url, ref = item.url,
                               other = other.capitalize(), language = lang ))
@@ -1002,8 +1038,11 @@ def play(item):
                 resp = httptools.downloadpage(item.url, follow_redirects=False)
 
         if 'location' in resp.headers: url = resp.headers['location']
+        else:
+           new_url = scrapertools.find_single_match(resp.data, 'href="(.*?)"')
+           if new_url: url = new_url
 
-    elif item.other == 'Clickndownload' or item.other == 'Gofile' or item.other == 'Gvideo' or item.other == 'Uptobox' or item.other == 'Dood' or item.other == 'Gamovideo' or item.other == 'Vidmoly' or item.other == 'Zures' or item.other != '':
+    elif item.other == 'Clickndownload' or item.other == 'Gofile' or item.other == 'Gvideo' or item.other == 'Uptobox' or item.other == 'Dood' or item.other == 'Gamovideo' or item.other == 'Vidmoly' or item.other == 'Voe' or item.other == 'Zures' or item.other != '':
         if not item.url.startswith(host) and not _player in url:
             resp = httptools.downloadpage(item.url, follow_redirects=False)
         else:
@@ -1041,6 +1080,27 @@ def play(item):
         if url.startswith('https://player.pepeliculas.org/'): url = url.replace('/player.pepeliculas.org/', '/waaw.to/')
         elif url.startswith('https://hqq.tv/player/embed_player.php?'): url = url.replace('https://hqq.tv/player/embed_player.php?', 'https://waaw.to/watch_video.php?v=')
 
+    if url.endswith('.torrent'):
+        if config.get_setting('proxies', item.channel, default=''):
+            if PY3:
+                from core import requeststools
+                data = requeststools.read(url, 'ppeliculas')
+            else:
+                data = do_downloadpage(url)
+
+            if data:
+                if '<h1>Not Found</h1>' in str(data) or '<!DOCTYPE html>' in str(data) or '<!DOCTYPE>' in str(data):
+                    return 'Archivo [COLOR red]Inexistente[/COLOR]'
+
+                file_local = os.path.join(config.get_data_path(), "temp.torrent")
+                with open(file_local, 'wb') as f: f.write(data); f.close()
+
+                itemlist.append(item.clone( url = file_local, server = 'torrent' ))
+        else:
+            itemlist.append(item.clone( url = url, server = 'torrent' ))
+
+        return itemlist
+
     if url:
         if item.other.startswith("Sb"):
             return 'Servidor [COLOR goldenrod]Obsoleto[/COLOR]'
@@ -1048,14 +1108,36 @@ def play(item):
         elif 'streamsb' in url or 'playersb' in url:
             return 'Servidor [COLOR goldenrod]Obsoleto[/COLOR]'
 
+        elif 'openload' in url or 'streamango' in url or 'vidlox' in url or 'jetload' in url or 'verystream' in url or 'streamcherry' in url or 'gounlimited' in url or 'streamix' in url or 'viewsb' in url or 'flix555' in url or '.stormo.' in url or '.spruto.' in url or '/biter.' in url or '/streamin.' in url or '/filebebo.' in url or '/streamcloud.' in url or '/videofiles.' in url or '/kingvid.' in url or '/allvid.' in url or '/goo.' in url:
+            return 'Servidor [COLOR goldenrod]Obsoleto[/COLOR]'
+
         elif 'uptobox' in url:
             return 'Servidor [COLOR goldenrod]Fuera de Servicio[/COLOR]'
 
-        elif '.pepeliculas.' in url or'-pepeliculas.' in url: url = ''
+        elif '.fembed.' in url:
+            return 'Servidor [COLOR red]Fuera de Servicio[/COLOR]'
 
-        elif '.googleapis.' in url: url = ''
+        elif '/powv1deo.' in url or '/powvibeo.' in url or '/pouvideo.' in url or '/povw1deo.' in url or '/powvldeo.' in url or '/pomvideo.' in url or '/streamp1ay.' in url or '/slreamplay.' in url or '/stemplay.' in url or '/steamplay.' in url:
+            return 'Servidor [COLOR goldenrod]No Soportado[/COLOR]'
+
+        elif '.rapidvideo.' in url or '.filefactory.' in url or '.owndrives.' in url or '/rapidcloud.' in url or '/ul.' in url or '/fileflares.' in url or '/rockfile.' in url or '/estream.' in url or '/uploadrocket.' in url or '/uploading.' in url or '/ddownload.' in url or '/uploadz.' in url or '/fikper.' in url or '/www.datafile.' in url or '/filerice.' in url or '/thevideo.' in url:
+            return 'Servidor [COLOR goldenrod]No Soportado[/COLOR]'
+
+        elif '/chomikuj.' in url: url = ''
+
+        elif '.pepeliculas.' in url or '-pepeliculas.' in url: url = ''
+        elif '.googleapis.' in url or '.google.' in url: url = ''
+        elif '/gateway.zsprotect.' in url: url = ''
 
     if url:
+        if '.fembed.' in url or '/feurl.' in url:
+            return 'Servidor [COLOR red]Fuera de Servicio[/COLOR]'
+
+        elif '/powv1deo.' in url or '/streamp1ay.' in url:
+            return 'Servidor [COLOR goldenrod]No Soportado[/COLOR]'
+
+        if '/noblocktape.com/' in url: url = url.replace('/noblocktape.com/', '/streamtape.com/').replace('/3/', '/v/')
+
         url = url.replace('http://', 'https://')
 
         servidor = servertools.get_server_from_url(url)

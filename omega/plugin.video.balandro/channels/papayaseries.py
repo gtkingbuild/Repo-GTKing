@@ -437,6 +437,8 @@ def play(item):
     if not new_url: new_url = scrapertools.find_single_match(data, ' SRC="(.*?)"')
 
     if new_url:
+        if new_url.startswith('https://player.megaxserie.me/'): new_url = new_url.replace('/player.megaxserie.me/', '/waaw.to/')
+
         servidor = servertools.get_server_from_url(new_url)
         servidor = servertools.corregir_servidor(servidor)
 

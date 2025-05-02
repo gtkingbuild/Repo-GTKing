@@ -42,7 +42,7 @@ def mainlist_pelis(item):
         from modules import actions
         if actions.adults_password(item) == False: return
 
-    itemlist.append(item.clone( title = 'Buscar vídeo ...', action = 'search', search_type = 'movie', text_color = 'orange' ))
+    itemlist.append(item.clone( title = 'Buscar vídeo ...', action = 'search', search_type = 'movie', search_video = 'adult', text_color = 'orange' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host ))
 
@@ -81,6 +81,11 @@ def categorias(item):
         title = scrapertools.find_single_match(match, '<figcaption>(.*?)</figcaption>')
         if not title: title = scrapertools.find_single_match(match, 'class="wp-caption-text gallery-caption">(.*?)</a>')
 
+        if not title:
+            title = scrapertools.find_single_match(url, '/xnxx/(.*?)$')
+            title = title.replace('-', ' ').replace('/', '').strip()
+            title = title.capitalize()
+
         if not url or not title: continue
 
         if title == 'All Videos': continue
@@ -101,7 +106,7 @@ def pornstars(item):
 
     bloque = scrapertools.find_single_match(data, '>Pornstars</h1>(.*?)</footer>')
 
-    matches = re.compile('<a(.*?)</a></div>', re.DOTALL).findall(bloque)
+    matches = re.compile('<a(.*?)</figcaption></a>', re.DOTALL).findall(bloque)
 
     for match in matches:
         url = scrapertools.find_single_match(match, 'href="(.*?)"')
@@ -109,9 +114,15 @@ def pornstars(item):
         title = scrapertools.find_single_match(match, '<figcaption>(.*?)</figcaption>')
         if not title: title = scrapertools.find_single_match(match, 'class="wp-caption-text gallery-caption">(.*?)</a>')
 
+        if not title:
+            title = scrapertools.find_single_match(url, '/xnxx/(.*?)$')
+            title = title.replace('-', ' ').replace('/', '').strip()
+            title = title.capitalize()
+
         if not url or not title: continue
 
         thumb = scrapertools.find_single_match(match, 'data-src="(.*?)"')
+        if not thumb: thumb = scrapertools.find_single_match(match, 'src="(.*?)"')
 
         itemlist.append(item.clone (action='list_all', title=title, url=url, thumbnail=thumb, text_color='orange' ))
 
@@ -123,6 +134,9 @@ def list_all(item):
     itemlist = []
 
     data = do_downloadpage(item.url)
+    data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
+
+    data = data.replace(' <!-- post-preview-styling -->', '')
 
     matches = re.compile('<article(.*?)</article>', re.DOTALL).findall(data)
     if not matches: matches = re.compile('<div class="col-xs-(.*?)</div></div></div>', re.DOTALL).findall(data)
@@ -219,6 +233,9 @@ def play(item):
 
     if '/mediac.povaddict.' in url: return itemlist
 
+    if item.server == 'directo':
+        url = url + '|Referer=' + host
+
     itemlist.append(item.clone(server = item.server, url = url))
 
     return itemlist
@@ -227,6 +244,8 @@ def play(item):
 def search(item, texto):
     logger.info()
     try:
+        config.set_setting('search_last_video', texto)
+
         item.url =  host + '?s=%s' % (texto.replace(" ", "+"))
         return list_all(item)
     except:

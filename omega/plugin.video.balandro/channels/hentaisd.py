@@ -26,7 +26,7 @@ def mainlist_pelis(item):
         from modules import actions
         if actions.adults_password(item) == False: return
 
-    itemlist.append(item.clone( title = 'Buscar vídeo ...', action = 'search', search_type = 'movie', text_color='orange' ))
+    itemlist.append(item.clone( title = 'Buscar vídeo ...', action = 'search', search_type = 'movie', search_video = 'adult', text_color='orange' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'hentai/' ))
 
@@ -48,7 +48,7 @@ def categorias(item):
     data = httptools.downloadpage(host + 'hentai/generos/').data
     data = re.sub(r"\n|\r|\t|&nbsp;|<br>|<br/>", "", data)
 
-    matches = re.compile('<h3 class="media-heading"><a href="([^"]+)" alt="([^"]+)"', re.DOTALL).findall(data)
+    matches = re.compile('<h3 class="media-heading">.*?<a href="(.*?)".*?alt="(.*?)"', re.DOTALL).findall(data)
 
     for url, title in matches:
         if title == 'audio latino': continue
@@ -71,7 +71,7 @@ def list_all(item):
     data = httptools.downloadpage(item.url).data
     data = re.sub(r"\n|\r|\t|&nbsp;|<br>|<br/>", "", data)
 
-    matches = re.compile('<div class="media">.*?<a href="([^"]+)".*?<img src="([^"]+)".*?alt="([^"]+)".*?>([^<]+)</p>', re.DOTALL).findall(data)
+    matches = re.compile('<div class="media".*?<a href="(.*?)".*?<img src="(.*?)".*?alt="(.*?)".*?<p.*?">(.*?)</p>', re.DOTALL).findall(data)
 
     for url, thumb, title, plot in matches:
         title = title.strip()
@@ -173,7 +173,9 @@ def findvideos(item):
 def search(item, texto):
     logger.info()
     try:
-        item.url =  host + '/buscar/?t=' + texto.replace(" ", "+")
+        config.set_setting('search_last_video', texto)
+
+        item.url =  host + 'buscar/?t=' + texto.replace(" ", "+")
         return list_all(item)
     except:
         import sys

@@ -2,18 +2,18 @@
 
 import re, base64
 
-
 from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-host = 'https://kissasian.com.mx/'
+host = 'https://kissasian.co.ba/'
 
 
 def do_downloadpage(url, post=None, headers=None):
     # ~ por si viene de enlaces guardados
-    ant_hosts = ['https://kiriasian.com/', 'https://kissasians.bar/', 'https://kissasians.vin/']
+    ant_hosts = ['https://kiriasian.com/', 'https://kissasians.bar/', 'https://kissasians.vin/',
+                 'https://kissasian.com.mx/', 'https://kissasian.org.es/']
 
     for ant in ant_hosts:
         url = url.replace(ant, host)
@@ -52,17 +52,18 @@ def generos(item):
 
     data = do_downloadpage(host)
 
-    bloque = scrapertools.find_single_match(data, '<ul class="genre">(.*?)</ul>')
-    if not bloque: bloque = scrapertools.find_single_match(data, '<!-- genres -->(.*?)</ul>')
+    bloque = scrapertools.find_single_match(data, "<ul class='genre'>(.*?)</ul>")
 
-    matches = scrapertools.find_multiple_matches(bloque, 'value="(.*?)".*?<label.*?">(.*?)</label>')
+    matches = scrapertools.find_multiple_matches(bloque, '<a href="(.*?)".*?>(.*?)</a>')
 
-    for id, title in matches:
-        url = host + 'series/?genre[]=' + id
+    for url, title in matches:
+        if 'APK' in title: continue
+
+        title = title.capitalize()
 
         itemlist.append(item.clone( title = title, action = 'list_all', url = url, text_color='firebrick' ))
 
-    return itemlist
+    return sorted(itemlist, key=lambda x: x.title)
 
 
 def list_all(item):
@@ -111,16 +112,23 @@ def list_all(item):
     tmdb.set_infoLabels(itemlist)
 
     if itemlist:
-        if 'Previous' in data:
-            next_page = scrapertools.find_single_match(data,'<div class="hpage">.*?</a>.*?href="(.*?)"')
+        if not '/genres/' in item.url:
+            if 'Previous' in data:
+                next_page = scrapertools.find_single_match(data,'<div class="hpage">.*?</a>.*?href="(.*?)"')
+            else:
+                next_page = scrapertools.find_single_match(data,'<div class="hpage">.*?href="(.*?)"')
+
+            if next_page:
+                if '?page=' in next_page:
+                    next_page = host + 'series/' + next_page
+
+                    itemlist.append(item.clone( title = 'Siguientes ...', action = 'list_all', url = next_page, text_color = 'coral' ))
         else:
-            next_page = scrapertools.find_single_match(data,'<div class="hpage">.*?href="(.*?)"')
+            next_page = scrapertools.find_single_match(data,'<a class="next page-numbers" href="(.*?)"')
 
-        if next_page:
-            if '?page=' in next_page:
-                next_page = host + 'series/' + next_page
-
-                itemlist.append(item.clone( title = 'Siguientes ...', action = 'list_all', url = next_page, text_color = 'coral' ))
+            if next_page:
+                if '/page/' in next_page:
+                    itemlist.append(item.clone( title = 'Siguientes ...', action = 'list_all', url = next_page, text_color = 'coral' ))
 
     return itemlist
 
@@ -214,6 +222,21 @@ def findvideos(item):
 
     ses = 0
 
+    # ~ Embeds
+    embed = scrapertools.find_single_match(data, '<div class="player-embed".*?<iframe.*?src="(.*?)".*?</iframe>')
+
+    if embed:
+        ses += 1
+
+        servidor = 'directo'
+        other = servertools.corregir_other(embed)
+
+        if '/asianload.' in embed:
+            servidor = 'zures'
+            other = 'Asianload'
+
+        itemlist.append(Item( channel = item.channel, action = 'play', server=servidor, url=embed, language = 'Vose', other=other ))
+
     # ~ Enlaces
     bloque = scrapertools.find_single_match(data,'>Select Video Server<(.*?)</select>')
 
@@ -230,6 +253,9 @@ def findvideos(item):
 
         url = scrapertools.find_single_match(video,'<iframe.*?src="(.*?)"')
         if not url: url = scrapertools.find_single_match(video,'<IFRAME.*?SRC="(.*?)"')
+
+        if not url: url = scrapertools.find_single_match(video,'<iframe.*?src=(.*?)"')
+        if not url: url = scrapertools.find_single_match(video,'<IFRAME.*?SRC=(.*?)"')
 
         if url:
             if '/streaming.php' in url:
@@ -249,28 +275,22 @@ def findvideos(item):
                 matches2 = scrapertools.find_multiple_matches(data2, '<li class="linkserver".*?data-video="(.*?)"')
 
                 for vid in matches2:
-                    servidor = servertools.get_server_from_url(vid)
-                    servidor = servertools.corregir_servidor(servidor)
-
                     other = ''
                     if servidor == 'various': other = servertools.corregir_other(vid)
 
                     if '/asianload.' in vid:
-                        data3 = do_downloadpage(vid)
+                        servidor = 'zures'
+                        other = 'Asianload'
+                    else:
+                        servidor = 'directo'
+                        other = servertools.corregir_other(url)
 
-                        vid = scrapertools.find_single_match(data3, 'file:"(.*?)"')
-                        if not vid: vid = scrapertools.find_single_match(data3, 'file: "(.*?)"')
+                        if not config.get_setting('developer_mode', default=False): continue
 
-                        if not vid: continue
+                        other = vid.split("/")[2]
+                        other = other.replace('https:', '').strip()
 
-                    if servidor == 'directo':
-                        if vid.endswith('.m3u8'): other = 'Asianload'
-                        else:
-                            if not config.get_setting('developer_mode', default=False): continue
-                            other = vid.split("/")[2]
-                            other = other.replace('https:', '').strip()
-
-                    itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = vid, language = 'Vose', other = other ))
+                    itemlist.append(Item( channel = item.channel, action = 'play', server=servidor, url=vid, language = 'Vose', other=other ))
 
                 continue
 
@@ -278,28 +298,19 @@ def findvideos(item):
 
             if not 'http' in url: ses = ses - 1
             else:
-                servidor = servertools.get_server_from_url(url)
-                servidor = servertools.corregir_servidor(servidor)
-
-                other = ''
-                if servidor == 'various': other = servertools.corregir_other(url)
-
                 if '/asianload.' in url:
-                   data4 = do_downloadpage(url)
+                   servidor = 'zures'
+                   other = 'Asianload'
+                else:
+                    servidor = 'directo'
+                    other = servertools.corregir_other(url)
 
-                   url = scrapertools.find_single_match(data4, 'file:"(.*?)"')
-                   if not url: url = scrapertools.find_single_match(data4, 'file: "(.*?)"')
+                    if not config.get_setting('developer_mode', default=False): continue
+	
+                    other = url.split("/")[2]
+                    other = other.replace('https:', '').strip()
 
-                   if not url: continue
-
-                if servidor == 'directo':
-                    if url.endswith('.m3u8'): other = 'Asianload'
-                    else:
-                        if not config.get_setting('developer_mode', default=False): continue
-                        other = url.split("/")[2]
-                        other = other.replace('https:', '').strip()
-
-                itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = url, language = 'Vose', other = other ))
+                itemlist.append(Item( channel = item.channel, action = 'play', server=servidor, url=url, language = 'Vose', other=other ))
 
     if not itemlist:
         if not ses == 0:

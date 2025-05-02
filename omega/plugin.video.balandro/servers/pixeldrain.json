@@ -14,6 +14,10 @@
       {
         "pattern": "(https://pixeldrain.com/l/[(a-zA-Z0-9]+)",
         "url": "\\1"
+      },
+      {
+        "pattern": "(https://pixeldrain.com/api/file/[(a-zA-Z0-9]+)",
+        "url": "\\1"
       }
     ]
   }

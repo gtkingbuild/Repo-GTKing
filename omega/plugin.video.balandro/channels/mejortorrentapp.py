@@ -1,13 +1,19 @@
 # -*- coding: utf-8 -*-
 
-import re
+import sys
+
+PY3 = False
+if sys.version_info[0] >= 3: PY3 = True
+
+
+import re, os
 
 from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, tmdb
 
 
-host = 'https://www26.mejortorrent.eu'
+host = 'https://www29.mejortorrent.eu'
 
 
 # ~ por si viene de enlaces guardados
@@ -19,7 +25,8 @@ ant_hosts = ['https://mejortorrent.app', 'https://mejortorrent.wtf', 'https://ww
              'https://www14.mejortorrent.rip', 'https://www15.mejortorrent.rip', 'https://www16.mejortorrent.rip',
              'https://www17.mejortorrent.zip', 'https://www18.mejortorrent.zip', 'https://www19.mejortorrent.zip',
              'https://www20.mejortorrent.zip', 'https://www21.mejortorrent.zip', 'https://www22.mejortorrent.zip',
-             'https://www23.mejortorrent.zip', 'https://www24.mejortorrent.zip', 'https://www25.mejortorrent.zip']
+             'https://www23.mejortorrent.zip', 'https://www24.mejortorrent.zip', 'https://www25.mejortorrent.zip',
+             'https://www26.mejortorrent.eu', 'https://www27.mejortorrent.eu', 'https://www28.mejortorrent.eu']
 
 
 domain = config.get_setting('dominio', 'mejortorrentapp', default='')
@@ -578,6 +585,34 @@ def findvideos(item):
     if not item.url.startswith(host): item.url = host + item.url
 
     itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = item.url, server = 'torrent', language = lang ))
+
+    return itemlist
+
+
+def play(item):
+    logger.info()
+    itemlist = []
+
+    if item.url.endswith('.torrent'):
+        if config.get_setting('proxies', item.channel, default=''):
+            if PY3:
+                from core import requeststools
+                data = requeststools.read(item.url, 'mejortorrentapp')
+            else:
+                data = do_downloadpage(item.url)
+
+            if data:
+                if '<h1>Not Found</h1>' in str(data) or '<!DOCTYPE html>' in str(data) or '<!DOCTYPE>' in str(data):
+                    return 'Archivo [COLOR red]Inexistente[/COLOR]'
+
+                file_local = os.path.join(config.get_data_path(), "temp.torrent")
+                with open(file_local, 'wb') as f: f.write(data); f.close()
+
+                itemlist.append(item.clone( url = file_local, server = 'torrent' ))
+        else:
+            itemlist.append(item.clone( url = item.url, server = 'torrent' ))
+    else:
+        itemlist.append(item.clone( url = item.url, server = 'torrent' ))
 
     return itemlist
 

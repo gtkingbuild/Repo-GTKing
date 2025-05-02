@@ -9,6 +9,7 @@ from core import httptools, scrapertools, servertools, jsontools, tmdb
 
 host = 'https://zoowomaniacos.org/'
 
+
 host_opts = host + 'alternativo3/server.php'
 
 
@@ -93,7 +94,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone ( title = 'Búsquedas:', action = '', folder=False, text_color='plum' ))
     itemlist.append(item.clone ( title = ' - Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
-    itemlist.append(item.clone ( title = ' - Buscar por dirección, intérprete ...', action = 'search', grupo = 'agrupa', search_type = 'movie', text_color='salmon' ))
+    itemlist.append(item.clone ( title = ' - [COLOR salmon]Buscar persona ...[/COLOR] ([COLOR springgreen]dirección[/COLOR], [COLOR aquamarine]intérprete[/COLOR])', action = 'search', grupo = 'agrupa', search_type = 'person' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host_opts ))
 
@@ -119,7 +120,7 @@ def mainlist_pelis(item):
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Por país', action = 'paises', search_type = 'movie' ))
 
-    itemlist.append(item.clone( title = 'Por dirección, interpretación ...', action = 'alfabetico', text_color='salmon' ))
+    itemlist.append(item.clone( title = 'Por persona ([COLOR springgreen]dirección[/COLOR], [COLOR aquamarine]intérprete[/COLOR]) (A-Z)', action = 'alfabetico' ))
 
     return itemlist
 
@@ -178,11 +179,13 @@ def generos(item):
 
         title = title.replace('&amp;', '&')
 
+        title = title.replace('África', 'Africa').replace('Ópera', 'Opera')
+
         post = {'start': 0, 'length': perpage, 'metodo': 'ObtenerListaTotal', 'searchPanes[a5][0]': genre, 'search[value]': '', 'searchPanes[a3][0]': '', 'searchPanes[a4][0]': '', 'searchPanes[a6][0]': ''}
 
         itemlist.append(item.clone( title = title, action = 'list_all', url = host_opts, pane = genre, post = post, text_color = 'deepskyblue' ))
 
-    return itemlist
+    return sorted(itemlist,key=lambda x: x.title)
 
 
 def epocas(item):
@@ -195,7 +198,7 @@ def epocas(item):
 
         post = {'start': 0, 'length': perpage, 'metodo': 'ObtenerListaTotal', 'searchPanes[a5][0]': epoca, 'search[value]': '', 'searchPanes[a3][0]': '', 'searchPanes[a4][0]': '', 'searchPanes[a6][0]': ''}
 
-        itemlist.append(item.clone( title = title, action = 'list_all', url = host_opts, pane = epoca, post = post, text_color = 'deepskyblue' ))
+        itemlist.append(item.clone( title = title, action = 'list_all', url = host_opts, pane = epoca, post = post, text_color = 'darkcyan' ))
 
     return itemlist
 
@@ -265,21 +268,23 @@ def paises(item):
         # ~ country = x[0] PY3
         country = title
 
+        title = title.strip()
+
         post = {'start': 0, 'length': perpage, 'metodo': 'ObtenerListaTotal', 'searchPanes[a5][0]': '', 'search[value]': '', 'searchPanes[a3][0]': '', 'searchPanes[a4][0]': '', 'searchPanes[a6][0]': country}
 
         itemlist.append(item.clone( title = title, action = 'list_all', url = host_opts, country = country, post = post, text_color='moccasin' ))
 
-    return itemlist
+    return sorted(itemlist,key=lambda x: x.title)
 
 
 def alfabetico(item):
     logger.info()
     itemlist = []
 
-    for letra in string.ascii_uppercase:
-        itemlist.append(item.clone (action = "directores", title = letra, letra = letra))
+    itemlist.append(item.clone (action = "directores", title = 'Todos los directores/intérpretes', letra = 'Todos', text_color='salmon' ))
 
-    itemlist.append(item.clone (action = "directores", title = 'Todos', letra = 'Todos'))
+    for letra in string.ascii_uppercase:
+        itemlist.append(item.clone (action = "directores", title = letra, letra = letra, text_color='salmon' ))
 
     return itemlist
 

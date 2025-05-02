@@ -289,7 +289,7 @@ def manto_domains(item):
 def show_old_domains(item):
     logger.info()
 
-    platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Comprobando Canal, espere ...[/B][/COLOR]' % color_infor)
+    platformtools.dialog_notification(config.__addon_name + ' ' + item.channel_id, '[B][COLOR %s]Accediendo Historial Canal[/B][/COLOR]' % color_infor)
 
     channel_py = item.channel_id + '.py'
     filename_py = os.path.join(config.get_runtime_path(), 'channels', channel_py)
@@ -347,7 +347,7 @@ def show_old_domains(item):
 
     ant_hosts = tab_hosts
 
-    txt = '[COLOR moccasin][B]Dominios Anteriores:[/B][/COLOR][CR]'
+    txt = '[COLOR moccasin][B]Dominios Anteriores [COLOR yellowgreen]' + item.channel_id + '[/COLOR]:[/B][CR]'
 
     for ant_host in ant_hosts:
         txt += '[COLOR mediumaquamarine][B]' + ant_host[1] + '[/B][/COLOR][CR]'
@@ -455,25 +455,17 @@ def manto_params(item):
         config.set_setting('channel_mejortorrentnz_dominio', '')
         config.set_setting('channel_mitorrent_dominio', '')
 
-        config.set_setting('channel_nextdede_dominio', '')
-        config.set_setting('channel_nextdede_nextdede_login', False)
-        config.set_setting('channel_nextdede_nextdede_email', '')
-        config.set_setting('channel_nextdede_nextdede_password', '')
-        config.set_setting('channel_nextdede_nextdede_username', '')
-
         config.set_setting('channel_novelastop_dominio', '')
 
         config.set_setting('channel_peliculaspro_dominio', '')
         config.set_setting('channel_pelisforte_dominio', '')
         config.set_setting('channel_pelismart_dominio', '')
         config.set_setting('channel_pelispanda_dominio', '')
-        config.set_setting('channel_pelispedia2me_dominio', '')
         config.set_setting('channel_pelispediaws_dominio', '')
         config.set_setting('channel_pelisplus_dominio', '')
         config.set_setting('channel_pelisplushd_dominio', '')
         config.set_setting('channel_pelisplushdlat_dominio', '')
         config.set_setting('channel_pelisplushdnz_dominio', '')
-        config.set_setting('channel_pelispluslat_dominio', '')
 
         config.set_setting('channel_playdede_dominio', '')
         config.set_setting('channel_playdede_playdede_login', False)
@@ -484,8 +476,8 @@ def manto_params(item):
 
         config.set_setting('channel_series24_dominio', '')
         config.set_setting('channel_serieskao_dominio', '')
-        config.set_setting('channel_seriesmetro_dominio', '')
         config.set_setting('channel_seriespapayato_dominio', '')
+        config.set_setting('channel_seriesplus_dominio', '')
         config.set_setting('channel_srnovelas_dominio', '')
         config.set_setting('channel_subtorrents_dominio', '')
 
@@ -528,6 +520,8 @@ def manto_params(item):
         config.set_setting('search_last_tvshow', '')
         config.set_setting('search_last_documentary', '')
         config.set_setting('search_last_person', '')
+        config.set_setting('search_last_list', '')
+        config.set_setting('search_last_video', '')
 
         config.set_setting('search_no_work_proxies', False)
         config.set_setting('search_no_results_proxies', True)
@@ -557,7 +551,7 @@ def manto_params(item):
         config.set_setting('channels_repeat', '30')
         config.set_setting('servers_waiting', '6')
 
-        config.set_setting('chrome_last_version', '131.0.6778.205')  # ~ 20/12/24
+        config.set_setting('chrome_last_version', '134.0.6998.166')  # ~ 22/3/25
 
         config.set_setting('debug', '0')
 
@@ -586,6 +580,8 @@ def manto_textos(item):
     elif config.get_setting('search_last_tvshow', default=''): hay_lastest = True
     elif config.get_setting('search_last_documentary', default=''): hay_lastest = True
     elif config.get_setting('search_last_person', default=''): hay_lastest = True
+    elif config.get_setting('search_last_list', default=''): hay_lastest = True
+    elif config.get_setting('search_last_video', default=''): hay_lastest = True
 
     if not hay_lastest:
          platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]No hay Textos Memorizados[/COLOR][/B]' % color_alert)
@@ -597,6 +593,8 @@ def manto_textos(item):
         config.set_setting('search_last_tvshow', '')
         config.set_setting('search_last_documentary', '')
         config.set_setting('search_last_person', '')
+        config.set_setting('search_last_list', '')
+        config.set_setting('search_last_video', '')
 
         platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Texos restablecidos[/B][/COLOR]' % color_infor)
 
@@ -1596,10 +1594,6 @@ def opciones_novelastop(item):
     item.from_channel = 'novelastop'
     opciones_domains_common(item)
 
-def opciones_nextdede(item):
-    item.from_channel = 'nextdede'
-    opciones_domains_common(item)
-
 def opciones_peliculaspro(item):
     item.from_channel = 'peliculaspro'
     opciones_domains_common(item)
@@ -1614,10 +1608,6 @@ def opciones_pelismart(item):
 
 def opciones_pelispanda(item):
     item.from_channel = 'pelispanda'
-    opciones_domains_common(item)
-
-def opciones_pelispedia2me(item):
-    item.from_channel = 'pelispedia2me'
     opciones_domains_common(item)
 
 def opciones_pelispediaws(item):
@@ -1640,10 +1630,6 @@ def opciones_pelisplushdnz(item):
     item.from_channel = 'pelisplushdnz'
     opciones_domains_common(item)
 
-def opciones_pelispluslat(item):
-    item.from_channel = 'pelispluslat'
-    opciones_domains_common(item)
-
 def opciones_playdede(item):
     item.from_channel = 'playdede'
     opciones_domains_common(item)
@@ -1660,12 +1646,12 @@ def opciones_serieskao(item):
     item.from_channel = 'serieskao'
     opciones_domains_common(item)
 
-def opciones_seriesmetro(item):
-    item.from_channel = 'seriesmetro'
-    opciones_domains_common(item)
-
 def opciones_seriespapayato(item):
     item.from_channel = 'seriespapayato'
+    opciones_domains_common(item)
+
+def opciones_seriesplus(item):
+    item.from_channel = 'seriesplus'
     opciones_domains_common(item)
 
 def opciones_srnovelas(item):
@@ -1796,8 +1782,6 @@ def opciones_domains_common(item):
 
             elif item.from_channel == 'mitorrent': domains.manto_domain_mitorrent(item)
 
-            elif item.from_channel == 'nextdede': domains.manto_domain_nextdede(item)
-
             elif item.from_channel == 'novelastop': domains.manto_domain_novelastop(item)
 
             elif item.from_channel == 'peliculaspro': domains.manto_domain_peliculaspro(item)
@@ -1807,8 +1791,6 @@ def opciones_domains_common(item):
             elif item.from_channel == 'pelismart': domains.manto_domain_pelismart(item)
 
             elif item.from_channel == 'pelispanda': domains.manto_domain_pelispanda(item)
-
-            elif item.from_channel == 'pelispedia2me': domains.manto_domain_pelispedia2me(item)
 
             elif item.from_channel == 'pelispediaws': domains.manto_domain_pelispediaws(item)
 
@@ -1820,8 +1802,6 @@ def opciones_domains_common(item):
 
             elif item.from_channel == 'pelisplushdnz': domains.manto_domain_pelisplushdnz(item)
 
-            elif item.from_channel == 'pelispluslat': domains.manto_domain_pelispluslat(item)
-
             elif item.from_channel == 'playdede': domains.manto_domain_playdede(item)
 
             elif item.from_channel == 'poseidonhd2': domains.manto_domain_poseidonhd2(item)
@@ -1830,9 +1810,9 @@ def opciones_domains_common(item):
 
             elif item.from_channel == 'serieskao': domains.manto_domain_serieskao(item)
 
-            elif item.from_channel == 'seriesmetro': domains.manto_domain_seriesmetro(item)
-
             elif item.from_channel == 'seriespapayato': domains.manto_domain_seriespapayato(item)
+
+            elif item.from_channel == 'seriesplus': domains.manto_domain_seriesplus(item)
 
             elif item.from_channel == 'srnovelas': domains.manto_domain_srnovelas(item)
 
@@ -1906,8 +1886,6 @@ def opciones_domains_common(item):
 
             elif item.from_channel == 'mitorrent': domains.test_domain_mitorrent(item)
 
-            elif item.from_channel == 'nextdede': domains.test_domain_nextdede(item)
-
             elif item.from_channel == 'novelastop': domains.test_domain_novelastop(item)
 
             elif item.from_channel == 'peliculaspro': domains.test_domain_peliculaspro(item)
@@ -1917,8 +1895,6 @@ def opciones_domains_common(item):
             elif item.from_channel == 'pelismart': domains.manto_domain_pelismart(item)
 
             elif item.from_channel == 'pelispanda': domains.manto_domain_pelispanda(item)
-
-            elif item.from_channel == 'pelispedia2me': domains.test_domain_pelispedia2me(item)
 
             elif item.from_channel == 'pelispediaws': domains.test_domain_pelispediaws(item)
 
@@ -1930,8 +1906,6 @@ def opciones_domains_common(item):
 
             elif item.from_channel == 'pelisplushdnz': domains.test_domain_pelisplushdnz(item)
 
-            elif item.from_channel == 'pelispluslat': domains.test_domain_pelispluslat(item)
-
             elif item.from_channel == 'playdede': domains.test_domain_playdede(item)
 
             elif item.from_channel == 'poseidonhd2': domains.test_domain_poseidonhd2(item)
@@ -1940,9 +1914,9 @@ def opciones_domains_common(item):
 
             elif item.from_channel == 'serieskao': domains.test_domain_serieskao(item)
 
-            elif item.from_channel == 'seriesmetro': domains.test_domain_seriesmetro(item)
-
             elif item.from_channel == 'seriespapayato': domains.test_domain_seriespapayato(item)
+
+            elif item.from_channel == 'seriesplus': domains.test_domain_seriesplus(item)
 
             elif item.from_channel == 'srnovelas': domains.test_domain_srnovelas(item)
 
@@ -1985,6 +1959,8 @@ def opciones_domains_common(item):
             elif item.from_channel == 'playdede': helper.show_help_playdede(item)
 
             elif item.from_channel == 'seriespapayato': helper.show_help_seriespapayato(item)
+
+            elif item.from_channel == 'seriesplus': helper.show_help_seriesplus(item)
 
             elif item.from_channel == 'srnovelas': helper.show_help_srnovelas(item)
 

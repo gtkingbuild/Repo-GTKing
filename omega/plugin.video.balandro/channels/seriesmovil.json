@@ -3,7 +3,7 @@
   "name": "SeriesMovil",
   "thumbnail": "seriesmovil.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["tvshow"],
@@ -11,7 +11,7 @@
   "categories": ["tvshow"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["problematic", "kids", "vos"],
+  "clusters": ["kids", "vos"],
 
-  "notes": "Series por Géneros."
+  "notes": "Web ANULADA. Series por Géneros."
 }

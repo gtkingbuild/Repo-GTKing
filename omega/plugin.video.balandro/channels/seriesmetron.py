@@ -202,6 +202,7 @@ def last_epis(item):
 
             title = title.replace('Capitulo', '[COLOR goldenrod]Epis.[/COLOR]').replace('capitulo', '[COLOR goldenrod]Epis.[/COLOR]')
             title = title.replace('Episode', '[COLOR goldenrod]Epis.[/COLOR]').replace('episode', '[COLOR goldenrod]Epis.[/COLOR]')
+            title = title.replace('Episodio', '[COLOR goldenrod]Epis.[/COLOR]').replace('episodio', '[COLOR goldenrod]Epis.[/COLOR]')
 
             titulo = '%sx%s %s' % (season, episode, title)
 
@@ -355,6 +356,7 @@ def episodios(item):
 
             title = title.replace('Capitulo', '[COLOR goldenrod]Epis.[/COLOR]').replace('capitulo', '[COLOR goldenrod]Epis.[/COLOR]')
             title = title.replace('Episode', '[COLOR goldenrod]Epis.[/COLOR]').replace('episode', '[COLOR goldenrod]Epis.[/COLOR]')
+            title = title.replace('Episodio', '[COLOR goldenrod]Epis.[/COLOR]').replace('episodio', '[COLOR goldenrod]Epis.[/COLOR]')
 
             tab_epis.append([ord_epis, url, title, thumb, season, episode])
 
@@ -412,6 +414,8 @@ def episodios(item):
         for orden, url, tit, ses, epi in tab_epis:
             tit = tit.replace('"', '').strip()
 
+            tit = tit.replace('Capitulo', '[COLOR goldenrod]Epis.[/COLOR]').replace('capitulo', '[COLOR goldenrod]Epis.[/COLOR]')
+            tit = tit.replace('Episode', '[COLOR goldenrod]Epis.[/COLOR]').replace('episode', '[COLOR goldenrod]Epis.[/COLOR]')
             tit = tit.replace('Episodio', '[COLOR goldenrod]Epis.[/COLOR]').replace('episodio', '[COLOR goldenrod]Epis.[/COLOR]')
 
             itemlist.append(item.clone( action = 'findvideos', url = url, title = tit, contentType='episode', contentSeason=ses, contentEpisodeNumber=epi ))

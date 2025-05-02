@@ -1,4 +1,4 @@
-[COLOR coral][B]Balandro [/COLOR][COLOR goldenrod] Situacion Dominios [/COLOR][COLOR aqua]  26 de Diciembre de 2024 [/COLOR][COLOR limegreen]  Hora  8:00  [/COLOR][COLOR yellow]Version 4.0.13 Fix-6[/B][/COLOR]
+[COLOR coral][B]Balandro [/COLOR][COLOR goldenrod] Situacion Dominios [/COLOR][COLOR aqua]  25 de Marzo de 2025 [/COLOR][COLOR limegreen]  Hora  8:00  [/COLOR][COLOR yellow]Version 4.0.16[/B][/COLOR]
 
  [COLOR yellow][B]CONTACTO:[/B][/COLOR]
    Foro  [COLOR dodgerblue][B][I]www.mimediacenter.info/foro/[/I][/B][/COLOR]  Instalaciones, Tutoriales, Sugerencias, etc.
@@ -7,15 +7,15 @@
 
  [COLOR gold][B]MEDIA CENTERS:[/B][/COLOR]
     [B][COLOR tan]Kodi Versiones Oficiales Soportadas:[/COLOR][/B]
-       [COLOR violet][B][I]https://kodi.tv/download/[/I][/B][/COLOR]  y  [COLOR violet][B][I]https://mirrors.kodi.tv/releases/[/I][/B][/COLOR]
+       [COLOR violet][B][I]kodi.tv/download/[/I][/B][/COLOR]  y  [COLOR violet][B][I]mirrors.kodi.tv/releases/[/I][/B][/COLOR]
        [COLOR darkorange][B]22.x Piers,  21.x Omega,  20.x Nexus,  19.x Matrix,  18.x Leia  y  17.x Krypton[/B][/COLOR]
 
     [B][COLOR limegreen]Kodi Consultas:[/COLOR][/B]
-       [COLOR violet][B][I]https://mundokodi.com[/I][/B][/COLOR]
+       [COLOR violet][B][I]mundokodi.com[/I][/B][/COLOR]
        [COLOR goldenrod][B]Tutoriales, Instalaciones, Funciones, Add-Ons, Noticias, etc.[/B][/COLOR]
 
  [COLOR gold][B]CONSULTAS ADD-ONS EXTERNOS:[/B][/COLOR]
-    [COLOR violet][B][I]https://www.pluginsxbmc.com[/I][/B][/COLOR]
+    [COLOR violet][B][I]www.pluginsxbmc.com[/I][/B][/COLOR]
     [COLOR goldenrod][B]Tutoriales, Instalaciones, Funciones, Add-Ons, Noticias, etc.[/B][/COLOR]
 
  [COLOR fuchsia][B]CUESTIONES PRELIMINARES:[/B][/COLOR]
@@ -27,25 +27,32 @@
         o menos saturados, o mas duraderos, ademas pueden ser gratuitos o de pago.[/B][/COLOR]
 
  [COLOR red][B]PROXIES[COLOR deepskyblue] GESTION LISTAS PERSONALIZADAS:[/B][/COLOR] 
-   [B][COLOR moccasin] Lista-proxies.zip [COLOR dodgerblue] Descarga desde el Foro [COLOR limegreen][I] Revision 15/12/2024 [/I][/B][/COLOR]
+   [B][COLOR moccasin] Lista-proxies.zip [COLOR dodgerblue] Descarga desde el Foro [COLOR limegreen][I] Revision 23/3/25 [/I][/B][/COLOR]
    [B][COLOR springgreen] Solo estos Canales Necesitan Proxies con Nuestras Operadoras
      y Usando esta Lista Personalizada consiguen Saltarse la Restriccion:[/B][/COLOR]
-   [B][COLOR red]   AnimeOnline,  FlixCorn,  PapayaSeries,  PelisXd,[/B][/COLOR]
-   [B][COLOR red]   PPeliculas,  ZonaLeros[/B][/COLOR]
+   [B][COLOR red]  AnimeOnline,  FlixCorn,  PapayaSeries,  PelisXd,  PPeliculas,  ZonaLeros[/B][/COLOR]
 
  [COLOR sienna][B]SITUACION SERVIDORES:[/B][/COLOR] [B][COLOR darkorange] Sin Novedades[/B][/COLOR]
 
- [COLOR yellowgreen][B]SITUACION CANALES:[/B][/COLOR]
-   [B][COLOR moccasin] AmateurTv [COLOR lime] es.amateur.tv [I][COLOR olivedrab] Kodi Play Pixelation [/I][/B][/COLOR]
+ [COLOR yellowgreen][B]SITUACION CANALES:[/B][/COLOR] [B][COLOR darkorange] Sin Novedades[/B][/COLOR]
 
- [COLOR darkcyan][B]CANALES TEMPORALMENTE DES-ACTIVADOS:[/B][/COLOR] [COLOR powderblue][B][I] Pdtes. Re-Activar o Anular [/I][/B][/COLOR]
-   [B][COLOR moccasin] DocumaniaTv [COLOR lime] www.documaniatv.com [I][COLOR salmon] Kodi Not Play [/I][/B][/COLOR]
-   [B][COLOR moccasin] NextDede [COLOR lime] nextdede.us [I][COLOR greenyellow] Not Login [/I][/B][/COLOR]
+ [COLOR darkcyan][B]CANALES TEMPORALMENTE DES-ACTIVADOS:[/B][/COLOR]
+   [B][COLOR moccasin] AnimeId [COLOR lime] animeid.live [I][COLOR red] Domain Copyrights [/I][/B][/COLOR]
+   [B][COLOR moccasin] AsianLoad [COLOR lime] embasic.pro [I][COLOR red] Host Error [/I][/B][/COLOR]
+   [B][COLOR moccasin] CliverSite [COLOR lime] www2.cliver.me [I][COLOR red] Host Error [/I][/B][/COLOR]
+   [B][COLOR moccasin] Cuevana3Video [COLOR lime] cuevana3.ch [I][COLOR red] Host Error [/I][/B][/COLOR]
+   [B][COLOR moccasin] ILoveNovelas [COLOR lime] tusnovelas.biz [I][COLOR red] Host Error [/I][/B][/COLOR]
+   [B][COLOR moccasin] NovelasPlus [COLOR lime] ennovelas.com.se [I][COLOR red] Host Error [/I][/B][/COLOR]
+   [B][COLOR moccasin] PelisPlus [COLOR lime] pelisplusgo.vip [I][COLOR red] Host Error [/I][/B][/COLOR]
+   [B][COLOR moccasin] TeleNovela [COLOR lime] ennovelas.at [I][COLOR red] Host Error [/I][/B][/COLOR]
 
  [COLOR slateblue][B]CANALES PROBABLEMENTE NO ACCESIBLES:[/B][/COLOR]
-   [B][COLOR moccasin] Area51 [COLOR lime] area51.porn [I][COLOR red] Host Not Found [/I][/B][/COLOR]
-   [B][COLOR moccasin] PeliPlayHd [COLOR lime] peliplayhd.com [I][COLOR red] CloudFlare ReCaptCha [/I][/B][/COLOR]
-   [B][COLOR moccasin] RePelisRe [COLOR lime] wow.repelis.re [I][COLOR red] CloudFlare High Level [/I][/B][/COLOR]
-   [B][COLOR moccasin] UpHd [COLOR lime] ultrapelishd.net [I][COLOR red] Hide CloudFlare ReCaptCha [/I][/B][/COLOR]
+   [B][COLOR moccasin] CinePlay [COLOR lime] peliplay.xyz [I][COLOR red] Certificate Error [/I][/B][/COLOR]
+   [B][COLOR moccasin] PGratisHd [COLOR lime] app.pelisgratishd.life [I][COLOR red] CloudFlare Level 2 [/I][/B][/COLOR]
+   [B][COLOR moccasin] TGx [COLOR lime] tgx.rs [I][COLOR red] Certificate Error [/I][/B][/COLOR]
+   [B][COLOR moccasin] TodoPeliculas [COLOR lime] detodopeliculas.nu [I][COLOR red] CloudFlare Level 2 [/I][/B][/COLOR]
 
  [COLOR cyan][B]ULTIMOS CAMBIOS DE DOMINIOS:[/B][/COLOR] [B][COLOR darkorange] Sin Novedades[/B][/COLOR]
+
+ [COLOR tomato][B]CANALES CON PROBLEMAS:[/B][/COLOR]
+   [B][COLOR moccasin] HdFullSe [COLOR lime] www.hdfull.it [I][COLOR red] Host Error [/I][/B][/COLOR]

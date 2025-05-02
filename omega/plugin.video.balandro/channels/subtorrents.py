@@ -196,7 +196,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = ' - [COLOR cyan]Estrenos[/COLOR]', action = 'list_all', url = host + 'peliculas-subtituladas/?filtro=estrenos', search_type = 'movie' ))
 
-    itemlist.append(item.clone( title = '[B]Otros idiomas:[/B]', folder=False, text_color='moccasin' ))
+    itemlist.append(item.clone( title = '[B]Idiomas:[/B]', folder=False, text_color='moccasin' ))
 
     itemlist.append(item.clone( title = ' - Catálogo', action = 'list_all', url = host + 'peliculas-subtituladas/?filtro=audio-latino', search_type = 'movie' ))
 
@@ -414,6 +414,12 @@ def episodios(item):
         if item.contentSeason:
             if not str(item.contentSeason) == str(season): continue
 
+        c_epis = ''
+        if sum_parts >= 10:
+            c_epis = str(epis)
+            if len(c_epis) == 1:
+                c_epis = '0' + c_epis
+
         if not item.contentSerieName in title: title = title + ' ' + item.contentSerieName
 
         if lang.endswith("1.png"): lang = "Esp"
@@ -427,13 +433,13 @@ def episodios(item):
 
         titulo = str(season) + 'x' + str(epis) + ' ' + title.replace(str(season) + 'x' + str(epis), '').replace(str(season) + 'x0' + str(epis), '')
 
-        itemlist.append(item.clone( action='findvideos', url=url, title=titulo, language = lang,
+        itemlist.append(item.clone( action='findvideos', url=url, title=titulo, language = lang, c_epis = c_epis,
                                     contentSerieName = item.contentSerieName, contentType = 'episode',
                                     contentSeason = season, contentEpisodeNumber = epis, infoLabels={'year': year} ))
 
     tmdb.set_infoLabels(itemlist)
 
-    return sorted(itemlist, key=lambda x: x.contentEpisodeNumber)
+    return sorted(itemlist, key=lambda x: x.c_epis)
 
 
 def findvideos(item):

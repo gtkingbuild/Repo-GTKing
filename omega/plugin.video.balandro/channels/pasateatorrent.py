@@ -291,7 +291,7 @@ def findvideos(item):
 
         other = peso.replace('&#8230;', '').strip()
 
-        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = 'torrent', language = lang, quality = qlty, other = other ))
+        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = 'torrent', language=lang, quality=qlty, other=other ))
 
     return itemlist
 

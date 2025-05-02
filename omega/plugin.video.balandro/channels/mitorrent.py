@@ -434,10 +434,34 @@ def findvideos(item):
 
     data = do_downloadpage(item.url)
 
-    links = scrapertools.find_multiple_matches(data, 'target="_blank".*?href="(.*?)"')
+    links = scrapertools.find_multiple_matches(data, 'target="_blank".*?href="(.*?)".*?class="quality-download">(.*?)</a>')
 
-    for link in links:
-        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = link, server = 'torrent', language = item.languages, quality = item.qualities))
+    qltys = item.qualities
+
+    for link, qlty in links:
+        if not qlty: qlty = qltys
+
+        if 'espanol' in qlty or 'castellano' in qlty: qlty = qlty.replace('espanol', '').replace('castellano', '')
+        if 'latino' in qlty: qlty = qlty.replace('latino', '')
+
+        qlty = qlty.strip()
+
+        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = link, server = 'torrent', language=item.languages, quality=qlty))
+
+    if '>Disponible en:' in data:
+        bloque = scrapertools.find_single_match(data, '>Disponible en:(.*?)</div></div><div></div>')
+
+        matches = scrapertools.find_multiple_matches(bloque, 'target="_blank".*?href="(.*?)".*?class="quality-download">(.*?)</a>')
+
+        for link, qlty in matches:
+            if not qlty: qlty = qltys
+
+            if 'espanol' in qlty or 'castellano' in qlty: qlty = qlty.replace('espanol', '').replace('castellano', '')
+            if 'latino' in qlty: qlty = qlty.replace('latino', '')
+
+            qlty = qlty.strip()
+
+            itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = link, server = 'torrent', language=item.languages, quality=qlty))
 
     return itemlist
 

@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import re
+import ast, re
 
 from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
-try:
-    from Cryptodome.Cipher import AES
-    from lib import jscrypto
-except:
-    pass
+
+from lib.pyberishaes import GibberishAES
 
 
 host = 'https://pelisgratishd.in/'
@@ -115,8 +112,9 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'movies/', search_type = 'movie' ))
 
+    itemlist.append(item.clone( title = 'Más populares', action = 'list_all', url = host + 'peliculas-populares/', search_type = 'movie' ))
+
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'movie' ))
 
     return itemlist
 
@@ -132,7 +130,6 @@ def mainlist_series(item):
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'series/', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
-    itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'tvshow' ))
 
     return itemlist
 
@@ -160,28 +157,6 @@ def generos(item):
         title = title.replace('&amp;', '&')
 
         itemlist.append(item.clone( action = 'list_all', title = title, url = url, text_color = text_color ))
-
-    return itemlist
-
-
-def anios(item):
-    logger.info()
-    itemlist = []
-
-    if item.search_type == 'movie':
-        text_color = 'deepskyblue'
-        top_year = 1929
-    else:
-        text_color = 'hotpink'
-        top_year = 1969
-
-    from datetime import datetime
-    current_year = int(datetime.today().year)
-
-    for x in range(current_year, top_year, -1):
-        url = host + 'estreno/' + str(x) + '/'
-
-        itemlist.append(item.clone( title = str(x), url = url, action = 'list_all', text_color = text_color ))
 
     return itemlist
 
@@ -405,10 +380,13 @@ def findvideos(item):
 
         datae = data
 
-        e_links = scrapertools.find_single_match(datae, 'const dataLink =(.*?);')
-        e_bytes = scrapertools.find_single_match(datae, "const bytes =.*?'(.*?)'")
+        dataLink = scrapertools.find_single_match(datae, 'const dataLink =(.*?);')
+        if not dataLink: dataLink = scrapertools.find_single_match(datae, 'dataLink(.*?);')
 
-        e_links = e_links.replace(']},', '"type":"file"').replace(']}]', '"type":"file"')
+        e_bytes = scrapertools.find_single_match(datae, "const bytes =.*?'(.*?)'")
+        if not e_bytes: e_bytes = scrapertools.find_single_match(datae, "encrypted.*?'(.*?)'")
+
+        e_links = dataLink.replace(']},', '"type":"file"').replace(']}]', '"type":"file"')
 
         langs = scrapertools.find_multiple_matches(str(e_links), '"video_language":(.*?)"type":"file"')
 
@@ -440,6 +418,8 @@ def findvideos(item):
                 elif 'xupalace' in srv: continue
                 elif 'uploadfox' in srv: continue
                 elif 'streamsito' in srv: continue
+
+                elif srv == 'download': continue
 
                 servidor = servertools.corregir_servidor(srv)
 
@@ -565,16 +545,20 @@ def play(item):
     url = item.url
 
     if item.crypto:
-        logger.info("check-1-crypto: %s" % item.crypto)
-        logger.info("check-2-crypto: %s" % item.bytes)
-        try:
-            ###############url =  AES.decrypt(item.crypto, item.bytes)
-            url = AES.new(item.crypto, AES.MODE_SIV==10)
-            logger.info("check-3-crypto: %s" % url)
+        crypto = str(item.crypto)
+        bytes = str(item.bytes)
 
-            url = jscrypto.new(item.crypto, 2, IV=item.bytes)
-            logger.info("check-4-crypto: %s" % url)
+        try:
+            cripto = ast.literal_eval(cripto)
         except:
+            crypto = str(item.crypto)
+
+        try:
+            url = GibberishAES.dec(GibberishAES(), string = crypto, pass_ = bytes)
+        except:
+            url = ''
+
+        if not url:
             return '[COLOR cyan]No se pudo [COLOR red]Desencriptar[/COLOR]'
 
     if url:

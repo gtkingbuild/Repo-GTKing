@@ -32,7 +32,7 @@ def mainlist_pelis(item):
         from modules import actions
         if actions.adults_password(item) == False: return
 
-    itemlist.append(item.clone( title = 'Buscar vídeo ...', action = 'search', search_type = 'movie', text_color = 'orange' ))
+    itemlist.append(item.clone( title = 'Buscar vídeo ...', action = 'search', search_type = 'movie', search_video = 'adult', text_color = 'orange' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host  + 'movies' ))
 
@@ -155,13 +155,10 @@ def list_all(item):
         time = time.replace('hrs.', 'h').strip()
         time = time.replace('mins.', 'm').strip()
 
-        year = scrapertools.find_single_match(match, 'rel="tag">(.*?)</a>')
-        if not year: year = '-'
-
         titulo = "[COLOR tan]%s[/COLOR] %s" % (time, title)
 
         itemlist.append(item.clone (action='findvideos', title=titulo, url=url, thumbnail=thumb,
-                                    contentType = 'movie', contentTitle = title, contentExtra='adults', infoLabels={'year': year}) )
+                                    contentType = 'movie', contentTitle = title, contentExtra='adults' ))
 
     if itemlist:
         next_page = scrapertools.find_single_match(data, "<div id='pagination'.*?<li class='active'>.*?href='(.*?)'")
@@ -203,6 +200,8 @@ def findvideos(item):
         if '/frdl.' in url: continue
         elif '/snowdayonline.' in url: continue
         elif '/freepopnews.' in url: continue
+        elif '/filepv.' in url: continue
+        elif '/vinovo.' in url: continue
 
         elif '/nitroflare.' in url: continue
         elif 'rapidgator.' in url: continue
@@ -229,6 +228,8 @@ def findvideos(item):
 def search(item, texto):
     logger.info()
     try:
+        config.set_setting('search_last_video', texto)
+
         item.url =  host + '?s=' + texto.replace(" ", "+")
         return list_all(item)
     except:

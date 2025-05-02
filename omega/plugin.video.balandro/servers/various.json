@@ -49,6 +49,10 @@
         "url": "https://filemoon.sx/e/\\1"
       },
       {
+        "pattern": "https://l1afav.net/(?:e/|d/|download/)([0-9a-zA-Z]+)",
+        "url": "https://filemoon.sx/e/\\1"
+      },
+      {
         "pattern": "(https://disk.yandex.(?:ru|com)/(?:d/|i/)[A-z0-9]+)",
         "url": "\\1"
       },
@@ -205,6 +209,18 @@
         "url": "https://streamwish.to/\\1"
       },
       {
+        "pattern": "https://ghbrisk.com/(?:e/|f/|d/)([0-9a-zA-Z]+)",
+        "url": "https://streamwish.to/\\1"
+      },
+      {
+        "pattern": "https://cybervynx.com/(?:e/|f/|d/)([0-9a-zA-Z]+)",
+        "url": "https://streamwish.to/\\1"
+      },
+      {
+        "pattern": "https://streamhg.com/(?:e/|f/|d/)([0-9a-zA-Z]+)",
+        "url": "https://streamwish.to/\\1"
+      },
+      {
         "pattern": "https://(?:wish.(.*))/(?:e/|f/|d/)([0-9a-zA-Z]+)",
         "url": "https://streamwish.to/\\1"
       },
@@ -258,6 +274,18 @@
       },
       {
         "pattern": "https://fdewsdc.sbs/(?:s/|v/|f/|d/|embed/|file/|download/)([0-9a-zA-Z]+)",
+        "url": "https://filelions.to/f/\\1"
+      },
+      {
+        "pattern": "https://peytonepre.com/(?:s/|v/|f/|d/|embed/|file/|download/)([0-9a-zA-Z]+)",
+        "url": "https://filelions.to/f/\\1"
+      },
+      {
+        "pattern": "https://ryderjet.com/(?:s/|v/|f/|d/|embed/|file/|download/)([0-9a-zA-Z]+)",
+        "url": "https://filelions.to/f/\\1"
+      },
+      {
+        "pattern": "https://smoothpre.com/(?:s/|v/|f/|d/|embed/|file/|download/)([0-9a-zA-Z]+)",
         "url": "https://filelions.to/f/\\1"
       },
       {
@@ -353,7 +381,7 @@
         "url": "https://emturbovid.com/t/\\1"
       },
       {
-        "pattern": "https://streamsilk.com/(?:d/|p/)([0-9a-zA-Z]+)",
+        "pattern": "https://streamsilk.com/(?:d/|p/|v/)([0-9a-zA-Z]+)",
         "url": "https://streamsilk.com/\\1"
       },
       {
@@ -469,6 +497,10 @@
         "url": "https://goodstream.uno/\\2"
       },
       {
+        "pattern": "(https://goodstream.)(?:uno|one)/([0-9a-zA-Z]+)",
+        "url": "https://goodstream.uno/\\2"
+      },
+      {
         "pattern": "https://rumble.com/(?:embed/)([0-9a-zA-Z]+)",
         "url": "https://rumble.com/\\1"
       },
@@ -494,6 +526,10 @@
       },
       {
         "pattern": "https://rubystm.com/(?:embed-|e/|d/)([0-9a-zA-Z]+)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "https://rubyvid.com/(?:embed-|e/|d/)([0-9a-zA-Z]+)",
         "url": "\\1"
       },
       {

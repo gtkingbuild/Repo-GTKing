@@ -181,6 +181,10 @@
         "url": "https://voe.sx/e/\\1"
       },
       {
+        "pattern": "https://robertordercharacter.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
         "pattern": "https://donaldlineelse.com/(?:e/|)([A-z0-9]+)",
         "url": "https://voe.sx/e/\\1"
       },
@@ -198,6 +202,14 @@
       },
       {
         "pattern": "https://sandratableother.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://maxfinishseveral.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://chuckle-tube.com/(?:e/|)([A-z0-9]+)",
         "url": "https://voe.sx/e/\\1"
       }
     ]

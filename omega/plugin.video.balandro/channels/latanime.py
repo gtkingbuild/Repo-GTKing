@@ -294,7 +294,7 @@ def list_all(item):
             if item.search_type != 'all':
                 if item.search_type == 'tvshow': continue
 
-            itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb, fmt_sufijo=sufijo,
+            itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, fmt_sufijo=sufijo,
                                         contentType = 'movie', contentTitle = SerieName, infoLabels={'year': year} ))
 
         if tipo == 'tvshow':
@@ -302,7 +302,9 @@ def list_all(item):
                 if item.search_type == 'movie': continue
 
             title = title.replace(' S1 ', '[COLOR tan] S1 [/COLOR]').replace(' S2 ', '[COLOR tan] S2 [/COLOR]').replace(' S3 ', '[COLOR tan] S3 [/COLOR]').replace(' S4 ', '[COLOR tan] S4 [/COLOR]')
+
             title = title.replace(' S5 ', '[COLOR tan] S5 [/COLOR]').replace(' S6 ', '[COLOR tan] S6 [/COLOR]').replace(' S7 ', '[COLOR tan] S7 [/COLOR]').replace(' S8 ', '[COLOR tan] S8 [/COLOR]')
+
             title = title.replace(' S9 ', '[COLOR tan] S9 [/COLOR]')
 
             itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb, fmt_sufijo=sufijo,
@@ -330,7 +332,7 @@ def last_epis(item):
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
-    bloque = scrapertools.find_single_match(data, 'Añadidos recientemente<(.*?)>Series Recientes<')
+    bloque = scrapertools.find_single_match(data, 'Añadidos recientemente<(.*?)>Series recientes<')
 
     matches = scrapertools.find_multiple_matches(bloque, '<div class="col-6 col-md-6 col-lg-3 mb-3">.*?<a href="(.*?)".*?data-src="(.*?)".*?alt="(.*?)"')
 
@@ -345,9 +347,11 @@ def last_epis(item):
 
         titulo = '[COLOR goldenrod]Epis. [/COLOR]' + str(epis) + ' ' + title.replace('capitulo '+ str(epis), '').strip()
 
-        titlulo = titulo.replace(' S1 ', '[COLOR tan] S1 [/COLOR]').replace(' S2 ', '[COLOR tan] S2 [/COLOR]').replace(' S3 ', '[COLOR tan] S3 [/COLOR]').replace(' S4 ', '[COLOR tan] S4 [/COLOR]')
-        titlulo = titulo.replace(' S5 ', '[COLOR tan] S5 [/COLOR]').replace(' S6 ', '[COLOR tan] S6 [/COLOR]').replace(' S7 ', '[COLOR tan] S7 [/COLOR]').replace(' S8 ', '[COLOR tan] S8 [/COLOR]')
-        titlulo = titulo.replace(' S9 ', '[COLOR tan] S9 [/COLOR]')
+        titulo = titulo.replace(' S1 ', '[COLOR tan] S1 [/COLOR]').replace(' S2 ', '[COLOR tan] S2 [/COLOR]').replace(' S3 ', '[COLOR tan] S3 [/COLOR]').replace(' S4 ', '[COLOR tan] S4 [/COLOR]')
+
+        titulo = titulo.replace(' S5 ', '[COLOR tan] S5 [/COLOR]').replace(' S6 ', '[COLOR tan] S6 [/COLOR]').replace(' S7 ', '[COLOR tan] S7 [/COLOR]').replace(' S8 ', '[COLOR tan] S8 [/COLOR]')
+
+        titulo = titulo.replace(' S9 ', '[COLOR tan] S9 [/COLOR]')
 
         itemlist.append(item.clone( action='findvideos', url=url, title=titulo, thumbnail=thumb,
                                     contentSerieName=SerieName, contentType='episode',
@@ -447,6 +451,9 @@ def episodios(item):
 def findvideos(item):
     logger.info()
     itemlist = []
+
+    if not item.search_type == 'tvshow':
+        if not '-episodio-' in item.url: item.url = item.url.replace('/anime/', '/ver/') + '-episodio-1'
 
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)

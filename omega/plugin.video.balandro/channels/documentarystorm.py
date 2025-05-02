@@ -82,7 +82,7 @@ def findvideos(item):
 
     data = httptools.downloadpage(item.url).data
 
-    url = scrapertools.find_single_match(data, 'data-lazy-type="iframe".*?<iframe.*?src="(.*?)"')
+    url = scrapertools.find_single_match(data, '<iframe.*?src="(.*?)"')
 
     if url:
         servidor = servertools.get_server_from_url(url)

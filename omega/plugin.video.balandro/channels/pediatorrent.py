@@ -279,7 +279,7 @@ def findvideos(item):
     lang = 'Esp'
 
     if '/torrents/'in item.url:
-        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = item.url, server = 'torrent', language = lang ))
+        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = item.url, server = 'torrent', language=lang, quality=item.qualities ))
         return itemlist
 
     data = do_downloadpage(item.url)
@@ -290,7 +290,7 @@ def findvideos(item):
     for url in matches:
         url = host[:-1] + url
 
-        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = 'torrent', language = lang ))
+        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = 'torrent', language=lang, quality=item.qualities ))
 
     return itemlist
 

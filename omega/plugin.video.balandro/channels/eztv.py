@@ -279,7 +279,17 @@ def findvideos(item):
         elif 'magnet' in url: pass
         else: continue
 
-        itemlist.append(Item( channel = item.channel, action='play', title='', url=url, server='torrent', language='Vo'))
+        qlty = ''
+        if url.endswith('.torrent'):
+            if '1080p' in url: qlty = '1080'
+            elif '720p' in url: qlty = '720'
+            elif '480p' in url: qlty = '480'
+            else: qlty = '?'
+
+        age = ''
+        if 'magnet' in url: age = 'magnet'
+
+        itemlist.append(Item( channel = item.channel, action='play', title='', url=url, server='torrent', language='Vo', quality=qlty, age=age))
 
     return itemlist
 

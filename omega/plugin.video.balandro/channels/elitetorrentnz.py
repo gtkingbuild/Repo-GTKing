@@ -322,6 +322,8 @@ def findvideos(item):
     for link in links:
         if '/tienda/' in link: continue
 
+        if link == '#': continue
+
         other = ''
         if 'magnet' in link: other = 'Magnet'
 

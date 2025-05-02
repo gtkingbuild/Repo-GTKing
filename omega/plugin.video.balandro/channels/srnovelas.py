@@ -206,12 +206,12 @@ def paises(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title = 'América', action = 'list_all', url = host + 'novelas-americanas/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Brasil', action = 'list_all', url = host + 'novelas-brasilenas/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Chile', action = 'list_all', url = host + 'novelas-chilenas/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Colombia', action = 'list_all', url = host + 'novelas-colombianas/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'México', action = 'list_all', url = host + 'novelas-mexicanas/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Turquía', action = 'list_all', url = host + 'novelas-turcas/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'América', action = 'list_all', url = host + 'novelas-americanas/', text_color='hotpink' ))
+    itemlist.append(item.clone( title = 'Brasil', action = 'list_all', url = host + 'novelas-brasilenas/', text_color='hotpink' ))
+    itemlist.append(item.clone( title = 'Chile', action = 'list_all', url = host + 'novelas-chilenas/', text_color='hotpink' ))
+    itemlist.append(item.clone( title = 'Colombia', action = 'list_all', url = host + 'novelas-colombianas/', text_color='hotpink' ))
+    itemlist.append(item.clone( title = 'México', action = 'list_all', url = host + 'novelas-mexicanas/', text_color='hotpink' ))
+    itemlist.append(item.clone( title = 'Turquía', action = 'list_all', url = host + 'novelas-turcas/', text_color='hotpink' ))
 
     return itemlist
 
@@ -547,7 +547,7 @@ def findvideos(item):
 
             if url.startswith('//'): url = 'https:' + url
 
-            elif 'api.mycdn.moe/uqlink.php?id=' in url: url = url.replace('api.mycdn.moe/uqlink.php?id=', 'uqload.com/embed-')
+            if 'api.mycdn.moe/uqlink.php?id=' in url: url = url.replace('api.mycdn.moe/uqlink.php?id=', 'uqload.com/embed-')
 
             elif 'api.mycdn.moe/dourl.php?id=' in url: url = url.replace('api.mycdn.moe/dourl.php?id=', 'dood.to/e/')
 
@@ -671,6 +671,8 @@ def play(item):
     url = item.url
 
     if url:
+        url = url.replace('/Smoothpre.', '/smoothpre.')
+
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 
@@ -679,6 +681,12 @@ def play(item):
             if new_server.startswith("http"): servidor = new_server
 
         url = servertools.normalize_url(servidor, url)
+
+        if 'filelions' in url or 'azipcdn' in url or 'alions' in url or 'dlions' in url or 'mlions' in url or 'fviplions' in url or 'javlion' in url or 'fdewsdc' in url or 'peytonepre' in url or 'ryderjet' in url:
+            url += "|Referer=" + host
+
+        elif 'vidhide' in url or 'stblion' in url or 'dhtpre' in url or 'dramacool' in url:
+            url += "|Referer=" + host
 
         itemlist.append(item.clone( url=url, server=servidor ))
 
@@ -697,6 +705,7 @@ def list_search(item):
         url = scrapertools.find_single_match(article, ' href="(.*?)"')
 
         title = scrapertools.find_single_match(article, ' title="(.*?)"')
+        if not title: title = scrapertools.find_single_match(article, '<p class="entry-title">(.*?)</p>')
 
         if not url or not title: continue
 
@@ -719,6 +728,9 @@ def list_search(item):
             epis = epis.replace('/', '')
 
             if not epis: epis = 1
+
+            title = title.replace('Capitulo', '[COLOR goldenrod]Epis.[/COLOR]').replace('capitulo', '[COLOR goldenrod]Epis.[/COLOR]')
+            title = title.replace('Episodio', '[COLOR goldenrod]Epis.[/COLOR]').replace('episodio', '[COLOR goldenrod]Epis.[/COLOR]')
 
             itemlist.append(item.clone( action = 'findvideos', url = url, title = title, thumbnail = thumb, infoLabels={'year': '-'},
                                         contentSerieName = SerieName, contentType = 'episode', contentSeason = 1, contentEpisodeNumber = epis ))

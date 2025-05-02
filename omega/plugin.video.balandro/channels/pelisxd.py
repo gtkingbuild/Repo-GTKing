@@ -246,9 +246,13 @@ def findvideos(item):
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
+    ses = 0
+
     matches = re.compile('href="#options-(.*?)">.*?<span class="server">(.*?)</span>', re.DOTALL).findall(data)
 
     for option, srv in matches:
+        ses += 1
+
         srv = srv.lower()
 
         if '-' in srv:
@@ -287,6 +291,11 @@ def findvideos(item):
 
             itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = IDIOMAS.get(lang, lang), other = other.capitalize() ))
 
+    if not itemlist:
+        if not ses == 0:
+            platformtools.dialog_notification(config.__addon_name, '[COLOR tan][B]Sin enlaces Soportados[/B][/COLOR]')
+            return
+
     return itemlist
 
 
@@ -316,6 +325,8 @@ def play(item):
             url = item.url
 
     if url:
+        url = url.replace('/Smoothpre.', '/smoothpre.')
+
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 

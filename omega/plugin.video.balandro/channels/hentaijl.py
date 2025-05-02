@@ -24,7 +24,7 @@ def mainlist_pelis(item):
         from modules import actions
         if actions.adults_password(item) == False: return
 
-    itemlist.append(item.clone( title = 'Buscar vídeo ...', action = 'search', search_type = 'movie', text_color='orange' ))
+    itemlist.append(item.clone( title = 'Buscar vídeo ...', action = 'search', search_type = 'movie', search_video = 'adult', text_color='orange' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'directorio-hentai' ))
 
@@ -169,6 +169,8 @@ def findvideos(item):
     for url in matches:
         ses += 1
 
+        url = url.replace('/Smoothpre.', '/smoothpre.')
+
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 
@@ -193,6 +195,8 @@ def findvideos(item):
 def search(item, texto):
     logger.info()
     try:
+        config.set_setting('search_last_video', texto)
+
         item.url =  host + 'directorio-hentai?q=' + texto.replace(" ", "+")
         return list_all(item)
     except:

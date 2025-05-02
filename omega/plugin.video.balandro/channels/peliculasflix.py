@@ -17,7 +17,6 @@ host = 'https://peliculasflix.co/'
 
 api = 'https://fluxcedene.net/api/gql'
 
-
 access_platform = 'lDakkGUZx7_nX25Nv1CJVbz_ZAjMKMTcwNTQyMzU4Nw=='
 
 
@@ -138,7 +137,7 @@ def categorias(item):
 
            elif title == 'aventura': title = 'Aventura'
 
-           itemlist.append(item.clone( title = title, label_id = label['_id'], url = host, action = 'list_all', text_color = 'deepskyblue' ))
+           itemlist.append(item.clone( title = title, label_id = label['_id'], url = host, action = 'list_all', text_color = 'moccasin' ))
     except:
        return itemlist
 
@@ -180,7 +179,7 @@ def productoras(item):
 
            if title == 'tvN': title = 'Tvn'
 
-           itemlist.append(item.clone( title = title, net_slug = network['slug'], url = host, action = 'list_all', text_color = 'deepskyblue' ))
+           itemlist.append(item.clone( title = title, net_slug = network['slug'], url = host, action = 'list_all', text_color = 'tan' ))
     except:
        return itemlist
 

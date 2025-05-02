@@ -57,6 +57,8 @@ def acciones(item):
 
     itemlist.append(item.clone( channel='domains', action='manto_domain_elitetorrent', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
 
+    itemlist.append(Item( channel='helper', action='show_help_prales', title='[B]Cuales son sus Clones[/B]', thumbnail=config.get_thumb('elitetorrent'), text_color='turquoise' ))
+
     itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'elitetorrent', thumbnail=config.get_thumb('elitetorrent') ))
 
     platformtools.itemlist_refresh()
@@ -316,6 +318,8 @@ def findvideos(item):
 
     for link in links:
         if '/tienda/' in link: continue
+
+        if link == '#': continue
 
         other = ''
         if 'magnet' in link: other = 'Magnet'

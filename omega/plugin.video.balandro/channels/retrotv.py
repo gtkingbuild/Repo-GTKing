@@ -7,7 +7,19 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-host = 'https://retrotv.org/'
+host = 'https://retrotve.com/'
+
+
+def do_downloadpage(url, post=None, headers=None):
+    # ~ por si viene de enlaces guardados
+    ant_hosts = ['https://retrotv.org/']
+
+    for ant in ant_hosts:
+        url = url.replace(ant, host)
+
+    data = httptools.downloadpage(url, post=post, headers=headers).data
+
+    return data
 
 
 def mainlist(item):
@@ -41,9 +53,9 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
-    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'lista-series/', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'lista-de-series/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimos episodios', action = 'list_epis', url = host + 'lista-series/episodios-agregados-actualizados/', search_type = 'tvshow', text_color = 'cyan' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'list_epis', url = host + 'lista-de-series/episodios-agregados-actualizados/', search_type = 'tvshow', text_color = 'cyan' ))
 
     itemlist.append(item.clone( title = 'Animación', action ='list_all', url = host + 'category/animacion/', search_type = 'tvshow', text_color='greenyellow' ))
 
@@ -64,7 +76,7 @@ def generos(item):
     if item.search_type == 'movie': text_color = 'deepskyblue'
     else: text_color = 'hotpink'
 
-    data = httptools.downloadpage(host).data
+    data = do_downloadpage(host)
 
     patron = 'class="menu-item menu-item-type-taxonomy menu-item-object-category.*?<a href="(.*?)">(.*?)</a>'
 
@@ -111,7 +123,7 @@ def list_all(item):
     logger.info()
     itemlist = []
 
-    data = httptools.downloadpage(item.url).data
+    data = do_downloadpage(item.url)
 
     matches = re.compile('<article(.*?)</article>', re.DOTALL).findall(data)
 
@@ -166,7 +178,7 @@ def list_alfa(item):
     logger.info()
     itemlist = []
 
-    data = httptools.downloadpage(item.url).data
+    data = do_downloadpage(item.url)
 
     matches = scrapertools.find_multiple_matches(data, '<td><span class="Num">(.*?)</tr>')
 
@@ -193,7 +205,7 @@ def list_epis(item):
     logger.info()
     itemlist = []
 
-    data = httptools.downloadpage(item.url).data
+    data = do_downloadpage(item.url)
 
     matches = re.compile('<article(.*?)</article>', re.DOTALL).findall(data)
 
@@ -238,7 +250,7 @@ def temporadas(item):
     logger.info()
     itemlist = []
 
-    data = httptools.downloadpage(item.url).data
+    data = do_downloadpage(item.url)
 
     matches = re.compile(' data-tab="(.*?)">Temporada', re.DOTALL).findall(data)
 
@@ -269,7 +281,7 @@ def episodios(item):
     if not item.page: item.page = 0
     if not item.perpage: item.perpage = 50
 
-    data = httptools.downloadpage(item.url).data
+    data = do_downloadpage(item.url)
 
     season = str(item.contentSeason)
 
@@ -356,43 +368,61 @@ def findvideos(item):
     logger.info()
     itemlist = []
 
-    data = httptools.downloadpage(item.url).data
+    data = do_downloadpage(item.url)
+    data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
-    matches = scrapertools.find_multiple_matches(data, 'data-tplayernv="Opt(.*?)"><span>(.*?)</span>.*?<span>(.*?)</span>')
+    matches = scrapertools.find_multiple_matches(data, 'data-tplayernv="Opt(.*?)">.*?<span>(.*?)</span>.*?<span>(.*?)</span>')
 
     ses = 0
 
     for opt, srv, lang_qlty in matches:
         ses += 1
 
-        srv = srv.replace('<strong>', '').replace('</strong>', '')
+        if not srv: continue
+
+        link_other = ''
+
+        srv = srv.replace('<strong>', '').replace('</strong>', '').strip()
+
+        _srv = srv
         srv = servertools.corregir_servidor(srv)
+
+        if srv == 'various':
+           link_other = servertools.corregir_other(_srv)
 
         url = scrapertools.find_single_match(data, ' id="Opt' + str(opt) + '".*?src="(.*?)"')
 
+        if url.endswith('.png'): url = ''
+
         if not url or url == 'https://':
-            url = scrapertools.find_single_match(str(data).replace('src=&quot;', 'src="').replace('&quot;', '"'), ' id="Opt' + str(opt) + '".*?src="(.*?)"')
+            datar = data.replace('src=&quot;', 'src="').replace('&quot;', '"')
 
-        if url.startswith('//') == True: 
-            url = scrapertools.find_single_match(str(data).replace('src=&quot;', 'src="').replace('&quot;', '"'), ' id="Opt' + str(opt) + '"".*?src="(.*?)"')
+            url = scrapertools.find_single_match(datar, ' id="Opt' + str(opt) + '".*?src="(.*?)"')
 
-        if not srv or not url: continue
+        if url.startswith('//') == True:
+            datar = (str(data).replace('src=&quot;', 'src="').replace('&quot;', '"'))
+
+            url = scrapertools.find_single_match(str(datar), ' id="Opt' + str(opt) + '".*?src="(.*?)"')
+
+        if not url: continue
 
         servidor = srv
 
         if 'opción' in srv or 'servidor' in srv:
             link_other = srv
             servidor = 'directo'
+
         elif srv == 'anavids':
             link_other = srv
             servidor = 'directo'
+
         elif srv == 'blenditall':
             link_other = srv
             servidor = 'directo'
 
-        else: link_other = ''
+        lang = lang_qlty
 
-        lang = scrapertools.find_single_match(lang_qlty, '(.*?)-').strip()
+        if '-' in lang_qlty: lang = scrapertools.find_single_match(lang_qlty, '(.*?)-').strip()
 
         if 'Latino' in lang: lang = 'Lat'
         elif 'Castellano' in lang or 'Español' in lang: lang = 'Esp'
@@ -401,7 +431,8 @@ def findvideos(item):
 
         qlty = scrapertools.find_single_match(lang_qlty, '-(.*?)$').strip()
 
-        itemlist.append(Item( channel = item.channel, action = 'play', url = url, server = servidor, title = '', language = lang, quality = qlty, other = link_other ))
+        itemlist.append(Item( channel = item.channel, action = 'play', url = url, server = servidor, title = '',
+                              language = lang, quality = qlty, other = link_other ))
 
     # ~ Descargas
     matches = scrapertools.find_multiple_matches(data, '<span class="Num">(.*?)</tr>')
@@ -476,10 +507,14 @@ def play(item):
                             itemlist.append(item.clone(server = 'blenditall', url=url))
                             return itemlist
 
-    if '/app.retrotvshows.com/' in url: url = ''
+    if '/app.retrotvshows.' in url: url = ''
     elif 'blenditall' in url:  url = ''
+    elif '/seriesretro.' in url:  url = ''
 
     if url:
+        if '/ouo.' in url:
+            return 'CloudFlare [COLOR red]ReCaptcha[/COLOR]'
+
         if url.startswith('//') == True: url = 'https:' + url
 
         servidor = servertools.get_server_from_url(url)

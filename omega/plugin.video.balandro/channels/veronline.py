@@ -7,11 +7,12 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-host = 'https://www.veronline.mov/'
+host = 'https://www.veronline.cfd/'
 
 
 # ~ por si viene de enlaces guardados
-ant_hosts = ['https://www.veronline.sh/', 'https://www.veronline.cc/', 'https://www.veronline.in/']
+ant_hosts = ['https://www.veronline.sh/', 'https://www.veronline.cc/', 'https://www.veronline.in/',
+             'https://www.veronline.mov/']
 
 domain = config.get_setting('dominio', 'veronline', default='')
 
@@ -112,6 +113,8 @@ def acciones(item):
 
     itemlist.append(item_configurar_proxies(item))
 
+    itemlist.append(Item( channel='helper', action='show_help_prales', title='[B]Cuales son sus Clones[/B]', thumbnail=config.get_thumb('veronlie'), text_color='turquoise' ))
+
     itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'veronline', thumbnail=config.get_thumb('veronline') ))
 
     platformtools.itemlist_refresh()
@@ -195,9 +198,9 @@ def list_all(item):
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
-    bloque = scrapertools.find_single_match(data, '<span>Veronline.mov</span>(.*?)>mas vistas<')
+    bloque = scrapertools.find_single_match(data, '<span>Veronline.cfd</span>(.*?)>mas vistas<')
 
-    if not bloque: bloque = scrapertools.find_single_match(data, '<span>veronline.mov</span>(.*?)>mas vistas<')
+    if not bloque: bloque = scrapertools.find_single_match(data, '<span>veronline.cfd</span>(.*?)>mas vistas<')
 
     if not bloque: bloque = scrapertools.find_single_match(data, '<span>veronline</span>(.*?)>mas vistas<')
     if not bloque: bloque = scrapertools.find_single_match(data, '<span>Veronline</span>(.*?)>mas vistas<')

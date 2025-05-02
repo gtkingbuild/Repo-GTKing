@@ -222,24 +222,28 @@ def list_dir(item):
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
-    matches = re.compile('<div class="card mb-3 custom_item2"(.*?)</div></div></div></div>').findall(data)
+    matches = re.compile('{"id":".*?"(.*?)"short_title"').findall(data)
 
     for match in matches:
-        url = scrapertools.find_single_match(match, 'href="(.*?)"')
+        url = scrapertools.find_single_match(match, '"slug":"(.*?)"')
 
-        title = scrapertools.find_single_match(match, '<a title="(.*?)"')
+        title = scrapertools.find_single_match(match, '"title":"(.*?)"')
 
         if not url or not title: continue
 
+        url = host + url
+
         title = title.replace('&quot;', '').replace('&amp;', '').replace('&#039;s', "'s").strip()
 
-        thumb = scrapertools.find_single_match(match, '<img src="(.*?)"')
+        thumb = scrapertools.find_single_match(match, '"image":"(.*?)"')
+
+        thumb = thumb.replace('\\/', '/')
 
         year = scrapertools.find_single_match(title, '(\d{4})')
         if year: title = title.replace('(' + year + ')', '')
         else: year = '-'
 
-        tipo = 'movie' if 'Pelicula' in match else 'tvshow'
+        tipo = 'tvshow' if '"TV"' in match else 'movie'
         sufijo = '' if item.search_type != 'all' else tipo
 
         if tipo == 'tvshow':
@@ -442,7 +446,7 @@ def episodios(item):
                if item.contentSerieName: titulo = '1x' + str(nro) + ' ' + title.replace(' - ' + str(nro), '').strip()
                else: titulo = item.title
 
-               url = item.url + nro
+               url = item.url + '/' + nro
 
                itemlist.append(item.clone( action='findvideos', url = url, title = titulo,
                                            contentType = 'episode', contentSeason=1, contentEpisodeNumber=nro ))
@@ -454,7 +458,7 @@ def episodios(item):
        jdata = jsontools.load(data2)
 
        for match in jdata:
-           itemlist.append(item.clone( action='findvideos', url = item.url + str(match['number']), title = match['title'],
+           itemlist.append(item.clone( action='findvideos', url = item.url + '/' + str(match['number']), title = match['title'],
                                        contentType = 'episode', contentSeason = 1, contentEpisodeNumber=match['number'] ))
 
     if not itemlist:
@@ -601,8 +605,8 @@ def play(item):
         url_play = scrapertools.find_single_match(data, '<iframe.*?src="([^"]+)"')
 
     if url_play:
-        if '.playmudos.' in url_play:
-            return itemlist
+        if '.playmudos.' in url_play: return itemlist
+        elif '/content-na.drive.' in url_play: return itemlist
 
         if not url_play.startswith("http"): url_play = "https:" + url_play
 

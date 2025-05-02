@@ -64,9 +64,9 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Últimas', action = 'list_ser', url = host, search_type = 'tvshow', group = 'lasts', text_color = 'moccasin' ))
 
-    itemlist.append(item.clone( title = 'Recomendadas', action = 'list_ser', url = host, search_type = 'tvshow', group = 'recom' ))
+    itemlist.append(item.clone( title = 'Más valoradas', action = 'list_ser', url = host, search_type = 'tvshow', group = 'recom' ))
 
-    itemlist.append(item.clone( title = 'Más series', action = 'otras', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Otras series', action = 'otras', search_type = 'tvshow', text_color = 'hotpink' ))
 
     return itemlist
 
@@ -115,14 +115,14 @@ def list_all(item):
 
     bloque = scrapertools.find_single_match(data, '>PELÍCULAS DISPONIBLES<(.*?)>SIGUENOS<')
 
-    matches = scrapertools.find_multiple_matches(bloque, '<div class="wpb_text_column wpb_content_element(.*?)</div></div>')
+    matches = scrapertools.find_multiple_matches(bloque, '<div class="wpb_column vc_column_container td-pb-span3">(.*?)</div></div>')
 
     num_matches = len(matches)
 
     for match in matches[item.page * perpage:]:
         link = scrapertools.find_single_match(match, 'data-mfp-src="(.*?)"')
 
-        title = scrapertools.find_single_match(match, '<p><!--(.*?)-->').strip()
+        title = scrapertools.find_single_match(match, '<!--(.*?)-->').strip()
 
         if not link or not title: continue
 
@@ -135,8 +135,12 @@ def list_all(item):
 
         if link.startswith("//"): link = 'https:' + link
 
+        PeliName = title
+
+        PeliName = PeliName.replace('(SUB)', '').replace(' - LA PELÍCULA', '').replace(' - DOCUMENTAL', '').replace(' - DOCUMENTARY', '').strip()
+
         itemlist.append(item.clone( action='findvideos', link=link, title=title, thumbnail=thumb,
-                                    contentType = 'movie', contentTitle = title, infoLabels={'year': year} ))
+                                    contentType = 'movie', contentTitle = PeliName, infoLabels={'year': year} ))
 
         if len(itemlist) >= perpage: break
 
@@ -220,7 +224,7 @@ def last_epis(item):
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
-    bloque = scrapertools.find_single_match(data, '>CAPÍTULOS MÁS RECIENTES<(.*?)</div></div>')
+    bloque = scrapertools.find_single_match(data, '>CAPÍTULOS MÁS RECIENTES<(.*?)>SERIES RECOMENDADAS<')
 
     matches = re.compile('<a href="(.*?)".*?data-lazy-src="(.*?)"', re.DOTALL).findall(bloque)
 

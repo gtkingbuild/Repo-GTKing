@@ -98,7 +98,7 @@ def mainlist2(item):
 
     itemlist.append(item.clone( action='', title= '[COLOR greenyellow][B]EFECTUAR Búsquedas [COLOR gold](solo en determinados canales)[/B][/COLOR]', folder=False ))
 
-    itemlist.append(item.clone( action = 'channels_excluded', title='Pulsar para acceder a la Lista de Canales', extra = 'included', folder = False ))
+    itemlist.append(item.clone( action = 'channels_excluded', title='Pulsar para acceder a la Lista de Canales', extra = 'included', folder = False, text_color='cyan' ))
 
     if channels_search_included:
         itemlist.append(item.clone( title = '[COLOR coral][B]Anular Todos los canales[COLOR greenyellow][B] para efectuar las búsquedas[/B][/COLOR]', action = 'channels_excluded_del', extra = 'included', folder = False, text_color='yellow' ))
@@ -351,9 +351,14 @@ def with_proxies(item):
             info = info + '[B][COLOR %s] Proxies [/B][/COLOR]' % color_list_proxies
             if config.get_setting(cfg_proxytools_provider, default=''):
                 info = info + ' [COLOR goldenrod][B]' + config.get_setting(cfg_proxytools_provider).capitalize() + '[/B][/COLOR] '
-        elif config.get_setting(cfg_proxytools_max_channel, default=''): info = info + '[COLOR yellowgreen][B] Sin proxies [/B][/COLOR]'
-        elif config.get_setting(cfg_proxytools_provider, default=''): info = info + '[COLOR yellowgreen][B] Sin proxies [/B][/COLOR]'
-        else: info = info + '[COLOR firebrick][B] Quizás use proxies [/B][/COLOR]'
+        else:
+            if config.get_setting(cfg_proxytools_max_channel, default=''): info = info + '[COLOR yellowgreen][B] Sin proxies [/B][/COLOR]'
+            elif config.get_setting(cfg_proxytools_provider, default=''): info = info + '[COLOR yellowgreen][B] Sin proxies [/B][/COLOR]'
+            else:
+               if not config.get_setting(cfg_proxytools_max_channel, default=''): info = info + '[COLOR yellowgreen][B] Sin proxies [/B][/COLOR]'
+               elif not config.get_setting(cfg_proxytools_provider, default=''): info = info + '[COLOR yellowgreen][B] Sin proxies [/B][/COLOR]'
+               else:
+                  info = info + '[COLOR firebrick][B] Quizás use proxies [/B][/COLOR]'
 
         if no_proxies: info = info + '[COLOR white][B] EXCLUIDO Buscar [/B][/COLOR]'
 
@@ -781,6 +786,10 @@ def channels_excluded(item):
         cabecera = 'Todos (Solo determinados canales)'
         filtros = {'searchable': True}
 
+    elif item.extra == 'excluded':
+        cabecera = 'Todos'
+        filtros = {'searchable': True}
+
     elif item.extra == 'movies':
         cabecera = 'Películas'
         filtros = {'categories': 'movie', 'searchable': True}
@@ -807,7 +816,10 @@ def channels_excluded(item):
     if item.extra == 'included':
         cfg_excludes = 'search_included_all'
     else:
-        cfg_excludes = 'search_excludes_' + item.extra
+        excludes_extra = item.extra
+        if excludes_extra == 'excluded': excludes_extra = 'all'
+
+        cfg_excludes = 'search_excludes_' + excludes_extra
 
     channels_search = config.get_setting(cfg_excludes, default='')
 
@@ -929,8 +941,13 @@ def channels_excluded(item):
 
     seleccionados = channels_excluded_list(ret, channels_ids, channels_search)
 
-    if str(seleccionados) == '[]': seleccionados = ''
     config.set_setting(cfg_excludes, str(seleccionados))
+
+    incluidos_excluidos = str(seleccionados)
+
+    if incluidos_excluidos:
+       if item.settings:
+           return incluidos_excluidos
 
     platformtools.itemlist_refresh()
 
@@ -1028,6 +1045,9 @@ def channels_excluded_del(item):
 
 def channels_excluded_list(ret, channels_ids, channels_search):
     logger.info()
+
+    if str(ret) == '[]':
+        return ret
 
     channel_sel = []
     seleccionados = []
@@ -1238,6 +1258,7 @@ def show_channels_list(item):
         elif item.last_domain == True: filtros = {'clusters': 'current'}
         elif item.mismatched == True: filtros = {'clusters': 'mismatched'}
         elif item.problematics == True: filtros = {'clusters': 'problematic'}
+        elif item.clons == True: filtros = {'clusters': 'clons'}
         elif item.clones == True: filtros = {'clusters': 'clone'}
         elif item.notices == True: filtros = {'clusters': 'notice'}
         elif item.onlyone == True: filtros = {'clusters': 'onlyone'}
@@ -1268,6 +1289,8 @@ def show_channels_list(item):
             if not 'mismatched' in ch['clusters']: continue
         elif item.problematics:
             if not 'problematic' in ch['clusters']: continue
+        elif item.clons:
+            if not 'clons' in ch['clusters']: continue
         elif item.clones:
             if not 'clone' in ch['clusters']: continue
         elif item.notices:
@@ -1319,6 +1342,7 @@ def show_channels_list(item):
                     info = info + '[B][COLOR green] %s [/B][/COLOR]' % vigente
 
         if 'problematic' in ch['clusters']: info = info + '[B][I][COLOR darkgoldenrod] Problemático [/I][/B][/COLOR]'
+        if 'clons' in ch['clusters']: info = info + '[B][I][COLOR violet] Principal [/I][/B][/COLOR]'
         if 'clone' in ch['clusters']: info = info + '[B][I][COLOR turquoise] Clon [/I][/B][/COLOR]'
         if 'notice' in ch['clusters']: info = info + '[B][COLOR orange] Aviso [/B][/COLOR]'
 
@@ -1372,6 +1396,7 @@ def show_channels_list(item):
         elif item.privates == True: cabecera = 'Canales [COLOR yellow]Privados[/COLOR]'
         elif item.mismatched == True: cabecera = 'Canales [COLOR yellow]Incompatibles con su Media Center[/COLOR]'
         elif item.problematics == True: cabecera = 'Canales [COLOR yellow]Problemáticos[/COLOR]'
+        elif item.clons == True: cabecera = 'Canales que son [COLOR yellow]Principales[/COLOR] con Clones Asociados'
         elif item.clones == True: cabecera = 'Canales que son [COLOR yellow]Clones[/COLOR]'
         elif item.notices == True: cabecera = 'Canales con [COLOR yellow]Aviso CloudFlare Protection[/COLOR]'
         elif item.onlyone == True: cabecera = 'Canales con [COLOR yellow]Un Único Servidor[/COLOR]'

@@ -62,7 +62,7 @@ def generos(item):
 
     data = do_downloadpage(host)
 
-    bloque = scrapertools.find_single_match(data, '>Generos<(.*?)</ul>')
+    bloque = scrapertools.find_single_match(data, '>Generos(.*?)</ul>')
 
     matches = re.compile('<a href="(.*?)".*?>(.*?)</a>', re.DOTALL).findall(bloque)
 
@@ -355,9 +355,9 @@ def findvideos(item):
 
 
     # ~ Downloads
-    matches = re.compile('<span class="Num">.*?</span> <!-- -->(.*?)</td>.*?<td>(.*?)</td>.*?href="(.*?)"', re.DOTALL).findall(data)
+    matches = re.compile('<span class="Num">.*?</span> <!-- -->(.*?)</td>.*?<td>(.*?)</td>.*?<span>(.*?)</span>.*?href="(.*?)"', re.DOTALL).findall(data)
 
-    for srv, lang, url in matches:
+    for srv, lang, qlty, url in matches:
         if not url: continue
 
         ses += 1
@@ -385,7 +385,7 @@ def findvideos(item):
 
         lang = IDIOMAS.get(lang, lang)
 
-        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = servidor, language = lang, other = srv )) 
+        itemlist.append(Item( channel = item.channel, action = 'play', title = '', url=url, server=servidor, quality=qlty, language=lang, other=srv )) 
 
     if not itemlist:
         if not ses == 0:

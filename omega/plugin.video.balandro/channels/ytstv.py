@@ -302,10 +302,13 @@ def episodios(item):
         data = do_downloadpage(new_url)
         data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
-    if '>Links<' in data: bloque = scrapertools.find_single_match(data, '>Links<(.*?)</div></div></div')
+    if '>Links<' in data:
+        bloque = scrapertools.find_single_match(data, '>Links<(.*?)</div></div></div>')
+        if not bloque: bloque = scrapertools.find_single_match(data, '>Links<(.*?)>Links<')
+
     else: bloque = scrapertools.find_single_match(data, '<strong>Season ' + str(item.contentSeason) + '(.*?)</ul>')
 
-    matches = re.compile('href="(.*?)">(.*?)</a>', re.DOTALL).findall(bloque)
+    matches = re.compile('href="(.*?)"(.*?)</a>', re.DOTALL).findall(bloque)
 
     if item.page == 0 and item.perpage == 50:
         sum_parts = len(matches)
@@ -370,13 +373,23 @@ def episodios(item):
         if '-' in epis: episode = scrapertools.find_single_match(epis, '(.*?)-').strip()
         else: episode = epis
 
-        if '<span class="serv_tit">' in episode:
+        completa = ''
+        if episode == 'class="lnk':
+            if '<span class="serv_tit">Complete</span>' in datos:
+                episode = 1
+                epis = 1
+                completa = ' [COLOR tan][B]Temp.[/B][/COLOR]'
+            else:
+               epis = scrapertools.find_single_match(datos, '<span class="serv_tit">.*?E(.*?)</span>')
+               episode = epis
+
+        elif '<span class="serv_tit">' in episode:
             epis = scrapertools.find_single_match(episode, '<span class="serv_tit">.*?E(.*?)</span>')
             episode = epis
 
         if not epis: continue
 
-        titulo = '%sx%s %s' % (str(item.contentSeason), epis, item.contentSerieName)
+        titulo = '%sx%s %s' % (str(item.contentSeason), str(epis), item.contentSerieName) + completa
 
         titulo = titulo + ' ' + qlty
 

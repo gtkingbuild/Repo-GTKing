@@ -134,6 +134,8 @@ def check_addon_updates(verbose=False, force=False):
 
     get_last_chrome_list()
 
+    put_proxies_list()
+
     try:
         last_fix_json = os.path.join(config.get_runtime_path(), 'last_fix.json')
 
@@ -285,6 +287,28 @@ def get_last_chrome_list():
         except: pass
 
         if web_last_ver_chrome: config.set_setting('chrome_last_version', web_last_ver_chrome)
+
+
+def put_proxies_list():
+    if not config.get_setting('proxies_list', default=False):
+        path_data = os.path.join(config.get_data_path(), 'Lista-proxies.txt')
+
+        existe = filetools.exists(path_data)
+
+        if not existe:
+            path_resources = os.path.join(filetools.translatePath("special://home/addons/plugin.video.balandro/resources/Lista-proxies.txt"))
+
+            existe = filetools.exists(path_resources)
+
+            if existe:
+                origen = filetools.join(path_resources)
+                destino = filetools.join(path_data)
+
+                filetools.copy(origen, destino, silent=False)
+
+                config.set_setting('proxies_list', True)
+
+                filetools.remove(origen)
 
 
 def check_addon_version():

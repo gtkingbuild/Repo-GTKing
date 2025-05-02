@@ -81,6 +81,7 @@ def findvideos(item):
     data = httptools.downloadpage(item.url).data
 
     url = scrapertools.find_single_match(data, '<meta itemprop="embedUrl" content="(.*?)"')
+    if not url: url = scrapertools.find_single_match(data, "<meta itemprop='embedUrl' content='(.*?)'")
 
     if url:
         servidor = servertools.get_server_from_url(url)

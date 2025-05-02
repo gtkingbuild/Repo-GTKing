@@ -28,6 +28,7 @@ config.set_setting('proxysearch_process_proxies', '')
 
 con_incidencias = ''
 no_accesibles = ''
+con_problemas = ''
 
 try:
     with open(os.path.join(config.get_runtime_path(), 'dominios.txt'), 'r') as f: txt_status=f.read(); f.close()
@@ -36,6 +37,7 @@ except:
     except: txt_status = ''
 
 if txt_status:
+    # ~ Incidencias
     bloque = scrapertools.find_single_match(txt_status, 'SITUACION CANALES(.*?)CANALES TEMPORALMENTE DES-ACTIVADOS')
 
     matches = scrapertools.find_multiple_matches(bloque, "[B](.*?)[/B]")
@@ -45,6 +47,7 @@ if txt_status:
 
         if '[COLOR moccasin]' in match: con_incidencias += '[B' + match + '/I][/B][/COLOR][CR]'
 
+    # ~ No Accesibles
     bloque = scrapertools.find_single_match(txt_status, 'CANALES PROBABLEMENTE NO ACCESIBLES(.*?)ULTIMOS CAMBIOS DE DOMINIOS')
 
     matches = scrapertools.find_multiple_matches(bloque, "[B](.*?)[/B]")
@@ -54,39 +57,37 @@ if txt_status:
 
         if '[COLOR moccasin]' in match: no_accesibles += '[B' + match + '/I][/B][/COLOR][CR]'
 
+    # ~ Con Problemas
+    bloque = scrapertools.find_single_match(txt_status, 'CANALES CON PROBLEMAS(.*?)$')
+
+    matches = scrapertools.find_multiple_matches(bloque, "[B](.*?)[/B]")
+
+    for match in matches:
+        match = match.strip()
+
+        if '[COLOR moccasin]' in match: con_problemas += '[B' + match + '/I][/B][/COLOR][CR]'
+
 
 dominioshdfull = [
-         'https://hdfull.cfd/',
-         'https://hdfull.tel/',
-         'https://hdfull.buzz/',
          'https://hdfull.blog/',
-         'https://hd-full.info/',
-         'https://hd-full.sbs/',
-         'https://hd-full.life/',
-         'https://hd-full.fit/',
-         'https://hd-full.me/',
-         'https://hd-full.vip/',
-         'https://hd-full.lol/',
-         'https://hd-full.co/',
-         'https://hdfull.quest/',
          'https://hdfull.today/',
          'https://hd-full.biz/',
          'https://hdfull.sbs/',
+
+         'https://hdfull.cv/',
+         'https://hdfull.monster/',
+         'https://hdfull.cfd/',
+         'https://hdfull.tel/',
+         'https://hdfull.buzz/',
          'https://hdfull.one/',
          'https://hdfull.org/',
+
          'https://new.hdfull.one/'
          ]
 
-dominiosnextdede = [
-         'https://nextdede.us',
-         'https://nextdede.tv',
-         'https://nextdede.top'
-         ]
-
 dominiosplaydede = [
-         'https://playdede.me/'
+         'https://www9.playdede.link/'
          ]
-
 
 channels_poe = [
         ['gdrive', 'https://drive.google.com/drive/']
@@ -646,6 +647,9 @@ def proxysearch_channel(item, channel_id, channel_name, iniciales_channels_proxi
         if no_accesibles:
            if channel_name in str(no_accesibles): return
 
+        if con_problemas:
+           if channel_name in str(con_problemas): return
+
     channels_proxies_memorized = config.get_setting('channels_proxies_memorized', default='')
 
     if config.get_setting('memorize_channels_proxies', default=True):
@@ -735,26 +739,15 @@ def proxysearch_channel(item, channel_id, channel_name, iniciales_channels_proxi
                   except:
                      host = dominioshdfull[0]
 
-              elif channel_id == 'nextdede':
-                  try:
-                     data = httptools.downloadpage('https://dominiosnextdede.com/').data
-
-                     sel_domain = scrapertools.find_single_match(data, '>Dominio actual.*?<a href="(.*?)"')
-
-                     if sel_domain:
-                         if not sel_domain.endswith('/'): sel_domain = sel_domain + '/'
-
-                         if sel_domain in str(dominiosnextdede):
-                             host = sel_domain
-
-                  except:
-                     host = dominiosnextdede[0]
-
               elif channel_id == 'playdede':
                   try:
                      data = httptools.downloadpage('https://privacidad.me/@playdede/').data
 
-                     sel_domain = scrapertools.find_single_match(data, '>Web:(.*?)</a>').strip()
+                     sel_domain = scrapertools.find_single_match(data, '>Dirección actual:(.*?)</a>').strip()
+
+                     if sel_domain:
+                         sel_domain = sel_domain.lower()
+                         if not 'playdede' in sel_domain: sel_domain = ''
 
                      if sel_domain:
                          if not 'https' in sel_domain: sel_domain = 'https://' + sel_domain

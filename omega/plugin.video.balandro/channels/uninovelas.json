@@ -3,7 +3,7 @@
   "name": "UniNovelas",
   "thumbnail": "uninovelas.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["tvshow"],
@@ -13,5 +13,5 @@
 
   "clusters": ["tales"],
 
-  "notes": "Web dedicada principalmente en Novelas."
+  "notes": "Web CERRADA. Web dedicada principalmente en Novelas."
 }

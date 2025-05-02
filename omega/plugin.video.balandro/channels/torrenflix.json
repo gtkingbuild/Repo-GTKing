@@ -11,7 +11,7 @@
   "categories": ["movie", "tvshow", "torrent"],
   "language": ["cast", "lat"],
 
-  "clusters": ["torrents", "news", "qualityes", "years", "lasts", "classic", "rankings", "kids", "docs", "4k"],
+  "clusters": ["clone", "torrents", "news", "qualityes", "years", "lasts", "classic", "rankings", "kids", "docs", "4k"],
 
   "notes": "Canal con enlaces Streaming y Torrent. Películas por géneros, calidad y año. También series por Géneros."
 }

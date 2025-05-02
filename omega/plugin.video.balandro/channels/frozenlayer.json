@@ -3,7 +3,7 @@
   "name": "FrozenLayer",
   "thumbnail": "frozenlayer.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": false,
   "search_types": ["tvshow"],
@@ -13,5 +13,5 @@
 
   "clusters": ["anime", "dorama", "torrents"],
 
-  "notes": "Canal con enlaces Torrent exclusivamente. Animes, Ovas, Doramas y Mangas"
+  "notes": "Web ANULADA. Canal con enlaces Torrent exclusivamente. Animes, Ovas, Doramas y Mangas"
 }

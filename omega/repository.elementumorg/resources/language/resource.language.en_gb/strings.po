@@ -1,7 +1,7 @@
 # Kodi Media Center language file
-# Addon Name: elementumorg Repository
-# Addon id: repository.elementumorg
-# Addon Provider: elementumorg
+# Addon Name: i96751414 Repository
+# Addon id: repository.github
+# Addon Provider: i96751414
 #
 msgid ""
 msgstr ""
@@ -42,6 +42,10 @@ msgctxt "#30005"
 msgid "Update repository"
 msgstr ""
 
+msgctxt "#30006"
+msgid "About"
+msgstr ""
+
 msgctxt "#30010"
 msgid "No entries to delete"
 msgstr ""
@@ -56,4 +60,8 @@ msgstr ""
 
 msgctxt "#30013"
 msgid "Repository updated"
+msgstr ""
+
+msgctxt "#30014"
+msgid "Failed updating repository"
 msgstr ""

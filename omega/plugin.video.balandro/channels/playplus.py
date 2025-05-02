@@ -101,7 +101,6 @@ def mainlist_series(item):
     itemlist.append(item.clone( title = 'Por año', action = 'anios', slug = 'series', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Por idioma', action = 'idiomas', slug = 'series', search_type = 'tvshow' ))
-    itemlist.append(item.clone( title = 'Por país', action = 'paises', slug = 'series', search_type = 'tvshow' ))
 
     return itemlist
 
@@ -126,7 +125,6 @@ def mainlist_animes(item):
     itemlist.append(item.clone( title = 'Por año', action = 'anios', group = 'anime', slug = 'animes', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Por idioma', action = 'idiomas', group = 'anime', slug = 'animes', search_type = 'tvshow' ))
-    itemlist.append(item.clone( title = 'Por país', action = 'paises', group = 'anime', slug = 'animes', search_type = 'tvshow' ))
 
     return itemlist
 
@@ -235,19 +233,11 @@ def paises(item):
     logger.info()
     itemlist = []
 
-    if item.slug == 'animes': text_color = 'springgreen'
-    else:
-       if item.search_type == 'movie': text_color = 'deepskyblue'
-       else: text_color = 'hotpink'
+    text_color = 'deepskyblue'
 
-    if item.group == 'anime': url_paises = host + 'animacion/'
-    else:
-        if item.search_type == 'movie': url_paises = host + 'peliculas/'
-        else: url_paises = host + 'seriesa/'
+    url_paises = host + 'peliculas/'
 
-    url = url_paises
-
-    data = do_downloadpage(url)
+    data = do_downloadpage(url_paises)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
     bloque = scrapertools.find_single_match(data, '>SELECCIONAR PAÍS<(.*?)</div>')
@@ -711,6 +701,9 @@ def findvideos(item):
                 elif '/katfile' in link: continue
                 elif '/nitro' in link: continue
 
+                elif '/powvideo' in link: continue
+                elif '/streamplay' in link: continue
+
                 elif '/viewsb.' in link: continue
                 elif '/formatearwindows.' in link: continue
 
@@ -718,8 +711,6 @@ def findvideos(item):
 
                 servidor = servertools.get_server_from_url(link)
                 servidor = servertools.corregir_servidor(servidor)
-
-                link = servertools.normalize_url(servidor, link)
 
                 if not servidor == 'various': other = ''
                 else: other = servertools.corregir_other(link)
@@ -738,6 +729,11 @@ def findvideos(item):
             server = 'waaw'
             sid = sid.replace('/player.cuevana.ac/f/', '/waaw.to/watch_video.php?v=').replace('/player.cuevana3.one/f/', '/waaw.to/watch_video.php?v=')
 
+        if 'powvideo' in sid: continue
+        elif 'streamplay' in sid: continue
+
+        if 'premiun' in server: continue
+
         elif server == 'filelions': other = 'Filelions'
         elif server == 'filemoon': other = 'Filemoon'
         elif server == 'streamwish': other = 'Streamwish'
@@ -747,8 +743,6 @@ def findvideos(item):
         elif server == 'hexupload': other = 'Hexupload'
         elif server == 'userload': other = 'Userload'
         elif server == 'streamruby': other = 'Streamruby'
-
-        elif 'premiun' in server: continue
 
         server = servertools.corregir_servidor(server)
 
@@ -801,6 +795,9 @@ def findvideos(item):
                 elif '/katfile' in link: continue
                 elif '/nitro' in link: continue
 
+                elif '/powvideo' in link: continue
+                elif '/streamplay' in link: continue
+
                 elif '/viewsb.' in link: continue
                 elif '/formatearwindows.' in link: continue
 
@@ -808,8 +805,6 @@ def findvideos(item):
 
                 servidor = servertools.get_server_from_url(link)
                 servidor = servertools.corregir_servidor(servidor)
-
-                link = servertools.normalize_url(servidor, link)
 
                 if not servidor == 'various': other = ''
                 else: other = servertools.corregir_other(link)
@@ -824,11 +819,13 @@ def findvideos(item):
 
             continue
 
+        if 'premiun' in server: continue
+
         if server == 'player':
             server = 'waaw'
             url = url.replace('/player.cuevana.ac/f/', '/waaw.to/watch_video.php?v=').replace('/player.cuevana3.one/f/', '/waaw.to/watch_video.php?v=')
 
-        if server == 'filelions': other = 'Filelions'
+        elif server == 'filelions': other = 'Filelions'
         elif server == 'filemoon': other = 'Filemoon'
         elif server == 'streamwish': other = 'Streamwish'
         elif server == 'streamhub': other = 'Streamhub'
@@ -836,8 +833,6 @@ def findvideos(item):
         elif server == 'vembed': other = 'Vidguard'
         elif server == 'hexupload': other = 'Hexupload'
         elif server == 'userload': other = 'Userload'
-
-        elif 'premiun' in server: continue
 
         server = servertools.corregir_servidor(server)
 
@@ -889,6 +884,31 @@ def findvideos(item):
         if not ses == 0:
             platformtools.dialog_notification(config.__addon_name, '[COLOR tan][B]Sin enlaces Soportados[/B][/COLOR]')
             return
+
+    return itemlist
+
+
+def play(item):
+    logger.info()
+    itemlist = []
+
+    url = item.url
+
+    if url:
+        if '/iplayerhls.' in url or '/powvideo.' in url or '/streamplay.' in url:
+            return 'Servidor [COLOR goldenrod]No Soportado[/COLOR]'
+
+        elif '/ouo.' in url:
+            return 'CloudFlare [COLOR red]ReCaptcha[/COLOR]'
+
+        servidor = servertools.get_server_from_url(url)
+        servidor = servertools.corregir_servidor(servidor)
+
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(url).lower()
+            if not new_server.startswith("http"): servidor = new_server
+
+        itemlist.append(item.clone(url = url, server = servidor))
 
     return itemlist
 

@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import re
+import ast, re
 
 from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
-try:
-    from Cryptodome.Cipher import AES
-    from lib import jscrypto
-except:
-    pass
+
+from lib.pyberishaes import GibberishAES
 
 
 host = 'https://entrepeliculasyseries.nz/'
@@ -436,15 +433,34 @@ def findvideos(item):
     data = do_downloadpage(embeds)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
-    if '//embed69.' in embeds:
+    if '/waaw.' in embeds:
+        ses += 1
+
+        lang = '?'
+
+        url = embeds
+
+        servidor = servertools.get_server_from_url(url)
+        servidor = servertools.corregir_servidor(servidor)
+
+        other = ''
+
+        if servidor == 'various': other = servertools.corregir_other(url)
+
+        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = lang, other = other ))
+
+    elif '//embed69.' in embeds:
         ses += 1
 
         datae = data
 
-        e_links = scrapertools.find_single_match(datae, 'const dataLink =(.*?);')
-        e_bytes = scrapertools.find_single_match(datae, "const bytes =.*?'(.*?)'")
+        dataLink = scrapertools.find_single_match(datae, 'const dataLink =(.*?);')
+        if not dataLink: dataLink = scrapertools.find_single_match(datae, 'dataLink(.*?);')
 
-        e_links = e_links.replace(']},', '"type":"file"').replace(']}]', '"type":"file"')
+        e_bytes = scrapertools.find_single_match(datae, "const bytes =.*?'(.*?)'")
+        if not e_bytes: e_bytes = scrapertools.find_single_match(datae, "encrypted.*?'(.*?)'")
+
+        e_links = dataLink.replace(']},', '"type":"file"').replace(']}]', '"type":"file"')
 
         langs = scrapertools.find_multiple_matches(str(e_links), '"video_language":(.*?)"type":"file"')
 
@@ -475,6 +491,8 @@ def findvideos(item):
                 elif 'disable' in srv: continue
                 elif 'xupalace' in srv: continue
                 elif 'uploadfox' in srv: continue
+
+                elif srv == 'download': continue
 
                 servidor = servertools.corregir_servidor(srv)
 
@@ -622,16 +640,20 @@ def play(item):
     url = item.url
 
     if item.crypto:
-        logger.info("check-1-crypto: %s" % item.crypto)
-        logger.info("check-2-crypto: %s" % item.bytes)
-        try:
-            ###############url =  AES.decrypt(item.crypto, item.bytes)
-            url = AES.new(item.crypto, AES.MODE_SIV==10)
-            logger.info("check-3-crypto: %s" % url)
+        crypto = str(item.crypto)
+        bytes = str(item.bytes)
 
-            url = jscrypto.new(item.crypto, 2, IV=item.bytes)
-            logger.info("check-4-crypto: %s" % url)
+        try:
+            cripto = ast.literal_eval(cripto)
         except:
+            crypto = str(item.crypto)
+
+        try:
+            url = GibberishAES.dec(GibberishAES(), string = crypto, pass_ = bytes)
+        except:
+            url = ''
+
+        if not url:
             return '[COLOR cyan]No se pudo [COLOR red]Desencriptar[/COLOR]'
 
     if url:

@@ -3,7 +3,7 @@
   "name": "Cuevana3In",
   "thumbnail": "cuevana3in.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["all", "movie", "tvshow"],
@@ -13,5 +13,5 @@
 
   "clusters": ["kids", "docs", "vos"],
 
-  "notes": "Películas por géneros. También Series."
+  "notes": "Web CERRADA. Películas por géneros. También Series."
 }

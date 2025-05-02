@@ -7,9 +7,20 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-# ~ 14/8/24 Peliculas solo hay 26
+host = 'https://www.cinehdplus.cc/'
 
-host = 'https://wl3v.gnula2h.cc/'
+
+# ~ por si viene de enlaces guardados
+ant_hosts = ['https://w-ww.gnula2h.cc/', 'https://wl3v.gnula2h.cc/', 'https://wv3l.gnula2h.cc/',
+             'https://wv7n.gnula2h.cc/']
+
+
+domain = config.get_setting('dominio', 'seriesplus', default='')
+
+if domain:
+    if domain == host: config.set_setting('dominio', '', 'seriesplus')
+    elif domain in str(ant_hosts): config.set_setting('dominio', '', 'seriesplus')
+    else: host = domain
 
 
 def item_configurar_proxies(item):
@@ -45,9 +56,6 @@ def configurar_proxies(item):
 
 
 def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
-    # ~ por si viene de enlaces guardados
-    ant_hosts = ['https://w-ww.gnula2h.cc/']
-
     for ant in ant_hosts:
         url = url.replace(ant, host)
 
@@ -84,10 +92,26 @@ def acciones(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( channel='submnuctext', action='_test_webs', title='Test Web del canal [COLOR yellow][B] ' + host + '[/B][/COLOR]',
+    domain_memo = config.get_setting('dominio', 'seriesplus', default='')
+
+    if domain_memo: url = domain_memo
+    else: url = host
+
+    itemlist.append(Item( channel='actions', action='show_latest_domains', title='[COLOR moccasin][B]Últimos Cambios de Dominios[/B][/COLOR]', thumbnail=config.get_thumb('pencil') ))
+
+    itemlist.append(Item( channel='helper', action='show_help_domains', title='[B]Información Dominios[/B]', thumbnail=config.get_thumb('help'), text_color='green' ))
+
+    itemlist.append(item.clone( channel='domains', action='test_domain_seriesplus', title='Test Web del canal [COLOR yellow][B] ' + url + '[/B][/COLOR]',
                                 from_channel='seriesplus', folder=False, text_color='chartreuse' ))
 
+    if domain_memo: title = '[B]Modificar/Eliminar el dominio memorizado[/B]'
+    else: title = '[B]Informar Nuevo Dominio manualmente[/B]'
+
+    itemlist.append(item.clone( channel='domains', action='manto_domain_seriesplus', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
+
     itemlist.append(item_configurar_proxies(item))
+
+    itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'seriesplus', thumbnail=config.get_thumb('seriesplus') ))
 
     platformtools.itemlist_refresh()
 

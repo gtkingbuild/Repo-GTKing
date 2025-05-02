@@ -131,27 +131,12 @@ def mainlist_animes(item):
     itemlist.append(item.clone( title = 'Donghuas', action = 'list_all', url = host + 'animes?tipo[]=7&order=created&page=1', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Ovas', action = 'list_all', url = host + 'animes?tipo[]=2&order=created&page=1&page=1', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'En latino', action = 'list_all', url = host + 'animes?genre[]=46&order=created&page=1', search_type = 'tvshow', text_color = 'moccasin' ))
+    itemlist.append(item.clone( title = 'En Castellano/Latino', action = 'list_all', url = host + 'animes?genre[]=46&order=created&page=1', search_type = 'tvshow', text_color = 'moccasin' ))
 
     itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host + 'animes?tipo[]=3&order=created&page=1', search_type = 'movie', text_color = 'deepskyblue' ))
 
-    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'tvshow' ))
-
-    return itemlist
-
-
-def categorias(item):
-    logger.info()
-    itemlist = []
-
-    text_color = 'moccasin'
-
-    itemlist.append(item.clone( title = 'Animes', action = 'list_all', url = host + 'animes?tipo%5B%5D=1&order=created&page=1', search_type = 'tvshow', text_color=text_color ))
-    itemlist.append(item.clone( title = 'Donghuas', action = 'list_all', url = host + 'animes?tipo%5B%5D=7&order=created&page=1', search_type = 'tvshow', text_color=text_color ))
-    itemlist.append(item.clone( title = 'Ovas', action = 'list_all', url = host + 'animes?tipo%5B%5D=2&order=created&page=1', search_type = 'tvshow', text_color=text_color ))
-    itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host + 'animes?tipo%5B%5D=3&order=created&page=1', search_type = 'movie', text_color=text_color ))
 
     return itemlist
 
@@ -235,7 +220,7 @@ def list_all(item):
 
             title = title.replace('Audio', '[COLOR red]Audio[/COLOR]')
 
-            itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb, lang=lang, fmt_sufijo=sufijo,
+            itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, lang=lang, fmt_sufijo=sufijo,
                                         contentType = 'movie', contentTitle = PeliName, infoLabels={'year': '-', 'plot': plot} ))
 
         if tipo == 'tvshow':
@@ -425,6 +410,9 @@ def episodios(item):
 def findvideos(item):
     logger.info()
     itemlist = []
+
+    if not item.search_type == 'tvshow':
+        if not '/episodio' in item.url: item.url = item.url + '/episodio-1'
 
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)

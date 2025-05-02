@@ -33,7 +33,7 @@ def mainlist_pelis(item):
         from modules import actions
         if actions.adults_password(item) == False: return
 
-    itemlist.append(item.clone( title = 'Buscar vídeo ...', action = 'search', search_type = 'movie', text_color = 'orange' ))
+    itemlist.append(item.clone( title = 'Buscar vídeo ...', action = 'search', search_type = 'movie', search_video = 'adult', text_color = 'orange' ))
 
     itemlist.append(item.clone( title = '[B]Películas:[/B]', folder=False, text_color='moccasin' ))
 
@@ -110,7 +110,9 @@ def list_all(item):
 
         title = scrapertools.find_single_match(match, 'alt="(.*?)"')
 
-        if '?php' in title: title = scrapertools.find_single_match(match, '<h3>.*?">(.*?)</a>')
+        if '?php' in title:
+            title = scrapertools.find_single_match(match, '<h3>.*?">(.*?)</a>')
+            if not title: title = scrapertools.find_single_match(match, 'alt=".*?alt="(.*?)"')
 
         if not url or not title: continue
 
@@ -246,6 +248,8 @@ def play(item):
 def search(item, texto):
     logger.info()
     try:
+        config.set_setting('search_last_video', texto)
+
         item.url =  host + 'xxxporn/page/1/?s=%s' % (texto.replace(" ", "+"))
         return list_all(item)
     except:

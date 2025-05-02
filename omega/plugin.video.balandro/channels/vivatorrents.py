@@ -176,7 +176,7 @@ def findvideos(item):
 
         url = base64.b64decode(data_url).decode("utf-8")
 
-        itemlist.append(Item( channel = item.channel, action='play', title='', url=url, server='torrent', language='Esp' ))
+        itemlist.append(Item( channel = item.channel, action='play', title='', url=url, server='torrent', language='Esp', quality='HD' ))
 
     if not itemlist:
         if not ses == 0:

@@ -35,8 +35,8 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone ( title = 'Por actor', action = 'listas', url = host + 'actores/actores-pag1/', group = 'Actores' ))
     itemlist.append(item.clone ( title = 'Por actriz', action = 'listas', url = host + 'actrices/actrices-pag1/', group = 'Actrices' ))
-    itemlist.append(item.clone ( title = 'Por dirección, guionistas, productores', action = 'listas', url = host + 'directores/directores-pag1/', group = 'Directores' ))
-    itemlist.append(item.clone ( title = 'Por compositores, escritores, novelistas', action = 'listas', url = host + 'otras-biografias/', group = 'Otras biografías' ))
+    itemlist.append(item.clone ( title = 'Por dirección, guionista, productor', action = 'listas', url = host + 'directores/directores-pag1/', group = 'Directores' ))
+    itemlist.append(item.clone ( title = 'Por compositor, escritor, novelista', action = 'listas', url = host + 'otras-biografias/', group = 'Otras biografías' ))
 
     return itemlist
 
@@ -45,17 +45,19 @@ def youtubes(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone ( title = 'Cine Clásico', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=r9y9RcsBv9k&list=PL5Elc2OLiWk6pkscyMTC6DCbE4GIeqfAe&index=2' ))
+    text_color = 'moccasin'
 
-    itemlist.append(item.clone ( title = 'Cine Clásico Español', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=OVjZTR0w_n4&list=PLhgZbivoHwSViCGE5ljvi8cYTgouloz_-' ))
+    itemlist.append(item.clone ( title = 'Cine Clásico', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=r9y9RcsBv9k&list=PL5Elc2OLiWk6pkscyMTC6DCbE4GIeqfAe&index=2', text_color=text_color ))
 
-    itemlist.append(item.clone ( title = 'Otras de Cine Clásico', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=_ppHqkSS_uQ&list=PL5Elc2OLiWk6pkscyMTC6DCbE4GIeqfAe' ))
+    itemlist.append(item.clone ( title = 'Cine Clásico Español', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=OVjZTR0w_n4&list=PLhgZbivoHwSViCGE5ljvi8cYTgouloz_-', text_color=text_color ))
 
-    itemlist.append(item.clone ( title = 'Bud Spencer & Terence Hill', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=PuMlIOHBaqg&list=PLy-qmp54bpB2yopTCH_4G5WLnniNQerQf' ))
+    itemlist.append(item.clone ( title = 'Otras de Cine Clásico', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=_ppHqkSS_uQ&list=PL5Elc2OLiWk6pkscyMTC6DCbE4GIeqfAe', text_color=text_color ))
 
-    itemlist.append(item.clone ( title = 'Cantinflas', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=U5neiehwYMk&list=PLEN1o4MXDPxA-o78qTZRqEU-XgRUyh76u' ))
+    itemlist.append(item.clone ( title = 'Bud Spencer & Terence Hill', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=PuMlIOHBaqg&list=PLy-qmp54bpB2yopTCH_4G5WLnniNQerQf', text_color=text_color ))
 
-    itemlist.append(item.clone ( title = 'Westerns', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=1g_SGZn4_-c&list=PLLxxgrF1QnBjEvwkfWLPkr-CLEeEHJuWl' ))
+    itemlist.append(item.clone ( title = 'Cantinflas', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=U5neiehwYMk&list=PLEN1o4MXDPxA-o78qTZRqEU-XgRUyh76u', text_color=text_color ))
+
+    itemlist.append(item.clone ( title = 'Westerns', action = 'list_tubes', url = 'https://www.youtube.com/watch?v=1g_SGZn4_-c&list=PLLxxgrF1QnBjEvwkfWLPkr-CLEeEHJuWl', text_color=text_color ))
 
     return itemlist
 
@@ -270,7 +272,9 @@ def play(item):
 
     url = item.url
 
-    if not url.endswith('.mp4'):
+    if item.server == 'youtube': pass
+
+    elif not url.endswith('.mp4'):
         new_url = httptools.downloadpage(url, follow_redirects=False).headers['location']
 
         if not new_url: return itemlist

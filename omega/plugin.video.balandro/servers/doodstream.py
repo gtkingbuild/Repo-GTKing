@@ -80,7 +80,7 @@ def get_video_url(page_url, url_referer=''):
 
                 page_url = ini_page_url
 
-                return 'No se pudo Reproducir el Vídeo con ResolveUrl'
+                return 'ResolveUrl No se pudo Reproducir el Vídeo'
 
             except:
                 import traceback
@@ -134,7 +134,7 @@ def get_video_url(page_url, url_referer=''):
 
                     page_url = ini_page_url
 
-                    return 'No se pudo Reproducir el Vídeo con ResolveUrl'
+                    return 'ResolveUrl No se pudo Reproducir el Vídeo'
 
                 except:
                    import traceback
@@ -187,7 +187,7 @@ def get_video_url(page_url, url_referer=''):
 
                 page_url = ini_page_url
 
-                return 'No se pudo Reproducir el Vídeo con ResolveUrl'
+                return 'ResolveUrl No se pudo Reproducir el Vídeo'
 
             except:
                import traceback

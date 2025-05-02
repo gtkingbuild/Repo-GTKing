@@ -63,16 +63,16 @@ def paises(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title = 'América', action = 'list_all', url = host + 'telenovelas/estados-unidos/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Argentina', action = 'list_all', url = host + 'telenovelas/argentina/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Brasil', action = 'list_all', url = host + 'telenovelas/brasil/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Chile', action = 'list_all', url = host + 'telenovelas/chile/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Colombia', action = 'list_all', url = host + 'telenovelas/colombia/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'México', action = 'list_all', url = host + 'telenovelas/mexico/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Perú', action = 'list_all', url = host + 'telenovelas/peru/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Turquía', action = 'list_all', url = host + 'telenovelas/turquia/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Venezuela', action = 'list_all', url = host + 'telenovelas/venezuela/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Resto del Mundo', action = 'list_all', url = host + 'telenovelas/resto-del-mundo/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'América', action = 'list_all', url = host + 'telenovelas/estados-unidos/', text_color='hotpink' ))
+    itemlist.append(item.clone( title = 'Argentina', action = 'list_all', url = host + 'telenovelas/argentina/', text_color='hotpink' ))
+    itemlist.append(item.clone( title = 'Brasil', action = 'list_all', url = host + 'telenovelas/brasil/', text_color='hotpink' ))
+    itemlist.append(item.clone( title = 'Chile', action = 'list_all', url = host + 'telenovelas/chile/', text_color='hotpink' ))
+    itemlist.append(item.clone( title = 'Colombia', action = 'list_all', url = host + 'telenovelas/colombia/', text_color='hotpink' ))
+    itemlist.append(item.clone( title = 'México', action = 'list_all', url = host + 'telenovelas/mexico/', text_color='hotpink' ))
+    itemlist.append(item.clone( title = 'Perú', action = 'list_all', url = host + 'telenovelas/peru/', text_color='hotpink' ))
+    itemlist.append(item.clone( title = 'Turquía', action = 'list_all', url = host + 'telenovelas/turquia/', text_color='hotpink' ))
+    itemlist.append(item.clone( title = 'Venezuela', action = 'list_all', url = host + 'telenovelas/venezuela/', text_color='hotpink' ))
+    itemlist.append(item.clone( title = 'Resto del Mundo', action = 'list_all', url = host + 'telenovelas/resto-del-mundo/', text_color='hotpink' ))
 
     return itemlist
 

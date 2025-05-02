@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import re, base64
+import ast, re, base64
 
 from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
-try:
-    from Cryptodome.Cipher import AES
-    from lib import jscrypto
-except:
-    pass
+
+from lib.pyberishaes import GibberishAES
 
 
 host = 'https://pelisplushd.bz/'
@@ -139,11 +136,11 @@ def mainlist(item):
     itemlist.append(item.clone( title = 'Películas', action = 'mainlist_pelis', text_color = 'deepskyblue' ))
     itemlist.append(item.clone( title = 'Series', action = 'mainlist_series', text_color = 'hotpink' ))
 
-    if not config.get_setting('descartar_anime', default=False):
-       itemlist.append(item.clone( title = 'Animes', action = 'mainlist_animes', text_color = 'springgreen' ))
-
     if config.get_setting('mnu_doramas', default=False):
         itemlist.append(item.clone( title = 'Doramas', action = 'mainlist_series', text_color = 'firebrick' ))
+
+    if not config.get_setting('descartar_anime', default=False):
+       itemlist.append(item.clone( title = 'Animes', action = 'mainlist_animes', text_color = 'springgreen' ))
 
     return itemlist
 
@@ -174,11 +171,11 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'series?page=1', search_type = 'tvshow' ))
 
-    if not config.get_setting('descartar_anime', default=False):
-        itemlist.append(item.clone( title = 'Animes', action = 'mainlist_animes', search_type = 'tvshow', text_color = 'springgreen' ))
-
     if config.get_setting('mnu_doramas', default=False):
         itemlist.append(item.clone( title = 'Doramas', action = 'list_all', url = host + 'generos/dorama/series?page=1', search_type = 'tvshow', text_color = 'firebrick' ))
+
+    if not config.get_setting('descartar_anime', default=False):
+        itemlist.append(item.clone( title = 'Animes', action = 'mainlist_animes', search_type = 'tvshow', text_color = 'springgreen' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'tvshow' ))
@@ -528,10 +525,13 @@ def findvideos(item):
 
             datae = do_downloadpage(url)
 
-            e_links = scrapertools.find_single_match(datae, 'const dataLink =(.*?);')
-            e_bytes = scrapertools.find_single_match(datae, "const bytes =.*?'(.*?)'")
+            dataLink = scrapertools.find_single_match(datae, 'const dataLink =(.*?);')
+            if not dataLink: dataLink = scrapertools.find_single_match(datae, 'dataLink(.*?);')
 
-            e_links = e_links.replace(']},', '"type":"file"').replace(']}]', '"type":"file"')
+            e_bytes = scrapertools.find_single_match(datae, "const bytes =.*?'(.*?)'")
+            if not e_bytes: e_bytes = scrapertools.find_single_match(datae, "encrypted.*?'(.*?)'")
+
+            e_links = dataLink.replace(']},', '"type":"file"').replace(']}]', '"type":"file"')
 
             langs = scrapertools.find_multiple_matches(str(e_links), '"video_language":(.*?)"type":"file"')
 
@@ -812,35 +812,40 @@ def play(item):
     url = item.url
 
     if item.crypto:
-        logger.info("check-1-crypto: %s" % item.crypto)
-        logger.info("check-2-crypto: %s" % item.bytes)
-        try:
-            ###############url =  AES.decrypt(item.crypto, item.bytes)
-            url = AES.new(item.crypto, AES.MODE_SIV==10)
-            logger.info("check-3-crypto: %s" % url)
+        crypto = str(item.crypto)
+        bytes = str(item.bytes)
 
-            url = jscrypto.new(item.crypto, 2, IV=item.bytes)
-            logger.info("check-4-crypto: %s" % url)
+        try:
+            cripto = ast.literal_eval(cripto)
         except:
+            crypto = str(item.crypto)
+
+        try:
+            url = GibberishAES.dec(GibberishAES(), string = crypto, pass_ = bytes)
+        except:
+            url = ''
+
+        if not url:
             return '[COLOR cyan]No se pudo [COLOR red]Desencriptar[/COLOR]'
 
-    if '/streamsito.com/uqlink.php?id=' in url: url = url.replace('/streamsito.com/uqlink.php?id=', '/uqload.com/embed-')
+    if url:
+        if '/streamsito.com/uqlink.php?id=' in url: url = url.replace('/streamsito.com/uqlink.php?id=', '/uqload.com/embed-')
 
-    servidor = servertools.get_server_from_url(url)
-    servidor = servertools.corregir_servidor(servidor)
+        servidor = servertools.get_server_from_url(url)
+        servidor = servertools.corregir_servidor(servidor)
 
-    url = servertools.normalize_url(servidor, url)
+        url = servertools.normalize_url(servidor, url)
 
-    if '/plustream.' in url or '/xupalace.' in url:
-        return 'Servidor [COLOR goldenrod]No Soportado[/COLOR]'
+        if '/plustream.' in url or '/xupalace.' in url:
+            return 'Servidor [COLOR goldenrod]No Soportado[/COLOR]'
 
-    if servidor == 'zplayer': url = url + '|Referer=' + host
+        if servidor == 'zplayer': url = url + '|Referer=' + host
 
-    if servidor == 'directo':
-        new_server = servertools.corregir_other(url).lower()
-        if new_server.startswith("http"): servidor = new_server
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(url).lower()
+            if new_server.startswith("http"): servidor = new_server
 
-    itemlist.append(item.clone( url = url, server = servidor ))
+        itemlist.append(item.clone( url = url, server = servidor ))
 
     return itemlist
 

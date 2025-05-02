@@ -69,9 +69,9 @@ def addFavourite(item):
     if item.contentType not in ['movie', 'tvshow', 'season', 'episode']:
         notification_d_ok = config.get_setting('notification_d_ok', default=True)
         if notification_d_ok:
-            platformtools.dialog_ok(config.__addon_name, 'Sólo películas, series, temporadas ó capítulos')
+            platformtools.dialog_ok(config.__addon_name, 'Sólo Películas, Series, Temporadas ó Episodios')
         else:
-            platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Sólo películas, series, temporadas ó capítulos[/COLOR][/B]' % color_avis)
+            platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Sólo Películas, Series, Temporadas ó Episodios[/COLOR][/B]' % color_avis)
         return False
 
     # ~ Si no está definido tmdb_id seleccionar
@@ -135,7 +135,10 @@ def addFavourite(item):
 
     if not done:
         if msg:
-            platformtools.dialog_ok(config.__addon_name, '[B][COLOR red]No se pudieron añadir los enlaces[/COLOR][/B]', msg)
+            if not config.get_setting('developer_mode', default=False):
+                platformtools.dialog_notification(config.__addon_name, '[B][COLOR red]No se Pudo Añadir los Enlaces[/COLOR][/B]')
+            else:
+                platformtools.dialog_ok(config.__addon_name, '[B][COLOR red]No se Pudieron Añadir los Enlaces[/COLOR][/B]', msg)
         return False
 
     tit = item.contentTitle if item.contentType == 'movie' else item.contentSerieName
@@ -319,9 +322,47 @@ def mainlist_episodios(item):
     rows = db.get_all_episodes(orden=orden[tracking_order], desde=item.desde, numero=tracking_perpage)
 
     for tmdb_id, season, episode, infolabels in rows:
+        try:
+           nro_season = int(infolabels['season'])
+        except:
+           logger.error("Comprobar Número Temporada: %s" % str(infolabels['season']))
+           nro_season = ''
+
+        if not nro_season: nro_season = '00'
+        else:
+           num_season = str(nro_season)
+           if len(num_season) == 1: nro_season = '0' + num_season
+
+        nro_epis = str(infolabels['episode'])
+
+        if 'Capitulo' in nro_epis: nro_epis = nro_epis.replace('Capitulo', '').strip()
+        elif 'Capítulo' in nro_epis: nro_epis = nro_epis.replace('Capítulo', '').strip()
+
+        elif 'capitulo' in nro_epis: nro_epis = nro_epis.replace('capitulo', '').strip()
+        elif 'capítulo' in nro_epis: nro_epis = nro_epis.replace('capítulo', '').strip()
+
+        elif 'Episodio' in nro_epis: nro_epis = nro_epis.replace('Episodio', '').strip()
+        elif 'episodio' in nro_epis: nro_epis = nro_epis.replace('episodio', '').strip()
+
+        elif 'Episode' in nro_epis: nro_epis = nro_epis.replace('Episode', '').strip()
+        elif 'episode' in nro_epis: nro_epis = nro_epis.replace('episode', '').strip()
+
+        if '-' in nro_epis: nro_epis = nro_epis.replace('-', '').strip()
+
+        try:
+           nro_epis = int(nro_epis)
+        except:
+           logger.error("Comprobar Número Episodio: %s" % str(infolabels['episode']))
+           nro_epis = ''
+
+        if not nro_epis: nro_epis = '00'
+        else:
+           num_epis = str(nro_epis)
+           if len(num_epis) == 1: nro_epis = '0' + num_epis
+
         # ~ 11/11/24 TypeError: %d format: a real number is required, not str
         # ~ titulo = '%s %dx%02d' % (infolabels['tvshowtitle'], infolabels['season'], infolabels['episode'])
-        titulo = infolabels['tvshowtitle'] + ' ' + str(infolabels['season']) + 'x' + str(infolabels['episode'])
+        titulo = infolabels['tvshowtitle'] + ' ' + str(nro_season) + 'x' + str(nro_epis)
 
         subtitulo = valor_infolabel('episodio_titulo', infolabels)
         if subtitulo != '': titulo += ' ' + subtitulo

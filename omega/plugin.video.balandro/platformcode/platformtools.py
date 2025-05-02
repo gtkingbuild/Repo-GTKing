@@ -408,6 +408,7 @@ def set_context_commands(item, parent_item, colores):
                 presentar = False
 
                 if item.contentExtra == 'filmaffinitylists': presentar = True
+                elif item.contentExtra == 'tvseries': presentar = False
                 else:
                     if item.contentExtra not in ['3', 'adults'] and parent_item.channel not in ['tracking', 'downloads', 'tmdblists', 'filmaffinitylists']: presentar = True 
 
@@ -464,7 +465,8 @@ def set_context_commands(item, parent_item, colores):
             # ~ item.clone(channel="actions", action="more_info",
                        # ~ from_channel=item.channel, from_action=item.action))) )
 
-    # ~ context_commands = sorted(context_commands, key=lambda comand: comand[0])
+        # ~ context_commands = sorted(context_commands, key=lambda comand: comand[0])
+
     return context_commands
 
 
@@ -584,10 +586,10 @@ def developer_mode_check_findvideos(itemlist, parent_item):
 
         # Server Various y anulados/controlados
         if apuntar:
-            if it.server in ['dropload', 'fastupload', 'filemoon', 'moonplayer', 'hexupload', 'hexload', 'krakenfiles', 'mvidoo', 'rutube', 'streamhub', 'streamwish', 'tubeload', 'uploadever', 'videowood', 'yandex', 'desiupload', 'filelions', 'youdbox', 'yodbox', 'youdboox', 'vudeo', 'embedgram', 'embedrise', 'embedwish', 'wishembed', 'vidguard', 'vgfplay', 'v6embed', 'vgembed', 'vembed', 'vid-guard', 'strwish', 'azipcdn', 'awish', 'dwish', 'mwish', 'swish', 'lulustream', 'luluvdo', 'lulu', 'lion', 'alions', 'dlions', 'mlions', 'turboviplay', 'emturbovid', 'tuborstb', 'streamvid' 'upload.do', 'uploaddo', 'file-upload', 'wishfast', 'doodporn', 'vidello', 'vidroba', 'vidspeed', 'sfastwish', 'fviplions', 'moonmov', 'flaswish', 'vkspeed', 'vkspeed7', 'obeywish', 'twitch', 'vidhide', 'hxfile', 'drop', 'embedv', 'vgplayer', 'userload', 'uploadraja', 'cdnwish', 'goodstream', 'asnwish', 'flastwish', 'jodwish', 'fmoonembed', 'embedmoon', 'moonjscdn', 'rumble', 'bembed', 'javlion', 'streamruby', 'sruby', 'rubystream', 'stmruby', 'rubystm', 'swhoi', 'listeamed', 'go-streamer.net', 'fsdcmo', 'fdewsdc', 'qiwi', 'swdyu', 'ponmi', 'wishonly', 'streamsilk', 'playerwish', 'hlswish', 'iplayerhls', 'hlsflast', 'wish', 'stblion', 'terabox', 'dhtpre', 'dramacool']:
+            if it.server in ['dropload', 'fastupload', 'filemoon', 'moonplayer', 'hexupload', 'hexload', 'krakenfiles', 'mvidoo', 'rutube', 'streamhub', 'streamwish', 'tubeload', 'uploadever', 'videowood', 'yandex', 'desiupload', 'filelions', 'youdbox', 'yodbox', 'youdboox', 'vudeo', 'embedgram', 'embedrise', 'embedwish', 'wishembed', 'vidguard', 'vgfplay', 'v6embed', 'vgembed', 'vembed', 'vid-guard', 'strwish', 'azipcdn', 'awish', 'dwish', 'mwish', 'swish', 'lulustream', 'luluvdo', 'lulu', 'lion', 'alions', 'dlions', 'mlions', 'turboviplay', 'emturbovid', 'tuborstb', 'streamvid' 'upload.do', 'uploaddo', 'file-upload', 'wishfast', 'doodporn', 'vidello', 'vidroba', 'vidspeed', 'sfastwish', 'fviplions', 'moonmov', 'flaswish', 'vkspeed', 'vkspeed7', 'obeywish', 'twitch', 'vidhide', 'hxfile', 'drop', 'embedv', 'vgplayer', 'userload', 'uploadraja', 'cdnwish', 'goodstream', 'asnwish', 'flastwish', 'jodwish', 'fmoonembed', 'embedmoon', 'moonjscdn', 'rumble', 'bembed', 'javlion', 'streamruby', 'sruby', 'rubystream', 'stmruby', 'rubystm', 'rubyvid', 'swhoi', 'listeamed', 'go-streamer.net', 'fsdcmo', 'fdewsdc', 'peytonepre', 'ryderjet', 'smoothpre' , 'qiwi', 'swdyu', 'ponmi', 'wishonly', 'streamsilk', 'playerwish', 'hlswish', 'iplayerhls', 'hlsflast', 'ghbrisk', 'cybervynx', 'streamhg', 'wish', 'stblion', 'terabox', 'dhtpre', 'dramacool', 'l1afav']:
                 apuntar = False
 
-            elif it.server in ['allviid', 'cloudfile', 'cloudmail', 'dailyuploads', 'darkibox', 'dembed', 'downace', 'fastdrive', 'fastplay', 'filegram', 'gostream', 'letsupload', 'liivideo', 'myupload', 'oneupload', 'pandafiles', 'rovideo', 'send', 'streamable', 'streamdav', 'streamgzzz', 'streamoupload', 'turbovid', 'tusfiles', 'uploadba', 'uploadflix', 'uploady', 'veev', 'doods', 'veoh', 'vidbob', 'vidlook', 'vidmx', 'vid', 'vidpro', 'vidstore', 'vipss', 'vkprime', 'worlduploads', 'ztreamhub' 'amdahost', 'updown', 'videa', 'asianplay', 'swiftload', 'udrop', 'vidtube']:
+            elif it.server in ['allviid', 'cloudfile', 'cloudmail', 'dailyuploads', 'darkibox', 'dembed', 'downace', 'fastdrive', 'fastplay', 'filegram', 'gostream', 'letsupload', 'liivideo', 'myupload', 'neohd', 'oneupload', 'pandafiles', 'rovideo', 'send', 'streamable', 'streamdav', 'streamgzzz', 'streamoupload', 'turbovid', 'tusfiles', 'uploadba', 'uploadflix', 'uploadhub', 'uploady', 'upvid', 'veev', 'doods', 'veoh', 'vidbob', 'vidlook', 'vidmx', 'vido.', 'vidpro', 'vidstore', 'vipss', 'vkprime', 'worlduploads', 'ztreamhub' 'amdahost', 'updown', 'videa', 'asianplay', 'swiftload', 'udrop', 'vidtube',  'bigwarp', 'bgwp', 'wecima', 'asianload']:
                 apuntar = False
 
             elif it.server in ['fembed', 'fembed-hd', 'fembeder', 'divload', 'ilovefembed', 'myurlshort', 'jplayer', 'feurl', 'fembedisthebest', 'femax20', 'fcdn', 'fembad', 'pelispng', 'hlshd', 'embedsito', 'mrdhan', 'dutrag', 'fplayer', 'diasfem', 'suzihaza', 'vanfem', 'youtvgratis', 'oceanplay', 'gotovideo.kiev.ua', 'owodeuwu', 'sypl', 'fembed9hd', 'watchse', 'vcdn', 'femoload', 'cubeembed']:
@@ -599,7 +601,7 @@ def developer_mode_check_findvideos(itemlist, parent_item):
             elif it.server in ['sbplay', 'sbplay1', 'sbplay2', 'pelistop', 'sbfast', 'sbfull', 'ssbstream', 'sbthe', 'sbspeed', 'cloudemb', 'tubesb', 'embedsb', 'playersb', 'sbcloud1', 'watchsb', 'viewsb', 'watchmo', 'streamsss', 'sblanh', 'sbanh', 'sblongvu', 'sbchill', 'sbrity', 'sbhight', 'sbbrisk', 'sbface', 'view345', 'sbone', 'sbasian', 'streaamss', 'lvturbo', 'sbnet', 'sbani', 'sbrapid', 'cinestart', 'vidmoviesb', 'sbsonic', 'sblona', 'likessb']:
                 apuntar = False
 
-            elif it.server in ['ddownload', 'dfiles', 'dropapk', 'fileflares', 'filerice', 'fireload', 'katfile', 'megaupload', 'oload', 'pandafiles', 'rockfile', 'turbobit', 'uploadrive', 'uppit']:
+            elif it.server in ['ddownload', 'dfiles', 'dropapk', 'fastclick', 'fileflares', 'filerice', 'fireload', 'katfile', 'megaupload', 'oload', 'pandafiles', 'rockfile', 'turbobit', 'uploadrive', 'uppit']:
                 apuntar = False
 
         if apuntar:
@@ -853,7 +855,17 @@ def play_video(item, parent_item, autoplay=False):
         if not autoplay:
             if motivo:
                 if '[' in motivo:
-                    motivo = '[COLOR darkorange][B]' + motivo + '[/B][/COLOR]'
+                    c_motivo = motivo
+
+                    if 'Falta el Servidor' in c_motivo: pass
+
+                    elif 'Captcha erróneo' in c_motivo: pass
+                    elif 'obf_link' in c_motivo: pass
+                    elif 'get_int' in c_motivo: pass
+
+                    else: c_motivo = c_motivo.replace('[', '').replace(']', ' -')
+
+                    motivo = '[COLOR darkorange][B]' + c_motivo + '[/B][/COLOR]'
                 else:
                     motivo = '[COLOR orange][B]' + motivo + '[/B][/COLOR]'
 

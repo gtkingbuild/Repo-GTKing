@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import sys
+
+PY3 = False
+if sys.version_info[0] >= 3: PY3 = True
+
+
 import re, os, string
 
 from platformcode import config, logger, platformtools
@@ -509,7 +515,27 @@ def play(item):
     itemlist = []
 
     if item.server == 'torrent':
-        itemlist.append(item.clone( url = item.url, server = 'torrent' ))
+        if item.url.endswith('.torrent'):
+            if config.get_setting('proxies', item.channel, default=''):
+                if PY3:
+                    from core import requeststools
+                    data = requeststools.read(item.url, 'tomadivx')
+                else:
+                    data = do_downloadpage(item.url)
+
+                if data:
+                    if '<h1>Not Found</h1>' in str(data) or '<!DOCTYPE html>' in str(data) or '<!DOCTYPE>' in str(data):
+                        return 'Archivo [COLOR red]Inexistente[/COLOR]'
+
+                    file_local = os.path.join(config.get_data_path(), "temp.torrent")
+                    with open(file_local, 'wb') as f: f.write(data); f.close()
+
+                    itemlist.append(item.clone( url = file_local, server = 'torrent' ))
+            else:
+                itemlist.append(item.clone( url = item.url, server = 'torrent' ))
+        else:
+            itemlist.append(item.clone( url = item.url, server = 'torrent' ))
+
         return itemlist
 
     else:
@@ -527,7 +553,23 @@ def play(item):
                itemlist.append(item.clone( url = url_base64, server = 'torrent' ))
 
             elif url_base64.endswith(".torrent"):
-               itemlist.append(item.clone( url = url_base64, server = 'torrent' ))
+               if config.get_setting('proxies', item.channel, default=''):
+                   if PY3:
+                       from core import requeststools
+                       data = requeststools.read(url_base64, 'tomadivx')
+                   else:
+                       data = do_downloadpage(url_base64)
+
+                   if data:
+                       if '<h1>Not Found</h1>' in str(data) or '<!DOCTYPE html>' in str(data) or '<!DOCTYPE>' in str(data):
+                           return 'Archivo [COLOR red]Inexistente[/COLOR]'
+
+                       file_local = os.path.join(config.get_data_path(), "temp.torrent")
+                       with open(file_local, 'wb') as f: f.write(data); f.close()
+
+                       itemlist.append(item.clone( url = file_local, server = 'torrent' ))
+               else:
+                   itemlist.append(item.clone( url = url_base64, server = 'torrent' ))
 
     return itemlist
 

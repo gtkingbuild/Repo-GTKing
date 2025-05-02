@@ -6,12 +6,12 @@
   "active": true,
 
   "searchable": true,
-  "search_types": ["movie"],
+  "search_types": ["all", "movie", "tvshow"],
 
-  "categories": ["movie", "torrent"],
+  "categories": ["movie", "tvshow", "torrent"],
   "language": ["cast"],
 
   "clusters": ["onlyone", "current", "torrents", "qualityes", "kids", "docs", "vos", "3d", "4k"],
 
-  "notes": "Canal con enlaces Torrent exclusivamente. Películas por géneros, calidades. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Canal con enlaces Torrent exclusivamente. Películas por géneros, calidades. También Series. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

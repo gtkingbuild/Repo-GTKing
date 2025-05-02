@@ -225,7 +225,8 @@ def save_download(item):
             if item.channel == 'tracking' and len(itemlist) > 0: item.url = itemlist[0].parent_item_url
 
             # ~ Reordenar/Filtrar enlaces
-            itemlist = filter(lambda it: it.action == 'play', itemlist) # ~ aunque por ahora no se usan action != 'play' en los findvideos
+            # ~ aunque por ahora no se usan action != 'play' en los findvideos
+            itemlist = filter(lambda it: it.action == 'play', itemlist)
 
             from core import servertools
             itemlist = servertools.filter_and_sort_by_quality(itemlist)
@@ -276,13 +277,13 @@ def save_download(item):
                             if notification_d_ok:
                                 platformtools.dialog_ok(config.__addon_name, itemlist_play)
                             else:
-                                platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]No se pudo descargar[/COLOR][/B]' % color_exec)
+                                platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]No se Pudo descargar[/COLOR][/B]' % color_exec)
                         else:
                             ok_play = False
                             if notification_d_ok:
                                 platformtools.dialog_ok(config.__addon_name, 'No se puede descargar')
                             else:
-                                platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]No se pudo descargar[/COLOR][/B]' % color_exec)
+                                platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]No se Pudo Descargar2[/COLOR][/B]' % color_exec)
 
                     else:
                         ok_play = download_video(itemlist[seleccion], item)
@@ -355,53 +356,84 @@ def download_video(item, parent_item):
 
         if mediaurl.endswith('.m3u8') or '.m3u8?' in mediaurl or 'm3u8' in video_urls[seleccion][0].lower():
             if notification_d_ok:
-                platformtools.dialog_ok(config.__addon_name, 'Formato M3u8 no admitido, no se puede descargar')
+                platformtools.dialog_ok(config.__addon_name, 'Los archivos M3u8 no están permitidos, no se descargan')
             else:
-                platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Formato M3u8 no admitido[/COLOR][/B]' % color_alert)
+                platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Archivo M3u8 no permitido[/COLOR][/B]' % color_alert)
             return False
 
         if mpd:
             if notification_d_ok:
-                platformtools.dialog_ok(config.__addon_name, 'Formato Mpd no admitido, no se puede descargar')
+                platformtools.dialog_ok(config.__addon_name, 'Los archivos Mpd no están permitidos, no se descargan')
             else:
-                platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Formato Mpd no admitido[/COLOR][/B]' % color_alert)
+                platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Archivo Mpd no permitido[/COLOR][/B]' % color_alert)
             return False
 
         if mediaurl.startswith('rtmp'):
             if notification_d_ok:
-                platformtools.dialog_ok(config.__addon_name, 'Formato Rtmp no admitido, no se puede descargar')
+                platformtools.dialog_ok(config.__addon_name, 'Los archivos Rtmp no está permitidos, no se descargan')
             else:
-                platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Formato Rtmp no admitido[/COLOR][/B]' % color_alert)
+                platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Archivo Rtmp no permitido[/COLOR][/B]' % color_alert)
             return False
 
         if item.server == 'torrent':
             if notification_d_ok:
-                platformtools.dialog_ok(config.__addon_name, 'Formato Torrent no admitido, no se puede descargar')
+                platformtools.dialog_ok(config.__addon_name, 'Los archivos Torrent no están permitidos, no se descargan')
             else:
-                platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Formato Torrent no admitido[/COLOR][/B]' % color_alert)
+                platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Archivo Torrent no permitido[/COLOR][/B]' % color_alert)
+            return False
+
+        if item.server == 'youtube':
+            if notification_d_ok:
+                platformtools.dialog_ok(config.__addon_name, 'Los Vídeos de Youtube no están permitidos, no se descargan')
+            else:
+                platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]Vídeo Youtube no permitido[/COLOR][/B]' % color_alert)
             return False
 
         if parent_item.contentType == 'movie':
             # ~ config.text_clean(...)
             file_name = '%s' % parent_item.contentTitle
         else:
-            num_epis = parent_item.contentEpisodeNumber
+            try:
+               nro_season = int(parent_item.contentSeason)
+            except:
+               logger.error("Verificar Número Temporada: %s" % str(parent_item.contentSeason))
+               nro_season = ''
 
-            nro_epis = str(num_epis)
+            if not nro_season: nro_season = '00'
+            else:
+               num_season = str(nro_season)
+               if len(num_season) == 1: nro_season = '0' + num_season
 
-            if 'Capitulo' in nro_epis: num_epis = num_epis.replace('Capitulo', '').strip()
-            elif 'Capítulo' in nro_epis: num_epis = num_epis.replace('Capítulo', '').strip()
-            elif 'capitulo' in nro_epis: num_epis = num_epis.replace('capitulo', '').strip()
-            elif 'capítulo' in nro_epis: num_epis = num_epis.replace('capítulo', '').strip()
-            elif 'Episodio' in nro_epis: num_epis = num_epis.replace('Episodio', '').strip()
-            elif 'episodio' in nro_epis: num_epis = num_epis.replace('episodio', '').strip()
+            nro_epis = str(parent_item.contentEpisodeNumber)
 
-            if '-' in nro_epis: num_epis = num_epis.replace('-', '').strip()
+            if 'Capitulo' in nro_epis: nro_epis = nro_epis.replace('Capitulo', '').strip()
+            elif 'Capítulo' in nro_epis: nro_epis = nro_epis.replace('Capítulo', '').strip()
 
-            try: nro_epis = int(num_epis)
-            except: logger.error("Comprobar Número del Episodio: %s" % num_epis)
+            elif 'capitulo' in nro_epis: nro_epis = nro_epis.replace('capitulo', '').strip()
+            elif 'capítulo' in nro_epis: nro_epis = nro_epis.replace('capítulo', '').strip()
 
-            file_name = '%s - S%02dE%02d' % (parent_item.contentSerieName, int(parent_item.contentSeason), int(num_epis))
+            elif 'Episodio' in nro_epis: nro_epis = nro_epis.replace('Episodio', '').strip()
+            elif 'episodio' in nro_epis: nro_epis = nro_epis.replace('episodio', '').strip()
+
+            elif 'Episode' in nro_epis: nro_epis = nro_epis.replace('Episode', '').strip()
+            elif 'episode' in nro_epis: nro_epis = nro_epis.replace('episode', '').strip()
+
+            if '-' in nro_epis: nro_epis = nro_epis.replace('-', '').strip()
+
+            try:
+               nro_epis = int(nro_epis)
+            except:
+               logger.error("Verificar Número Episodio: %s" % str(parent_item.contentEpisodeNumber))
+               nro_epis = ''
+
+            if not nro_epis: nro_epis = '00'
+            else:
+               num_epis = str(nro_epis)
+               if len(num_epis) == 1: nro_epis = '0' + num_epis
+
+            # ~ 6/1/25
+            # ~ file_name = '%s - S%02dE%02d' % (parent_item.contentSerieName, int(parent_item.contentSeason), int(num_epis))
+            file_name = '%s - S%02dE%02d' % (parent_item.contentSerieName, int(nro_season), int(nro_epis))
 
         ch_name = parent_item.channel if parent_item.channel != 'tracking' else item.channel
         file_name += ' [%s][%s]' % (ch_name, item.server)
@@ -448,7 +480,9 @@ def do_download(mediaurl, file_name, parent_item, server_item):
 
     # ~ Guardar info del vídeo en json
     path_down_json = filetools.join(download_path, file_name + '.json')
-    parent_item.server_item = server_item.tojson() # ~ Guardar info del server por si hay que continuar la descarga
+
+    # ~ Guardar info del server por si hay que continuar la descarga
+    parent_item.server_item = server_item.tojson()
     write_download_json(path_down_json, parent_item)
 
     # ~ Lanzamos la descarga
@@ -462,7 +496,7 @@ def do_download(mediaurl, file_name, parent_item, server_item):
         return False
     else:
         if down_stats['downloadStatus'] == STATUS_CODES.completed:
-            platformtools.dialog_ok(config.__addon_name, 'Descarga Finalizada', file_name, config.format_bytes(down_stats['downloadSize']))
+            platformtools.dialog_ok(config.__addon_name + ' Descargas', '[COLOR cyan][B]Descarga Finalizada[/B][/COLOR]', '[COLOR yellow][B]' + file_name + '[/B][/COLOR]', config.format_bytes(down_stats['downloadSize']))
 
         platformtools.itemlist_refresh()
         return True
@@ -482,3 +516,4 @@ def update_download_json(path, params):
     item = Item().fromjson(filetools.read(path))
     item.__dict__.update(params)
     filetools.write(path, item.tojson())
+

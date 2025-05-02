@@ -32,6 +32,7 @@ current_month = int(datetime.today().month)
 
 con_incidencias = ''
 no_accesibles = ''
+con_problemas = ''
 
 try:
     with open(os.path.join(config.get_runtime_path(), 'dominios.txt'), 'r') as f: txt_status=f.read(); f.close()
@@ -40,6 +41,7 @@ except:
     except: txt_status = ''
 
 if txt_status:
+    # ~ Incidencias
     bloque = scrapertools.find_single_match(txt_status, 'SITUACION CANALES(.*?)CANALES TEMPORALMENTE DES-ACTIVADOS')
 
     matches = scrapertools.find_multiple_matches(bloque, "[B](.*?)[/B]")
@@ -49,6 +51,7 @@ if txt_status:
 
         if '[COLOR moccasin]' in match: con_incidencias += '[B' + match + '/I][/B][/COLOR][CR]'
 
+    # ~ No Accesibles
     bloque = scrapertools.find_single_match(txt_status, 'CANALES PROBABLEMENTE NO ACCESIBLES(.*?)ULTIMOS CAMBIOS DE DOMINIOS')
 
     matches = scrapertools.find_multiple_matches(bloque, "[B](.*?)[/B]")
@@ -57,6 +60,16 @@ if txt_status:
         match = match.strip()
 
         if '[COLOR moccasin]' in match: no_accesibles += '[B' + match + '/I][/B][/COLOR][CR]'
+
+    # ~ Con Problemas
+    bloque = scrapertools.find_single_match(txt_status, 'CANALES CON PROBLEMAS(.*?)$')
+
+    matches = scrapertools.find_multiple_matches(bloque, "[B](.*?)[/B]")
+
+    for match in matches:
+        match = match.strip()
+
+        if '[COLOR moccasin]' in match: con_problemas += '[B' + match + '/I][/B][/COLOR][CR]'
 
 
 context_desarrollo = []
@@ -98,7 +111,7 @@ context_buscar.append({'title': tit, 'channel': 'search', 'action': 'show_help_p
 tit = '[COLOR darkcyan][B]Preferencias Proxies[/B][/COLOR]'
 context_buscar.append({'title': tit, 'channel': 'helper', 'action': 'show_prx_parameters'})
 
-tit = '[COLOR darkorange]Información Dominios[/COLOR]'
+tit = '[COLOR bisque]Gestión Dominios[/COLOR]'
 context_buscar.append({'title': tit, 'channel': 'helper', 'action': 'show_help_domains'})
 
 tit = '[COLOR mediumaquamarine][B]Últimos Cambios Dominios[/B][/COLOR]'
@@ -343,7 +356,7 @@ context_config = []
 tit = '[COLOR tan][B]Preferencias Canales[/B][/COLOR]'
 context_config.append({'title': tit, 'channel': 'helper', 'action': 'show_channels_parameters'})
 
-tit = '[COLOR darkorange]Información Dominios[/COLOR]'
+tit = '[COLOR bisque]Gestión Dominios[/COLOR]'
 context_config.append({'title': tit, 'channel': 'helper', 'action': 'show_help_domains'})
 
 tit = '[COLOR %s][B]Últimos Cambios Dominios[/B][/COLOR]' % color_exec
@@ -579,7 +592,7 @@ def mainlist(item):
     tit = '[COLOR tan][B]Preferencias Menús[/B][/COLOR]'
     context_ayuda.append({'title': tit, 'channel': 'helper', 'action': 'show_menu_parameters'})
 
-    tit = '[COLOR darkorange]Información Dominios[/COLOR]'
+    tit = '[COLOR bisque]Gestión Dominios[/COLOR]'
     context_ayuda.append({'title': tit, 'channel': 'helper', 'action': 'show_help_domains'})
 
     tit = '[COLOR %s][B]Últimos Cambios Dominios[/B][/COLOR]' % color_exec
@@ -1326,7 +1339,7 @@ def channels(item):
         if 'current' in ch['clusters']:
             cfg_domains = True
 
-            tit = '[COLOR darkorange]Información Dominios[/COLOR]'
+            tit = '[COLOR bisque]Gestión Dominios[/COLOR]'
             context.append({'title': tit, 'channel': 'helper', 'action': 'show_help_domains'})
 
         tit = '[COLOR %s][B]Últimos Cambios Dominios[/B][/COLOR]' % color_exec
@@ -1377,6 +1390,17 @@ def channels(item):
         if 'notice' in ch['clusters']:
             tit = '[COLOR tan][B]Aviso Canal[/B][/COLOR]'
             context.append({'title': tit, 'channel': 'helper', 'action': 'show_help_' + ch['id']})
+
+        if 'register' in ch['clusters']:
+            cfg_user_channel = 'channel_' + ch['id'] + '_' + ch['id'] + '_username'
+            cfg_pass_channel = 'channel_' + ch['id'] + '_' + ch['id'] + '_password'
+            if config.get_setting(cfg_user_channel, default='') and config.get_setting(cfg_pass_channel, default=''):
+               cfg_login_channel = 'channel_' + ch['id'] + '_' + ch['id'] + '_login'
+
+               if config.get_setting(cfg_login_channel, default=False):
+                   cfg_dominio_channel = 'channel_' + ch['id'] + '_dominio'
+                   tit = '[COLOR springgreen][B]Test Login Cuenta[/B][/COLOR]'
+                   context.append({'title': tit, 'channel': 'submnuctext', 'action': '_credenciales_' + ch['id']})
 
         tit = '[COLOR darkorange][B]Test Web Canal[/B][/COLOR]'
         context.append({'title': tit, 'channel': item.channel, 'action': '_tests'})
@@ -1464,6 +1488,19 @@ def channels(item):
 
         if no_accesibles:
            if ch['name'] in str(no_accesibles): titulo += '[I][B][COLOR tan] (no accesible)[/COLOR][/I][/B]'
+
+        if con_problemas:
+           if ch['name'] in str(con_problemas):
+               hay_problemas = str(con_problemas).replace('[B][COLOR moccasin]', 'CHANNEL').replace('[COLOR lime]', '/CHANNEL')
+               channels_con_problemas = scrapertools.find_multiple_matches(hay_problemas, "CHANNEL(.*?)/CHANNEL")
+
+               for channel_con_problema in channels_con_problemas:
+                    channel_con_problema = channel_con_problema.strip()
+
+                    if not channel_con_problema == ch['name']: continue
+
+                    titulo += '[I][B][COLOR tomato] (con problema)[/COLOR][/I][/B]'
+                    break
 
         if ch['searchable']:
             if not ch['status'] == -1:

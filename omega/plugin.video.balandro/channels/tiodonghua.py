@@ -429,6 +429,8 @@ def findvideos(item):
                 if url.startswith("https://sb"): continue
                 elif 'fembed' in url or  'streamsb' in url or 'playersb' in url or 'fcom' in url: continue
 
+                url = url.replace('/Smoothpre.', '/smoothpre.')
+
                 servidor = servertools.get_server_from_url(url)
                 servidor = servertools.corregir_servidor(servidor)
 
@@ -454,6 +456,9 @@ def findvideos(item):
                     if not servidor == 'various': other = ''
 
                 if servidor == 'directo':
+                    if '/tioplayer.' in url: continue
+                    elif '/tiodonghua.' in url: continue
+
                     if '/ok.ru' in url: servidor = 'okru'
 
                     elif '/terabox.' in url:
@@ -463,6 +468,7 @@ def findvideos(item):
                     elif config.get_setting('developer_mode', default=False):
                         other = url.split("/")[2]
                         other = other.replace('https:', '').strip()
+
 
                 itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = url, language = 'Vos', other = other ))
 
@@ -561,6 +567,9 @@ def play(item):
     if servidor == 'directo':
         new_server = servertools.corregir_other(url_play).lower()
         if new_server.startswith("http"): servidor = new_server
+
+    if '/filelions.' in url_play:
+        url_play = url_play + '|Referer=' + host
 
     itemlist.append(item.clone(url = url_play, server = servidor))
 

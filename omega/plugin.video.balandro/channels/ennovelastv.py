@@ -10,13 +10,13 @@ from core import httptools, scrapertools, servertools, tmdb
 # ~ pelis No hay 24/12/2023
 
 
-host = 'https://j.ennovelas-tv.com/'
+host = 'https://k.ennovelas-tv.com/'
 
 
 # ~ por si viene de enlaces guardados
 ant_hosts = ['https://c.ennovelas-tv.com/', 'https://d.ennovelas-tv.com/', 'https://e.ennovelas-tv.com/',
              'https://f.ennovelas-tv.com/', 'https://g.ennovelas-tv.com/', 'https://h.ennovelas-tv.com/',
-             'https://i.ennovelas-tv.com/']
+             'https://i.ennovelas-tv.com/', 'https://j.ennovelas-tv.com/']
 
 
 domain = config.get_setting('dominio', 'ennovelastv', default='')
@@ -136,7 +136,7 @@ def anios(item):
     for x in range(current_year, 1989, -1):
         url = host + 'years/' + str(x) + '/'
 
-        itemlist.append(item.clone( title = str(x), url = url, action = 'list_all', text_color = 'deepskyblue' ))
+        itemlist.append(item.clone( title = str(x), url = url, action = 'list_all', text_color = 'hotpink' ))
 
     return itemlist
 
@@ -145,16 +145,18 @@ def paises(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title = 'América', action = 'list_all', url = host + 'country/united-states/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Argentina', action = 'list_all', url = host + 'country/argentina/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Brasil', action = 'list_all', url = host + 'country/brasil/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Chile', action = 'list_all', url = host + 'country/chile/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Colombia', action = 'list_all', url = host + 'country/colombia/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'México', action = 'list_all', url = host + 'country/mexico/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Perú', action = 'list_all', url = host + 'country/peru/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Reino unido', action = 'list_all', url = host + 'country/reino-unido/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Turquía', action = 'list_all', url = host + 'country/turkey/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'Venezuela', action = 'list_all', url = host + 'country/venezuela/', text_color='moccasin' ))
+    text_color = 'hotpink'
+
+    itemlist.append(item.clone( title = 'América', action = 'list_all', url = host + 'country/united-states/', text_color= text_color))
+    itemlist.append(item.clone( title = 'Argentina', action = 'list_all', url = host + 'country/argentina/', text_color=text_color ))
+    itemlist.append(item.clone( title = 'Brasil', action = 'list_all', url = host + 'country/brasil/', text_color=text_color ))
+    itemlist.append(item.clone( title = 'Chile', action = 'list_all', url = host + 'country/chile/', text_color= text_color))
+    itemlist.append(item.clone( title = 'Colombia', action = 'list_all', url = host + 'country/colombia/', text_color=text_color ))
+    itemlist.append(item.clone( title = 'México', action = 'list_all', url = host + 'country/mexico/', text_color=text_color ))
+    itemlist.append(item.clone( title = 'Perú', action = 'list_all', url = host + 'country/peru/', text_color=text_color ))
+    itemlist.append(item.clone( title = 'Reino unido', action = 'list_all', url = host + 'country/reino-unido/', text_color=text_color ))
+    itemlist.append(item.clone( title = 'Turquía', action = 'list_all', url = host + 'country/turkey/', text_color=text_color ))
+    itemlist.append(item.clone( title = 'Venezuela', action = 'list_all', url = host + 'country/venezuela/', text_color=text_color ))
 
     return itemlist
 

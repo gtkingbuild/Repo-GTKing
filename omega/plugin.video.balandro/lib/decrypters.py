@@ -178,6 +178,13 @@ def decode_url_base64(url, host_torrent):
             if domain and domain in str(host_list): url_base64_bis = sorted_urls(url_base64, url_base64, host_torrent)
             else: url_base64_bis = sorted_urls(url, url_base64, host_torrent)
 
+            host_name = scrapertools.find_single_match(url_base64_bis, patron_host)
+
+            if host_name:
+                url_base64_bis = host_name + url_base64_bis.replace(host_name, '').replace('//', '/')
+            else:
+                url_base64_bis = url_base64_bis.replace('//', '/')
+
             domain_bis = scrapertools.find_single_match(url_base64_bis, patron_domain)
 
             if domain_bis: domain = domain_bis
@@ -190,12 +197,13 @@ def decode_url_base64(url, host_torrent):
 
     if not domain: domain = 'default'
 
-    if host_torrent and host_torrent not in url_base64 and not url_base64.startswith('magnet') and domain not in str(host_list):
-        url_base64 = urlparse.urljoin(host_torrent, url_base64)
+    if host_torrent:
+        if host_torrent not in url_base64 and not url_base64.startswith('magnet') and not url_base64.startswith('http') and domain not in str(host_list):
+            url_base64 = urlparse.urljoin(host_torrent, url_base64)
 
-        if url_base64 != url or host_torrent not in url_base64:
-            host_name = scrapertools.find_single_match(url_base64, patron_host)
-            url_base64 = re.sub(host_name, host_torrent, url_base64)
+            if url_base64 != url or host_torrent not in url_base64:
+                host_name = scrapertools.find_single_match(url_base64, patron_host)
+                url_base64 = re.sub(host_name, host_torrent, url_base64)
 
     return url_base64 + url_sufix
 
@@ -228,13 +236,14 @@ def sorted_urls(url, url_base64, host_torrent):
             'super-enlace.com': [None, [64, 123 ,77, 91, 96, 109, 13, 13], 0, 0, False]
             }
 
-    if not url_base64 or url_base64.startswith('magnet') or url_base64.endswith('.torrent'): return url_base64
+    if url_base64:
+        if url_base64.startswith('magnet') or url_base64.endswith('.torrent'): return url_base64
 
     domain = scrapertools.find_single_match(url, patron_domain)
 
     if sortened_domains.get(domain, False) == False or not url_base64 or url_base64.startswith('magnet'): return url_base64
 
-    if ('//' in url_base64  or ':?' in url_base64) and not (url_base64.startswith('magnet') or url_base64.startswith('http')):
+    if ('//' in url_base64 or ':?' in url_base64) and not (url_base64.startswith('magnet') or url_base64.startswith('http')):
         try:
             chers = []
 
@@ -259,7 +268,9 @@ def sorted_urls(url, url_base64, host_torrent):
             logger.error('Error translation: %s' % url_base64)
             logger.error(traceback.format_exc())
 
-        return url_base64
+        if url_base64:
+            if url_base64.startswith('magnet') or url_base64.endswith('.torrent'):
+                return url_base64
 
     host_name = scrapertools.find_single_match(url, patron_host)
 

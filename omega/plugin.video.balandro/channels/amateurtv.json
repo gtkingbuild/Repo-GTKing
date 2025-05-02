@@ -3,7 +3,7 @@
   "name": "AmateurTv",
   "thumbnail": "amateurtv.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": false,
   "search_types": ["movie"],
@@ -13,5 +13,5 @@
 
   "clusters": ["onlyone", "adults"],
 
-  "notes": "Vídeos en versión Original para Adultos +18."
+  "notes": "Web ANULADA. Vídeos en versión Original para Adultos +18."
 }

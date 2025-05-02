@@ -208,7 +208,7 @@ def list_all(item):
                 buscar_next = False
 
         if buscar_next:
-            next_page = scrapertools.find_single_match(data,'<ul class="pagination">.*?<li>.*?<a href="(.*?)"')
+            next_page = scrapertools.find_single_match(data,'<ul class="pagination">.*?<li class="active">.*?<li>.*?<a href="(.*?)"')
 
             if next_page:
                 if not host in next_page: next_page = host[:-1] + next_page

@@ -5,13 +5,13 @@
 
   "active": true,
 
-  "searchable": true,
+  "searchable": false,
   "search_types": ["documentary"],
 
   "categories": ["documentary"],
   "language": ["vo"],
 
-  "clusters": ["categories"],
+  "clusters": ["onlyone", "categories"],
 
   "notes": "Documentales en versión original."
 }

@@ -68,11 +68,11 @@ def plataformas(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title = 'Amazon Prime', action = 'list_all', url = host + 'genero/amazon-prime/', genre='Amazon Prime', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'Disney+', action = 'list_all', url = host + 'genero/disney/', genre='Disney+', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'Hbo', action = 'list_all', url = host + 'genero/hbo/', genre='HBO', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'Netflix', action = 'list_all', url = host + 'genero/netflix/', genre='Netflix', search_type = 'movie' ))
-    itemlist.append(item.clone( title = 'Rakuten', action = 'list_all', url = host + 'genero/rakuten/', genre='Rakuten', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Amazon Prime', action = 'list_all', url = host + 'genero/amazon-prime/', genre='Amazon Prime', search_type = 'movie', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'Disney+', action = 'list_all', url = host + 'genero/disney/', genre='Disney+', search_type = 'movie', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'Hbo', action = 'list_all', url = host + 'genero/hbo/', genre='HBO', search_type = 'movie', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'Netflix', action = 'list_all', url = host + 'genero/netflix/', genre='Netflix', search_type = 'movie', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'Rakuten', action = 'list_all', url = host + 'genero/rakuten/', genre='Rakuten', search_type = 'movie', text_color='moccasin' ))
 
     return itemlist
 

@@ -3,6 +3,7 @@
   "name": "Gamovideo",
 
   "active": true,
+  "notes": "Cerrado el 31/12/2024. Out of Service, Alternative vía: Script.Module.ResolveUrl",
 
   "find_videos": {
     "ignore_urls": [],

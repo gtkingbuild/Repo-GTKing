@@ -330,7 +330,7 @@ def episodios(item):
         if not epis: epis = 1
 
         title = title.replace('Temporada', '[COLOR tan]Temp.[/COLOR]').replace('temporada', '[COLOR tan]Temp.[/COLOR]')
-        title = title.replace('Capitulo', '[COLOR tan]Cap.[/COLOR]').replace('capitulo', '[COLOR tan]Cap.[/COLOR]')
+        title = title.replace('Capitulo', '[COLOR tan]Epis.[/COLOR]').replace('capitulo', '[COLOR tan]Epis.[/COLOR]')
 
         title = title.replace(' » ', ' ')
 

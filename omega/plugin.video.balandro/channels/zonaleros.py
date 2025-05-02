@@ -596,6 +596,18 @@ def play(item):
     elif '.zpaste.' in url: url = ''
 
     if url:
+        if url.startswith("https://sb"):
+            return 'Servidor [COLOR goldenrod]Obsoleto[/COLOR]'
+
+        elif 'streamsb' in url or 'playersb' in url:
+            return 'Servidor [COLOR goldenrod]Obsoleto[/COLOR]'
+
+        elif 'uptobox' in url:
+            return 'Servidor [COLOR goldenrod]Fuera de Servicio[/COLOR]'
+
+        elif '.fembed.' in url:
+            return 'Servidor [COLOR red]Fuera de Servicio[/COLOR]'
+
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 

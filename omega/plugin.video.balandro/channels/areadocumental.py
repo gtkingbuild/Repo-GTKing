@@ -16,7 +16,7 @@ def mainlist(item):
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'resultados-reciente.php?buscar=&genero=' ))
 
-    itemlist.append(item.clone( title = 'Destacados', action = 'list_all', url = host + 'resultados.php?buscar=&genero=' ))
+    itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = host + 'resultados.php?buscar=&genero=' ))
     itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = host +'resultados-visto.php?buscar=&genero=' ))
 
     itemlist.append(item.clone( title = 'En [COLOR moccasin][B]3D[/B][/COLOR]', action = 'list_all', url = host + '3D.php' ))

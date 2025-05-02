@@ -275,7 +275,7 @@ def list_all(item):
             if not item.search_type == 'all':
                 if item.search_type == 'tvshow': continue
 
-            itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb, languages = lang, fmt_sufijo=sufijo,
+            itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, languages = lang, fmt_sufijo=sufijo,
                                         contentType='movie', contentTitle=title, infoLabels={'year': '-'} ))
 
         if tipo == 'tvshow':
@@ -457,6 +457,9 @@ def findvideos(item):
     logger.info()
     itemlist = []
 
+    if item.search_type == 'movie':
+        item.url = item.url.replace('/dorama/', '/ver/').replace('-sub-espanol', '-episodio-1')
+
     data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
@@ -487,8 +490,14 @@ def findvideos(item):
         elif srv == 'drive': srv = 'gvideo'
         elif srv == 'pixel': srv = 'pixeldrain'
         elif srv == 'senvid2': srv = 'sendvid'
-        elif srv == 'mixdropco': srv = 'mixdrop'
+        elif srv == 'mixdropco' or srv == 'mxdrop': srv = 'mixdrop'
         elif srv == 'mdy48tn97com': srv = 'mixdrop'
+
+        elif srv == 'cybervynx':
+             srv = 'various'
+
+             other = 'Cybervynx'
+
         else:
              if srv == 'vgembedcom': srv = 'vembed'
 
@@ -503,7 +512,7 @@ def findvideos(item):
 
         if not servidor == 'directo':
             if not servidor == 'various': other = ''
-
+            
         itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', d_play = d_play, language = 'Vose', other = other ))
 
     # download
@@ -556,11 +565,12 @@ def play(item):
         itemlist.append(item.clone( url = item.url, server = item.server ))
         return itemlist
 
-    url = base64.b64decode(item.d_play).decode("utf-8")
+    player = host + 'reproductor?video=' + item.d_play
 
-    if host in url: url = scrapertools.find_single_match(url, 'url=(.*?)$')
-    else:
-       if '?url=' in url: url = scrapertools.find_single_match(url, 'url=(.*?)$')
+    data = do_downloadpage(player)
+    data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
+
+    url = scrapertools.find_single_match(data, 'var redir = "(.*?)"')
 
     if url:
         servidor = servertools.get_server_from_url(url)

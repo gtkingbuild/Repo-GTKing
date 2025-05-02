@@ -175,12 +175,16 @@ def temporadas(item):
         else:
             url = scrapertools.find_single_match(item.url, "(.*?)-temporada-")
 
-        url = url + '/'
+        if url:
+            url = url + '/'
 
-        data = do_downloadpage(url)
-        data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
+            data = do_downloadpage(url)
+            data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
-        item.url = url
+            item.url = url
+        else:
+            data = do_downloadpage(item.url)
+            data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
     else:
         data = do_downloadpage(item.url)
         data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)

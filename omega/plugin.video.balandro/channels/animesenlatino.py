@@ -49,7 +49,7 @@ def generos(item):
     logger.info()
     itemlist = []
 
-    data = httptools.downloadpage(host).data
+    data = do_downloadpage(host)
 
     data = scrapertools.find_single_match(data, 'Por género<(.*?)</ul>')
 
@@ -85,7 +85,7 @@ def list_all(item):
     logger.info()
     itemlist = []
 
-    data = httptools.downloadpage(item.url).data
+    data = do_downloadpage(item.url)
 
     bloque = scrapertools.find_single_match(data, '<h1(.*?)<span class="navigation">')
     if not bloque: bloque = scrapertools.find_single_match(data, '<h1(.*?)<div class="navigation">')
@@ -135,7 +135,8 @@ def list_all(item):
 
     if itemlist:
          if '<span class="navigation">' in data:
-             next_page = scrapertools.find_single_match(data, '<span class="navigation">.*?</span><a rel="nofollow".*?href="(.*?)"')
+             next_page = scrapertools.find_single_match(data, '<span class="navigation">.*?</span>.*?<a rel="nofollow".*?href="(.*?)"')
+             if not next_page: next_page = scrapertools.find_single_match(data, '<span class="navigation">.*?</span>.*?<a rel="nonfollow".*?href="(.*?)"')
 
              if next_page:
                  if 'page=' in next_page or '/page/' in next_page:
@@ -211,7 +212,7 @@ def episodios(item):
     if not item.page: item.page = 0
     if not item.perpage: item.perpage = 50
 
-    data = httptools.downloadpage(item.url).data
+    data = do_downloadpage(item.url)
 
     bloque = scrapertools.find_single_match(data, '</div><div align="center">(.*?)</div></div></div>')
 
@@ -288,7 +289,7 @@ def findvideos(item):
     logger.info()
     itemlist = []
 
-    data = httptools.downloadpage(item.url).data
+    data = do_downloadpage(item.url)
 
     lang = 'Vose'
 

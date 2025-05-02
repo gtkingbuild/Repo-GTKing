@@ -199,7 +199,9 @@ def configurar_proxies_canal(canal, url):
 
                 if not proxies_iniciales:
                     provider = config.get_setting('proxytools_provider', canal, default=default_provider)
-                    if not provider == all_providers:
+                    if not provider:
+                        if proxies_list: provider_auto = private_list
+                    elif not provider == all_providers:
                         if proxies_list: provider_auto = private_list
 
                 proxies_nuevos = ''
@@ -371,23 +373,27 @@ def configurar_proxies_canal(canal, url):
 
                 elif ret == 4:
                      if proxies: configuracion_general()
-                     else: show_help_proxies()
+                     else:
+                        if proxies_help: show_help_proxies()
 
-                elif ret == 5: show_help_proxies()
+                elif ret == 5:
+                     if proxies_help: show_help_proxies()
             else:
                 if ret == 3:
                     if proxies: config.set_setting('proxies', '', canal)
-                    else: configuracion_general()
+                    else: manto_yourlist()
 
                 elif ret == 4:
                     if proxies: manto_yourlist()
-                    else: show_help_proxies()
+                    else: configuracion_general()
 
                 elif ret == 5:
                      if proxies: configuracion_general()
-                     else: show_help_proxies()
+                     else:
+                        if proxies_help: show_help_proxies()
 
-                elif ret == 6: show_help_proxies()
+                elif ret == 6:
+                     if proxies_help: show_help_proxies()
 
     return True
 

@@ -31,6 +31,7 @@ thumb_tmdb = os.path.join(config.get_runtime_path(), 'resources', 'media', 'chan
 
 con_incidencias = ''
 no_accesibles = ''
+con_problemas = ''
 
 try:
     with open(os.path.join(config.get_runtime_path(), 'dominios.txt'), 'r') as f: txt_status=f.read(); f.close()
@@ -39,6 +40,7 @@ except:
     except: txt_status = ''
 
 if txt_status:
+    # ~ Incidencias
     bloque = scrapertools.find_single_match(txt_status, 'SITUACION CANALES(.*?)CANALES TEMPORALMENTE DES-ACTIVADOS')
 
     matches = scrapertools.find_multiple_matches(bloque, "[B](.*?)[/B]")
@@ -48,6 +50,7 @@ if txt_status:
 
         if '[COLOR moccasin]' in match: con_incidencias += '[B' + match + '/I][/B][/COLOR][CR]'
 
+    # ~ No Accesibles
     bloque = scrapertools.find_single_match(txt_status, 'CANALES PROBABLEMENTE NO ACCESIBLES(.*?)ULTIMOS CAMBIOS DE DOMINIOS')
 
     matches = scrapertools.find_multiple_matches(bloque, "[B](.*?)[/B]")
@@ -56,6 +59,16 @@ if txt_status:
         match = match.strip()
 
         if '[COLOR moccasin]' in match: no_accesibles += '[B' + match + '/I][/B][/COLOR][CR]'
+
+    # ~ Con Problemas
+    bloque = scrapertools.find_single_match(txt_status, 'CANALES CON PROBLEMAS(.*?)$')
+
+    matches = scrapertools.find_multiple_matches(bloque, "[B](.*?)[/B]")
+
+    for match in matches:
+        match = match.strip()
+
+        if '[COLOR moccasin]' in match: con_problemas += '[B' + match + '/I][/B][/COLOR][CR]'
 
 
 context_buscar = []
@@ -72,7 +85,7 @@ context_buscar.append({'title': tit, 'channel': 'search', 'action': 'show_help_p
 tit = '[COLOR darkcyan][B]Preferencias Proxies[/B][/COLOR]'
 context_buscar.append({'title': tit, 'channel': 'helper', 'action': 'show_prx_parameters'})
 
-tit = '[COLOR darkorange]Información Dominios[/COLOR]'
+tit = '[COLOR bisque]Gestión Dominios[/COLOR]'
 context_buscar.append({'title': tit, 'channel': 'helper', 'action': 'show_help_domains'})
 
 tit = '[COLOR mediumaquamarine][B]Últimos Cambios Dominios[/B][/COLOR]'
@@ -266,7 +279,7 @@ context_config = []
 tit = '[COLOR tan][B]Preferencias Canales[/B][/COLOR]'
 context_config.append({'title': tit, 'channel': 'helper', 'action': 'show_channels_parameters'})
 
-tit = '[COLOR darkorange]Información Dominios[/COLOR]'
+tit = '[COLOR bisque]Gestión Dominios[/COLOR]'
 context_config.append({'title': tit, 'channel': 'helper', 'action': 'show_help_domains'})
 
 tit = '[COLOR %s][B]Últimos Cambios Dominios[/B][/COLOR]' % color_exec
@@ -358,6 +371,9 @@ def mainlist(item):
 
         if presentar:
             itemlist.append(item.clone( channel='submnuctext', action='submnu_news', title='[B]Novedades[/B]', context=context_cfg_search, thumbnail=config.get_thumb('novedades'), text_color='darksalmon' ))
+
+        if config.get_setting('sub_mnu_special', default=True):
+            itemlist.append(item.clone( channel='submnuctext', action='submnu_special', title='[B]Especiales[/B]', context=context_cfg_search, extra='all', thumbnail=config.get_thumb('heart'), text_color='pink' ))
 
         if not config.get_setting('mnu_simple', default=False):
             if config.get_setting('mnu_generos', default=True):
@@ -533,10 +549,8 @@ def submnu_alls(item):
         itemlist.append(item.clone( channel='filmaffinitylists', action='_bestmovies', title='   - Películas Recomendadas', thumbnail=config.get_thumb('bestmovies'), search_type = 'movie' ))
         itemlist.append(item.clone( channel='filmaffinitylists', action='plataformas', title='   - Películas y Series por plataforma', thumbnail=config.get_thumb('booklet'), search_type = 'all' ))
         itemlist.append(item.clone( channel='filmaffinitylists', action='_themes', title='   - Películas y Series por tema', thumbnail=config.get_thumb('listthemes'), search_type = 'all' ))
-        itemlist.append(item.clone( channel='filmaffinitylists', action='_oscars', title='   - Películas Premios Oscar', thumbnail=config.get_thumb('oscars'), search_type = 'movie' ))
         itemlist.append(item.clone( channel='filmaffinitylists', action='_sagas', title='   - Películas Sagas y colecciones', thumbnail=config.get_thumb('bestsagas'), search_type = 'movie' ))
         itemlist.append(item.clone( channel='filmaffinitylists', action='_besttvshows', title='   - Series Recomendadas', thumbnail=config.get_thumb('besttvshows'), search_type = 'tvshow' ))
-        itemlist.append(item.clone( channel='filmaffinitylists', action='_emmys', title='   - Series Premios Emmy', thumbnail=config.get_thumb('emmys'), origen='mnu_esp', search_type = 'tvshow' ))
 
     return itemlist
 
@@ -594,7 +608,6 @@ def submnu_pelis(item):
         itemlist.append(item.clone( channel='filmaffinitylists', action='_bestmovies', title='   - Recomendadas', thumbnail=config.get_thumb('bestmovies'), search_type = 'movie' ))
         itemlist.append(item.clone( channel='filmaffinitylists', action='plataformas', title='   - Por plataforma', thumbnail=config.get_thumb('booklet'), search_type = 'movie' ))
         itemlist.append(item.clone( channel='filmaffinitylists', action='_themes', title=' - Por tema', thumbnail = config.get_thumb('listthemes'), search_type = 'movie' ))
-        itemlist.append(item.clone( channel='filmaffinitylists', action='_oscars', title='   - Premios Oscar', thumbnail=config.get_thumb('oscars'), search_type = 'movie' ))
         itemlist.append(item.clone( channel='filmaffinitylists', action='_sagas', title='   - Sagas y colecciones', thumbnail=config.get_thumb('bestsagas'), search_type = 'movie' ))
         itemlist.append(item.clone( channel='filmaffinitylists', action='generos', title='   - Por género', thumbnail=config.get_thumb('listgenres'), search_type = 'movie' ))
         itemlist.append(item.clone( channel='filmaffinitylists', action='paises', title='   - Por país', thumbnail=config.get_thumb('idiomas'), search_type = 'movie' ))
@@ -649,7 +662,6 @@ def submnu_series(item):
         itemlist.append(item.clone( title = '[B]Búsquedas a través de Listas en Filmaffinity:[/B]', action = '', thumbnail=thumb_filmaffinity, text_color='violet' ))
 
         itemlist.append(item.clone( channel='filmaffinitylists', action='_besttvshows', title='   - Recomendadas', thumbnail=config.get_thumb('besttvshows'), search_type = 'tvshow' ))
-        itemlist.append(item.clone( channel='filmaffinitylists', action='_emmys', title='   - Premios Emmy', thumbnail=config.get_thumb('emmys'), origen='mnu_esp', search_type = 'tvshow' ))
         itemlist.append(item.clone( channel='filmaffinitylists', action='plataformas', title='   - Por plataforma', thumbnail=config.get_thumb('booklet'), search_type = 'tvshow' ))
         itemlist.append(item.clone( channel='filmaffinitylists', action='_themes', title='   - Por tema', thumbnail = config.get_thumb('listthemes'), search_type = 'tvshow' ))
         itemlist.append(item.clone( channel='filmaffinitylists', action='_genres', title='   - Por género', thumbnail = config.get_thumb('listgenres'), search_type = 'tvshow' ))
@@ -1129,7 +1141,7 @@ def ch_groups(item):
         if 'current' in ch['clusters']:
             cfg_domains = True
 
-            tit = '[COLOR darkorange]Información Dominios[/COLOR]'
+            tit = '[COLOR bisque]Gestión Dominios[/COLOR]'
             context.append({'title': tit, 'channel': 'helper', 'action': 'show_help_domains'})
 
         tit = '[COLOR %s][B]Últimos Cambios Dominios[/B][/COLOR]' % color_exec
@@ -1261,6 +1273,19 @@ def ch_groups(item):
 
         if no_accesibles:
            if ch['name'] in str(no_accesibles): titulo += '[I][B][COLOR tan] (no accesible)[/COLOR][/I][/B]'
+
+        if con_problemas:
+           if ch['name'] in str(con_problemas):
+               hay_problemas = str(con_problemas).replace('[B][COLOR moccasin]', 'CHANNEL').replace('[COLOR lime]', '/CHANNEL')
+               channels_con_problemas = scrapertools.find_multiple_matches(hay_problemas, "CHANNEL(.*?)/CHANNEL")
+
+               for channel_con_problema in channels_con_problemas:
+                    channel_con_problema = channel_con_problema.strip()
+
+                    if not channel_con_problema == ch['name']: continue
+
+                    titulo += '[I][B][COLOR tomato] (con problema)[/COLOR][/I][/B]'
+                    break
 
         if ch['searchable']:
             if not ch['status'] == -1:

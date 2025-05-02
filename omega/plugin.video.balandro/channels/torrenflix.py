@@ -10,12 +10,6 @@ from core import httptools, scrapertools, tmdb, servertools
 host = 'https://www.torrenflix.com/'
 
 
-_players = ['.torrenflix.']
-
-
-perpage = 24
-
-
 IDIOMAS = {'Español': 'Esp', 'Latino': 'Lat', 'Subtitulado': 'Vose', 'V.O.S.E': 'Vose', 'Inglés': 'Ing'}
 
 
@@ -25,6 +19,14 @@ def do_downloadpage(url, post=None, headers=None):
     elif '/release/' in url: raise_weberror = False
 
     data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
+
+    if not data:
+        if not '?s=' in url:
+            if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('TorrenFlix', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+
+            timeout = config.get_setting('channels_repeat', default=30)
+
+            data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
 
     return data
 
@@ -593,7 +595,12 @@ def play(item):
         url = scrapertools.find_single_match(data, '<div class="Video">.*?src="(.*?)"')
 
     if url:
-        if url.startswith('https://drive.google.com/'): url = ''
+        if '.filekas.'in url:
+            data = do_downloadpage(url)
+
+            url = scrapertools.find_single_match(data, '<li id="download">.*?<a href="(.*?)"')
+
+        elif url.startswith('https://drive.google.com/'): url = ''
 
     if url:
        if item.server == 'torrent':

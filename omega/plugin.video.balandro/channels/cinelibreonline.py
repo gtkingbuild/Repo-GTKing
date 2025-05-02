@@ -37,7 +37,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Por alfabético', action = 'listas', url= host + 'p/peliculas.html', search_type='movie' ))
 
-    itemlist.append(item.clone( title = 'Por categorias', action = 'categorias', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Por categoría', action = 'categorias', search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'movie' ))
 
@@ -48,7 +48,7 @@ def categorias(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( action = 'listas', title = 'Colecciones', url= host + 'p/colecciones.html', exec_action = 'list_genre', text_color='moccasin' ))
+    itemlist.append(item.clone( action = 'listas', title = 'Colecciones', url= host + 'p/colecciones.html', exec_action = 'list_colec', text_color='moccasin' ))
     itemlist.append(item.clone( action = 'listas', title = 'Cortometrajes', url= host + 'p/cortometrajes.html', text_color='moccasin' ))
 
     itemlist.append(item.clone( action = 'list_list', title = 'Dibujos animados', url= host + '2015/10/dibujos-animados-en-dominio-publico.html', text_color='moccasin' ))
@@ -218,16 +218,13 @@ def list_genre(item):
 
     bloque = scrapertools.find_single_match(data, """(?is)id='post-body(.*?)clear: both;""")
 
-    if item.exec_action:
-        matches = scrapertools.find_multiple_matches(bloque, '<h3>.*?href="(.*?)".*?target="_blank">(.*?)</a>.*?src="(.*?)"')
-        if not matches: matches = scrapertools.find_multiple_matches(bloque, 'href="([^"]+).*?alt="([^"]+).*?src="([^"]+)')
-    else:
-        matches = scrapertools.find_multiple_matches(bloque, 'href="([^"]+).*?alt="([^"]+).*?src="([^"]+)')
+    matches = scrapertools.find_multiple_matches(bloque, 'href="([^"]+).*?alt="([^"]+).*?src="([^"]+)')
 
     num_matches = len(matches)
 
     for url, title, thumb in matches[item.page * perpage:]:
-        if '.blogspot.' in url: continue
+        if '.blogspot.' in url:
+            continue
 
         if thumb.startswith('//'): thumb = 'https:' + thumb
 
@@ -252,8 +249,8 @@ def listas(item):
     itemlist = []
 
     if not item.page: item.page = 0
-    data = do_downloadpage(item.url)
 
+    data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
     bloque = scrapertools.find_single_match(data, "<div class='post-body entry-content'(.*?)<div style='clear: both;'></div>")
@@ -295,6 +292,35 @@ def listas(item):
     return itemlist
 
 
+def list_colec(item):
+    logger.info()
+    itemlist = []
+
+    data = do_downloadpage(item.url)
+    data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
+
+    bloque = scrapertools.find_single_match(data, ">Dominio Público<(.*?)>CineLibreOnline<")
+    if not bloque: bloque = scrapertools.find_single_match(data, "Dominio Público(.*?)CineLibreOnline")
+
+    matches = scrapertools.find_multiple_matches(bloque, '>Título original<.*?src="(.*?)".*?title="(.*?)".*?<a href="(.*?)"')
+    if not matches: matches = scrapertools.find_multiple_matches(bloque, '<u><b>.*?src="(.*?)".*?title="(.*?)".*?<a href="(.*?)"')
+    if not matches: matches = scrapertools.find_multiple_matches(bloque, '<u>.*?src="(.*?)".*?title="(.*?)".*?<a href="(.*?)"')
+
+    for thumb, title, url in matches[item.page * perpage:]:
+        if '.blogspot.' in url:
+            continue
+
+        if thumb.startswith('//'): thumb = 'https:' + thumb
+
+        PeliName = title.replace('Ver Película', '').replace('Ver película', '').replace('Película', '').replace('película', '').replace('Online', '').replace('online', '').replace('Portada', '').replace('Póster', '').replace('Cortometraje', '').replace('original', '').replace('Ver Documental', '').replace('Documental', '').replace('documental', '').strip()
+
+        itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, contentType='movie', contentTitle=PeliName, infoLabels={'year': '-'} ))
+
+    tmdb.set_infoLabels(itemlist)
+
+    return itemlist
+
+
 def findvideos(item):
     logger.info()
     itemlist = []
@@ -327,6 +353,7 @@ def findvideos(item):
         ses += 1
 
         if '.blogspot.' in url: continue
+        elif 'blogger.' in url: continue
 
         if url.startswith('//'): url = 'https:' + url
 
@@ -358,6 +385,9 @@ def play(item):
 
     url = item.url
 
+    if '/playlist?list=' in url:
+        return 'YouTube Play List [COLOR goldenrod]No Soportada[/COLOR]'
+
     if item.server == 'directo':
         data = do_downloadpage(url)
 
@@ -371,8 +401,10 @@ def play(item):
         url = servertools.normalize_url(servidor, url)
 
         if servidor == 'directo':
-            new_server = servertools.corregir_other(url).lower()
-            if new_server.startswith("http"): servidor = new_server
+            if '.wikipedia.' in url or '.wikimedia.' in url: pass
+            else:
+               new_server = servertools.corregir_other(url).lower()
+               if new_server.startswith("http"): servidor = new_server
 
         itemlist.append(item.clone(url = url, server = servidor))
 

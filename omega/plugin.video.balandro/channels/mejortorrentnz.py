@@ -6,7 +6,7 @@ PY3 = False
 if sys.version_info[0] >= 3: PY3 = True
 
 
-import re
+import re, os
 
 from platformcode import config, logger, platformtools
 from core.item import Item
@@ -290,8 +290,6 @@ def list_list(item):
 
     matches = scrapertools.find_multiple_matches(bloque, "<span class='text-muted'>(.*?)<br>")
 
-    logger.info("check-00-mayches: %s" % matches)
-
     for match in matches:
         url = scrapertools.find_single_match(match, "<a href='(.*?)'")
         title = scrapertools.find_single_match(match, "class='text-primary'>(.*?)</a>")
@@ -503,6 +501,16 @@ def findvideos(item):
             except:
                return itemlist
 
+    qlty = scrapertools.find_single_match(data, "<b>Formato.*?</b>(.*?)<br>").strip()
+    if not qlty: qlty = scrapertools.find_single_match(data, ">Formato.*?</b>(.*?)<").strip()
+
+    qlty = qlty.replace('&nbsp;', '').strip()
+
+    size = scrapertools.find_single_match(data, "<b>Tamaño.*?</b>(.*?)<br>").strip()
+    if not size: size = scrapertools.find_single_match(data, ">Tamaño.*?</b>(.*?)<").strip()
+
+    size = size.replace('&nbsp;', '').strip()
+
     if item.search_type == 'movie':
         hash = scrapertools.find_single_match(data, '<input type="submit" value="Descargar".*?name="id_post">.*?<input type="hidden".*?value="(.*?)"')
     else:
@@ -518,17 +526,11 @@ def findvideos(item):
             if item.url.endswith('.torrent'): url = item.url
 
         if url:
-            itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = 'torrent', language = lang ))
+            itemlist.append(Item( channel = item.channel, action = 'play', title = '', url = url, server = 'torrent', language=lang, quality=qlty, other=size ))
 
         return itemlist
 
-    qlty = scrapertools.find_single_match(data, "<b>Formato.*?</b>(.*?)<br>").strip()
-    qlty = qlty.replace('&nbsp;', '').strip()
-
-    size = scrapertools.find_single_match(data, "<b>Tamaño.*?</b>(.*?)<br>").strip()
-    size = size.replace('&nbsp;', '').strip()
-
-    itemlist.append(Item( channel = item.channel, action = 'play', title = '', hash = hash, server = 'torrent', language = lang, quality = qlty, other = size ))
+    itemlist.append(Item( channel = item.channel, action = 'play', title = '', hash = hash, server = 'torrent', language=lang, quality=qlty, other=size ))
 
     return itemlist
 
@@ -572,22 +574,26 @@ def play(item):
 
         url = link
 
-        if PY3:
-            from core import requeststools
-            data = requeststools.read(url, 'mejortorrentnz')
+        if url.endswith('.torrent'):
+            if config.get_setting('proxies', item.channel, default=''):
+                if PY3:
+                    from core import requeststools
+                    data = requeststools.read(url, 'mejortorrentnz')
+                else:
+                    data = do_downloadpage(url)
+
+                if data:
+                    if '<h1>Not Found</h1>' in str(data) or '<!DOCTYPE html>' in str(data) or '<!DOCTYPE>' in str(data):
+                        return 'Archivo [COLOR red]Inexistente[/COLOR]'
+
+                    file_local = os.path.join(config.get_data_path(), "temp.torrent")
+                    with open(file_local, 'wb') as f: f.write(data); f.close()
+
+                    itemlist.append(item.clone( url = file_local, server = 'torrent' ))
+            else:
+                itemlist.append(item.clone( url = url, server = 'torrent' ))
         else:
-            data = do_downloadpage(url)
-
-        if data:
-            if '<h1>Not Found</h1>' in str(data) or '<!DOCTYPE html>' in str(data) or '<!DOCTYPE>' in str(data):
-                return 'Archivo [COLOR red]Inexistente[/COLOR]'
-
-            import os
-
-            file_local = os.path.join(config.get_data_path(), "temp.torrent")
-            with open(file_local, 'wb') as f: f.write(data); f.close()
-
-            itemlist.append(item.clone( url = file_local, server = 'torrent' ))
+            itemlist.append(item.clone( url = url, server = 'torrent' ))
 
     return itemlist
 

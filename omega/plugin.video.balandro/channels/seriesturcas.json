@@ -3,15 +3,15 @@
   "name": "SeriesTurcas",
   "thumbnail": "seriesturcas.jpg",
 
-  "active": false,
+  "active": true,
 
   "searchable": true,
-  "search_types": ["all", "movie", "tvshow"],
+  "search_types": ["tvshow"],
 
-  "categories": ["movie", "tvshow"],
+  "categories": ["tvshow"],
   "language": ["cast", "lat", "vose"],
 
-  "clusters": ["lasts", "vos", "tales"],
+  "clusters": ["years", "vos", "tales"],
 
-  "notes": "Web ANULADA. Web dedicada principalmente en Novelas. Películas y Series"
+  "notes": "Web dedicada exclusivamente en Novelas. Series por Géneros."
 }

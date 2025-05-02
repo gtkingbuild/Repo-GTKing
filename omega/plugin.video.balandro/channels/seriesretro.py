@@ -540,11 +540,11 @@ def findvideos(item):
 
     data = do_downloadpage(item.url)
 
-    matches = scrapertools.find_multiple_matches(data, 'data-tplayernv="Opt(.*?)"><span>(.*?)</span>')
+    matches = scrapertools.find_multiple_matches(data, 'data-tplayernv="Opt(.*?)"><span>(.*?)</span>.*?<span>(.*?)</span>')
 
     ses = 0
 
-    for opt, servidor in matches:
+    for opt, servidor, idio_qlty in matches:
         ses += 1
 
         servidor = servidor.replace('<strong>', '').replace('</strong>', '')
@@ -582,7 +582,19 @@ def findvideos(item):
         if url.endswith('.torrent'): servidor = 'torrent'
         elif 'magnet:?' in url: servidor = 'torrent'
 
-        itemlist.append(Item( channel = item.channel, action = 'play', url = url, server = servidor, title = '', language = 'Lat', other = link_other ))
+        qlty = scrapertools.find_single_match(idio_qlty, '.*?-(.*?)$').strip()
+
+        lang = scrapertools.find_single_match(idio_qlty, '(.*?)-').strip()
+        if 'Latino/Ingles' in lang: lang = 'Lat'
+        elif 'Castellano/Ingles' in lang: lang = 'Esp'
+
+        elif 'Castellano' in lang: lang = 'Esp'
+        elif 'Latino' in lang: lang = 'Lat'
+        elif 'Subtitulado' in lang: lang = 'Vose'
+        elif 'Version Original' in lang: lang = 'VO'
+        else: lang = '?'
+
+        itemlist.append(Item( channel = item.channel, action = 'play', url=url, server=servidor, title = '', quality=qlty, language=lang, other=link_other ))
 
     # ~ Descargas
     matches = scrapertools.find_multiple_matches(data, '<span class="Num">(.*?)</tr>')
@@ -603,9 +615,21 @@ def findvideos(item):
         if url.endswith('.torrent'): servidor = 'torrent'
         elif 'magnet:?' in url: servidor = 'torrent'
 
+        qlty = scrapertools.find_single_match(match, '<!-- <td>.*?<td><span>(.*?)</span>')
+
+        lang = scrapertools.find_single_match(match, '<!-- <td><span>(.*?)</span>')
+        if 'Latino/Ingles' in lang: lang = 'Lat'
+        elif 'Castellano/Ingles' in lang: lang = 'Esp'
+
+        elif 'Castellano' in lang: lang = 'Esp'
+        elif 'Latino' in lang: lang = 'Lat'
+        elif 'Subtitulado' in lang: lang = 'Vose'
+        elif 'Version Original' in lang: lang = 'VO'
+        else: lang = '?'
+
         other = 'D'
 
-        itemlist.append(Item( channel = item.channel, action = 'play', url = url, server = servidor, title = '', language = 'Lat', other = other ))
+        itemlist.append(Item( channel = item.channel, action = 'play', url=url, server=servidor, title = '', quality=qlty, language=lang, other=other ))
 
     if not itemlist:
         if not ses == 0:
@@ -659,12 +683,13 @@ def play(item):
                 itemlist.append(item.clone( url = url_base64, server = 'torrent' ))
                 return itemlist
 
-            if item.server == 'mega':
-                if '/file/' in url_base64:
-                    url = url_base64.replace(host + 'file/', 'https://mega.nz/#!')
+            else:
+               if url_base64:
+                   new_server = servertools.get_server_from_url(url_base64)
+                   new_server = servertools.corregir_other(new_server)				   
 
-                    itemlist.append(item.clone( url = url, server = 'mega' ))
-                    return itemlist
+                   if not new_server == 'directo':
+                       url = url_base64
  
         if url.endswith('.torrent'):
             itemlist.append(item.clone( url = url, server = 'torrent' ))

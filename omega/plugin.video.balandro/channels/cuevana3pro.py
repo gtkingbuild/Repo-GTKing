@@ -1,19 +1,16 @@
 # -*- coding: utf-8 -*-
 
-import re
+import ast, re
 
 from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
-try:
-    from Cryptodome.Cipher import AES
-    from lib import jscrypto
-except:
-    pass
+
+from lib.pyberishaes import GibberishAES
 
 
-host = 'https://zx1.cuevana3.vip'
+host = 'https://tv8.cuevana3.vip'
 
 
 # ~ por si viene de enlaces guardados
@@ -27,7 +24,8 @@ ant_hosts = ['https://wwa3.cuevana3.vip', 'https://wlw.cuevana3.vip', 'https://w
              'https://iv3.cuevana3.vip', 'https://lm3.cuevana3.vip', 'https://ww3v.cuevana3.vip',
              'https://ww3u.cuevana3.vip', 'https://wl3v.cuevana3.vip', 'https://wv3n.cuevana3.vip',
              'https://wl3r.cuevana3.vip', 'https://me3.cuevana3.vip', 'https://me4.cuevana3.vip',
-             'https://mia.cuevana3.vip', 'https://max.cuevana3.vip']
+             'https://mia.cuevana3.vip', 'https://max.cuevana3.vip', 'https://zx1.cuevana3.vip',
+             'https://zz.cuevana3.vip', 'https://gx.cuevana3.vip', 'https://tv.cuevana3.vip']
 
 
 domain = config.get_setting('dominio', 'cuevana3pro', default='')
@@ -174,7 +172,7 @@ def mainlist_pelis(item):
 
     itemlist.append(item.clone( title = 'Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
 
-    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + '/biblioteca-peliculas/', search_type = 'movie' ))
+    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + '/movies/', search_type = 'movie' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'movie' ))
 
@@ -189,7 +187,7 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
-    itemlist.append(item.clone( title = 'Catalogo', action = 'list_all', url = host + '/biblioteca-series/', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Catalogo', action = 'list_all', url = host + '/series/', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Últimos episodios', action = 'last_epis', url = host + '/episodios/', search_type = 'tvshow', text_color = 'cyan' ))
 
@@ -272,7 +270,10 @@ def list_all(item):
         if not year: year = scrapertools.find_single_match(article, '<span class=Year>(.*?)</span>').strip()
         if not year: year = scrapertools.find_single_match(article, '<span class="Date">(.*?)</span>').strip()
 
-        if year: title = title.replace('(' + year + ')', '').strip()
+        if year:
+            title = title.replace('(' + year + ')', '').strip()
+            c_year = scrapertools.find_single_match(title, '(\d{4})')
+            if c_year: title = title.replace('(' + c_year + ')', '').strip()
         else:
             year = scrapertools.find_single_match(title, '(\d{4})')
             if year: title = title.replace('(' + year + ')', '').strip()
@@ -800,10 +801,13 @@ def findvideos(item):
 
             datae = do_downloadpage(match)
 
-            e_links = scrapertools.find_single_match(datae, 'const dataLink =(.*?);')
-            e_bytes = scrapertools.find_single_match(datae, "const bytes =.*?'(.*?)'")
+            dataLink = scrapertools.find_single_match(datae, 'const dataLink =(.*?);')
+            if not dataLink: dataLink = scrapertools.find_single_match(datae, 'dataLink(.*?);')
 
-            e_links = e_links.replace(']},', '"type":"file"').replace(']}]', '"type":"file"')
+            e_bytes = scrapertools.find_single_match(datae, "const bytes =.*?'(.*?)'")
+            if not e_bytes: e_bytes = scrapertools.find_single_match(datae, "encrypted.*?'(.*?)'")
+
+            e_links = dataLink.replace(']},', '"type":"file"').replace(']}]', '"type":"file"')
 
             langs = scrapertools.find_multiple_matches(str(e_links), '"video_language":(.*?)"type":"file"')
 
@@ -834,6 +838,8 @@ def findvideos(item):
                     elif 'disable' in srv: continue
                     elif 'xupalace' in srv: continue
                     elif 'uploadfox' in srv: continue
+
+                    elif srv == 'download': continue
 
                     servidor = servertools.corregir_servidor(srv)
 
@@ -1051,19 +1057,23 @@ def play(item):
     url = item.url.replace('&#038;', '&').replace('&amp;', '&').replace('#038;', '')
 
     if item.crypto:
-        logger.info("check-1-crypto: %s" % item.crypto)
-        logger.info("check-2-crypto: %s" % item.bytes)
-        try:
-            ###############url =  AES.decrypt(item.crypto, item.bytes)
-            url = AES.new(item.crypto, AES.MODE_SIV==10)
-            logger.info("check-3-crypto: %s" % url)
+        crypto = str(item.crypto)
+        bytes = str(item.bytes)
 
-            url = jscrypto.new(item.crypto, 2, IV=item.bytes)
-            logger.info("check-4-crypto: %s" % url)
+        try:
+            cripto = ast.literal_eval(cripto)
         except:
+            crypto = str(item.crypto)
+
+        try:
+            url = GibberishAES.dec(GibberishAES(), string = crypto, pass_ = bytes)
+        except:
+            url = ''
+
+        if not url:
             return '[COLOR cyan]No se pudo [COLOR red]Desencriptar[/COLOR]'
 
-    if item.server == 'directo':
+    elif item.server == 'directo':
         item.url = url
 
         data = do_downloadpage(item.url)
@@ -1095,7 +1105,20 @@ def play(item):
 
         return itemlist
 
-    itemlist.append(item.clone(server = item.server, url = url))
+    if url:
+        if '/hydrax.' in url or '/xupalace.' in url or '/uploadfox.' in url:
+            return 'Servidor [COLOR goldenrod]No Soportado[/COLOR]'
+
+        servidor = servertools.get_server_from_url(url)
+        servidor = servertools.corregir_servidor(servidor)
+
+        url = servertools.normalize_url(servidor, url)
+
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(url).lower()
+            if new_server.startswith("http"): servidor = new_server
+
+    itemlist.append(item.clone(server = servidor, url = url))
 
     return itemlist
 
@@ -1135,7 +1158,10 @@ def list_search(item):
         if not year: year = scrapertools.find_single_match(article, '<span class=Year>(.*?)</span>').strip()
         if not year: year = scrapertools.find_single_match(article, '<span class="Date">(.*?)</span>').strip()
 
-        if year: title = title.replace('(' + year + ')' , '').strip()
+        if year:
+            title = title.replace('(' + year + ')' , '').strip()
+            c_year = scrapertools.find_single_match(title, '(\d{4})')
+            if c_year: title = title.replace('(' + c_year + ')', '').strip()
         else: year ='-'
 
         tipo = 'tvshow' if '/series/' in url else 'movie'

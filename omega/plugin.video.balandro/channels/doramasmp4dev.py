@@ -7,10 +7,16 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-host = 'https://doramasmp4.se/'
+host = 'https://doramasmp4.dev/'
 
 
 def do_downloadpage(url, post=None, headers=None):
+    # ~ por si viene de enlaces guardados
+    ant_hosts = ['https://doramasmp4.se/']
+
+    for ant in ant_hosts:
+        url = url.replace(ant, host)
+
     data = httptools.downloadpage(url, post=post, headers=headers).data
 
     return data
@@ -354,7 +360,11 @@ def findvideos(item):
     for url in matches:
         if url == 'about:blank': continue
 
+        elif 'data:image' in url: continue
+
         elif '/googleads.' in url: continue
+
+        elif url.endswith('.jpg'): continue
 
         ses += 1
 

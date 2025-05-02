@@ -3,7 +3,7 @@
   "name": "StreamGratis",
   "thumbnail": "streamgratis.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["all", "movie", "tvshow"],
@@ -13,5 +13,5 @@
 
   "clusters": ["years", "lasts", "kids", "docs", "vos"],
 
-  "notes": "Películas por géneros y año. También Series."
+  "notes": "Web CERRADA. Películas por géneros y año. También Series."
 }

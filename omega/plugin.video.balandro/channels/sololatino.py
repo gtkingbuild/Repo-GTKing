@@ -1,32 +1,97 @@
 # -*- coding: utf-8 -*-
 
-import re
+import ast, re
 
 from platformcode import config, logger, platformtools
 from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
-try:
-    from Cryptodome.Cipher import AES
-    from lib import jscrypto
-except:
-    pass
+
+from lib.pyberishaes import GibberishAES
 
 
 host = 'https://sololatino.net/'
 
 
+def item_configurar_proxies(item):
+    color_list_proxies = config.get_setting('channels_list_proxies_color', default='red')
+
+    color_avis = config.get_setting('notification_avis_color', default='yellow')
+    color_exec = config.get_setting('notification_exec_color', default='cyan')
+
+    context = []
+
+    tit = '[COLOR %s]Información proxies[/COLOR]' % color_avis
+    context.append({'title': tit, 'channel': 'helper', 'action': 'show_help_proxies'})
+
+    if config.get_setting('channel_sololatino_proxies', default=''):
+        tit = '[COLOR %s][B]Quitar los proxies del canal[/B][/COLOR]' % color_list_proxies
+        context.append({'title': tit, 'channel': item.channel, 'action': 'quitar_proxies'})
+
+    tit = '[COLOR %s]Ajustes categoría proxies[/COLOR]' % color_exec
+    context.append({'title': tit, 'channel': 'actions', 'action': 'open_settings'})
+
+    plot = 'Es posible que para poder utilizar este canal necesites configurar algún proxy, ya que no es accesible desde algunos países/operadoras.'
+    plot += '[CR]Si desde un navegador web no te funciona el sitio ' + host + ' necesitarás un proxy.'
+    return item.clone( title = '[B]Configurar proxies a usar ...[/B]', action = 'configurar_proxies', folder=False, context=context, plot=plot, text_color='red' )
+
+def quitar_proxies(item):
+    from modules import submnuctext
+    submnuctext._quitar_proxies(item)
+    return True
+
+def configurar_proxies(item):
+    from core import proxytools
+    return proxytools.configurar_proxies_canal(item.channel, host)
+
+
 def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
     if '/filtro/' in url: raise_weberror = False
 
-    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
+    hay_proxies = False
+    if config.get_setting('channel_sololatino_proxies', default=''): hay_proxies = True
+
+    if not url.startswith(host):
+        data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
+    else:
+        if hay_proxies:
+            data = httptools.downloadpage_proxy('sololatino', url, post=post, headers=headers, raise_weberror=raise_weberror).data
+        else:
+            data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror).data
+
+        if not data:
+            if not '/?s=' in url:
+                if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('SoloLatino', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+
+                timeout = config.get_setting('channels_repeat', default=30)
+
+                if hay_proxies:
+                    data = httptools.downloadpage_proxy('sololatino', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
+                else:
+                    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
 
     return data
+
+
+def acciones(item):
+    logger.info()
+    itemlist = []
+
+    itemlist.append(item.clone( channel='submnuctext', action='_test_webs', title='Test Web del canal [COLOR yellow][B] ' + host + '[/B][/COLOR]',
+                                from_channel='sololatino', folder=False, text_color='chartreuse' ))
+
+    itemlist.append(item_configurar_proxies(item))
+
+    platformtools.itemlist_refresh()
+
+    return itemlist
 
 
 def mainlist(item):
     logger.info()
     itemlist = []
+
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone( title = 'Buscar ...', action = 'search', search_type = 'all', text_color = 'yellow' ))
 
@@ -42,6 +107,8 @@ def mainlist(item):
 def mainlist_pelis(item):
     logger.info()
     itemlist = []
+
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone( title = 'Buscar película ...', action = 'search', search_type = 'movie', text_color = 'deepskyblue' ))
 
@@ -60,6 +127,8 @@ def mainlist_pelis(item):
 def mainlist_series(item):
     logger.info()
     itemlist = []
+
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
 
     itemlist.append(item.clone( title = 'Buscar serie ...', action = 'search', search_type = 'tvshow', text_color = 'hotpink' ))
 
@@ -83,13 +152,15 @@ def mainlist_animes(item):
     logger.info()
     itemlist = []
 
+    itemlist.append(item.clone( action='acciones', title= '[B]Acciones[/B] [COLOR plum](si no hay resultados)[/COLOR]', text_color='goldenrod' ))
+
     itemlist.append(item.clone( title = 'Buscar anime ...', action = 'search', search_type = 'tvshow', text_color = 'springgreen' ))
 
     itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'animes/', search_type = 'tvshow' ))
 
-    itemlist.append(item.clone( title = 'Últimos episodios', action = 'list_all', url = host + 'series/novedades/', group = 'animes', search_type = 'tvshow', text_color = 'cyan' ))
+    itemlist.append(item.clone( title = 'Últimos episodios', action = 'list_all', url = host + 'animes/novedades/', group = 'animes', search_type = 'tvshow', text_color = 'cyan' ))
 
-    itemlist.append(item.clone( title = 'Más valoradas', action = 'list_all', url = host + 'animes/mejor-valoradas/', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = host + 'animes/mejor-valoradas/', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', group = 'animes', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', group = 'animes', search_type = 'tvshow' ))
@@ -393,10 +464,13 @@ def findvideos(item):
 
             datae = data_s
 
-            e_links = scrapertools.find_single_match(datae, 'const dataLink =(.*?);')
-            e_bytes = scrapertools.find_single_match(datae, "const bytes =.*?'(.*?)'")
+            dataLink = scrapertools.find_single_match(datae, 'const dataLink =(.*?);')
+            if not dataLink: dataLink = scrapertools.find_single_match(datae, 'dataLink(.*?);')
 
-            e_links = e_links.replace(']},', '"type":"file"').replace(']}]', '"type":"file"')
+            e_bytes = scrapertools.find_single_match(datae, "const bytes =.*?'(.*?)'")
+            if not e_bytes: e_bytes = scrapertools.find_single_match(datae, "encrypted.*?'(.*?)'")
+
+            e_links = dataLink.replace(']},', '"type":"file"').replace(']}]', '"type":"file"')
 
             langs = scrapertools.find_multiple_matches(str(e_links), '"video_language":(.*?)"type":"file"')
 
@@ -427,6 +501,8 @@ def findvideos(item):
                     elif 'disable' in srv: continue
                     elif 'xupalace' in srv: continue
                     elif 'uploadfox' in srv: continue
+
+                    elif srv == 'download': continue
 
                     servidor = servertools.corregir_servidor(srv)
 
@@ -555,16 +631,20 @@ def play(item):
     url = item.url
 
     if item.crypto:
-        logger.info("check-1-crypto: %s" % item.crypto)
-        logger.info("check-2-crypto: %s" % item.bytes)
-        try:
-            ###############url =  AES.decrypt(item.crypto, item.bytes)
-            url = AES.new(item.crypto, AES.MODE_SIV==10)
-            logger.info("check-3-crypto: %s" % url)
+        crypto = str(item.crypto)
+        bytes = str(item.bytes)
 
-            url = jscrypto.new(item.crypto, 2, IV=item.bytes)
-            logger.info("check-4-crypto: %s" % url)
+        try:
+            cripto = ast.literal_eval(cripto)
         except:
+            crypto = str(item.crypto)
+
+        try:
+            url = GibberishAES.dec(GibberishAES(), string = crypto, pass_ = bytes)
+        except:
+            url = ''
+
+        if not url:
             return '[COLOR cyan]No se pudo [COLOR red]Desencriptar[/COLOR]'
 
     if url:

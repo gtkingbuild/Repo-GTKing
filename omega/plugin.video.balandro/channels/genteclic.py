@@ -40,8 +40,11 @@ def generos(item):
     itemlist = []
 
     data = do_downloadpage(host)
+    data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
-    matches = scrapertools.find_multiple_matches(data, '<li class="cat-item cat-item-(.*?)">.*?<a href="(.*?)".*?>(.*?)</a>')
+    bloque = scrapertools.find_single_match(data, '>Menu<(.*?)</ul></div></div></div>')
+
+    matches = scrapertools.find_multiple_matches(bloque, 'menu-item-object-category menu-item-(.*?)">.*?<a href="(.*?)".*?>(.*?)</a>')
 
     for cat, url, tit in matches:
         if 'Academia de Sabiduría' in tit: continue
@@ -50,18 +53,29 @@ def generos(item):
         elif tit == 'Conspiraciones': continue
         elif tit == 'Curiosidades': continue
         elif tit == 'Educacion': continue
-        elif tit == 'Metaciencia': continue
+        elif tit == 'Motivación': continue
         elif tit == 'Peliculas': continue
-
         elif 'Cosmos' in tit: continue
         elif 'Playlist' in tit: continue
-
         elif tit == 'Series': continue
         elif tit == 'Salud': continue
+        elif tit == 'Videoteca': continue
+
+        if tit == 'Acción': cat = '216'
+        elif tit == 'Animación': cat = '219'
+        elif tit == 'Biograficas': cat = '221'
+        elif tit == 'Ciencia Ficción': cat = '218'
+        elif tit == 'Comedia': cat = '217'
+        elif tit == 'Documentales': cat = '50'
+        elif tit == 'Drama': cat = '215'
+        elif tit == 'Hechos reales': cat = '215'
+        elif tit == 'Metafísica': cat = '238'
+        elif tit == 'Terror': cat = '0'
+        elif tit == 'Western': cat = '0'
 
         itemlist.append(item.clone( title = tit, url = url, action = 'list_all', cat = cat, text_color = 'deepskyblue' ))
 
-    return itemlist
+    return sorted(itemlist, key=lambda it: it.title)
 
 
 def categorias(item):
@@ -80,9 +94,7 @@ def categorias(item):
 
     itemlist.append(item.clone( title = 'Educación', action = 'list_all', url = host + 'category/educacion/', cat = '201', text_color='moccasin' ))
 
-    itemlist.append(item.clone( title = 'Metaciencia', action = 'list_all', url = host + 'category/peliculas/metaciencia/', cat = '238', text_color='moccasin' ))
-
-    itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host + 'category/peliculas/', cat = '1', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'Motivación', action = 'list_all', url = host + 'category/peliculas/motivacion/', cat = '7440', text_color='moccasin' ))
 
     itemlist.append(item.clone( title = 'Salud', action = 'list_all', url = host + 'category/salud/', cat = '193', text_color='moccasin' ))
 
@@ -136,6 +148,9 @@ def list_all(item):
 
             if not title: continue
 
+            c_year = scrapertools.find_single_match(title, '(\d{4})')
+            if c_year: title = title.replace('(' + c_year + ')', '').strip()
+
             thumb = scrapertools.find_single_match(article, ' data-src="([^"]+)')
 
             itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, languages=lang,
@@ -152,7 +167,6 @@ def list_all(item):
 
         post = {"action": "jnews_module_ajax_jnews_video_block4_view",
                 "module": "true",
-                "s": "",
                 "data[filter]": "0",
                 "data[filter_type]": "all",
                 "data[current_page]": item.page,
@@ -180,7 +194,9 @@ def list_all(item):
 
         data2 = str(data2).replace('\\/', '/')
 
-        matches2 = scrapertools.find_multiple_matches(str(data2), '<article(.*?)</article>')
+        if item.cat == '0': matches2 = []
+        else:
+            matches2 = scrapertools.find_multiple_matches(str(data2), '<article(.*?)</article>')
 
         for match in matches2:
             match = str(match).replace('\\/', '/')
@@ -273,6 +289,12 @@ def clean_title(title):
     title = title.replace('\\u00e1', 'a').replace('\\u00c1', 'a').replace('\\u00e9', 'e').replace('\\u00ed', 'i').replace('\\u00f3', 'o').replace('\\u00fa', 'u')
     title = title.replace('\\u00f1', 'ñ').replace('\\u00bf', '¿').replace('\\u00a1', '¡').replace('\\u00ba', 'º')
     title = title.replace('\\u00eda', 'a').replace('\\u00f3n', 'o').replace('\\u00fal', 'u').replace('\\u00e0', 'a').replace('\\u00fc', 'u').replace('\\u00d3', 'o').replace('\\u00c9', 'e')
+
+    title = title.replace('\\u00a0', ' ').replace('\\u2013', '').replace('\\u2027', '').replace('\\u00e8', 'e')
+
+    title = title.replace('\\u00da', 'Ú').replace('\\u00da', 'Ú').replace('\\u2019', "'")
+
+    title = title.replace('&quot;', '')
 
     return title
 

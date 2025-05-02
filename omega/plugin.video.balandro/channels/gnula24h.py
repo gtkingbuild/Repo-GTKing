@@ -7,16 +7,14 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-# ~ 14/8/24 Peliculas solo hay 26
-
-host = 'https://wv-5n.gnula.cc/'
+host = 'https://wv5c.gnula.cc/'
 
 
 # ~ por si viene de enlaces guardados
 ant_hosts = ['https://ww3.gnula2h.cc/', 'https://www11.gnula.cc/', 'https://w-ww.gnula.cc/',
              'https://ww-w.gnula.cc/', 'https://www1.gnula.cc/', 'https://w-w-w.gnula.cc/',
              'https://wv5n.gnula.cc/', 'https://wv5h.gnula.cc/', 'https://wv5l.gnula.cc/',
-             'https://w-v5n.gnula.cc/']
+             'https://w-v5n.gnula.cc/', 'https://wv-5n.gnula.cc/', 'https://kv5n.gnula.cc/']
 
 
 domain = config.get_setting('dominio', 'gnula24h', default='')

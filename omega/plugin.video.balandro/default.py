@@ -74,11 +74,21 @@ if tipo_channel != '':
 
                     search_type = ''
 
-                    if item.search_type == 'movie': search_type = 'para [COLOR yellow]Películas[/COLOR]'
+                    if item.search_type == 'all':
+                        if item.search_pop:
+                            last_search = config.get_setting('search_last_list')
+                            search_type = 'para [COLOR yellow]Listas[/COLOR]'
+
+                    elif item.search_type == 'movie':
+                        if item.search_video: search_type = 'para [COLOR yellow]Vídeos[/COLOR]'
+                        else: search_type = 'para [COLOR yellow]Películas[/COLOR]'
+
                     elif item.search_type == 'tvshow': search_type = 'para [COLOR yellow]Series[/COLOR]'
+
                     elif item.search_type == 'documentary': search_type = 'para [COLOR yellow]Documentales[/COLOR]'
                     elif item.search_type == 'person': search_type = 'para [COLOR yellow]Personas[/COLOR]'
 
+                    elif item.search_special == 'torrent': search_type = 'para [COLOR yellow]Torrents[/COLOR]'
                     elif item.search_special == 'anime': search_type = 'para [COLOR yellow]Animes[/COLOR]'
                     elif item.search_special == 'dorama': search_type = 'para [COLOR yellow]Doramas[/COLOR]'
 
@@ -86,7 +96,14 @@ if tipo_channel != '':
 
                 if tecleado is not None and tecleado != '':
                     itemlist = canal.search(item, tecleado)
-                    if item.buscando == '': config.set_last_search(item.search_type, tecleado)
+
+                    if item.buscando == '':
+                        search_type = item.search_type
+
+                        if item.search_pop: search_type = 'search_last_list'
+                        elif item.search_video: search_type = 'search_last_video'
+
+                        config.set_last_search(search_type, tecleado)
                 else:
                     itemlist = []
                     # ~ (desactivar si provoca ERROR: GetDirectory en el log)
@@ -171,9 +188,9 @@ if tipo_channel != '':
 
         if item.channel in ['mainmenu', 'actions', 'domains', 'downloads', 'favoritos', 'filmaffinitylists', 'filters', 'generos', 'groups', 'helper', 'proxysearch', 'search', 'submnuctext', 'submnuteam', 'tester', 'tmdblists', 'tracking']:
             platformtools.dialog_ok(release + '[COLOR red][B]Error inesperado en [COLOR gold]' + item.channel.capitalize() + '[/B][/COLOR]',
-                                    '[COLOR moccasin][B]Podría estar corrupto su fichero de [COLOR chocolate][B]Ajustes[/COLOR][COLOR moccasin][B] de Balandro[/B][/COLOR], de ser así, pruebe a [COLOR cyan][B]Re-Instalar el Add-On[/B][/COLOR][COLOR yellow][B] (explicación en nuestro Telegram y/ó Foro Mensaje Fijado #10)[/B][/COLOR][COLOR moccasin][B], ó bien ser un error interno del Add-On/Modulo. [COLOR yellowgreen][B]Para saber más detalles, consulta el fichero Log de su Media Center.[/B][/COLOR]')
+                                    '[COLOR moccasin][B]Puede estar Corrupto su Fichero de [COLOR chocolate][B]Ajustes[/COLOR][COLOR goldenrod][B] de [/B][/COLOR][COLOR yellow][B]Balandro[/B][/COLOR], Pruebe a [COLOR cyan][B]Re-Instalar el Add-On[/B][/COLOR][COLOR goldenrod][B] (consulte nuestro Telegram ó Foro)[/B][/COLOR][COLOR moccasin][B], ó [/COLOR][COLOR darkcyan][B]bien hay un Error en el Add-On/Modulo.[/B][/COLOR] [COLOR chartreuse][B]Para más detalles, vea el Fichero Log de su Media Center en la Ayuda.[/B][/COLOR]')
         else:
             platformtools.dialog_ok(release + ' [COLOR red]Error inesperado en [COLOR yellow]' + item.channel.capitalize() + '[/B][/COLOR]',
-                                    '[COLOR moccasin][B]Quizás puede deberse a un fallo de conexión[/B][/COLOR], [COLOR cyan][B]ó que la web asociada a este canal ha variado su estructura[/B][/COLOR], ó bien ser un error interno del Add-On. [COLOR yellowgreen][B]Para saber más detalles, consulta el fichero Log de su Media Center.[/B][/COLOR]')
+                                    '[COLOR moccasin][B]Puede deberse a un fallo de Conexión[/B][/COLOR], ó [COLOR cyan][B]la Web asociada al Canal varió su estructura[/B][/COLOR], ó [COLOR goldenrod][B]estar Corrupto su Fichero de [COLOR chocolate][B]Ajustes[/COLOR][COLOR goldenrod][B] de [/B][/COLOR][COLOR yellow][B]Balandro[/B][/COLOR][COLOR moccasin], ó [/COLOR][COLOR darkcyan][B]Hay un Error en el Add-On.[/B][/COLOR] [COLOR chartreuse][B]Para más detalles, vea el Fichero Log de su Media Center en la Ayuda.[/B][/COLOR]')
 
 logger.info('[COLOR blue]Ending with %s[/COLOR]' % sys.argv[1])

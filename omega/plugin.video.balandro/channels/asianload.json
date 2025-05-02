@@ -3,7 +3,7 @@
   "name": "AsianLoad",
   "thumbnail": "asianload.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": false,
   "search_types": ["tvshow"],
@@ -11,7 +11,7 @@
   "categories": ["tvshow"],
   "language": ["vose", "vo"],
 
-  "clusters": ["dorama"],
+  "clusters": ["temporary", "dorama"],
 
   "notes": "Web dedicada exclusivamente al dorama"
 }

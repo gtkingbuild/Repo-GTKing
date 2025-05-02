@@ -38,16 +38,20 @@ def mainlist_animes(item):
 
     itemlist.append(item.clone( title = 'Buscar anime ...', action = 'search', search_type = 'all', text_color='springgreen' ))
 
-    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'tv/?status=&type=&order=update&page=1', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Catálogo', action = 'list_all', url = host + 'tv/?page=1', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Últimos episodios', action = 'list_all', url = host + 'tv/?sub=&order=latest&page=1' , search_type = 'tvshow', text_color = 'cyan' ))
 
     itemlist.append(item.clone( title = 'Últimos animes', action = 'list_all', url = host + 'tv/?status=&type=&order=update&page=1', search_type = 'tvshow', text_color = 'moccasin' ))
 
     itemlist.append(item.clone( title = 'Actualizados', action = 'list_all', url = host + 'tv/?status=&type=&order=latest&page=1', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'En emisión', action = 'list_all', url = host + 'tv/?status=ongoing&page=1', search_type = 'tvshow' ))
+    itemlist.append(item.clone( title = 'Finalizados', action = 'list_all', url = host + 'tv/?status=completed&page=1', search_type = 'tvshow' ))
 
     itemlist.append(item.clone( title = 'Más vistos', action = 'list_all', url = host + 'tv/?sub=&order=popular&page=1', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Más valorados', action = 'list_all', url = host + 'tv/?status=&type=&order=rating&page=1', search_type = 'tvshow' ))
+
+    itemlist.append(item.clone( title = 'Proximamente', action = 'list_all', url = host + 'tv/?status=upcoming&page=1', search_type = 'tvshow', text_color='yellowgreen' ))
 
     itemlist.append(item.clone( title = 'Series', action = 'list_all', url = host + 'tv/?status=&type=tv&order=update&page=1', search_type = 'tvshow', text_color = 'hotpink' ))
     itemlist.append(item.clone( title = 'Películas', action = 'list_all', url = host + 'tv/?status=&type=movie&order=update&page=1', search_type = 'movie', text_color='deepskyblue' ))
@@ -77,7 +81,7 @@ def generos(item):
     logger.info()
     itemlist = []
 
-    data = httptools.downloadpage(host + 'tv/').data
+    data = do_downloadpage(host + 'tv/')
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
     bloque = scrapertools.find_single_match(data, '> Género <(.*?)</ul>')
@@ -96,7 +100,7 @@ def list_all(item):
     logger.info()
     itemlist = []
 
-    data = httptools.downloadpage(item.url).data
+    data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
     bloque = scrapertools.find_single_match(data, '>Modo Texto<(.*?)</div></div></div>')
@@ -119,7 +123,7 @@ def list_all(item):
 
         title = title.replace('&#8217;', "'").replace('&#8211;', '').replace('&#215;', 'x')
 
-        tipo = 'movie' if '>Movie<' in match or '-movie-' in url else 'tvshow'
+        tipo = 'movie' if '>Pelicula<' in match else 'tvshow'
         sufijo = '' if item.search_type != 'all' else tipo
 
         lang = ''
@@ -133,7 +137,7 @@ def list_all(item):
             if '[Latino' in title or 'Latino]' in title: lang = 'Lat'
             elif '[Castellano' in title or 'Castellano]' in title: lang = 'Esp'
 
-            itemlist.append(item.clone( action='episodios', url=url, title=title, thumbnail=thumb, lang=lang, fmt_sufijo=sufijo,
+            itemlist.append(item.clone( action='findvideos', url=url, title=title, thumbnail=thumb, lang=lang, fmt_sufijo=sufijo,
                                         contentType = 'movie', contentTitle = PeliName, infoLabels={'year': year} ))
 
         if tipo == 'tvshow':
@@ -177,7 +181,7 @@ def episodios(item):
     if not item.page: item.page = 0
     if not item.perpage: item.perpage = 50
 
-    data = httptools.downloadpage(item.url).data
+    data = do_downloadpage(item.url)
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
     bloque = scrapertools.find_single_match(data, '<div class="eplister">(.*?)</ul></div></div>')
@@ -232,6 +236,8 @@ def episodios(item):
     for url, epis, title in matches[item.page * item.perpage:]:
         title = title.replace('&#8217;', "'").replace('&#8211;', '').replace('&#215;', 'x')
 
+        if '| Fin' in epis: epis = epis.replace('| Fin', '').strip()
+
         if len(str(epis)) >= 4:
             epis = 1
             titulo = title
@@ -257,7 +263,17 @@ def findvideos(item):
     logger.info()
     itemlist = []
 
-    data = httptools.downloadpage(item.url).data
+    if not item.search_type == 'tvshow':
+        data = do_downloadpage(item.url)
+        data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
+
+        new_url = scrapertools.find_single_match(data, '<li data-index="0">.*?<a href="(.*?)"')
+
+        if new_url:
+            data = do_downloadpage(new_url)
+    else:
+        data = do_downloadpage(item.url)
+
     data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
 
     lang = 'Vose'
@@ -355,10 +371,14 @@ def play(item):
 
         return itemlist
     else:
-        if item.other == 'Tera': item.url = item.url.replace('/one.php?', '/two.php?')
+        if item.other == 'Tera'or item.other == 'Terabbox': item.url = item.url.replace('/one.php?', '/two.php?')
 
         if '.php?' in item.url:
             resp = httptools.downloadpage(item.url, follow_redirects=False)
+
+            new_url = scrapertools.find_single_match(resp.data, '<a href="(.*?)"')
+            if 'php?' in new_url:
+                resp = httptools.downloadpage(host[:-1] + new_url, follow_redirects=False)
 
             url = scrapertools.find_single_match(resp.data, "window.location.href = '(.*?)'")
 

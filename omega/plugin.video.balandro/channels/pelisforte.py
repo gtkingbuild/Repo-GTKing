@@ -300,7 +300,9 @@ def findvideos(item):
             ref = ''
             other = ''
 
-            if srv == 'ok':
+            if srv == 'pf': continue
+
+            elif srv == 'ok':
                 servidor = 'directo'
                 srv = 'ok'
             elif srv == 'okhd':
@@ -343,7 +345,7 @@ def play(item):
 
     if item.other:
         if '/mp4.nu/' in url:
-            new_url = url.replace('/mp4.nu/', '/mp4.nu/r.php')
+            new_url = url.replace('/mp4.nu//?h=', '/mp4.nu/r.php?h=').replace('/mp4.nu/', '/mp4.nu/r.php')
 
             if not new_url.startswith(host_player):
                 resp = httptools.downloadpage(new_url, headers={'Referer': host_player}, follow_redirects=False, only_headers=True)
@@ -368,11 +370,21 @@ def play(item):
                 elif '/playpf.link/' in url:
                     return 'Servidor [COLOR plum]No Soportado[/COLOR]'
 
-                if item.ref:
-                    url += "|Referer=" + item.ref
-
                 servidor = servertools.get_server_from_url(url)
                 servidor = servertools.corregir_servidor(servidor)
+
+                if item.ref:
+                    if not "vgfplay" in url and not "listeamed":
+                        url += "|Referer=" + url
+                    else:
+                        url += "|Referer=" + host_player
+                else:
+                    if 'streamwish' in url or 'strwish' in url or 'embedwish' in url or 'wishembed' in url or 'awish' in url or 'dwish' in url or 'mwish' in url or 'wishfast' in url or 'sfastwish' in url or 'doodporn' in url or 'flaswish' in url or 'obeywish' in url or 'cdnwish' in url or 'asnwish' in url or 'flastwish' in url or 'jodwish' in url or 'swhoi' in url or 'fsdcmo' in url or 'swdyu' in url or 'wishonly' in url or 'playerwish' in url or 'hlswish' in url or 'wish' in url or 'iplayerhls' in url or 'hlsflast' in url or 'ghbrisk' in url:
+                        url += "|Referer=" + host_player
+
+                    else:
+                       if not "vgfplay" in url and not "listeamed" in url:
+                           url += "|Referer=" + url
 
                 itemlist.append(item.clone(server = servidor, url = url))
                 return itemlist
@@ -415,15 +427,25 @@ def play(item):
         if 'gounlimited' in url:
             return 'Requiere verificación [COLOR red]reCAPTCHA[/COLOR]'
 
-        if item.ref:
-            url += "|Referer=" + item.ref
-
         servidor = servertools.get_server_from_url(url)
         servidor = servertools.corregir_servidor(servidor)
 
         if servidor == 'directo':
             new_server = servertools.corregir_other(url).lower()
             if new_server.startswith("http"): servidor = new_server
+
+        if item.ref:
+            if not "vgfplay" in url and not "listeamed" in url:
+                url += "|Referer=" + url
+            else:
+                url += "|Referer=" + host_player
+        else:
+            if 'streamwish' in url or 'strwish' in url or 'embedwish' in url or 'wishembed' in url or 'awish' in url or 'dwish' in url or 'mwish' in url or 'wishfast' in url or 'sfastwish' in url or 'doodporn' in url or 'flaswish' in url or 'obeywish' in url or 'cdnwish' in url or 'asnwish' in url or 'flastwish' in url or 'jodwish' in url or 'swhoi' in url or 'fsdcmo' in url or 'swdyu' in url or 'wishonly' in url or 'playerwish' in url or 'hlswish' in url or 'wish' in url or 'iplayerhls' in url or 'hlsflast' in url or 'ghbrisk' in url:
+                url += "|Referer=" + host_player
+
+            else:
+              if not "vgfplay" in url and not "listeamed" in url:
+                  url += "|Referer=" + url
 
         itemlist.append(item.clone(server = servidor, url = url))
 

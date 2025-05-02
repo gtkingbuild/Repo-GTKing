@@ -7,16 +7,14 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-# ~ 14/8/24 Peliculas solo hay 26
-
-host = 'https://w-v5u.seriesgod.cc/'
+host = 'https://wvvn.seriesgod.cc/'
 
 
 # ~ por si viene de enlaces guardados
 ant_hosts = ['https://www.gnula24.xyz/', 'https://www3.gnula24.xyz/', 'https://ww2.gnula24.xyz/',
              'https://www11.gnula24.xyz/', 'https://w-ww.gnula24.xyz/', 'https://c1.gnula24.xyz/',
              'https://www.seriesgod.cc/', 'https://ww-w.seriesgod.cc/', 'https://w-ww.seriesgod.cc/',
-             'https://www.seriesgod.cc/', 'https://wv5u.seriesgod.cc/']
+             'https://www.seriesgod.cc/', 'https://wv5u.seriesgod.cc/', 'https://w-v5u.seriesgod.cc/']
 
 
 domain = config.get_setting('dominio', 'gnula24', default='')
@@ -115,6 +113,8 @@ def acciones(item):
     itemlist.append(item.clone( channel='domains', action='manto_domain_gnula24', title=title, desde_el_canal = True, folder=False, text_color='darkorange' ))
 
     itemlist.append(item_configurar_proxies(item))
+
+    itemlist.append(Item( channel='helper', action='show_help_prales', title='[B]Cuales son sus Clones[/B]', thumbnail=config.get_thumb('gnula24'), text_color='turquoise' ))
 
     itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'gnula24', thumbnail=config.get_thumb('gnula24') ))
 

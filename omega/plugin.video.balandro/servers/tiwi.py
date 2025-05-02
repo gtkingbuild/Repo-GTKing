@@ -14,9 +14,9 @@ def get_video_url(page_url, url_referer=''):
 
     headers = {}
 
-    if "|Referer" in page_url or "|referer" in page_url:
+    if "|Referer=" in page_url:
         page_url, referer = page_url.split("|")
-        referer = referer.replace('Referer=', '').replace('referer=', '')
+        referer = referer.replace('Referer=', '')
         headers = {'Referer': referer}
 
     resp = httptools.downloadpage(page_url, headers=headers)
@@ -37,7 +37,7 @@ def get_video_url(page_url, url_referer=''):
     try:
         matches = re.compile(sources, re.DOTALL).findall(dec_data)
         for url in matches:
-            video_urls.append(['m3u', url])
+            video_urls.append(['m3u8', url])
     except Exception:
         pass
 

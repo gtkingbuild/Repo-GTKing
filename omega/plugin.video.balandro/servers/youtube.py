@@ -256,8 +256,11 @@ def extract_videos(video_id, ini_page_url):
                 logger.error(traceback.format_exc())
 
                 trace = traceback.format_exc()
+
                 if 'This video may be inappropriate for some users' in trace:
                     return 'Vídeo Restringido'
+                elif "Sign in to confirm you’re not a bot" in trace:
+                    return 'Error YouTube Exception'
 
         if xbmc.getCondVisibility('System.HasAddon("script.module.resolveurl")'):
             try:
@@ -388,8 +391,11 @@ def extract_videos(video_id, ini_page_url):
                 logger.error(traceback.format_exc())
 
                 trace = traceback.format_exc()
+
                 if 'This video may be inappropriate for some users' in trace:
                     return 'Vídeo Restringido'
+                elif "Sign in to confirm you’re not a bot" in trace:
+                    return 'Error YouTube Exception'
 
         if xbmc.getCondVisibility('System.HasAddon("script.module.resolveurl")'):
             try:

@@ -206,17 +206,19 @@ def findvideos(item):
         if 'up-4ever' in servidor: continue
 
         other = ''
+        age = ''
+
         if servidor == 'qiwi': other = 'Qiwi'
+        elif servidor == 'drop':
+              other = 'Drop'
+              age = 'Captcha'
 
         servidor = servertools.corregir_servidor(servidor)
 
         if not url or not servidor: continue
 
-        quality = 'HD'
-        lang = 'Esp'
-
         itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url,
-                              language = lang, quality = quality , other = 'd' + ' ' + other ))
+                              language = 'Esp', quality = 'HD' , other = 'd' + ' ' + other, age = age ))
 
     if not itemlist:
         if not ses == 0:

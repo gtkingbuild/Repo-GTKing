@@ -7,14 +7,15 @@ from core.item import Item
 from core import httptools, scrapertools, servertools, tmdb
 
 
-host = 'https://www19.pelisplushd.to/'
+host = 'https://www23.pelisplushd.to/'
 
 
 # ~ por si viene de enlaces guardados
 ant_hosts = ['https://pelisplushd.lat/', 'https://www1.pelisplushd.lat/', 'https://www2.pelisplushd.lat/',
              'https://www.pelisplushd.la/', 'https://ww1.pelisplushd.to/', 'https://www9.pelisplushd.to/',
              'https://www11.pelisplushd.to/', 'https://www15.pelisplushd.to/', 'https://www16.pelisplushd.to/',
-             'https://www17.pelisplushd.to/', 'https://www18.pelisplushd.to/']
+             'https://www17.pelisplushd.to/', 'https://www18.pelisplushd.to/', 'https://www19.pelisplushd.to/',
+             'https://www20.pelisplushd.to/']
 
 
 domain = config.get_setting('dominio', 'pelisplushdlat', default='')
@@ -119,11 +120,11 @@ def mainlist(item):
     itemlist.append(item.clone( title = 'Películas', action = 'mainlist_pelis', text_color = 'deepskyblue' ))
     itemlist.append(item.clone( title = 'Series', action = 'mainlist_series', text_color = 'hotpink' ))
 
-    if not config.get_setting('descartar_anime', default=False):
-        itemlist.append(item.clone( title = 'Animes', action = 'mainlist_animes', text_color = 'springgreen' ))
-
     if config.get_setting('mnu_doramas', default=False):
         itemlist.append(item.clone( title = 'Doramas', action = 'mainlist_series', text_color = 'firebrick' ))
+
+    if not config.get_setting('descartar_anime', default=False):
+        itemlist.append(item.clone( title = 'Animes', action = 'mainlist_animes', text_color = 'springgreen' ))
 
     return itemlist
 
@@ -162,11 +163,11 @@ def mainlist_series(item):
 
     itemlist.append(item.clone( title = 'Más populares', action = 'list_all', url = host + 'series/populares?page=1', search_type = 'tvshow' ))
 
-    if not config.get_setting('descartar_anime', default=False):
-        itemlist.append(item.clone( title = 'Animes', action = 'mainlist_animes', search_type = 'tvshow', text_color = 'springgreen' ))
-
     if config.get_setting('mnu_doramas', default=False):
         itemlist.append(item.clone( title = 'Doramas', action = 'list_all', url = host + 'generos/dorama/series?page=1', search_type = 'tvshow', text_color = 'firebrick' ))
+
+    if not config.get_setting('descartar_anime', default=False):
+        itemlist.append(item.clone( title = 'Animes', action = 'mainlist_animes', search_type = 'tvshow', text_color = 'springgreen' ))
 
     itemlist.append(item.clone( title = 'Por género', action = 'generos', search_type = 'tvshow' ))
     itemlist.append(item.clone( title = 'Por año', action = 'anios', search_type = 'tvshow' ))

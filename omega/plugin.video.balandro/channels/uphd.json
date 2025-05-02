@@ -3,7 +3,7 @@
   "name": "UpHd",
   "thumbnail": "uphd.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["movie"],
@@ -13,5 +13,5 @@
 
   "clusters": ["notice", "news", "rankings", "producers", "kids", "vos", "4k"],
 
-  "notes": "Películas por géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+  "notes": "Web ANULADA. Películas por géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
 }

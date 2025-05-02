@@ -3,7 +3,7 @@
   "name": "ViMeo",
   "thumbnail": "vimeo.jpg",
 
-  "active": true,
+  "active": false,
 
   "searchable": true,
   "search_types": ["documentary"],
@@ -11,7 +11,7 @@
   "categories": ["documentary"],
   "language": ["cast"],
 
-  "clusters": ["inestable", "onlyone", "rankings", "docs"],
+  "clusters": ["onlyone", "rankings", "docs"],
 
-  "notes": "Documentales en castellano."
+  "notes": "Web ANULADA. Documentales en castellano."
 }

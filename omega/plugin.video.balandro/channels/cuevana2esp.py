@@ -168,6 +168,8 @@ def acciones(item):
 
     itemlist.append(item_configurar_proxies(item))
 
+    itemlist.append(Item( channel='helper', action='show_help_prales', title='[B]Cuales son sus Clones[/B]', thumbnail=config.get_thumb('cuevana2esp'), text_color='turquoise' ))
+
     itemlist.append(Item( channel='actions', action='show_old_domains', title='[COLOR coral][B]Historial Dominios[/B][/COLOR]', channel_id = 'cuevana2esp', thumbnail=config.get_thumb('cuevana2esp') ))
 
     platformtools.itemlist_refresh()

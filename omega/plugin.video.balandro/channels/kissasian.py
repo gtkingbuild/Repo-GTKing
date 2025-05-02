@@ -216,23 +216,31 @@ def findvideos(item):
     data = do_downloadpage(item.url)
     data = re.sub(r"\n|\r|\t|&nbsp;|<br>|<br/>", "", data)
 
-    _ep = scrapertools.find_single_match(data, 'data-id="(.*?)"')
+    _ep = scrapertools.find_single_match(item.url, '/ep-(.*?)$')
 
     if not _ep: return itemlist
 
-    data = do_downloadpage(host + 'ajax/episode/player?episode_id=' + _ep, headers={'Referer': item.url})
+    data = do_downloadpage(host + 'ajax/episode/player?episode_id=' + _ep, headers = {'Referer': item.url})
 
-    link = scrapertools.find_single_match(data, '"server_link":"(.*?)"')
+    _link = scrapertools.find_single_match(data, '"server_link":"(.*?)"')
 
-    if not link: return itemlist
+    if not _link: return itemlist
 
-    link = link.replace('\\/', '/')
+    _link = _link.replace('\\/', '/')
 
-    data = do_downloadpage(link, headers={'Referer': item.url})
+    data = do_downloadpage(_link, headers={'Referer': host})
+    data = re.sub(r"\n|\r|\t|&nbsp;|<br>|<br/>", "", data)
 
     matches = re.compile('class="linkserver".*?data-video="(.*?)"', re.DOTALL).findall(str(data))
 
     ses = 0
+
+    if not matches:
+       if '/asianbxkiun.pro/' in _link:
+           ses =+ 1
+           _link = _link.replace('/asianbxkiun.pro/', '/embasic.pro/')
+
+           itemlist.append(Item( channel = item.channel, action = 'play', server = 'directo', title = '', url = _link, language = 'Vo' ))
 
     for url in matches:
         ses += 1
@@ -264,19 +272,48 @@ def findvideos(item):
                 other = ''
                 if servidor == 'various': other = servertools.corregir_other(link)
 
-                itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = link, language = 'Vos', other = other ))
+                itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = link, language = 'Vo', other = other ))
 
             continue
 
         other = ''
         if servidor == 'various': other = servertools.corregir_other(url)
 
-        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = 'Vos', other = other ))
+        itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, title = '', url = url, language = 'Vo', other = other ))
 
     if not itemlist:
         if not ses == 0:
             platformtools.dialog_notification(config.__addon_name, '[COLOR tan][B]Sin enlaces Soportados[/B][/COLOR]')
             return
+
+    return itemlist
+
+
+def play(item):
+    logger.info()
+    itemlist = []
+
+    url = item.url
+
+    if '/embasic.pro/' in item.url:
+        data = do_downloadpage(item.url)
+        data = re.sub(r'\n|\r|\t|\s{2}|&nbsp;', '', data)
+
+        url = scrapertools.find_single_match(data, 'onclick="location.href=' + "*.*?'(.*?)'")
+
+    if url:
+        url = url.replace('http://', 'https://')
+
+        servidor = servertools.get_server_from_url(url)
+        servidor = servertools.corregir_servidor(servidor)
+
+        url = servertools.normalize_url(servidor, url)
+
+        if servidor == 'directo':
+            new_server = servertools.corregir_other(url).lower()
+            if new_server.startswith("http"): servidor = new_server
+
+        itemlist.append(item.clone(url = url, server = servidor))
 
     return itemlist
 

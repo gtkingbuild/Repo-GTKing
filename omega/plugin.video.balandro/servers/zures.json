@@ -3,7 +3,7 @@
   "name": "Zures",
 
   "active": true,
-  "notes": "Alternative vía: Script.Module.ResolveUrl (Amdahost,  Allviid,  Asian,  Cloudfile,  Cloudmail,  Dailyuploads,  Darkibox,  Dembed,  Downace,  Fastdrive,  Fastplay,  Filegram,  Gostream,  Letsupload,  Liivideo,  Myupload,  Neohh,  Oneupload,  Pandafiles,  Rovideo,  Send,  Streamable,  Streamdav,  Streamcool,  Streamgzzz,  Streamoupload,  SwiftLoad,  Turbovid,  Tusfiles,  Udrop,  Updown,  Uploadbaz,  Uploadflix,  Uploady,  Veev,  Veoh,  Videa,  Vidbob,  Vidlook,  Vidmx,  Vido,  Vidpro,  Vidstore,  Vidtube,  Vipss,  Vkprime,  Worlduploads,  Ztreamhub)",
+  "notes": "Alternative vía: Script.Module.ResolveUrl (Allviid,  Amdahost,  Asianload,  Asianplay,  Bigwarp,  Cloudfile,  Cloudmail,  Dailyuploads,  Darkibox,  Dembed,  Downace,  Fastdrive,  Fastplay,  Filegram,  Gostream,  Letsupload,  Liivideo,  Myupload,  Neohd,  Oneupload,  Pandafiles,  Rovideo,  Send,  Streamable,  Streamdav,  Streamcool,  Streamgzzz,  Streamoupload,  SwiftLoad,  Turbovid,  Tusfiles,  Udrop,  Updown,  Uploadbaz,  Uploadflix,  Uploadhub,  Uploady,  Upvid, Veev,  Veoh,  Videa,  Vidbob,  Vidlook,  Vidmx,  Vido,  Vidpro,  Vidstore,  Vidtube,  Vipss,  Vkprime,  Wecima,  Worlduploads,  Ztreamhub)",
 
   "find_videos": {
     "ignore_urls": [],
@@ -37,7 +37,7 @@
         "url": "https://dembed2.com/\\2"
       },
       {
-        "pattern": "(https://asianplay).(?:net|pro)/([0-9a-zA-Z]+)",
+        "pattern": "(https://asianplay.)(?:net|pro)/([0-9a-zA-Z]+)",
         "url": "https://asianplay.pro/\\2"
       },
       {
@@ -61,7 +61,7 @@
         "url": "\\1"
       },
       {
-        "pattern": "(https://letsupload).(?:io|org|cc)/([0-9a-zA-Z]+)",
+        "pattern": "(https://letsupload.)(?:io|org|cc)/([0-9a-zA-Z]+)",
         "url": "https://letsupload.org/\\2"
       },
       {
@@ -105,7 +105,7 @@
         "url": "\\1"
       },
       {
-        "pattern": "https://streamable.com/([0-9a-zA-Z]+)",
+        "pattern": "https://streamable.com/(?:s/|e/|)([0-9a-zA-Z]+)",
         "url": "\\1"
       },
       {
@@ -213,7 +213,7 @@
         "url": "https://videakid.hu/\\1"
       },
       {
-        "pattern": "https://swiftload.io/(?:d|e|v)/([0-9a-zA-Z]+)",
+        "pattern": "https://swiftload.io/(?:d/|e/|v/)([0-9a-zA-Z]+)",
         "url": "https://swiftload.io/v/\\1"
       },
       {
@@ -221,8 +221,36 @@
         "url": "\\1"
       },
       {
+        "pattern": "https://bigwarp.io/(?:d/|e/|v/|embed-)([0-9a-zA-Z]+)",
+        "url": "https://bigwarp.io/\\1"
+      },
+      {
+        "pattern": "https://bgwp.cc/(?:d/|e/|v/|embed-)([0-9a-zA-Z]+)",
+        "url": "https://bigwarp.io/\\1"
+      },
+      {
+        "pattern": "https://bigwarp.art/(?:d/|e/|v/|embed-)([0-9a-zA-Z]+)",
+        "url": "https://bigwarp.io/\\1"
+      },
+      {
         "pattern": "(https://vidtube.)(?:pro|cam|one)/(?:embed-|d/)([0-9a-zA-Z]+)",
         "url": "https://vidtube.one/embed-\\2.html"
+      },
+      {
+        "pattern": "(https://uploadhub.)(?:to|wf)/([0-9a-zA-Z]+)",
+        "url": "https://uploadhub.wf/\\2"
+      },
+      {
+        "pattern": "(https://upvid.)(?:co|pro|live|host|biz|cloud)/([0-9a-zA-Z]+)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://wecima.)(?:show|movie|stream|watch)/([0-9a-zA-Z]+)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "https://asianload.cfd/watch?v=([0-9a-zA-Z]+)",
+        "url": "https://asianload.cfd/watch?v=\\2"
       }
     ]
   }

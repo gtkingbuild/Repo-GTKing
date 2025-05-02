@@ -551,7 +551,7 @@ def episodios(item):
         if not title: title = scrapertools.find_single_match(epi, '<div class="episodiotitle">.*?">(.*?)</a>')
 
         if item.contentSerieName: 
-            titulo = '%sx%s - %s' % (str(item.contentSeason), epis, title)
+            titulo = '%sx%s - %s' % (str(item.contentSeason), str(epis), title)
 
             titulo = titulo + ' ' + item.contentSerieName
 

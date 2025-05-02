@@ -66,14 +66,14 @@ def do_downloadpage(url, post=None, headers=None, raise_weberror=True):
 
         if not data:
             if not 'suggest?que=' in url:
-                if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('filmoves', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
+                if config.get_setting('channels_re_charges', default=True): platformtools.dialog_notification('FilMoves', '[COLOR cyan]Re-Intentanto acceso[/COLOR]')
 
                 timeout = config.get_setting('channels_repeat', default=30)
 
                 if hay_proxies:
-                    data = httptools.downloadpage_proxy('filmoves', url, post=post, headers=headers, timeout=timeout).data
+                    data = httptools.downloadpage_proxy('filmoves', url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
                 else:
-                    data = httptools.downloadpage(url, post=post, headers=headers, timeout=timeout).data
+                    data = httptools.downloadpage(url, post=post, headers=headers, raise_weberror=raise_weberror, timeout=timeout).data
 
     return data
 
@@ -378,6 +378,8 @@ def findvideos(item):
             elif '/cloudemb.' in url or '.fembed.' in url or '/fembad.' in url or 'vanfem' in url: continue
             elif '/tubesb.' in url or '/sbsonic.' in url or '/sbrapid.' in url or '/lvturbo.' in url or '/sbface.' in url or '/sbbrisk.' in url or '/sblona.' in url: continue
 
+            elif '/bogarcomesticos.' in url: continue
+
             if url.startswith("//"): url = 'https:' + url
 
             servidor = servertools.get_server_from_url(url)
@@ -388,7 +390,7 @@ def findvideos(item):
             link_other = ''
             if servidor == 'various': link_other = servertools.corregir_other(url)
 
-            itemlist.append(Item( channel = item.channel, action = 'play', server = servidor, url = url, quality = qlty, language = lang, other = link_other ))
+            itemlist.append(Item( channel = item.channel, action = 'play', server=servidor, url=url, quality=qlty, language=lang, other=link_other ))
 
     if not itemlist:
         if not ses == 0:

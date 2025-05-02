@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import re
+import sys
+
+PY3 = False
+if sys.version_info[0] >= 3: PY3 = True
+
+import re, os
 
 from platformcode import logger, config, platformtools
 from core.item import Item
@@ -177,12 +182,12 @@ def calidades(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( title = 'En 4K 2160p', action = 'list_all', url = host + 'quality/4k-2160p/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'En 1080p dual', action = 'list_all', url = host + 'quality/1080p-dual/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'En 1080p', action = 'list_all', url = host + 'quality/1080p/', text_color='moccasin' ))
-    itemlist.append(item.clone( title = 'En 720p', action = 'list_all', url = host + 'quality/720p/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En 4K 2160p', action = 'list_all', url = host + 'calidad/4k-2160p/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En 1080p dual', action = 'list_all', url = host + 'calidad/1080p-dual/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En 1080p', action = 'list_all', url = host + 'calidad/1080p/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En 720p', action = 'list_all', url = host + 'calidad/720p/', text_color='moccasin' ))
 
-    itemlist.append(item.clone( title = 'En Micro HD', action = 'list_all', url = host + 'peliculas-microhd-9/', text_color='moccasin' ))
+    itemlist.append(item.clone( title = 'En Micro HD', action = 'list_all', url = host + 'calidad/microhd/', text_color='moccasin' ))
 
     return itemlist
 
@@ -422,7 +427,8 @@ def findvideos(item):
 
     data = do_downloadpage(item.url)
 
-    bloque = scrapertools.find_single_match(data, '>Utorrent<(.*?)</table>')
+    bloque = scrapertools.find_single_match(data, '>Torrent<(.*?)</table>')
+    if not bloque: bloque = scrapertools.find_single_match(data, '>Utorrent<(.*?)</table>')
 
     links = scrapertools.find_multiple_matches(bloque, '<td>(.*?)</td>.*?<td(.*?)</td>.*?<td>(.*?)</td>.*?href="(.*?)"')
 
@@ -431,6 +437,12 @@ def findvideos(item):
     if not links: links = scrapertools.find_multiple_matches(data, '>T<.*?<td>(.*?)</td>.*?<td(.*?)</td>.*?<td>(.*?)</td>.*?href="(.*?)"')
 
     for qlty, lang, size, link in links:
+        if qlty == 'voe': qlty = ''
+
+        if '>Dual' in lang or '>D' in lang:
+            qlty = lang.replace('>', '').strip()
+            lang = 'Lat'
+
         if 'Castellano' in lang: lang = 'Esp'
         elif 'Latino' in lang: lang = 'Lat'
         elif 'Subitulado' in lang: lang = 'Vose'
@@ -453,11 +465,29 @@ def play(item):
     host_torrent = host[:-1]
     url_base64 = decrypters.decode_url_base64(url, host_torrent)
 
+    if not url_base64: return itemlist
+
     if url_base64.startswith('magnet:'):
         itemlist.append(item.clone( url = url_base64, server = 'torrent' ))
 
     elif url_base64.endswith(".torrent"):
-        itemlist.append(item.clone( url = url_base64, server = 'torrent' ))
+        if config.get_setting('proxies', item.channel, default=''):
+            if PY3:
+                from core import requeststools
+                data = requeststools.read(url_base64, 'pelispanda')
+            else:
+                data = do_downloadpage(url_base64)
+
+            if data:
+                if '<h1>Not Found</h1>' in str(data) or '<!DOCTYPE html>' in str(data) or '<!DOCTYPE>' in str(data):
+                    return 'Archivo [COLOR red]Inexistente[/COLOR]'
+
+                file_local = os.path.join(config.get_data_path(), "temp.torrent")
+                with open(file_local, 'wb') as f: f.write(data); f.close()
+
+                itemlist.append(item.clone( url = file_local, server = 'torrent' ))
+        else:
+            itemlist.append(item.clone( url = url_base64 , server = 'torrent' ))
 
     return itemlist
 

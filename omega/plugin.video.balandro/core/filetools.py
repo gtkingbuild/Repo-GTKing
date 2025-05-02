@@ -317,7 +317,6 @@ def write(path, data, mode="wb"):
         return True
 
 
-
 def file_open(path, mode="r"):
     """
     Abre un archivo

@@ -46,6 +46,7 @@ tests_all_srvs = []
 srv_pending = ''
 con_incidencias = ''
 no_accesibles = ''
+con_problemas = ''
 
 try:
     with open(os.path.join(config.get_runtime_path(), 'dominios.txt'), 'r') as f: txt_status=f.read(); f.close()
@@ -54,6 +55,7 @@ except:
     except: txt_status = ''
 
 if txt_status:
+    # ~ Pending
     bloque = scrapertools.find_single_match(txt_status, 'SITUACION SERVIDORES(.*?)SITUACION CANALES')
 
     matches = scrapertools.find_multiple_matches(bloque, "[B](.*?)[/B]")
@@ -63,6 +65,7 @@ if txt_status:
 
         if '[COLOR orchid]' in match: srv_pending += '[B' + match + '/I][/B][/COLOR][CR]'
 
+    # ~ Incidencias
     bloque = scrapertools.find_single_match(txt_status, 'SITUACION CANALES(.*?)CANALES TEMPORALMENTE DES-ACTIVADOS')
 
     matches = scrapertools.find_multiple_matches(bloque, "[B](.*?)[/B]")
@@ -72,6 +75,7 @@ if txt_status:
 
         if '[COLOR moccasin]' in match: con_incidencias += '[B' + match + '/I][/B][/COLOR][CR]'
 
+    # ~ No Accesibles
     bloque = scrapertools.find_single_match(txt_status, 'CANALES PROBABLEMENTE NO ACCESIBLES(.*?)ULTIMOS CAMBIOS DE DOMINIOS')
 
     matches = scrapertools.find_multiple_matches(bloque, "[B](.*?)[/B]")
@@ -80,6 +84,17 @@ if txt_status:
         match = match.strip()
 
         if '[COLOR moccasin]' in match: no_accesibles += '[B' + match + '/I][/B][/COLOR][CR]'
+
+    # ~ Con Problemas
+    bloque = scrapertools.find_single_match(txt_status, 'CANALES CON PROBLEMAS(.*?)$')
+
+    matches = scrapertools.find_multiple_matches(bloque, "[B](.*?)[/B]")
+
+    for match in matches:
+        match = match.strip()
+
+        if '[COLOR moccasin]' in match: con_problemas += '[B' + match + '/I][/B][/COLOR][CR]'
+
 
 context_desarrollo = []
 
@@ -332,6 +347,9 @@ def submnu_team_info(item):
         if no_accesibles:
             itemlist.append(item.clone( action='resumen_no_accesibles', title='[COLOR gold][B]Canales[/COLOR][COLOR indianred] No Accesibles[/B][/COLOR]', thumbnail=config.get_thumb('stack') ))
 
+        if con_problemas:
+            itemlist.append(item.clone( action='resumen_con_problemas', title='[COLOR gold][B]Canales[/COLOR][COLOR tomato] Con Problemas[/B][/COLOR]', thumbnail=config.get_thumb('stack') ))
+
     if config.get_setting('memorize_channels_proxies', default=True):
         itemlist.append(item.clone( channel='helper',  action='channels_with_proxies_memorized', title= '[COLOR gold][B]Canales[/COLOR][COLOR red][B] Con Proxies[/B][/COLOR]', new_proxies=True, memo_proxies=True, test_proxies=True, thumbnail=config.get_thumb('stack') ))
 
@@ -518,15 +536,18 @@ def submnu_addons_info(item):
     logger.info()
     itemlist = []
 
-    itemlist.append(item.clone( action='', title='[COLOR green][B]INFORMACIÓN[/COLOR] [COLOR yellowgreen]ADD-ONS:[/COLOR][/B]' ))
+    itemlist.append(item.clone( action='', title='[COLOR yellowgreen][B]INFORMACIÓN ADD-ONS:[/COLOR][/B]' ))
 
-    itemlist.append(item.clone( channel='helper', action='show_help_vias', title= 'Vía alternativa [COLOR goldenrod][B]ResolveUrl[/B][/COLOR]', thumbnail=config.get_thumb('resolveurl') ))
-    itemlist.append(item.clone( channel='helper', action='show_help_vias', title= 'Vía alternativa [COLOR goldenrod][B]Youtube[/B][/COLOR]', thumbnail=config.get_thumb('youtube') ))
+    itemlist.append(item.clone( channel='helper', action='show_help_vias', title= 'Vía alternativa [COLOR goldenrod][B]Elementum[/B][/COLOR]', only_elementum=True, thumbnail=config.get_thumb('elementum') ))
+
+    itemlist.append(item.clone( channel='helper', action='show_help_vias', title= 'Vía alternativa [COLOR goldenrod][B]ResolveUrl[/B][/COLOR]', only_resolve=True, thumbnail=config.get_thumb('resolveurl') ))
+
+    itemlist.append(item.clone( channel='helper', action='show_help_vias', title= 'Vía alternativa [COLOR goldenrod][B]Youtube[/B][/COLOR]', only_youtube=True, thumbnail=config.get_thumb('youtube') ))
 
     itemlist.append(item.clone( channel='helper', action='show_help_torrents', title= '¿ Dónde obtener los Add-Ons para [COLOR gold][B]Clientes/Motores[/B][/COLOR] torrents ?', thumbnail=config.get_thumb('tools') ))
     itemlist.append(item.clone( channel='helper', action='show_clients_torrent', title= 'Clientes/Motores externos torrent [COLOR gold][B]Soportados[/B][/COLOR]', thumbnail=config.get_thumb('cloud') ))
 
-    itemlist.append(item.clone( action='', title='[B]Balandro[/B] [I]ADD-ONS EXTERNOS y VIAS ALTERNATIVAS:[/I]', thumbnail=config.get_thumb('kodiaddons'), text_color='yellowgreen' ))
+    itemlist.append(item.clone( action='', title='[COLOR yellowgreen][B][I]ADD-ONS y VIAS ALTERNATIVAS:[/B][/I][/COLOR] (Gestión desde Balandro)', thumbnail=config.get_thumb('kodiaddons') ))
 
     if config.get_setting('mnu_torrents', default=True):
         cliente_torrent = config.get_setting('cliente_torrent', default='Seleccionar')
@@ -569,7 +590,7 @@ def submnu_addons_info(item):
 
     itemlist.append(item.clone( action = '', title= ' - [COLOR fuchsia][B]ResolveUrl[/B][/COLOR]' + '[COLOR yellowgreen][B] ' + tex_mr + '[/B][/COLOR]', thumbnail=config.get_thumb('resolveurl') ))
 
-    itemlist.append(item.clone( action='', title='[B]Balandro[/B] [I]ADD-ONS EXTERNOS REPOSITORIOS:[/I]', thumbnail=config.get_thumb('kodiaddons'), text_color='yellowgreen' ))
+    itemlist.append(item.clone( action='', title='[COLOR yellowgreen][B][I]REPOSITORIOS:[/B][/I][/COLOR] (Gestión desde Balandro)', thumbnail=config.get_thumb('kodiaddons') ))
 
     if xbmc.getCondVisibility('System.HasAddon("repository.resolveurl")'):
         cod_version = xbmcaddon.Addon("repository.resolveurl").getAddonInfo("version").strip()
@@ -579,12 +600,13 @@ def submnu_addons_info(item):
     itemlist.append(item.clone( action = '', title= ' - [COLOR gold][B]Repository ResolveUrl[/B][/COLOR]' + '[COLOR yellowgreen][B] ' + tex_rp + '[/B][/COLOR]', thumbnail=config.get_thumb('resolveurl') ))
 
     if config.get_setting('mnu_torrents', default=True):
-        if xbmc.getCondVisibility('System.HasAddon("repository.elementum")'):
-            cod_version = xbmcaddon.Addon("repository.elementum").getAddonInfo("version").strip()
-            tex_rp = '  [COLOR goldenrod]' + cod_version + '[/COLOR]'
-        else: tex_rp = '  [COLOR red]No instalado[/COLOR]'
+        if not PY3:
+            if xbmc.getCondVisibility('System.HasAddon("repository.elementum")'):
+                cod_version = xbmcaddon.Addon("repository.elementum").getAddonInfo("version").strip()
+                tex_rp = '  [COLOR goldenrod]' + cod_version + '[/COLOR]'
+            else: tex_rp = '  [COLOR red]No instalado[/COLOR]'
 
-        itemlist.append(item.clone( action = '', title= ' - [COLOR gold][B]Repository Elementum[/B][/COLOR]' + '[COLOR yellowgreen][B] ' + tex_rp + '[/B][/COLOR]', thumbnail=config.get_thumb('elementum') ))
+            itemlist.append(item.clone( action = '', title= ' - [COLOR gold][B]Repository Elementum[/B][/COLOR]' + '[COLOR yellowgreen][B] ' + tex_rp + '  (hasta K18.x)[/B][/COLOR]', thumbnail=config.get_thumb('elementum') ))
 
         if xbmc.getCondVisibility('System.HasAddon("repository.elementumorg")'):
             cod_version = xbmcaddon.Addon("repository.elementumorg").getAddonInfo("version").strip()
@@ -593,25 +615,63 @@ def submnu_addons_info(item):
 
         itemlist.append(item.clone( action = '', title= ' - [COLOR gold][B]Repository ElementumOrg[/B][/COLOR]' + '[COLOR yellowgreen][B] ' + tex_rp + '[/B][/COLOR]', thumbnail=config.get_thumb('elementum') ))
 
-    itemlist.append(item.clone( action='submnu_resto_addons', title='[I]ADD-ONS y SCRIPTS CON DATOS[/I]', thumbnail=config.get_thumb('kodiaddons'), text_color='yellowgreen' ))
+    if not item._help:
+        itemlist.append(item.clone( action='submnu_all_addons', title='[COLOR limegreen][B][I]ADD-ONS INSTALADOS[/I][/B][/COLOR]', thumbnail=config.get_thumb('kodiaddons') ))
+
+        itemlist.append(item.clone( action='submnu_resto_addons', title='[COLOR yellowgreen][B][I]ADD-ONS INSTALADOS CON DATOS[/I][/B][/COLOR]', thumbnail=config.get_thumb('kodiaddons') ))
 
     return itemlist
+
+
+def submnu_all_addons(item):
+    logger.info()
+    itemlist = []
+
+    item.all_addons = True
+
+    submnu_resto_addons(item)
 
 
 def submnu_resto_addons(item):
     logger.info()
     itemlist = []
 
-    path = translatePath(os.path.join('special://home/userdata/addon_data', ''))
+    if item.all_addons:
+        path = translatePath(os.path.join('special://home/addons/', ''))
+    else:
+        path = translatePath(os.path.join('special://home/userdata/addon_data', ''))
 
     addons = filetools.listdir(path)
 
     txt = ''
 
     for addon in addons:
-        txt += '  ' + str(addon) + '[CR][CR]'
+        if item.all_addons:
+           if addon == 'packages': continue
+           elif addon == 'temp': continue
 
-    platformtools.dialog_textviewer('Add-Ons con Datos', txt)
+        addon = addon.replace('plugin', '[COLOR yellow]plugin[/COLOR]')
+        addon = addon.replace('repository', '[COLOR cyan]repository[/COLOR]')
+        addon = addon.replace('script', '[COLOR orange]script[/COLOR]')
+        addon = addon.replace('skin', '[COLOR aquamarine]skin[/COLOR]')
+        addon = addon.replace('service', '[COLOR violet]service[/COLOR]')
+        addon = addon.replace('resource', '[COLOR magenta]resource[/COLOR]')
+
+        addon = addon.replace('inputstream', '[COLOR fuchsia]inputstream[/COLOR]')
+
+        addon = addon.replace('resolveurl', '[COLOR fuchsia]resolveurl[/COLOR]')
+        addon = addon.replace('elementum', '[COLOR fuchsia]elementum[/COLOR]')
+        addon = addon.replace('youtube', '[COLOR fuchsia]youtube[/COLOR]')
+
+        addon = addon.replace('balandro', '[COLOR yellow]balandro[/COLOR]')
+
+        if item.all_addons: txt += '  ' + str(addon) + '[CR]'
+        else: txt += '  ' + str(addon) + '[CR][CR]'
+
+    if item.all_addons: tex_cab = 'Add-Ons Instalados'
+    else: tex_cab = 'Add-Ons Instalados con Datos'
+
+    platformtools.dialog_textviewer(tex_cab, txt)
 
 
 def submnu_sistema(item):
@@ -742,6 +802,8 @@ def submnu_sistema_info(item):
 
         itemlist.append(item.clone( channel='helper', action='show_last_fix', title= ' - [COLOR green][B]Información[/B][/COLOR] Fix instalado', thumbnail=config.get_thumb('news') ))
         itemlist.append(item.clone( channel='actions', action='manto_last_fix', title= " - Eliminar fichero control 'Fix'", thumbnail=config.get_thumb('news'), text_color='red' ))
+
+    itemlist.append(item.clone( channel='helper',  action='show_sets', title= 'Visualizar sus [COLOR chocolate][B]Ajustes[/B][/COLOR] Personalizados', thumbnail=config.get_thumb('folder') ))
 
     return itemlist
 
@@ -946,13 +1008,20 @@ def submnu_canales(item):
     itemlist.append(item.clone( action='submnu_canales_info', title=' - [COLOR green][B]Información[/B][/COLOR]', thumbnail=config.get_thumb('news') ))
 
     itemlist.append(item.clone( action='test_all_webs', title=' - Posibles [B][COLOR gold]Insatisfactorios[/B][/COLOR]', unsatisfactory = True ))
-    itemlist.append(item.clone( action='test_alfabetico', title=' - [COLOR gold]Insatisfactorios[/COLOR] desde un canal [B][COLOR powderblue]letra inicial[/B][/COLOR]', unsatisfactory = True ))
 
-    itemlist.append(item.clone( action='test_all_webs', title=' - Todos' ))
+    itemlist.append(item.clone( action='test_all_webs', title=' - Posibles [COLOR gold]Insatisfactorios[/COLOR] Solo los canales [B][COLOR aquamarine]Sugeridos[/B][/COLOR]', extra='sugeridos', thumbnail=config.get_thumb('suggested'), unsatisfactory = True ))
 
-    itemlist.append(item.clone( action='test_one_channel', title=' - Un canal concreto' ))
+    itemlist.append(item.clone( action='test_all_webs', title=' - Posibles [COLOR gold]Insatisfactorios[/COLOR] Solo los canales que sean [B][COLOR turquoise]Clones[/B][/COLOR]', extra='clones', unsatisfactory = True  ))
 
-    itemlist.append(item.clone( action='test_one_channel', title= ' - Temporalmente [B][COLOR mediumaquamarine]Inactivos[/B][/COLOR]', temp_no_active = True ))
+    itemlist.append(item.clone( action='test_all_webs', title=' - Posibles [COLOR gold]Insatisfactorios[/COLOR] Excepto los canales que sean [B][COLOR turquoise]Clones[/B][/COLOR]', extra='no_clones', unsatisfactory = True ))
+
+    itemlist.append(item.clone( action='test_alfabetico', title=' - Posibles [COLOR gold]Insatisfactorios[/COLOR] desde un Canal [B][COLOR powderblue]Letra inicial[/B][/COLOR]', unsatisfactory = True ))
+
+    itemlist.append(item.clone( action='test_all_webs', title=' - Todos los canales' ))
+
+    itemlist.append(item.clone( action='test_one_channel', title=' - Un canal Concreto' ))
+
+    itemlist.append(item.clone( action='test_one_channel', title= ' - Canales Temporalmente [B][COLOR springgreen]Inactivos[/B][/COLOR]', temp_no_active = True ))
 
     return itemlist
 
@@ -1000,11 +1069,12 @@ def submnu_servidores(item):
     itemlist.append(item.clone( action='submnu_servidores_info', title=' - [COLOR green][B]Información[/B][/COLOR]', thumbnail=config.get_thumb('news') ))
 
     itemlist.append(item.clone( action='test_all_srvs', title=' - Posibles [B][COLOR fuchsia]Insatisfactorios[/B][/COLOR]', unsatisfactory = True ))
-    itemlist.append(item.clone( action='test_alfabetico', title=' - [COLOR fuchsia]Insatisfactorios[/COLOR] desde un servidor [B][COLOR powderblue]letra inicial[/B][/COLOR]', unsatisfactory = True ))
 
-    itemlist.append(item.clone( action='test_all_srvs', title=' - Todos' ))
+    itemlist.append(item.clone( action='test_alfabetico', title=' - Posibles [COLOR fuchsia]Insatisfactorios[/COLOR] desde un Servidor [B][COLOR powderblue]Letra inicial[/B][/COLOR]', unsatisfactory = True ))
 
-    itemlist.append(item.clone( action='test_one_server', title=' - Un servidor concreto' ))
+    itemlist.append(item.clone( action='test_all_srvs', title=' - Todos los servidores' ))
+
+    itemlist.append(item.clone( action='test_one_server', title=' - Un servidor Concreto' ))
 
     return itemlist
 
@@ -1357,7 +1427,10 @@ def test_all_webs(item):
     config.set_setting('user_test_channel', '')
 
     if not item.letra:
-        if item.unsatisfactory: text = '¿ Iniciar Test Web de los Posibles Canales [B][COLOR gold]Insatisfactorios[/B][/COLOR] ?'
+        if item.extra == 'sugeridos': text = '¿ Iniciar Test Web Solo de los Canales [B][COLOR aquamarine]Sugeridos[/B][/COLOR] ?'
+        elif item.extra == 'clones': text = '¿ Iniciar Test Web Solo de los Canales que sean [B][COLOR turquoise]Clones[/B][/COLOR] ?'
+        elif item.extra == 'no_clones': text = '¿ Iniciar Test Web de los Canales Excepto los que sean [B][COLOR turquoise]Clones[/B][/COLOR] ?'
+        elif item.unsatisfactory: text = '¿ Iniciar Test Web de los Posibles Canales [B][COLOR gold]Insatisfactorios[/B][/COLOR] ?'
         else: text = '¿ Iniciar Test Web de [B][COLOR gold]TODOS[/B][/COLOR] los Canales ?'
 
         if not platformtools.dialog_yesno(config.__addon_name, text): return
@@ -1379,6 +1452,13 @@ def test_all_webs(item):
     i = 0
 
     for ch in ch_list:
+        if item.extra == 'sugeridos':
+            if not 'suggested' in ch['clusters']: continue
+        elif item.extra == 'clones':
+            if not 'clone' in ch['clusters']: continue
+        elif item.extra == 'no_clones':
+            if 'clone' in ch['clusters']: continue
+
         if config.get_setting('mnu_simple', default=False):
             if 'enlaces torrent exclusivamente' in ch['notes'].lower(): continue
             elif 'exclusivamente al dorama' in ch['notes'].lower(): continue
@@ -1634,6 +1714,24 @@ def test_all_webs(item):
                            tests_all_webs.append(ch['name'])
                            continue
 
+               if con_problemas:
+                   host_incid = ch['name']
+
+                   if host_incid in str(con_problemas):
+                       incidencia = ''
+
+                       incids = scrapertools.find_multiple_matches(str(con_problemas), '[COLOR moccasin](.*?)[/B][/COLOR]')
+
+                       for incid in incids:
+                            if not ' ' + host_incid + ' ' in str(incid): continue
+
+                            incidencia = incid
+                            break
+
+                       if incidencia:
+                           tests_all_webs.append(ch['name'])
+                           continue
+
            if not 'nuevo:' in txt:
                if ' con proxies ' in str(txt):
                    if platformtools.dialog_yesno(config.__addon_name + ' [COLOR yellow][B]' + ch['name'] + '[/B][/COLOR]', '[COLOR red][B]¿ Desea Iniciar una nueva Búsqueda de Proxies en el Canal ?[/B][/COLOR]'):
@@ -1868,6 +1966,20 @@ def show_addons(item):
     txt = '[COLOR gold][B]' + item.tipo + ':[/B][/COLOR][CR]'
 
     for addons in item.addons:
+        addons = addons.replace('plugin', '[COLOR yellow]plugin[/COLOR]')
+        addons = addons.replace('repository', '[COLOR cyan]repository[/COLOR]')
+        addons = addons.replace('script', '[COLOR orange]script[/COLOR]')
+        addons = addons.replace('skin', '[COLOR aquamarine]skin[/COLOR]')
+        addons = addons.replace('service', '[COLOR violet]service[/COLOR]')
+        addons = addons.replace('resource', '[COLOR magenta]resource[/COLOR]')
+
+        addons = addons.replace('inputstream', '[COLOR fuchsia]inputstream[/COLOR]')
+        addons = addons.replace('resolveurl', '[COLOR fuchsia]resolveurl[/COLOR]')
+        addons = addons.replace('elementum', '[COLOR fuchsia]elementum[/COLOR]')
+        addons = addons.replace('youtube', '[COLOR fuchsia]youtube[/COLOR]')
+
+        addons = addons.replace('balandro', '[COLOR yellow]balandro[/COLOR]')
+
         txt += '  ' + str(addons) + '[CR][CR]'
 
     titulo = 'Información Add-ons '
@@ -1928,12 +2040,13 @@ def show_help_addons(item):
 
     txt += ' - [COLOR gold][B]Repository ResolveUrl[/B][/COLOR]' + '[COLOR yellowgreen][B] ' + tex_rp + '[/B][/COLOR][CR]'
 
-    if xbmc.getCondVisibility('System.HasAddon("repository.elementum")'):
-        cod_version = xbmcaddon.Addon("repository.elementum").getAddonInfo("version").strip()
-        tex_rp = '  [COLOR goldenrod]' + cod_version + '[/COLOR]'
-    else: tex_rp = '  [COLOR red]No instalado[/COLOR]'
+    if not PY3:
+        if xbmc.getCondVisibility('System.HasAddon("repository.elementum")'):
+            cod_version = xbmcaddon.Addon("repository.elementum").getAddonInfo("version").strip()
+            tex_rp = '  [COLOR goldenrod]' + cod_version + '[/COLOR]'
+        else: tex_rp = '  [COLOR red]No instalado[/COLOR]'
 
-    txt += ' - [COLOR gold][B]Repository Elementum[/B][/COLOR]' + '[COLOR yellowgreen][B] ' + tex_rp + '[/B][/COLOR][CR]'
+        txt += ' - [COLOR gold][B]Repository Elementum[/B][/COLOR]' + '[COLOR yellowgreen][B] ' + tex_rp + ' (hasta K18.x)[/B][/COLOR][CR]'
 
     if xbmc.getCondVisibility('System.HasAddon("repository.elementumorg")'):
         cod_version = xbmcaddon.Addon("repository.elementumorg").getAddonInfo("version").strip()
@@ -1943,6 +2056,84 @@ def show_help_addons(item):
     txt += ' - [COLOR gold][B]Repository ElementumOrg[/B][/COLOR]' + '[COLOR yellowgreen][B] ' + tex_rp + '[/B][/COLOR][CR]'
 
     platformtools.dialog_textviewer('Información Add-Ons Extternos', txt)
+
+
+def show_help_torrents(item):
+    logger.info()
+
+    txt = ''
+
+    cliente_torrent = config.get_setting('cliente_torrent', default='Seleccionar')
+
+    if cliente_torrent == 'Seleccionar' or cliente_torrent == 'Ninguno': tex_tor = cliente_torrent
+    else:
+       tex_tor = cliente_torrent
+       cliente_torrent = 'plugin.video.' + cliente_torrent.lower()
+       if xbmc.getCondVisibility('System.HasAddon("%s")' % cliente_torrent):
+           cod_version = xbmcaddon.Addon(cliente_torrent).getAddonInfo("version").strip()
+           tex_tor += '  [COLOR goldenrod]' + cod_version + '[/COLOR]'
+
+    txt += ' - Cliente/Motor Torrent ' + '[COLOR fuchsia][B] ' + tex_tor + '[/B][/COLOR][CR]'
+
+    if xbmc.getCondVisibility('System.HasAddon("script.elementum.burst")'):
+        cod_version = xbmcaddon.Addon("script.elementum.burst").getAddonInfo("version").strip()
+        tex_tor = '  [COLOR goldenrod]' + cod_version + '[/COLOR]'
+    else: tex_tor = '  [COLOR red]No instalado[/COLOR]'
+
+    txt += ' - [COLOR fuchsia][B]Elementum Burst[/B][/COLOR]' + '[COLOR yellowgreen][B] ' + tex_tor + '[/B][/COLOR][CR]'
+
+    if not PY3:
+        if xbmc.getCondVisibility('System.HasAddon("repository.elementum")'):
+            cod_version = xbmcaddon.Addon("repository.elementum").getAddonInfo("version").strip()
+            tex_rp = '  [COLOR goldenrod]' + cod_version + '[/COLOR]'
+        else: tex_rp = '  [COLOR red]No instalado[/COLOR]'
+
+        txt += ' - [COLOR gold][B]Repository Elementum[/B][/COLOR]' + '[COLOR yellowgreen][B] ' + tex_rp + ' (hasta K18.x)[/B][/COLOR][CR]'
+
+    if xbmc.getCondVisibility('System.HasAddon("repository.elementumorg")'):
+        cod_version = xbmcaddon.Addon("repository.elementumorg").getAddonInfo("version").strip()
+        tex_rp = '  [COLOR goldenrod]' + cod_version + '[/COLOR]'
+    else: tex_rp = '  [COLOR red]No instalado[/COLOR]'
+
+    txt += ' - [COLOR gold][B]Repository ElementumOrg[/B][/COLOR]' + '[COLOR yellowgreen][B] ' + tex_rp + '[/B][/COLOR][CR]'
+
+    platformtools.dialog_textviewer('Información Add-Ons y Repositorios Torrents', txt)
+
+
+def show_help_players(item):
+    logger.info()
+
+    txt = ''
+
+    if xbmc.getCondVisibility('System.HasAddon("inputstream.adaptive")'):
+        cod_version = xbmcaddon.Addon("inputstream.adaptive").getAddonInfo("version").strip()
+        tex_ia = '  [COLOR goldenrod]' + cod_version + '[/COLOR]'
+    else: tex_ia = '  [COLOR red]No instalado[/COLOR]'
+
+    txt += ' - [COLOR fuchsia][B]InputStream Adaptive[/B][/COLOR]' + '[COLOR yellowgreen][B] ' + tex_ia + '[/B][/COLOR][CR]'
+
+    if xbmc.getCondVisibility('System.HasAddon("plugin.video.youtube")'):
+        cod_version = xbmcaddon.Addon("plugin.video.youtube").getAddonInfo("version").strip()
+        tex_yt = '  [COLOR goldenrod]' + cod_version + '[/COLOR]'
+    else: tex_yt = '  [COLOR red]No instalado[/COLOR]'
+
+    txt += ' - [COLOR fuchsia][B]Youtube[/B][/COLOR]' + '[COLOR yellowgreen][B] ' + tex_yt + '[/B][/COLOR][CR]'
+
+    if xbmc.getCondVisibility('System.HasAddon("script.module.resolveurl")'):
+        cod_version = xbmcaddon.Addon("script.module.resolveurl").getAddonInfo("version").strip()
+        tex_mr = '  [COLOR goldenrod]' + cod_version + '[/COLOR]'
+    else: tex_mr = '  [COLOR red]No instalado[/COLOR]'
+
+    txt += ' - [COLOR fuchsia][B]ResolveUrl[/B][/COLOR]' + '[COLOR yellowgreen][B] ' + tex_mr + '[/B][/COLOR][CR]'
+
+    if xbmc.getCondVisibility('System.HasAddon("repository.resolveurl")'):
+        cod_version = xbmcaddon.Addon("repository.resolveurl").getAddonInfo("version").strip()
+        tex_rp = '  [COLOR goldenrod]' + cod_version + '[/COLOR]'
+    else: tex_rp = '  [COLOR red]No instalado[/COLOR]'
+
+    txt += ' - [COLOR gold][B]Repository ResolveUrl[/B][/COLOR]' + '[COLOR yellowgreen][B] ' + tex_rp + '[/B][/COLOR][CR]'
+
+    platformtools.dialog_textviewer('Información Add-Ons y Repositorios Players', txt)
 
 
 def show_sistema(item):
@@ -2112,6 +2303,7 @@ def resumen_canales(item):
     mismatcheds = 0
     inestables = 0
     problematics = 0
+    clons = 0
     clones = 0
     notices = 0
     proxies = 0
@@ -2121,6 +2313,7 @@ def resumen_canales(item):
     onlyones = 0
     searchables = 0
     status_access = 0
+    status_problems = 0
     con_proxies = 0
 
     bus_pelisyseries = 0
@@ -2149,6 +2342,7 @@ def resumen_canales(item):
     animes = 0
     adults = 0
     privates = 0
+    others = 0
     no_actives = 0
 
     filtros = {'active': False}
@@ -2158,16 +2352,19 @@ def resumen_canales(item):
         total += 1
 
         if ch['active'] == False:
-            if not 'temporary' in ch['clusters']: inactives += 1
+            if not 'temporary' in ch['clusters']:
+                inactives += 1
 
-            if 'Web CERRADA' in ch['notes']: cerrados += 1
-            elif 'Web ANULADA' in ch['notes']: anulados += 1
+                if 'Web CERRADA' in ch['notes']: cerrados += 1
+                elif 'Web ANULADA' in ch['notes']: anulados += 1
+                else: others += 1
 
-        if 'temporary' in ch['clusters']: temporarys += 1
+        else:
+            if 'temporary' in ch['clusters']: temporarys += 1
 
-        if 'privates' in ch['clusters']:
-            el_canal = ch['id']
-            if os.path.exists(os.path.join(config.get_runtime_path(), 'channels', el_canal)): privates += 1
+            if 'privates' in ch['clusters']:
+                el_canal = ch['id']
+                if os.path.exists(os.path.join(config.get_runtime_path(), 'channels', el_canal + '.py')): privates += 1
 
     filtros = {}
     ch_list = channeltools.get_channels_list(filtros=filtros)
@@ -2189,6 +2386,7 @@ def resumen_canales(item):
         if 'mismatched' in ch['clusters']: mismatcheds += 1
         if 'inestable' in ch['clusters']: inestables += 1
         if 'problematic' in ch['clusters']: problematics += 1
+        if 'clons' in ch['clusters']: clons += 1
         if 'clone' in ch['clusters']: clones += 1
         if 'notice' in ch['clusters']: notices += 1
         if 'proxies' in ch['notes'].lower(): proxies += 1
@@ -2268,15 +2466,24 @@ def resumen_canales(item):
 
         if 'privates' in ch['clusters']:
             el_canal = ch['id']
-            if os.path.exists(os.path.join(config.get_runtime_path(), 'channels', el_canal)): privates += 1
+            if os.path.exists(os.path.join(config.get_runtime_path(), 'channels', el_canal + '.py')): privates += 1
 
     txt = '[COLOR yellow][B]RESÚMENES CANALES:[/B][/COLOR][CR]'
 
     txt += '  ' + str(total) + ' [COLOR darkorange][B]Canales[/B][/COLOR][CR][CR]'
 
-    txt += '     ' + str(inactives) + ' [COLOR coral]Inactivos[/COLOR][CR]'
-    txt += '           ' + str(cerrados) + ' [COLOR coral]Cerrados[/COLOR][CR]'
-    txt += '           ' + str(anulados) + ' [COLOR coral]Anulados[/COLOR][CR]'
+    if not inactives == 0:
+        txt += '     ' + str(inactives) + ' [COLOR coral]Inactivos[/COLOR][CR]'
+
+    if not cerrados == 0:
+        txt += '           ' + str(cerrados) + ' [COLOR coral]Cerrados[/COLOR][CR]'
+
+    if not anulados == 0:
+        txt += '           ' + str(anulados) + ' [COLOR coral]Anulados[/COLOR][CR]'
+
+    if not others == 0: txt += '             ' + str(others) + ' [COLOR coral]Otros[/COLOR][CR]'
+
+    if not (inactives + cerrados + anulados + others) == 0: txt += '[CR]'
 
     if not temporarys == 0: txt += '       ' + str(temporarys) + ' [COLOR cyan]Temporalmente Inactivos[/COLOR][CR]'
 
@@ -2287,15 +2494,24 @@ def resumen_canales(item):
 
     if not problematics == 0: txt += '       ' + str(problematics) + ' [COLOR darkgoldenrod]Problemáticos[/COLOR][CR]'
 
-    txt += '     ' + str(clones) + ' [COLOR turquoise]Clones[/COLOR][CR]'
-    txt += '     ' + str(notices) + ' [COLOR olivedrab]Con Probable CloudFlare Protection[/COLOR][CR]'
-    txt += '     ' + str(proxies) + ' [COLOR red]Pueden Usar Proxies[/COLOR][CR]'
+    if not clons == 0:
+        txt += '       ' + str(clons) + ' [COLOR aquamarine]Principales con clones[/COLOR][CR]'
+
+    if not clones == 0:
+        txt += '     ' + str(clones) + ' [COLOR turquoise]Clones[/COLOR][CR]'
+
+    if not notices == 0:
+        txt += '     ' + str(notices) + ' [COLOR olivedrab]Con control CloudFlare Protection[/COLOR][CR]'
+
+    if not proxies == 0:
+        txt += '     ' + str(proxies) + ' [COLOR red]Pueden Usar Proxies[/COLOR][CR]'
 
     if not registers == 0: txt += '       ' + str(registers) + ' [COLOR teal]Requieren Cuenta[/COLOR][CR]'
 
     if not dominios == 0: txt += '       ' + str(dominios) + ' [COLOR green]Varios Dominios[/COLOR][CR]'
 
-    txt += '     ' + str(currents) + ' [COLOR goldenrod]Gestión Dominio Vigente[/COLOR][CR]'
+    if not currents == 0:
+        txt += '     ' + str(currents) + ' [COLOR goldenrod]Gestión Dominio Vigente[/COLOR][CR]'
 
     if not onlyones == 0: txt += '     ' + str(onlyones) + ' [COLOR fuchsia]Con un Único Servidor[/COLOR][CR]'
 
@@ -2308,11 +2524,18 @@ def resumen_canales(item):
             if matches:
                 status_access = matches
 
+        if con_problemas:
+            matches = con_problemas.count('[COLOR lime]')
+
+            if matches:
+                status_problems = matches
+
     txt += '[CR]  ' + str(disponibles) + ' [COLOR gold][B]Disponibles[/B][/COLOR][CR]'
 
     if not status_access == 0: txt += '          [COLOR indianred]No Accesibles[/COLOR][B] '  + str(status_access) + '[/B][CR]'
+    if not status_problems == 0: txt += '          [COLOR tomato]Con Problemas[/COLOR][B] '  + str(status_problems) + '[/B][CR]'
 
-    accesibles = (disponibles - status_access)
+    accesibles = (disponibles - status_access - status_problems)
     txt += '  ' + str(accesibles) + ' [COLOR powderblue][B]Accesibles[/B][/COLOR][CR]'
 
     if txt_status:
@@ -2351,7 +2574,7 @@ def resumen_canales(item):
     txt += '    ' + str(pelisyseries) + ' [COLOR teal]Películas y Series[/COLOR][CR]'
 
     txt += '[CR]    ' + str(generos) + '  [COLOR thistle]Géneros[/COLOR][CR]'
-    txt += '    ' + str(documentarys) + '  [COLOR cyan]Documentales[/COLOR][CR]'
+    txt += '      ' + str(documentarys) + '  [COLOR cyan]Documentales[/COLOR][CR]'
 
     if not infantiles == 0: txt += '      ' + str(infantiles) + '  [COLOR lightyellow]Infantiles[/COLOR][CR]'
 
@@ -2364,6 +2587,8 @@ def resumen_canales(item):
     txt += '    ' + str(animes) + '  [COLOR springgreen]Animes[/COLOR][CR]'
     txt += '    ' + str(adults) + '  [COLOR orange]Adultos[/COLOR][CR]'
 
+    if not privates == 0: txt += '      ' + str(privates) + '  [COLOR grey]Privados[/COLOR][CR]'
+
     txt += '[CR][COLOR powderblue][B]DISTRIBUCIÓN CANALES DISPONIBLES PARA BÚSQUEDAS:[/B][/COLOR][CR]'
 
     txt += '   ' + str(bus_pelis) + ' [COLOR deepskyblue]Películas[/COLOR][CR]'
@@ -2371,7 +2596,7 @@ def resumen_canales(item):
     txt += '     ' + str(bus_pelisyseries) + ' [COLOR teal]Películas y Series[/COLOR][CR]'
 
     txt += '[CR]'
-    txt += '     ' + str(bus_documentaryes) + ' [COLOR cyan]Documentales[/COLOR][CR]'
+    txt += '       ' + str(bus_documentaryes) + ' [COLOR cyan]Documentales[/COLOR][CR]'
 
     bus_tematica_documentales = bus_documentales + bus_documentaryes
     txt += '   ' + str(bus_tematica_documentales) + ' [COLOR darkcyan]Temática Documental[/COLOR][CR]'
@@ -2432,6 +2657,27 @@ def resumen_no_accesibles(item):
     platformtools.dialog_textviewer('Canales No Accesibles', txt)
 
 
+def resumen_con_problemas(item):
+    logger.info()
+
+    txt = ''
+
+    if txt_status:
+        if con_problemas:
+            matches = scrapertools.find_multiple_matches(con_problemas, "[B](.*?)[/B]")
+
+            for match in matches:
+                match = match.strip()
+
+                if '[COLOR moccasin]' in match: txt += '[B' + match + '/I][/B][/COLOR][CR]'
+
+    if not txt:
+        platformtools.dialog_notification(config.__addon_name, '[B][COLOR %s]No Hay No Accesibles[/COLOR][/B]' % color_exec)
+        return
+
+    platformtools.dialog_textviewer('Canales Con Problemas', txt)
+
+
 def resumen_servidores(item):
     logger.info()
 
@@ -2442,7 +2688,11 @@ def resumen_servidores(item):
     notsuported = 0
     outservice = 0
     alternatives = 0
-    aditionals = 41
+
+    aditionals = 0
+    if xbmc.getCondVisibility('System.HasAddon("script.module.resolveurl")'):
+         aditionals = 97  # ~ 44 Various  y  53  Zures
+
     disponibles = 0
     pending = 0
 
@@ -2494,15 +2744,42 @@ def resumen_servidores(item):
         txt += '    ' + str(operativos) + '  [COLOR goldenrod][B]Operativos[/B][/COLOR][CR]'
 
     if xbmc.getCondVisibility('System.HasAddon("script.module.resolveurl")'):
+        cod_version = xbmcaddon.Addon("script.module.resolveurl").getAddonInfo("version").strip()
+        tex_mr = '  [COLOR goldenrod]' + cod_version + '[/COLOR]'
+
         txt += '[CR][COLOR goldenrod][B]RESOLVEURL:[/B][/COLOR][CR]'
+
+        txt += '    Versión' + tex_mr + '[CR]'
 
         txt += '    ' + str(alternatives) + '  [COLOR green]Vías alternativas[/COLOR][CR]'
         txt += '    ' + str(aditionals) + '  [COLOR powderblue]Vías Adicionales[/COLOR][CR]'
 
+    cliente_torrent = config.get_setting('cliente_torrent', default='Seleccionar')
+
+    if cliente_torrent == 'Seleccionar' or cliente_torrent == 'Ninguno': tex_tor = cliente_torrent
+    else:
+       tex_tor = cliente_torrent
+       cliente_torrent = 'plugin.video.' + cliente_torrent.lower()
+       if xbmc.getCondVisibility('System.HasAddon("%s")' % cliente_torrent):
+           cod_version = xbmcaddon.Addon(cliente_torrent).getAddonInfo("version").strip()
+           tex_tor += '  [COLOR goldenrod]' + cod_version + '[/COLOR]'
+
+    if not cliente_torrent == 'Ninguno':
+        txt += '[CR][COLOR goldenrod][B]TORRENTS:[/B][/COLOR][CR]'
+
+        txt += '      1' + '   [COLOR fuchsia]' + tex_tor + '[/COLOR][CR]'
+
+        aditionals += 1
+
     if xbmc.getCondVisibility('System.HasAddon("plugin.video.youtube")'):
+        cod_version = xbmcaddon.Addon("plugin.video.youtube").getAddonInfo("version").strip()
+        tex_yt = '  [COLOR goldenrod]' + cod_version + '[/COLOR]'
+
         txt += '[CR][COLOR goldenrod][B]YOUTUBE:[/B][/COLOR][CR]'
 
-        txt += '      1' + '   [COLOR green]Vía alternativa[/COLOR][CR]'
+        txt += '      1' + '   [COLOR green]Vía alternativa[/COLOR]' + tex_yt + '[CR]'
+
+        aditionals += 1
 
     txt += '[CR][COLOR dodgerblue][B]DISTRIBUCIÓN SERVIDORES DISPONIBLES:[/B][/COLOR]'
 
@@ -2552,42 +2829,46 @@ def show_help_alternativas(item):
         tex_mr = '  ' + cod_version
     else: tex_mr = '[COLOR red][B]No instalado[/B][/COLOR]'
 
-    txt += '[CR][COLOR gold]ResolveUrl Script:[/COLOR]  %s' % tex_mr
+    txt += '[CR][COLOR fuchsia][B]ResolveUrl Script[/B]:[/COLOR]  %s' % tex_mr
 
-    txt += '[CR][CR] - Qué servidores tienen [COLOR goldenrod][B]Vías Alternativas[/B][/COLOR] a través de [COLOR fuchsia][B]ResolveUrl[/B][/COLOR]:[CR]'
+    if xbmc.getCondVisibility('System.HasAddon("script.module.resolveurl")'):
+        txt += '[CR][CR] - Qué servidores tienen [COLOR goldenrod][B]Vías Alternativas[/B][/COLOR] a través de [COLOR fuchsia][B]ResolveUrl[/B][/COLOR]:[CR]'
 
-    txt += '   [COLOR yellow]Clicknupload[/COLOR][CR]'
-    txt += '   [COLOR yellow]Cloudvideo[/COLOR][CR]'
-    txt += '   [COLOR yellow]Dailymotion[/COLOR][CR]'
-    txt += '   [COLOR yellow]Doodstream[/COLOR][CR]'
-    txt += '   [COLOR yellow]Flashx[/COLOR][CR]'
-    txt += '   [COLOR yellow]Gofile[/COLOR][CR]'
-    txt += '   [COLOR yellow]MegaUp[/COLOR][CR]'
-    txt += '   [COLOR yellow]Mixdrop[/COLOR][CR]'
-    txt += '   [COLOR yellow]Playtube[/COLOR][CR]'
-    txt += '   [COLOR yellow]Racaty[/COLOR][CR]'
-    txt += '   [COLOR yellow]Streamlare[/COLOR][CR]'
-    txt += '   [COLOR yellow]Streamvid[/COLOR][CR]'
-    txt += '   [COLOR yellow]Uptobox[/COLOR][CR]'
-    txt += '   [COLOR yellow]Userscloud[/COLOR][CR]'
-    txt += '   [COLOR yellow]Various[/COLOR][CR]'
-    txt += '   [COLOR yellow]Vimeo[/COLOR][CR]'
-    txt += '   [COLOR yellow]Vidmoly[/COLOR][CR]'
-    txt += '   [COLOR yellow]Vk[/COLOR][CR]'
-    txt += '   [COLOR yellow]Voe[/COLOR][CR]'
-    txt += '   [COLOR yellow]Waaw[/COLOR][CR]'
-    txt += '   [COLOR yellow]Zures[/COLOR][CR]'
+        txt += '   [COLOR yellow]Clicknupload[/COLOR][CR]'
+        txt += '   [COLOR yellow]Cloudvideo[/COLOR][CR]'
+        txt += '   [COLOR yellow]Dailymotion[/COLOR][CR]'
+        txt += '   [COLOR yellow]Doodstream[/COLOR][CR]'
+        txt += '   [COLOR yellow]Flashx[/COLOR][CR]'
+        txt += '   [COLOR yellow]Gamovideo[/COLOR][CR]'
+        txt += '   [COLOR yellow]Gofile[/COLOR][CR]'
+        txt += '   [COLOR yellow]MegaUp[/COLOR][CR]'
+        txt += '   [COLOR yellow]Mixdrop[/COLOR][CR]'
+        txt += '   [COLOR yellow]Playtube[/COLOR][CR]'
+        txt += '   [COLOR yellow]Racaty[/COLOR][CR]'
+        txt += '   [COLOR yellow]Streamlare[/COLOR][CR]'
+        txt += '   [COLOR yellow]Streamtape[/COLOR][CR]'
+        txt += '   [COLOR yellow]Streamvid[/COLOR][CR]'
+        txt += '   [COLOR yellow]Uptobox[/COLOR][CR]'
+        txt += '   [COLOR yellow]Userscloud[/COLOR][CR]'
+        txt += '   [COLOR yellow]Various[/COLOR][CR]'
+        txt += '   [COLOR yellow]Vimeo[/COLOR][CR]'
+        txt += '   [COLOR yellow]Vidmoly[/COLOR][CR]'
+        txt += '   [COLOR yellow]Vk[/COLOR][CR]'
+        txt += '   [COLOR yellow]Voe[/COLOR][CR]'
+        txt += '   [COLOR yellow]Waaw[/COLOR][CR]'
+        txt += '   [COLOR yellow]Zures[/COLOR]'
 
     if xbmc.getCondVisibility('System.HasAddon("plugin.video.youtube")'):
         cod_version = xbmcaddon.Addon("plugin.video.youtube").getAddonInfo("version").strip()
         tex_yt = '  ' + cod_version
     else: tex_yt = '  [COLOR red]No instalado[/COLOR]'
 
-    txt += '[CR][CR][COLOR gold]Youtube Plugin:[/COLOR]  %s' % tex_yt
+    txt += '[CR][CR][COLOR fuchsia][B]Youtube Plugin[/B]:[/COLOR]  %s' % tex_yt
 
-    txt += '[CR][CR] - Qué servidor tiene [COLOR goldenrod][B]Vía Alternativa[/B][/COLOR] a través de [COLOR fuchsia][B]YouTube[/B][/COLOR]:[CR]'
+    if xbmc.getCondVisibility('System.HasAddon("plugin.video.youtube")'):
+        txt += '[CR][CR] - Qué servidor tiene [COLOR goldenrod][B]Vía Alternativa[/B][/COLOR] a través de [COLOR fuchsia][B]YouTube[/B][/COLOR]:[CR]'
 
-    txt += '    [COLOR yellow]Youtube[/COLOR][CR]'
+        txt += '    [COLOR yellow]Youtube[/COLOR]'
 
     platformtools.dialog_textviewer('Servidores Vías Alternativas', txt)
 
@@ -2602,50 +2883,110 @@ def show_help_adicionales(item):
         tex_mr = '  ' + cod_version
     else: tex_mr = '[COLOR red][B]No instalado[/B][/COLOR]'
 
-    txt += '[CR][COLOR gold]ResolveUrl Script:[/COLOR]  %s' % tex_mr
+    txt += '[CR][COLOR fuchsia][B]ResolveUrl Script[/B]:[/COLOR]  %s' % tex_mr
 
-    txt += '[CR][CR] - Servidores [COLOR goldenrod][B]Vías Adicionales[/B][/COLOR] a través de [COLOR fuchsia][B]ResolveUrl[/B][/COLOR]:[CR]'
+    if xbmc.getCondVisibility('System.HasAddon("script.module.resolveurl")'):
+        txt += '[CR][CR] - Servidores [COLOR goldenrod][B]Vías Adicionales[/B][/COLOR] a través de [COLOR yellowgreen][B]Various[/COLOR][/B] [COLOR fuchsia][B]ResolveUrl[/B][/COLOR]:[CR]'
 
-    txt += '   [COLOR yellow]Desiupload[/COLOR][CR]'
-    txt += '   [COLOR yellow]Drop[/COLOR][CR]'
-    txt += '   [COLOR yellow]Dropload[/COLOR][CR]'
-    txt += '   [COLOR yellow]Embedgram[/COLOR][CR]'
-    txt += '   [COLOR yellow]Embedrise[/COLOR][CR]'
-    txt += '   [COLOR yellow]Emturbovid[/COLOR][CR]'
-    txt += '   [COLOR yellow]Fastupload[/COLOR][CR]'
-    txt += '   [COLOR yellow]Filelions[/COLOR][CR]'
-    txt += '   [COLOR yellow]Filemoon[/COLOR][CR]'
-    txt += '   [COLOR yellow]Fileupload[/COLOR][CR]'
-    txt += '   [COLOR yellow]Goodstream[/COLOR][CR]'
-    txt += '   [COLOR yellow]Hxfile[/COLOR][CR]'
-    txt += '   [COLOR yellow]Hexupload[/COLOR][CR]'
-    txt += '   [COLOR yellow]Krakenfiles[/COLOR][CR]'
-    txt += '   [COLOR yellow]Lulustream[/COLOR][CR]'
-    txt += '   [COLOR yellow]Mvidoo[/COLOR][CR]'
-    txt += '   [COLOR yellow]Qiwi[/COLOR][CR]'
-    txt += '   [COLOR yellow]Rumble[/COLOR][CR]'
-    txt += '   [COLOR yellow]Rutube[/COLOR][CR]'
-    txt += '   [COLOR yellow]Streamhub[/COLOR][CR]'
-    txt += '   [COLOR yellow]Streamruby[/COLOR][CR]'
-    txt += '   [COLOR yellow]Streamsilk[/COLOR][CR]'
-    txt += '   [COLOR yellow]Streamvid[/COLOR][CR]'
-    txt += '   [COLOR yellow]Streamwish[/COLOR][CR]'
-    txt += '   [COLOR yellow]Terabox[/COLOR][CR]'
-    txt += '   [COLOR yellow]Tubeload[/COLOR][CR]'
-    txt += '   [COLOR yellow]Turboviplay[/COLOR][CR]'
-    txt += '   [COLOR yellow]Twitch[/COLOR][CR]'
-    txt += '   [COLOR yellow]Uploaddo[/COLOR][CR]'
-    txt += '   [COLOR yellow]Uploadever[/COLOR][CR]'
-    txt += '   [COLOR yellow]Uploadraja[/COLOR][CR]'
-    txt += '   [COLOR yellow]Userload[/COLOR][CR]'
-    txt += '   [COLOR yellow]Vidello[/COLOR][CR]'
-    txt += '   [COLOR yellow]Videowood[/COLOR][CR]'
-    txt += '   [COLOR yellow]Vidguard[/COLOR][CR]'
-    txt += '   [COLOR yellow]Vidhide[/COLOR][CR]'
-    txt += '   [COLOR yellow]Vidspeed[/COLOR][CR]'
-    txt += '   [COLOR yellow]Vkspeed[/COLOR][CR]'
-    txt += '   [COLOR yellow]Vudeo[/COLOR][CR]'
-    txt += '   [COLOR yellow]Yandex[/COLOR][CR]'
-    txt += '   [COLOR yellow]Youdbox[/COLOR]'
+        txt += '   [COLOR yellow]Azipcdn[/COLOR][CR]'
+        txt += '   [COLOR yellow]Bembed[/COLOR][CR]'
+        txt += '   [COLOR yellow]Desiupload[/COLOR][CR]'
+        txt += '   [COLOR yellow]Doodporn[/COLOR][CR]'
+        txt += '   [COLOR yellow]Drop[/COLOR][CR]'
+        txt += '   [COLOR yellow]Dropload[/COLOR][CR]'
+        txt += '   [COLOR yellow]Embedgram[/COLOR][CR]'
+        txt += '   [COLOR yellow]Embedrise[/COLOR][CR]'
+        txt += '   [COLOR yellow]Emturbovid[/COLOR][CR]'
+        txt += '   [COLOR yellow]Fastupload[/COLOR][CR]'
+        txt += '   [COLOR yellow]Filelions[/COLOR][CR]'
+        txt += '   [COLOR yellow]Filemoon[/COLOR][CR]'
+        txt += '   [COLOR yellow]Fileupload[/COLOR][CR]'
+        txt += '   [COLOR yellow]Goodstream[/COLOR][CR]'
+        txt += '   [COLOR yellow]Hxfile[/COLOR][CR]'
+        txt += '   [COLOR yellow]Hexupload[/COLOR][CR]'
+        txt += '   [COLOR yellow]Krakenfiles[/COLOR][CR]'
+        txt += '   [COLOR yellow]Lulustream[/COLOR][CR]'
+        txt += '   [COLOR yellow]Mvidoo[/COLOR][CR]'
+        txt += '   [COLOR yellow]Qiwi[/COLOR][CR]'
+        txt += '   [COLOR yellow]Rumble[/COLOR][CR]'
+        txt += '   [COLOR yellow]Rutube[/COLOR][CR]'
+        txt += '   [COLOR yellow]Streamhub[/COLOR][CR]'
+        txt += '   [COLOR yellow]Streamruby[/COLOR][CR]'
+        txt += '   [COLOR yellow]Streamsilk[/COLOR][CR]'
+        txt += '   [COLOR yellow]Streamvid[/COLOR][CR]'
+        txt += '   [COLOR yellow]Streamwish[/COLOR][CR]'
+        txt += '   [COLOR yellow]Terabox[/COLOR][CR]'
+        txt += '   [COLOR yellow]Tubeload[/COLOR][CR]'
+        txt += '   [COLOR yellow]Turboviplay[/COLOR][CR]'
+        txt += '   [COLOR yellow]Twitch[/COLOR][CR]'
+        txt += '   [COLOR yellow]Uploaddo[/COLOR][CR]'
+        txt += '   [COLOR yellow]Uploadever[/COLOR][CR]'
+        txt += '   [COLOR yellow]Uploadraja[/COLOR][CR]'
+        txt += '   [COLOR yellow]Userload[/COLOR][CR]'
+        txt += '   [COLOR yellow]Vidello[/COLOR][CR]'
+        txt += '   [COLOR yellow]Videowood[/COLOR][CR]'
+        txt += '   [COLOR yellow]Vidguard[/COLOR][CR]'
+        txt += '   [COLOR yellow]Vidhide[/COLOR][CR]'
+        txt += '   [COLOR yellow]Vidspeed[/COLOR][CR]'
+        txt += '   [COLOR yellow]Vkspeed[/COLOR][CR]'
+        txt += '   [COLOR yellow]Vudeo[/COLOR][CR]'
+        txt += '   [COLOR yellow]Yandex[/COLOR][CR]'
+        txt += '   [COLOR yellow]Youdbox[/COLOR]'
+
+        txt += '[CR][CR] - Servidores [COLOR goldenrod][B]Vías Adicionales[/B][/COLOR] a través de [COLOR yellowgreen][B]Zures[/COLOR][/B] [COLOR fuchsia][B]ResolveUrl[/B][/COLOR]:[CR]'
+
+        txt += '   [COLOR yellow]Allviid[/COLOR][CR]'
+        txt += '   [COLOR yellow]Amdahost[/COLOR][CR]'
+        txt += '   [COLOR yellow]Asianload[/COLOR][CR]'
+        txt += '   [COLOR yellow]Asianplay[/COLOR][CR]'
+        txt += '   [COLOR yellow]Bigwarp[/COLOR][CR]'
+        txt += '   [COLOR yellow]Cloudfile[/COLOR][CR]'
+        txt += '   [COLOR yellow]Cloudmail[/COLOR][CR]'
+        txt += '   [COLOR yellow]Dailyuploads[/COLOR][CR]'
+        txt += '   [COLOR yellow]Darkibox[/COLOR][CR]'
+        txt += '   [COLOR yellow]Dembed[/COLOR][CR]'
+        txt += '   [COLOR yellow]Downace[/COLOR][CR]'
+        txt += '   [COLOR yellow]Fastdrive[/COLOR][CR]'
+        txt += '   [COLOR yellow]Fastplay[/COLOR][CR]'
+        txt += '   [COLOR yellow]Filegram[/COLOR][CR]'
+        txt += '   [COLOR yellow]Gostream[/COLOR][CR]'
+        txt += '   [COLOR yellow]Letsupload[/COLOR][CR]'
+        txt += '   [COLOR yellow]Liivideo[/COLOR][CR]'
+        txt += '   [COLOR yellow]Myupload[/COLOR][CR]'
+        txt += '   [COLOR yellow]Neohd[/COLOR][CR]'
+        txt += '   [COLOR yellow]Oneupload[/COLOR][CR]'
+        txt += '   [COLOR yellow]Pandafiles[/COLOR][CR]'
+        txt += '   [COLOR yellow]Rovideo[/COLOR][CR]'
+        txt += '   [COLOR yellow]Send[/COLOR][CR]'
+        txt += '   [COLOR yellow]Streamable[/COLOR][CR]'
+        txt += '   [COLOR yellow]Streamdav[/COLOR][CR]'
+        txt += '   [COLOR yellow]Streamcool[/COLOR][CR]'
+        txt += '   [COLOR yellow]Streamgzzz[/COLOR][CR]'
+        txt += '   [COLOR yellow]Streamoupload[/COLOR][CR]'
+        txt += '   [COLOR yellow]SwiftLoad[/COLOR][CR]'
+        txt += '   [COLOR yellow]Turbovid[/COLOR][CR]'
+        txt += '   [COLOR yellow]Tusfiles[/COLOR][CR]'
+        txt += '   [COLOR yellow]Udrop[/COLOR][CR]'
+        txt += '   [COLOR yellow]Updown[/COLOR][CR]'
+        txt += '   [COLOR yellow]Uploadbaz[/COLOR][CR]'
+        txt += '   [COLOR yellow]Uploadflix[/COLOR][CR]'
+        txt += '   [COLOR yellow]Uploadhub[/COLOR][CR]'
+        txt += '   [COLOR yellow]Uploady[/COLOR][CR]'
+        txt += '   [COLOR yellow]Upvid[/COLOR][CR]'
+        txt += '   [COLOR yellow]Veev[/COLOR][CR]'
+        txt += '   [COLOR yellow]Veoh[/COLOR][CR]'
+        txt += '   [COLOR yellow]Videa[/COLOR][CR]'
+        txt += '   [COLOR yellow]Vidbob[/COLOR][CR]'
+        txt += '   [COLOR yellow]Vidlook[/COLOR][CR]'
+        txt += '   [COLOR yellow]Vidmx[/COLOR][CR]'
+        txt += '   [COLOR yellow]Vido[/COLOR][CR]'
+        txt += '   [COLOR yellow]Vidpro[/COLOR][CR]'
+        txt += '   [COLOR yellow]Vidstore[/COLOR][CR]'
+        txt += '   [COLOR yellow]Vidtube[/COLOR][CR]'
+        txt += '   [COLOR yellow]Vipss[/COLOR][CR]'
+        txt += '   [COLOR yellow]Vkprime[/COLOR][CR]'
+        txt += '   [COLOR yellow]Wecima[/COLOR][CR]'
+        txt += '   [COLOR yellow]Worlduploads[/COLOR][CR]'
+        txt += '   [COLOR yellow]Ztreamhub[/COLOR]'
 
     platformtools.dialog_textviewer('Servidores Vías Adicionales', txt)

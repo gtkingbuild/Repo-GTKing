@@ -5,7 +5,7 @@ GIT_USER = elementumorg
 GIT_REPOSITORY = repository.elementumorg
 TAG_VERSION = $(subst v,,$(GIT_VERSION))
 LAST_COMMIT = $(shell $(GIT) log -1 --pretty=\%B)
-VERSION = $(shell sed -ne "s/.*\"\sversion=\"\([0-9a-z\.\-]*\)\".*/\1/p" addon.xml)
+VERSION = $(shell sed -ne "s/.*elementumorg\"\sversion=\"\([0-9a-z\.\-]*\)\".*/\1/p" addon.xml)
 ZIP_SUFFIX = zip
 ZIP_FILE = $(NAME)-$(VERSION).$(ZIP_SUFFIX)
 
