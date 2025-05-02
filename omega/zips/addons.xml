@@ -632,6 +632,7 @@ provider-name="The Cleaner">
     </extension>
 </addon>
 
+<<<<<<< HEAD
 <addon id="plugin.video.espada.dragao" name="[COLOR yellow]ESPADA[COLORgrey]DRAGÃO[/COLOR]" version="1.8" provider-name="[COLOR orange]@by_blak_eagle[/COLOR]">
         <requires>
         <import addon="script.module.simplejson" />
@@ -643,6 +644,16 @@ provider-name="The Cleaner">
     </requires>
   <extension point="xbmc.python.pluginsource"
       library="default.py">
+=======
+<addon id="plugin.video.moestv" name="Moe's TV" version="0.2.1" provider-name="La Taberna">
+  <requires>
+    <import addon="script.module.six" version="1.11.0"/>
+    <import addon="script.module.simplecache"/>
+    <import addon="script.module.inputstreamhelper" version="0.5.0"/>
+    <import addon="plugin.video.duffyou" version="0.1.2"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+>>>>>>> 470572371b2cef837a6d95eb098678b9dbe553aa
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
