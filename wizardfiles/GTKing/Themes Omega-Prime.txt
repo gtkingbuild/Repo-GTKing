@@ -1,4 +1,4 @@
-name="[B][COLOR white]•• [COLOR red]Parche: [COLOR crimson]GTKing Prime OMEGA [COLOR tan]04/12/2024[/COLOR][/B]"
+name="[B][COLOR white]•• [COLOR red]Parche: [COLOR crimson]GTKing Prime OMEGA [COLOR tan]03/05/2024l5[/COLOR][/B]"
 url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/21.0.Prime/Parche.GTKing.Phoenix.Prime.OMEGA.zip"
 icon="https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardfiles/wizard_icons_builds/icon_prime.jpg"
 fanart="https://raw.githubusercontent.com/gtkingbuild/Repo-GTKing/master/wizardfiles/wizard_fanarts_builds/fanart_prime.jpg"
