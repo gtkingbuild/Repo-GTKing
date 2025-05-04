@@ -13,7 +13,7 @@ Seleccionamos la Build que deseas instalar de[COLOR yellowgreen][B]GTKing[/B][/C
 Cuando termine de instalar, nos saldrá una ventana [COLOR white][B]"Necesita Forzar el Cierre de Kodi"[/B][/COLOR]. Pulsaremos en [COLOR white][B]"OK"[/B][/COLOR].
 Se cerrará Kodi y ya sólo nos quedará iniciar de nuevo Kodi, darle unos minutos para que cargue el menú correctamente.
 
-[COLOR gold][B]03/05/2025 ¡¡¡ PARCHE SOLO PARA LAS BUILDS PRIME Y GTACTIL !!!/B][/COLOR]
+[COLOR gold][B]03/05/2025 ¡¡¡ PARCHE SOLO PARA LAS BUILDS PRIME Y GTACTIL !!![/B][/COLOR]
 
 [COLOR gold][B]¡¡¡ PARCHE SOLO PARA LAS BUILDS PRIME Y GTACTIL !!![/B][/COLOR]
 
