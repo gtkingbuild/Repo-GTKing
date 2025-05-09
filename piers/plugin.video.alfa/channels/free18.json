@@ -1,0 +1,15 @@
+{
+  "id": "free18",
+  "name": "free18",
+  "active": false,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "http://www.free18.net/static/images/homelogoen.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

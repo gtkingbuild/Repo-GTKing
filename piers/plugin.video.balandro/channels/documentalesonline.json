@@ -1,0 +1,17 @@
+{
+  "id": "documentalesonline",
+  "name": "DocumentalesOnline",
+  "thumbnail": "documentalesonline.png",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["documentary"],
+
+  "categories": ["documentary"],
+  "language": ["cast"],
+
+  "clusters": ["rankings", "categories", "docs"],
+
+  "notes": "Documentales en castellano."
+}

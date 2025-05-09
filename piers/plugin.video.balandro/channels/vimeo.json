@@ -1,0 +1,17 @@
+{
+  "id": "vimeo",
+  "name": "ViMeo",
+  "thumbnail": "vimeo.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["documentary"],
+
+  "categories": ["documentary"],
+  "language": ["cast"],
+
+  "clusters": ["onlyone", "rankings", "docs"],
+
+  "notes": "Web ANULADA. Documentales en castellano."
+}

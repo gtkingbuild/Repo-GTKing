@@ -1,0 +1,22 @@
+{
+  "id": "dailymotion",
+  "name": "Dailymotion",
+
+  "active": true,
+  "notes": "Alternative vía: Script.Module.ResolveUrl",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "dailymotion.com/(?:video/|swf/|sequence/|player/(?:video/|)|)(?:embed/video/|)([A-z0-9]+)",
+        "url": "https://www.dailymotion.com/player/metadata/video/\\1"
+      },
+      {
+        "pattern": "dai.ly/(?:video/|swf/|sequence/|player/(?:video/|)|)(?:embed/video/|)([A-z0-9]+)",
+        "url": "https://www.dailymotion.com/player/metadata/video/\\1"
+      }
+    ]
+  }
+
+}

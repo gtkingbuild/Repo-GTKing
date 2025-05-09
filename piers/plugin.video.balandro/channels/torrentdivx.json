@@ -1,0 +1,17 @@
+{
+  "id": "torrentdivx",
+  "name": "TorrentDivx",
+  "thumbnail": "torrentdivx.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow", "torrent"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["years", "torrents", "news", "languages", "qualityes", "kids", "docs", "vos", "4k"],
+
+  "notes": "Web CERRADA. Canal con enlaces Torrent exclusivamente. Películas por géneros. También Series."
+}

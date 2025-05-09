@@ -1,0 +1,17 @@
+{
+  "id": "pepecine",
+  "name": "PepeCine",
+  "thumbnail": "pepecine.png",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast"],
+
+  "clusters": ["adults", "news", "rankings", "years", "countries", "lists", "lasts", "vos"],
+
+  "notes": "Web CERRADA. Películas por géneros. También Series."
+}

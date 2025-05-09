@@ -1,0 +1,17 @@
+{
+  "id": "seriesbanana",
+  "name": "SeriesBanana",
+  "thumbnail": "seriesbanana.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["onlyone", "infantil", "classic", "kids", "vos"],
+
+  "notes": "Web CERRADA. Series por Géneros."
+}

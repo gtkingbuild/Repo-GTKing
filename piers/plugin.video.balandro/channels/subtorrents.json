@@ -1,0 +1,17 @@
+{
+  "id": "subtorrents",
+  "name": "SubTorrents",
+  "thumbnail": "subtorrents.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow", "torrent"],
+  "language": ["cast", "lat", "vose", "vo"],
+
+  "clusters": ["onlyone", "notice", "current", "torrents", "news", "qualityes", "vos", "3d"],
+
+  "notes": "Canal con enlaces Torrent exclusivamente. Películas y Series Subtituladas y en versión original. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

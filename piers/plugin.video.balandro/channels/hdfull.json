@@ -1,0 +1,17 @@
+{
+  "id": "hdfull",
+  "name": "HdFull",
+  "thumbnail": "hdfull.png",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose", "vo"],
+
+  "clusters": ["register", "current", "suggested", "notice", "news", "rankings", "lists", "lasts", "stars", "directors", "kids", "docs", "vos", "dorama", "anime", "tales"],
+
+  "notes": "Películas por géneros. Series por Géneros. Categoría Novelas. Dispone de varios posibles dominios. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

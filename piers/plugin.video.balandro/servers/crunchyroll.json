@@ -1,0 +1,17 @@
+{
+  "id": "crunchyroll",
+  "name": "Crunchyroll",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "(crunchyroll.com/[A-z0-9-/]+\\d{6})",
+        "url": "https://www.\\1"
+      }
+    ]
+  }
+
+}

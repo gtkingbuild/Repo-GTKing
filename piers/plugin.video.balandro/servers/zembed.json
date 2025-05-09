@@ -1,0 +1,17 @@
+{
+  "id": "zembed",
+  "name": "Zembed",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "https://www.zembed.to/public/dist/(?:asteroid|index).html\\?id=([A-z0-9]+)",
+        "url": "https://www.zembed.to/public/dist/asteroid.html?id=\\1"
+      }
+    ]
+  }
+
+}

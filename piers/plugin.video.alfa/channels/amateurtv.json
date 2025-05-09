@@ -1,0 +1,15 @@
+{
+  "id": "amateurtv",
+  "name": "amateurtv",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://i.postimg.cc/Cx3Bjbpn/amateurtv.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "dilo",
+  "name": "Dilo",
+  "thumbnail": "dilo.png",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["lasts", "years", "countries", "adults", "kids", "docs", "vos"],
+
+  "notes": "Web CERRADA. Series por Géneros. También dispone de Películas catalogadas como episodios."
+}

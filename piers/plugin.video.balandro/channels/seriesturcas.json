@@ -1,0 +1,17 @@
+{
+  "id": "seriesturcas",
+  "name": "SeriesTurcas",
+  "thumbnail": "seriesturcas.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["years", "vos", "tales"],
+
+  "notes": "Web dedicada exclusivamente en Novelas. Series por Géneros."
+}

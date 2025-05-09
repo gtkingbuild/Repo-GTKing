@@ -1,0 +1,18 @@
+{
+  "id": "divxstage",
+  "name": "Divxstage",
+ 
+  "active": false,
+  "notes": "Ya no existe",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "(divxstage.net/video/[0-9a-z]+)",
+        "url": "http://\\1"
+      }
+    ]
+  }
+
+}

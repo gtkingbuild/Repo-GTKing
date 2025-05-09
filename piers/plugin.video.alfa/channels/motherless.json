@@ -1,0 +1,15 @@
+{
+  "id": "motherless",
+  "name": "motherless",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://i.postimg.cc/5tfTxzD8/logo-header.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

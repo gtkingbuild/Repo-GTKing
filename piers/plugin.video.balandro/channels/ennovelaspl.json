@@ -1,0 +1,17 @@
+{
+  "id": "ennovelaspl",
+  "name": "EnNovelasPl",
+  "thumbnail": "ennovelaspl.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["lasts", "years", "countries", "vos", "tales"],
+
+  "notes": "Web dedicada principalmente en Novelas. Series por Géneros."
+}

@@ -1,0 +1,17 @@
+{
+  "id": "pasateatorrent",
+  "name": "PasateATorrent",
+  "thumbnail": "pasateatorrent.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["torrent", "movie", "tvshow"],
+  "language": ["cast"],
+
+  "clusters": ["onlyone", "torrents", "kids", "docs", "3d", "4k"],
+
+  "notes": "Canal con enlaces Torrent exclusivamente. Películas por géneros."
+}

@@ -1,0 +1,218 @@
+{
+  "id": "voe",
+  "name": "Voe",
+
+  "active": true,
+  "notes": "Alternative vía: Script.Module.ResolveUrl",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "voe.sx/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "(?:voe-unblock.com|voe-unblock.net|voeunblock.com|voeunbl0ck.com|voeunblck.com|voeunblk.com|voe-un-block.com|voeun-block.net|un-block-voe.net|v-o-e-unblock.com)/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://edwardarriveoften.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://reputationsheriffkennethsand.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://fittingcentermondaysunday.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://tinycat-voe-fashion.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://scatch176duplicities.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://yodelswartlike.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://nectareousoverelate.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://kathleenmemberhistory.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://apinchcaseation.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://strawberriesporail.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://cigarlessarefy.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://crownmakermacaronicism.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://generatesnitrosate.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://figeterpiazine.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://timberwoodanotia.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://tubelessceliolymph.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://wolfdyslectic.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://metagnathtuggers.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://chromotypic.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://gamoneinterrupted.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://rationalityaloelike.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://valeronevijao.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://availedsmallest.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://prefulfilloverdoor.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://jayservicestuff.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://brookethoughi.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://jasonresponsemeasure.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://graceaddresscommunity.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://shannonpersonalcost.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://paulkitchendark.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://roberteachfinal.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://cindyeyefinal.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://josephseveralconcern.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://alleneconomicmatter.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://ryanagoinvolve.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://loriwithinfamily.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://rebeccaneverbase.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://morganoperationface.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://erikcoldperson.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://jasminetesttry.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://robertplacespace.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://robertordercharacter.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://donaldlineelse.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://lisatrialidea.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://jamessoundcost.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://brittneystandardwestern.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://sandratableother.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://maxfinishseveral.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      },
+      {
+        "pattern": "https://chuckle-tube.com/(?:e/|)([A-z0-9]+)",
+        "url": "https://voe.sx/e/\\1"
+      }
+    ]
+  }
+
+}

@@ -1,0 +1,17 @@
+{
+  "id": "allpeliculasse",
+  "name": "AllPeliculasSe",
+  "thumbnail": "allpeliculasse.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow", "torrent"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["torrents", "rankings", "years", "docs", "vos", "4k"],
+
+  "notes": "Canal con enlaces Streaming y Torrent. Películas por géneros y años. Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

@@ -1,0 +1,17 @@
+{
+  "id": "flixcorn",
+  "name": "FlixCorn",
+  "thumbnail": "flixcorn.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["notice", "lasts"],
+
+  "notes": "Series. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

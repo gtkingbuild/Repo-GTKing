@@ -1,0 +1,17 @@
+{
+  "id": "playdo",
+  "name": "PlayDo",
+  "thumbnail": "playdo.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose", "vo"],
+
+  "clusters": ["lasts", "kids", "docs", "vos"],
+
+  "notes": "Web ANULADA. Películas por géneros. Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

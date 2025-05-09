@@ -1,0 +1,17 @@
+{
+  "id": "cinehindi",
+  "name": "CineHindi",
+  "thumbnail": "cinehindi.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie"],
+  "language": ["vose"],
+
+  "clusters": ["news"],
+
+  "notes": "Películas por géneros."
+}

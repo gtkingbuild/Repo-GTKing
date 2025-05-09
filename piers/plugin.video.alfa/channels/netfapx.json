@@ -1,0 +1,15 @@
+{
+  "id": "netfapx",
+  "name": "netfapx",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://netfapx.com/wp-content/uploads/2017/11/netfapx-lg-1_319381e1f227e13ae1201bfa30857622.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

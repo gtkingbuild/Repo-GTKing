@@ -1,0 +1,17 @@
+{
+  "id": "streams3",
+  "name": "Streams3",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "(https://streams3.com/redirect.php\\?data=\\w+)",
+        "url": "\\1"
+      }
+    ]
+  }
+
+}

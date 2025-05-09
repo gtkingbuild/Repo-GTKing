@@ -1,0 +1,17 @@
+{
+  "id": "kindor",
+  "name": "KinDor",
+  "thumbnail": "kindor.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["news", "rankings", "lasts", "docs", "kids", "vos"],
+
+  "notes": "Web ANULADA. Películas por géneros. Series por Géneros"
+}

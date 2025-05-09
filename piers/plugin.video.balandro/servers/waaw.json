@@ -1,0 +1,90 @@
+{
+  "id": "waaw",
+  "name": "Waaw",
+
+  "active": true,
+  "notes": "Alternative vía: Script.Module.ResolveUrl (Doplay,  Hqq,  Megaplay,  Megavideo,  Netu,  Netutv,  Ncdn22,  Oyohd,, Playermoovies,  Pornjustx,  Richhioon,  Stbnetu,  Vidxhot,  Waaw,  Woffxxx,  Younetu)",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "megavideo.cam/watch_video.php/?v=([A-z0-9]+)",
+        "url": "https://waaw.to/watch_video.php?v=\\1"
+      },
+      {
+        "pattern": "/netu/tv/(embed_)(.*?$)",
+        "url": "https://waaw.to/watch_video.php?v=\\2"
+      },
+      {
+        "pattern": "(?:hqq.|waaw.|netu.|waaw1.)(?:ac|tv|watch|to)/(?:f/|e/)([A-z0-9]+)",
+        "url": "https://waaw.to/watch_video.php?v=\\1"
+      },
+      {
+        "pattern": "(?:hqq.|waaw.|netu.|waaw1.)(?:ac|tv|watch|to|php)/(?:v=|vid=)([A-z0-9]+)",
+        "url": "https://waaw.to/watch_video.php?v=\\1"
+      },
+      {
+        "pattern": "https://waaws.tk/player/embed_player.php?vid=([A-z0-9]+)&autoplay=yes",
+        "url": "https://waaw.to/watch_video.php?v=\\2"
+      },
+      {
+        "pattern": "(?:hqq.|waaw.|netu.|waaw1.)(?:ac|tv|watch|to|php).*?hash=([A-z0-9]+)",
+        "url": "https://waaw.to/watch_video.php?v=\\1"
+      },
+      {
+        "pattern": "(?:hqq.|waaw.|netu.|waaw1.)(?:ac|tv|watch|to)(.*?$)",
+        "url": "https://waaw.to/watch_video.php?v=\\1"
+      },
+      {
+        "pattern": "(?:hqq.|waaw.|netu.|waaw1.|megaplay.|pbtube.|wiztube.)(?:ac|tv|watch|to|cc|xyz)/player/embed_player.php?vid=([A-z0-9]+)",
+        "url": "https://waaw.to/watch_video.php?v=\\1"
+      },
+      {
+        "pattern": "https://vidxhot.(?:com|net)/f/([A-z0-9]+)",
+        "url": "https://waaw.to/watch_video.php?v=\\1"
+      },
+      {
+        "pattern": "https://vidxhot.(?:com|net)/e/([A-z0-9]+)",
+        "url": "https://waaw.to/watch_video.php?v=\\1"
+      },
+      {
+        "pattern": "https://player.moovies.in/f/([A-z0-9]+)",
+        "url": "https://waaw.to/watch_video.php?v=\\1"
+      },
+      {
+        "pattern": "https://player.moovies.in/e/([A-z0-9]+)",
+        "url": "https://waaw.to/watch_video.php?v=\\1"
+      },
+      {
+        "pattern": "https://(?:richhioon.|woffxxx.|pornjustx.)(?:eu|com)/(?:f/|e/)([A-z0-9]+)",
+        "url": "https://waaw.to/watch_video.php?v=\\1"
+      },
+      {
+        "pattern": "https://doplay.store/(?:f/|e/)([A-z0-9]+)",
+        "url": "https://waaw.to/watch_video.php?v=\\1"
+      },
+      {
+        "pattern": "https://younetu.com/(?:f/|e/)([A-z0-9]+)",
+        "url": "https://waaw.to/watch_video.php?v=\\1"
+      },
+      {
+        "pattern": "https://stbnetu.xyz/(?:f/|e/)([A-z0-9]+)",
+        "url": "https://waaw.to/watch_video.php?v=\\1"
+      },
+      {
+        "pattern": "https://ncdn22.xyz/(?:f/|e/)([A-z0-9]+)",
+        "url": "https://waaw.to/watch_video.php?v=\\1"
+      },
+      {
+        "pattern": "https://oyohd.one/(?:f/|e/)([A-z0-9]+)",
+        "url": "https://waaw.to/watch_video.php?v=\\1"
+      },
+      {
+        "pattern": "https://player.sorozatok.me/(?:f/|e/)([A-z0-9]+)",
+        "url": "https://waaw.to/watch_video.php?v=\\1"
+      }
+    ]
+  }
+
+}

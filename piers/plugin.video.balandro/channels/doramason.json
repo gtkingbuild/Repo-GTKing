@@ -1,0 +1,17 @@
+{
+  "id": "doramason",
+  "name": "DoramasOn",
+  "thumbnail": "doramason.jpg",
+
+  "active": false,
+
+  "searchable": false,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["lat"],
+
+  "clusters": ["dorama"],
+
+  "notes": "Web CERRADA. Web dedicada exclusivamente al dorama"
+}

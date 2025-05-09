@@ -1,0 +1,15 @@
+{
+  "id": "cumlouder",
+  "name": "Cumlouder",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://i.postimg.cc/jns92b05/cumlouder.png",
+  "banner": "cumlouder.png",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

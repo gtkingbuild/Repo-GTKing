@@ -1,0 +1,17 @@
+{
+  "id": "seriesyonkis",
+  "name": "SeriesYonkis",
+  "thumbnail": "seriesyonkis.png",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose", "vo"],
+
+  "clusters": ["producers", "rankings", "kids", "docs", "vos", "anime"],
+
+  "notes": "Web ANULADA. Películas por géneros. Series por Géneros."
+}

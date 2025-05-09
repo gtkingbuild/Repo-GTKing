@@ -1,0 +1,18 @@
+{
+  "id": "rapidvideo",
+  "name": "Rapidvideo",
+
+  "active": false,
+  "notes": "Cerrado el 20/10/2019",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "(?:rapidvideo|rapidvid).(?:org|com|to)/(?:\\?v=|e/|embed/|v/|)([A-z0-9]+)",
+        "url": "https://www.rapidvideo.com/e/\\1"
+      }
+    ]
+  }
+
+}

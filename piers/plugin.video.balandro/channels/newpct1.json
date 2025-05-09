@@ -1,0 +1,17 @@
+{
+  "id": "newpct1",
+  "name": "NewPct1",
+  "thumbnail": "newpct1.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow", "torrent"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["torrents", "news", "lists", "vos", "3d"],
+
+  "notes": "Web ANULADA. Canal con enlaces Streaming y Torrent. Películas y Series."
+}

@@ -1,0 +1,29 @@
+{
+  "id": "vshare",
+  "name": "Vshare",
+ 
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "vshare.(?:eu|io)/(?:embed-|)([A-z0-9]+)",
+        "url": "https://vshare.eu/\\1"
+      },
+      {
+        "pattern": "vshare.(?:eu|io)/(?:embed-|)([A-z0-9]+).html",
+        "url": "https://vshare.eu/\\1"
+      },
+      {
+        "pattern": "vshare.(?:eu|io)/(?:embed-|)([A-z0-9]+).htm",
+        "url": "https://vshare.eu/\\1"
+      },
+      {
+        "pattern": "(vshare.(?:eu|io)/v/[a-zA-Z0-9/-]+)",
+        "url": "https://vshare.eu/\\1"
+      }
+    ]
+  }
+
+}

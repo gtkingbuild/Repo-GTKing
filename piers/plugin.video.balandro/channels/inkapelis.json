@@ -1,0 +1,17 @@
+{
+  "id": "inkapelis",
+  "name": "InkaPelis",
+  "thumbnail": "inkapelis.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["news", "rankings", "languages", "years", "lasts", "producers", "kids", "docs", "vos", "anime"],
+
+  "notes": "Web ANULADA. Películas por géneros. Series por Géneros."
+}

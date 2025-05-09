@@ -1,0 +1,17 @@
+{
+  "id": "hentaijl",
+  "name": "HentaiJl",
+  "thumbnail": "hentaijl.jpg",
+
+  "active": true,
+
+  "searchable": false,
+  "search_types": ["movie"],
+
+  "categories": ["movie", "adults"],
+  "language": ["lat", "vo"],
+
+  "clusters": ["adults"],
+
+  "notes": "Vídeos de Animación en versión Original para Adultos +18"
+}

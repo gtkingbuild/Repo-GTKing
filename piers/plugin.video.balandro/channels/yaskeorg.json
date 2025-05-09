@@ -1,0 +1,17 @@
+{
+  "id": "yaskeorg",
+  "name": "YaskeOrg",
+  "thumbnail": "yaskeorg.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie"],
+  "language": ["lat"],
+
+  "clusters": ["suggested", "kids"],
+
+  "notes": "Películas por géneros."
+}

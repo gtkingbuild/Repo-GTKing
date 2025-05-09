@@ -1,0 +1,17 @@
+{
+  "id": "rarbg",
+  "name": "RarBg",
+  "thumbnail": "rarbg.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["torrent", "movie"],
+  "language": ["vo"],
+
+  "clusters": ["onlyone", "torrents", "qualityes", "years", "rankings", "kids", "docs", "4k", "3d"],
+
+  "notes": "Canal con enlaces Torrent exclusivamente. Películas en Versión Original, por géneros, calidad y año. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

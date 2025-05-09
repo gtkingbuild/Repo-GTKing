@@ -1,0 +1,17 @@
+{
+  "id": "filesim",
+  "name": "Filesim",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "http(?:s|)://files.im/(?:embed-|)([A-z0-9]+)",
+        "url": "https://files.im/embed-\\1.html"
+      }
+    ]
+  }
+
+}

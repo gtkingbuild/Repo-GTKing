@@ -1,0 +1,17 @@
+{
+  "id": "documaniatv",
+  "name": "DocumaniaTv",
+  "thumbnail": "documaniatv.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["documentary"],
+
+  "categories": ["documentary"],
+  "language": ["cast"],
+
+  "clusters": ["onlyone", "suggested", "rankings", "categories", "adults", "docs"],
+
+  "notes": "Web ANULADA. Documentales en castellano por categorías, series. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

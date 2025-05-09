@@ -1,0 +1,17 @@
+{
+  "id": "zonapelis",
+  "name": "ZonaPelis",
+  "thumbnail": "zonapelis.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow", "torrent"],
+  "language": ["cast", "lat"],
+
+  "clusters": ["clons", "torrents", "rankings", "qualityes", "years", "classic", "producers", "kids", "docs", "4k"],
+
+  "notes": "Canal con enlaces Torrent exclusivamente. Películas por géneros. También series por Géneros."
+}

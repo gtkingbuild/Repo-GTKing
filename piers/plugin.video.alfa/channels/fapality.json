@@ -1,0 +1,15 @@
+{
+  "id": "fapality",
+  "name": "fapality",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://i.imgur.com/Orguh85.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

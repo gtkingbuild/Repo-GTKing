@@ -1,0 +1,22 @@
+{
+  "id": "streamz",
+  "name": "Streamz",
+
+  "active": true,
+  "notes": "Out of Service",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "streamz(?:z|).(?:cc|vg|ws|to|tv|)/([A-z0-9]+)",
+        "url": "https://streamz.ws/\\1"
+      },
+      {
+        "pattern": "(https://streamz(?:z|).\\w{2,3}/[A-z0-9]+)",
+        "url": "\\1"
+      }
+    ]
+  }
+
+}

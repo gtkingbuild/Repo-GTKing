@@ -1,0 +1,17 @@
+{
+  "id": "cineteca",
+  "name": "CineTeca",
+  "thumbnail": "cineteca.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["docs", "vos"],
+
+  "notes": "Películas por géneros."
+}

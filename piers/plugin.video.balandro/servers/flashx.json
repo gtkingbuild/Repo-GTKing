@@ -1,0 +1,22 @@
+{
+  "id": "flashx",
+  "name": "Flashx",
+
+  "active": true,
+  "notes": "Alternative vía: Script.Module.ResolveUrl",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "flashx.(?:co|net)/([A-z0-9]+)\\.(jsp|html)",
+        "url": "https://www.flashx.co/\\1.\\2"
+      },
+     {
+        "pattern": "flashx.(?:tv|pw|ws|sx|to|cc|bz)/(?:embed.php\\?c=|embed-|playvid-|)([A-z0-9]+)",
+        "url": "https://www.flashx.tv/\\1.html"
+      }
+    ]
+  }
+
+}

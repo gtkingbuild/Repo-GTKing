@@ -1,0 +1,25 @@
+{
+  "id": "anonfiles",
+  "name": "Anonfiles",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "(https://anonfiles.com/\\w+)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://anonfiles.me/\\w+)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(https://anonfile.com/\\w+)",
+        "url": "\\1"
+      }
+    ]
+  }
+
+}

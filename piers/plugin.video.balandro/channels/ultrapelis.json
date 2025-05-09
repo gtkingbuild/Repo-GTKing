@@ -1,0 +1,17 @@
+{
+  "id": "ultrapelis",
+  "name": "UltraPelis",
+  "thumbnail": "ultrapelis.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["suggested", "news", "years", "languages", "kids", "vos"],
+
+  "notes": "Películas por géneros y Año. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

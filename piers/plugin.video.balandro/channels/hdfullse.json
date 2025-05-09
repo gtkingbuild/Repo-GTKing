@@ -1,0 +1,17 @@
+{
+  "id": "hdfullse",
+  "name": "HdFullSe",
+  "thumbnail": "hdfullse.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": [ "movie", "tvshow" ],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["current", "notice", "news", "rankings", "years", "stars", "directors", "kids", "docs", "vos", "dorama", "anime", "tales"],
+
+  "notes": "Películas por géneros, año. Series por Géneros. Categoría Novelas. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

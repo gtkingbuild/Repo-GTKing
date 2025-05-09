@@ -1,0 +1,17 @@
+{
+  "id": "cinecalidad",
+  "name": "CineCalidad",
+  "thumbnail": "cinecalidad.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow", "torrent"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["current", "suggested", "notice", "torrents", "news", "years", "rankings", "kids", "docs", "vos", "4k"],
+
+  "notes": "Canal con enlaces Streaming y Torrent. Acceso por separado Castellano y Latino. Películas por géneros. Series por Géneros. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

@@ -1,0 +1,17 @@
+{
+  "id": "playplus",
+  "name": "PlayPlus",
+  "thumbnail": "playplus.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose", "vo"],
+
+  "clusters": ["suggested", "news", "rankings", "languages", "countries", "years", "lists", "lasts", "kids", "docs", "vos", "anime"],
+
+  "notes": "Películas por géneros y año. Series y Animes por Géneros y año."
+}

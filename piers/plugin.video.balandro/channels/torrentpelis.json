@@ -1,0 +1,17 @@
+{
+  "id": "torrentpelis",
+  "name": "TorrentPelis",
+  "thumbnail": "torrentpelis.jpg",
+
+  "active": false,
+
+  "searchable": true,
+  "search_types": ["movie"],
+
+  "categories": ["movie", "torrent"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["torrents", "rankings", "lists", "docs", "vos"],
+
+  "notes": "Web CERRADA. Canal con enlaces Torrent exclusivamente. Películas por géneros."
+}

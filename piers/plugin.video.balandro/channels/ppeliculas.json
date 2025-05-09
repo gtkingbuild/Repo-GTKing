@@ -1,0 +1,17 @@
+{
+  "id": "ppeliculas",
+  "name": "PPeliculas",
+  "thumbnail": "ppeliculas.png",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow", "torrent"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["notice", "torrents", "news", "rankings", "lasts", "kids", "docs", "vos"],
+
+  "notes": "Canal con enlaces Streaming y Torrent. Películas por géneros. También Series. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

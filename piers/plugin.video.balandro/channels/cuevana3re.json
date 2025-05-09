@@ -1,0 +1,17 @@
+{
+  "id": "cuevana3re",
+  "name": "Cuevana3Re",
+  "thumbnail": "cuevana3re.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow", "torrent"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["suggested", "torrents", "kids", "docs", "vos"],
+
+  "notes": "Canal con enlaces Streaming y Torrent. Películas por géneros. También Series."
+}

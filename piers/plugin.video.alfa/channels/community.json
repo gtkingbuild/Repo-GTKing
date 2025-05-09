@@ -1,0 +1,33 @@
+{
+  "id": "community",
+  "name": "Community",
+  "active": true,
+  "adult": false,
+  "language": ["cast", "lat"],
+  "thumbnail": "",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "movie",
+    "tvshow",
+    "direct",
+    "vos"
+  ],
+  "settings": [
+    {
+      "id": "filterlanguages",
+      "type": "list",
+      "label": "Mostrar enlaces del canal en idioma...",
+      "default": 3,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "No Filtrar",
+        "LAT",
+        "CAST",
+        "VO",
+        "VOSE"
+      ]
+    }
+  ]
+}

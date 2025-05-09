@@ -1,0 +1,15 @@
+{
+  "id": "titsbox",
+  "name": "titsbox",
+  "active": true,
+  "adult": true,
+  "language": ["*"],
+  "thumbnail": "https://titsbox.com/android-chrome-192x192.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "adult"
+  ],
+  "settings": [
+  ]
+}

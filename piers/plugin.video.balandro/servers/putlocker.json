@@ -1,0 +1,18 @@
+{
+  "id": "putlocker",
+  "name": "Putlocker",
+ 
+  "active": false,
+  "notes": "Requiere Debrider",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "putlocker.com/file/([0-9a-zA-Z]+)",
+        "url": "http://www.putlocker.com/file/\\1"
+      }
+    ]
+  }
+
+}

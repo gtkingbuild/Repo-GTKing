@@ -1,0 +1,18 @@
+{
+  "id": "videobin",
+  "name": "Videobin",
+
+  "active": true,
+  "notes": "Out of Service",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "videobin.co/(?:embed-|)([A-z0-9_-]+)",
+        "url": "https://videobin.co/\\1"
+      }
+    ]
+  }
+
+}

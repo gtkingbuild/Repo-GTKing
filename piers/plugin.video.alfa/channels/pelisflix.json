@@ -1,0 +1,31 @@
+{
+  "id": "pelisflix",
+  "name": "Pelisflix",
+  "active": true,
+  "adult": false,
+  "language": ["lat", "cast"],
+  "thumbnail": "https://i.postimg.cc/yJLCpSY0/pelisflix.png",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "movie",
+    "vos"
+  ],
+  "force_unify": true,
+  "settings": [
+    {
+      "id": "filter_languages",
+      "type": "list",
+      "label": "Mostrar enlaces en idioma...",
+      "default": 0,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "No filtrar",
+        "CAST",
+        "LAT",
+        "VOSE"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "mitorrent",
+  "name": "MiTorrent",
+  "thumbnail": "mitorrent.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow", "torrent"],
+  "language": ["cast", "lat"],
+
+  "clusters": ["current", "torrents", "qualityes", "languages", "years", "kids", "docs", "4k"],
+
+  "notes": "Canal con enlaces Torrent exclusivamente. Películas y series, por géneros, calidad, idioma y año."
+}

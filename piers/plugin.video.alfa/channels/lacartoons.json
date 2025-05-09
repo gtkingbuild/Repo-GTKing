@@ -1,0 +1,35 @@
+{
+  "id": "lacartoons",
+  "name": "Lacartoons",
+  "active": true,
+  "adult": false,
+  "language": ["lat"],
+  "thumbnail": "https://i.postimg.cc/8PCB3kwL/lacartoons.jpg",
+  "banner": "",
+  "fanart": "",
+  "categories": [
+    "tvshow"
+  ],
+  "settings": [
+    {
+      "id": "filter_languages",
+      "type": "list",
+      "label": "Mostrar enlaces en idioma...",
+      "default": 0,
+      "enabled": true,
+      "visible": true,
+      "lvalues": [
+        "No filtrar",
+        "Latino"
+      ]
+    },
+    {
+      "id": "modo_grafico",
+      "type": "bool",
+      "label": "Buscar información extra",
+      "default": true,
+      "enabled": true,
+      "visible": true
+    }
+  ]
+}

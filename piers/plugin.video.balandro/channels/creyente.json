@@ -1,0 +1,17 @@
+{
+  "id": "creyente",
+  "name": "Creyente",
+  "thumbnail": "creyente.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["all", "movie", "tvshow"],
+
+  "categories": ["movie", "tvshow"],
+  "language": ["cast", "lat", "vose"],
+
+  "clusters": ["classic", "vos", "bibles"],
+
+  "notes": "Películas y Series. Con temas bíblicos."
+}

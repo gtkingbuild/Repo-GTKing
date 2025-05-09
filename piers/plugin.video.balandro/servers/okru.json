@@ -1,0 +1,38 @@
+{
+  "id": "okru",
+  "more_ids": ["ok.ru", "okru.link"],
+  "name": "Okru",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "(https://okru.link/v2/embed_vf_s.html\\?t=[a-zA-Z0-9_.]+)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "(?:www.)?ok.../(?:videoembed|video|live)/(\\d+)",
+        "url": "https://ok.ru/videoembed/\\1"
+      },
+      {
+        "pattern": "https://okru.link/v2/.*?t=([A-z0-9]+)",
+        "url": "https://okru.link/v2/embed_vf.html?t=\\1"
+      },
+      {
+        "pattern": "https://okru.link/.*?t=([A-z0-9]+)",
+        "url": "https://okru.link/embed.html?t=\\1"
+      },
+      {
+        "pattern": "(https://okru.link/embed.html.t=\\w+)",
+        "url": "\\1"
+      },
+      {
+        "pattern": "odnoklassniki.ru/(?:videoembed|video|live)/(\\d+)",
+        "url": "https://ok.ru/videoembed/\\1"
+      }
+    ]
+  }
+
+}

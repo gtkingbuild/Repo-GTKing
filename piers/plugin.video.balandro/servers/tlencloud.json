@@ -1,0 +1,17 @@
+{
+  "id": "tlencloud",
+  "name": "Tlencloud",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "http(?:s|)://tlencloud.com/(?:embed/\\?param=|)([A-z0-9]+)",
+        "url": "https://tlencloud.com/embed/?param=\\1"
+      }
+    ]
+  }
+
+}

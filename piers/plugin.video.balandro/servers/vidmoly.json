@@ -1,0 +1,26 @@
+{
+  "id": "vidmoly",
+  "name": "Vidmoly",
+
+  "active": true,
+  "notes": "Alternative vía: Script.Module.ResolveUrl",
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "https://vidmoly.me/(?:embed-|d/|w/|)([A-z0-9]+)",
+        "url": "https://vidmoly.me/embed-\\1.html"
+      },
+      {
+        "pattern": "https://vidmoly.to/(?:embed-|d/|w/|)([A-z0-9]+)",
+        "url": "https://vidmoly.me/embed-\\1.html"
+      },
+      {
+        "pattern": "https://vidmoly.net/(?:embed-|d/|w/|)([A-z0-9]+)",
+        "url": "https://vidmoly.me/embed-\\1.html"
+      }
+    ]
+  }
+
+}

@@ -1,0 +1,17 @@
+{
+  "id": "kissasian",
+  "name": "KissAsian",
+  "thumbnail": "kissasian.jpg",
+
+  "active": true,
+
+  "searchable": false,
+  "search_types": ["tvshow"],
+
+  "categories": ["tvshow"],
+  "language": ["vo"],
+
+  "clusters": ["dorama"],
+
+  "notes": "Web dedicada exclusivamente al dorama"
+}

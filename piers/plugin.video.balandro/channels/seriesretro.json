@@ -1,0 +1,17 @@
+{
+  "id": "seriesretro",
+  "name": "SeriesRetro",
+  "thumbnail": "seriesretro.jpg",
+
+  "active": true,
+
+  "searchable": true,
+  "search_types": ["tvshow"],
+
+  "categories": ["movie", "tvshow", "torrent"],
+  "language": ["lat"],
+
+  "clusters": ["suggested", "notice", "classic", "infantil", "years", "lasts", "kids"],
+
+  "notes": "Canal con enlaces Streaming y Torrent. Películas por géneros y años. Series clásicas, por Géneros, años en idioma orignal de emisión. Puede requerir el uso de proxies en función del país/operadora desde el que se accede."
+}

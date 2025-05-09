@@ -1,0 +1,17 @@
+{
+  "id": "documentaryheaven",
+  "name": "DocumentaryHeaven",
+  "thumbnail": "documentaryheaven.jpg",
+
+  "active": true,
+
+  "searchable": false,
+  "search_types": ["documentary"],
+
+  "categories": ["documentary"],
+  "language": ["vo"],
+
+  "clusters": ["onlyone", "categories"],
+
+  "notes": "Documentales en versión original."
+}

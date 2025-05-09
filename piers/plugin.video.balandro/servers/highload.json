@@ -1,0 +1,25 @@
+{
+  "id": "highload",
+  "name": "HighLoad",
+
+  "active": true,
+
+  "find_videos": {
+    "ignore_urls": [],
+    "patterns": [
+      {
+        "pattern": "https://highload.to/(?:embed-|f/|)([A-z0-9]+)",
+        "url": "https://highload.to/f/\\1"
+      },
+      {
+        "pattern": "https://highload.to/(?:embed-|d/|e/|v/)([A-z0-9]+)",
+        "url": "https://highload.to/f/\\1"
+      },
+      {
+        "pattern": "(https://(upvideos|streamon).\\w{2,4}/(?:embed-|f|d|v|e|)/[A-z0-9]+)",
+        "url": "\\1"
+      }
+    ]
+  }
+
+}
