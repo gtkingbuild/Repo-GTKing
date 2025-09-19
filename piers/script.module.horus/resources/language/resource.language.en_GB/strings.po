@@ -1,0 +1,197 @@
+# Kodi Media Center language file
+# Addon Name: Horus
+# Addon id: script.module.horus
+# Addon Provider: CaperucitaFeroz
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC-Addons\n"
+"POT-Creation-Date: 2021-04-08 11:01+0000\n"
+"PO-Revision-Date: 2021-04-08 11:01+0000\n"
+"Last-Translator: CaperucitaFeroz\n"
+"Language-Team: Horus\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+
+msgctxt "#30000"
+msgid "Downloading Acestream ..."
+msgstr ""
+
+msgctxt "#30001"
+msgid "Complete Download"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Unzipping Files ..."
+msgstr ""
+
+msgctxt "#30003"
+msgid "Error unzipping Files in %s"
+msgstr ""
+
+msgctxt "#30004"
+msgid "Cleaning Files ..."
+msgstr ""
+
+msgctxt "#30005"
+msgid "Acestream installed successfully!"
+msgstr ""
+
+msgctxt "#30006"
+msgid " Timeout: %s seconds"
+msgstr ""
+
+msgctxt "#30007"
+msgid "Downloading"
+msgstr ""
+
+msgctxt "#30008"
+msgid "Pre-Buffer    %s"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Status: %s"
+msgstr ""
+
+msgctxt "#30010"
+msgid "Download:    %s Kb/s"
+msgstr ""
+
+msgctxt "#30011"
+msgid "Upload:    %s Kb/s"
+msgstr ""
+
+msgctxt "#30012"
+msgid "Seeds:    %s"
+msgstr ""
+
+msgctxt "#30013"
+msgid "Downloaded:    %s Mb"
+msgstr ""
+
+msgctxt "#30014"
+msgid "Uploaded:    %s Mb"
+msgstr ""
+
+msgctxt "#30015"
+msgid "The ID is not in a valid format"
+msgstr ""
+
+msgctxt "#30016"
+msgid "We were unable to start the Acestream engine.\nMake sure it is started before continuing.\nMore information at https://t.me/KodiManiac"
+msgstr ""
+
+msgctxt "#30017"
+msgid "Cancel"
+msgstr ""
+
+msgctxt "#30018"
+msgid "Continue"
+msgstr ""
+
+msgctxt "#30019"
+msgid "Engine not started"
+msgstr ""
+
+msgctxt "#30020"
+msgid "Play Acestream ID / Torrent URI"
+msgstr ""
+
+msgctxt "#30021"
+msgid "Settings"
+msgstr ""
+
+msgctxt "#30022"
+msgid "Enter an Acestream ID or URI"
+msgstr ""
+
+msgctxt "#30023"
+msgid "Unsupported operating system"
+msgstr ""
+
+msgctxt "#30024"
+msgid "AceStream Engine IP address"
+msgstr ""
+
+msgctxt "#30025"
+msgid "AceStream Engine port"
+msgstr ""
+
+msgctxt "#30026"
+msgid "Maximum time to open Acestream engine"
+msgstr ""
+
+msgctxt "#30027"
+msgid "Please install Acestreamplayer via snap before continuing."
+msgstr ""
+
+msgctxt "#30028"
+msgid "Reinstall Acestream"
+msgstr ""
+
+msgctxt "#30029"
+msgid "Acestream installed:"
+msgstr ""
+
+msgctxt "#30030"
+msgid "Option %s: %s"
+msgstr ""
+
+msgctxt "#30031"
+msgid "No links found in %s"
+msgstr ""
+
+msgctxt "#30032"
+msgid "Enter a website to find Acestream links"
+msgstr ""
+
+msgctxt "#30033"
+msgid "Opening Acestream engine ..."
+msgstr ""
+
+msgctxt "#30034"
+msgid "Connecting ..."
+msgstr ""
+
+msgctxt "#30035"
+msgid "Acestream engine closed"
+msgstr ""
+
+msgctxt "#30036"
+msgid "Stop Acestream Engine"
+msgstr ""
+
+msgctxt "#30037"
+msgid "Playback history"
+msgstr ""
+
+msgctxt "#30038"
+msgid "Find links ..."
+msgstr ""
+
+msgctxt "#30039"
+msgid "External player"
+msgstr ""
+
+msgctxt "#30040"
+msgid "Acestream engine NOT closed"
+msgstr ""
+
+msgctxt "#30041"
+msgid "It is necessary to open the acestream engine before playing the video\nDo you want us to open it for you?\nReturn to kodi when the engine is started"
+msgstr ""
+
+msgctxt "#30042"
+msgid "Stop the Acestream Engine automatically"
+msgstr ""
+
+msgctxt "#30043"
+msgid "Show Acestream information in OSD"
+msgstr ""
+
+msgctxt "#30044"
+msgid "Remember last operating ID"
+msgstr ""
