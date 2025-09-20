@@ -41,7 +41,7 @@ info="http://"
 description="[COLOR lime]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM [COLOR darkorchid]OMEGA para [COLOR darkturquoise]KODI 21.X Omega.[/COLOR]                                          [COLOR dodgerblue]Developers: [COLOR azure]Gregorio Cuad & DavidZgZ[/COLOR]                                   [COLOR orange]Testers:[/COLOR] [COLOR cyan]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR lime]TEAM.[/COLOR]"
 
 name="PRUEBA GTKing Phoenix GTKing Prime OMEGA"
-version="22.0"
+version="21.0"
 url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/20.0.Prime/Phoenix.Prime.OMEGA.TEST.zip"
 minor="http://"
 gui="http://"
