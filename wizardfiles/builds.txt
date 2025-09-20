@@ -42,7 +42,7 @@ description="[COLOR lime]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[C
 
 name="PRUEBA GTKing Phoenix GTKing Prime OMEGA"
 version="21.0"
-url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/20.0.Prime/Phoenix.Prime.OMEGA.TEST.zip"
+url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/21.0.Prime/Phoenix.Prime.OMEGA.TEST.zip"
 minor="http://"
 gui="http://"
 kodi="21"
