@@ -1132,6 +1132,25 @@ No se acepta ninguna responsabilidad por el uso de este addon.
     </extension>
 </addon>
 
+<addon id="repository.estupalant" name="Repositorio Palantir" version="1.0.1" provider-name="The Lords Of Flix">
+    <extension point="xbmc.addon.repository" name="Palantir 3 y Skin">
+    	<dir minversion="19.0.0">
+    	    <info compressed="false">https://palantir.5g.in/Repo/addons.xml</info>
+        	<checksum>https://palantir.5g.in/Repo/addons.xml.md5</checksum>
+        	<datadir zip="true">https://palantir.5g.in/Repo/</datadir>
+	    </dir>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary></summary>
+   		<description lang="en">Repositorio oficial de Palantir y Estuary Palantir</description>
+		<platform>all</platform>
+		<assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+	</extension>
+</addon>
+
 <addon id="repository.greenball" name="GreenBall Repository" version="1.0.0" provider-name="ajsm90">
     <extension point="xbmc.addon.repository" name="GreenBall Repository">
         <dir>
