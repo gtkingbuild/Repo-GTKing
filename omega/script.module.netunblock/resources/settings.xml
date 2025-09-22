@@ -1,0 +1,6 @@
+<settings>
+    <category label="Configurações Gerais">
+        <setting id="doh_url" type="text" label="URL DoH" default="https://da5f663b4690-doh.baby-beamup.club" />
+        <setting id="debug_mode" type="bool" label="Modo de Depuração" default="false" />
+    </category>
+</settings>
