@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="script.module.flask"
+       name="Flask"
+       version="2.1.3"
+       provider-name="Joel">
+    <extension point="xbmc.python.module" library="lib"/>
+    <extension point="xbmc.addon.metadata">
+        <summary>Flask module</summary>
+        <description>Flask module</description>
+        <platform>all</platform>
+        <assets>
+            <icon>icon.png</icon>
+        </assets>        
+    </extension>
+</addon>

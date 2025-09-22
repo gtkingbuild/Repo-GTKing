@@ -607,31 +607,6 @@ provider-name="The Cleaner">
     </extension>
 </addon>
 
-<addon id="plugin.video.duffyou" name="Duff You" version="0.2.1" provider-name="La Taberna">
-    <requires>
-        <import addon="script.module.six" version="1.11.0" />
-        <import addon="script.module.simplecache" />
-        <import addon="script.module.inputstreamhelper" version="0.5.0" />
-    </requires>
-
-    <extension point="xbmc.python.pluginsource" library="libs/plugin.py">
-        <provides>video</provides>
-    </extension>
-	<extension point="xbmc.python.module" library="libs" />
-    <extension point="xbmc.addon.metadata">
-        <description>Hasta las narices de las apikeys de YouTube? Y de ver como calidad máxima los videos de la plataforma solo hasta 720p?[CR]Pues se acabó! Desde nuestra taberna os presentamos un nuevo addon de YouTube, donde no hace falta APIKEY alguna, ni tampoco hay ningún tipo de restricción para ver los videos a la máxima calidad ofrecida, 720p, 1080p, 2K y 4K![CR]Todo esto y mucho mas...</description>
-        <disclaimer>Este es un software [COLOR red][B]gratuito[/B][/COLOR][CR][COLOR red][B]Pero no se permite[/B][/COLOR] su distribuición preinstalada en ningún tipo de dispositivo ni tampoco su inclusión total o parcial en cualquier paquete de software y/o hardware por el que el usuario final deba [COLOR red][B]pagar o hacer una donación[/B][/COLOR], por su adquisición, por su uso o por recibir asistencia.[CR]Si cree que alguna de estas normas no se está cumpliendo póngase en contacto con nosotros.</disclaimer>
-        <platform>all</platform>
-        <assets>
-            <icon>icon.jpg</icon>
-            <fanart>fanart.jpg</fanart>
-        </assets>
-        <license>[B]Este es un software gratuito[/B]</license>
-        <news>- Añadida opción de reproducción externa de playlists[CR]- Correcciones menores
-        </news>
-    </extension>
-</addon>
-
 <addon id="plugin.video.espada.dragao" name="[COLOR yellow]ESPADA[COLORgrey]DRAGÃO[/COLOR]" version="1.8" provider-name="[COLOR orange]@by_blak_eagle[/COLOR]">
         <requires>
         <import addon="script.module.simplejson" />
@@ -659,26 +634,26 @@ provider-name="The Cleaner">
   </extension>
 </addon>
 
-<addon id="plugin.video.f4mTester" version="4.1.3" name="f4mTester" provider-name="Equipe Oneplay e Tiago ">
-    <requires>
-        <import addon="xbmc.python" version="3.0.0"/>
-        <import addon="script.module.six" />
-        <import addon="script.module.kodi-six" />
-		<import addon="script.module.requests"/>
-		<import addon="script.video.F4mProxy" version="4.0.9"/>
-        <import addon="inputstream.ffmpegdirect"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource" library="default.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="en">f4mTester</summary>
-        <description></description>
-        <platform>all</platform>
-        <assets>
+<addon id="plugin.video.f4mTester" version="4.2.5" name="f4mTester" provider-name="Joel">
+  <requires>
+    <import addon="script.module.flask"/>
+    <import addon="script.module.requests"/>
+    <import addon="script.module.netunblock"/>
+    <import addon="xbmc.json" version="6.0.0"/>
+    <import addon="xbmc.python" version="3.0.0"/>
+  </requires>
+  <extension point="xbmc.service" library="service.py" start="startup"/>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+      <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">f4mTester</summary>
+    <description lang="en"></description>
+    <platform>all</platform>
+    <assets>
 			<icon>icon.png</icon>
 		</assets>
-    </extension>
+  </extension>
 </addon>
 
 <addon id="plugin.video.tacones" name="[COLOR red]TACONES[/COLOR]" version="3.5.6" provider-name="La Mala de la Novela">
@@ -1449,6 +1424,21 @@ No se acepta ninguna responsabilidad por el uso de este addon.
 	</extension>
 </addon>
 
+<addon id="script.module.flask"
+       name="Flask"
+       version="2.1.3"
+       provider-name="Joel">
+    <extension point="xbmc.python.module" library="lib"/>
+    <extension point="xbmc.addon.metadata">
+        <summary>Flask module</summary>
+        <description>Flask module</description>
+        <platform>all</platform>
+        <assets>
+            <icon>icon.png</icon>
+        </assets>
+    </extension>
+</addon>
+
 <addon id="script.module.horus" name="Horus" version="1.1.9" provider-name="Caperucitaferoz">
     <requires>
         <import addon="script.module.six" />
@@ -1501,6 +1491,27 @@ No se acepta ninguna responsabilidad por el uso de este addon.
 	<assets>
 		<icon>resources/icon.png</icon>
 	</assets>
+</addon>
+
+<addon id="script.module.netunblock" name="Net Unblock" version="0.0.2" provider-name="Joel">
+    <requires>
+        <import addon="script.module.six" />
+        <import addon="script.module.kodi-six" />
+        <import addon="script.module.requests" />
+    </requires>
+    <extension point="xbmc.python.module" library="lib" />
+    <extension point="xbmc.python.pluginsource" library="app.py">
+        <provides>executable</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <summary lang="en_GB">DNS OVER HTTPS (DoH) resolver for Kodi.</summary>
+        <description lang="en_GB">dns over https resolve globally in python script with socket</description>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
 </addon>
 
 	<addon id="script.skin.helper.colorpicker" name="Skin Helper Service ColorPicker" version="2.0.2" provider-name="sualfred,marcelveldt">
