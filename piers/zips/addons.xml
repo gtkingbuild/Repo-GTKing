@@ -1493,6 +1493,27 @@ No se acepta ninguna responsabilidad por el uso de este addon.
 	</assets>
 </addon>
 
+<addon id="script.module.netunblock" name="Net Unblock" version="0.0.2" provider-name="Joel">
+    <requires>
+        <import addon="script.module.six" />
+        <import addon="script.module.kodi-six" />
+        <import addon="script.module.requests" />
+    </requires>
+    <extension point="xbmc.python.module" library="lib" />
+    <extension point="xbmc.python.pluginsource" library="app.py">
+        <provides>executable</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <summary lang="en_GB">DNS OVER HTTPS (DoH) resolver for Kodi.</summary>
+        <description lang="en_GB">dns over https resolve globally in python script with socket</description>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon>
+
 	<addon id="script.skin.helper.colorpicker" name="Skin Helper Service ColorPicker" version="2.0.2" provider-name="sualfred,marcelveldt">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0"/>
