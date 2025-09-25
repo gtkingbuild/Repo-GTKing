@@ -1,0 +1,36 @@
+# -*- coding: utf-8 -*-
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<items>
+    <items_info> 
+      <title>Testing XML</title> <!-- um título é obrigatório, outros elementos são opcionais -->
+      <genre>News</genre> <!-- Genero -->
+      <description>this is the descripton string</description> <!-- Descrição da categoria -->
+      <thumbnail>http://community-links.googlecode.com/svn/icons/news-icon.png</thumbnail> <!-- Icon -->
+      <fanart>http://community-links.googlecode.com/svn/icons/news-fanart.jpg</fanart> <!--  Background -->
+      <date>04.01.2013</date> <!-- Data -->
+      <credits>divingmule, Johnny Cache</credits> <!-- Creditos -->
+    </items_info>
+
+    <item>
+        <title>POKER CHANNEL</title> <!-- Titulo -->
+        <link>mms://some/place/pokerchannel</link> <!-- link do video-->
+        <thumbnail>http://channel.png</thumbnail> <!-- Icon -->
+        <genre>Poker</genre> <!-- Genero -->
+        <info>The Poker Channel – Europe’s largest dedicated gaming TV network is available online to a global audience.</info> <!-- Descrição -->
+        <date>07.12.2011</date>  <!-- formato - dd.mm.yyyy -->
+        <epg></epg>  <!-- Lista de Programção EPG-->
+        <fanart>http://fanart.jpg</fanart>
+    </item>
+    
+	<item>
+        <title>NHK - World</title>         
+        <link>rtmp://some/place playpath=nhkworldhd swfUrl="http://player.0.3.6.2.swf" pageUrl="http://nhkworld/r/movie/" swfVfy=true live=true</link>
+        <thumbnail>http://header_logo.gif</thumbnail>
+    </item>
+	
+    <item>
+        <title>BBC World</title>         
+        <link>rtmp://some/place playpath=bbcworld1_en_high.sdp swfUrl="http://some/place/player.swf" pageUrl="http://some/place/10-bbc-world-news-english" swfVfy=true live=true</link>
+        <thumbnail>http://some/place.jpg</thumbnail>
+	
+</items>

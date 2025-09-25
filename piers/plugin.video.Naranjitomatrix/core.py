@@ -1,0 +1,1 @@
+[{"url": "https://raw.githubusercontent.com/", "fanart": ".\\fanart.jpg", "title": "CANAIS"}]

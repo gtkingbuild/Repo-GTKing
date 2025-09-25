@@ -1,0 +1,44 @@
+
+Lembrando que Filmes é só exemplo, mas vale para outros como Seriados, canais de tv, animes e etc
+__________________________________________________________________________________________________________
+
+<item>
+<title>The Old Guard</title>
+<link>https://azureedge.azureedge.net/RCFServer5/ondemand/THOLDGRD.mp4</link>
+<thumbnail>https://upload.wikimedia.org/wikipedia/pt/5/53/The-Old-Guard-cartaz.png</thumbnail>
+<fanart>https://miro.medium.com/max/1200/0*oBDno6Kr63I8r4li</fanart>
+<info>Em The Old Guard, Andy (Charlize Theron) e seus companheiros formam um grupo de soldados que possuem a inestimável virtude da vida eterna. Eles vivem através dos anos oferecendo seus serviços como mercenários para aqueles que podem pagar, se passando como seres humanos comuns dentre os demais.</info>
+</item>
+
+
+
+Pode colocar varios <link> um em baixo do outro para haver mais opçoes
+
+
+______________________________________________________________________________________________________
+Para arquivos torrent funciona assim no <link>
+
+<link>plugin://plugin.video.elementum/play?uri=URL MAGNET DO TORRENT</link>
+
+Exemplo:
+
+<item><title>O Dom Da Serpente</title>
+<link>plugin://plugin.video.elementum/play?uri=magnet:?xt=urn:btih:9d5966805adfff7ac527823a3a08471aa25358f5</link>
+<thumbnail>https://abutretorrents.com/imagens/o-dom-da-serpente-download-torrent-dublado-dual-audio-legendado-bluray-1080p-720p-4k-hd.jpg</thumbnail>
+<info>Dina, uma jovem que herdou a habilidade sobrenatural de ver os pecados e as fraquezas das outras pessoas olhando nos olhos precisa salvar sua família. Com a ajuda do pai, que ela não conhecia, Dina terá que escolher entre o seu próprio dom e a magia negra.</info>
+</item>
+
+
+______________________________________________________________________________________________________
+Para Canais de TV
+
+<item>
+<title>POKER CHANNEL</title> <!-- Titulo -->
+<link>mms://some/place/pokerchannel</link> <!-- link do video-->
+<thumbnail>http://channel.png</thumbnail> <!-- Icon -->
+<genre>Poker</genre> <!-- Genero -->
+<info>The Poker Channel – Europe’s largest dedicated gaming TV network is available online to a global audience.</info> <!-- Descrição -->
+<date>07.12.2011</date>  <!-- formato - dd.mm.yyyy -->
+<epg></epg>  <!-- Lista de Programção EPG-->
+<fanart>http://fanart.jpg</fanart>
+</item>

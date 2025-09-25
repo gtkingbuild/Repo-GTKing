@@ -1,0 +1,22 @@
+<channels>
+<channel>
+<name>Filmes</name>
+<thumbnail>https://i.imgur.com/lHNFDcc.png</thumbnail>
+<externallink>https://pastebin.com/raw/y4im1QAb</externallink>
+<fanart>https://i.imgur.com/pk8hVv5.jpg</fanart>
+<info>OS Categoria de Filmes, encontrados na internet.</info>
+</channel>
+</channels>
+
+
+Exemplo:
+
+<channels>
+<channel>
+<name>Nome da Categoria</name>
+<thumbnail>Poster/Icon</thumbnail>
+<externallink>URL do RAW</externallink>
+<fanart>Imagem de fundo</fanart>
+<info>Descrição</info>
+</channel>
+</channels>
