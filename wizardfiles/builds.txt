@@ -68,7 +68,7 @@ adult="No"
 info="http://"
 description="[COLOR azure][B]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM [COLOR darkorchid]OMEGA para [COLOR darkturquoise]KODI 21.X Omega.[/COLOR]                                          [COLOR dodgerblue]Developers:[/COLOR] Gregorio Cuad & DavidZgZ                                   [COLOR orange]Testers:[/COLOR] [COLOR cyan]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR lime]TEAM.[/COLOR]"
 
-name="PRUEBA GTKing Artic Phoenix 2 OMEGA"
+name="PRUEBA GTKing Phoenix Artic 2 OMEGA"
 version="21.0"
 url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/21.0.Artic2/Phoenix.Artic2.OMEGA.zip"
 minor="http://"
