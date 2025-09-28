@@ -51,7 +51,7 @@
         <setting id="clearcache" type="bool" label="Borrar Cache al Iniciar" default="true" enable="!eq(-1,false)"/>
         <setting id="clearpackages" type="bool" label="Borrar paquetes al Iniciar" default="true" enable="!eq(-2,false)"/>
         <setting id="clearthumbs" type="bool" label="Borrar Miniaturas de una Semana al Inicio" default="true" enable="!eq(-3,false)"/>
-        <setting id="autocleanfreq" type="enum" label="Con qué frecuencia le gustaría Limpiar Auto al Iniciar?" values="Siempre|Diario|3 Dias|Semanal|Mensual" default="3" enable="!eq(-2,false)"/>
+        <setting id="autocleanfreq" type="enum" label="Con qué frecuencia le gustaría Limpiar Auto al Iniciar?" values="Siempre|Diario|3 Dias|Semanal|Mensual" default="1" enable="!eq(-2,false)"/>
         <setting id="nextautocleanup" type="text" label="Siguiente Limpieza Automática: " enable="false" visible="false" default="2023-03-17 00:00:00" />
         <setting type="lsep" label="Borrar Cache de Video:"/>
         <setting id="includevideo" type="bool" label="Incluir Video Addons en Claro Cache: " default="true"/>
