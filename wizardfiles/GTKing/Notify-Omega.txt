@@ -1,31 +1,38 @@
-19
+20
 |||
 
-[COLOR greenyellow][B]¡¡¡BIENVENIDOS A LAS BUILDS GTKing PHOENIX TEAM!!![B][/COLOR]
-[COLOR greenyellow][B]¡¡¡LAS UNICAS Y AUNTENTICAS BUILDS DE GTKing PHOENIX TEAM... RECHAZA LAS IMITACIONES!!![B][/COLOR]
+[COLOR greenyellow]¡¡¡BIENVENIDOS A LAS BUILDS GTKing PHOENIX TEAM!!![/COLOR]
+[COLOR greenyellow]¡¡¡LAS UNICAS Y AUNTENTICAS BUILDS DE GTKing PHOENIX TEAM... RECHAZA LAS IMITACIONES!!![/COLOR]
 
-[COLOR aquamarine][B]INSTALACIÓN:[B][/COLOR]
+[COLOR aquamarine]INSTALACIÓN:[/COLOR]
 
-[COLOR deepskyblue]* Para realizar la instalación correctamente deberás pulsar en la opción [COLOR white][B]"Build Menu"[/B][/COLOR] en la ventana que aparece después de instalar el plugin instalador (Wizard).
+[COLOR deepskyblue]* Para realizar la instalación correctamente deberás pulsar en la opción [COLOR white]"Build Menu"[/COLOR] en la ventana que aparece después de instalar el plugin instalador (Wizard).
 
-En ésta ventana de Notificación, damos a [COLOR white][B]"Cerrar"[/B][/COLOR]
-Seleccionamos la Build que deseas instalar de[COLOR yellowgreen][B]GTKing[/B][/COLOR] - [COLOR white][B]Instalar Build[/B][/COLOR]. 
-Cuando termine de instalar, nos saldrá una ventana [COLOR white][B]"Necesita Forzar el Cierre de Kodi"[/B][/COLOR]. Pulsaremos en [COLOR white][B]"OK"[/B][/COLOR].
+En ésta ventana de Notificación, damos a [COLOR white]"Cerrar"[/COLOR]
+Seleccionamos la Build que deseas instalar de[COLOR yellowgreen]GTKing[/COLOR] - [COLOR white]Instalar Build[/COLOR]. 
+Cuando termine de instalar, nos saldrá una ventana [COLOR white]"Necesita Forzar el Cierre de Kodi"[/COLOR]. Pulsaremos en [COLOR white]"OK"[/COLOR].
 Se cerrará Kodi y ya sólo nos quedará iniciar de nuevo Kodi, darle unos minutos para que cargue el menú correctamente.
 
-[COLOR gold][B]16/09/2025 ¡¡¡ PARCHE PARA TODAS LAS BUILDS !!![/B][/COLOR]
+[COLOR gold]01/10/2025 ¡¡¡ PARCHES PARA TODAS LAS BUILDS !!![/COLOR]
 
-[COLOR red][B]* AÑADIDO REPO ACESTREAM CHANNELS
+[COLOR white][B]* AÑADIDO REPO ADDON DADDYLIVE2[/COLOR][/B]
+[COLOR white][B]* AÑADIDO ATAJO DEPORTES/DIRECTOS 2 + ADDON DADDYLIVE2[/COLOR][/B]
+[COLOR white][B]* AÑADIDOS REPO Y ADDON GREENBALL[/COLOR][/B]
+[COLOR white][B]* AÑADIDO ADDON NARANJITO[/COLOR][/B]
+[COLOR white][B]* AÑADIDOS ATAJO DEPORTES/GREENBALL + ATAJO VIDEOTECA (CARGA BASE DE DATOS)[/COLOR][/B]
+[COLOR white][B]* AÑADIDOS ATAJOS PELIS/SERIES/TELEVISIÓN/PVR/BUSCADOR GREENBALL Y NARANJITO[/COLOR][/B]
+[COLOR white][B]* CAMBIOS VISUALES EN BUILDS PRIME Y GTACTIL[/COLOR][/B]
+[COLOR white][B]* OPTIMIZACIÓN BASE DE DATOS DE ADDONS EN KODI[/COLOR][/B]
 
-[COLOR red][I]* PARA EL CORRECTO FUNCIONAMIENTO DE LAS NUEVAS FUNCIONES SERÁN NECESARIOS INSTALAR:[/COLOR][/B][/U][/I][/SIZE]
-
-        [COLOR gold][I]* f4mTester (Repo GTKing PHOENIX TEAM/Servicios)[/COLOR][/B][/U][/I][/SIZE]
-		[COLOR gold][I]* SMR Link Tester (REPO ResolveURL/Addons de video)[/COLOR][/B][/U][/I][/SIZE]
+[COLOR red][I]* PARA EL CORRECTO FUNCIONAMIENTO DE LAS NUEVAS FUNCIONES SERÁ NECESARIO:[/COLOR][/I]
 		
+		[COLOR gold][I]* Después de la instalacion del parche, una vez cargado KODI se tiene que ir a la sección MANTENIMIENTO en AJUSTES, una vez allí entrar en HERRAMIENTAS ADDON, pulsar HABILITAR/DESHABILITAR ADDONS y luego HABILITAR TODOS para la correcta activación de los Addons/Repositorios añadidos.[/COLOR][/I]
+        [COLOR gold][I]* INSTALAR f4mTester (Repo GTKing PHOENIX TEAM/Servicios)[/COLOR][/I]
+		[COLOR gold][I]* INSTALAR SMR Link Tester (REPO ResolveURL/Addons de video)[/COLOR][/I]
 
-[COLOR lime][B]NOTA:[COLOR magenta][B]*** PARA APROVECHAR TODAS LAS POSIBILIDADES DEL WIDGET DONTORRENT ES NECESARIO TENER INSTALADO ELEMENTUM E INSTALAR LA APK ALFA ASSISTANT (DÁNDOLE TODOS LOS PERMISOS) Y DEJARLA EN SEGUNDO PLANO CORRIENDO, DE ESTE MODO AL PINCHAR EN CUALQUIER CONTENIDO SE NOS MOSTRARÁN UNOS ENLACES LLAMADOS[/B][/COLOR] [COLOR gold][B][I]BT[COLOR red][B][I]Digg[/B][/I][/COLOR] [COLOR magenta][B]LOS CUALES NOS OFRECEN UNA MAYOR CALIDAD DE VISIONADO. AUNQUE A VECES ESTOS ENLACES PUEDEN NO APARECER PERO ESTO NO DEPENDE DE NOSOTROS, SINO DE LA APK DE ALFA ASSISTANT Y/O DEL CANAL DONTORRENT[/B][/COLOR]
+[COLOR lime]NOTA:[COLOR lavender]*** PARA APROVECHAR TODAS LAS POSIBILIDADES DEL WIDGET DONTORRENT ES NECESARIO TENER INSTALADO ELEMENTUM E INSTALAR LA APK ALFA ASSISTANT (DÁNDOLE TODOS LOS PERMISOS) Y DEJARLA EN SEGUNDO PLANO CORRIENDO, DE ESTE MODO AL PINCHAR EN CUALQUIER CONTENIDO SE NOS MOSTRARÁN UNOS ENLACES LLAMADOS[/COLOR] [COLOR gold][B][I]BT[COLOR red][B][I]Digg[/B][/I][/COLOR] [COLOR lavender]LOS CUALES NOS OFRECEN UNA MAYOR CALIDAD DE VISIONADO. AUNQUE A VECES ESTOS ENLACES PUEDEN NO APARECER PERO ESTO NO DEPENDE DE NOSOTROS, SINO DE LA APK DE ALFA ASSISTANT Y/O DEL CANAL DONTORRENT[/COLOR]
 
-[COLOR aquamarine][B]INSTALACIÓN DE PARCHE:[/B][/COLOR]
+[COLOR aquamarine][B]INSTALACIÓN DE PARCHE:[/COLOR]
 
 Para instalar un parche, deberemos seleccionar la build correspondiente que tengamos instalada y dentro nos saldrá el parche a instalar.
 
@@ -36,7 +43,7 @@ Después de la instalacion del parche, una vez cargado KODI se tiene que ir a la
 
 
 
-[COLOR white][B]GRACIAS POR UTILIZAR [COLOR dodgerblue]GTKING [COLOR red]PHOENIX[/COLOR] [COLOR lime]TEAM[/COLOR][/B]
+[COLOR white]GRACIAS POR UTILIZAR [COLOR dodgerblue]GTKING [COLOR red]PHOENIX[/COLOR] [COLOR lime]TEAM[/COLOR]
 
   
 

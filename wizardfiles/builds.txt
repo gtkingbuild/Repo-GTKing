@@ -28,7 +28,7 @@ description="[COLOR azure]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[
 
 name="GTKing Artic Phoenix 2 OMEGA"
 version="21.0"
-url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/21.0.Artic2/Artyc.Phoenix.2.Omega.zip"
+url="https://github.com/gtkingbuild/Repo-GTKing/releases/download/21.0.Artic2/Phoenix.Artic2.OMEGA.zip"
 minor="http://"
 gui="http://"
 kodi="21"
