@@ -1034,12 +1034,12 @@ No se acepta ninguna responsabilidad por el uso de este addon.
     </extension>
 </addon>
 
-    <addon id="repository.cMaNWizard" name="cMaN's Wizard Repository" version="2.8" provider-name="cMaN">
+    <addon id="repository.cMaNWizard" name="cMaN's Wizard Repository" version="3.2" provider-name="cMaN">
         <extension point="xbmc.addon.repository" name="cMaN's Wizard Repository">
 		<dir>
-            <info compressed="false">https://cmanbuildsxyz.com/cman/repo/addons.xml</info>
-            <checksum>https://cmanbuildsxyz.com/cman/repo/addonsmd5.txt</checksum>
-            <datadir zip="true">https://cmanbuildsxyz.com/cman/repo/</datadir>
+            <info compressed="false">https://raw.githubusercontent.com/mfirepo/repo/master/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/mfirepo/repo/master/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/mfirepo/repo/master/plugins/</datadir>
 		</dir>
 		<dir>
 			<info compressed="false">https://raw.githubusercontent.com/Gujal00/smrzips/master/addons.xml</info>
@@ -1178,26 +1178,6 @@ No se acepta ninguna responsabilidad por el uso de este addon.
             <fanart>fanart.jpg</fanart>
         </assets>
 	</extension>
-</addon>
-
-<addon id="repository.greenball" name="GreenBall Repository" version="1.0.0" provider-name="ajsm90">
-    <extension point="xbmc.addon.repository" name="GreenBall Repository">
-        <dir>
-            <info compressed="true">https://ajsm90.github.io/greenball.repo/repo/zips/addons.xml</info>
-            <checksum>https://ajsm90.github.io/greenball.repo/repo/zips/addons.xml.md5</checksum>
-            <datadir zip="true">https://ajsm90.github.io/greenball.repo/repo/zips/</datadir>
-        </dir>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary>Repositorio GreenBall</summary>
-        <description>Repositorio con addons de GreenBall</description>
-        <disclaimer></disclaimer>
-        <platform>all</platform>
-        <assets>
-            <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
-        </assets>
-    </extension>
 </addon>
 
 <addon id="repository.GTKing-Phoenix" name="[B][COLOR steelblue]Repo [COLOR azure]GTKing [COLOR yellow]P[COLOR gold]H[COLOR goldenrod]O[COLOR orange]E[COLOR darkorange]N[COLOR red]I[COLOR orangered]X [COLOR limegreen]TEAM[/COLOR][/B]" version="22.0.0" provider-name="GTKing PHOENIX TEAM">
