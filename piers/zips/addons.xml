@@ -1405,6 +1405,106 @@ No se acepta ninguna responsabilidad por el uso de este addon.
   </extension>
 </addon>
 
+
+<addon id="repository.roooar" name=" [COLOR limegreen]R[/COLOR]epo [COLOR limegreen]o[/COLOR]f [COLOR limegreen]a[/COLOR]ll [COLOR limegreen]R[/COLOR]epositories" version="1.0.2" provider-name="dEXE">
+	<requires>
+		<import addon="xbmc.addon" version="12.0.0" />
+	</requires>
+	<extension point="xbmc.addon.repository" name="Repo of all Repositories">
+
+		<dir>
+			<info compressed="false">https://raw.githubusercontent.com/deklica/repo.dexe/master/repos/addons.xml</info>
+			<checksum>https://raw.githubusercontent.com/deklica/repo.dexe/master/repos/addons.xml.md5</checksum>
+			<datadir zip="true">https://raw.githubusercontent.com/deklica/repo.dexe/master/repos/</datadir>
+			<hashes>false</hashes>
+		</dir>
+		<dir>
+			<info compressed="false">https://raw.githubusercontent.com/deklica/repo.dexe/master/repo/addons.xml</info>
+			<checksum>https://raw.githubusercontent.com/deklica/repo.dexe/master/repo/addons.xml.md5</checksum>
+			<datadir zip="true">https://raw.githubusercontent.com/deklica/repo.dexe/master/repo/</datadir>
+		</dir>
+
+<!--  Repositories  -->
+
+<!--  pkscout's Skin Modifications  -->
+		<dir minversion="19.0.0" maxversion="19.9.0">
+			<info>https://raw.github.com/pkscout/repository.skins.pkscout/matrix/addons.xml</info>
+			<checksum>https://raw.github.com/pkscout/repository.skins.pkscout/matrix/addons.xml.md5</checksum>
+			<datadir zip="true">https://raw.github.com/pkscout/repository.skins.pkscout/matrix/download</datadir>
+			<artdir>https://raw.github.com/pkscout/repository.skins.pkscout/matrix/download</artdir>
+			<hashes>false</hashes>
+		</dir>
+		<dir minversion="20.0.0" maxversion="20.8.900">
+			<info>https://raw.github.com/pkscout/repository.skins.pkscout/nexus/addons.xml</info>
+			<checksum>https://raw.github.com/pkscout/repository.skins.pkscout/nexus/addons.xml.md5</checksum>
+			<datadir zip="true">https://raw.github.com/pkscout/repository.skins.pkscout/nexus/download</datadir>
+			<artdir>https://raw.github.com/pkscout/repository.skins.pkscout/nexus/download</artdir>
+			<hashes>false</hashes>
+		</dir>
+		<dir minversion="20.9.0">
+			<info>https://raw.github.com/pkscout/repository.skins.pkscout/omega/addons.xml</info>
+			<checksum>https://raw.github.com/pkscout/repository.skins.pkscout/omega/addons.xml.md5</checksum>
+			<datadir zip="true">https://raw.github.com/pkscout/repository.skins.pkscout/omega/download</datadir>
+			<artdir>https://raw.github.com/pkscout/repository.skins.pkscout/omega/download</artdir>
+			<hashes>false</hashes>
+		</dir>
+
+<!--  jurialmunkey Alpha Repository  -->
+		<dir>
+			<info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/repo/zips/addons.xml</info>
+			<checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/repo/zips/addons.xml.md5</checksum>
+			<datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/repo/zips/</datadir>
+		</dir>
+		<dir minversion="19.9.1" maxversion="20.9.0">
+			<info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/addons.xml</info>
+			<checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/addons.xml.md5</checksum>
+			<datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/</datadir>
+		</dir>
+		<dir minversion="20.9.1">
+			<info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/omega/zips/addons.xml</info>
+			<checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/omega/zips/addons.xml.md5</checksum>
+			<datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/omega/zips/</datadir>
+		</dir>
+
+<!--  ivarbrandt's Repository  -->
+		<dir>
+			<info compressed="false">https://raw.githubusercontent.com/ivarbrandt/repository.ivarbrandt/master/repo/zips/addons.xml</info>
+			<checksum>https://raw.githubusercontent.com/ivarbrandt/repository.ivarbrandt/master/repo/zips/addons.xml.md5</checksum>
+			<datadir zip="true">https://raw.githubusercontent.com/ivarbrandt/repository.ivarbrandt/master/repo/zips/</datadir>
+		</dir>
+
+<!--  realcopacetic Repository  -->
+		<dir>
+			<info compressed="false">https://raw.githubusercontent.com/realcopacetic/realcopacetic.github.io/master/repo/zips/addons.xml</info>
+			<checksum>https://raw.githubusercontent.com/realcopacetic/realcopacetic.github.io/master/repo/zips/addons.xml.md5</checksum>
+			<datadir zip="true">https://raw.githubusercontent.com/realcopacetic/realcopacetic.github.io/master/repo/zips/</datadir>
+		</dir>
+		<dir minversion="19.9.1" maxversion="20.9.0">
+			<info compressed="false">https://raw.githubusercontent.com/realcopacetic/realcopacetic.github.io/master/nexus/zips/addons.xml</info>
+			<checksum>https://raw.githubusercontent.com/realcopacetic/realcopacetic.github.io/master/nexus/zips/addons.xml.md5</checksum>
+			<datadir zip="true">https://raw.githubusercontent.com/realcopacetic/realcopacetic.github.io/master/nexus/zips/</datadir>
+		</dir>
+		<dir minversion="20.9.1">
+			<info compressed="false">https://raw.githubusercontent.com/realcopacetic/realcopacetic.github.io/master/omega/zips/addons.xml</info>
+			<checksum>https://raw.githubusercontent.com/realcopacetic/realcopacetic.github.io/master/omega/zips/addons.xml.md5</checksum>
+			<datadir zip="true">https://raw.githubusercontent.com/realcopacetic/realcopacetic.github.io/master/omega/zips/</datadir>
+		</dir>
+
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="en">Roooar!</summary>
+		<description>Quickly and easily install all the best Kodi repositories and selected skins.[CR][CR](Part of dEXE's Addons Repository)[CR][CR]Instalirajte željeni repozitorijum.[CR]Kolekcija najboljih Kodi repozitorijuma i odabranih skinova.</description>
+		<disclaimer lang="en">None of the Repos are hosted by this addon. All Repos are the official repositories of the addon developers. The author does not develop or provide any content in these repositories.</disclaimer>
+		<language>en</language>
+		<platform>all</platform>
+		<assets>
+			<icon>icon.png</icon>
+			<fanart>fanart.jpg</fanart>
+		</assets>
+		<news></news>
+	</extension>
+</addon>
+
 <addon id="repository.slyguy" name="SlyGuy Repository" provider-name="SlyGuy" version="0.0.9">
   <extension point="xbmc.addon.repository" name="SlyGuy Repository">
     <dir>
