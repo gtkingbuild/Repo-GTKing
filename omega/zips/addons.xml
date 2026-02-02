@@ -1527,25 +1527,6 @@ No se acepta ninguna responsabilidad por el uso de este addon.
   </extension>
 </addon>
 
-<addon id="repository.tvchopo" name="[COLOR lime]tvchopo[/COLOR] Repo" version="3" provider-name="torete">
-    <extension point="xbmc.addon.repository" name="tvchoco Jose">
-        <info>https://raw.githubusercontent.com/elchocolate/repotvchopo/master/Repositorio/addons.xml</info>
-        <checksum>https://raw.githubusercontent.com/elchocolate/repotvchopo/master/Repositorio/addons.xml.md5</checksum>
-        <datadir zip="true">https://raw.githubusercontent.com/elchocolate/repotvchopo/master/Repositorio/</datadir>
-	    <dir>
-        <info compressed="false">https://raw.githubusercontent.com/elchocolate/repotvchopo/master/Repositorio/addons.xml</info>
-        <checksum>https://raw.githubusercontent.com/elchocolate/repotvchopo/master/Repositorio/addons.xml.md5</checksum>
-        <datadir zip="true">https://raw.githubusercontent.com/elchocolate/repotvchopo/master/Repositorio/</datadir>
-        </dir>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary>Repositorio para familia chopo</summary>
-        <description></description>
-        <disclaimer></disclaimer>
-        <platform>all</platform>
-    </extension>
-</addon>
-
 <addon id="script.colorbox" name="colorbox Script" version="2.0.8" provider-name="BADMS, drinfernoo">
 	<requires>
 		<import addon="script.module.pil"/>
