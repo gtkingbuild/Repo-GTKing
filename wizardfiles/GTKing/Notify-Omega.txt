@@ -1,4 +1,4 @@
-24
+25
 |||
 
 [COLOR greenyellow]¡¡¡BIENVENIDOS A LAS BUILDS GTKing PHOENIX TEAM!!![/COLOR]
@@ -13,10 +13,9 @@ Seleccionamos la Build que deseas instalar de[COLOR yellowgreen]GTKing[/COLOR] -
 Cuando termine de instalar, nos saldrá una ventana [COLOR white]"Necesita Forzar el Cierre de Kodi"[/COLOR]. Pulsaremos en [COLOR white]"OK"[/COLOR].
 Se cerrará Kodi y ya sólo nos quedará iniciar de nuevo Kodi, darle unos minutos para que cargue el menú correctamente.
 
-[COLOR gold]28/12/2025 ¡¡¡ PARCHES PARA TODAS LAS BUILDS !!![/COLOR]
+[COLOR gold]02/02/2025 ¡¡¡ PARCHES BUILDS PRIME Y GTACTIL !!![/COLOR]
 
-[COLOR white][B]* ACTUALIZADO REPOSITORIO ELEMENTUM EN LAS BUILDS[/COLOR][/B]
-[COLOR white][B]* OPTIMIZACIÓN ACCESO A JELLY[/COLOR][/B]
+[COLOR white][B]* CAMBIADO VALOR MEMORIA CACHÉ DE KODI[/COLOR][/B]
 
 
 [COLOR red][I]* PARA EL CORRECTO FUNCIONAMIENTO DE LAS NUEVAS FUNCIONES SERÁ NECESARIO:[/COLOR][/I]
@@ -34,7 +33,7 @@ Para instalar un parche, deberemos seleccionar la build correspondiente que teng
 Después de la instalacion del parche, una vez cargado KODI se tiene que ir a la sección MANTENIMIENTO en AJUSTES, una vez allí entrar en HERRAMIENTAS ADDON, pulsar HABILITAR/DESHABILITAR ADDONS y luego HABILITAR TODOS para la correcta activación de los Addons añadidos.
 
 
-[COLOR red]                   ****** DAVIDZGZ y GTKing TEAM ******                 [/COLOR]
+[COLOR red]                   ****** DAVIDZgZ y GTKing TEAM ******                 [/COLOR]
 
 
 
