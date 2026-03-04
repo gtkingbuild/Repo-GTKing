@@ -1,0 +1,25 @@
+﻿<settings>
+	<category label="Settings">
+		<setting id="baseUrl" label="Start Url" type="text" default="blank" visible="true" />
+		<setting id="password" label="Access Password" type="text" option="hidden" default="MandraKodi3" visible="false" />
+		<setting id="ShowAdult" type="bool" label="Show Adult Content" default="false"/>
+		<setting id="debug" type="text" label="Enable Add-on Debugging" default="spento" visible="false" />
+	</category>
+	<category label="Personal List">
+		<setting id="macFile" label="MAC List File Url" type="text" default="blank" visible="false" />
+		<setting id="iptvFile" label="IPTV List File Url" type="text" default="blank" visible="false" />
+		<setting id="m3uFile" label="M3U List File Url" type="text" default="blank" visible="false" />
+		<setting id="urlAppo1" label="External Json File 1" type="text" default="Not in use" visible="true" />
+		<setting id="urlAppo2" label="External Json File 2" type="text" default="Not in use" visible="true" />
+		<setting id="urlAppo3" label="Appo1" type="text" default="Not in use" visible="true" />
+		<setting id="urlAppo4" label="Appo2" type="text" default="Not in use" visible="true" />
+		<setting id="urlAppo5" label="Appo3" type="text" default="Not in use" visible="true" />
+	</category>
+	<category label="Skin Visualization">
+		<setting id="SkinWall"  label="Type Wall" type="number" default="500" visible="true" />
+		<setting id="SkinList1" label="Type List 1" type="number" default="50" visible="true" />
+		<setting id="SkinList2" label="Type List 2" type="number" default="51" visible="true" />
+		<setting id="SkinInfo1"  label="Type Info 1" type="number" default="503" visible="true" />
+		<setting id="SkinInfo2"  label="Type Info 2" type="number" default="504" visible="true" />
+	</category>
+</settings>

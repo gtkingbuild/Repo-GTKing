@@ -1,0 +1,19 @@
+{
+	"SetViewMode":"55",
+	"items":[
+      {
+         "title":"[COLOR yellow]===[/COLOR] [COLOR red]YOUR VERSION IS OUT OF DATE[/COLOR] [COLOR yellow]===[/COLOR]",
+         "link":"ignoreme",
+         "thumbnail":"https://www.psdstamps.com/wp-content/uploads/2020/08/round-new-version-stamp-png.png",
+         "fanart":"https://www.stadiotardini.it/wp-content/uploads/2016/12/mandrakata.jpg",
+         "info":"NEW VERSION"
+      },
+	  {
+         "title":"[COLOR yellow]===[/COLOR] [COLOR lime]UPDATE ON REPOSITORY[/COLOR] [COLOR yellow]===[/COLOR]",
+         "link":"ignoreme",
+         "thumbnail":"https://www.psdstamps.com/wp-content/uploads/2020/08/round-new-version-stamp-png.png",
+         "fanart":"https://www.stadiotardini.it/wp-content/uploads/2016/12/mandrakata.jpg",
+         "info":"NEW VERSION"
+      }
+	]
+}

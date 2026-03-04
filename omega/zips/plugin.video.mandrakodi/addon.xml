@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="plugin.video.mandrakodi"
+version="2.2.1"
+name="[B][COLOR aqua]MandraKodi[/COLOR][/B]"
+provider-name="ElSupremo">
+<requires>
+  <import addon="script.module.requests" version="2.22.0"/>
+  <import addon="script.module.resolveurl" optional="true"/>
+</requires>
+<extension point="xbmc.python.pluginsource" library="default.py">
+  <provides>video</provides>
+</extension>
+<extension point="xbmc.addon.metadata">
+  <summary lang="en">MandraKodi</summary>
+  <description lang="en_GB">Free streaming for Kodi mediacenter.</description>
+  <disclaimer lang="en_GB">This addon is a multimedia content collector via a scraping system</disclaimer>
+  <summary lang="it">MandraKodi</summary>
+  <description lang="it_IT">Streaming libero per Kodi mediacenter.</description>
+  <disclaimer lang="it_IT">
+  Questo addon e' un raccoglitore di contenuti multimediali tramite sistema di scraping.
+  Si intende pertanto che sono recuperabili liberamente dalla rete.
+  Questo addon e' un "contenitore" che, per praticità, raccoglie ciò che gia' esiste in rete.
+  </disclaimer>
+  <assets>
+    <icon>icon.gif</icon>
+    <fanart>fanart.jpg</fanart>
+    <screenshot>resources\screen-01.png</screenshot>
+    <screenshot>resources\screen-02.png</screenshot>
+    <screenshot>resources\screen-03.png</screenshot>    
+    <screenshot>resources\screen-04.png</screenshot>    
+    <screenshot>resources\screen-05.png</screenshot>    
+    <screenshot>resources\screen-06.png</screenshot>    
+  </assets>
+  <news>
+  #Vers. 2.2.1
+  Kodi 20 
+
+  #Vers. 2.2.0
+  Default Base Url
+
+  #Vers. 2.1.0
+  Check Base Url
+  
+  #Vers. 2.0.0
+  Restyling and Upgrade
+  
+  #Vers. 1.3.0
+  Hide Adult Content
+  
+  #Vers. 1.2.0
+  Fix MultiServer
+  
+  #Vers. 1.1.0
+  Remote Update
+  
+  #Vers. 1.0.8
+  Fix Error
+  
+  #Vers. 1.0.7
+  Fix CheckResolver
+  
+  #Vers. 1.0.6
+  Add resolver + Change script
+  
+  #Vers. 1.0.5
+  Add channels tag
+  
+  #Vers. 1.0.4
+  Add SetViewMode tag
+  
+  #Vers. 1.0.3
+  Compatibility Kodi 18 and 19
+  
+  #Vers. 1.0.2
+  Add yatse script
+  </news>
+</extension>
+</addon>
