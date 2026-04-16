@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<addon id="repository.atresdaily" name="AtresDaily Repository" version="1.0.1" provider-name="RubenSDFA1labernt">
+    <extension point="xbmc.addon.repository" name="AtresDaily Repository">
+        <dir>
+            <info compressed="false">https://fullstackcurso.github.io/atresdaily/addons.xml</info>
+            <checksum>https://fullstackcurso.github.io/atresdaily/addons.xml.md5</checksum>
+            <datadir zip="true">https://fullstackcurso.github.io/atresdaily/</datadir>
+        </dir>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="es">Repositorio de AtresDaily</summary>
+        <description lang="es">Repositorio oficial para instalar y actualizar el addon AtresDaily.</description>
+        <platform>all</platform>
+        <assets>
+            <icon>icon.png</icon>
+            </assets>
+    </extension>
+</addon>
