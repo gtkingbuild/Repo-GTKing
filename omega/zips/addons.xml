@@ -1270,6 +1270,26 @@ No se acepta ninguna responsabilidad por el uso de este addon.
     </extension>
 </addon>
 
+<addon id="repository.hub" name="Hub Repo" version="1.2.2" provider-name="1x">
+    <extension point="xbmc.addon.repository" name="Hub Repo">
+		<dir>
+			<info compressed="false">https://raw.githubusercontent.com/staycanuca/hub/main/zip/addons.xml</info>
+			<checksum>https://raw.githubusercontent.com/staycanuca/hub/main/zip/addons.xml.md5</checksum>
+			<datadir zip="true">https://raw.githubusercontent.com/staycanuca/hub/main/zip/</datadir>
+			<hashes>false</hashes>
+		</dir>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB">Hub Repository</summary>
+        <description lang="en_GB">Repo for Hub.</description>
+        <platform>all</platform>
+        <assets>
+            <icon>icon.png</icon>
+			<fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon>
+
 <addon id="repository.jellyfin.kodi" name="Kodi Jellyfin Addons" version="1.0.0" provider-name="null_pointer,angelblue05,sualfred,im85288,xnappo">
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>
@@ -1698,6 +1718,25 @@ No se acepta ninguna responsabilidad por el uso de este addon.
       <fanart>fanart.jpg</fanart>
     </assets>
   </extension>
+</addon>
+
+<addon id="repository.tvchopo" name="[COLOR lime]tvchopo[/COLOR] Repo" version="3" provider-name="torete">
+    <extension point="xbmc.addon.repository" name="tvchoco Jose">
+        <info>https://raw.githubusercontent.com/elchocolate/repotvchopo/master/Repositorio/addons.xml</info>
+        <checksum>https://raw.githubusercontent.com/elchocolate/repotvchopo/master/Repositorio/addons.xml.md5</checksum>
+        <datadir zip="true">https://raw.githubusercontent.com/elchocolate/repotvchopo/master/Repositorio/</datadir>
+	    <dir>
+        <info compressed="false">https://raw.githubusercontent.com/elchocolate/repotvchopo/master/Repositorio/addons.xml</info>
+        <checksum>https://raw.githubusercontent.com/elchocolate/repotvchopo/master/Repositorio/addons.xml.md5</checksum>
+        <datadir zip="true">https://raw.githubusercontent.com/elchocolate/repotvchopo/master/Repositorio/</datadir>
+        </dir>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary>Repositorio para familia chopo</summary>
+        <description></description>
+        <disclaimer></disclaimer>
+        <platform>all</platform>
+    </extension>
 </addon>
 
 <addon id="script.colorbox" name="colorbox Script" version="2.0.8" provider-name="BADMS, drinfernoo">
