@@ -552,38 +552,6 @@ provider-name="The Cleaner">
   <extension point="xbmc.service" library="services.py" start="login|startup"/>
 </addon>
 
-<addon id="plugin.video.blackcat2" name="BlackCat v2" version="1.2.9" provider-name="korda">
-    <requires>
-        <import addon="xbmc.python" version="3.0.0" />
-        <import addon="script.module.requests" version="2.25.1" />
-        <import addon="script.module.beautifulsoup4" version="4.9.3" />
-    </requires>
-    <extension point="xbmc.python.pluginsource" library="main.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="ca_ES">Llista i reprodueix enllaços fent servir el complement Horus.</summary>
-        <summary lang="en_GB">List and play links via the Horus addon.</summary>
-        <summary lang="es_ES">Lista y reproduce enlaces a través del addon Horus.</summary>
-        <description lang="ca_ES">BlackCat utilitza Horus com a passarel·la per reproduir enllaços i també és necessari tindre instal·lat AceStream.</description>
-        <description lang="en_GB">BlackCat uses Horus to play AceStream links and you also need to have AceStream installed.</description>
-        <description lang="es_ES">BlackCat usa Horus para reproducir enlaces y también es necesario tener instalado AceStream.</description>
-        <disclaimer lang="ca_ES">[COLOR red]BlackCat només recopila enllaços publicats a pàgines web disponibles al públic general.[/COLOR]</disclaimer>
-        <disclaimer lang="en_GB">[COLOR red]BlackCat only collects links posted on websites that are available to the general public.[/COLOR]</disclaimer>
-        <disclaimer lang="es_ES">[COLOR red]BlackCat solo recopila enlaces publicados en páginas web disponibles para el público en general.[/COLOR]</disclaimer>
-        <platform>all</platform>
-        <assets>
-            <icon>icon.jpg</icon>
-            <fanart>fanart.jpg</fanart>
-        </assets>
-        <news>
-            ~[1.2.9] HDN minor fix.
-            ~[1.2.7] Bug fix SUP.
-            ~[1.0.9] First release.
-        </news>
-    </extension>
-</addon>
-
 <addon id="plugin.video.doqmental"
 	name="DOQMENTAL"
 	version="1.1"
@@ -732,92 +700,6 @@ provider-name="ElSupremo">
   Add yatse script
   </news>
 </extension>
-</addon>
-
-<addon id="plugin.video.Naranjitomatrix"
-       name="[COLOR orange]Naranjito[/COLOR]"
-       version="1.2.1+matrix"
-       provider-name="Naranjito">
-<requires>
-    <import addon="xbmc.python" version="3.0.0"/>
-    <import addon="script.module.requests"/>
-    <import addon="script.module.simplejson"/>
-	<import addon="script.module.kodi-six" />
-</requires>
-<extension point="xbmc.python.pluginsource" library="default.py">
-	<provides>video</provides>
-</extension>
-<extension point="xbmc.addon.metadata">
-	 <summary lang="en">Creado por Naranjito</summary>
-    <description lang="en">Naranjito 2017</description>
-    <disclaimer lang="en"></disclaimer>
-	<platform>all</platform>
-	<assets>
-       <icon>icon.png</icon>
-       <fanart>fanart.jpg</fanart>
-</assets>
-	<news>news
-	</news>
-</extension>
-</addon>
-
-<addon id="plugin.video.tacones" name="[COLOR red]TACONES[/COLOR]" version="3.5.6" provider-name="La Mala de la Novela">
-	<requires>
-		<import addon="script.module.six" />
-		<import addon="script.module.kodi-six" />
-		<import addon="script.module.requests" />
-		<import addon="script.module.websocket" version="0.50.0"  optional="true"/>
-		<import addon="script.module.youtube.dl" optional="true"/>
-		<import addon="plugin.video.youtube" optional="true" />
-		<import addon="plugin.video.duffyou" optional="true" />
-		<import addon="script.module.dateutil" optional="true" />
-		<import addon="script.module.resolveurl" optional="true"/>
-		<import addon="script.module.urlresolver" optional="true"/>
-		<import addon="script.module.cloudscraper" optional="true"/>
-		<import addon="script.module.inputstreamhelper" optional="true"/>
-		<import addon="script.module.slproxy" optional="true"/>
-		<import addon="script.module.beautifulsoup4" />
-		<import addon="script.module.html5lib" />
-	</requires>
-	<extension point="xbmc.python.pluginsource" library="default.py">
-		<provides>video</provides>
-	</extension>
-
-	<extension point="xbmc.addon.repository" name="Tacones repository">
-		<dir>
-			<info compressed="false">https://raw.githubusercontent.com/830NY/Tacones_Repo/main/addons.xml</info>
-			<checksum>https://raw.githubusercontent.com/830NY/Tacones_Repo/main/addons.xml.md5</checksum>
-			<datadir zip="true">https://raw.githubusercontent.com/830NY/Tacones_Repo/main/</datadir>
-		</dir>
-	</extension>
-
-	<extension point="xbmc.addon.metadata">
-		<summary>Películas, Series y más...</summary>
-		<description>
-Puedes seguirme en https://t.me/kodispain_1
-
-AVISO LEGAL:
-
-Este complemento no aloja ningun contenido mostrado.
-Todo el contenido se encuentra libremente en internet.
-No se acepta ninguna responsabilidad por el uso de este addon.
-
-¡Disfruta!
-		</description>
-		<platform>all</platform>
-		<assets>
-			<icon>icon.png</icon>
-			<fanart>fanart.jpg</fanart>
-			<screenshot>resources/media/screenshot-1.jpg</screenshot>
-			<screenshot>resources/media/screenshot-2.jpg</screenshot>
-			<screenshot>resources/media/screenshot-3.jpg</screenshot>
-			<screenshot>resources/media/screenshot-4.jpg</screenshot>
-		</assets>
-		<news>Segunda versión basada en LSP Mod by Someone Like You
-			- Multiples Cambios en la estructura interna.
-			- Añadidas librerías de soporte.
-		</news>
-	</extension>
 </addon>
 
 <addon id="plugin.video.youtube" name="YouTube" version="7.0.6.3" provider-name="anxdpanic, bromix, MoojMidge">
@@ -1270,7 +1152,7 @@ No se acepta ninguna responsabilidad por el uso de este addon.
     </extension>
 </addon>
 
-<addon id="repository.hub" name="Hub Repo" version="1.2.2" provider-name="1x">
+<addon id="repository.hub" name="Hub Repo" version="1.2.4" provider-name="1x">
     <extension point="xbmc.addon.repository" name="Hub Repo">
 		<dir>
 			<info compressed="false">https://raw.githubusercontent.com/staycanuca/hub/main/zip/addons.xml</info>
@@ -1288,6 +1170,26 @@ No se acepta ninguna responsabilidad por el uso de este addon.
 			<fanart>fanart.jpg</fanart>
         </assets>
     </extension>
+</addon>
+
+<addon id="repository.jacktook" name="Jacktook Add-on Repository" version="0.0.5" provider-name="Sam-Max">
+<extension point="xbmc.addon.repository" name="Jacktook Add-on Repository">
+<dir>
+<info compressed="false">https://raw.githubusercontent.com/Sam-Max/repository.jacktook/master/repo/zips/addons.xml</info>
+<checksum>https://raw.githubusercontent.com/Sam-Max/repository.jacktook/master/repo/zips/addons.xml.md5</checksum>
+<datadir zip="true">https://raw.githubusercontent.com/Sam-Max/repository.jacktook/master/repo/zips/</datadir>
+</dir>
+</extension>
+<extension point="xbmc.addon.metadata">
+<summary>Jacktook Add-on Repository</summary>
+<description>Jacktook Repository for Jacktook Addon</description>
+<disclaimer/>
+<platform>all</platform>
+<assets>
+<icon>icon.png</icon>
+<fanart>fanart.jpg</fanart>
+</assets>
+</extension>
 </addon>
 
 <addon id="repository.jellyfin.kodi" name="Kodi Jellyfin Addons" version="1.0.0" provider-name="null_pointer,angelblue05,sualfred,im85288,xnappo">
@@ -1482,7 +1384,7 @@ No se acepta ninguna responsabilidad por el uso de este addon.
     </extension>
 </addon>
 
-<addon id="repository.oldsalt" name="Old Salt Repository" version="1.4" provider-name="Jax">
+<addon id="repository.oldsalt" name="Old Salt Repository" version="1.5" provider-name="Jax">
 <extension point="xbmc.addon.repository" name="Old Salt Repository">
     <dir>
         <info compressed="false">https://github.com/OldManJax/repository.oldsalt/raw/master/addons.xml</info>
@@ -1552,12 +1454,6 @@ No se acepta ninguna responsabilidad por el uso de este addon.
         <info compressed="false">https://raw.githubusercontent.com/Slamious/swzips/main/addons.xml</info>
         <checksum>https://raw.githubusercontent.com/Slamious/swzips/main/addons.xml.md5</checksum>
         <datadir zip="true">https://raw.githubusercontent.com/Slamious/swzips/main/zips/</datadir>
-    </dir>
-    <!--RD Player-->
-    <dir>
-        <info compressed="false">https://rdp.uck.st/rdprepo/zips/addons.xml</info>
-        <checksum>https://rdp.uck.st/rdprepo/zips/addons.xml.md5</checksum>
-        <datadir zip="true">https://rdp.uck.st/rdprepo/zips/</datadir>
     </dir>
     <!--ResolveURL-->
     <dir>
