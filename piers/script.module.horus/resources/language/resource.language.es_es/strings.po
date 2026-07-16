@@ -1,7 +1,7 @@
 # Kodi Media Center language file
-# Addon Name: Horus
+# Addon Name: EKHorus
 # Addon id: script.module.horus
-# Addon Provider: CaperucitaFeroz
+# Addon Provider: CaperucitaFeroz, RubénSDFA1laberot
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC-Addons\n"
@@ -195,3 +195,15 @@ msgstr "Mostrar información Acestream en OSD"
 msgctxt "#30044"
 msgid "Remember last operating ID"
 msgstr "Recordar último ID operativo"
+
+msgctxt "#30045"
+msgid "Ace Engine"
+msgstr "Motor ace"
+
+msgctxt "#30046"
+msgid "Show QR"
+msgstr "Mostrar QR"
+
+msgctxt "#30047"
+msgid "Redirect external calls to StreamNinja"
+msgstr "Redirigir a StreamNinja las llamadas de otros addons"

@@ -1,17 +1,12 @@
 # -*- coding: utf-8 -*-
 #-------------------------------------------------------------------------------
-# Horus by Caperucitaferoz based on previous work by:
+# EKHorus by Caperucitaferoz, modified by RubénSDFA1laberot based on previous work by:
 # - Enen92 (https://github.com/enen92)
 # - Joian (https://github.com/jonian)
 #
-# Thanks to those who have collaborated in any way, especially to:
-# - @Canna_76
-# - @AceStreamMOD (https://t.me/AceStreamMOD)
-# - @luisma66 (tester raspberry)
+# This file is part of EKHorus for Kodi
 #
-# This file is part of Horus for Kodi
-#
-# Horus for Kodi is free software: you can redistribute it and/or modify
+# EKHorus for Kodi is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -21,6 +16,9 @@
 #-------------------------------------------------------------------------------
 
 from lib.utils import *
+import base64
+import gzip
+import json
 
 from acestream.engine import Engine
 from acestream.stream import Stream
@@ -144,11 +142,11 @@ class MyPlayer(xbmc.Player):
         status = 'failed'
 
         listitem = xbmcgui.ListItem()
+        infotag = listitem.getVideoInfoTag()
         title = title or stream.filename or stream.id
-        info = {'title': title}
+        infotag.setTitle(title)
         if plot:
-            info['plot'] = plot
-        listitem.setInfo('video', info )
+            infotag.setPlot(plot)
         art = {'icon': iconimage if iconimage else os.path.join(runtime_path, 'resources', 'media', 'icono_aces_horus.png')}
         listitem.setArt(art)
 
@@ -269,7 +267,10 @@ def clear_cache():
                 acestream_cachefolder = os.path.join(os.getenv("HOME"), '.ACEStream', 'cache', '.acestream_cache')
             else:
                 home = "/storage/emulated/0/"
-                acestream_cachefolder = '/storage/emulated/0/org.acestream.engine/.ACEStream/.acestream_cache'
+                if system_platform == 'android' and get_setting("ace_engine") == "org.free.aceserve":
+                    acestream_cachefolder = '/storage/emulated/0/org.free.aceserve/files/.ACEStream/'
+                else:
+                    acestream_cachefolder = '/storage/emulated/0/org.acestream.engine/.ACEStream/.acestream_cache'
 
         acestream_cachefolder = acestream_cachefolder if os.path.isdir(acestream_cachefolder) else None
 
@@ -360,13 +361,6 @@ def acestreams(id=None, url=None, infohash=None, title="", iconimage="", plot=""
             xbmcgui.Dialog().ok(HEADING, translate(30015))
             return
 
-
-    if id and system_platform == 'android' and get_setting("reproductor_externo"):
-        AndroidActivity = 'StartAndroidActivity("","org.acestream.action.start_content","","acestream:?content_id=%s")' % id
-        logger("Abriendo " + AndroidActivity)
-        xbmc.executebuiltin(AndroidActivity)
-        return
-
     if not server.available:
         # Create an engine instance
         if system_platform == "windows":
@@ -404,30 +398,14 @@ def acestreams(id=None, url=None, infohash=None, title="", iconimage="", plot=""
                 cmd_stop_acestream = [os.path.join(get_setting("install_acestream"), 'acestream.stop')]
 
         elif system_platform == 'android':
-            AndroidActivity = None
-            if id:
-                # Reproducir ID
-                AndroidActivity = 'StartAndroidActivity("","org.acestream.action.start_content","","acestream:?content_id=%s")' % id
-                logger("Abriendo " + AndroidActivity)
-                xbmc.executebuiltin(AndroidActivity)
-                return
+            if get_setting("ace_engine") == "org.free.aceserve":
+                AndroidActivity = 'StartAndroidActivity("%s","","","acestream://","","","","","crc644baf9324e22bb51e.LinkHandlerActivity")' % get_setting("ace_engine")
             else:
-                import glob
-                for patron in ["/storage/emulated/0/Android/data/org.acestream.*", "/data/user/0/org.acestream.*"]:
-                    org_acestream = glob.glob(patron)
-                    if org_acestream:
-                        AndroidActivity = 'StartAndroidActivity("%s")' % org_acestream[0].split('/')[-1]
-                        break
-
-            if AndroidActivity:
-                if xbmcgui.Dialog().yesno(HEADING, translate(30041)):
-                    logger("Abriendo " + AndroidActivity)
-                    xbmc.executebuiltin(AndroidActivity)
-                else:
-                    return
-            else:
-                xbmcgui.Dialog().ok(HEADING, translate(30016))
+                AndroidActivity = 'StartAndroidActivity("","org.acestream.action.start_content","","acestream:?content_id=launch")'
+            if not xbmcgui.Dialog().yesno(HEADING, translate(30041)):
                 return
+            logger("Abriendo " + AndroidActivity)
+            xbmc.executebuiltin(AndroidActivity)
 
         logger("acestream_executable= %s" % acestream_executable)
 
@@ -443,6 +421,15 @@ def acestreams(id=None, url=None, infohash=None, title="", iconimage="", plot=""
                 return
 
     try:
+        if id and system_platform == 'android' and get_setting("reproductor_externo"):
+            if get_setting("ace_engine") == "org.free.aceserve":
+                AndroidActivity = 'StartAndroidActivity("","android.intent.action.VIEW","video/mp4","http://%s:%s/ace/getstream?id=%s")' % (get_setting("ip_addr"),get_setting("ace_port"),id)
+            else:
+                AndroidActivity = 'StartAndroidActivity("","org.acestream.action.start_content","","acestream:?content_id=%s")' % id
+            logger("Abriendo " + AndroidActivity)
+            xbmc.executebuiltin(AndroidActivity)
+            return
+
         d = xbmcgui.DialogProgress()
         d.create(HEADING, translate(30033))
         timedown = time.time() + get_setting("time_limit")
@@ -619,66 +606,145 @@ def mainmenu():
     return itemlist
 
 
+ass_ids = list()
+def ass_decoder(ass_id_or_json):
+    from six.moves import urllib_request
+
+    global ass_ids
+    itemlist = list()
+    is_json = 1
+    try:
+        json_data = json.loads(ass_id_or_json)
+    except:
+        is_json = 0
+    if not is_json:
+    #input is  ASS ID and not json
+        if ass_id_or_json not in ass_ids:
+            ass_ids.append(ass_id_or_json)
+            req = urllib_request.Request("https://dns.google/resolve?name={}.elcano.top&type=TXT".format(ass_id_or_json.replace("ass://","")), data=None, headers={'Accept': 'application/json'})
+            response = json.loads(six.ensure_str(urllib_request.urlopen(req).read()))
+            if "Answer" in response.keys():
+                for i in range(len(response["Answer"])):
+                    if "H4sIAAAAAAAA" in response["Answer"][i]["data"]:
+                    #gz data
+                        json_data = gzip.decompress(base64.b64decode(response["Answer"][i]["data"])).decode("utf-8")
+                    else:
+                    #base64
+                        json_data = base64.b64decode(response["Answer"][i]["data"]).decode("utf-8")
+                    itemlist = itemlist + ass_decoder(json_data)
+    else:
+        for i in range(len(json_data)):
+            jsitem = json_data[i]
+            if "subLinks" in jsitem.keys():
+                itemlist = itemlist + ass_decoder(json.dumps(jsitem["subLinks"]))
+            elif "ref" in jsitem.keys():
+                itemlist = itemlist + ass_decoder(jsitem["ref"])
+            elif "url" in jsitem.keys() and len(re.findall('([0-9a-f]{40})', jsitem["url"], re.I)):
+                chan_name = jsitem["name"]
+                chan_id = re.findall('([0-9a-f]{40})', jsitem["url"], re.I)[0]
+                itemlist.append(Item(label=chan_name ,action='play',id=chan_id))
+            else:
+                xbmc.log("HORUS - ASS decoder ignored item: " + str(jsitem))
+    return itemlist
+
+
 def search(url):
     from six.moves import urllib_request
 
     itemlist = list()
     ids = list()
 
-    # Ejemplos de urls validas:
-    #   https://fastestvpn.com/blog/acestream-channels/
-    #   http://acetv.org/js/data.json
-    #   https://raw.githubusercontent.com/digitaimadness/digitaimadness.github.io/59c454b198f65c6e17ae106f1312b8e0be204211/alpaca.tv/ace.world.m3u
+    # Ejemplos de urls validas: 
+    #
 
     try:
-        data = six.ensure_str(urllib_request.urlopen(url).read())
-        data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;", "", data)
+        if "://" not in url:
+            req = urllib_request.Request("https://acestreamsearch.net/en/?q={}".format(url), data=None, headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'})
+            data = six.ensure_str(urllib_request.urlopen(req).read())
+            data=data.split("list-group\">")[1].split("</ul>")[0]
+            data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;", "", data)
+            patron = '<a href="(.*?)">(\\w*.*?)<'
+            for channel in re.findall(patron, data, re.I):
+                itemlist.append(Item(label=channel[1]+ " (acestreamsearch.net)",
+                            action='play',
+                            id=channel[0].replace("acestream://","")))
+            req = urllib_request.Request("https://search-ace.stream/search?query={}".format(url), data=None, headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'})
+            data = json.loads(six.ensure_str(urllib_request.urlopen(req).read()))
+            for i in range(len(data)):
+                itemlist.append(Item(label=data[i]["name"]+ " (search-ace.stream)",
+                            action='play',
+                            id=data[i]["content_id"]))
+        elif url.startswith("ass://"):
+            global ass_ids
+            ass_ids = list()
+            itemlist = ass_decoder(url)
+        else:
+            req = urllib_request.Request(url, data=None, headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'})
+            data = six.ensure_str(urllib_request.urlopen(req).read())
 
-        if data:
-            if url.startswith('https://ipfs.io/'):
-                patron = '<a href="(/ipfs/[^"]+acelive)">(\d*)'
-                for ace,n in re.findall(patron, data, re.I):
-                    itemlist.append(Item(label="Arenavisión Canal " + n,
-                                         action='play',
-                                         url="https://ipfs.io" + ace))
-            else:
-                try:
-                    for n, it in enumerate(eval(re.findall('(\[.*?])', data)[0])):
-                        label = it.get("name", it.get("title", it.get("label")))
-                        id = it.get("id", it.get("url"))
-                        id = re.findall('([0-9a-f]{40})', id, re.I)[0]
-                        icon = it.get("icon", it.get("image", it.get("thumb")))
+            if data:
+                if "pastebin" in url or ".txt" in url:
+                    data = data.replace("\n\n", "\n") #remove empty lines
+                    data = data.replace("acestream://", "") #remove protocol
+                    patron = "(?:.*?)======\n(.*)"
+                    tmp = re.findall(patron, data, re.DOTALL) #remove text before "========"
+                    if len(tmp) > 0:
+                        data = tmp[0]
+                    data = re.sub(r'(?m)^\===.*\n?', '', data) #remove lines starting with "==="
+                    for it in re.findall(r'(.+?)\n([0-9a-f]{40})(?=\n|$)', data, re.DOTALL):
+                        if len(it) == 2 and len(it[1]) > 0:
+                                    name = it[0].replace("\n","")
+                                    id = it[1]
+                                    itemlist.append(Item(label=name ,action='play',id=id))
+                elif "elcano" in url:
+                    data = json.loads(data.split("linksData = ")[1].split(";")[0])
+                    for link in data["links"]:
+                        if len(link["url"]) >= 40:
+                            itemlist.append(Item(label=link["name"] ,action='play',id=link["url"].replace("acestream://","")))
+                elif "vercel.app" in url or "netlify.app" in url:
+                    data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;", "", data)
+                    data = data.replace("acestream://","")
+                    patron = "<a href=[\'\"]([0-9a-f]{40})[\'\"](?:.*?)>(?: |)(\\w*.*?)(?: |)<"
+                    for channel in re.findall(patron, data, re.I):
+                        itemlist.append(Item(label=channel[1],
+                                action='play',
+                                id=channel[0]))
+                else:
+                    data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;", "", data)
+                    try:
+                        for n, it in enumerate(eval(re.findall('(\[.*?])', data)[0])):
+                            label = it.get("name", it.get("title", it.get("label")))
+                            id = it.get("id", it.get("url"))
+                            id = re.findall('([0-9a-f]{40})', id, re.I)[0]
+                            icon = it.get("icon", it.get("image", it.get("thumb")))
 
-                        new_item = Item(label= label if label else translate(30030) % (n,id), action='play', id=id)
+                            new_item = Item(label= label if label else translate(30030) % (n,id), action='play', id=id)
 
-                        if icon:
-                            new_item.icon = icon
+                            if icon:
+                                new_item.icon = icon
 
-                        itemlist.append(new_item)
-                except:
-                    for patron in [r'#EXTINF:-1.*?id="([^"]+)".*?([0-9a-f]{40})', '#EXTINF:-1,(.*?)http.*?([0-9a-f]{40})']:
-                        for label, id in re.findall(patron, data):
-                            itemlist.append(Item(label=label, action='play', id=id))
-                        if itemlist: break
-
-                    if not itemlist:
-                        itemlist = []
-                        for patron in [r"acestream://([0-9a-f]{40})", r'(?:"|>)([0-9a-f]{40})(?:"|<)']:
-                            n = 1
-                            for id in re.findall(patron, data, re.I):
-                                if id not in ids:
-                                    ids.append(id)
-                                    itemlist.append(Item(label= translate(30030) % (n,id),
-                                                         action='play',
-                                                         id= id))
-                                    n += 1
+                            itemlist.append(new_item)
+                    except:
+                        for patron in [r'#EXTINF:-1.*?id="([^"]+)".*?([0-9a-f]{40})', '#EXTINF:-1.*?,(.*?)http.*?([0-9a-f]{40})']:
+                            for label, id in re.findall(patron, data):
+                                itemlist.append(Item(label=label, action='play', id=id))
                             if itemlist: break
+
+                        if not itemlist:
+                            itemlist = []
+                            for patron in [r"acestream://([0-9a-f]{40})", r'(?:"|>)([0-9a-f]{40})(?:"|<)']:
+                                n = 1
+                                for id in re.findall(patron, data, re.I):
+                                    if id not in ids:
+                                        ids.append(id)
+                                        itemlist.append(Item(label= translate(30030) % (n,id),
+                                                             action='play',
+                                                             id= id))
+                                        n += 1
+                                if itemlist: break
     except: pass
 
-    if itemlist:
-        return itemlist
-    else:
-        xbmcgui.Dialog().ok(HEADING,  translate(30031) % url)
+    return itemlist
 
 
 def kill_process():
@@ -713,6 +779,7 @@ def run(item):
         logger("Item sin acción")
         return
 
+    logger("Ejecutando " + str(item))
     if item.action == "mainmenu":
         itemlist = mainmenu()
 
@@ -729,13 +796,23 @@ def run(item):
                                  plot=it.get('plot')))
 
     elif item.action == "search":
-        url = xbmcgui.Dialog().input(translate(30032),
-                get_setting("last_search", "http://acetv.org/js/data.json"))
-
-        if url:
-            itemlist = search(url)
-            if itemlist:
-                set_setting("last_search", url)
+        url_list = xbmcgui.Dialog().input(translate(30032),get_setting("last_search", "http://acetv.org/js/data.json"))
+        if url_list:
+            itemlist = list()
+            tmp_itemlist = list()
+            ids = list()
+            for url in url_list.split(";"):
+                if url:
+                    tmp_itemlist.append(Item(label=">>>>>>>>>> Source [{}] <<<<<<<<<<".format(url) ,action='',id=url))
+                    tmp_itemlist = tmp_itemlist + search(url)
+            for item in tmp_itemlist:
+                if item.id not in ids:
+                    itemlist.append(item)
+                    ids.append(item.id)
+            if len(itemlist) > len(url_list.split(";")):
+                set_setting("last_search", url_list)
+            else:
+                xbmcgui.Dialog().ok(HEADING,  translate(30031) % url_list)
         else:
             return
 
@@ -756,8 +833,11 @@ def run(item):
             input = xbmcgui.Dialog().input(translate(30022), last_id if get_setting("remerber_last_id") else "")
             if re.findall('^(http|magnet)', input, re.I):
                 url = input
-            else:
-                id = input
+            elif re.findall('([0-9a-f]{40})', input, re.I):
+                id = re.findall('([0-9a-f]{40})', input, re.I)[0]
+            elif input:
+                xbmcgui.Dialog().ok(HEADING, translate(30031) % input)
+                return
 
         if id:
             acestreams(id=id)
@@ -774,16 +854,25 @@ def run(item):
         elif infohash:
             acestreams(infohash=infohash)
 
-        xbmc.executebuiltin('Container.Refresh')
-
+        #xbmc.executebuiltin('Container.Refresh')
 
     if itemlist:
         for item in itemlist:
             listitem = xbmcgui.ListItem(item.label or item.title)
-            listitem.setInfo('video', {'title': item.label or item.title, 'mediatype': 'video'})
-            listitem.setArt(item.getart())
-            if item.plot:
-                listitem.setInfo('video', {'plot': item.plot})
+            infotag = listitem.getVideoInfoTag()
+            infotag.setTitle(item.label or item.title)
+            infotag.setMediaType('video') 
+            infotag.setPlot(item.plot or item.id or item.url)
+            
+            poster_url = os.path.join(runtime_path, 'icon.png')
+            if item.id and "://" not in item.id and get_setting("show_qr_codes"):
+                import pyqrcode
+                qr_data = "acestream://" + item.id
+                poster_url = xbmcvfs.translatePath('special://temp') + item.id + '.png'
+                pyqrcode.create(qr_data).png(poster_url, scale=6)
+            art = {'icon': os.path.join(runtime_path, 'icon.png'), 'poster': poster_url}
+            listitem.setArt(art)
+
 
             if item.isPlayable:
                 listitem.setProperty('IsPlayable', 'true')
@@ -792,7 +881,7 @@ def run(item):
             elif isinstance(item.isFolder, bool):
                 isFolder = item.isFolder
 
-            elif not item.action:
+            elif item.action in ["", "kill", "play", "open_settings"]:
                 isFolder = False
 
             else:
@@ -805,7 +894,7 @@ def run(item):
                 isFolder= isFolder,
                 totalItems=len(itemlist)
             )
-        
+
         xbmcplugin.addSortMethod(handle=int(sys.argv[1]), sortMethod=xbmcplugin.SORT_METHOD_NONE)
         xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True)
 
@@ -827,6 +916,23 @@ if __name__ == '__main__':
             action = argumentos.get('action', '').lower()
 
             if action == 'play' and (argumentos.get('id') or argumentos.get('url') or argumentos.get('infohash')):
+                # StreamNinja rebota a Horus cuando su motor nativo no reproduce; sin este
+                # cortacircuitos el reenvío entra en bucle infinito Horus<->StreamNinja.
+                snb_key = 'ekhorus_snb_' + (argumentos.get('id') or argumentos.get('infohash') or argumentos.get('url') or '')
+                win = xbmcgui.Window(10000)
+                prev = win.getProperty(snb_key)
+                bounced = False
+                if prev:
+                    try:
+                        bounced = (time.time() - float(prev)) < 15
+                    except ValueError:
+                        pass
+                if get_setting("redirect_streamninja") and xbmc.getCondVisibility('System.HasAddon(plugin.video.streamninja)') and not bounced:
+                    win.setProperty(snb_key, str(time.time()))
+                    fwd = {k: v for k, v in argumentos.items() if k != 'action' and v}
+                    xbmc.executebuiltin('RunPlugin(plugin://plugin.video.streamninja/?action=acestream&%s)' % urllib_parse.urlencode(fwd))
+                    exit(0)
+                win.clearProperty(snb_key)
                 if argumentos.get('url') and argumentos.get('url').lower().endswith('.torrent'):
                     infohash = read_torrent(argumentos.get('url'), argumentos.get('headers'))
                     if infohash:
@@ -858,7 +964,3 @@ if __name__ == '__main__':
         item = Item(action='mainmenu')
 
     run(item)
-
-
-
-

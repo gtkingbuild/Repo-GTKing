@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.module.horus" name="Horus" version="1.1.9" provider-name="Caperucitaferoz">
+<addon id="script.module.horus" name="EKHorus" version="1.3.2" provider-name="Caperucitaferoz, RubénSDFA1laberot">
     <requires>
         <import addon="script.module.six" />
+        <import addon="script.module.pyqrcode" />
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>executable</provides>
     </extension>
     <extension point="xbmc.addon.metadata">
-        <description>Horus:
+        <description>EKHorus: modificación de Horus adaptada a EspaKodi.
+
 "Señor de sus ojos"
 "Unificador de las dos tierras"
 "Señor de las estrellas circumpolares"
@@ -18,15 +20,32 @@
         <assets>
               <icon>icon.png</icon>
               <fanart>fanart.jpg</fanart>
-              <screenshot>resources/media/Captura1.png</screenshot>
-              <screenshot>resources/media/Captura2.png</screenshot>
-              <screenshot>resources/media/Captura3.png</screenshot>
-              <screenshot>resources/media/Captura4.png</screenshot>
         </assets>
         <news>
-            - Añadido soporte para enlaces magnet-torrent
+            EKHorus: diferencias respecto al Horus original de Caperucitaferoz (1.1.9).
+
+            Enlaces y búsqueda:
+            - Soporte de enlaces ass:// (se resuelven por DNS sobre elcano.top y se decodifican en base64/gzip, incluyendo listas anidadas).
+            - Búsqueda directa por texto, sin URL, en acestreamsearch.net y search-ace.stream.
+            - Buscar varias fuentes a la vez separando las direcciones con ; (fusiona y elimina duplicados).
+            - Nuevos formatos de lista reconocidos: pastebin/.txt (nombre e ID por líneas), elcano y páginas vercel.app / netlify.app.
+
+            Motor AceStream (Android):
+            - Segundo motor org.free.aceserve (aceserve) seleccionable con el ajuste Motor ace, con sus propias rutas de caché e intents de lanzamiento y reproducción.
+
+            Reproducción e interfaz:
+            - Ajuste Mostrar QR: genera un código QR del enlace acestream:// como carátula del elemento (dependencia nueva: script.module.pyqrcode).
+            - Listitems con la API moderna getVideoInfoTag en lugar de setInfo.
+            - Al introducir un ID a mano exige un hash de 40 caracteres y avisa si no es válido (el original aceptaba el texto tal cual).
+            - Ya no fuerza el refresco del contenedor tras reproducir.
+
+            Integración con otros addons:
+            - Ajuste Redirigir a StreamNinja las llamadas de otros addons: reenvía las llamadas externas al reproductor de StreamNinja, con protección anti-bucle.
+
+            Identidad:
+            - Renombrado a EKHorus (adaptación para EspaKodi), con RubénSDFA1laberot como coautor. El id sigue siendo script.module.horus para no romper las llamadas de otros addons. Dependencia añadida: script.module.pyqrcode.
         </news>
-        <forum>https://t.me/KodiManiac
-        https://t.me/acestream_spanish</forum>
+        <forum>https://t.me/espakodi
+        https://espatv.github.io/ekstreaming</forum>
     </extension>
 </addon>

@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-    <category label="Horus">
+    <category label="EKHorus">
         <setting id="ip_addr" type="text" label="30024" default="127.0.0.1" />
         <setting id="ace_port" type="text" label="30025" default="6878" />
         <setting id="time_limit" type="slider" label="30026" default="30" range="10,2,120" option="int" />
         <setting id="show_osd" type="bool" label="30043" default="true"/>
         <setting id="remerber_last_id" type="bool" label="30044" default="true"/>
+        <setting id="show_qr_codes" type="bool" label="30046" default="false"/>
+        <setting id="redirect_streamninja" type="bool" label="30047" default="false" visible="System.HasAddon(plugin.video.streamninja)"/>
         <!-- Android -->
         <setting id="reproductor_externo" type="bool" label="30039" default="false" visible="System.Platform.Android"/>
-
+        <setting id="ace_engine" type="select" label="30045" values="org.acestream.----|org.free.aceserve" default="org.acestream.----" visible="System.Platform.Android"/>
+        
         <!--Windows y linux no ubuntu -->
         <setting id="install_acestream" type="text" default="false" visible="false"/>
         <setting id="stop_acestream" type="bool" label="30042" default="false" visible="!eq(-1,false)+!System.Platform.Android"/>
