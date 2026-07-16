@@ -1,4 +1,4 @@
-27
+28
 |||
 
 [COLOR greenyellow]¡¡¡BIENVENIDOS A LAS BUILDS GTKing PHOENIX TEAM!!![/COLOR]
@@ -13,10 +13,11 @@ Seleccionamos la Build que deseas instalar de[COLOR yellowgreen]GTKing[/COLOR] -
 Cuando termine de instalar, nos saldrá una ventana [COLOR white]"Necesita Forzar el Cierre de Kodi"[/COLOR]. Pulsaremos en [COLOR white]"OK"[/COLOR].
 Se cerrará Kodi y ya sólo nos quedará iniciar de nuevo Kodi, darle unos minutos para que cargue el menú correctamente.
 
-[COLOR gold]10/07/2026 ¡¡¡ PARCHE PARA LAS BUILDS GTKing Prime y GTactil!!![/COLOR]
+[COLOR gold]16/07/2026 ¡¡¡ PARCHE PARA LAS BUILDS GTKing Prime y GTactil!!![/COLOR]
 
 [COLOR white][B]* ELIMINADO ADDON TACONES Y VAVOO[/COLOR][/B]
-[COLOR white][B]* AÑADIDOS ADDONS MANDRAKODI, EAGLE ESPAÑA Y HUBLIVE[/COLOR][/B]
+[COLOR white][B]* AÑADIDOS ADDONS JACKTOOK, MANDRAKODI, EAGLE ESPAÑA Y HUBLIVE[/COLOR][/B]
+[COLOR white][B]* CAMBIADO HORUS POR EKHORUS (MAXIMA COMPATIBILIDAD CON KODI, ACESERVER Y ACESTREAM[/COLOR][/B]
 [COLOR white][B]* ATAJOS REDIRIGIDOS[/COLOR][/B]
 
 
